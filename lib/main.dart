@@ -48,6 +48,7 @@ import 'package:upgrader/upgrader.dart';
 import 'package:window_manager/window_manager.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   if (sentryDSN != "") {
     await SentryFlutter.init(
       (options) {
@@ -57,7 +58,6 @@ Future<void> main() async {
         options.profilesSampleRate = kDebugMode ? 0 : 0.5;
       },
       appRunner: () async {
-        WidgetsFlutterBinding.ensureInitialized();
         MediaKit.ensureInitialized();
         await initializeServices();
         runApp(const MainApp());

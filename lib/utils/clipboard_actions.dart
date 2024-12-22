@@ -56,12 +56,13 @@ Future<void> shareClipboardItem(
   ClipboardItem item,
 ) async {
   final ctx = context.mounted ? context : rootNavKey.currentContext!;
-  ctx
-      .read<OfflinePersistenceCubit>()
-      .shareClipboardItem(ctx, item)
-      .catchError((_) {
-    showTextSnackbar(ctx.locale.failed);
-  });
+  try {
+    ctx.read<OfflinePersistenceCubit>().shareClipboardItem(ctx, item);
+  } catch (e) {
+    if (ctx.mounted) {
+      showTextSnackbar(ctx.locale.failed);
+    }
+  }
 }
 
 Future<void> selectClip(
@@ -84,6 +85,13 @@ Future<void> launchUrl(ClipboardItem item) async {
   if (item.url != null && Uri.tryParse(item.url!) != null) {
     await launchUrlString(item.url!);
   }
+}
+
+Future<void> editTextContent(BuildContext context, ClipboardItem item) async {
+  final ctx = context.mounted ? context : rootNavKey.currentContext!;
+  ctx.pushReplacementNamed(RouteConstants.createClipNote, queryParameters: {
+    "id": item.id.toString(),
+  });
 }
 
 Future<void> launchPhone(ClipboardItem item, {bool message = false}) async {

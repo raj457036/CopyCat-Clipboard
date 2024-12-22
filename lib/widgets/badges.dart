@@ -3,6 +3,22 @@ import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
+class TextBadge extends StatelessWidget {
+  final String message;
+  const TextBadge({super.key, required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: context.locale.experimentalDescription,
+      child: Chip(
+        label: Text(message),
+        shape: StadiumBorder(),
+      ),
+    );
+  }
+}
+
 class InfoBadge extends StatelessWidget {
   final String message;
   const InfoBadge({super.key, required this.message});

@@ -7,6 +7,7 @@ import "package:clipboard/pages/collections/page.dart";
 import "package:clipboard/pages/collections/pages/create_edit/page.dart";
 import "package:clipboard/pages/collections/pages/details/clip_collection_provider.dart";
 import "package:clipboard/pages/collections/pages/details/page.dart";
+import "package:clipboard/pages/create_clip_note/page.dart";
 import "package:clipboard/pages/drive_setup/page.dart";
 import "package:clipboard/pages/home/page.dart";
 import "package:clipboard/pages/layout/navbar_layout.dart";
@@ -87,16 +88,19 @@ GoRouter router([List<NavigatorObserver>? observers]) => GoRouter(
             return DynamicPage(
               key: state.pageKey,
               fullScreenDialog: true,
-              child: FutureBuilder(
-                future: item,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return ClipboardItemPreviewPage(item: snapshot.data);
-                },
+              child: KeyboardShortcutProvider(
+                activePageIndex: -1,
+                child: FutureBuilder(
+                  future: item,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    return ClipboardItemPreviewPage(item: snapshot.data);
+                  },
+                ),
               ),
             );
           },
@@ -263,6 +267,39 @@ GoRouter router([List<NavigatorObserver>? observers]) => GoRouter(
           ],
         ),
         GoRoute(
+          name: RouteConstants.createClipNote,
+          path: "/create-clip-note",
+          pageBuilder: (context, state) {
+            final id = int.tryParse(state.uri.queryParameters["id"] ?? "");
+            final item = id == null
+                ? null
+                : context.read<OfflinePersistenceCubit>().getItem(id: id);
+            return DynamicPage(
+              key: state.pageKey,
+              fullScreenDialog: true,
+              child: item != null
+                  ? FutureBuilder(
+                      future: item,
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return KeyboardShortcutProvider(
+                          activePageIndex: -1,
+                          child: CreateClipNotePage(item: snapshot.data),
+                        );
+                      },
+                    )
+                  : KeyboardShortcutProvider(
+                      activePageIndex: -1,
+                      child: CreateClipNotePage(),
+                    ),
+            );
+          },
+        ),
+        GoRoute(
           name: RouteConstants.clipCollectionSelection,
           path: "/select-collection",
           pageBuilder: (context, state) {
@@ -271,7 +308,9 @@ GoRouter router([List<NavigatorObserver>? observers]) => GoRouter(
             return DynamicPage(
               key: state.pageKey,
               fullScreenDialog: true,
-              child: ClipCollectionSelectionPage(selectedCollectionId: id),
+              child: KeyboardShortcutProvider(
+                  activePageIndex: -1,
+                  child: ClipCollectionSelectionPage(selectedCollectionId: id)),
             );
           },
         ),
@@ -286,21 +325,25 @@ GoRouter router([List<NavigatorObserver>? observers]) => GoRouter(
             return DynamicPage(
               key: state.pageKey,
               fullScreenDialog: true,
-              child: collection == null
-                  ? const ClipCollectionCreateEditPage()
-                  : FutureBuilder(
-                      future: collection,
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (!snapshot.hasData) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
+              child: KeyboardShortcutProvider(
+                activePageIndex: -1,
+                child: collection == null
+                    ? const ClipCollectionCreateEditPage()
+                    : FutureBuilder(
+                        future: collection,
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (!snapshot.hasData) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return ClipCollectionCreateEditPage(
+                            collection: snapshot.data,
                           );
-                        }
-                        return ClipCollectionCreateEditPage(
-                          collection: snapshot.data,
-                        );
-                      },
-                    ),
+                        },
+                      ),
+              ),
             );
           },
         ),

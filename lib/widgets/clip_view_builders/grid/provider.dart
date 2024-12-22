@@ -33,7 +33,6 @@ class ClipGridDelegateProvider extends StatelessWidget {
             scrollDirection = Axis.horizontal;
           case AppView.windowed:
           case AppView.leftDocked || AppView.rightDocked:
-          default:
             gridDelegate = const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 240,
               crossAxisSpacing: 8,

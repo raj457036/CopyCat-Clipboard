@@ -34,12 +34,31 @@ class PasteIntent extends Intent {
   const PasteIntent();
 }
 
+class NewClipNoteIntent extends Intent {
+  const NewClipNoteIntent();
+}
+
 class RefreshIntent extends Intent {
   const RefreshIntent();
 }
 
 class HideWindowIntent extends Intent {
   const HideWindowIntent();
+
+  Future<void> invoke(BuildContext context) async {
+    FocusManager.instance.primaryFocus
+        ?.unfocus(disposition: UnfocusDisposition.previouslyFocusedChild);
+    final router = GoRouter.maybeOf(context);
+    if (router == null) return;
+    final canPop = router.canPop();
+    if (!canPop) {
+      WindowFocusManager.of(context)?.restore();
+    } else {
+      router.pop();
+    }
+
+    return;
+  }
 }
 
 class EditClipboardItemIntent extends Intent {
@@ -88,6 +107,13 @@ final syncKeySet = SingleActivator(
   includeRepeats: false,
 );
 
+final newClipNoteKeySet = SingleActivator(
+  LogicalKeyboardKey.keyN,
+  meta: Platform.isMacOS,
+  control: Platform.isWindows || Platform.isLinux,
+  includeRepeats: false,
+);
+
 const closeWindowKeySet = SingleActivator(LogicalKeyboardKey.escape);
 // final editClipItemKeySet = SingleActivator(
 //   LogicalKeyboardKey.keyE,
@@ -114,6 +140,8 @@ class KeyboardShortcutProvider extends StatelessWidget {
             shortcuts: <ShortcutActivator, Intent>{
               searchKeySet: const SearchPageIntent(),
               homeKeySet: const HomePageIntent(),
+              if (activePageIndex != -1)
+                newClipNoteKeySet: const NewClipNoteIntent(),
               if (view != AppView.bottomDocked && view != AppView.topDocked)
                 collectionKeySet: const CollectionPageIntent(),
               if (view == AppView.windowed)
@@ -172,6 +200,12 @@ class KeyboardShortcutProvider extends StatelessWidget {
                   return null;
                 },
               ),
+              NewClipNoteIntent: CallbackAction<NewClipNoteIntent>(
+                onInvoke: (intent) {
+                  context.pushNamed(RouteConstants.createClipNote);
+                  return null;
+                },
+              ),
               RefreshIntent: CallbackAction<RefreshIntent>(
                 onInvoke: (intent) async {
                   final collectionSyncCubit =
@@ -180,20 +214,10 @@ class KeyboardShortcutProvider extends StatelessWidget {
                   return null;
                 },
               ),
-              HideWindowIntent: CallbackAction<HideWindowIntent>(
-                onInvoke: (intent) async {
-                  final router = GoRouter.maybeOf(context);
-                  if (router == null) return null;
-                  final canPop = router.canPop();
-                  if (!canPop) {
-                    WindowFocusManager.of(context)?.restore();
-                  } else {
-                    router.pop();
-                  }
-
-                  return null;
-                },
-              ),
+              HideWindowIntent:
+                  CallbackAction<HideWindowIntent>(onInvoke: (intent) async {
+                return await intent.invoke(context);
+              }),
             },
             child: child,
           );
