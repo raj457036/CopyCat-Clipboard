@@ -1,9 +1,12 @@
 import 'package:clipboard/widgets/layout/bottom_navbar.dart';
 import 'package:clipboard/widgets/layout/dynamic_floating_actions.dart';
 import 'package:clipboard/widgets/layout/navrail_layout.dart';
+import 'package:copycat_base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:copycat_base/constants/numbers/breakpoints.dart';
+import 'package:copycat_base/db/app_config/appconfig.dart';
 import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomScaffold extends StatelessWidget {
   final int activeIndex;
@@ -23,38 +26,44 @@ class CustomScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = context.mq.size.width;
     final smallScreen = Breakpoints.isMobile(width);
-    final floatingActions = DynamicFloatingActions(
-      activeIndex: activeIndex,
-      reversed: smallScreen,
-      showCopyCatLogo: (activeIndex == 0 || activeIndex == 1) && !smallScreen,
-    );
 
     Widget scaffoldBody = body;
-    Widget? floatingActionButton;
     Widget? bottomNavBar;
 
     if (smallScreen) {
       bottomNavBar = BottomNavBar(navbarActiveIndex: activeIndex);
-      floatingActionButton = floatingActions;
     }
 
-    Widget scaffold = Scaffold(
-      appBar: appBar,
-      endDrawer: endDrawer,
-      body: scaffoldBody,
-      floatingActionButton: floatingActionButton,
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      bottomNavigationBar: bottomNavBar,
-    );
+    return BlocBuilder<WindowActionCubit, WindowActionState>(
+        builder: (context, state) {
+      final verticalDock =
+          state.view == AppView.topDocked || state.view == AppView.bottomDocked;
+      final floatingActions = DynamicFloatingActions(
+        activeIndex: activeIndex,
+        reversed: state.view != AppView.windowed,
+        showCopyCatLogo: (activeIndex == 0 || activeIndex == 1) &&
+            !smallScreen &&
+            !verticalDock,
+      );
 
-    if (!smallScreen) {
-      scaffold = NavrailLayout(
+      Widget scaffold = Scaffold(
+        appBar: appBar,
+        endDrawer: endDrawer,
+        body: scaffoldBody,
+        floatingActionButton:
+            state.view == AppView.windowed ? null : floatingActions,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        bottomNavigationBar: bottomNavBar,
+      );
+
+      if (state.view != AppView.windowed) {
+        return scaffold;
+      }
+      return NavrailLayout(
         navbarActiveIndex: activeIndex,
         floatingActionButton: floatingActions,
         child: scaffold,
       );
-    }
-
-    return scaffold;
+    });
   }
 }

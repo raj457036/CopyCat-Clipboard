@@ -21,12 +21,7 @@ class HomePage extends StatelessWidget {
 
     // NOTE: drag and drop doesn't work in android for now
     if (!Platform.isAndroid) {
-      scaffold = ClipDropRegionProvider(
-        child: scaffold,
-        onDragStart: () {
-          // context.read<WindowActionCubit>().dropView();
-        },
-      );
+      scaffold = ClipDropRegionProvider(child: scaffold);
     }
 
     return scaffold;
