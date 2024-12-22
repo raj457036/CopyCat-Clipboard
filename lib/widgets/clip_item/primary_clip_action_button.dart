@@ -22,7 +22,6 @@ class PrimaryClipActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isGrid = layout == AppLayout.grid;
     final colors = context.colors;
-    const iconSize = 24.0;
 
     if (item.encrypted) {
       return const SizedBox.shrink();
@@ -48,7 +47,7 @@ class PrimaryClipActionButton extends StatelessWidget {
               : Icon(
                   Icons.download_for_offline_outlined,
                   color: colors.onSurfaceVariant,
-                  size: iconSize,
+                  size: 24,
                 ),
         ),
       );
@@ -56,13 +55,13 @@ class PrimaryClipActionButton extends StatelessWidget {
 
     if (isMobilePlatform) {
       return SizedBox.square(
-        dimension: iconSize * 1.44,
+        dimension: 36,
         child: IconButton(
           onPressed: () {
             final menu = Menu.of(context);
             menu.openOptionDialog(context);
           },
-          iconSize: iconSize,
+          iconSize: 24,
           icon: const Icon(Icons.more_vert_rounded),
           style: IconButton.styleFrom(
             padding: EdgeInsets.zero,
@@ -75,21 +74,6 @@ class PrimaryClipActionButton extends StatelessWidget {
         ),
       );
     }
-
-    // return SizedBox.square(
-    //   dimension: iconSize * 1.44,
-    //   child: IconButton(
-    //     onPressed: null,
-    //     iconSize: iconSize,
-    //     style: IconButton.styleFrom(
-    //       padding: EdgeInsets.zero,
-    //     ),
-    //     icon: Icon(
-    //       hasFocusForPaste ? Icons.paste : Icons.copy,
-    //       color: colors.outline,
-    //     ),
-    //   ),
-    // );
     return const SizedBox.shrink();
   }
 }

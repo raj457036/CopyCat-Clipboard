@@ -1,4 +1,3 @@
-import 'package:clipboard/widgets/dialogs/collection_selector.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:copycat_base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
@@ -6,6 +5,7 @@ import 'package:copycat_base/bloc/offline_persistance_cubit/offline_persistance_
 import 'package:copycat_base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:copycat_base/constants/key.dart';
 import 'package:copycat_base/constants/strings/route_constants.dart';
+import 'package:copycat_base/db/clip_collection/clipcollection.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/snackbar.dart';
@@ -111,7 +111,7 @@ Future<bool> deleteClipboardItem(
   final confirmation = await ConfirmDialog(
     title: context.locale.delete,
     message: context.locale.sureToDeleteItem,
-  ).open(ctx);
+  ).show(ctx);
 
   if (!confirmation) return false;
 
@@ -160,9 +160,12 @@ Future<void> changeCollection(
   final selectedCollectionId =
       items.isNotEmpty ? null : items.firstOrNull?.collectionId;
 
-  final collection = await ClipCollectionSelectionDialog(
-    selectedCollectionId: selectedCollectionId,
-  ).open(ctx);
+  final collection = await ctx.pushNamed<ClipCollection>(
+    RouteConstants.clipCollectionSelection,
+    queryParameters: {
+      "id": selectedCollectionId.toString(),
+    },
+  );
 
   if (collection != null) {
     final updatedItems = items

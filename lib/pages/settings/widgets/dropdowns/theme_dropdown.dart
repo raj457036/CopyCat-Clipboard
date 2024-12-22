@@ -31,7 +31,7 @@ class ThemeDropdownTile extends StatelessWidget {
               autofocus: true,
               value: state,
               padding: const EdgeInsets.symmetric(horizontal: padding16),
-              borderRadius: radius12,
+              borderRadius: radius26,
               icon: const Icon(Icons.arrow_drop_down_rounded),
               items: [
                 DropdownMenuItem(

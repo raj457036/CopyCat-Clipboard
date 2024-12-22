@@ -1,3 +1,4 @@
+import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
@@ -6,11 +7,9 @@ import 'package:flutter/material.dart';
 
 class TextClipPreviewCard extends StatelessWidget {
   final ClipboardItem item;
-  final bool isMobile;
   const TextClipPreviewCard({
     super.key,
     required this.item,
-    required this.isMobile,
   });
 
   @override
@@ -21,22 +20,12 @@ class TextClipPreviewCard extends StatelessWidget {
       fg = getFg(bg);
     }
 
+    final config = ClipPreviewConfig.of(context);
+
     return Card.filled(
       color: bg,
-      margin: isMobile
-          ? const EdgeInsets.only(
-              left: padding16,
-              right: padding16,
-              top: padding16,
-            )
-          : EdgeInsets.zero,
-      shape: isMobile
-          ? null
-          : const RoundedRectangleBorder(
-              borderRadius: BorderRadius.horizontal(
-                left: Radius.circular(12),
-              ),
-            ),
+      margin: EdgeInsets.zero,
+      shape: config?.shape,
       child: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.only(

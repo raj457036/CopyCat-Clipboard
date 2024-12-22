@@ -26,7 +26,7 @@ class LocaleDropdownButton extends StatelessWidget {
             enableFeedback: true,
             icon: const Icon(Icons.arrow_drop_down_rounded),
             padding: const EdgeInsets.symmetric(horizontal: padding16),
-            borderRadius: radius12,
+            borderRadius: radius26,
             items: [
               DropdownMenuItem(
                 value: const Locale("en"),

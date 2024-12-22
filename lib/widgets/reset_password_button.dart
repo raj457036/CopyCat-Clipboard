@@ -23,7 +23,7 @@ class ResetPasswordButton extends StatelessWidget {
         onPressed: () => resetPassword(context),
       );
     }
-    return ElevatedButton.icon(
+    return FilledButton.icon(
       icon: const Icon(Icons.lock_person_rounded),
       label: Text(context.locale.resetYourPassword),
       onPressed: () => resetPassword(context),

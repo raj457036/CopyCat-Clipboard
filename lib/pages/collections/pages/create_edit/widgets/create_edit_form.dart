@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:universal_io/io.dart';
 
 class ClipCollectionCreateEditForm extends StatefulWidget {
   final ClipCollection? collection;
@@ -93,7 +94,7 @@ class _ClipCollectionCreateEditFormState
         onPressed: context.pop,
         child: Text(context.locale.cancel),
       ),
-      ElevatedButton(
+      FilledButton(
         onPressed: submit,
         child: Text(context.locale.save),
       ),
@@ -105,16 +106,18 @@ class _ClipCollectionCreateEditFormState
         key: formKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            IconButton.filledTonal(
-              style: IconButton.styleFrom(
-                fixedSize: const Size.square(100),
-              ),
-              onPressed: selectEmoji,
-              icon: Text(
-                emojiController.text,
-                style: const TextStyle(fontSize: 55),
+            CircleAvatar(
+              radius: 55,
+              child: IconButton.filledTonal(
+                style: IconButton.styleFrom(fixedSize: const Size.square(100)),
+                onPressed: selectEmoji,
+                icon: Text(
+                  emojiController.text,
+                  style: const TextStyle(fontSize: 55),
+                ),
               ),
             ),
             height12,
@@ -138,8 +141,13 @@ class _ClipCollectionCreateEditFormState
               maxLines: 6,
               maxLength: 255,
             ),
-            const Spacer(),
-            ButtonBar(children: options)
+            height12,
+            OverflowBar(
+              spacing: 10,
+              alignment: MainAxisAlignment.end,
+              children:
+                  Platform.isWindows ? options.reversed.toList() : options,
+            )
           ],
         ),
       ),

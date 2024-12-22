@@ -117,7 +117,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
       yes: context.locale.yes,
       no: context.locale.no,
       confirmationDelay: 5,
-    ).open(context);
+    ).show(context);
 
     if (!answer) return;
     widget.onContinue();
@@ -129,7 +129,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
       message:
           "This action is irreversible. Are you sure you want to permanently delete all encrypted data from the server?",
       confirmationDelay: 10,
-    ).open(context);
+    ).show(context);
 
     if (!answer) return;
 

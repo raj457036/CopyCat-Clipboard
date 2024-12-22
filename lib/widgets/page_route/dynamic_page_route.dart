@@ -1,4 +1,6 @@
+import 'package:clipboard/widgets/titlebar.dart';
 import 'package:copycat_base/constants/numbers/breakpoints.dart';
+import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -8,12 +10,14 @@ class DynamicPage<T> extends CustomTransitionPage<T> {
   final bool useSafeArea;
   final CapturedThemes? themes;
   final bool fullScreenDialog;
+  final bool childOfTitlebar;
 
   DynamicPage({
     required super.child,
     this.anchorPoint,
     this.useSafeArea = true,
     this.fullScreenDialog = false,
+    this.childOfTitlebar = true,
     this.themes,
     super.key,
     super.name,
@@ -37,7 +41,8 @@ class DynamicPage<T> extends CustomTransitionPage<T> {
     if (Breakpoints.isMobile(width)) {
       return MaterialPageRoute<T>(
         settings: this,
-        builder: (context) => child,
+        builder: (context) =>
+            childOfTitlebar ? TitlebarView(child: child) : child,
         fullscreenDialog: false,
         maintainState: true,
         barrierDismissible: barrierDismissible,
@@ -47,7 +52,15 @@ class DynamicPage<T> extends CustomTransitionPage<T> {
     return DialogRoute<T>(
       context: context,
       settings: this,
-      builder: (context) => Dialog(child: child),
+      builder: (context) => Dialog(
+        child: ConstrainedBox(
+          constraints: BoxConstraints.loose(Size(924, 580)),
+          child: ClipRRect(
+            borderRadius: radius12,
+            child: child,
+          ),
+        ),
+      ),
       anchorPoint: anchorPoint,
       barrierColor: barrierColor,
       barrierDismissible: barrierDismissible,

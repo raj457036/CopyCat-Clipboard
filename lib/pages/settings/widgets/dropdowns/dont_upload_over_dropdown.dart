@@ -44,7 +44,7 @@ class DontAutoUploadOverDropdown extends StatelessWidget {
               alignment: Alignment.centerRight,
               enableFeedback: true,
               padding: const EdgeInsets.symmetric(horizontal: padding16),
-              borderRadius: radius12,
+              borderRadius: radius26,
               items: [
                 DropdownMenuItem(
                   value: $5MB,

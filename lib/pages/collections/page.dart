@@ -1,5 +1,5 @@
 import 'package:clipboard/pages/collections/widgets/appbar.dart';
-import 'package:clipboard/pages/collections/widgets/clip_collection_grid_item.dart';
+import 'package:clipboard/widgets/clip_collection_grid_item.dart';
 import 'package:clipboard/widgets/layout/custom_scaffold.dart';
 import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/widgets/no_collection.dart';

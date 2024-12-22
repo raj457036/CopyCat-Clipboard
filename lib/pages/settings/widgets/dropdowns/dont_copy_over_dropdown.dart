@@ -43,7 +43,7 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
             child: DropdownButton<int>(
               value: state,
               padding: const EdgeInsets.symmetric(horizontal: padding16),
-              borderRadius: radius12,
+              borderRadius: radius26,
               items: [
                 DropdownMenuItem(
                   value: $5MB,

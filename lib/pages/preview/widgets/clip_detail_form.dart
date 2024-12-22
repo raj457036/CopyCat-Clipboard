@@ -13,12 +13,10 @@ import 'package:go_router/go_router.dart';
 import 'package:universal_io/io.dart';
 
 class ClipDetailForm extends StatefulWidget {
-  final bool isMobile;
   final ClipboardItem item;
   const ClipDetailForm({
     super.key,
     required this.item,
-    required this.isMobile,
   });
 
   @override
@@ -97,7 +95,8 @@ class _ClipDetailFormState extends State<ClipDetailForm> {
         onPressed: context.pop,
         child: Text(context.locale.cancel),
       ),
-      ElevatedButton(
+      width6,
+      FilledButton(
         onPressed: submit,
         child: Text(context.locale.save),
       ),
@@ -108,48 +107,46 @@ class _ClipDetailFormState extends State<ClipDetailForm> {
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(padding16),
         physics: const ClampingScrollPhysics(),
-        child: SizedBox(
-          height: 360,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                context.locale.editDetails,
-                style: textTheme.titleMedium,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              context.locale.editDetails,
+              style: textTheme.titleMedium,
+            ),
+            height16,
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: context.locale.title,
               ),
-              height16,
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: context.locale.title,
-                ),
-                controller: titleController,
-                validator:
-                    ValidationBuilder(optional: true).maxLength(100).build(),
+              controller: titleController,
+              validator:
+                  ValidationBuilder(optional: true).maxLength(100).build(),
+            ),
+            height12,
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: context.locale.description,
               ),
-              height12,
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: context.locale.description,
-                ),
-                minLines: 2,
-                maxLines: 6,
-                controller: descriptionController,
-                validator:
-                    ValidationBuilder(optional: true).maxLength(255).build(),
-              ),
-              height12,
-              ClipCollectionSelectorTile(
-                onChange: setCollection,
-                collectionId: collectionId?.$1,
-              ),
-              if (!widget.isMobile) const Spacer() else height16,
-              ButtonBar(
-                children:
-                    Platform.isWindows ? options.reversed.toList() : options,
-              )
-            ],
-          ),
+              minLines: 2,
+              maxLines: 6,
+              controller: descriptionController,
+              validator:
+                  ValidationBuilder(optional: true).maxLength(255).build(),
+            ),
+            height12,
+            ClipCollectionSelectorTile(
+              onChange: setCollection,
+              collectionId: collectionId?.$1,
+            ),
+            height12,
+            OverflowBar(
+              alignment: MainAxisAlignment.end,
+              children:
+                  Platform.isWindows ? options.reversed.toList() : options,
+            )
+          ],
         ),
       ),
     );

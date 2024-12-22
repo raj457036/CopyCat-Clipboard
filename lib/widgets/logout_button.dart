@@ -20,7 +20,7 @@ class LogoutButton extends StatelessWidget {
     final confirm = await ConfirmDialog(
       title: context.locale.logout,
       message: context.locale.logoutMessage,
-    ).open(context);
+    ).show(context);
 
     if (confirm) {
       showTextSnackbar(

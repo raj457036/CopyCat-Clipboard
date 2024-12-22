@@ -18,7 +18,7 @@ class GoogleDriveSetup extends StatelessWidget {
       final confirm = await ConfirmDialog(
               title: context.locale.reconnectGoogleDrive,
               message: context.locale.reconnectGoogleDriveDesc)
-          .open(context);
+          .show(context);
 
       if (!confirm) return;
     }

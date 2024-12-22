@@ -44,7 +44,7 @@ class ThemeVariantDropdown extends StatelessWidget {
               child: DropdownButton<DynamicSchemeVariant>(
                 value: variant,
                 padding: const EdgeInsets.symmetric(horizontal: padding16),
-                borderRadius: radius12,
+                borderRadius: radius26,
                 items: [
                   DropdownMenuItem(
                     value: DynamicSchemeVariant.tonalSpot,

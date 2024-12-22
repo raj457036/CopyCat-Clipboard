@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:blurhash_dart/blurhash_dart.dart';
+import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:copycat_base/constants/strings/asset_constants.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +13,9 @@ import 'package:universal_io/io.dart';
 
 class MediaClipPreviewCard extends StatelessWidget {
   final ClipboardItem item;
-  final bool isMobile;
   const MediaClipPreviewCard({
     super.key,
     required this.item,
-    required this.isMobile,
   });
 
   ImageProvider? getPreview() {
@@ -90,22 +88,12 @@ class MediaClipPreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final config = ClipPreviewConfig.of(context);
     final preview = getPreview();
+
     return Card.filled(
-      margin: isMobile
-          ? const EdgeInsets.only(
-              left: padding16,
-              right: padding16,
-              top: padding16,
-            )
-          : EdgeInsets.zero,
-      shape: isMobile
-          ? null
-          : const RoundedRectangleBorder(
-              borderRadius: BorderRadius.horizontal(
-                left: Radius.circular(12),
-              ),
-            ),
+      margin: EdgeInsets.zero,
+      shape: config?.shape,
       child: DecoratedBox(
         decoration: BoxDecoration(
           image: preview != null
@@ -114,11 +102,9 @@ class MediaClipPreviewCard extends StatelessWidget {
                   fit: BoxFit.contain,
                 )
               : null,
-          borderRadius: isMobile
-              ? radius12
-              : const BorderRadius.horizontal(
-                  left: Radius.circular(12),
-                ),
+          borderRadius: const BorderRadius.horizontal(
+            left: Radius.circular(12),
+          ),
         ),
         child: getPrimaryView(context),
       ),

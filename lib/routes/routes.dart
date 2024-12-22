@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:clipboard/di/di.dart";
 import "package:clipboard/pages/account/page.dart";
+import "package:clipboard/pages/collection_selection/page.dart";
 import "package:clipboard/pages/collections/page.dart";
 import "package:clipboard/pages/collections/pages/create_edit/page.dart";
 import "package:clipboard/pages/collections/pages/details/clip_collection_provider.dart";
@@ -94,9 +95,7 @@ GoRouter router([List<NavigatorObserver>? observers]) => GoRouter(
                       child: CircularProgressIndicator(),
                     );
                   }
-                  return ClipboardItemPreviewPage(
-                    item: snapshot.data,
-                  );
+                  return ClipboardItemPreviewPage(item: snapshot.data);
                 },
               ),
             );
@@ -181,43 +180,6 @@ GoRouter router([List<NavigatorObserver>? observers]) => GoRouter(
                         ),
                       );
                     }),
-                GoRoute(
-                  name: RouteConstants.createEditCollection,
-                  path: 'write/:id',
-                  // redirect: (context, state) =>
-                  //     idPresentOrRedirect(context, state, "new"),
-                  pageBuilder: (context, state) {
-                    final id = state.pathParameters["id"] ?? "new";
-
-                    return DynamicPage(
-                      key: state.pageKey,
-                      child: Builder(
-                        builder: (context) {
-                          if (id == "new") {
-                            return const ClipCollectionCreateEditPage();
-                          }
-                          final id_ = int.parse(id);
-
-                          return FutureBuilder(
-                            future:
-                                context.read<ClipCollectionCubit>().get(id_),
-                            builder:
-                                (BuildContext context, AsyncSnapshot snapshot) {
-                              if (!snapshot.hasData) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                              return ClipCollectionCreateEditPage(
-                                collection: snapshot.data,
-                              );
-                            },
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
               ],
             ),
             GoRoute(
@@ -299,6 +261,48 @@ GoRouter router([List<NavigatorObserver>? observers]) => GoRouter(
               ],
             ),
           ],
+        ),
+        GoRoute(
+          name: RouteConstants.clipCollectionSelection,
+          path: "/select-collection",
+          pageBuilder: (context, state) {
+            final id = int.tryParse(state.uri.queryParameters["id"] ?? "");
+
+            return DynamicPage(
+              key: state.pageKey,
+              fullScreenDialog: true,
+              child: ClipCollectionSelectionPage(selectedCollectionId: id),
+            );
+          },
+        ),
+        GoRoute(
+          name: RouteConstants.createEditCollection,
+          path: '/write-collection/:id',
+          pageBuilder: (context, state) {
+            final id = state.pathParameters["id"] ?? "new";
+            final collection = id == "new"
+                ? null
+                : context.read<ClipCollectionCubit>().get(int.parse(id));
+            return DynamicPage(
+              key: state.pageKey,
+              fullScreenDialog: true,
+              child: collection == null
+                  ? const ClipCollectionCreateEditPage()
+                  : FutureBuilder(
+                      future: collection,
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return ClipCollectionCreateEditPage(
+                          collection: snapshot.data,
+                        );
+                      },
+                    ),
+            );
+          },
         ),
       ],
     );

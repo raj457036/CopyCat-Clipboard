@@ -52,8 +52,6 @@ class _EmojiSelectorSheetState extends State<EmojiSelectorSheet>
             backgroundColor: colorScheme.surface,
           ),
         ),
-        // textEditingController:
-        // pass here the same [TextEditingController] that is connected to your input field, usually a [TextFormField]
       ),
     );
   }

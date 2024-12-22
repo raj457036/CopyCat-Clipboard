@@ -161,17 +161,16 @@ class ColorPickerTile extends StatelessWidget {
             final color = Color(
               themeColor.isNegative ? defaultThemeColor : themeColor,
             );
-            return ElevatedButton.icon(
+            return FilledButton.icon(
               onPressed: hasAccess ? () => chooseColor(context, color) : null,
               label: Text(context.locale.change),
-              icon: const Icon(Icons.color_lens_rounded),
+              icon: Icon(
+                Icons.color_lens_rounded,
+                color: colors.onPrimary,
+              ),
               style: ElevatedButton.styleFrom(
-                fixedSize: const Size(150, 40),
-                backgroundColor: colors.primary,
-                foregroundColor: colors.onPrimary,
-                textStyle: textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                fixedSize: const Size(150, 46),
+                textStyle: textTheme.titleMedium,
               ),
             );
           },

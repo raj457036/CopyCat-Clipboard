@@ -1,6 +1,5 @@
 import 'dart:math' show max;
 
-import 'package:clipboard/pages/collections/widgets/dialogs/create_collection.dart';
 import 'package:clipboard/widgets/badges.dart';
 import 'package:copycat_base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:copycat_base/constants/numbers/values.dart';
@@ -22,11 +21,9 @@ class CreateCollectionButton extends StatelessWidget {
   });
 
   void createCollection(BuildContext context) {
-    context.goNamed(
+    context.pushNamed(
       RouteConstants.createEditCollection,
-      pathParameters: {
-        "id": "new",
-      },
+      pathParameters: {"id": "new"},
     );
   }
 
@@ -54,7 +51,7 @@ class CreateCollectionButton extends StatelessWidget {
             Widget child;
             if (!isFab) {
               child = IconButton.filledTonal(
-                onPressed: () => showCreateCollectionDialog(context),
+                onPressed: () => createCollection(context),
                 icon: const Icon(Icons.add),
                 tooltip: context.locale.createACollection(remaining),
               );

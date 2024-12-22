@@ -87,7 +87,7 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
       yes: context.locale.yes,
       no: context.locale.no,
       confirmationDelay: 5,
-    ).open(context);
+    ).show(context);
 
     if (!answer) return;
     widget.onContinue();

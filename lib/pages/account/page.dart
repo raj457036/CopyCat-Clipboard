@@ -17,7 +17,7 @@ class AccountPage extends StatelessWidget {
     final answer = await ConfirmDialog(
       title: context.locale.accountDeleteDialogTitle,
       message: context.locale.accountDeleteDialogDesc,
-    ).open(context);
+    ).show(context);
 
     if (answer) {
       launchUrlString('https://forms.gle/TzAvgA935h8mYP5eA');
@@ -31,7 +31,7 @@ class AccountPage extends StatelessWidget {
     final colors = context.colors;
     final content = BlocSelector<AuthCubit, AuthState, AuthUser?>(
       selector: (state) {
-        return state.mapOrNull(authenticated: (_) => _.user);
+        return state.mapOrNull(authenticated: (state) => state.user);
       },
       builder: (context, state) {
         if (state == null) {
@@ -54,12 +54,7 @@ class AccountPage extends StatelessWidget {
               title: Text(context.locale.accountSettings),
               subtitle: const Padding(
                 padding: EdgeInsets.only(top: padding16),
-                child: OverflowBar(
-                  alignment: MainAxisAlignment.start,
-                  children: [
-                    ResetPasswordButton(iconButton: false),
-                  ],
-                ),
+                child: ResetPasswordButton(iconButton: false),
               ),
             ),
             const Divider(),
@@ -67,19 +62,17 @@ class AccountPage extends StatelessWidget {
               title: Text(context.locale.dangerZone),
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: padding16),
-                child: OverflowBar(
-                  alignment: MainAxisAlignment.start,
-                  children: [
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.remove_circle_outline_rounded),
-                      onPressed: () => deleteAccount(context),
-                      label: Text(context.locale.requestAccountDeletion),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: colors.error,
-                        foregroundColor: colors.onError,
-                      ),
-                    ),
-                  ],
+                child: ElevatedButton.icon(
+                  icon: Icon(
+                    Icons.person_remove_alt_1_rounded,
+                    color: colors.error,
+                  ),
+                  onPressed: () => deleteAccount(context),
+                  label: Text(context.locale.requestAccountDeletion),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colors.onError,
+                    foregroundColor: colors.error,
+                  ),
                 ),
               ),
             ),
@@ -94,7 +87,7 @@ class AccountPage extends StatelessWidget {
       body: Align(
         alignment: isPhone ? Alignment.topCenter : Alignment.center,
         child: ConstrainedBox(
-          constraints: BoxConstraints.loose(const Size(550, 400)),
+          constraints: BoxConstraints.loose(const Size(550, 356)),
           child: isPhone ? content : Card.outlined(child: content),
         ),
       ),

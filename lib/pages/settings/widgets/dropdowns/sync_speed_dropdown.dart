@@ -45,8 +45,8 @@ class SyncSpeedDropdown extends StatelessWidget {
               trailing: DropdownButtonHideUnderline(
                 child: DropdownButton<SyncSpeed>(
                   value: speed,
-                  padding: const EdgeInsets.symmetric(horizontal: padding10),
-                  borderRadius: radius12,
+                  padding: const EdgeInsets.symmetric(horizontal: padding16),
+                  borderRadius: radius26,
                   items: [
                     if (subscription != null)
                       DropdownMenuItem(

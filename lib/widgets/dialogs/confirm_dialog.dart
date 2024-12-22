@@ -60,7 +60,7 @@ class ConfirmDialog extends StatelessWidget {
     );
   }
 
-  Future<bool> open(BuildContext context) async {
+  Future<bool> show(BuildContext context) async {
     return await showDialog<bool>(
           context: context,
           builder: (context) => this,
