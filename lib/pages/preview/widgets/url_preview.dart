@@ -2,6 +2,7 @@ import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
 import 'package:copycat_base/l10n/l10n.dart';
+import 'package:copycat_base/widgets/link_preview.dart';
 import 'package:flutter/material.dart';
 
 class URLClipPreviewCard extends StatelessWidget {
@@ -18,17 +19,21 @@ class URLClipPreviewCard extends StatelessWidget {
     return Card.filled(
       margin: EdgeInsets.zero,
       shape: config?.shape,
-      child: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(
-            left: padding16,
-            right: padding16,
-            top: padding16,
-            bottom: padding38 * 2.5,
-          ),
-          child: SelectableText(
-            item.url ?? context.locale.nothingHere,
-          ),
+      child: Padding(
+        padding: const EdgeInsets.all(padding8),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 8,
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints.loose(Size(250, 150)),
+              child: LinkPreview(url: item.url!),
+            ),
+            SelectableText(
+              item.url ?? context.locale.nothingHere,
+            )
+          ],
         ),
       ),
     );

@@ -25,7 +25,7 @@ class PreviewOptions extends StatelessWidget {
         padding: const EdgeInsets.all(padding8),
         child: Flex(
           mainAxisSize: MainAxisSize.min,
-          direction: direction,
+          direction: Axis.horizontal,
           spacing: 10,
           children: [
             if (item.needDownload)
