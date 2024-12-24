@@ -43,7 +43,7 @@ class EventBridge extends StatelessWidget {
 
   bool shouldSync(List<String>? updatedFields, ClipboardItem item) {
     if (updatedFields == null) return true;
-    if (updatedFields.contains("copiedCount") && item.copiedCount % 10 == 0) {
+    if (updatedFields.contains("copiedCount") && item.copiedCount % 15 == 0) {
       // if only copied count is changed then only sync after every 10 copy operations.
       return true;
     }
@@ -300,7 +300,7 @@ class EventBridge extends StatelessWidget {
         ),
         BlocListener<OfflinePersistenceCubit, OfflinePersistanceState>(
           listener: (context, state) async {
-            final locales = rootNavKey.currentContext!.locale;
+            final locales = rootNavKey.currentContext?.locale;
             switch (state) {
               case OfflinePersistanceSaved(:final items, synced: true):
                 showDebugSnackbar("Offline Saved ( Synced ) ${items.length}");
@@ -330,7 +330,7 @@ class EventBridge extends StatelessWidget {
                 showFailureSnackbar(failure);
               case OfflinePersistanceDeleted(:final items):
                 showTextSnackbar(
-                  locales.itemDeleted,
+                  locales?.itemDeleted ?? "Item Deleted",
                   closePrevious: true,
                 );
                 broadcastBatchEvent(CrossSyncEventType.delete, items);
@@ -340,7 +340,7 @@ class EventBridge extends StatelessWidget {
         ),
         BlocListener<CloudPersistanceCubit, CloudPersistanceState>(
           listener: (context, state) async {
-            final locales = rootNavKey.currentContext!.locale;
+            final locales = rootNavKey.currentContext?.locale;
             final offlineCubit = context.read<OfflinePersistenceCubit>();
             switch (state) {
               case CloudPersistanceSaved(:final item):
@@ -350,7 +350,7 @@ class EventBridge extends StatelessWidget {
                 offlineCubit.delete(items);
               case CloudPersistanceDeleting():
                 showTextSnackbar(
-                  locales.deletingFromCloud,
+                  locales?.deletingFromCloud ?? "Deleting from Cloud",
                   isLoading: true,
                   closePrevious: true,
                 );

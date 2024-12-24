@@ -31,12 +31,14 @@ Future<void> copyToClipboard(
       showTextSnackbar(
         saveFile ? ctx.locale.exportSuccess : ctx.locale.copySuccess,
         closePrevious: true,
+        context: ctx,
       );
     }
   } catch (e) {
     showTextSnackbar(
       "⭕️ Failed to copy. Something went wrong!",
       closePrevious: true,
+      context: context,
     );
   }
 }

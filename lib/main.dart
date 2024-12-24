@@ -160,9 +160,6 @@ class AppContent extends StatelessWidget {
                 syncHours: subscription.syncHours,
                 manualDelay: subscription.syncInterval,
               );
-
-              // await collectionSyncCubit.syncCollections();
-              // This will trigger clip syncing in event bridge
             }
         }
       },

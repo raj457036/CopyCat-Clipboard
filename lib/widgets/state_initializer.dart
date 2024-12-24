@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:animate_do/animate_do.dart';
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:copycat_base/constants/numbers/breakpoints.dart';
@@ -21,6 +22,8 @@ class StateInitializer extends StatefulWidget {
 class _StateInitializerState extends State<StateInitializer>
     with WidgetsBindingObserver {
   ui.FlutterView? _view;
+  bool _isInBackground = false;
+  bool _pinned = false;
 
   Future<void> setupWindow() async {
     final appConfigCubit = context.read<AppConfigCubit>();
@@ -34,7 +37,20 @@ class _StateInitializerState extends State<StateInitializer>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
     setupWindow();
+  }
+
+  @override
+  void didChangeAppLifecycleState(ui.AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    setState(() {
+      if (state == ui.AppLifecycleState.resumed) {
+        _isInBackground = false;
+      } else {
+        _isInBackground = true;
+      }
+    });
   }
 
   @override
@@ -68,6 +84,28 @@ class _StateInitializerState extends State<StateInitializer>
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    final Widget child;
+
+    if (_pinned || !_isInBackground) {
+      child = FadeIn(
+        // delay: Durations.extralong4,
+        duration: Durations.medium3,
+        child: widget.child,
+      );
+    } else {
+      child = SizedBox.shrink();
+    }
+
+    return BlocListener<AppConfigCubit, AppConfigState>(
+      listenWhen: (previous, current) {
+        return previous.config.pinned != current.config.pinned;
+      },
+      listener: (context, state) {
+        setState(() {
+          _pinned = state.config.pinned;
+        });
+      },
+      child: child,
+    );
   }
 }
