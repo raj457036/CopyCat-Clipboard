@@ -317,8 +317,8 @@ class EventBridge extends StatelessWidget {
                       : CrossSyncEventType.update;
                   broadcastBatchEvent(eventType, items);
 
-                  showDebugSnackbar(
-                      "Offline Saved ( Not Synced ) ${items.length}");
+                  // showDebugSnackbar(
+                  //     "Offline Saved ( Not Synced ) ${items.length}");
                   final forSync =
                       items.where((item) => shouldSync(updatedFields, item));
                   final cubit = context.read<CloudPersistanceCubit>();

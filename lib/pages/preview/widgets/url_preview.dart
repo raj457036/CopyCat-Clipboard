@@ -27,7 +27,7 @@ class URLClipPreviewCard extends StatelessWidget {
           spacing: 8,
           children: [
             ConstrainedBox(
-              constraints: BoxConstraints.loose(Size(250, 150)),
+              constraints: BoxConstraints.loose(Size(280, 200)),
               child: LinkPreview(url: item.url!),
             ),
             SelectableText(
