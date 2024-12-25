@@ -9,7 +9,6 @@
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "flutterMode": "debug",
       "args": ["--dart-define-from-file", "local/prod.json", "--verbose"]
     },
     {

@@ -4,6 +4,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:copycat_base/constants/numbers/breakpoints.dart';
+import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,6 +45,7 @@ class _StateInitializerState extends State<StateInitializer>
   @override
   void didChangeAppLifecycleState(ui.AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
+    if (!isDesktopPlatform) return;
     setState(() {
       if (state == ui.AppLifecycleState.resumed) {
         _isInBackground = false;

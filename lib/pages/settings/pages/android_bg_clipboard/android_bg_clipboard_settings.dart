@@ -2,6 +2,8 @@ import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
 import 'package:clipboard/widgets/pro_tip_banner.dart';
+import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:copycat_base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:copycat_base/common/logging.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/utils/common_extension.dart';
@@ -29,6 +31,8 @@ class AndroidBgClipboardSettings extends StatefulWidget {
 class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     with WidgetsBindingObserver {
   late final MonetizationCubit monetizationCubit;
+  late final AppConfigCubit appConfigCubit;
+  String? enc1Key;
 
   bool loading = true;
   bool writingConfig = false;
@@ -46,6 +50,14 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     monetizationCubit = context.read();
+    appConfigCubit = context.read();
+
+    context.read<AuthCubit>().state.whenOrNull(
+      authenticated: (user, _) {
+        enc1Key = user.enc1;
+      },
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await widget.bgService.initStorage();
       await checkStatus();
@@ -110,6 +122,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
       writingConfig = true;
     });
     try {
+      final enc1Decrypt = appConfigCubit.state.config.decryptEnc2(enc1Key);
       final tkn = monetizationCubit.active?.tkn;
       if (tkn != null) {
         await widget.bgService
@@ -124,6 +137,13 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
         sl<String>(instanceName: "supabase_project_key"),
         secure: true,
       );
+      if (enc1Decrypt != null) {
+        await widget.bgService.writeShared(
+          "e2e_key",
+          enc1Decrypt,
+          secure: true,
+        );
+      }
       await widget.bgService.writeShared(
         "projectApiKey",
         sl<String>(instanceName: "supabase_key"),

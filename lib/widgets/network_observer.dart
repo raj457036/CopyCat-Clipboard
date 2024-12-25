@@ -7,6 +7,7 @@ import 'package:copycat_base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/snackbar.dart';
 import 'package:copycat_pro/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -47,7 +48,7 @@ class _NetworkObserverState extends State<NetworkObserver> {
   void initState() {
     super.initState();
     authCubit = BlocProvider.of<AuthCubit>(context);
-    if (authCubit.isLocalAuth) return;
+    if (authCubit.isLocalAuth || kDebugMode) return;
     networkObserver =
         InternetConnection().onStatusChange.map(transformNetworkStatus);
     subscription = networkObserver?.listen(onConnectionChanged);

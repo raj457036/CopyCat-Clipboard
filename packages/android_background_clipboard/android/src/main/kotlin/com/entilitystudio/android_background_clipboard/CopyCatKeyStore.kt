@@ -5,6 +5,7 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.annotation.RequiresApi
 import java.security.KeyStore
+import java.security.KeyStore.SecretKeyEntry
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -52,7 +53,7 @@ class CopyCatKeyStore private constructor() {
         keyGenerator.init(keyGenParameterSpec)
 
         // Generate and store the key in Keystore
-        keyGenerator.generateKey()
+       keyGenerator.generateKey()
     }
 
     @Throws(Exception::class)

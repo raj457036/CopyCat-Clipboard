@@ -140,7 +140,7 @@ class CopyCatSyncManager(applicationContext: Context) {
         return dateFormat.format(Date())
     }
 
-    fun writeClipboardItem(clip: String, type: ClipType): Long {
+    fun writeClipboardItem(clip: String, type: ClipType, encrypted: Boolean): Long {
         Log.i(logTag, "Writing to remote clipboard")
         if (userId == null || !isReady) {
             Log.w(logTag, "Failed to write to remote clipboard, service not ready or user not found.")
@@ -161,6 +161,7 @@ class CopyCatSyncManager(applicationContext: Context) {
             "modified" to currentTime(),
             "os" to "android",
             "deviceId" to deviceId,
+            "encrypted" to encrypted,
         )
 
         when (type) {

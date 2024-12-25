@@ -79,9 +79,8 @@ class EventBridge extends StatelessWidget {
       final authState = context.read<AuthCubit>().state;
       if (authState is AuthenticatedAuthState) {
         final enc1 = authState.user.enc1;
-        if (enc1 == null) return;
-        final encMngr = EncryptionManager(config.enc2Key!);
-        final enc1Decrypt = encMngr.decrypt(enc1);
+        final enc1Decrypt = config.decryptEnc2(enc1);
+        if (enc1Decrypt == null) return;
         await encryptionWorker.start(enc1Decrypt);
       }
     }

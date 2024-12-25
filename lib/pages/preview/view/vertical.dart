@@ -33,16 +33,20 @@ class ClipItemPreviewVerticalView extends StatelessWidget {
               child: TabBarView(
                 children: [
                   Stack(
+                    fit: StackFit.expand,
                     children: [
                       ClipPreviewConfig(
                           shape: RoundedRectangleBorder(),
                           child: ClipPreview(item: item)),
                       Positioned(
-                        right: 10,
-                        bottom: 10,
-                        child: PreviewOptions(
-                          item: item,
-                          direction: Axis.vertical,
+                        bottom: 20,
+                        right: 0,
+                        left: 0,
+                        child: Center(
+                          child: PreviewOptions(
+                            item: item,
+                            direction: Axis.vertical,
+                          ),
                         ),
                       ),
                     ],

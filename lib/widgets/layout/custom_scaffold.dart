@@ -40,7 +40,7 @@ class CustomScaffold extends StatelessWidget {
           state.view == AppView.topDocked || state.view == AppView.bottomDocked;
       final floatingActions = DynamicFloatingActions(
         activeIndex: activeIndex,
-        reversed: state.view != AppView.windowed,
+        reversed: state.view != AppView.windowed || smallScreen,
         showCopyCatLogo: (activeIndex == 0 || activeIndex == 1) &&
             !smallScreen &&
             !verticalDock,
@@ -50,13 +50,14 @@ class CustomScaffold extends StatelessWidget {
         appBar: appBar,
         endDrawer: endDrawer,
         body: scaffoldBody,
-        floatingActionButton:
-            state.view == AppView.windowed ? null : floatingActions,
+        floatingActionButton: smallScreen || state.view == AppView.windowed
+            ? floatingActions
+            : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         bottomNavigationBar: bottomNavBar,
       );
 
-      if (state.view != AppView.windowed) {
+      if (state.view != AppView.windowed || smallScreen) {
         return scaffold;
       }
       return NavrailLayout(

@@ -127,8 +127,14 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       return;
     }
 
-    final item_ = await widget.item.decrypt();
-    persitCubit.persist([item_]);
+    try {
+      final item_ = await widget.item.decrypt();
+      persitCubit.persist([item_]);
+    } catch (e) {
+      showFailureSnackbar(
+        Failure.fromException(e),
+      );
+    }
   }
 
   Future<void> performPrimaryAction(BuildContext context) async {

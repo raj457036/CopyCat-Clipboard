@@ -6,15 +6,17 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Build
 import android.util.Base64
 import android.util.Log
-import java.lang.Exception
+import android.widget.Toast
 
 class CopyCatSharedStorage private constructor(applicationContext: Context) {
+    private val appContext: Context = applicationContext
     private val logTag = "CopyCatSharedStorage"
     private val sp = applicationContext.getSharedPreferences("CopyCatSharedPreferences", MODE_PRIVATE)
     private var syncEnabled: Boolean = false
     private lateinit var deviceId: String
     private var endId: Int = -1
-    private var syncManager: CopyCatSyncManager = CopyCatSyncManager(applicationContext)
+    private var syncManager: CopyCatSyncManager = CopyCatSyncManager(appContext)
+    private var encryptor: CopyCatEncryptor? = null
 
     var excludedPackages: Set<String> = emptySet()
     var strictCheck = false
@@ -48,7 +50,14 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             deviceId = sharedPreferences.getString("deviceId", "").toString()
             syncManager.deviceId = deviceId
         }
+
+        if (key == "e2e_key") {
+            readSecure(key)?.let {
+                setupEncryptor(it)
+            }
+        }
     }
+
 
     companion object {
         @Volatile
@@ -56,6 +65,21 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         fun getInstance(applicationContext: Context): CopyCatSharedStorage {
             return instance ?: synchronized(this) {
                 instance ?: CopyCatSharedStorage(applicationContext).also { instance = it }
+            }
+        }
+    }
+
+    private fun setupEncryptor(key: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                val items = key.split("-+-", limit = 2)
+                val secret = items[0]
+                val iv = items[1]
+                encryptor = CopyCatEncryptor(secret, iv)
+            } catch (e: Error) {
+                Log.e(logTag, "Failed to initialize copycat encryptor. Warning: ")
+                Log.e(logTag, e.toString())
+                Toast.makeText(appContext,"Background Encryption Setup Failed", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -111,6 +135,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         readSecure("projectApiKey")?.let {
             syncManager.projectApiKey = it
         }
+        readSecure("e2e_key")?.let {
+            setupEncryptor(it)
+        }
 
         syncManager.deviceId = deviceId
     }
@@ -144,7 +171,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             "bool" -> sp.getBoolean(key, false)
             else -> null
         }
-
     }
 
     fun delete(keys: Iterable<String>) {
@@ -162,24 +188,31 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         endId += 1  // Update endId for next usage
         val editor = sp.edit()
         editor.putString(nextId, text)
-        // type::description::serverId
-        editor.putString("$nextId-meta", "$type::$desc::::")
+        // type::description::serverId::userid
+        editor.putString("$nextId-meta", "$type::$desc::-::-")
         editor.putInt("endId", endId)
         editor.apply()
-        writeTextClipToServer(text, type, "$nextId-meta")
+
+        // Encrypt clip
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && encryptor != null) {
+            val encryptedText = encryptor?.encrypt(text).toString()
+            writeTextClipToServer(encryptedText, type, "$nextId-meta", true)
+        } else {
+            writeTextClipToServer(text, type, "$nextId-meta", false)
+        }
     }
 
     private fun updateClipId(key: String, id: Long, userId: String) {
         var meta = sp.getString(key, "")!!
         if (meta.isBlank()) return
-        val parts = meta.split("::", limit = 4).toMutableList()
+        val parts = meta.split("::").toMutableList()
         parts[2] = id.toString()
         parts[3] = userId
         meta = parts.joinToString("::")
         sp.edit().putString(key, meta).apply()
     }
 
-    private fun writeTextClipToServer(text: String, type: ClipType, metaKey: String) {
+    private fun writeTextClipToServer(text: String, type: ClipType, metaKey: String, encrypted: Boolean) {
         Log.i(logTag, "Writing text clip to server")
         if (!syncEnabled || !serviceEnabled) {
             Log.i(logTag, "Sync Disabled or Service is not enabled.")
@@ -192,7 +225,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         }
 
         try {
-            val id = syncManager.writeClipboardItem(text, type)
+            val id = syncManager.writeClipboardItem(text, type, encrypted)
             if (id != (-1).toLong()) {
                 updateClipId(metaKey, id, syncManager.currentUserId!!)
                 return
