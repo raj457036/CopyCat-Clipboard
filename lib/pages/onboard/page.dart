@@ -85,7 +85,7 @@ class _OnBoardPageState extends State<OnBoardPage> {
           5 => RestoreClipsStep(
               onContinue: goHome,
               clipboardRepository: sl(
-                instanceName: "cloud",
+                instanceName: "remote",
               ),
               restorationStatusRepository: sl(),
             ),

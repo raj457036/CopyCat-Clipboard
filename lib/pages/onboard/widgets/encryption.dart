@@ -42,7 +42,7 @@ class EncryptionStep extends StatelessWidget {
               return ImportEncryptionKeyStep(
                 importableKeyId: keyId,
                 clipboardRepository: sl(
-                  instanceName: "cloud",
+                  instanceName: "remote",
                 ),
                 onContinue: onContinue,
               );
