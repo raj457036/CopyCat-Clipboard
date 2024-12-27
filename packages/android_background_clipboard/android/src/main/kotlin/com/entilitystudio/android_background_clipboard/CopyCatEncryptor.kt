@@ -3,11 +3,12 @@ package com.entilitystudio.android_background_clipboard
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import okio.ByteString.Companion.encode
+import java.security.Security
 import java.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 class CopyCatEncryptor(key: String, iv: String) {
@@ -24,8 +25,6 @@ class CopyCatEncryptor(key: String, iv: String) {
 
         val keyBytes = key.toByteArray(Charsets.UTF_8)
         val ivBytes = base64Decoder.decode(iv)
-            .map { byte -> (byte.toInt() and 0xFF).toByte() }
-            .toByteArray()
 
         // Log the decoded key and IV in byte form
         Log.d("CopyCatEncryptor", "Key Bytes: ${keyBytes.contentToString()}")
@@ -36,7 +35,7 @@ class CopyCatEncryptor(key: String, iv: String) {
         }
 
         // Initialize the cipher, key spec, and IV spec
-        cipher = Cipher.getInstance("AES/CFB/NoPadding")
+        cipher = Cipher.getInstance("AES/CFB64/PKCS5Padding")
         secretKeySpec = SecretKeySpec(keyBytes, "AES")
         ivParameterSpec = IvParameterSpec(ivBytes)
     }

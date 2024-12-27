@@ -1903,12 +1903,11 @@ packages:
   supabase_auth_ui:
     dependency: transitive
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: acf0ab191e6b5ea22f05995a8bf3725fa7fa93a7
-      url: "https://github.com/raj457036/flutter-auth-ui.git"
-    source: git
-    version: "0.4.4"
+      name: supabase_auth_ui
+      sha256: "2a9752f8f0fea257f834ee6da9ac764d73ada67c2947f74f5024c72bdd7f8b2e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.4"
   supabase_flutter:
     dependency: transitive
     description:

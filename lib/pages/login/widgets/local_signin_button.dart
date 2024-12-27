@@ -14,7 +14,7 @@ class LocalSigninButton extends StatelessWidget {
     final colors = context.colors;
     return Tooltip(
       message: context.locale.useLocallyDesc,
-      child: ElevatedButton.icon(
+      child: FilledButton.icon(
         onPressed: () {
           final cubit = context.read<AuthCubit>();
           cubit.localAuthenticated();
