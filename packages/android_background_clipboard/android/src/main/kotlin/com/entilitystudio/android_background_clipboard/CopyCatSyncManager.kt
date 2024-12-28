@@ -72,10 +72,12 @@ class CopyCatSyncManager(applicationContext: Context) {
 
 
     fun start() {
-        if (listening) return
-        sp.registerOnSharedPreferenceChangeListener(listener)
-        listening = true
-        Log.d(logTag, "Started")
+        if (!listening) {
+            sp.registerOnSharedPreferenceChangeListener(listener)
+            listening = true
+        }
+
+        Log.d(logTag, "Configuring CopyCat Sync")
         Log.d(logTag, "tokenKey = $tokenKey")
         token = sp.getString(tokenKey, "{}")!!
         load()
@@ -104,6 +106,7 @@ class CopyCatSyncManager(applicationContext: Context) {
         refreshToken = parsed.getString("refresh_token")
         expireAt = parsed.getLong("expires_at")
         userId = parsed.getJSONObject("user").getString("id")
+        isStopped = false
     }
 
     private fun writeToSp(key: String, value: String) {
@@ -140,7 +143,7 @@ class CopyCatSyncManager(applicationContext: Context) {
         return dateFormat.format(Date())
     }
 
-    fun writeClipboardItem(clip: String, type: ClipType, encrypted: Boolean): Long {
+    fun writeClipboardItem(clip: String, type: ClipType, encrypted: Boolean, label: String? = null): Long {
         Log.i(logTag, "Writing to remote clipboard")
         if (userId == null || !isReady) {
             Log.w(logTag, "Failed to write to remote clipboard, service not ready or user not found.")
@@ -157,6 +160,8 @@ class CopyCatSyncManager(applicationContext: Context) {
         }
         val url = "$url/rest/v1/clipboard_items"
         val payload = mutableMapOf(
+            "title" to label,
+            "description" to label,
             "userId" to userId!!,
             "modified" to currentTime(),
             "os" to "android",

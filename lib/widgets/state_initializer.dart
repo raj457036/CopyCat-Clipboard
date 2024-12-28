@@ -38,7 +38,9 @@ class _StateInitializerState extends State<StateInitializer>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
+        .copyWith(systemNavigationBarColor: Color(0x00000000)));
     setupWindow();
   }
 
@@ -74,6 +76,7 @@ class _StateInitializerState extends State<StateInitializer>
     if (display == null) {
       return;
     }
+
     if (display.size.width / display.devicePixelRatio < Breakpoints.xs) {
       SystemChrome.setPreferredOrientations(<DeviceOrientation>[
         DeviceOrientation.portraitUp,

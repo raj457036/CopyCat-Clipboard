@@ -27,6 +27,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         get() = CopyCatKeyStore.getInstance()
 
     private val listener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        if (key == "set--excludedPackages") {
+            excludedPackages = sharedPreferences.getStringSet("excludedPackages", emptySet())!!
+        }
         if (key == "strictCheck") {
             strictCheck = sharedPreferences.getBoolean(key, false)
         }
@@ -151,7 +154,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         val editor = sp.edit()
         when (value) {
             is String -> {
-                editor.putString(key, value)
+                if (key.startsWith("<set>")) {
+                    editor.putStringSet(key.substring(5), value.split(",").toSet())
+                } else {
+                    editor.putString(key, value)
+                }
             }
             is Int -> {
                 editor.putInt(key, value)
@@ -169,6 +176,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             "string" -> sp.getString(key, "")
             "int" ->  sp.getInt(key, 0)
             "bool" -> sp.getBoolean(key, false)
+            "set" -> sp.getStringSet(key, emptySet<String>())
             else -> null
         }
     }
@@ -182,23 +190,23 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
     }
 
-    fun writeTextClip(text: String, type: ClipType, desc: String = "") {
+    fun writeTextClip(text: String, type: ClipType, label: String = "") {
         if (!serviceEnabled) return
         val nextId = getNextId()
         endId += 1  // Update endId for next usage
         val editor = sp.edit()
         editor.putString(nextId, text)
         // type::description::serverId::userid
-        editor.putString("$nextId-meta", "$type::$desc::-::-")
+        editor.putString("$nextId-meta", "$type::$label::-::-")
         editor.putInt("endId", endId)
         editor.apply()
 
         // Encrypt clip
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && encryptor != null) {
             val encryptedText = encryptor?.encrypt(text).toString()
-            writeTextClipToServer(encryptedText, type, "$nextId-meta", true)
+            writeTextClipToServer(encryptedText, type, "$nextId-meta", true, label)
         } else {
-            writeTextClipToServer(text, type, "$nextId-meta", false)
+            writeTextClipToServer(text, type, "$nextId-meta", false, label)
         }
     }
 
@@ -212,7 +220,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         sp.edit().putString(key, meta).apply()
     }
 
-    private fun writeTextClipToServer(text: String, type: ClipType, metaKey: String, encrypted: Boolean) {
+    private fun writeTextClipToServer(text: String, type: ClipType, metaKey: String, encrypted: Boolean, label: String? = null) {
         Log.i(logTag, "Writing text clip to server")
         if (!syncEnabled || !serviceEnabled) {
             Log.i(logTag, "Sync Disabled or Service is not enabled.")
@@ -220,12 +228,18 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         }
 
         if (syncManager.isStopped) {
-            Log.w(logTag, "Sync service stopped")
-            return
+            Log.w(logTag, "Sync service not running, trying to restart it.")
+
+            syncManager.start()
+
+            if (syncManager.isStopped) {
+                Log.e(logTag, "Sync Service cannot start.")
+                return
+            }
         }
 
         try {
-            val id = syncManager.writeClipboardItem(text, type, encrypted)
+            val id = syncManager.writeClipboardItem(text, type, encrypted, label)
             if (id != (-1).toLong()) {
                 updateClipId(metaKey, id, syncManager.currentUserId!!)
                 return

@@ -6,7 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
@@ -31,7 +33,10 @@ class CopyCatAccessibilityService: AccessibilityService() {
             Log.d(logTag, "OnServiceConnected $name")
             clipboardService = (binder as CopyCatClipboardService.LocalBinder).getService()
             isClipboardServiceConnected = true
-            detectCopyAck()
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                detectCopyAck()
+            }, 500)
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -62,7 +67,7 @@ class CopyCatAccessibilityService: AccessibilityService() {
 
         val bindIntent = Intent(this, CopyCatClipboardService::class.java)
         bindService(bindIntent, connection, Context.BIND_AUTO_CREATE)
-        Toast.makeText(this, "CopyCat Service Started", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "CopyCat Service Starting", Toast.LENGTH_SHORT).show()
     }
 
     private fun  stopClipboardService() {
@@ -78,6 +83,7 @@ class CopyCatAccessibilityService: AccessibilityService() {
 
     private fun detectCopyAckComplete() {
         detectingCopyAck = false
+        Toast.makeText(this, "CopyCat Service Started", Toast.LENGTH_SHORT).show()
         Log.d(logTag, "CopyCat Service successfully detected ($notificationAckText) ack event.")
     }
 
@@ -90,14 +96,17 @@ class CopyCatAccessibilityService: AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         Log.d(logTag, "Event : $event")
 
-        if (Utils.isActivityOnTop) {
-            Log.d(logTag, "Ignoring events as current activity is CopyCat itself")
-            return
-        }
+        if (!detectingCopyAck)
+        {
+            if (Utils.isActivityOnTop) {
+                Log.d(logTag, "Ignoring events as current activity is CopyCat itself")
+                return
+            }
 
-        if (event?.packageName?.startsWith("com.entilitystudio") == true) {
-            Log.d(logTag,"Ignoring CopyCat Clipboard Events")
-            return
+            if (event?.packageName?.startsWith("com.entilitystudio") == true) {
+                Log.d(logTag,"Ignoring CopyCat Clipboard Events")
+                return
+            }
         }
 
 

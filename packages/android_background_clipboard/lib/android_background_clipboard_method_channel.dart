@@ -95,8 +95,11 @@ class MethodChannelAndroidBackgroundClipboard
   }) async {
     assert(
         !secure || secure && value is String, "Secure value must be a String.");
+
+    final isSet = value is Set ? true : false;
+
     return await methodChannel.invokeMethod<bool>('writeShared', {
-          "key": key,
+          "key": isSet ? "<set>$key" : key,
           "value": value,
           "secure": secure,
         }) ??

@@ -60,13 +60,14 @@ class CopyCatClipboardService: Service() {
     }
 
     fun performClipboardRead(appPackageName: String) {
+        Log.d(logTag, "Current Package: $appPackageName")
         if (!copycatStorage.serviceEnabled) {
             Log.w(logTag,"Service not configured")
             return
         }
         if (copycatStorage.excludedPackages.contains(appPackageName)) {
             Log.i(logTag,"$appPackageName is excluded by exclusion rules.")
-            showAck("Clip not synced due to exclusion rules")
+            showAck("Clip filtered by exclusion rules")
             return
         }
 
@@ -86,7 +87,7 @@ class CopyCatClipboardService: Service() {
         }
     }
 
-    private fun readUriClip(uri: Uri): ClipAction {
+    private fun readUriClip(uri: Uri, label: String? = null): ClipAction {
         return when (uri.scheme) {
             "content" -> {
                 // Media or File!
@@ -100,13 +101,13 @@ class CopyCatClipboardService: Service() {
             }
 
             else -> {
-                writeTextToCopyCatClipboard(uri.toString(), ClipType.Url)
+                writeTextToCopyCatClipboard(uri.toString(), ClipType.Url, label)
             }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
-    private fun readTextLinks(tls: TextLinks): ClipAction {
+    private fun readTextLinks(tls: TextLinks, label: String? = null): ClipAction {
 
         val text = tls.text
         for (link in tls.links) {
@@ -115,36 +116,31 @@ class CopyCatClipboardService: Service() {
                 if (url.startsWith("http://") || url.startsWith("https://"))
                 {
                     Log.d(logTag, "Clipboard Link: $url")
-                    return writeTextToCopyCatClipboard(url, ClipType.Url)
+                    return writeTextToCopyCatClipboard(url, ClipType.Url, label)
                 }
             }
             if (link.getConfidenceScore(TextClassifier.TYPE_EMAIL) == 1.0f) {
                 val email = text.substring(link.start, link.end)
                 Log.d(logTag, "Clipboard Email: $email")
-                return writeTextToCopyCatClipboard(email, ClipType.Email)
+                return writeTextToCopyCatClipboard(email, ClipType.Email, label)
             }
             if (link.getConfidenceScore(TextClassifier.TYPE_PHONE) == 1.0f) {
                 val phone = text.substring(link.start, link.end)
                 Log.d(logTag, "Clipboard Phone: $phone")
-                return writeTextToCopyCatClipboard(phone, ClipType.Phone)
-            }
-            if (link.getConfidenceScore(TextClassifier.TYPE_PHONE) == 1.0f) {
-                val phone = text.substring(link.start, link.end)
-                Log.d(logTag, "Clipboard Phone: $phone")
-                return writeTextToCopyCatClipboard(phone, ClipType.Phone)
+                return writeTextToCopyCatClipboard(phone, ClipType.Phone, label)
             }
         }
         return ClipAction.Pending
     }
 
 
-    private fun writeTextToCopyCatClipboard(text: String, type: ClipType, desc: String? = null): ClipAction {
+    private fun writeTextToCopyCatClipboard(text: String, type: ClipType, label: String? = null): ClipAction {
         if (lastCopiedText == text) {
             Log.d(logTag, "Detected duplicate item")
             return ClipAction.Duplicate
         }
         lastCopiedText = text
-        copycatStorage.writeTextClip(text, type, desc ?: "")
+        copycatStorage.writeTextClip(text, type, label ?: "")
         return ClipAction.Success
     }
 
@@ -156,12 +152,17 @@ class CopyCatClipboardService: Service() {
             var actionStatus: ClipAction = ClipAction.Pending
 
             if (clipData != null && clipData.itemCount > 0) {
-
+                val clipLabel = clipData.description.label.toString()
+                Log.d(logTag, "Description Label: $clipLabel")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                {
+                    Log.d(logTag, "Description Extras: ${clipData.description.extras}")
+                }
                 val item = clipData.getItemAt(0)
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     item.textLinks?.let {
-                        val result = readTextLinks(it)
+                        val result = readTextLinks(it, clipLabel)
                         actionStatus = if (result == ClipAction.Success && it.text.length ==  lastCopiedText?.length) {
                             result
                         } else {
@@ -173,13 +174,13 @@ class CopyCatClipboardService: Service() {
                 if (actionStatus != ClipAction.Success)
                     item.text?.let {
                         Log.d(logTag, "Clipboard Text: $it")
-                        actionStatus = writeTextToCopyCatClipboard(it.toString(), ClipType.Text)
+                        actionStatus = writeTextToCopyCatClipboard(it.toString(), ClipType.Text, clipLabel)
                     }
 
                 if (actionStatus != ClipAction.Success)
                     item.uri?.let {
                         Log.d(logTag, "Clipboard URI: $it")
-                        actionStatus = readUriClip(it)
+                        actionStatus = readUriClip(it, clipLabel)
                     }
             }
 

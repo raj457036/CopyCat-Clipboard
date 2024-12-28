@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _plugin = AndroidBackgroundClipboard();
+  final _plugin = const AndroidBackgroundClipboard();
   late final SharedPreferences pref;
   bool checking = false;
   bool isNotificationGranted = false;
@@ -63,6 +63,8 @@ class _MyAppState extends State<MyApp> {
     isAccessibilityGranted = await _plugin.isAccessibilityPermissionGranted();
     isBatteryOptEnabled = await _plugin.isBatteryOptimizationEnabled();
     isServiceRunning = await _plugin.isServiceRunning();
+
+    _plugin.writeShared("serviceEnabled", true);
 
     checking = false;
 

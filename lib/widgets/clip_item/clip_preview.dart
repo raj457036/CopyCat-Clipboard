@@ -19,7 +19,7 @@ class ClipPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (item.encrypted) return const EncryptedClipItem();
+    if (item.encrypted) return EncryptedClipItem(item: item);
     return switch (item.type) {
       ClipItemType.text => TextClipCard(item: item, layout: layout),
       ClipItemType.media => MediaClipCard(item: item, layout: layout),

@@ -10,7 +10,6 @@
 #include <awesome_notifications/awesome_notifications_plugin_c_api.h>
 #include <clipboard_watcher/clipboard_watcher_plugin.h>
 #include <connectivity_plus/connectivity_plus_windows_plugin.h>
-#include <emoji_picker_flutter/emoji_picker_flutter_plugin_c_api.h>
 #include <flutter_platform_alert/flutter_platform_alert_plugin.h>
 #include <focus_window/focus_window_plugin_c_api.h>
 #include <hotkey_manager_windows/hotkey_manager_windows_plugin_c_api.h>
@@ -36,8 +35,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("ClipboardWatcherPlugin"));
   ConnectivityPlusWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("ConnectivityPlusWindowsPlugin"));
-  EmojiPickerFlutterPluginCApiRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("EmojiPickerFlutterPluginCApi"));
   FlutterPlatformAlertPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterPlatformAlertPlugin"));
   FocusWindowPluginCApiRegisterWithRegistrar(

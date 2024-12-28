@@ -21,12 +21,13 @@ class BottomNavBar extends StatelessWidget {
           data: NavigationBarThemeData(
             labelTextStyle:
                 textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold).msp,
-            height: 45,
+            height: 64,
+            // iconTheme: IconThemeData(size: 20).msp,
           ),
           child: NavigationBar(
             selectedIndex: navbarActiveIndex,
             onDestinationSelected: (idx) => onNavItemTapped(context, idx),
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
             destinations: [
               NavigationDestination(
                 icon: const Icon(Icons.paste_outlined),

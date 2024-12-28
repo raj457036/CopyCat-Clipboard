@@ -3,7 +3,6 @@ package com.entilitystudio.android_background_clipboard
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import java.security.Security
 import java.util.Base64
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec

@@ -1,0 +1,4 @@
+-keep class androidx.lifecycle.DefaultLifecycleObserver
+-keep class * {
+    public *;
+}

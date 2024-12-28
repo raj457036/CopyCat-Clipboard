@@ -28,8 +28,8 @@ class _NavBarPageState extends State<NavBarPage> {
     Widget child = NetworkObserver(child: widget.child);
     if (isDesktopPlatform) child = TitlebarView(child: child);
     return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) {
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
         logger.i("DID POP: $didPop");
       },
       child: child,

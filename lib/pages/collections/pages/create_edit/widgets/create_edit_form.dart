@@ -57,7 +57,7 @@ class _ClipCollectionCreateEditFormState
   Future<void> selectEmoji() async {
     final result = await const EmojiSelectorSheet().open(context);
     if (result == null) return;
-    emojiController.text = result.emoji;
+    emojiController.text = result.char;
     setState(() {});
   }
 

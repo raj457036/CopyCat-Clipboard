@@ -1,8 +1,8 @@
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accessibilityEventTypes="typeAllMask"
+    android:accessibilityEventTypes="typeViewTextSelectionChanged|typeWindowStateChanged|typeAnnouncement|typeNotificationStateChanged"
     android:accessibilityFlags="flagDefault"
     android:accessibilityFeedbackType="feedbackAllMask"
-    android:notificationTimeout="120"
+    android:notificationTimeout="90"
     android:canRetrieveWindowContent="true"
     android:settingsActivity="com.entilitystudio.CopyCat.MainActivity"
 />
