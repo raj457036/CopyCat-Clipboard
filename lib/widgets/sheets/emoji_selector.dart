@@ -1,4 +1,5 @@
 import 'package:copycat_base/constants/widget_styles.dart';
+import 'package:copycat_base/utils/common_extension.dart';
 import 'package:emoji_selector/emoji_selector.dart';
 import 'package:flutter/material.dart';
 
@@ -9,11 +10,13 @@ class EmojiSelectorSheet extends StatefulWidget {
   State<EmojiSelectorSheet> createState() => _EmojiSelectorSheetState();
 
   Future<EmojiData?> open(BuildContext context) {
+    final mqSize = context.mq.size;
     return showModalBottomSheet(
       context: context,
-      enableDrag: true,
       showDragHandle: true,
-      isScrollControlled: true,
+      constraints: BoxConstraints(
+        maxWidth: mqSize.width * 0.9,
+      ),
       builder: (context) {
         return this;
       },
@@ -33,7 +36,7 @@ class _EmojiSelectorSheetState extends State<EmojiSelectorSheet> {
       }
       if (constrints.maxWidth < 400) {
         columns = 6;
-        rows = 6;
+        rows = 7;
       }
       final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
       return Padding(
@@ -45,7 +48,7 @@ class _EmojiSelectorSheetState extends State<EmojiSelectorSheet> {
             padding: EdgeInsets.only(
               left: padding10,
               right: padding10,
-              bottom: padding16,
+              bottom: padding38,
             ),
             withTitle: false,
             onSelected: Navigator.of(context).pop,

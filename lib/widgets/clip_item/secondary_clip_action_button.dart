@@ -26,7 +26,7 @@ class SecondaryClipActionButton extends StatelessWidget {
       ClipItemType.file || ClipItemType.media => item.inCache
           ? IconButton(
               onPressed: () => openFile(item),
-              icon: const Icon(Icons.outbound_rounded),
+              icon: const Icon(Icons.file_open_rounded),
               iconSize: 24,
               tooltip: context.locale.open,
               style: IconButton.styleFrom(
@@ -39,7 +39,7 @@ class SecondaryClipActionButton extends StatelessWidget {
               onPressed: () => launchPhone(item, message: true),
               icon: const Icon(Icons.outbound_rounded),
               iconSize: 24,
-              tooltip: context.locale.open,
+              tooltip: context.locale.makePhoneCall,
               style: IconButton.styleFrom(
                 padding: EdgeInsets.zero,
               ),
