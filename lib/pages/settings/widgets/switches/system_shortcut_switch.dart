@@ -53,10 +53,10 @@ class ClipboardHotKeySwitch extends StatelessWidget {
             ],
           ),
           value: state != null,
-          onChanged: (_) async {
+          onChanged: (value) async {
             final cubit = BlocProvider.of<AppConfigCubit>(context);
 
-            if (!_) {
+            if (!value) {
               await cubit.setClipboardToggleHotkey(null);
               return;
             }

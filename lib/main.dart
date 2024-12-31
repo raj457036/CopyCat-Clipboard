@@ -36,7 +36,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
@@ -136,7 +135,6 @@ class AppContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = GoogleFonts.poppinsTextTheme();
     return BlocListener<MonetizationCubit, MonetizationState>(
       listenWhen: (prev, current) {
         if (current is MonetizationActive && prev is MonetizationActive) {

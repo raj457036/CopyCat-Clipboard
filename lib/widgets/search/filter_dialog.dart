@@ -210,26 +210,26 @@ class _FilterDialogState extends State<FilterDialog> {
                     children: [
                       FilterChip(
                         label: Text(locale.text),
-                        onSelected: (_) =>
-                            setTypeInclusion(_, ClipItemType.text),
+                        onSelected: (value) =>
+                            setTypeInclusion(value, ClipItemType.text),
                         selected: typeIncludes.contains(ClipItemType.text),
                       ),
                       FilterChip(
                         label: Text(locale.url),
-                        onSelected: (_) =>
-                            setTypeInclusion(_, ClipItemType.url),
+                        onSelected: (value) =>
+                            setTypeInclusion(value, ClipItemType.url),
                         selected: typeIncludes.contains(ClipItemType.url),
                       ),
                       FilterChip(
                         label: Text(locale.media),
-                        onSelected: (_) =>
-                            setTypeInclusion(_, ClipItemType.media),
+                        onSelected: (value) =>
+                            setTypeInclusion(value, ClipItemType.media),
                         selected: typeIncludes.contains(ClipItemType.media),
                       ),
                       FilterChip(
                         label: Text(locale.docs),
-                        onSelected: (_) =>
-                            setTypeInclusion(_, ClipItemType.file),
+                        onSelected: (value) =>
+                            setTypeInclusion(value, ClipItemType.file),
                         selected: typeIncludes.contains(ClipItemType.file),
                       ),
                     ],
@@ -257,20 +257,20 @@ class _FilterDialogState extends State<FilterDialog> {
                       children: [
                         FilterChip(
                           label: Text(locale.email),
-                          onSelected: (_) =>
-                              setTextCategory(_, TextCategory.email),
+                          onSelected: (value) =>
+                              setTextCategory(value, TextCategory.email),
                           selected: textCategory.contains(TextCategory.email),
                         ),
                         FilterChip(
                           label: Text(locale.phone),
-                          onSelected: (_) =>
-                              setTextCategory(_, TextCategory.phone),
+                          onSelected: (value) =>
+                              setTextCategory(value, TextCategory.phone),
                           selected: textCategory.contains(TextCategory.phone),
                         ),
                         FilterChip(
                           label: Text(locale.color),
-                          onSelected: (_) =>
-                              setTextCategory(_, TextCategory.color),
+                          onSelected: (value) =>
+                              setTextCategory(value, TextCategory.color),
                           selected: textCategory.contains(TextCategory.color),
                         ),
                       ],
