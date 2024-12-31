@@ -8,6 +8,7 @@ import 'package:clipboard/widgets/event_bridge.dart';
 import 'package:clipboard/widgets/state_initializer.dart';
 import 'package:clipboard/widgets/system_shortcut_listeners.dart';
 import 'package:clipboard/widgets/tray_manager.dart';
+import 'package:clipboard/widgets/upgrader.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:copycat_base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
@@ -216,6 +217,7 @@ class AppContent extends StatelessWidget {
               locale: Locale(langCode.isEmpty ? "en" : langCode),
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
+              builder: (context, child) => UpgraderBuilder(child: child),
             );
           },
         ),

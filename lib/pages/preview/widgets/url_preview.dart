@@ -24,11 +24,11 @@ class URLClipPreviewCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 8,
+          spacing: 12,
           children: [
-            ConstrainedBox(
-              constraints: BoxConstraints.loose(Size(280, 200)),
-              child: LinkPreview(url: item.url!),
+            SizedBox.fromSize(
+              size: Size(280, 240),
+              child: LinkPreview(url: item.url!, withProgress: true),
             ),
             SelectableText(
               item.url ?? context.locale.nothingHere,

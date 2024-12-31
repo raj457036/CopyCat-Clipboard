@@ -59,7 +59,7 @@ class PreviewOptions extends StatelessWidget {
                 tooltip: context.locale.openInBrowser,
                 onPressed: () => launchUrl(item),
               ),
-            if (item.isTextType)
+            if (item.text != null)
               IconButton.outlined(
                 icon: const Icon(Icons.edit_document),
                 tooltip: context.locale.edit,

@@ -9,33 +9,24 @@ import 'package:flutter/material.dart';
 class TextPreviewBody extends StatelessWidget {
   final Color? bg;
   final Widget child;
-  final AppLayout layout;
 
   const TextPreviewBody({
     super.key,
     required this.child,
     this.bg,
-    required this.layout,
   });
 
   @override
   Widget build(BuildContext context) {
     final body = Padding(
-      padding: layout == AppLayout.grid
-          ? const EdgeInsets.all(padding8)
-          : const EdgeInsets.only(
-              top: padding10,
-              left: padding10,
-              right: padding10,
-              bottom: padding10,
-            ),
+      padding: const EdgeInsets.all(padding8),
       child: child,
     );
     if (bg != null) {
       return Material(
         type: MaterialType.card,
         color: bg,
-        borderRadius: layout == AppLayout.grid ? radiusBottom12 : radiusBottom8,
+        borderRadius: radiusBottom12,
         child: body,
       );
     }
@@ -60,21 +51,16 @@ class TextClipCard extends StatelessWidget {
 
     switch (item.textCategory) {
       case TextCategory.color:
-        Color? fg;
         final bg = hexToColor(item);
-        if (bg != null) {
-          fg = getFg(bg);
-        }
         return SizedBox(
           width: double.infinity,
           child: TextPreviewBody(
             bg: bg,
-            layout: layout,
             child: Center(
               child: Text(
                 item.text!,
                 style: textTheme.titleMedium?.copyWith(
-                  color: fg,
+                  color: getFg(bg),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -87,13 +73,14 @@ class TextClipCard extends StatelessWidget {
           width: double.infinity,
           child: TextPreviewBody(
             bg: colors.secondaryContainer,
-            layout: layout,
             child: Align(
               heightFactor: 1,
               child: Text(
                 item.text!,
                 textAlign: TextAlign.center,
-                style: textTheme.titleMedium,
+                style: textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.fade,
               ),
@@ -104,11 +91,10 @@ class TextClipCard extends StatelessWidget {
         return SizedBox(
           width: double.infinity,
           child: TextPreviewBody(
-            layout: layout,
             child: Text(
               item.text!,
               overflow: TextOverflow.fade,
-              style: textTheme.bodySmall,
+              style: textTheme.bodyMedium,
             ),
           ),
         );

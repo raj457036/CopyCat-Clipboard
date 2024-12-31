@@ -20,18 +20,26 @@ class UrlClipCard extends StatelessWidget {
     final textTheme = context.textTheme;
     final text = Text(
       item.url ?? "https://example.com",
-      maxLines: 4,
-      overflow: TextOverflow.fade,
-      style: textTheme.bodySmall,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      style: textTheme.bodyMedium,
     );
     final child = LayoutBuilder(builder: (context, constriants) {
       final hide = constriants.maxWidth < 150;
       if (hide) return text;
+      final hideDesc = constriants.maxWidth < 100;
       return Column(
         spacing: 10,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (item.url != null) LinkPreview(url: item.url!, expanded: true),
+          if (item.url != null)
+            LinkPreview(
+              url: item.url!,
+              expanded: true,
+              hideDesc: hideDesc,
+              maxTitleLines: 1,
+              maxDescLines: 1,
+            ),
           text,
         ],
       );
@@ -39,8 +47,8 @@ class UrlClipCard extends StatelessWidget {
 
     final padded = Padding(
       padding: const EdgeInsets.only(
-        left: padding10,
-        right: padding10,
+        left: padding8,
+        right: padding8,
         bottom: padding10,
       ),
       child: child,

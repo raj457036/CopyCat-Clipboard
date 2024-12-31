@@ -110,23 +110,15 @@ class _ClipListItemState extends State<ClipListItem> {
     final colors = context.colors;
     final textTheme = context.textTheme;
 
-    final selectedShape = focused || widget.selected
-        ? RoundedRectangleBorder(
-            side: BorderSide(
-              color: colors.primary,
-              width: 2.5,
-              strokeAlign: BorderSide.strokeAlignOutside,
-            ),
-            borderRadius: radius16,
-          )
-        : RoundedRectangleBorder(
-            side: BorderSide(
-              color: colors.outlineVariant,
-              width: 1,
-              strokeAlign: BorderSide.strokeAlignOutside,
-            ),
-            borderRadius: radius16,
-          );
+    final selectedShape = RoundedRectangleBorder(
+      side: BorderSide(
+        color:
+            focused || widget.selected ? colors.primary : colors.outlineVariant,
+        width: focused || widget.selected ? 2.5 : 1,
+        strokeAlign: BorderSide.strokeAlignOutside,
+      ),
+      borderRadius: radius12,
+    );
 
     final child = Padding(
       padding: const EdgeInsets.only(bottom: padding10),
@@ -135,7 +127,7 @@ class _ClipListItemState extends State<ClipListItem> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 60, maxHeight: 220),
           child: InkWell(
-            borderRadius: radius16,
+            borderRadius: radius12,
             autofocus: widget.autofocus,
             onTap: !widget.selectionActive
                 ? () => performPrimaryAction(context)
@@ -169,11 +161,11 @@ class _ClipListItemState extends State<ClipListItem> {
                     padding: const EdgeInsets.only(
                       left: padding10,
                       right: padding10,
-                      bottom: padding4,
+                      bottom: padding8,
                     ),
                     child: Text(
                       widget.item.displayTitle!,
-                      style: textTheme.titleMedium?.copyWith(
+                      style: textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 2,

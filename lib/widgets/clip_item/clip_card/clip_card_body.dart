@@ -55,13 +55,17 @@ class ClipCardBodyContent extends StatelessWidget {
             children: [
               if (item.displayTitle != null)
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: padding8,
-                    vertical: padding2,
+                  padding: const EdgeInsets.only(
+                    left: padding8,
+                    right: padding8,
+                    top: padding2,
+                    bottom: padding8,
                   ),
                   child: Text(
                     item.displayTitle!,
-                    style: textTheme.labelLarge,
+                    style: textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
                     maxLines: 2,
                   ),
                 ),
