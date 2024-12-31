@@ -1,5 +1,5 @@
 import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/l10n/l10n.dart';
+import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
 enum MenuItemType { option, divider }
@@ -42,35 +42,48 @@ class Menu extends InheritedWidget {
     required super.child,
   });
 
-  Future<void> openOptionDialog(BuildContext context) async {
-    await showDialog(
+  Future<void> openOptionBottomSheet(BuildContext context) async {
+    final mqSize = context.mq.size;
+    final colors = context.colors;
+    await showModalBottomSheet(
       context: context,
+      constraints: BoxConstraints(
+        maxWidth: mqSize.width * 0.9,
+      ),
+      backgroundColor: Colors.transparent,
       builder: (context) {
-        return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                context.locale.selectAnOption,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 24),
+          child: Material(
+            color: colors.surface,
+            borderRadius: radius16,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: padding12),
+                  child: SizedBox.fromSize(
+                    size: Size(32, 4),
+                    child: Material(
+                      color: colors.onSurfaceVariant,
+                      borderRadius: radius12,
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              for (var menuItem in items)
-                menuItem.type == MenuItemType.divider
-                    ? const Divider()
-                    : ListTile(
-                        leading: Icon(menuItem.icon),
-                        title: Text(menuItem.text!),
-                        onTap: () {
-                          Navigator.pop(context);
-                          menuItem.onPressed?.call();
-                        },
-                      ),
-            ],
+                for (var menuItem in items)
+                  menuItem.type == MenuItemType.divider
+                      ? const Divider(height: 0)
+                      : ListTile(
+                          leading: Icon(menuItem.icon),
+                          title: Text(menuItem.text!),
+                          onTap: () {
+                            Navigator.pop(context);
+                            menuItem.onPressed?.call();
+                          },
+                        ),
+              ],
+            ),
           ),
         );
       },

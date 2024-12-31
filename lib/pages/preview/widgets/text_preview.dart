@@ -14,11 +14,7 @@ class TextClipPreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color? fg;
     final bg = hexToColor(item);
-    if (bg != null) {
-      fg = getFg(bg);
-    }
 
     final config = ClipPreviewConfig.of(context);
 
@@ -36,7 +32,7 @@ class TextClipPreviewCard extends StatelessWidget {
           ),
           child: SelectableText(
             item.text ?? context.locale.nothingHere,
-            style: TextStyle(color: fg),
+            style: TextStyle(color: getFg(bg)),
           ),
         ),
       ),

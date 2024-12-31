@@ -187,10 +187,6 @@ class AppContent extends StatelessWidget {
               themeMode: theme,
               theme: ThemeData(
                 useMaterial3: true,
-                textTheme: textTheme.apply(
-                  bodyColor: lightColorScheme.onSurface,
-                  displayColor: lightColorScheme.onSurface,
-                ),
                 colorScheme: lightColorScheme,
                 brightness: Brightness.light,
                 inputDecorationTheme: const InputDecorationTheme(
@@ -201,10 +197,6 @@ class AppContent extends StatelessWidget {
               ),
               darkTheme: ThemeData(
                 useMaterial3: true,
-                textTheme: textTheme.apply(
-                  bodyColor: darkColorScheme.onSurface,
-                  displayColor: darkColorScheme.onSurface,
-                ),
                 colorScheme: darkColorScheme,
                 brightness: Brightness.dark,
                 inputDecorationTheme: const InputDecorationTheme(

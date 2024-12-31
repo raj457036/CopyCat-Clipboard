@@ -59,7 +59,7 @@ class PrimaryClipActionButton extends StatelessWidget {
         child: IconButton(
           onPressed: () {
             final menu = Menu.of(context);
-            menu.openOptionDialog(context);
+            menu.openOptionBottomSheet(context);
           },
           iconSize: 24,
           icon: const Icon(Icons.more_vert_rounded),

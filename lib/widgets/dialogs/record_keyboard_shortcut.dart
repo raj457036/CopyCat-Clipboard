@@ -78,7 +78,7 @@ class _RecordKeyboardShortcutDialogState
           textAlign: TextAlign.center,
         ),
         height12,
-        ButtonBar(
+        OverflowBar(
           children: revert ? options.reversed.toList() : options,
         )
       ],

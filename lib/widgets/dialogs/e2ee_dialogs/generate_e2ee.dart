@@ -45,7 +45,7 @@ class GenerateE2eeDialog extends StatelessWidget {
           children: [
             Card.outlined(
               margin: EdgeInsets.zero,
-              color: Colors.yellow.withOpacity(0.2),
+              color: Colors.yellow.withAlpha(51),
               child: ListTile(
                 title: Text(
                   context.locale.e2eeSetupWarning,

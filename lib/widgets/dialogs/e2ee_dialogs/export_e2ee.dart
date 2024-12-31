@@ -46,7 +46,7 @@ class ExportE2eeDialog extends StatelessWidget {
           children: [
             Card.outlined(
               margin: EdgeInsets.zero,
-              color: Colors.green.withOpacity(0.2),
+              color: Colors.green.withValues(alpha: 0.2),
               child: ListTile(
                 title: Text(
                   context.locale.e2eeExportNote,

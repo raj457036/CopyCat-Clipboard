@@ -50,7 +50,7 @@ class ImportE2eeDialog extends StatelessWidget {
             if (invalidImportedKey)
               Card.outlined(
                 margin: EdgeInsets.zero,
-                color: Colors.deepOrange.withOpacity(0.2),
+                color: Colors.deepOrange.withAlpha(51),
                 child: ListTile(
                   title: Text(
                     context.locale.importE2eeInvalidKey,

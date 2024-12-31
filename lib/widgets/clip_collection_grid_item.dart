@@ -86,7 +86,7 @@ class ClipCollectionGridItem extends StatelessWidget {
           autofocus: autoFocus,
           onLongPress: selectionOnly
               ? null
-              : () => Menu.of(context).openOptionDialog(context),
+              : () => Menu.of(context).openOptionBottomSheet(context),
           onTap: onTap ?? () => showDetail(context),
           child: Padding(
             padding: const EdgeInsets.symmetric(

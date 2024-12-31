@@ -144,7 +144,7 @@ class _SearchBarStInputate extends State<SearchInputBar> {
                 onSubmitted: search,
               ),
             ),
-            if (size.width > 300) width8,
+            if (size.width > 300) width4,
             if (size.width > 300)
               FilterButton(
                 size: 40,

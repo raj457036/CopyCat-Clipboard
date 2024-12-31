@@ -136,7 +136,7 @@ class _ClipListItemState extends State<ClipListItem> {
                 ? (detail) async {
                     final menu = Menu.of(context);
                     if (isMobilePlatform) {
-                      menu.openOptionDialog(context);
+                      menu.openOptionBottomSheet(context);
                       return;
                     }
                     final position = detail.globalPosition;
