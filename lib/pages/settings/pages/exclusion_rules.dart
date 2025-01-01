@@ -6,6 +6,7 @@ import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/exclusion_rules/exclusion_rules.dart';
 import 'package:copycat_base/l10n/l10n.dart';
+import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universal_io/io.dart';
@@ -18,11 +19,8 @@ class ExclusionRulesPage extends StatelessWidget {
     ExclusionRules rules,
   ) async {
     final cubit = context.read<AppConfigCubit>();
-    final granted = await cubit.focusWindow.isAccessibilityPermissionGranted();
-    if (!granted) {
-      await cubit.focusWindow.openAccessibilityPermissionSetting();
-      return;
-    }
+    final granted = await cubit.confirmAccessibilityPermission();
+    if (!granted) return;
     cubit.updateExclusionRule(rules);
   }
 
@@ -37,7 +35,7 @@ class ExclusionRulesPage extends StatelessWidget {
         return CustomScaffold(
           activeIndex: 2,
           appBar: AppBar(
-            automaticallyImplyLeading: false,
+            // automaticallyImplyLeading: true,
             centerTitle: false,
             title: Text(context.locale.exclusionRules),
             actions: [
@@ -91,18 +89,19 @@ class ExclusionRulesPage extends StatelessWidget {
                     //         }
                     //       : null,
                     // ),
-                    SwitchListTile(
-                      title: Text(context.locale.creditCardNumber),
-                      value: state.creditCard,
-                      onChanged: enable
-                          ? (value) {
-                              updateExclusionRules(
-                                context,
-                                state.copyWith(creditCard: value),
-                              );
-                            }
-                          : null,
-                    ),
+                    if (isDesktopPlatform)
+                      SwitchListTile(
+                        title: Text(context.locale.creditCardNumber),
+                        value: state.creditCard,
+                        onChanged: enable
+                            ? (value) {
+                                updateExclusionRules(
+                                  context,
+                                  state.copyWith(creditCard: value),
+                                );
+                              }
+                            : null,
+                      ),
                     SwitchListTile(
                       title: Text(context.locale.phoneNumber),
                       value: state.phone,

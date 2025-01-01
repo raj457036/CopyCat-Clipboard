@@ -16,7 +16,7 @@ import android.widget.Toast
 
 const val DetectionText = "CopyCat"
 
-class CopyCatAccessibilityService: AccessibilityService() {
+class CopyCatAccessibilityService : AccessibilityService() {
     private val logTag = "CopyCatAccService"
     private var detectingCopyAck: Boolean = false
     private var notificationAckText: String = "[Copied]"
@@ -53,7 +53,7 @@ class CopyCatAccessibilityService: AccessibilityService() {
     }
 
     private fun onCopyEvent() {
-        Log.d(logTag,"Copy Event Detected, Reading Clipboard")
+        Log.d(logTag, "Copy Event Detected, Reading Clipboard")
         clipboardService.performClipboardRead(currentlyActiveApp)
     }
 
@@ -70,7 +70,7 @@ class CopyCatAccessibilityService: AccessibilityService() {
         Toast.makeText(this, "CopyCat Service Starting", Toast.LENGTH_SHORT).show()
     }
 
-    private fun  stopClipboardService() {
+    private fun stopClipboardService() {
         val stopIntent = Intent(this, CopyCatClipboardService::class.java)
         stopService(stopIntent)
     }
@@ -96,15 +96,14 @@ class CopyCatAccessibilityService: AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         Log.d(logTag, "Event : $event")
 
-        if (!detectingCopyAck)
-        {
+        if (!detectingCopyAck) {
             if (Utils.isActivityOnTop) {
                 Log.d(logTag, "Ignoring events as current activity is CopyCat itself")
                 return
             }
 
             if (event?.packageName?.startsWith("com.entilitystudio") == true) {
-                Log.d(logTag,"Ignoring CopyCat Clipboard Events")
+                Log.d(logTag, "Ignoring CopyCat Clipboard Events")
                 return
             }
         }
@@ -125,6 +124,7 @@ class CopyCatAccessibilityService: AccessibilityService() {
 ////                    select
 //                }
             }
+
             AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
                 event.packageName?.let {
                     currentlyActiveApp = it.toString()
@@ -154,6 +154,7 @@ class CopyCatAccessibilityService: AccessibilityService() {
                     }
                 }
             }
+
             AccessibilityEvent.TYPE_ANNOUNCEMENT -> {
                 if (event.packageName != "com.android.systemui") {
                     return
@@ -171,6 +172,7 @@ class CopyCatAccessibilityService: AccessibilityService() {
                     onCopyEvent()
                 }
             }
+
             AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED -> {
                 if (event.className != "android.widget.Toast") {
                     return
@@ -188,6 +190,7 @@ class CopyCatAccessibilityService: AccessibilityService() {
                     onCopyEvent()
                 }
             }
+
             else -> {}
         }
 

@@ -1,4 +1,5 @@
 import 'package:clipboard/widgets/empty.dart';
+import 'package:clipboard/widgets/sheets/select_app.dart';
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/db/exclusion_rules/exclusion_rules.dart';
 import 'package:copycat_base/l10n/l10n.dart';
@@ -24,14 +25,38 @@ class AppExclusionTab extends StatelessWidget {
 
   void addApp(BuildContext context) async {
     final cubit = context.read<AppConfigCubit>();
-    final apps = await selectApp();
+    final apps = await selectApp(context);
     if (apps.isEmpty) return;
     final excludedApps = {...apps, ...cubit.exclusionRules.apps}.toList();
     final updatedRules = cubit.exclusionRules.copyWith(apps: excludedApps);
     cubit.updateExclusionRule(updatedRules);
   }
 
-  Future<Iterable<AppInfo>> selectApp() async {
+  Future<Iterable<AppInfo>> selectApp(BuildContext context) async {
+    if (Platform.isAndroid) {
+      return selectAndroidApp(context);
+    } else {
+      return selectDesktopApp();
+    }
+  }
+
+  Future<Iterable<AppInfo>> selectAndroidApp(BuildContext context) async {
+    final cubit = context.read<AppConfigCubit>();
+    final rules =
+        cubit.exclusionRules.apps.map((a) => a.identifier ?? '').toSet();
+    final app =
+        await SelectInstalledAppSheet(selectedApps: rules).show(context);
+
+    if (app == null) return [];
+
+    final info = AppInfo(
+      name: app.name,
+      identifier: app.packageName,
+    );
+    return [info];
+  }
+
+  Future<Iterable<AppInfo>> selectDesktopApp() async {
     final List<String> ext;
     String? initialDirectory;
     if (Platform.isMacOS) {
@@ -96,7 +121,7 @@ class AppExclusionTab extends StatelessWidget {
                   final app = rules[index];
                   return ListTile(
                     title: Text(app.name),
-                    subtitle: Text(app.path ?? "-"),
+                    subtitle: Text(app.path ?? app.identifier ?? "-"),
                     dense: true,
                     leading: IconButton(
                       onPressed: () => deleteItem(context, index),

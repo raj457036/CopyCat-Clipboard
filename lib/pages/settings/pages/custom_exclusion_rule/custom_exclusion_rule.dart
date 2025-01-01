@@ -5,6 +5,7 @@ import 'package:clipboard/pages/settings/pages/custom_exclusion_rule/tabs/url_te
 import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/l10n/l10n.dart';
+import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 
 class CustomExclusionRulePage extends StatefulWidget {
@@ -48,14 +49,17 @@ class _CustomExclusionRulePageState extends State<CustomExclusionRulePage> {
                 NavigationRailDestination(
                   icon: const Icon(Icons.abc),
                   label: Text(context.locale.title),
+                  disabled: !isDesktopPlatform,
                 ),
                 NavigationRailDestination(
                   icon: const Icon(Icons.link),
                   label: Text(context.locale.url),
+                  disabled: !isDesktopPlatform,
                 ),
                 NavigationRailDestination(
                   icon: const Icon(Icons.pattern_rounded),
                   label: Text(context.locale.pattern),
+                  disabled: !isDesktopPlatform,
                 ),
               ],
             ),

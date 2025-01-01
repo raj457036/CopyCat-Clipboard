@@ -8,27 +8,38 @@ import android.util.Base64
 import android.util.Log
 import android.widget.Toast
 
+
 class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private val appContext: Context = applicationContext
     private val logTag = "CopyCatSharedStorage"
-    private val sp = applicationContext.getSharedPreferences("CopyCatSharedPreferences", MODE_PRIVATE)
+    private val sp =
+        applicationContext.getSharedPreferences("CopyCatSharedPreferences", MODE_PRIVATE)
     private var syncEnabled: Boolean = false
     private lateinit var deviceId: String
     private var endId: Int = -1
     private var syncManager: CopyCatSyncManager = CopyCatSyncManager(appContext)
     private var encryptor: CopyCatEncryptor? = null
+    val passwordManagers: Set<String> = setOf(
+        "com.x8bit.bitwarden",
+        "proton.android.pass",
+        "com.lastpass.lpandroid",
+        "com.onepassword.android",
+    )
 
     var excludedPackages: Set<String> = emptySet()
     var strictCheck = false
     var showAckToast = true
     var serviceEnabled: Boolean = false
+    var excludePasswordManagers: Boolean = false
+    var excludeEmail: Boolean = false
+    var excludePhone: Boolean = false
 
     val keystore: CopyCatKeyStore
         get() = CopyCatKeyStore.getInstance()
 
     private val listener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
-        if (key == "set--excludedPackages") {
-            excludedPackages = sharedPreferences.getStringSet("excludedPackages", emptySet())!!
+        if (key == "excludedPackages") {
+            excludedPackages = sharedPreferences.getStringSet(key, emptySet())!!
         }
         if (key == "strictCheck") {
             strictCheck = sharedPreferences.getBoolean(key, false)
@@ -38,6 +49,15 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         }
         if (key == "serviceEnabled") {
             serviceEnabled = sharedPreferences.getBoolean(key, false)
+        }
+        if (key == "exclude-pass-mgr") {
+            excludePasswordManagers = sharedPreferences.getBoolean(key, false)
+        }
+        if (key == "exclude-email") {
+            excludeEmail = sharedPreferences.getBoolean(key, false)
+        }
+        if (key == "exclude-phone") {
+            excludePhone = sharedPreferences.getBoolean(key, false)
         }
         if (key == "projectKey") {
             readSecure(key)?.let {
@@ -82,7 +102,8 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             } catch (e: Error) {
                 Log.e(logTag, "Failed to initialize copycat encryptor. Warning: ")
                 Log.e(logTag, e.toString())
-                Toast.makeText(appContext,"Background Encryption Setup Failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(appContext, "Background Encryption Setup Failed", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -96,8 +117,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     fun readSecure(key: String): String? {
         Log.d(logTag, "Reading $key from secure storage")
         val encrypted = sp.getString(key, "").toString()
-        if (encrypted.isNotBlank())
-        {
+        if (encrypted.isNotBlank()) {
             val decoded = Base64.decode(encrypted, Base64.DEFAULT)
             return keystore.decryptData(decoded)
         }
@@ -131,6 +151,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         strictCheck = sp.getBoolean("strictCheck", false)
         showAckToast = sp.getBoolean("showAckToast", true)
         serviceEnabled = sp.getBoolean("serviceEnabled", false)
+        excludePasswordManagers = sp.getBoolean("exclude-pass-mgr", false)
+        excludeEmail = sp.getBoolean("exclude-email", false)
+        excludePhone = sp.getBoolean("exclude-phone", false)
 
         readSecure("projectKey")?.let {
             syncManager.projectKey = it
@@ -160,9 +183,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                     editor.putString(key, value)
                 }
             }
+
             is Int -> {
                 editor.putInt(key, value)
             }
+
             is Boolean -> {
                 editor.putBoolean(key, value)
             }
@@ -174,7 +199,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         Log.d(logTag, "Reading $key of type $type from storage")
         return when (type) {
             "string" -> sp.getString(key, "")
-            "int" ->  sp.getInt(key, 0)
+            "int" -> sp.getInt(key, 0)
             "bool" -> sp.getBoolean(key, false)
             "set" -> sp.getStringSet(key, emptySet<String>())
             else -> null
@@ -187,7 +212,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             editor.remove(key)
         }
         editor.apply()
-
     }
 
     fun writeTextClip(text: String, type: ClipType, label: String = "") {
@@ -220,7 +244,13 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         sp.edit().putString(key, meta).apply()
     }
 
-    private fun writeTextClipToServer(text: String, type: ClipType, metaKey: String, encrypted: Boolean, label: String? = null) {
+    private fun writeTextClipToServer(
+        text: String,
+        type: ClipType,
+        metaKey: String,
+        encrypted: Boolean,
+        label: String? = null
+    ) {
         Log.i(logTag, "Writing text clip to server")
         if (!syncEnabled || !serviceEnabled) {
             Log.i(logTag, "Sync Disabled or Service is not enabled.")

@@ -41,7 +41,6 @@ class CopyCatSyncManager(applicationContext: Context) {
     var isStopped = false
 
 
-
     private val listener =
         SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == tokenKey) {
@@ -68,7 +67,6 @@ class CopyCatSyncManager(applicationContext: Context) {
 
     private val tokenKey
         get() = "flutter.sb-$projectKey-auth-token"
-
 
 
     fun start() {
@@ -143,10 +141,18 @@ class CopyCatSyncManager(applicationContext: Context) {
         return dateFormat.format(Date())
     }
 
-    fun writeClipboardItem(clip: String, type: ClipType, encrypted: Boolean, label: String? = null): Long {
+    fun writeClipboardItem(
+        clip: String,
+        type: ClipType,
+        encrypted: Boolean,
+        label: String? = null
+    ): Long {
         Log.i(logTag, "Writing to remote clipboard")
         if (userId == null || !isReady) {
-            Log.w(logTag, "Failed to write to remote clipboard, service not ready or user not found.")
+            Log.w(
+                logTag,
+                "Failed to write to remote clipboard, service not ready or user not found."
+            )
             return -1
         }
         if (isExpired) {
@@ -174,20 +180,24 @@ class CopyCatSyncManager(applicationContext: Context) {
                 payload["text"] = clip
                 payload["type"] = "text"
             }
+
             ClipType.Email -> {
                 payload["text"] = clip
                 payload["type"] = "text"
                 payload["textCategory"] = "email"
             }
+
             ClipType.Phone -> {
                 payload["text"] = clip
                 payload["type"] = "text"
                 payload["textCategory"] = "phone"
             }
+
             ClipType.Url -> {
                 payload["url"] = clip
                 payload["type"] = "url"
             }
+
             else -> {
                 payload["text"] = clip
                 payload["type"] = "text"

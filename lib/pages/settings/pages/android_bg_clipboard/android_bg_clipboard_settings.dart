@@ -186,6 +186,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
               "Allows CopyCat to show an active notification for the running service.",
             ),
             value: notification,
+            enableFeedback: true,
             thumbIcon: notification ? checked : unchecked,
             onChanged: writingConfig ? null : (_) => openNotificationSetting(),
           ),
@@ -195,8 +196,11 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
               "Required to detect if something is copied.",
             ),
             value: overlay,
+            enableFeedback: true,
             thumbIcon: overlay ? checked : unchecked,
-            onChanged: writingConfig ? null : (_) => openOverlaySetting(),
+            onChanged: writingConfig || !notification
+                ? null
+                : (_) => openOverlaySetting(),
           ),
           SwitchListTile(
             title: Text("Unrestricted Battery Optimization"),
@@ -205,8 +209,10 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
             ),
             thumbIcon: batteryOptimization ? checked : unchecked,
             value: batteryOptimization,
-            onChanged:
-                writingConfig ? null : (_) => openBatteryOptimizationSetting(),
+            enableFeedback: true,
+            onChanged: writingConfig || !notification || !overlay
+                ? null
+                : (_) => openBatteryOptimizationSetting(),
           ),
           SwitchListTile(
             title: Text("CopyCat Accessibility Service"),
@@ -215,7 +221,13 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
             ),
             thumbIcon: accessibility ? checked : unchecked,
             value: accessibility,
-            onChanged: writingConfig ? null : (_) => openAccessibilitySetting(),
+            enableFeedback: true,
+            onChanged: writingConfig ||
+                    !notification ||
+                    !overlay ||
+                    !batteryOptimization
+                ? null
+                : (_) => openAccessibilitySetting(),
           ),
         ],
       );

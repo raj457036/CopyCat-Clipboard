@@ -133,6 +133,17 @@ class EventBridge extends StatelessWidget {
               context.read<WindowActionCubit>().setup(view, size);
             },
           ),
+        if (Platform.isAndroid)
+          BlocListener<AppConfigCubit, AppConfigState>(
+            listenWhen: (previous, current) =>
+                previous.config.exclusionRules != current.config.exclusionRules,
+            listener: (context, state) {
+              final rules = state.config.exclusionRules;
+              context
+                  .read<AndroidBgClipboardCubit>()
+                  .updateExclusionRule(rules);
+            },
+          ),
         BlocListener<AppConfigCubit, AppConfigState>(
           listenWhen: (previous, current) {
             final prev = previous.config;

@@ -7,17 +7,15 @@ import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:universal_io/io.dart';
 
 class ExclusionRulesSwitchTile extends StatelessWidget {
   const ExclusionRulesSwitchTile({super.key});
 
   Future<void> onChanged(BuildContext context, bool value) async {
     final cubit = context.read<AppConfigCubit>();
-    final granted = await cubit.focusWindow.isAccessibilityPermissionGranted();
-    if (!granted) {
-      await cubit.focusWindow.openAccessibilityPermissionSetting();
-      return;
-    }
+    final granted = await cubit.confirmAccessibilityPermission();
+    if (!granted) return;
     final config = cubit.exclusionRules.copyWith(enable: value);
     cubit.updateExclusionRule(config);
   }
@@ -28,7 +26,7 @@ class ExclusionRulesSwitchTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSupported = isDesktopPlatform;
+    final isSupported = isDesktopPlatform || Platform.isAndroid;
     final textTheme = context.textTheme;
     final colors = context.colors;
     return BlocSelector<AppConfigCubit, AppConfigState, bool>(
@@ -46,7 +44,14 @@ class ExclusionRulesSwitchTile extends StatelessWidget {
           children: [
             Expanded(
               child: ListTile(
-                title: Text(context.locale.exclusionRules),
+                title: Row(
+                  spacing: 4,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(context.locale.exclusionRules),
+                    if (Platform.isAndroid) const Icon(Icons.science),
+                  ],
+                ),
                 subtitle: isSupported
                     ? Text(context.locale.exclusionRulesDesc)
                     : Text(context.locale.featureNotSupported),

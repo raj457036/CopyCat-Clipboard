@@ -5,7 +5,6 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.annotation.RequiresApi
 import java.security.KeyStore
-import java.security.KeyStore.SecretKeyEntry
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -42,18 +41,21 @@ class CopyCatKeyStore private constructor() {
         if (keyStore.containsAlias(KEY_ALIAS)) return
 
         // Define the key generation specifications
-        val keyGenParameterSpec = KeyGenParameterSpec.Builder(KEY_ALIAS,
-            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+        val keyGenParameterSpec = KeyGenParameterSpec.Builder(
+            KEY_ALIAS,
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+        )
             .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
             .build()
 
         // Initialize the KeyGenerator with AES algorithm
-        val keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
+        val keyGenerator =
+            KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
         keyGenerator.init(keyGenParameterSpec)
 
         // Generate and store the key in Keystore
-       keyGenerator.generateKey()
+        keyGenerator.generateKey()
     }
 
     @Throws(Exception::class)
@@ -64,6 +66,7 @@ class CopyCatKeyStore private constructor() {
         val key = keyStore.getKey(KEY_ALIAS, null)
         return key as SecretKey
     }
+
     // Encrypt data
     fun encryptData(data: String): ByteArray {
         val cipher = Cipher.getInstance(AES_MODE)
@@ -82,7 +85,7 @@ class CopyCatKeyStore private constructor() {
         if (encryptedData.size <= IV_LENGTH) {
             throw IllegalArgumentException("Invalid encrypted data format.")
         }
-        
+
         // Split IV and encrypted data
         val iv = encryptedData.copyOfRange(0, IV_LENGTH)
         val encryptedBytes = encryptedData.copyOfRange(IV_LENGTH, encryptedData.size)

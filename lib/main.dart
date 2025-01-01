@@ -47,26 +47,30 @@ import 'package:universal_io/io.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:window_manager/window_manager.dart';
 
+Future<void> appRunner() async {
+  MediaKit.ensureInitialized();
+  await initializeServices();
+  runApp(const MainApp());
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (sentryDSN != "") {
+  if (sentryDSN != "" && !kDebugMode) {
     await SentryFlutter.init(
       (options) {
         options.dsn = sentryDSN;
-        options.environment = kDebugMode ? "Dev" : "Prod";
+        options.environment = kDebugMode
+            ? "Dev"
+            : kProfileMode
+                ? "Profile"
+                : "Prod";
         options.tracesSampleRate = kDebugMode ? 0 : 0.05;
         options.profilesSampleRate = kDebugMode ? 0 : 0.5;
       },
-      appRunner: () async {
-        MediaKit.ensureInitialized();
-        await initializeServices();
-        runApp(const MainApp());
-      },
+      appRunner: appRunner,
     );
   } else {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initializeServices();
-    runApp(const MainApp());
+    appRunner();
   }
 }
 
