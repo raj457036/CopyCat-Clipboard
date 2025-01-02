@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:animate_do/animate_do.dart';
+import 'package:copycat_base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:copycat_base/constants/numbers/breakpoints.dart';
@@ -8,6 +9,7 @@ import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:universal_io/io.dart';
 
 class StateInitializer extends StatefulWidget {
   final Widget child;
@@ -34,6 +36,13 @@ class _StateInitializerState extends State<StateInitializer>
     windowCubit.setup(appConfig.view, appConfig.windowSize);
   }
 
+  Future<void> syncAndroidBgClipboardStates() async {
+    if (!Platform.isAndroid) return;
+    final cubit = context.read<AndroidBgClipboardCubit>();
+    await Future.delayed(Durations.extralong4);
+    cubit.syncStates();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -47,7 +56,13 @@ class _StateInitializerState extends State<StateInitializer>
   @override
   void didChangeAppLifecycleState(ui.AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+      syncAndroidBgClipboardStates();
+    }
+
     if (!isDesktopPlatform) return;
+
     setState(() {
       if (state == ui.AppLifecycleState.resumed) {
         _isInBackground = false;
