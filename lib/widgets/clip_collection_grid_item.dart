@@ -25,7 +25,7 @@ class ClipCollectionGridItem extends StatelessWidget {
   });
 
   void edit(BuildContext context) {
-    context.goNamed(
+    context.pushNamed(
       RouteConstants.createEditCollection,
       pathParameters: {
         "id": collection.id.toString(),

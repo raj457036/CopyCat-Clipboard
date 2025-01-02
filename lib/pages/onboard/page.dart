@@ -57,40 +57,42 @@ class _OnBoardPageState extends State<OnBoardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(padding16),
-        child: switch (currentStep) {
-          0 => WelcomeStep(
-              onContinue: () => goToPage(1),
-            ),
-          1 => EncryptionStep(
-              onContinue: () {
-                if (isDesktopPlatform) {
-                  goToPage(2);
-                } else {
-                  goToPage(4);
-                }
-              },
-            ),
-          2 => SmartPasteStep(
-              onContinue: () => goToPage(3),
-            ),
-          3 => KeyboardShortcutStep(
-              onContinue: () => goToPage(4),
-            ),
-          4 => RestoreCollectionStep(
-              onContinue: () => goToPage(5),
-              collectionRepository: sl(),
-            ),
-          5 => RestoreClipsStep(
-              onContinue: goHome,
-              clipboardRepository: sl(
-                instanceName: "remote",
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(padding16),
+          child: switch (currentStep) {
+            0 => WelcomeStep(
+                onContinue: () => goToPage(1),
               ),
-              restorationStatusRepository: sl(),
-            ),
-          _ => SizedBox.shrink(),
-        },
+            1 => EncryptionStep(
+                onContinue: () {
+                  if (isDesktopPlatform) {
+                    goToPage(2);
+                  } else {
+                    goToPage(4);
+                  }
+                },
+              ),
+            2 => SmartPasteStep(
+                onContinue: () => goToPage(3),
+              ),
+            3 => KeyboardShortcutStep(
+                onContinue: () => goToPage(4),
+              ),
+            4 => RestoreCollectionStep(
+                onContinue: () => goToPage(5),
+                collectionRepository: sl(),
+              ),
+            5 => RestoreClipsStep(
+                onContinue: goHome,
+                clipboardRepository: sl(
+                  instanceName: "remote",
+                ),
+                restorationStatusRepository: sl(),
+              ),
+            _ => SizedBox.shrink(),
+          },
+        ),
       ),
     );
   }

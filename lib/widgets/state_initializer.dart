@@ -48,8 +48,7 @@ class _StateInitializerState extends State<StateInitializer>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light
-        .copyWith(systemNavigationBarColor: Color(0x00000000)));
+
     setupWindow();
   }
 

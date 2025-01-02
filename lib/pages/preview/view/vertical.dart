@@ -19,43 +19,45 @@ class ClipItemPreviewVerticalView extends StatelessWidget {
         centerTitle: false,
         title: Text(context.locale.preview),
       ),
-      body: DefaultTabController(
-        length: 2,
-        child: Column(
-          children: [
-            TabBar(
-              tabs: [
-                Tab(text: context.locale.preview),
-                Tab(text: context.locale.editDetails),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      ClipPreviewConfig(
-                          shape: RoundedRectangleBorder(),
-                          child: ClipPreview(item: item)),
-                      Positioned(
-                        bottom: 20,
-                        right: 0,
-                        left: 0,
-                        child: Center(
-                          child: PreviewOptions(
-                            item: item,
-                            direction: Axis.vertical,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  ClipDetailForm(item: item),
+      body: SafeArea(
+        child: DefaultTabController(
+          length: 2,
+          child: Column(
+            children: [
+              TabBar(
+                tabs: [
+                  Tab(text: context.locale.preview),
+                  Tab(text: context.locale.editDetails),
                 ],
               ),
-            ),
-          ],
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        ClipPreviewConfig(
+                            shape: RoundedRectangleBorder(),
+                            child: ClipPreview(item: item)),
+                        Positioned(
+                          bottom: 20,
+                          right: 0,
+                          left: 0,
+                          child: Center(
+                            child: PreviewOptions(
+                              item: item,
+                              direction: Axis.vertical,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    ClipDetailForm(item: item),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -43,17 +43,20 @@ class Menu extends InheritedWidget {
   });
 
   Future<void> openOptionBottomSheet(BuildContext context) async {
-    final mqSize = context.mq.size;
+    final mq = context.mq;
+    final mqSize = mq.size;
+    final safeArea = mq.systemGestureInsets.bottom + padding16;
     final colors = context.colors;
     await showModalBottomSheet(
       context: context,
       constraints: BoxConstraints(
         maxWidth: mqSize.width * 0.9,
       ),
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
         return Padding(
-          padding: const EdgeInsets.only(bottom: 24),
+          padding: EdgeInsets.only(bottom: safeArea),
           child: Material(
             color: colors.surface,
             borderRadius: radius16,

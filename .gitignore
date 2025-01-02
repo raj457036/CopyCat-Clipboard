@@ -52,3 +52,5 @@ window_dist/installer.exe
 firebase.json
 
 **/secret/**
+
+**/packages/emoji_picker_flutter

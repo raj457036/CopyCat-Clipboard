@@ -108,16 +108,15 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Spacer(),
-            Icon(
-              Icons.lock,
-              size: 28,
-            ),
+            Icon(Icons.lock, size: 28),
             height10,
             Text(
               "Setup Clipboard Encryption",
               style: textTheme.headlineMedium,
+              textAlign: TextAlign.center,
             ),
             height10,
             if (generating || saving)

@@ -33,6 +33,7 @@ import 'package:copycat_pro/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:device_preview_screenshot/device_preview_screenshot.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -136,6 +137,21 @@ final router_ = router();
 class AppContent extends StatelessWidget {
   const AppContent({super.key});
 
+  SystemUiOverlayStyle getUiOverlay(ThemeMode mode) {
+    var lightTheme =
+        SchedulerBinding.instance.platformDispatcher.platformBrightness ==
+            Brightness.light;
+    return mode == ThemeMode.light || (mode == ThemeMode.system && lightTheme)
+        ? SystemUiOverlayStyle.light.copyWith(
+            systemNavigationBarColor: Colors.transparent,
+            systemNavigationBarContrastEnforced: false,
+            systemNavigationBarIconBrightness: Brightness.dark,
+          )
+        : SystemUiOverlayStyle.dark.copyWith(
+            systemNavigationBarColor: Colors.transparent,
+          );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<MonetizationCubit, MonetizationState>(
@@ -178,39 +194,43 @@ class AppContent extends StatelessWidget {
           },
           builder: (context, state) {
             final (theme, langCode, lightColorScheme, darkColorScheme) = state;
-            return MaterialApp.router(
-              scaffoldMessengerKey: scaffoldMessengerKey,
-              routeInformationParser: router_.routeInformationParser,
-              routeInformationProvider: router_.routeInformationProvider,
-              routerDelegate: router_.routerDelegate,
-              backButtonDispatcher: router_.backButtonDispatcher,
-              color: Colors.transparent,
-              themeMode: theme,
-              theme: ThemeData(
-                useMaterial3: true,
-                colorScheme: lightColorScheme,
-                brightness: Brightness.light,
-                inputDecorationTheme: const InputDecorationTheme(
-                  border: OutlineInputBorder(
-                    borderRadius: radius12,
+
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: getUiOverlay(theme),
+              child: MaterialApp.router(
+                scaffoldMessengerKey: scaffoldMessengerKey,
+                routeInformationParser: router_.routeInformationParser,
+                routeInformationProvider: router_.routeInformationProvider,
+                routerDelegate: router_.routerDelegate,
+                backButtonDispatcher: router_.backButtonDispatcher,
+                color: Colors.transparent,
+                themeMode: theme,
+                theme: ThemeData(
+                  useMaterial3: true,
+                  colorScheme: lightColorScheme,
+                  brightness: Brightness.light,
+                  inputDecorationTheme: const InputDecorationTheme(
+                    border: OutlineInputBorder(
+                      borderRadius: radius12,
+                    ),
                   ),
                 ),
-              ),
-              darkTheme: ThemeData(
-                useMaterial3: true,
-                colorScheme: darkColorScheme,
-                brightness: Brightness.dark,
-                inputDecorationTheme: const InputDecorationTheme(
-                  border: OutlineInputBorder(
-                    borderRadius: radius12,
+                darkTheme: ThemeData(
+                  useMaterial3: true,
+                  colorScheme: darkColorScheme,
+                  brightness: Brightness.dark,
+                  inputDecorationTheme: const InputDecorationTheme(
+                    border: OutlineInputBorder(
+                      borderRadius: radius12,
+                    ),
                   ),
                 ),
+                debugShowCheckedModeBanner: false,
+                locale: Locale(langCode.isEmpty ? "en" : langCode),
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                supportedLocales: AppLocalizations.supportedLocales,
+                builder: (context, child) => UpgraderBuilder(child: child),
               ),
-              debugShowCheckedModeBanner: false,
-              locale: Locale(langCode.isEmpty ? "en" : langCode),
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              builder: (context, child) => UpgraderBuilder(child: child),
             );
           },
         ),

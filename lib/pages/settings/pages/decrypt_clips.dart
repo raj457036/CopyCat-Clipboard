@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:copycat_base/common/failure.dart';
-import 'package:copycat_base/common/logging.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
 import 'package:copycat_base/domain/repositories/clipboard.dart';
@@ -55,49 +56,51 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
   }
 
   Future<void> startDecryption() async {
-    int offset = 0;
     bool hasMore = true;
 
     while (hasMore && !stopped) {
       final result = await widget.clipboardRepository.getList(
         limit: 350,
-        offset: offset,
         encrypted: true,
         sortBy: ClipboardSortKey.modified,
       );
 
-      await result.fold((l) async {
-        showFailureSnackbar(l);
-        hasMore = false;
-        totalEncrypted = -1;
-        decryptedCount = 0;
-        return;
-      }, (r) async {
-        final toSave = <ClipboardItem>[];
-        for (int i = 0; i < r.results.length && !stopped; i++) {
-          final item = r.results[i];
-          try {
-            final t = now();
-            final decrypted = await item.decrypt(throwException: true);
-            logger.w("Time elapsed: ${now().difference(t).inSeconds} seconds");
-            toSave.add(decrypted);
-            decryptedCount++;
-          } catch (e) {
-            showFailureSnackbar(Failure.fromException(e));
+      await result.fold(
+        (l) async {
+          showFailureSnackbar(l);
+          hasMore = false;
+          totalEncrypted = -1;
+          decryptedCount = 0;
+          return;
+        },
+        (r) async {
+          if (r.results.isNotEmpty) {
+            final toSave = <ClipboardItem>[];
+            for (int i = 0; i < r.results.length && !stopped; i++) {
+              final item = r.results[i];
+              try {
+                final decrypted = await item.decrypt(throwException: true);
+                toSave.add(decrypted);
+                decryptedCount++;
+              } catch (e) {
+                showFailureSnackbar(Failure.fromException(e));
+                hasMore = false;
+                totalEncrypted = -1;
+                decryptedCount = 0;
+                return;
+              }
+
+              // Update the UI every 10 items for better performance
+              if (mounted && decryptedCount % 10 == 0) setState(() {});
+            }
+            await widget.clipboardRepository.updateAll(toSave);
+          } else {
             hasMore = false;
-            totalEncrypted = -1;
-            decryptedCount = 0;
-            return;
           }
-          if (mounted) {
-            setState(() {});
-          }
-        }
-        offset += r.results.length;
-        hasMore = r.hasMore;
-        await widget.clipboardRepository.updateAll(toSave);
-        await wait(200);
-      });
+          if (mounted) setState(() {});
+          await wait(30);
+        },
+      );
     }
   }
 
