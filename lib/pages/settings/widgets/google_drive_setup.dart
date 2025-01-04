@@ -37,8 +37,11 @@ class GoogleDriveSetup extends StatelessWidget {
         bool alreadyConnected = false;
         bool hasError = false;
         switch (state) {
-          case DriveSetupFetching():
+          case DriveSetupFetching() || DriveSetupRefreshingToken():
             text = context.locale.loading;
+            buttonDisabled = true;
+          case DriveSetupVerifyingCode():
+            text = context.locale.authorizing;
             buttonDisabled = true;
           case DriveSetupUnknown(:final waiting):
             text =
@@ -48,7 +51,7 @@ class GoogleDriveSetup extends StatelessWidget {
             text = context.locale.connected;
             buttonDisabled = false;
             alreadyConnected = true;
-          case DriveSetupError() || DriveSetupFetching():
+          case DriveSetupError():
             text = context.locale.connectNow;
             buttonDisabled = false;
             hasError = true;
