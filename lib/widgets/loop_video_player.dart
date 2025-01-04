@@ -69,7 +69,7 @@ class _LoopVideoPlayerState extends State<LoopVideoPlayer> {
       width: widget.width,
       height: widget.height ?? widget.width / widget.aspectRatio,
       aspectRatio: widget.aspectRatio,
-      controls: (state) => SizedBox.shrink(),
+      controls: (state) => const SizedBox.shrink(),
       pauseUponEnteringBackgroundMode: true,
       resumeUponEnteringForegroundMode: true,
     );
@@ -84,7 +84,7 @@ class _LoopVideoPlayerState extends State<LoopVideoPlayer> {
           shape: widget.borderRadius != null
               ? RoundedRectangleBorder(borderRadius: widget.borderRadius!)
               : null,
-          child: Center(child: CircularProgressIndicator()),
+          child: const Center(child: CircularProgressIndicator()),
         ),
       );
     }

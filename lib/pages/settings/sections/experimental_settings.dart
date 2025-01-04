@@ -16,9 +16,9 @@ class ExperimentalSettings extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.symmetric(vertical: padding12),
         children: [
-          DragAndDropSwitchTile(),
-          if (Platform.isAndroid) AndroidClipboardSettingListTile(),
-          if (isDesktopPlatform) PreventDuplicateSwitchTile(),
+          const DragAndDropSwitchTile(),
+          if (Platform.isAndroid) const AndroidClipboardSettingListTile(),
+          if (isDesktopPlatform) const PreventDuplicateSwitchTile(),
         ],
       ),
     );

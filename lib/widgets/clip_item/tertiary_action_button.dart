@@ -21,13 +21,13 @@ class TertiaryActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!hovered) return SizedBox.shrink();
+    if (!hovered) return const SizedBox.shrink();
     return SizedBox.square(
       dimension: 36,
       child: IconButton(
         onPressed: () => editClip(context),
         iconSize: 22,
-        icon: Icon(Icons.edit),
+        icon: const Icon(Icons.edit),
       ),
     );
   }

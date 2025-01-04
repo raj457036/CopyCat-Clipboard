@@ -27,7 +27,7 @@ class URLClipPreviewCard extends StatelessWidget {
           spacing: 12,
           children: [
             SizedBox.fromSize(
-              size: Size(280, 240),
+              size: const Size(280, 240),
               child: LinkPreview(url: item.url!, withProgress: true),
             ),
             SelectableText(

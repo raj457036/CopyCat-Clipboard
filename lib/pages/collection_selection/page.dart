@@ -20,7 +20,7 @@ class ClipCollectionSelectionPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(context.locale.selectCollection),
-        actions: [
+        actions: const [
           DisableForLocalUser(
             ifLocal: CreateCollectionButton(
               isFab: false,
@@ -50,8 +50,8 @@ class ClipCollectionSelectionPage extends StatelessWidget {
                   return const NoCollectionAvailable();
                 }
                 return GridView.builder(
-                  padding: EdgeInsets.all(padding10),
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  padding: const EdgeInsets.all(padding10),
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 380,
                     childAspectRatio: 16 / 9,
                     mainAxisExtent: 100,

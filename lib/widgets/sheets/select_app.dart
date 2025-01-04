@@ -56,7 +56,7 @@ class SelectInstalledAppSheet extends StatelessWidget {
                   return ListTile(
                     leading: app.icon != null
                         ? Image.memory(app.icon!, width: 28)
-                        : Icon(Icons.android_rounded),
+                        : const Icon(Icons.android_rounded),
                     title: Text(app.name),
                     subtitle: Text(app.packageName),
                     onTap: () {

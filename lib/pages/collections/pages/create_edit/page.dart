@@ -17,7 +17,7 @@ class ClipCollectionCreateEditPage extends StatelessWidget {
         ? context.locale.createCollection
         : context.locale.editCollection;
     return ConstrainedBox(
-      constraints: BoxConstraints.loose(Size(320, 430)),
+      constraints: BoxConstraints.loose(const Size(320, 430)),
       child: Scaffold(
         appBar: AppBar(
           title: FittedBox(child: Text(title)),

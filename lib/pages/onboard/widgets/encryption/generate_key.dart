@@ -94,7 +94,7 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
   }
 
   Future<void> whyDoINeedIt() async {
-    await InfoDialog(
+    await const InfoDialog(
       title: "🤔 Why Do I Need Encryption?",
       message:
           "Encryption protects your data by converting it into a secure format that can only be accessed with a key. Without encryption, your clips are stored in plain text, making them vulnerable to unauthorized access. Enabling encryption ensures that only you can access your sensitive data, providing an extra layer of security against potential breaches.",
@@ -110,8 +110,8 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Spacer(),
-            Icon(Icons.lock, size: 28),
+            const Spacer(),
+            const Icon(Icons.lock, size: 28),
             height10,
             Text(
               "Setup Clipboard Encryption",
@@ -120,7 +120,7 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
             ),
             height10,
             if (generating || saving)
-              CircularProgressIndicator()
+              const CircularProgressIndicator()
             else if (generatedKeys != null)
               Column(
                 children: [
@@ -133,7 +133,7 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
                     children: [
                       TextButton(
                         onPressed: generateEnc2Key,
-                        child: Text('Re-Generate Key'),
+                        child: const Text('Re-Generate Key'),
                       ),
                       width10,
                       FilledButton(
@@ -143,7 +143,7 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
                           children: [
                             Text(context.locale.continue_),
                             width4,
-                            Icon(Icons.chevron_right),
+                            const Icon(Icons.chevron_right),
                           ],
                         ),
                       ),
@@ -163,13 +163,13 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
                     children: [
                       FilledButton.icon(
                         onPressed: generateEnc2Key,
-                        label: Text('Generate Key'),
-                        icon: Icon(Icons.key),
+                        label: const Text('Generate Key'),
+                        icon: const Icon(Icons.key),
                       ),
                       width10,
                       TextButton(
                         onPressed: doItLater,
-                        child: Text('Do it later'),
+                        child: const Text('Do it later'),
                       ),
                     ],
                   ),
@@ -177,12 +177,12 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
                   TextButton.icon(
                     style: TextButton.styleFrom(),
                     onPressed: whyDoINeedIt,
-                    label: Text("Why It's Important?"),
-                    icon: Icon(Icons.info),
+                    label: const Text("Why It's Important?"),
+                    icon: const Icon(Icons.info),
                   ),
                 ],
               ),
-            Spacer(),
+            const Spacer(),
             LocaleAndLogoutRow(enableLogout: !(generating || saving)),
           ],
         ),

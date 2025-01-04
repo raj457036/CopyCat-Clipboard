@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:copycat_base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:copycat_base/common/failure.dart';
 import 'package:copycat_base/common/logging.dart';
+import 'package:copycat_base/constants/key.dart';
 import 'package:copycat_base/constants/strings/strings.dart';
 import 'package:copycat_base/data/services/clipboard_service.dart';
 import 'package:copycat_base/l10n/l10n.dart';
@@ -15,106 +16,45 @@ import 'package:path/path.dart' as p;
 import 'package:share_handler/share_handler.dart';
 import "package:universal_io/io.dart";
 
-class ShareListener extends StatefulWidget {
-  final Widget child;
-  const ShareListener({
-    super.key,
-    required this.child,
-  });
-
-  static Widget fromPlatform({required Widget child}) {
-    if (isMobilePlatform) {
-      return ShareListener(child: child);
-    }
-    return child;
-  }
-
-  @override
-  State<ShareListener> createState() => _ShareListenerState();
-}
-
-class _ShareListenerState extends State<ShareListener> {
+class ShareListener {
   StreamSubscription? subscription;
 
-  @override
-  void initState() {
-    super.initState();
+  BuildContext get context => rootNavKey.currentContext!;
+  ShareHandlerPlatform get handler => ShareHandlerPlatform.instance;
+
+  init() {
+    if (!isMobilePlatform) return;
+    dispose();
     initPlatformState();
+    subscription = handler.sharedMediaStream.listen((SharedMedia media) async {
+      logger.i("Received shared media: $media");
+
+      try {
+        await putMediaToClipboard(media);
+        closeSnackbar();
+      } catch (e) {
+        if (context.mounted) {
+          showTextSnackbar("❌ ${context.locale.failed}", closePrevious: true);
+        }
+      }
+    }, onError: (error) {
+      if (context.mounted) {
+        showFailureSnackbar(Failure.fromException(error));
+      }
+    });
   }
 
-  @override
   void dispose() {
     subscription?.cancel();
-    super.dispose();
   }
 
   Future<void> initPlatformState() async {
-    final handler = ShareHandlerPlatform.instance;
     final media = await handler.getInitialSharedMedia();
     if (media != null) {
       logger.i("Received initial shared media!");
       await putMediaToClipboard(media);
       await handler.resetInitialSharedMedia();
-      if (Platform.isAndroid && mounted) {
-        showTextSnackbar(
-          // ignore: use_build_context_synchronously
-          "✅ ${context.locale.done}",
-          closePrevious: true,
-          duration: 15,
-          isProgress: true,
-          action: SnackBarAction(
-            // ignore: use_build_context_synchronously
-            label: context.locale.backToApp,
-            onPressed: () {
-              SystemNavigator.pop(animated: true);
-            },
-          ),
-        );
-      }
     }
-
-    subscription = handler.sharedMediaStream.listen((SharedMedia media) async {
-      logger.i("Received shared media: $media");
-
-      try {
-        if (mounted) {
-          showTextSnackbar(
-            context.locale.pastingTheSharedContent,
-            isLoading: true,
-            duration: 10,
-          );
-        }
-        await putMediaToClipboard(media);
-        closeSnackbar();
-        if (Platform.isAndroid) {
-          if (mounted) {
-            showTextSnackbar(
-              "✅ ${context.locale.done}",
-              closePrevious: true,
-              duration: 15,
-              isProgress: true,
-              action: SnackBarAction(
-                // ignore: use_build_context_synchronously
-                label: context.locale.backToApp,
-                onPressed: () {
-                  SystemNavigator.pop(animated: true);
-                },
-              ),
-            );
-          }
-        }
-      } catch (e) {
-        // ignore: use_build_context_synchronously
-        if (mounted) {
-          showTextSnackbar("❌ ${context.locale.failed}", closePrevious: true);
-        }
-      }
-      // closeSnackbar();
-    }, onError: (error) {
-      if (mounted) {
-        showFailureSnackbar(Failure.fromException(error));
-      }
-    });
   }
 
   Future<ClipItem?> getFileClipItem(String path, String category) async {
@@ -153,7 +93,12 @@ class _ShareListenerState extends State<ShareListener> {
 
     if (media.content != null && media.content!.isNotEmpty) {
       final uri = Uri.tryParse(media.content!);
+
       final schema = uri?.scheme;
+
+      /// ignore copycat app link
+      if (schema == "clipboard") return;
+
       final isSupported = supportedUriSchemas.contains(schema);
 
       if (isSupported && uri != null) {
@@ -169,28 +114,50 @@ class _ShareListenerState extends State<ShareListener> {
     }
     if (media.attachments != null) {
       for (final attachment in media.attachments!) {
-        if (attachment == null) continue;
-        final category =
-            attachment.type == SharedAttachmentType.file ? "files" : "medias";
-        final clip = await getFileClipItem(attachment.path, category);
-        if (clip == null) continue;
-        clips.add(clip);
+        await processAttachment(attachment, clips);
       }
     }
-    if (media.imageFilePath != null) {
-      final clip = await getFileClipItem(media.imageFilePath!, "medias");
-      if (clip != null) clips.add(clip);
-    }
+    await processImageFilePath(media.imageFilePath, clips);
 
-    if (mounted) {
+    if (context.mounted) {
+      showSnackbar(context);
       await context
           .read<OfflinePersistenceCubit>()
           .onClips(clips, manualPaste: true);
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return widget.child;
+  Future<void> processAttachment(
+      SharedAttachment? attachment, List<ClipItem> clips) async {
+    if (attachment == null) return;
+    final category =
+        attachment.type == SharedAttachmentType.file ? "files" : "medias";
+    final clip = await getFileClipItem(attachment.path, category);
+    if (clip != null) clips.add(clip);
+  }
+
+  Future<void> processImageFilePath(
+      String? imageFilePath, List<ClipItem> clips) async {
+    if (imageFilePath == null) return;
+    final clip = await getFileClipItem(imageFilePath, "medias");
+    if (clip != null) clips.add(clip);
+  }
+
+  void showSnackbar(BuildContext context) {
+    if (Platform.isAndroid) {
+      showTextSnackbar(
+        "✅ ${context.locale.done}",
+        closePrevious: true,
+        duration: 15,
+        isProgress: true,
+        action: SnackBarAction(
+          // ignore: use_build_context_synchronously
+          label: context.locale.backToApp,
+          onPressed: () {
+            SystemNavigator.pop(animated: true);
+          },
+        ),
+      );
+    }
   }
 }

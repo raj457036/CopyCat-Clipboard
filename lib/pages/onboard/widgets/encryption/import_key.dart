@@ -124,7 +124,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
   }
 
   Future<void> resetEncryption() async {
-    final answer = await ConfirmDialog(
+    final answer = await const ConfirmDialog(
       title: "✋ Permanently Delete Encrypted Data",
       message:
           "This action is irreversible. Are you sure you want to permanently delete all encrypted data from the server?",
@@ -151,7 +151,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
   }
 
   Future<void> whereIsMyKey() async {
-    await InfoDialog(
+    await const InfoDialog(
       title: "🤔 Where is my key?",
       message:
           "Your encryption key is a secure file generated during the encryption setup process. If you’ve misplaced it, check your downloads folder or any backup location where you might have saved it. Without this key, your encrypted data cannot be accessed.\n\n"
@@ -171,7 +171,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
+                const Icon(
                   Icons.lock,
                   size: 28,
                 ),
@@ -183,7 +183,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
                 ),
                 height16,
                 if (importing || saving)
-                  CircularProgressIndicator()
+                  const CircularProgressIndicator()
                 else
                   FadeIn(
                     child: Column(
@@ -198,13 +198,13 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
                           children: [
                             FilledButton.icon(
                               onPressed: importEnc2Key,
-                              label: Text('Import Key'),
-                              icon: Icon(Icons.key),
+                              label: const Text('Import Key'),
+                              icon: const Icon(Icons.key),
                             ),
                             width10,
                             TextButton(
                               onPressed: doItLater,
-                              child: Text('Do It Later'),
+                              child: const Text('Do It Later'),
                             ),
                           ],
                         ),
@@ -212,17 +212,17 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
                         TextButton.icon(
                           style: TextButton.styleFrom(),
                           onPressed: whereIsMyKey,
-                          label: Text("Where Is My Key?"),
-                          icon: Icon(Icons.info),
+                          label: const Text("Where Is My Key?"),
+                          icon: const Icon(Icons.info),
                         ),
-                        SizedBox(width: 50, child: Divider(height: 40)),
+                        const SizedBox(width: 50, child: Divider(height: 40)),
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
                             foregroundColor: colors.error,
                           ),
                           onPressed: resetEncryption,
-                          icon: Icon(Icons.lock_reset_rounded),
-                          label: Text("Reset Encryption"),
+                          icon: const Icon(Icons.lock_reset_rounded),
+                          label: const Text("Reset Encryption"),
                         ),
                       ],
                     ),

@@ -21,7 +21,7 @@ class WelcomeStep extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Spacer(),
+                const Spacer(),
                 Text(
                   "Welcome to",
                   style: textTheme.displaySmall,
@@ -36,7 +36,7 @@ class WelcomeStep extends StatelessWidget {
                 height20,
                 IconButton.filled(
                   onPressed: onContinue,
-                  icon: Icon(Icons.chevron_right),
+                  icon: const Icon(Icons.chevron_right),
                 ),
                 height10,
                 Text(
@@ -44,8 +44,8 @@ class WelcomeStep extends StatelessWidget {
                   style: textTheme.labelLarge,
                   textAlign: TextAlign.center,
                 ),
-                Spacer(),
-                LocaleAndLogoutRow(),
+                const Spacer(),
+                const LocaleAndLogoutRow(),
               ],
             ),
           ),

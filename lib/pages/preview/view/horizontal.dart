@@ -26,7 +26,7 @@ class ClipItemPreviewHorizontalView extends StatelessWidget {
                 children: [
                   Positioned.fill(
                     child: ClipPreviewConfig(
-                      shape: RoundedRectangleBorder(
+                      shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                           topLeft: circleRadius12,
                           bottomLeft: circleRadius12,

@@ -21,8 +21,10 @@ class GoogleDriveSetup extends StatelessWidget {
           .show(context);
 
       if (!confirm) return;
+      await cubit.startSetup(force: true);
+      return;
     }
-    cubit.startSetup();
+    await cubit.startSetup();
   }
 
   @override
@@ -32,21 +34,21 @@ class GoogleDriveSetup extends StatelessWidget {
     return BlocBuilder<DriveSetupCubit, DriveSetupState>(
       builder: (context, state) {
         String text = context.locale.connected;
-        bool noClick = false;
+        bool buttonDisabled = false;
         bool alreadyConnected = false;
         bool hasError = false;
         switch (state) {
           case DriveSetupUnknown(:final waiting):
             text =
                 waiting ? context.locale.authorizing : context.locale.loading;
-            noClick = true;
+            buttonDisabled = true;
           case DriveSetupDone():
             text = context.locale.connected;
-            noClick = false;
+            buttonDisabled = false;
             alreadyConnected = true;
-          case DriveSetupError():
+          case DriveSetupError() || DriveSetupFetching():
             text = context.locale.connectNow;
-            noClick = false;
+            buttonDisabled = false;
             hasError = true;
         }
         return Column(
@@ -55,7 +57,7 @@ class GoogleDriveSetup extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: padding16),
               child: InfoCard(
-                title: hasError ? null : context.locale.tips,
+                title: hasError ? null : "✅",
                 color: hasError ? Colors.deepOrange : colors.primary,
                 description: context.locale.cloudStorageInfo(
                   hasError ? context.locale.cloudStorageInfoDefault : '',
@@ -71,7 +73,7 @@ class GoogleDriveSetup extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                onPressed: noClick
+                onPressed: buttonDisabled
                     ? null
                     : () => connectGDrive(
                           context,

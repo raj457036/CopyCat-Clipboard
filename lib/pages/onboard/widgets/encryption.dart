@@ -28,7 +28,7 @@ class EncryptionStep extends StatelessWidget {
             return state.config.enc2Key;
           },
           builder: (context, secret) {
-            if (user == null) return Center(child: ToLoginPage());
+            if (user == null) return const Center(child: ToLoginPage());
             final keyId = user.enc2KeyId;
             final enc1 = user.enc1;
 

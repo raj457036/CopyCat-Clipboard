@@ -67,7 +67,7 @@ class Menu extends InheritedWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: padding12),
                   child: SizedBox.fromSize(
-                    size: Size(32, 4),
+                    size: const Size(32, 4),
                     child: Material(
                       color: colors.onSurfaceVariant,
                       borderRadius: radius12,

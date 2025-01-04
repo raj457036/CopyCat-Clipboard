@@ -88,7 +88,7 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
   }
 
   Future<void> whyExportKey() async {
-    await InfoDialog(
+    await const InfoDialog(
       title: "🤔 Why Export the Encryption Key?",
       message:
           "Exporting your encryption key is essential for securely accessing your encrypted data on multiple devices. Without the key, your encrypted data will remain inaccessible after sync.\n\n"
@@ -105,7 +105,7 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            const Icon(
               Icons.lock,
               size: 28,
             ),
@@ -116,7 +116,7 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
             ),
             height16,
             if (exporting)
-              CircularProgressIndicator()
+              const CircularProgressIndicator()
             else
               FadeIn(
                 child: Column(
@@ -131,8 +131,8 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
                       children: [
                         FilledButton.icon(
                           onPressed: exportEnc2Key,
-                          label: Text('Export Key'),
-                          icon: Icon(Icons.key),
+                          label: const Text('Export Key'),
+                          icon: const Icon(Icons.key),
                         ),
                         width10,
                         TextButton(
@@ -145,8 +145,8 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
                     TextButton.icon(
                       style: TextButton.styleFrom(),
                       onPressed: whyExportKey,
-                      label: Text("Why Export the Encryption Key?"),
-                      icon: Icon(Icons.info),
+                      label: const Text("Why Export the Encryption Key?"),
+                      icon: const Icon(Icons.info),
                     ),
                   ],
                 ),

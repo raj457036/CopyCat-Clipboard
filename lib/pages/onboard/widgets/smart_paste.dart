@@ -21,7 +21,7 @@ class SmartPasteStep extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.switch_access_shortcut_add_rounded,
                 size: 32,
               ),
@@ -32,13 +32,13 @@ class SmartPasteStep extends StatelessWidget {
                 style: textTheme.headlineMedium,
               ),
               height10,
-              LoopVideoPlayer(
+              const LoopVideoPlayer(
                 width: 620,
                 borderRadius: radius16,
                 url: smartPasteDemoVideo,
               ),
               height10,
-              SizedBox(width: 620, child: SmartPasteSwitch()),
+              const SizedBox(width: 620, child: SmartPasteSwitch()),
               height10,
               FilledButton(
                 onPressed: onContinue,

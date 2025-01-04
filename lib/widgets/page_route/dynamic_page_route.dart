@@ -76,7 +76,7 @@ class DynamicPage<T> extends CustomTransitionPage<T> {
       settings: this,
       builder: (context) => Dialog(
         child: ConstrainedBox(
-          constraints: BoxConstraints.loose(Size(924, 580)),
+          constraints: BoxConstraints.loose(const Size(924, 580)),
           child: ClipRRect(
             borderRadius: radius12,
             child: child,

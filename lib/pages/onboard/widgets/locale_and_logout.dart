@@ -11,7 +11,7 @@ class LocaleAndLogoutRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        LocaleDropdownButton(),
+        const LocaleDropdownButton(),
         LogoutButton(
           enabled: enableLogout,
         ),

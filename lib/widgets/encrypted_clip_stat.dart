@@ -31,7 +31,7 @@ class EncryptedClipsStat extends StatelessWidget {
       future: repository.fetchEncryptedCount(),
       builder:
           (BuildContext context, AsyncSnapshot<Either<Failure, int>> snapshot) {
-        if (!snapshot.hasData) return SizedBox.shrink();
+        if (!snapshot.hasData) return const SizedBox.shrink();
         final result = snapshot.data!;
         return result.fold((l) {
           return Text(l.message);
@@ -44,7 +44,7 @@ class EncryptedClipsStat extends StatelessWidget {
                   textAlign: TextAlign.center,
                 )
               else
-                Text(
+                const Text(
                   "🥳 Congratulations! All your clips have been successfully decrypted locally, so rebuilding the database is not required.",
                   textAlign: TextAlign.center,
                 ),
@@ -54,8 +54,8 @@ class EncryptedClipsStat extends StatelessWidget {
                   style:
                       FilledButton.styleFrom(foregroundColor: colors.primary),
                   onPressed: () => goToDecryptionPage(context),
-                  icon: Icon(Icons.lock_open_rounded),
-                  label: Text(
+                  icon: const Icon(Icons.lock_open_rounded),
+                  label: const Text(
                     "Rebuid Database",
                   ),
                 ),

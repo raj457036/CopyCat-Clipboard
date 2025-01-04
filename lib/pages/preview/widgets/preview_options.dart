@@ -20,7 +20,7 @@ class PreviewOptions extends StatelessWidget {
         (item.type == ClipItemType.file || item.type == ClipItemType.media) &&
             item.inCache;
     return Card(
-      shape: StadiumBorder(),
+      shape: const StadiumBorder(),
       child: Padding(
         padding: const EdgeInsets.all(padding8),
         child: Flex(

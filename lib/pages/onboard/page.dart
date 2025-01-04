@@ -90,7 +90,7 @@ class _OnBoardPageState extends State<OnBoardPage> {
                 ),
                 restorationStatusRepository: sl(),
               ),
-            _ => SizedBox.shrink(),
+            _ => const SizedBox.shrink(),
           },
         ),
       ),

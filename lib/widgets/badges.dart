@@ -13,7 +13,7 @@ class TextBadge extends StatelessWidget {
       message: context.locale.experimentalDescription,
       child: Chip(
         label: Text(message),
-        shape: StadiumBorder(),
+        shape: const StadiumBorder(),
       ),
     );
   }

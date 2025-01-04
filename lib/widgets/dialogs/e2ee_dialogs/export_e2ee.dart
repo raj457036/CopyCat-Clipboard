@@ -68,7 +68,7 @@ class ExportE2eeDialog extends StatelessWidget {
               onPressed: loading ? null : exportEnc2Key,
             ),
             if (bottom != null) ...[
-              Divider(height: 30),
+              const Divider(height: 30),
               bottom!,
             ]
           ],

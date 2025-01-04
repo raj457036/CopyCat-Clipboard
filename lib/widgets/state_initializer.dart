@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:animate_do/animate_do.dart';
+import 'package:clipboard/utils/applink_listener.dart';
+import 'package:clipboard/utils/share_listener.dart';
 import 'package:copycat_base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/bloc/window_action_cubit/window_action_cubit.dart';
@@ -24,6 +27,8 @@ class StateInitializer extends StatefulWidget {
 
 class _StateInitializerState extends State<StateInitializer>
     with WidgetsBindingObserver {
+  final appLinkListener = ApplinkListener();
+  final shareListener = ShareListener();
   ui.FlutterView? _view;
   bool _isInBackground = false;
   bool _pinned = false;
@@ -48,7 +53,8 @@ class _StateInitializerState extends State<StateInitializer>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-
+    appLinkListener.init();
+    shareListener.init();
     setupWindow();
   }
 
@@ -80,6 +86,8 @@ class _StateInitializerState extends State<StateInitializer>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    appLinkListener.dispose();
+    shareListener.dispose();
     _view = null;
     super.dispose();
   }
@@ -112,7 +120,7 @@ class _StateInitializerState extends State<StateInitializer>
         child: widget.child,
       );
     } else {
-      child = SizedBox.shrink();
+      child = const SizedBox.shrink();
     }
 
     return BlocListener<AppConfigCubit, AppConfigState>(

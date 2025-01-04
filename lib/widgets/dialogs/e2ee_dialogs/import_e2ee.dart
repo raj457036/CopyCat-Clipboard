@@ -74,7 +74,7 @@ class ImportE2eeDialog extends StatelessWidget {
                   : Text(context.locale.importKey),
             ),
             if (bottom != null) ...[
-              Divider(height: 30),
+              const Divider(height: 30),
               bottom!,
             ]
           ],

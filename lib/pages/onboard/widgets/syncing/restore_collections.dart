@@ -85,7 +85,7 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.collections_bookmark_rounded,
               size: 32,
             ),
@@ -97,15 +97,15 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
             ),
             height8,
             if (fetchingCount)
-              CircularProgressIndicator()
+              const CircularProgressIndicator()
             else if (totalCount < 0)
               Column(
                 children: [
-                  Text("Failed to find any collections backup.",
+                  const Text("Failed to find any collections backup.",
                       textAlign: TextAlign.center),
                   height10,
                   ElevatedButton(
-                      onPressed: startSyncing, child: Text('Try Again')),
+                      onPressed: startSyncing, child: const Text('Try Again')),
                 ],
               )
             else
@@ -118,7 +118,7 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                     style: textTheme.titleMedium,
                   ),
                   height12,
-                  SizedBox(width: 100, height: 20, child: Divider()),
+                  const SizedBox(width: 100, height: 20, child: Divider()),
                   height8,
                   BlocConsumer<CollectionSyncManagerCubit,
                       CollectionSyncManagerState>(
@@ -126,13 +126,14 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                     builder: (context, state) {
                       switch (state) {
                         case CollectionSyncDisabled():
-                          return Text(
+                          return const Text(
                             "Syncing is currently disabled. Please enable it to continue.",
                             textAlign: TextAlign.center,
                           );
                         case CollectionSyncUnknown() ||
                               CollectionSyncingUnknown():
-                          return Text("Preparing to sync. Please wait...");
+                          return const Text(
+                              "Preparing to sync. Please wait...");
                         case CollectionSyncComplete(:final syncCount):
                           return Column(
                             children: [
@@ -162,7 +163,7 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                               height10,
                               ElevatedButton(
                                 onPressed: startSyncing,
-                                child: Text('Try Again'),
+                                child: const Text('Try Again'),
                               ),
                             ],
                           );
@@ -194,7 +195,7 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                           );
                         case _:
                           // no-op
-                          return SizedBox.shrink();
+                          return const SizedBox.shrink();
                       }
                     },
                   ),

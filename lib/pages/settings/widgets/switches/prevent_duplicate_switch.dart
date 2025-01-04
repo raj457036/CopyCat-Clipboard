@@ -21,8 +21,8 @@ class PreventDuplicateSwitchTile extends StatelessWidget {
         return SwitchListTile(
           value: enabled,
           onChanged: cubit.togglePreventDuplication,
-          title: Text("Avoid Immediate Duplicates"),
-          subtitle: Text("Avoid copying the same content twice in a row"),
+          title: const Text("Avoid Immediate Duplicates"),
+          subtitle: const Text("Avoid copying the same content twice in a row"),
         );
       },
     );

@@ -27,27 +27,27 @@ class RealTimeConnectionStatus extends StatelessWidget {
         return child;
       }
 
-      Icon indicator = Icon(Icons.all_inclusive);
+      Icon indicator = const Icon(Icons.all_inclusive);
       switch (rtClip) {
         case RealtimeClipSyncUnknown():
-          indicator = Icon(
+          indicator = const Icon(
             Icons.all_inclusive,
             size: 16,
           );
         case RealtimeClipSyncConnecting():
-          indicator = Icon(
+          indicator = const Icon(
             Icons.all_inclusive,
             color: Colors.yellow,
             size: 16,
           );
         case RealtimeClipSyncConnected():
-          indicator = Icon(
+          indicator = const Icon(
             Icons.all_inclusive,
             color: Colors.lightGreen,
             size: 16,
           );
         case RealtimeClipSyncDisconnected():
-          indicator = Icon(
+          indicator = const Icon(
             Icons.all_inclusive,
             color: Colors.red,
             size: 16,
@@ -56,21 +56,21 @@ class RealTimeConnectionStatus extends StatelessWidget {
 
       switch (rtCollection) {
         case RealtimeCollectionSyncUnknown():
-          indicator = Icon(Icons.all_inclusive);
+          indicator = const Icon(Icons.all_inclusive);
         case RealtimeCollectionSyncConnecting():
-          indicator = Icon(
+          indicator = const Icon(
             Icons.all_inclusive,
             color: Colors.amber,
             size: 16,
           );
         case RealtimeCollectionSyncConnected():
-          indicator = Icon(
+          indicator = const Icon(
             Icons.all_inclusive,
             color: Colors.green,
             size: 16,
           );
         case RealtimeCollectionSyncDisconnected():
-          indicator = Icon(
+          indicator = const Icon(
             Icons.all_inclusive,
             color: Colors.red,
             size: 16,

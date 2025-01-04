@@ -35,13 +35,13 @@ class KeyboardShortcutStep extends StatelessWidget {
                 style: textTheme.headlineMedium,
               ),
               height10,
-              LoopVideoPlayer(
+              const LoopVideoPlayer(
                 width: 620,
                 borderRadius: radius16,
                 url: keyboardShortcutDemoVideo,
               ),
               height10,
-              SizedBox(width: 620, child: ClipboardHotKeySwitch()),
+              const SizedBox(width: 620, child: ClipboardHotKeySwitch()),
               height10,
               FilledButton(
                 onPressed: onContinue,

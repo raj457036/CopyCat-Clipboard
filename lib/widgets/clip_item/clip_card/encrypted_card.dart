@@ -13,11 +13,11 @@ class EncryptedClipItem extends StatelessWidget {
       spacing: 4,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.security),
-        Text("Encrypted"),
+        const Icon(Icons.security),
+        const Text("Encrypted"),
         IconButton.filledTonal(
           onPressed: () => deleteClipboardItem(context, [item]),
-          icon: Icon(Icons.delete),
+          icon: const Icon(Icons.delete),
         ),
       ],
     ));

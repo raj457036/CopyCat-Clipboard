@@ -163,26 +163,26 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
 
   @override
   Widget build(BuildContext context) {
-    Widget child = Center(
+    Widget child = const Center(
       child: CircularProgressIndicator(),
     );
 
     if (!loading) {
-      final checked = Icon(Icons.check).msp;
-      final unchecked = Icon(Icons.close).msp;
+      final checked = const Icon(Icons.check).msp;
+      final unchecked = const Icon(Icons.close).msp;
 
       child = ListView(
         children: [
-          TipTile(
+          const TipTile(
             title: "Clipboard Monitoring",
             tip:
                 "Enable permissions to ensure CopyCat works seamlessly with your clipboard.",
           ),
           height5,
-          SettingHeader(name: "Essential Permissions"),
+          const SettingHeader(name: "Essential Permissions"),
           SwitchListTile(
-            title: Text("Notification Access"),
-            subtitle: Text(
+            title: const Text("Notification Access"),
+            subtitle: const Text(
               "Allows CopyCat to show an active notification for the running service.",
             ),
             value: notification,
@@ -191,8 +191,8 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
             onChanged: writingConfig ? null : (_) => openNotificationSetting(),
           ),
           SwitchListTile(
-            title: Text("Overlay Permission"),
-            subtitle: Text(
+            title: const Text("Overlay Permission"),
+            subtitle: const Text(
               "Required to detect if something is copied.",
             ),
             value: overlay,
@@ -203,8 +203,8 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                 : (_) => openOverlaySetting(),
           ),
           SwitchListTile(
-            title: Text("Unrestricted Battery Optimization"),
-            subtitle: Text(
+            title: const Text("Unrestricted Battery Optimization"),
+            subtitle: const Text(
               "To prevent system from closing the CopyCat service",
             ),
             thumbIcon: batteryOptimization ? checked : unchecked,
@@ -215,8 +215,8 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                 : (_) => openBatteryOptimizationSetting(),
           ),
           SwitchListTile(
-            title: Text("CopyCat Accessibility Service"),
-            subtitle: Text(
+            title: const Text("CopyCat Accessibility Service"),
+            subtitle: const Text(
               "Start the CopyCat background service",
             ),
             thumbIcon: accessibility ? checked : unchecked,

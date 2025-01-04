@@ -107,7 +107,7 @@ class SyncStatusFAB extends StatelessWidget {
                         infinite: true,
                         spins: -1,
                         curve: Curves.linear,
-                        child: Icon(Icons.sync_rounded),
+                        child: const Icon(Icons.sync_rounded),
                       )
                     : Icon(icon),
               ),

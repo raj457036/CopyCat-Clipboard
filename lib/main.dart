@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/routes/routes.dart';
 import 'package:clipboard/utils/utility.dart';
-import 'package:clipboard/widgets/app_link_listener.dart';
 import 'package:clipboard/widgets/event_bridge.dart';
 import 'package:clipboard/widgets/state_initializer.dart';
 import 'package:clipboard/widgets/system_shortcut_listeners.dart';
@@ -85,11 +84,6 @@ Future<void> initializeServices() async {
     unawaited(MobileAds.instance.initialize());
   }
 
-  LicenseRegistry.addLicense(() async* {
-    final license = await rootBundle.loadString('google_fonts/OFL.txt');
-    yield LicenseEntryWithLineBreaks(['google_fonts'], license);
-  });
-
   await configureDependencies();
   timeago.setLocaleMessages('fr', timeago.FrMessages());
   timeago.setLocaleMessages('de', timeago.DeMessages());
@@ -100,9 +94,7 @@ Future<void> initializeDesktopServices() async {
   await windowManager.ensureInitialized();
   await updateWindowsRegistry();
 
-  if (kDebugMode) {
-    await hotKeyManager.unregisterAll();
-  }
+  if (kDebugMode) await hotKeyManager.unregisterAll();
 
   final packageInfo = await PackageInfo.fromPlatform();
   launchAtStartup.setup(
@@ -114,25 +106,19 @@ Future<void> initializeDesktopServices() async {
     // size:  minimumWindowSize,
     // minimumSize: minimumWindowSize,
     // make sure to change it in main.cpp ( windows ) &
-    // my_application.cc ( linux ) and other places too if changing the title.
+    // ? my_application.cc ( linux ) and other places too if changing the title.
     title: "CopyCat Clipboard",
     skipTaskbar: true,
     windowButtonVisibility: true,
     backgroundColor: Colors.transparent,
     titleBarStyle: TitleBarStyle.hidden,
   );
-  unawaited(windowManager.waitUntilReadyToShow(windowOptions).then((_) async {
-    // if (Platform.isMacOS) {
-    //   await windowManager.setVisibleOnAllWorkspaces(
-    //     true,
-    //     visibleOnFullScreen: true,
-    //   );
-    // }
-    windowManager.hide();
-  }));
+  unawaited(
+    windowManager
+        .waitUntilReadyToShow(windowOptions)
+        .then((_) async => windowManager.hide()),
+  );
 }
-
-final router_ = router();
 
 class AppContent extends StatelessWidget {
   const AppContent({super.key});
@@ -142,13 +128,18 @@ class AppContent extends StatelessWidget {
         SchedulerBinding.instance.platformDispatcher.platformBrightness ==
             Brightness.light;
     return mode == ThemeMode.light || (mode == ThemeMode.system && lightTheme)
-        ? SystemUiOverlayStyle.light.copyWith(
+        ? const SystemUiOverlayStyle(
             systemNavigationBarColor: Colors.transparent,
             systemNavigationBarContrastEnforced: false,
             systemNavigationBarIconBrightness: Brightness.dark,
+            statusBarIconBrightness: Brightness.light,
+            statusBarBrightness: Brightness.dark,
           )
-        : SystemUiOverlayStyle.dark.copyWith(
+        : const SystemUiOverlayStyle(
             systemNavigationBarColor: Colors.transparent,
+            systemNavigationBarIconBrightness: Brightness.light,
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: Brightness.light,
           );
   }
 
@@ -198,11 +189,8 @@ class AppContent extends StatelessWidget {
             return AnnotatedRegion<SystemUiOverlayStyle>(
               value: getUiOverlay(theme),
               child: MaterialApp.router(
+                routerConfig: routeConfig,
                 scaffoldMessengerKey: scaffoldMessengerKey,
-                routeInformationParser: router_.routeInformationParser,
-                routeInformationProvider: router_.routeInformationProvider,
-                routerDelegate: router_.routerDelegate,
-                backButtonDispatcher: router_.backButtonDispatcher,
                 color: Colors.transparent,
                 themeMode: theme,
                 theme: ThemeData(
@@ -248,9 +236,7 @@ class MainApp extends StatelessWidget {
       child: WindowFocusManager.forPlatform(
         child: TrayManager.forPlatform(
           child: const SystemShortcutListener(
-            child: AppLinkListener(
-              child: AppContent(),
-            ),
+            child: AppContent(),
           ),
         ),
       ),

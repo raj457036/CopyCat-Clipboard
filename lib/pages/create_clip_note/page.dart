@@ -59,23 +59,25 @@ class _CreateClipNotePageState extends State<CreateClipNotePage> {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            widget.item == null ? Text('New Clip') : Text("Edit Clip"),
+            widget.item == null
+                ? const Text('New Clip')
+                : const Text("Edit Clip"),
             width10,
-            TextBadge(message: "Experimental"),
+            const TextBadge(message: "Experimental"),
           ],
         ),
         centerTitle: false,
-        leading: CloseButton(),
+        leading: const CloseButton(),
         backgroundColor: colors.secondaryContainer,
         actions: [
           IconButton(
-            icon: Icon(Icons.check),
+            icon: const Icon(Icons.check),
             onPressed: saveAsNew,
             tooltip: "Save as new",
           ),
           if (widget.item != null)
             IconButton(
-              icon: Icon(Icons.save_as_rounded),
+              icon: const Icon(Icons.save_as_rounded),
               onPressed: save,
               tooltip: context.locale.save,
             ),
@@ -91,7 +93,7 @@ class _CreateClipNotePageState extends State<CreateClipNotePage> {
           controller: controller,
           autofocus: true,
           cursorColor: colors.primary,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             border: InputBorder.none,
             hintText: 'Enter your clip note here',
           ),

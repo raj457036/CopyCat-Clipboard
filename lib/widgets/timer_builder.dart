@@ -24,7 +24,7 @@ class _TimerBuilderState extends State<TimerBuilder> {
   @override
   void initState() {
     super.initState();
-    timer = Timer.periodic(Duration(seconds: 1), onTick);
+    timer = Timer.periodic(const Duration(seconds: 1), onTick);
   }
 
   void onTick(Timer timer) {

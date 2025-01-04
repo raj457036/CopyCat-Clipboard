@@ -116,7 +116,7 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
         TextButton.icon(onPressed: cancel, label: Text(context.locale.cancel));
     return Scaffold(
       body: ScaffoldBody(
-        margin: EdgeInsets.all(padding16),
+        margin: const EdgeInsets.all(padding16),
         borderRadius: radius16,
         child: Padding(
           padding: const EdgeInsets.all(padding16),
@@ -124,7 +124,7 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
+                const Icon(
                   Icons.lock_open_rounded,
                   size: 28,
                 ),
@@ -137,7 +137,7 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
                 Column(
                   children: [
                     if (loading) ...[
-                      CircularProgressIndicator(),
+                      const CircularProgressIndicator(),
                       cancelButton
                     ] else if (decryptedCount == totalEncrypted)
                       Column(
@@ -157,13 +157,13 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
                     else if (totalEncrypted < 0)
                       Column(
                         children: [
-                          Text("Something went wrong!"),
+                          const Text("Something went wrong!"),
                           height10,
                           OverflowBar(
                             children: [
                               ElevatedButton(
                                 onPressed: start,
-                                child: Text('Try Again'),
+                                child: const Text('Try Again'),
                               ),
                               cancelButton,
                             ],

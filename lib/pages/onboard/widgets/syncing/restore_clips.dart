@@ -118,7 +118,7 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.restore_rounded,
               size: 32,
             ),
@@ -129,14 +129,14 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
             ),
             height8,
             if (fetchingCount)
-              CircularProgressIndicator()
+              const CircularProgressIndicator()
             else if (totalCount < 0)
               Column(
                 children: [
-                  Text("Failed to find any clips backup."),
+                  const Text("Failed to find any clips backup."),
                   height10,
                   ElevatedButton(
-                      onPressed: startSyncing, child: Text('Try Again')),
+                      onPressed: startSyncing, child: const Text('Try Again')),
                 ],
               )
             else
@@ -147,7 +147,7 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                     textAlign: TextAlign.center,
                   ),
                   height12,
-                  SizedBox(width: 100, height: 20, child: Divider()),
+                  const SizedBox(width: 100, height: 20, child: Divider()),
                   height8,
                   BlocConsumer<ClipSyncManagerCubit, ClipSyncManagerState>(
                     listener: (context, state) {
@@ -175,12 +175,13 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                     builder: (context, state) {
                       switch (state) {
                         case ClipSyncDisabled():
-                          return Text(
+                          return const Text(
                             "Syncing is currently disabled. Please enable it to continue.",
                             textAlign: TextAlign.center,
                           );
                         case ClipSyncUnknown() || ClipSyncingUnknown():
-                          return Text("Preparing to sync. Please wait...");
+                          return const Text(
+                              "Preparing to sync. Please wait...");
                         case ClipSyncComplete(:final syncCount):
                           return Column(
                             children: [
@@ -199,8 +200,8 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                               height10,
                               FilledButton.tonalIcon(
                                 onPressed: widget.onContinue,
-                                label: Text("Let's Go Home"),
-                                icon: Icon(Icons.check_rounded),
+                                label: const Text("Let's Go Home"),
+                                icon: const Icon(Icons.check_rounded),
                               ),
                             ],
                           );
@@ -211,7 +212,7 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                               height10,
                               ElevatedButton(
                                 onPressed: startSyncing,
-                                child: Text('Try Again'),
+                                child: const Text('Try Again'),
                               ),
                             ],
                           );

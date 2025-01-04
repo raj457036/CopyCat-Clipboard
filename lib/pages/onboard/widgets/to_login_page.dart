@@ -13,7 +13,7 @@ class ToLoginPage extends StatelessWidget {
         context.goNamed(RouteConstants.login);
       },
       label: Text(context.locale.signIn),
-      icon: Icon(Icons.login),
+      icon: const Icon(Icons.login),
     );
   }
 }
