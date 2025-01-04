@@ -18,17 +18,17 @@ class InfoCard extends StatelessWidget {
     final textTheme = context.textTheme;
     return Card.filled(
       color: color?.lighter(50, isDark),
-      margin: const EdgeInsets.symmetric(vertical: padding10),
+      margin: EdgeInsets.zero,
       child: Padding(
-        padding: const EdgeInsets.all(padding12),
+        padding: const EdgeInsets.all(padding10),
         child: Column(
+          spacing: 6,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title ?? context.locale.attentionNeeded,
               style: textTheme.titleMedium,
             ),
-            height12,
             Text(description),
           ],
         ),

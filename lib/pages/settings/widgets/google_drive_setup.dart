@@ -1,4 +1,3 @@
-import 'package:clipboard/pages/settings/widgets/info_card.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:copycat_base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:copycat_base/constants/strings/asset_constants.dart';
@@ -38,6 +37,9 @@ class GoogleDriveSetup extends StatelessWidget {
         bool alreadyConnected = false;
         bool hasError = false;
         switch (state) {
+          case DriveSetupFetching():
+            text = context.locale.loading;
+            buttonDisabled = true;
           case DriveSetupUnknown(:final waiting):
             text =
                 waiting ? context.locale.authorizing : context.locale.loading;
@@ -51,42 +53,82 @@ class GoogleDriveSetup extends StatelessWidget {
             buttonDisabled = false;
             hasError = true;
         }
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: padding16),
-              child: InfoCard(
-                title: hasError ? null : "✅",
-                color: hasError ? Colors.deepOrange : colors.primary,
-                description: context.locale.cloudStorageInfo(
-                  hasError ? context.locale.cloudStorageInfoDefault : '',
+        return Card(
+          elevation: 0.5,
+          margin: const EdgeInsets.symmetric(horizontal: padding16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: padding16,
+                  right: padding16,
+                  top: padding16,
                 ),
-              ),
-            ),
-            ListTile(
-              title: const Text("Google Drive"),
-              trailing: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(185, 40),
-                  textStyle: textTheme.labelLarge?.copyWith(
+                child: Text(
+                  "Cloud Storage",
+                  style: textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                onPressed: buttonDisabled
-                    ? null
-                    : () => connectGDrive(
-                          context,
-                          alreadyConnected: alreadyConnected,
-                        ),
-                icon: const Image(
-                  image: AssetImage(AssetConstants.googleDriveLogo),
-                  height: 20,
-                ),
-                label: Text(text),
               ),
-            )
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: padding16,
+                  vertical: padding8,
+                ),
+                child: Text(
+                  context.locale.cloudStorageInfo(
+                    hasError ? context.locale.cloudStorageInfoDefault : '',
+                  ),
+                ),
+              ),
+              ListTile(
+                tileColor: colors.secondaryContainer,
+                minLeadingWidth: 20,
+                title: Text(
+                  "Google Drive",
+                  style: textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: const Text(
+                  "Current Default",
+                ),
+                trailing: FilledButton.icon(
+                  style: FilledButton.styleFrom(
+                    fixedSize: const Size(185, 40),
+                    textStyle: textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: buttonDisabled
+                      ? null
+                      : () => connectGDrive(
+                            context,
+                            alreadyConnected: alreadyConnected,
+                          ),
+                  label: Text(text),
+                  icon: const Image(
+                    image: AssetImage(AssetConstants.googleDriveLogo),
+                    height: 22,
+                  ),
+                ),
+              ),
+              // ListTile(
+              //   contentPadding: const EdgeInsets.symmetric(
+              //     horizontal: padding16,
+              //   ),
+              //   title: const Text('Setup Other Cloud Drive'),
+              //   subtitle: const Text(
+              //       "Setup other cloud drives like Dropbox, OneDrive, etc."),
+              //   trailing: const Icon(Icons.chevron_right),
+              //   onTap: () => {},
+              // ),
+              height10,
+            ],
+          ),
         );
       },
     );
