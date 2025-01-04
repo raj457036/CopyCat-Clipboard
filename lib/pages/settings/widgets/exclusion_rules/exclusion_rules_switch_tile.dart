@@ -49,7 +49,7 @@ class ExclusionRulesSwitchTile extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(context.locale.exclusionRules),
-                    if (Platform.isAndroid) const Icon(Icons.science),
+                    if (Platform.isAndroid) const Icon(Icons.science_rounded),
                   ],
                 ),
                 subtitle: isSupported

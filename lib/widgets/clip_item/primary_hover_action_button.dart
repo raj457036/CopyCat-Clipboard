@@ -3,11 +3,11 @@ import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class TertiaryActionButton extends StatelessWidget {
+class PrimaryHoverAction extends StatelessWidget {
   final ClipboardItem item;
   final bool hovered;
 
-  const TertiaryActionButton({
+  const PrimaryHoverAction({
     super.key,
     required this.item,
     required this.hovered,

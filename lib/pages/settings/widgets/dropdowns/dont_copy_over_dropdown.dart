@@ -40,92 +40,96 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
             ),
           ),
           trailing: DropdownButtonHideUnderline(
-            child: DropdownButton<int>(
-              value: state,
-              padding: const EdgeInsets.symmetric(horizontal: padding16),
-              borderRadius: radius26,
-              items: [
-                DropdownMenuItem(
-                  value: $5MB,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox.square(
-                        dimension: 24,
-                        child: Icon(
-                          Icons.circle,
-                          size: 5,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 140),
+              child: DropdownButton<int>(
+                value: state,
+                isExpanded: true,
+                padding: const EdgeInsets.symmetric(horizontal: padding16),
+                borderRadius: radius26,
+                items: [
+                  DropdownMenuItem(
+                    value: $5MB,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox.square(
+                          dimension: 24,
+                          child: Icon(
+                            Icons.circle,
+                            size: 5,
+                          ),
                         ),
-                      ),
-                      width12,
-                      Text(context.locale.$5MB),
-                    ],
+                        width12,
+                        Text(context.locale.$5MB),
+                      ],
+                    ),
                   ),
-                ),
-                DropdownMenuItem(
-                  value: $10MB,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox.square(
-                        dimension: 24,
-                        child: Icon(
-                          Icons.circle,
-                          size: 10,
+                  DropdownMenuItem(
+                    value: $10MB,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox.square(
+                          dimension: 24,
+                          child: Icon(
+                            Icons.circle,
+                            size: 10,
+                          ),
                         ),
-                      ),
-                      width12,
-                      Text(context.locale.$10MB),
-                    ],
+                        width12,
+                        Text(context.locale.$10MB),
+                      ],
+                    ),
                   ),
-                ),
-                DropdownMenuItem(
-                  value: $20MB,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox.square(
-                        dimension: 24,
-                        child: Icon(
-                          Icons.circle,
-                          size: 15,
+                  DropdownMenuItem(
+                    value: $20MB,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox.square(
+                          dimension: 24,
+                          child: Icon(
+                            Icons.circle,
+                            size: 15,
+                          ),
                         ),
-                      ),
-                      width12,
-                      Text(context.locale.$20MB),
-                    ],
+                        width12,
+                        Text(context.locale.$20MB),
+                      ],
+                    ),
                   ),
-                ),
-                DropdownMenuItem(
-                  value: $50MB,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const SizedBox.square(
-                        dimension: 24,
-                        child: Icon(
-                          Icons.circle,
-                          size: 20,
+                  DropdownMenuItem(
+                    value: $50MB,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox.square(
+                          dimension: 24,
+                          child: Icon(
+                            Icons.circle,
+                            size: 20,
+                          ),
                         ),
-                      ),
-                      width12,
-                      Text(context.locale.$50MB),
-                    ],
+                        width12,
+                        Text(context.locale.$50MB),
+                      ],
+                    ),
                   ),
-                ),
-                DropdownMenuItem(
-                  value: $100MB,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.circle, size: 24),
-                      width12,
-                      Text(context.locale.$100MB),
-                    ],
+                  DropdownMenuItem(
+                    value: $100MB,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.circle, size: 24),
+                        width12,
+                        Text(context.locale.$100MB),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-              onChanged: cubit.changeDontCopyOver,
+                ],
+                onChanged: cubit.changeDontCopyOver,
+              ),
             ),
           ),
         );

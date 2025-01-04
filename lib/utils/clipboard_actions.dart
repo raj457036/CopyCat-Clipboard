@@ -89,11 +89,15 @@ Future<void> launchUrl(ClipboardItem item) async {
   }
 }
 
-Future<void> editTextContent(BuildContext context, ClipboardItem item) async {
+Future<ClipboardItem?> editTextContent(
+    BuildContext context, ClipboardItem item) async {
   final ctx = context.mounted ? context : rootNavKey.currentContext!;
-  ctx.pushReplacementNamed(RouteConstants.createClipNote, queryParameters: {
-    "id": item.id.toString(),
-  });
+  return await ctx.pushNamed<ClipboardItem?>(
+    RouteConstants.createClipNote,
+    queryParameters: {
+      "id": item.id.toString(),
+    },
+  );
 }
 
 Future<void> launchPhone(ClipboardItem item, {bool message = false}) async {

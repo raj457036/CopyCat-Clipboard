@@ -61,10 +61,6 @@ class HideWindowIntent extends Intent {
   }
 }
 
-class EditClipboardItemIntent extends Intent {
-  const EditClipboardItemIntent();
-}
-
 final homeKeySet = SingleActivator(
   LogicalKeyboardKey.keyD,
   meta: Platform.isMacOS,
@@ -146,7 +142,6 @@ class KeyboardShortcutProvider extends StatelessWidget {
                 collectionKeySet: const CollectionPageIntent(),
               if (view == AppView.windowed)
                 settingsKeySet: const SettingsPageIntent(),
-              // editClipItemKeySet: const EditClipboardItemIntent(),
               if (isDesktopPlatform)
                 closeWindowKeySet: const HideWindowIntent(),
               if (activePageIndex == 0) pasteKeySet: const PasteIntent(),

@@ -2,8 +2,8 @@
 
 import 'package:clipboard/widgets/clip_item/leading_option.dart';
 import 'package:clipboard/widgets/clip_item/primary_clip_action_button.dart';
+import 'package:clipboard/widgets/clip_item/primary_hover_action_button.dart';
 import 'package:clipboard/widgets/clip_item/secondary_clip_action_button.dart';
-import 'package:clipboard/widgets/clip_item/tertiary_action_button.dart';
 import 'package:copycat_base/db/app_config/appconfig.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
 import 'package:copycat_base/enums/clip_type.dart';
@@ -79,15 +79,9 @@ class ClipCardOptionsHeader extends StatelessWidget {
               ),
             ),
           ),
+          if (!selectionActive) SecondaryClipActionButton(item: item),
           if (!selectionActive)
-            SecondaryClipActionButton(
-              item: item,
-            ),
-          if (!selectionActive)
-            TertiaryActionButton(
-              item: item,
-              hovered: hovered,
-            ),
+            PrimaryHoverAction(item: item, hovered: hovered),
           if (!selectionActive)
             PrimaryClipActionButton(
               item: item,

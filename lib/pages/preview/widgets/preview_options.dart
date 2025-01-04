@@ -1,3 +1,4 @@
+import 'package:clipboard/pages/preview/page.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
@@ -13,6 +14,14 @@ class PreviewOptions extends StatelessWidget {
     required this.item,
     required this.direction,
   });
+
+  Future<void> updateItem(BuildContext context) async {
+    final state = ClipboardItemPreviewPage.of(context);
+    final updatedItem = await editTextContent(context, item);
+    if (updatedItem != null) {
+      state.updateItem(updatedItem);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +72,7 @@ class PreviewOptions extends StatelessWidget {
               IconButton.outlined(
                 icon: const Icon(Icons.edit_document),
                 tooltip: context.locale.edit,
-                onPressed: () => editTextContent(context, item),
+                onPressed: () => updateItem(context),
               ),
             if (canOpen)
               IconButton.outlined(

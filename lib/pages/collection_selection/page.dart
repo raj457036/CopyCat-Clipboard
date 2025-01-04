@@ -5,6 +5,7 @@ import 'package:clipboard/widgets/no_collection.dart';
 import 'package:copycat_base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/l10n/l10n.dart';
+import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -55,6 +56,8 @@ class ClipCollectionSelectionPage extends StatelessWidget {
                     maxCrossAxisExtent: 380,
                     childAspectRatio: 16 / 9,
                     mainAxisExtent: 100,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
                   ),
                   itemCount: collections.length,
                   itemBuilder: (context, index) {
@@ -62,8 +65,8 @@ class ClipCollectionSelectionPage extends StatelessWidget {
 
                     return ClipCollectionGridItem(
                       collection: collection,
-                      autoFocus:
-                          collection.id == selectedCollectionId || index == 0,
+                      autoFocus: collection.id == selectedCollectionId ||
+                          (index == 0 && isDesktopPlatform),
                       selectionOnly: true,
                       onTap: () => Navigator.pop(context, collection),
                     );

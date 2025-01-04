@@ -66,7 +66,8 @@ class ClipCollectionGridItem extends StatelessWidget {
       borderRadius: radius12,
     );
     final collectionTile = StatefulBuilder(builder: (context, setState) {
-      return Card.outlined(
+      return Card.filled(
+        margin: EdgeInsets.zero,
         shape: selected
             ? selectedShape
             : const RoundedRectangleBorder(borderRadius: radius12),
@@ -143,7 +144,6 @@ class ClipCollectionGridItem extends StatelessWidget {
           text: context.locale.edit,
           onPressed: () => edit(context),
         ),
-        const MenuItem(type: MenuItemType.divider),
         MenuItem(
           icon: Icons.delete,
           text: context.locale.delete,

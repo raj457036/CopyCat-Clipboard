@@ -3,7 +3,6 @@ import 'package:copycat_base/constants/strings/route_constants.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_pro/widgets/subscription/subscription_provider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,8 +21,7 @@ class ExcludeCustomRules extends StatelessWidget {
   Widget build(BuildContext context) {
     return SubscriptionBuilder(builder: (context, subscription) {
       final hasAccess =
-          (subscription != null && subscription.customExclusionRules) ||
-              kDebugMode;
+          (subscription != null && subscription.customExclusionRules);
       return ListTile(
         title: Row(
           mainAxisSize: MainAxisSize.min,
@@ -42,7 +40,7 @@ class ExcludeCustomRules extends StatelessWidget {
         subtitle: Text(
           context.locale.customRulesDesc,
         ),
-        enabled: enabled,
+        enabled: enabled && hasAccess,
         trailing: const Icon(Icons.keyboard_arrow_right_rounded),
         onTap: hasAccess && enabled ? () => navigateTo(context) : null,
       );

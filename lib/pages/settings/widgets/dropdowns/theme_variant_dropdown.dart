@@ -41,49 +41,53 @@ class ThemeVariantDropdown extends StatelessWidget {
           },
           builder: (context, variant) {
             return DropdownButtonHideUnderline(
-              child: DropdownButton<DynamicSchemeVariant>(
-                value: variant,
-                padding: const EdgeInsets.symmetric(horizontal: padding16),
-                borderRadius: radius26,
-                items: [
-                  DropdownMenuItem(
-                    value: DynamicSchemeVariant.tonalSpot,
-                    child: Text(context.locale.tonalSpot),
-                  ),
-                  DropdownMenuItem(
-                    value: DynamicSchemeVariant.content,
-                    child: Text(context.locale.content),
-                  ),
-                  DropdownMenuItem(
-                    value: DynamicSchemeVariant.expressive,
-                    child: Text(context.locale.expressive),
-                  ),
-                  DropdownMenuItem(
-                    value: DynamicSchemeVariant.fidelity,
-                    child: Text(context.locale.fidility),
-                  ),
-                  DropdownMenuItem(
-                    value: DynamicSchemeVariant.fruitSalad,
-                    child: Text(context.locale.fruitSalad),
-                  ),
-                  DropdownMenuItem(
-                    value: DynamicSchemeVariant.monochrome,
-                    child: Text(context.locale.monochrome),
-                  ),
-                  DropdownMenuItem(
-                    value: DynamicSchemeVariant.neutral,
-                    child: Text(context.locale.neutral),
-                  ),
-                  DropdownMenuItem(
-                    value: DynamicSchemeVariant.rainbow,
-                    child: Text(context.locale.rainbow),
-                  ),
-                  DropdownMenuItem(
-                    value: DynamicSchemeVariant.vibrant,
-                    child: Text(context.locale.vibrant),
-                  ),
-                ],
-                onChanged: hasAccess ? cubit.setThemeColorVariant : null,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 140),
+                child: DropdownButton<DynamicSchemeVariant>(
+                  value: variant,
+                  isExpanded: true,
+                  padding: const EdgeInsets.symmetric(horizontal: padding16),
+                  borderRadius: radius26,
+                  items: [
+                    DropdownMenuItem(
+                      value: DynamicSchemeVariant.tonalSpot,
+                      child: Text(context.locale.tonalSpot),
+                    ),
+                    DropdownMenuItem(
+                      value: DynamicSchemeVariant.content,
+                      child: Text(context.locale.content),
+                    ),
+                    DropdownMenuItem(
+                      value: DynamicSchemeVariant.expressive,
+                      child: Text(context.locale.expressive),
+                    ),
+                    DropdownMenuItem(
+                      value: DynamicSchemeVariant.fidelity,
+                      child: Text(context.locale.fidility),
+                    ),
+                    DropdownMenuItem(
+                      value: DynamicSchemeVariant.fruitSalad,
+                      child: Text(context.locale.fruitSalad),
+                    ),
+                    DropdownMenuItem(
+                      value: DynamicSchemeVariant.monochrome,
+                      child: Text(context.locale.monochrome),
+                    ),
+                    DropdownMenuItem(
+                      value: DynamicSchemeVariant.neutral,
+                      child: Text(context.locale.neutral),
+                    ),
+                    DropdownMenuItem(
+                      value: DynamicSchemeVariant.rainbow,
+                      child: Text(context.locale.rainbow),
+                    ),
+                    DropdownMenuItem(
+                      value: DynamicSchemeVariant.vibrant,
+                      child: Text(context.locale.vibrant),
+                    ),
+                  ],
+                  onChanged: hasAccess ? cubit.setThemeColorVariant : null,
+                ),
               ),
             );
           },

@@ -1,5 +1,5 @@
-import 'package:clipboard/widgets/badges.dart';
 import 'package:copycat_base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
+import 'package:copycat_base/constants/strings/route_constants.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
 import 'package:copycat_base/l10n/l10n.dart';
@@ -35,20 +35,21 @@ class _CreateClipNotePageState extends State<CreateClipNotePage> {
   Future<void> save() async {
     final note = controller.text;
     final cubit = context.read<OfflinePersistenceCubit>();
-    context.pop();
+
     if (note.isNotEmpty && widget.item != null) {
       final item = widget.item!.copyWith(text: note)..applyId(widget.item!);
       cubit.persist([item]);
+      context.pop(item);
+    } else {
+      context.pop();
     }
   }
 
   Future<void> saveAsNew() async {
     final note = controller.text;
     final cubit = context.read<OfflinePersistenceCubit>();
-    context.pop();
-    if (note.isNotEmpty) {
-      cubit.paste(note);
-    }
+    if (note.isNotEmpty) cubit.paste(note);
+    context.goNamed(RouteConstants.home);
   }
 
   @override
@@ -63,7 +64,7 @@ class _CreateClipNotePageState extends State<CreateClipNotePage> {
                 ? const Text('New Clip')
                 : const Text("Edit Clip"),
             width10,
-            const TextBadge(message: "Experimental"),
+            const Icon(Icons.science_rounded)
           ],
         ),
         centerTitle: false,
@@ -71,13 +72,13 @@ class _CreateClipNotePageState extends State<CreateClipNotePage> {
         backgroundColor: colors.secondaryContainer,
         actions: [
           IconButton(
-            icon: const Icon(Icons.check),
+            icon: const Icon(Icons.note_add_rounded),
             onPressed: saveAsNew,
             tooltip: "Save as new",
           ),
           if (widget.item != null)
             IconButton(
-              icon: const Icon(Icons.save_as_rounded),
+              icon: const Icon(Icons.check_rounded),
               onPressed: save,
               tooltip: context.locale.save,
             ),

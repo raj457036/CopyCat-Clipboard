@@ -67,7 +67,7 @@ class CollectionsPage extends StatelessWidget {
                           const aspectRatio = 16 / 7;
                           final builder = GridView.builder(
                             padding: isMobile
-                                ? const EdgeInsets.only(bottom: padding12)
+                                ? const EdgeInsets.all(padding10)
                                 : inset12,
                             itemCount: collections.length,
                             gridDelegate:
@@ -75,6 +75,8 @@ class CollectionsPage extends StatelessWidget {
                               crossAxisCount: crossAxisCount,
                               childAspectRatio: aspectRatio,
                               mainAxisExtent: 100,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
                             ),
                             itemBuilder: (BuildContext context, int index) {
                               final collection = collections[index];

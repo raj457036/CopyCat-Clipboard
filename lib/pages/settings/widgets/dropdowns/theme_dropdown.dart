@@ -27,48 +27,51 @@ class ThemeDropdownTile extends StatelessWidget {
         },
         builder: (context, state) {
           return DropdownButtonHideUnderline(
-            child: DropdownButton<ThemeMode>(
-              autofocus: true,
-              value: state,
-              padding: const EdgeInsets.symmetric(horizontal: padding16),
-              borderRadius: radius26,
-              icon: const Icon(Icons.arrow_drop_down_rounded),
-              items: [
-                DropdownMenuItem(
-                  value: ThemeMode.system,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.contrast_rounded),
-                      width12,
-                      Text(context.locale.system),
-                    ],
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 140),
+              child: DropdownButton<ThemeMode>(
+                isExpanded: true,
+                value: state,
+                padding: const EdgeInsets.symmetric(horizontal: padding16),
+                borderRadius: radius26,
+                icon: const Icon(Icons.arrow_drop_down_rounded),
+                items: [
+                  DropdownMenuItem(
+                    value: ThemeMode.system,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.contrast_rounded),
+                        width12,
+                        Text(context.locale.system),
+                      ],
+                    ),
                   ),
-                ),
-                DropdownMenuItem(
-                  value: ThemeMode.light,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.light_mode_rounded),
-                      width12,
-                      Text(context.locale.light),
-                    ],
+                  DropdownMenuItem(
+                    value: ThemeMode.light,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.light_mode_rounded),
+                        width12,
+                        Text(context.locale.light),
+                      ],
+                    ),
                   ),
-                ),
-                DropdownMenuItem(
-                  value: ThemeMode.dark,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.dark_mode_rounded),
-                      width12,
-                      Text(context.locale.dark),
-                    ],
+                  DropdownMenuItem(
+                    value: ThemeMode.dark,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.dark_mode_rounded),
+                        width12,
+                        Text(context.locale.dark),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-              onChanged: cubit.changeThemeMode,
+                ],
+                onChanged: cubit.changeThemeMode,
+              ),
             ),
           );
         },

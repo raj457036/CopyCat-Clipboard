@@ -43,29 +43,34 @@ class SyncSpeedDropdown extends StatelessWidget {
                 ),
               ),
               trailing: DropdownButtonHideUnderline(
-                child: DropdownButton<SyncSpeed>(
-                  value: speed,
-                  padding: const EdgeInsets.symmetric(horizontal: padding16),
-                  borderRadius: radius26,
-                  items: [
-                    if (subscription != null)
-                      DropdownMenuItem(
-                        enabled: subscription.syncInterval < $10S,
-                        value: SyncSpeed.realtime,
-                        child: const Row(
-                          children: [
-                            Text("⚡ Realtime"),
-                            width8,
-                            ProBadge(),
-                          ],
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 140),
+                  child: DropdownButton<SyncSpeed>(
+                    value: speed,
+                    isExpanded: true,
+                    hint: const Text("dasdfasd"),
+                    padding: const EdgeInsets.symmetric(horizontal: padding16),
+                    borderRadius: radius26,
+                    items: [
+                      if (subscription != null)
+                        DropdownMenuItem(
+                          enabled: subscription.syncInterval < $10S,
+                          value: SyncSpeed.realtime,
+                          child: const Row(
+                            children: [
+                              Text("⚡ Realtime"),
+                              width8,
+                              ProBadge(),
+                            ],
+                          ),
                         ),
+                      DropdownMenuItem(
+                        value: SyncSpeed.balanced,
+                        child: Text(context.locale.$45Sec),
                       ),
-                    DropdownMenuItem(
-                      value: SyncSpeed.balanced,
-                      child: Text(context.locale.$45Sec),
-                    ),
-                  ],
-                  onChanged: enabled ? cubit.changeAutoSyncDuration : null,
+                    ],
+                    onChanged: enabled ? cubit.changeAutoSyncDuration : null,
+                  ),
                 ),
               ),
             );

@@ -1,5 +1,6 @@
 import 'package:clipboard/widgets/clip_item/leading_option.dart';
 import 'package:clipboard/widgets/clip_item/primary_clip_action_button.dart';
+import 'package:clipboard/widgets/clip_item/primary_hover_action_button.dart';
 import 'package:clipboard/widgets/clip_item/secondary_clip_action_button.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/app_config/appconfig.dart';
@@ -44,6 +45,11 @@ class ClipListItemOptionHeader extends StatelessWidget {
             ),
           ),
           if (!selectionActive) SecondaryClipActionButton(item: item),
+          if (!selectionActive)
+            PrimaryHoverAction(
+              item: item,
+              hovered: hovered,
+            ),
           if (!selectionActive)
             PrimaryClipActionButton(
               item: item,

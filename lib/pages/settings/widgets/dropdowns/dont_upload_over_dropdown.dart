@@ -39,35 +39,39 @@ class DontAutoUploadOverDropdown extends StatelessWidget {
             ),
           ),
           trailing: DropdownButtonHideUnderline(
-            child: DropdownButton<int>(
-              value: state,
-              alignment: Alignment.centerRight,
-              enableFeedback: true,
-              padding: const EdgeInsets.symmetric(horizontal: padding16),
-              borderRadius: radius26,
-              items: [
-                DropdownMenuItem(
-                  value: $5MB,
-                  child: Text(context.locale.$5MB),
-                ),
-                DropdownMenuItem(
-                  value: $10MB,
-                  child: Text(context.locale.$10MB),
-                ),
-                DropdownMenuItem(
-                  value: $20MB,
-                  child: Text(context.locale.$20MB),
-                ),
-                DropdownMenuItem(
-                  value: $50MB,
-                  child: Text(context.locale.$50MB),
-                ),
-                DropdownMenuItem(
-                  value: $100MB,
-                  child: Text(context.locale.$100MB),
-                ),
-              ],
-              onChanged: cubit.changeDontUploadOver,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 120),
+              child: DropdownButton<int>(
+                value: state,
+                isExpanded: true,
+                alignment: Alignment.centerRight,
+                enableFeedback: true,
+                padding: const EdgeInsets.symmetric(horizontal: padding16),
+                borderRadius: radius26,
+                items: [
+                  DropdownMenuItem(
+                    value: $5MB,
+                    child: Text(context.locale.$5MB),
+                  ),
+                  DropdownMenuItem(
+                    value: $10MB,
+                    child: Text(context.locale.$10MB),
+                  ),
+                  DropdownMenuItem(
+                    value: $20MB,
+                    child: Text(context.locale.$20MB),
+                  ),
+                  DropdownMenuItem(
+                    value: $50MB,
+                    child: Text(context.locale.$50MB),
+                  ),
+                  DropdownMenuItem(
+                    value: $100MB,
+                    child: Text(context.locale.$100MB),
+                  ),
+                ],
+                onChanged: cubit.changeDontUploadOver,
+              ),
             ),
           ),
         );

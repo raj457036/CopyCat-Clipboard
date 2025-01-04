@@ -164,10 +164,7 @@ class ColorPickerTile extends StatelessWidget {
             return FilledButton.icon(
               onPressed: hasAccess ? () => chooseColor(context, color) : null,
               label: Text(context.locale.change),
-              icon: Icon(
-                Icons.color_lens_rounded,
-                color: colors.onPrimary,
-              ),
+              icon: const Icon(Icons.color_lens_rounded),
               style: ElevatedButton.styleFrom(
                 fixedSize: const Size(150, 46),
                 textStyle: textTheme.titleMedium,

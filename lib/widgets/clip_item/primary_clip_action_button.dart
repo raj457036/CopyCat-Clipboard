@@ -61,16 +61,16 @@ class PrimaryClipActionButton extends StatelessWidget {
             final menu = Menu.of(context);
             menu.openOptionBottomSheet(context);
           },
-          iconSize: 24,
-          icon: const Icon(Icons.more_vert_rounded),
+          iconSize: 22,
+          icon: CircleAvatar(
+            radius: 12,
+            backgroundColor: colors.primary.withAlpha(40),
+            child: const Icon(Icons.more_horiz_rounded),
+          ),
           style: IconButton.styleFrom(
             padding: EdgeInsets.zero,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(12),
-              ),
-            ),
           ),
+          padding: EdgeInsets.zero,
         ),
       );
     }

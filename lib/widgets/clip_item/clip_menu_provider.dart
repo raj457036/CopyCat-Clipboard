@@ -73,7 +73,6 @@ class ClipMenuProvider extends StatelessWidget {
           text: context.locale.changeCollection,
           onPressed: () => changeCollection(context, [item]),
         ),
-        const MenuItem(type: MenuItemType.divider),
         MenuItem(
           icon: Icons.delete_outline,
           text: context.locale.delete,

@@ -37,8 +37,9 @@ class ClipItemPreviewVerticalView extends StatelessWidget {
                       fit: StackFit.expand,
                       children: [
                         ClipPreviewConfig(
-                            shape: const RoundedRectangleBorder(),
-                            child: ClipPreview(item: item)),
+                          shape: const RoundedRectangleBorder(),
+                          child: ClipPreview(item: item),
+                        ),
                         Positioned(
                           bottom: 20,
                           right: 0,

@@ -1,36 +1,19 @@
+import 'package:clipboard/widgets/sheets/sheet_handle.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/utils/common_extension.dart';
+import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
-
-enum MenuItemType { option, divider }
 
 class MenuItem {
   final String? text;
   final IconData? icon;
   final VoidCallback? onPressed;
-  final MenuItemType type;
 
   const MenuItem({
     this.text,
     this.icon,
     this.onPressed,
-    this.type = MenuItemType.option,
-  })  : assert(
-          (type == MenuItemType.divider &&
-                  text == null &&
-                  icon == null &&
-                  onPressed == null) ||
-              type == MenuItemType.option,
-          "Divider type menu item cannot have a text and icon or onPressed property.",
-        ),
-        assert(
-          (type == MenuItemType.option &&
-                  text != null &&
-                  icon != null &&
-                  onPressed != null) ||
-              type == MenuItemType.divider,
-          "Option type menu item must have a text and icon and onPressed property.",
-        );
+  });
 }
 
 class Menu extends InheritedWidget {
@@ -49,6 +32,7 @@ class Menu extends InheritedWidget {
     final colors = context.colors;
     await showModalBottomSheet(
       context: context,
+      scrollControlDisabledMaxHeightRatio: 0.8,
       constraints: BoxConstraints(
         maxWidth: mqSize.width * 0.9,
       ),
@@ -64,27 +48,18 @@ class Menu extends InheritedWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: padding12),
-                  child: SizedBox.fromSize(
-                    size: const Size(32, 4),
-                    child: Material(
-                      color: colors.onSurfaceVariant,
-                      borderRadius: radius12,
-                    ),
-                  ),
-                ),
+                const SheetHandle(),
                 for (var menuItem in items)
-                  menuItem.type == MenuItemType.divider
-                      ? const Divider(height: 0)
-                      : ListTile(
-                          leading: Icon(menuItem.icon),
-                          title: Text(menuItem.text!),
-                          onTap: () {
-                            Navigator.pop(context);
-                            menuItem.onPressed?.call();
-                          },
-                        ),
+                  ListTile(
+                    leading: Icon(menuItem.icon),
+                    title: Text(menuItem.text!),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      await wait(250);
+                      menuItem.onPressed?.call();
+                    },
+                  ),
+                height10,
               ],
             ),
           ),
@@ -103,22 +78,19 @@ class Menu extends InheritedWidget {
     );
     final options = <PopupMenuEntry<MenuItem>>[
       for (var menuItem in items)
-        if (menuItem.type == MenuItemType.divider)
-          const PopupMenuDivider()
-        else
-          PopupMenuItem(
-            height: 40,
-            value: menuItem,
-            mouseCursor: SystemMouseCursors.click,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(menuItem.icon, size: 18),
-                width6,
-                Text(menuItem.text!, overflow: TextOverflow.fade, maxLines: 1),
-              ],
-            ),
+        PopupMenuItem(
+          height: 40,
+          value: menuItem,
+          mouseCursor: SystemMouseCursors.click,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(menuItem.icon, size: 18),
+              width6,
+              Text(menuItem.text!, overflow: TextOverflow.fade, maxLines: 1),
+            ],
           ),
+        ),
     ];
     final item = await showMenu(
       context: context,
@@ -127,7 +99,7 @@ class Menu extends InheritedWidget {
       items: options,
       popUpAnimationStyle: AnimationStyle.noAnimation,
     );
-
+    await wait(250);
     item?.onPressed?.call();
   }
 

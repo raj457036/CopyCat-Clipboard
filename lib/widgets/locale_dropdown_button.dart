@@ -21,41 +21,45 @@ class LocaleDropdownButton extends StatelessWidget {
       },
       builder: (context, state) {
         return DropdownButtonHideUnderline(
-          child: DropdownButton<Locale>(
-            value: state,
-            enableFeedback: true,
-            icon: const Icon(Icons.arrow_drop_down_rounded),
-            padding: const EdgeInsets.symmetric(horizontal: padding16),
-            borderRadius: radius26,
-            items: [
-              DropdownMenuItem(
-                value: const Locale("en"),
-                child: Text(context.locale.en),
-              ),
-              DropdownMenuItem(
-                value: const Locale("es"),
-                child: Text(context.locale.es),
-              ),
-              DropdownMenuItem(
-                value: const Locale("fr"),
-                child: Text(context.locale.fr),
-              ),
-              DropdownMenuItem(
-                value: const Locale("de"),
-                child: Text(context.locale.de),
-              ),
-              DropdownMenuItem(
-                value: const Locale("zh"),
-                child: Text(context.locale.zh),
-              ),
-            ],
-            onChanged: (locale) {
-              if (locale != null) {
-                context.read<AppConfigCubit>().changeLocale(
-                      locale.languageCode,
-                    );
-              }
-            },
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 140),
+            child: DropdownButton<Locale>(
+              value: state,
+              isExpanded: true,
+              enableFeedback: true,
+              icon: const Icon(Icons.arrow_drop_down_rounded),
+              padding: const EdgeInsets.symmetric(horizontal: padding16),
+              borderRadius: radius26,
+              items: [
+                DropdownMenuItem(
+                  value: const Locale("en"),
+                  child: Text(context.locale.en),
+                ),
+                DropdownMenuItem(
+                  value: const Locale("es"),
+                  child: Text(context.locale.es),
+                ),
+                DropdownMenuItem(
+                  value: const Locale("fr"),
+                  child: Text(context.locale.fr),
+                ),
+                DropdownMenuItem(
+                  value: const Locale("de"),
+                  child: Text(context.locale.de),
+                ),
+                DropdownMenuItem(
+                  value: const Locale("zh"),
+                  child: Text(context.locale.zh),
+                ),
+              ],
+              onChanged: (locale) {
+                if (locale != null) {
+                  context.read<AppConfigCubit>().changeLocale(
+                        locale.languageCode,
+                      );
+                }
+              },
+            ),
           ),
         );
       },
