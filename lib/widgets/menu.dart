@@ -28,7 +28,7 @@ class Menu extends InheritedWidget {
   Future<void> openOptionBottomSheet(BuildContext context) async {
     final mq = context.mq;
     final mqSize = mq.size;
-    final safeArea = mq.systemGestureInsets.bottom + padding16;
+    final safeArea = mq.systemGestureInsets.bottom + padding8;
     final colors = context.colors;
     await showModalBottomSheet(
       context: context,

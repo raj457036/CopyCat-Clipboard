@@ -66,11 +66,10 @@ class ClipCollectionGridItem extends StatelessWidget {
       borderRadius: radius12,
     );
     final collectionTile = StatefulBuilder(builder: (context, setState) {
-      return Card.filled(
+      return Card.outlined(
+        color: colors.surface,
         margin: EdgeInsets.zero,
-        shape: selected
-            ? selectedShape
-            : const RoundedRectangleBorder(borderRadius: radius12),
+        shape: selected ? selectedShape : null,
         child: InkWell(
           borderRadius: radius12,
           onSecondaryTapDown: selectionOnly
@@ -81,8 +80,11 @@ class ClipCollectionGridItem extends StatelessWidget {
                 },
           onFocusChange: (isFocused) {
             setState(() => selected = isFocused);
-            Scrollable.ensureVisible(context,
-                alignment: 0.5, duration: Durations.medium1);
+            Scrollable.ensureVisible(
+              context,
+              alignment: 0.5,
+              duration: Durations.medium1,
+            );
           },
           autofocus: autoFocus,
           onLongPress: selectionOnly
