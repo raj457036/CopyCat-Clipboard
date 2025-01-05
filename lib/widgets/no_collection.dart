@@ -18,7 +18,7 @@ class NoCollectionAvailable extends StatelessWidget {
           height20,
           TextButton.icon(
             onPressed: () {
-              context.goNamed(
+              context.pushNamed(
                 RouteConstants.createEditCollection,
                 pathParameters: {
                   "id": "new",

@@ -1,6 +1,5 @@
 import 'package:clipboard/widgets/badges.dart';
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:copycat_base/constants/numbers/breakpoints.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/app_config/appconfig.dart';
 import 'package:copycat_base/l10n/l10n.dart';
@@ -40,50 +39,26 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.theme;
-    final textTheme = context.textTheme;
-    final colors = context.colors;
-    final size = context.mq.size;
-    final isMobile = Breakpoints.isMobile(size.width);
-    final double width, height;
-    if (size.width > 650) {
-      width = 650;
-      height = 200;
-    } else {
-      width = 250;
-      height = 510;
-    }
     return AlertDialog(
       actionsPadding: const EdgeInsets.only(
-        left: padding10,
-        right: padding10,
         bottom: padding12,
       ),
       // titlePadding: EdgeInsets.zero,
       content: SingleChildScrollView(
-        child: SizedBox(
-          width: width,
-          height: height,
-          child: Theme(
-            data: theme.copyWith(
-              inputDecorationTheme: InputDecorationTheme(
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: colors.surfaceContainer,
-              ),
-              textTheme: textTheme,
-            ),
-            child: ColorPicker(
-              portraitOnly: false,
-              pickerColor: widget.selectedColor,
-              onColorChanged: onChangeColor,
-              pickerAreaBorderRadius: BorderRadius.circular(18),
-              displayThumbColor: true,
-              hexInputBar: true,
-            ),
+        child: ColorPicker(
+          portraitOnly: true,
+          pickerColor: widget.selectedColor,
+          onColorChanged: onChangeColor,
+          pickerAreaBorderRadius: const BorderRadius.vertical(
+            top: Radius.circular(16),
           ),
+          displayThumbColor: false,
+          paletteType: PaletteType.hsl,
+          hexInputBar: false,
+          enableAlpha: false,
+          colorPickerWidth: 282,
+          pickerAreaHeightPercent: 0.6,
+          labelTypes: const [],
         ),
       ),
       actions: [
@@ -100,15 +75,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
           child: Text(context.locale.done),
         ),
       ],
-
-      insetPadding: isMobile
-          ? const EdgeInsets.all(padding8)
-          : const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
-      contentPadding: const EdgeInsets.only(
-        left: padding12,
-        right: padding12,
-        top: padding12,
-      ),
+      contentPadding: EdgeInsets.zero,
     );
   }
 }

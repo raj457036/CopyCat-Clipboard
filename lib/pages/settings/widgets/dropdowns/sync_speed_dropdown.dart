@@ -44,11 +44,10 @@ class SyncSpeedDropdown extends StatelessWidget {
               ),
               trailing: DropdownButtonHideUnderline(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 140),
+                  constraints: const BoxConstraints(maxWidth: 185),
                   child: DropdownButton<SyncSpeed>(
                     value: speed,
                     isExpanded: true,
-                    hint: const Text("dasdfasd"),
                     padding: const EdgeInsets.symmetric(horizontal: padding16),
                     borderRadius: radius26,
                     items: [
@@ -57,9 +56,9 @@ class SyncSpeedDropdown extends StatelessWidget {
                           enabled: subscription.syncInterval < $10S,
                           value: SyncSpeed.realtime,
                           child: const Row(
+                            spacing: 8,
                             children: [
-                              Text("⚡ Realtime"),
-                              width8,
+                              Text("Realtime"),
                               ProBadge(),
                             ],
                           ),

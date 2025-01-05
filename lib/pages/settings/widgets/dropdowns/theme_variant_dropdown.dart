@@ -42,7 +42,7 @@ class ThemeVariantDropdown extends StatelessWidget {
           builder: (context, variant) {
             return DropdownButtonHideUnderline(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 140),
+                constraints: const BoxConstraints(maxWidth: 160),
                 child: DropdownButton<DynamicSchemeVariant>(
                   value: variant,
                   isExpanded: true,

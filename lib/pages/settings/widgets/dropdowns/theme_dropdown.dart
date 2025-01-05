@@ -28,7 +28,7 @@ class ThemeDropdownTile extends StatelessWidget {
         builder: (context, state) {
           return DropdownButtonHideUnderline(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 140),
+              constraints: const BoxConstraints(maxWidth: 160),
               child: DropdownButton<ThemeMode>(
                 isExpanded: true,
                 value: state,

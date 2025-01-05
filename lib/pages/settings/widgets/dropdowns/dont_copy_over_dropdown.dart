@@ -41,7 +41,7 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
           ),
           trailing: DropdownButtonHideUnderline(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 140),
+              constraints: const BoxConstraints(maxWidth: 160),
               child: DropdownButton<int>(
                 value: state,
                 isExpanded: true,

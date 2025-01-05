@@ -50,7 +50,7 @@ class CustomScaffold extends StatelessWidget {
         appBar: appBar,
         endDrawer: endDrawer,
         body: scaffoldBody,
-        floatingActionButton: smallScreen || state.view == AppView.windowed
+        floatingActionButton: smallScreen && state.view == AppView.windowed
             ? floatingActions
             : null,
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
