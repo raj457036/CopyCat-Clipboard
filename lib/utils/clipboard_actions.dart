@@ -1,8 +1,10 @@
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
+import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
 import 'package:copycat_base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:copycat_base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
+import 'package:copycat_base/common/failure.dart';
 import 'package:copycat_base/constants/key.dart';
 import 'package:copycat_base/constants/strings/route_constants.dart';
 import 'package:copycat_base/db/clip_collection/clipcollection.dart';
@@ -73,6 +75,23 @@ Future<void> selectClip(
 ) async {
   final ctx = context.mounted ? context : rootNavKey.currentContext!;
   ctx.read<SelectedClipsCubit>().select(item);
+}
+
+Future<void> decryptItem(BuildContext context, ClipboardItem item) async {
+  final persitCubit = context.read<OfflinePersistenceCubit>();
+  final appConfig = context.read<AppConfigCubit>();
+  if (!appConfig.isE2EESetupDone) {
+    showFailureSnackbar(
+      Failure(
+        message: context.locale.e2eeNotSetup,
+        code: "e2ee-no-setup",
+      ),
+    );
+    return;
+  }
+
+  final item_ = await item.decrypt();
+  persitCubit.persist([item_]);
 }
 
 Future<void> downloadFile(
@@ -189,5 +208,18 @@ Future<void> changeCollection(
             )..applyId(item))
         .toList();
     cubit.persist(updatedItems);
+  }
+}
+
+Future<void> performPrimaryActionOnClip(
+    BuildContext context, ClipboardItem item, bool canPaste) async {
+  if (item.encrypted) {
+    decryptItem(context, item);
+  } else if (item.needDownload) {
+    downloadFile(context, item);
+  } else if (canPaste) {
+    pasteOnLastWindow(context, item);
+  } else {
+    copyToClipboard(context, item);
   }
 }

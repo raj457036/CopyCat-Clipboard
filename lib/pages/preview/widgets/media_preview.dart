@@ -40,9 +40,7 @@ class MediaClipPreviewCard extends StatelessWidget {
     }
   }
 
-  void open() async {
-    openFile(item);
-  }
+  void open() => openFile(item);
 
   Widget? getPrimaryView(BuildContext context) {
     if (item.fileMimeType != null) {
@@ -50,7 +48,7 @@ class MediaClipPreviewCard extends StatelessWidget {
         return const Align(
           alignment: Alignment(-.98, -.98),
           child: Icon(
-            Icons.image,
+            Icons.image_rounded,
             color: Colors.white,
           ),
         );

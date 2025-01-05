@@ -46,17 +46,16 @@ class ClipListItemOptionHeader extends StatelessWidget {
           ),
           if (!selectionActive) SecondaryClipActionButton(item: item),
           if (!selectionActive)
-            PrimaryHoverAction(
-              item: item,
-              hovered: hovered,
-            ),
-          if (!selectionActive)
             PrimaryClipActionButton(
               item: item,
               hasFocusForPaste: hasFocusForPaste,
               layout: AppLayout.list,
             ),
-          // width4,
+          if (!selectionActive)
+            PrimaryHoverAction(
+              item: item,
+              hovered: hovered,
+            ),
         ],
       ),
     );

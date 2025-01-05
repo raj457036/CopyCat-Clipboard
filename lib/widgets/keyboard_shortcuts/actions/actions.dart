@@ -1,0 +1,9 @@
+export 'collection_page.dart';
+export 'digit_paste.dart';
+export 'hide_window.dart';
+export 'home_page.dart';
+export 'new_clip_note.dart';
+export 'paste.dart';
+export 'search.dart';
+export 'settings_page.dart';
+export 'sync.dart';

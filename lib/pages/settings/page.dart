@@ -22,6 +22,7 @@ class SettingsPage extends StatelessWidget {
     final colors = context.colors;
     return DefaultTabController(
       length: 5,
+      initialIndex: 0,
       child: CustomScaffold(
         activeIndex: 2,
         appBar: AppBar(
@@ -48,6 +49,7 @@ class SettingsPage extends StatelessWidget {
                 TabBar(
                   isScrollable: true,
                   tabAlignment: TabAlignment.start,
+                  onTap: print,
                   tabs: [
                     Tab(text: context.locale.general),
                     Tab(text: context.locale.customization),

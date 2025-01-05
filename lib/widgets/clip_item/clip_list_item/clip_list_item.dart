@@ -4,16 +4,11 @@ import 'package:clipboard/widgets/clip_item/clip_preview.dart';
 import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
 import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/widgets/menu.dart';
-import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:copycat_base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:copycat_base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
-import 'package:copycat_base/common/failure.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/app_config/appconfig.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
-import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
-import 'package:copycat_base/utils/snackbar.dart';
 import 'package:copycat_base/utils/utility.dart';
 import 'package:copycat_pro/widgets/drag_drop/drag_item.dart';
 import 'package:flutter/material.dart';
@@ -67,35 +62,6 @@ class _ClipListItemState extends State<ClipListItem> {
     }
   }
 
-  Future<void> decryptItem(BuildContext context) async {
-    final persitCubit = context.read<OfflinePersistenceCubit>();
-    final appConfig = context.read<AppConfigCubit>();
-    if (!appConfig.isE2EESetupDone) {
-      showFailureSnackbar(
-        Failure(
-          message: context.locale.e2eeNotSetup,
-          code: "e2ee-no-setup",
-        ),
-      );
-      return;
-    }
-
-    final item_ = await widget.item.decrypt();
-    persitCubit.persist([item_]);
-  }
-
-  Future<void> performPrimaryAction(BuildContext context) async {
-    if (widget.item.encrypted) {
-      decryptItem(context);
-    } else if (widget.item.needDownload) {
-      downloadFile(context, widget.item);
-    } else if (widget.canPaste) {
-      pasteOnLastWindow(context, widget.item);
-    } else {
-      copyToClipboard(context, widget.item);
-    }
-  }
-
   void toggleSelect(BuildContext context) {
     final cubit = context.read<SelectedClipsCubit>();
     if (widget.selected) {
@@ -130,7 +96,8 @@ class _ClipListItemState extends State<ClipListItem> {
             borderRadius: radius12,
             autofocus: widget.autofocus,
             onTap: !widget.selectionActive
-                ? () => performPrimaryAction(context)
+                ? () => performPrimaryActionOnClip(
+                    context, widget.item, widget.canPaste)
                 : () => toggleSelect(context),
             onSecondaryTapDown: !widget.selectionActive
                 ? (detail) async {

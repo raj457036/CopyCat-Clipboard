@@ -1,4 +1,3 @@
-import 'package:atom_event_bus/atom_event_bus.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/widgets/dialogs/inconsistent_timing.dart';
 import 'package:copycat_base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
@@ -9,11 +8,11 @@ import 'package:copycat_base/bloc/clip_sync_manager_cubit/clip_sync_manager_cubi
 import 'package:copycat_base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
 import 'package:copycat_base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
 import 'package:copycat_base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
+import 'package:copycat_base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:copycat_base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:copycat_base/bloc/realtime_clip_sync_cubit/realtime_clip_sync_cubit.dart';
 import 'package:copycat_base/bloc/realtime_collection_sync_cubit/realtime_collection_sync_cubit.dart';
 import 'package:copycat_base/bloc/window_action_cubit/window_action_cubit.dart';
-import 'package:copycat_base/common/events.dart';
 import 'package:copycat_base/common/logging.dart';
 import 'package:copycat_base/constants/key.dart';
 import 'package:copycat_base/constants/strings/route_constants.dart';
@@ -34,10 +33,12 @@ import 'package:isar/isar.dart';
 import 'package:universal_io/io.dart';
 
 class EventBridge extends StatelessWidget {
+  final EventBusCubit eventBus;
   final Widget child;
 
   const EventBridge({
     super.key,
+    required this.eventBus,
     required this.child,
   });
 
@@ -52,8 +53,7 @@ class EventBridge extends StatelessWidget {
   }
 
   void broadcastEvent(CrossSyncEventType eventType, ClipboardItem item) {
-    final eventPayload = clipboardEvent.createPayload((eventType, item));
-    EventBus.emit(eventPayload);
+    eventBus.clipSync((eventType, item));
   }
 
   void broadcastBatchEvent(
@@ -66,8 +66,7 @@ class EventBridge extends StatelessWidget {
       return;
     }
     final payload = items.map((item) => (eventType, item)).toList();
-    final eventPayload = clipboardBatchEvent.createPayload(payload);
-    EventBus.emit(eventPayload);
+    eventBus.batchClipSync(payload);
   }
 
   Future<void> setupEncryption(BuildContext context) async {

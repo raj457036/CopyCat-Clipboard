@@ -81,7 +81,7 @@ class TextClipCard extends StatelessWidget {
                 style: textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
-                maxLines: 2,
+                maxLines: 3,
                 overflow: TextOverflow.fade,
               ),
             ),

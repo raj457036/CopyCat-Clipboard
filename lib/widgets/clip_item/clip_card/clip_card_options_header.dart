@@ -81,13 +81,13 @@ class ClipCardOptionsHeader extends StatelessWidget {
           ),
           if (!selectionActive) SecondaryClipActionButton(item: item),
           if (!selectionActive)
-            PrimaryHoverAction(item: item, hovered: hovered),
-          if (!selectionActive)
             PrimaryClipActionButton(
               item: item,
               hasFocusForPaste: hasFocusForPaste,
               layout: AppLayout.grid,
             ),
+          if (!selectionActive)
+            PrimaryHoverAction(item: item, hovered: hovered),
         ],
       ),
     );

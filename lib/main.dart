@@ -17,6 +17,7 @@ import 'package:copycat_base/bloc/clip_sync_manager_cubit/clip_sync_manager_cubi
 import 'package:copycat_base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
 import 'package:copycat_base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
 import 'package:copycat_base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
+import 'package:copycat_base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:copycat_base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:copycat_base/bloc/realtime_clip_sync_cubit/realtime_clip_sync_cubit.dart';
 import 'package:copycat_base/bloc/realtime_collection_sync_cubit/realtime_collection_sync_cubit.dart';
@@ -25,6 +26,7 @@ import 'package:copycat_base/common/bloc_config.dart';
 import 'package:copycat_base/constants/key.dart';
 import 'package:copycat_base/constants/strings/strings.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
+import 'package:copycat_base/db/app_config/appconfig.dart';
 import 'package:copycat_base/l10n/generated/app_localizations.dart';
 import 'package:copycat_base/utils/utility.dart';
 import 'package:copycat_base/utils/windows/update_registry.dart';
@@ -45,6 +47,8 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:universal_io/io.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:window_manager/window_manager.dart';
+
+import 'widgets/keyboard_shortcuts/actions/actions.dart';
 
 Future<void> appRunner() async {
   MediaKit.ensureInitialized();
@@ -174,17 +178,19 @@ class AppContent extends StatelessWidget {
       },
       child: StateInitializer(
         child: BlocSelector<AppConfigCubit, AppConfigState,
-            (ThemeMode, String, ColorScheme, ColorScheme)>(
+            (ThemeMode, String, ColorScheme, ColorScheme, AppView)>(
           selector: (state) {
             return (
               state.config.themeMode,
               state.config.locale,
               state.config.lightThemeColorScheme,
               state.config.darkThemeColorScheme,
+              state.config.view,
             );
           },
           builder: (context, state) {
-            final (theme, langCode, lightColorScheme, darkColorScheme) = state;
+            final (theme, langCode, lightColorScheme, darkColorScheme, view) =
+                state;
 
             return AnnotatedRegion<SystemUiOverlayStyle>(
               value: getUiOverlay(theme),
@@ -193,6 +199,39 @@ class AppContent extends StatelessWidget {
                 scaffoldMessengerKey: scaffoldMessengerKey,
                 color: Colors.transparent,
                 themeMode: theme,
+                shortcuts: {
+                  ...WidgetsApp.defaultShortcuts,
+                  NavigateToHomePageIntent.activator:
+                      const NavigateToHomePageIntent(),
+                  NavigateToCollectionPageIntent.activator:
+                      const NavigateToCollectionPageIntent(),
+                  FocusOnSearchFieldIntent.activator:
+                      const FocusOnSearchFieldIntent(),
+                  CreateNewClipNoteIntent.activator:
+                      const CreateNewClipNoteIntent(),
+                  SyncIntent.activator: const SyncIntent(),
+                  PasteIntent.activator: const PasteIntent(),
+                  if (view == AppView.windowed)
+                    NavigateToSettingPageIntent.activator:
+                        const NavigateToSettingPageIntent(),
+                  if (isDesktopPlatform)
+                    HideWindowIntent.activator: const HideWindowIntent(),
+                  PasteByClipIndexIntent.i.activator: PasteByClipIndexIntent.i,
+                },
+                actions: {
+                  ...WidgetsApp.defaultActions,
+                  NavigateToHomePageIntent: NavigateToHomePageAction(),
+                  NavigateToCollectionPageIntent:
+                      NavigateToCollectionPageAction(),
+                  FocusOnSearchFieldIntent: FocusOnSearchFieldAction(),
+                  SyncIntent: SyncAction(),
+                  CreateNewClipNoteIntent: CreateNewClipNoteAction(),
+                  PasteIntent: PasteAction(),
+                  if (isDesktopPlatform) HideWindowIntent: HideWindowAction(),
+                  if (view == AppView.windowed)
+                    NavigateToSettingPageIntent: NavigateToSettingPageAction(),
+                  PasteByClipIndexIntent: PasteByClipIndexAction(),
+                },
                 theme: ThemeData(
                   useMaterial3: true,
                   colorScheme: lightColorScheme,
@@ -233,6 +272,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget content = EventBridge(
+      eventBus: sl(),
       child: WindowFocusManager.forPlatform(
         child: TrayManager.forPlatform(
           child: const SystemShortcutListener(
@@ -256,6 +296,7 @@ class MainApp extends StatelessWidget {
         BlocProvider<WindowActionCubit>(create: (context) => sl()),
         BlocProvider<RealtimeClipSyncCubit>(create: (context) => sl()),
         BlocProvider<RealtimeCollectionSyncCubit>(create: (context) => sl()),
+        BlocProvider<EventBusCubit>(create: (context) => sl()),
         if (Platform.isAndroid)
           BlocProvider<AndroidBgClipboardCubit>(
             lazy: false,

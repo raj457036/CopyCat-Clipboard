@@ -1,15 +1,15 @@
-import 'package:atom_event_bus/atom_event_bus.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/search/filter_button.dart';
 import 'package:clipboard/widgets/view_buttons/app_layout_button.dart';
 import 'package:copycat_base/bloc/clipboard_cubit/clipboard_cubit.dart';
-import 'package:copycat_base/common/events.dart';
+import 'package:copycat_base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:copycat_base/constants/numbers/breakpoints.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/domain/model/search_filter_state.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
 import 'package:copycat_base/utils/utility.dart';
+import 'package:copycat_base/widgets/on_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,31 +28,33 @@ class SearchInputBar extends StatefulWidget {
   const SearchInputBar({super.key});
 
   @override
-  State<SearchInputBar> createState() => _SearchBarStInputate();
+  State<SearchInputBar> createState() => _SearchBarInputState();
 }
 
-class _SearchBarStInputate extends State<SearchInputBar> {
+class _SearchBarInputState extends State<SearchInputBar> {
   SearchFilterState? filterState;
   late final TextEditingController queryController;
-  EventRule? focusEventRule;
   late final FocusNode focusNode;
 
   @override
   void initState() {
     super.initState();
     queryController = TextEditingController();
-    if (isDesktopPlatform) {
-      focusEventRule = EventRule<void>(searchFocusEvent, targets: [
-        EventListener((_) => focusNode.requestFocus()),
-      ]);
-    }
-    focusNode = FocusNode(debugLabel: "Search Bar Focus");
+    focusNode = FocusNode(
+      debugLabel: "Search Bar Focus",
+      onKeyEvent: (node, event) {
+        if (event.logicalKey == LogicalKeyboardKey.escape) {
+          node.nextFocus();
+          return KeyEventResult.handled;
+        }
+        return KeyEventResult.ignored;
+      },
+    );
   }
 
   @override
   void dispose() {
     queryController.dispose();
-    focusEventRule?.cancel();
     focusNode.dispose();
     super.dispose();
   }
@@ -62,7 +64,13 @@ class _SearchBarStInputate extends State<SearchInputBar> {
       (filterState != null && filterState!.isActive);
 
   void focus() {
-    focusNode.requestFocus();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      focusNode.requestFocus();
+    });
+  }
+
+  void onSearchFocusEvent(BuildContext context, EventBusKeyboardEvent event) {
+    if (event.event == "search") focus();
   }
 
   Future<void> search(String text) async {
@@ -99,61 +107,64 @@ class _SearchBarStInputate extends State<SearchInputBar> {
     final colors = context.colors;
     final size = context.mq.size;
 
-    return Focus(
-      descendantsAreTraversable: false,
-      skipTraversal: true,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxHeight: 40,
-          minWidth: 200,
-          maxWidth: 450,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Expanded(
-              child: SearchBar(
-                controller: queryController,
-                focusNode: focusNode,
-                onTapOutside: (event) =>
-                    FocusManager.instance.primaryFocus?.nextFocus(),
-                elevation: 0.0.msp,
-                padding: const EdgeInsets.only(left: padding12).msp,
-                leading: const Icon(Icons.search_rounded),
-                hintText: context.locale.searchInClipboard,
-                trailing: [
-                  if (isDesktopPlatform)
-                    Padding(
-                      padding: const EdgeInsets.only(right: padding10),
-                      child: Text(
-                        "$metaKey + F",
-                        style: textTheme.labelLarge?.copyWith(
-                          color: colors.outline,
+    return OnEvent<EventBusKeyboardEvent>(
+      trigger: onSearchFocusEvent,
+      child: Focus(
+        // descendantsAreTraversable: false,
+        // skipTraversal: true,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxHeight: 40,
+            minWidth: 200,
+            maxWidth: 450,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: SearchBar(
+                  controller: queryController,
+                  focusNode: focusNode,
+                  onTapOutside: (event) =>
+                      FocusManager.instance.primaryFocus?.nextFocus(),
+                  elevation: 0.0.msp,
+                  padding: const EdgeInsets.only(left: padding12).msp,
+                  leading: const Icon(Icons.search_rounded),
+                  hintText: context.locale.searchInClipboard,
+                  trailing: [
+                    if (isDesktopPlatform)
+                      Padding(
+                        padding: const EdgeInsets.only(right: padding10),
+                        child: Text(
+                          "$metaKey + F",
+                          style: textTheme.labelLarge?.copyWith(
+                            color: colors.outline,
+                          ),
                         ),
                       ),
-                    ),
-                  if (isActive)
-                    IconButton(
-                      onPressed: clear,
-                      icon: const Icon(Icons.clear_rounded),
-                      color: colors.outline,
-                      tooltip: context.locale.resetSearch,
-                    ),
-                ],
-                textInputAction: TextInputAction.search,
-                onSubmitted: search,
+                    if (isActive)
+                      IconButton(
+                        onPressed: clear,
+                        icon: const Icon(Icons.clear_rounded),
+                        color: colors.outline,
+                        tooltip: context.locale.resetSearch,
+                      ),
+                  ],
+                  textInputAction: TextInputAction.search,
+                  onSubmitted: search,
+                ),
               ),
-            ),
-            if (size.width > 300) width4,
-            if (size.width > 300)
-              FilterButton(
-                size: 40,
-                onChange: onFilterChange,
-                initialState: filterState ?? const SearchFilterState(),
-              ),
-            if (isMobilePlatform && Breakpoints.isMobile(size.width))
-              const AppLayoutToggleButton(rounded: true),
-          ],
+              if (size.width > 300) width4,
+              if (size.width > 300)
+                FilterButton(
+                  size: 40,
+                  onChange: onFilterChange,
+                  initialState: filterState ?? const SearchFilterState(),
+                ),
+              if (isMobilePlatform && Breakpoints.isMobile(size.width))
+                const AppLayoutToggleButton(rounded: true),
+            ],
+          ),
         ),
       ),
     );

@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/utils/applink_listener.dart';
 import 'package:clipboard/utils/share_listener.dart';
+import 'package:clipboard/widgets/keyboard_shortcuts/keyboard_shortcut_provider.dart';
 import 'package:copycat_base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/bloc/window_action_cubit/window_action_cubit.dart';
@@ -111,16 +112,17 @@ class _StateInitializerState extends State<StateInitializer>
 
   @override
   Widget build(BuildContext context) {
-    final Widget child;
+    Widget child = const SizedBox.shrink();
 
     if (_pinned || !_isInBackground) {
       child = FadeIn(
-        // delay: Durations.extralong4,
         duration: Durations.medium3,
         child: widget.child,
       );
-    } else {
-      child = const SizedBox.shrink();
+    }
+
+    if (isDesktopPlatform) {
+      child = KeyboardShortcutProvider(child: child);
     }
 
     return BlocListener<AppConfigCubit, AppConfigState>(
