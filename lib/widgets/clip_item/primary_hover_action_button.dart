@@ -3,6 +3,7 @@ import 'package:clipboard/widgets/clip_item/clip_meta_info.dart';
 import 'package:copycat_base/constants/strings/route_constants.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
+import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -33,7 +34,7 @@ class PrimaryHoverAction extends StatelessWidget {
       child = Card.filled(
         margin: const EdgeInsets.only(right: padding8),
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
+          borderRadius: BorderRadius.all(Radius.circular(6)),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: padding4),
@@ -44,7 +45,7 @@ class PrimaryHoverAction extends StatelessWidget {
                 "$metaKey + ${meta.index}",
                 textAlign: TextAlign.center,
                 style: textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
@@ -59,6 +60,7 @@ class PrimaryHoverAction extends StatelessWidget {
           child: IconButton(
             onPressed: () => editClip(context),
             iconSize: 22,
+            tooltip: context.locale.previewEdit,
             icon: const Icon(Icons.edit),
           ),
         ),

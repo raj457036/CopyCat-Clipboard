@@ -61,7 +61,7 @@ class TextClipCard extends StatelessWidget {
                 item.text!,
                 style: textTheme.titleMedium?.copyWith(
                   color: getFg(bg),
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
@@ -79,7 +79,7 @@ class TextClipCard extends StatelessWidget {
                 item.text!,
                 textAlign: TextAlign.center,
                 style: textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w500,
                 ),
                 maxLines: 3,
                 overflow: TextOverflow.fade,

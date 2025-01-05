@@ -31,14 +31,9 @@ Color? hexToColor(ClipboardItem item) {
   String hex = item.text!.replaceAll('#', '');
 
   if (hex.length == 3) {
-    // Expand shorthand format (e.g., #abc to #aabbcc)
-    hex = '${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}FF';
+    hex = 'FF${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}';
   } else if (hex.length == 6) {
-    // Add alpha value if not specified
     hex = 'FF$hex';
-  } else if (hex.length != 8) {
-    // Check for valid length
-    return null;
   }
 
   return Color(int.parse(hex, radix: 16));

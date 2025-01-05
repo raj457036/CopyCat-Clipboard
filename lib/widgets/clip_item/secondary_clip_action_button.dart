@@ -26,7 +26,7 @@ class SecondaryClipActionButton extends StatelessWidget {
       ClipItemType.file || ClipItemType.media => item.inCache
           ? IconButton(
               onPressed: () => openFile(item),
-              icon: const Icon(Icons.outbound),
+              icon: const Icon(Icons.outbound_rounded),
               iconSize: 24,
               tooltip: context.locale.open,
               style: IconButton.styleFrom(
@@ -46,7 +46,7 @@ class SecondaryClipActionButton extends StatelessWidget {
             ),
           TextCategory.email => IconButton(
               onPressed: () => launchEmail(item),
-              icon: const Icon(Icons.outgoing_mail),
+              icon: const Icon(Icons.outbound_rounded),
               iconSize: 24,
               tooltip: context.locale.email,
               style: IconButton.styleFrom(
