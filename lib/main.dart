@@ -286,7 +286,6 @@ class MainApp extends StatelessWidget {
         BlocProvider<AuthCubit>(create: (context) => sl()),
         BlocProvider<AppConfigCubit>(create: (context) => sl()..load()),
         BlocProvider<MonetizationCubit>(create: (context) => sl()),
-        // BlocProvider<SyncManagerCubit>(create: (context) => sl()),
         BlocProvider<ClipSyncManagerCubit>(create: (context) => sl()),
         BlocProvider<CollectionSyncManagerCubit>(create: (context) => sl()),
         BlocProvider<OfflinePersistenceCubit>(create: (context) => sl()),

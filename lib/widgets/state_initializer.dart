@@ -4,11 +4,13 @@ import 'dart:ui' as ui;
 import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/utils/applink_listener.dart';
 import 'package:clipboard/utils/share_listener.dart';
-import 'package:clipboard/widgets/keyboard_shortcuts/keyboard_shortcut_provider.dart';
+import 'package:clipboard/widgets/in_background_state.dart';
 import 'package:copycat_base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/bloc/window_action_cubit/window_action_cubit.dart';
+import 'package:copycat_base/common/logging.dart';
 import 'package:copycat_base/constants/numbers/breakpoints.dart';
+import 'package:copycat_base/utils/debounce.dart';
 import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,9 +32,9 @@ class _StateInitializerState extends State<StateInitializer>
     with WidgetsBindingObserver {
   final appLinkListener = ApplinkListener();
   final shareListener = ShareListener();
+  final powerSaverDebounce = Debouncer(milliseconds: 30000);
   ui.FlutterView? _view;
-  bool _isInBackground = false;
-  bool _pinned = false;
+  bool renderingDisabled = false;
 
   Future<void> setupWindow() async {
     final appConfigCubit = context.read<AppConfigCubit>();
@@ -59,23 +61,22 @@ class _StateInitializerState extends State<StateInitializer>
     setupWindow();
   }
 
+  void disableRendering(bool disable) {
+    if (!isDesktopPlatform) return;
+    if (disable) logger.i("CopyCat switching to power saving mode.");
+    setState(() => renderingDisabled = disable);
+  }
+
   @override
-  void didChangeAppLifecycleState(ui.AppLifecycleState state) {
+  void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
       syncAndroidBgClipboardStates();
+      disableRendering(false);
+    } else {
+      powerSaverDebounce(() => disableRendering(true));
     }
-
-    if (!isDesktopPlatform) return;
-
-    setState(() {
-      if (state == ui.AppLifecycleState.resumed) {
-        _isInBackground = false;
-      } else {
-        _isInBackground = true;
-      }
-    });
   }
 
   @override
@@ -112,29 +113,15 @@ class _StateInitializerState extends State<StateInitializer>
 
   @override
   Widget build(BuildContext context) {
-    Widget child = const SizedBox.shrink();
+    final windowInBackground =
+        (InBackgroundState.of(context)?.inBackground ?? false);
+    final isPowerSaverActive = windowInBackground && renderingDisabled;
 
-    if (_pinned || !_isInBackground) {
-      child = FadeIn(
-        duration: Durations.medium3,
-        child: widget.child,
-      );
-    }
+    if (isPowerSaverActive) return const SizedBox.shrink();
 
-    if (isDesktopPlatform) {
-      child = KeyboardShortcutProvider(child: child);
-    }
-
-    return BlocListener<AppConfigCubit, AppConfigState>(
-      listenWhen: (previous, current) {
-        return previous.config.pinned != current.config.pinned;
-      },
-      listener: (context, state) {
-        setState(() {
-          _pinned = state.config.pinned;
-        });
-      },
-      child: child,
+    return FadeIn(
+      duration: Durations.medium3,
+      child: widget.child,
     );
   }
 }

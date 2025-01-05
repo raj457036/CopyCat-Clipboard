@@ -12,7 +12,7 @@ class PasteByClipIndexShortcutActivator implements ShortcutActivator {
         triggers.contains(event.logicalKey);
 
     if (accepted) {
-      final num_ = int.parse(event.character!);
+      final num_ = int.parse(event.logicalKey.keyLabel);
       onAccept?.call(num_);
     }
     return accepted;

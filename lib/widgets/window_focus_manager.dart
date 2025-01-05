@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
+import 'package:clipboard/widgets/in_background_state.dart';
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/common/logging.dart';
 import 'package:copycat_base/db/app_config/appconfig.dart';
@@ -44,6 +45,8 @@ class WindowFocusManager extends StatefulWidget {
 
 class WindowFocusManagerState extends State<WindowFocusManager>
     with WindowListener {
+  bool isWindowInBackground = false;
+
   int? lastWindowId;
   StreamSubscription? subscription;
   final debounce = Debouncer(milliseconds: 650);
@@ -65,6 +68,9 @@ class WindowFocusManagerState extends State<WindowFocusManager>
       context.windowAction?.hide();
       await widget.focusWindow.setActiveWindowId(windowId!);
     }
+    setState(() {
+      isWindowInBackground = true;
+    });
   }
 
   Future<void> pasteOnFocusedWindow() async {
@@ -109,7 +115,9 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   @override
   void onWindowFocus() {
     // Make sure to call once.
-    setState(() {});
+    setState(() {
+      isWindowInBackground = false;
+    });
     context.windowAction?.isFocused = true;
   }
 
@@ -159,6 +167,9 @@ class WindowFocusManagerState extends State<WindowFocusManager>
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return InBackgroundState(
+      inBackground: isWindowInBackground,
+      child: widget.child,
+    );
   }
 }

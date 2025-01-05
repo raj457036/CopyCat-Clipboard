@@ -96,9 +96,9 @@ class GoogleDriveSetup extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                subtitle: const Text(
-                  "Current Default",
-                ),
+                // subtitle: const Text(
+                //   "🔗 linked email...",
+                // ),
                 trailing: FilledButton.icon(
                   style: FilledButton.styleFrom(
                     fixedSize: const Size(185, 40),
