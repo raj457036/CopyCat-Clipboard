@@ -36,8 +36,10 @@ class ClipGridBuilder extends StatelessWidget {
   });
 
   void onIndexPaste(BuildContext context, EventBusIndexPasteEvent state) {
-    final index = state.index;
-    performPrimaryActionOnClip(context, items[index - 1], canPaste);
+    final index = state.index - 1;
+    if (!index.isNegative && index < items.length) {
+      performPrimaryActionOnClip(context, items[index], canPaste);
+    }
   }
 
   @override

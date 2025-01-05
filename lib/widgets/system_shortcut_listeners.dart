@@ -27,7 +27,6 @@ class SystemShortcutListener extends StatelessWidget {
           previous.config.toggleHotkey != current.config.toggleHotkey,
       listener: (context, state) async {
         final hotKey = state.config.getToggleHotkey;
-        await hotKeyManager.unregisterAll();
         if (hotKey == null) return;
         await hotKeyManager.register(
           hotKey,

@@ -3,13 +3,21 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+final Set<LogicalKeyboardKey> _metaSynonyms = LogicalKeyboardKey.expandSynonyms(
+    <LogicalKeyboardKey>{LogicalKeyboardKey.meta});
+
 class PasteByClipIndexShortcutActivator implements ShortcutActivator {
   void Function(int index)? onAccept;
+
+  bool _shouldAcceptMetaModifiers(Set<LogicalKeyboardKey> pressed) {
+    return pressed.intersection(_metaSynonyms).isNotEmpty;
+  }
 
   @override
   bool accepts(KeyEvent event, HardwareKeyboard state) {
     final accepted = (event is KeyDownEvent || (event is! KeyRepeatEvent)) &&
-        triggers.contains(event.logicalKey);
+        triggers.contains(event.logicalKey) &&
+        _shouldAcceptMetaModifiers(state.logicalKeysPressed);
 
     if (accepted) {
       final num_ = int.parse(event.logicalKey.keyLabel);
