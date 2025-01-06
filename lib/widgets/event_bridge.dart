@@ -100,7 +100,9 @@ class EventBridge extends StatelessWidget {
     if (Platform.isAndroid) context.read<AndroidBgClipboardCubit?>()?.reset();
     context.read<MonetizationCubit>().logout();
     context.read<ClipCollectionCubit>().reset();
-    if (isDesktopPlatform) context.read<WindowActionCubit>().setWindowdView();
+    if (isDesktopPlatform) {
+      context.read<WindowActionCubit>()..setWindowdView()..show();
+    }
     clearPersistedRootDir();
     db.writeTxn(() => db.clear());
 
@@ -257,7 +259,6 @@ class EventBridge extends StatelessWidget {
                       context
                           .read<CollectionSyncManagerCubit>()
                           .syncChanges(null, manual: false, restoration: false);
-
                       rootNavKey.currentContext?.goNamed(RouteConstants.home);
                     } else {
                       rootNavKey.currentContext
@@ -268,6 +269,7 @@ class EventBridge extends StatelessWidget {
               case UnauthenticatedAuthState(:final failure):
                 if (failure == null) resetAll(context);
                 context.read<AppConfigCubit>().reset();
+                context.read<WindowActionCubit>().show();
                 rootNavKey.currentContext?.goNamed(RouteConstants.login);
               case UnknownAuthState() || AuthenticatingAuthState():
                 logger.i(
