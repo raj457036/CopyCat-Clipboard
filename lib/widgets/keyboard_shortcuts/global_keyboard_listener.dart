@@ -1,3 +1,4 @@
+import 'package:copycat_base/common/logging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -21,7 +22,7 @@ class _GlobalKeyboardListenerState extends State<GlobalKeyboardListener> {
 
   void onKeyEvent(KeyEvent value) {
     if (value is! KeyUpEvent) return;
-    print(value);
+    logger.d(value);
   }
 
   @override

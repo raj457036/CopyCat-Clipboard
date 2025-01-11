@@ -93,7 +93,7 @@ class WindowsActivityObserver implements PlatformActivityObserverInterface {
 
     var activity = ActivityInfo.fromJson(result);
 
-    // TODO: Work on getting the url in windows
+    // TODO(raj): try to find another way to fetch browser url
     // if (activity.title != _lastActivity?.title) {
     //   final url = await getUrl(activity.appFileName, activity.title);
     //   activity = activity.copyWith(url: url);
