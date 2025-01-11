@@ -162,6 +162,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
         context,
         alignment: 0.5,
         duration: Durations.medium1,
+        curve: Curves.easeOut,
       );
       focus();
     } else {

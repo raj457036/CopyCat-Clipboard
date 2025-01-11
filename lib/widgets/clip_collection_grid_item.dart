@@ -84,6 +84,7 @@ class ClipCollectionGridItem extends StatelessWidget {
               context,
               alignment: 0.5,
               duration: Durations.medium1,
+              curve: Curves.easeOut,
             );
           },
           autofocus: autoFocus,

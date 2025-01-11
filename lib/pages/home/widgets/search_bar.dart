@@ -119,7 +119,7 @@ class _SearchBarInputState extends State<SearchInputBar> {
       trigger: onSearchFocusEvent,
       child: AnimatedContainer(
         height: 40,
-        width: isFocused ? 650 : 450,
+        width: isFocused ? 650 : 500,
         duration: Durations.short2,
         child: Row(
           spacing: 4,
