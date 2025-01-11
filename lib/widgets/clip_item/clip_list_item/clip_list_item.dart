@@ -123,7 +123,7 @@ class _ClipListItemState extends State<ClipListItem> {
                   selected: widget.selected,
                   selectionActive: widget.selectionActive,
                 ),
-                if (widget.item.displayTitle != null)
+                if (widget.item.displayTitle != null && !widget.item.encrypted)
                   Padding(
                     padding: const EdgeInsets.only(
                       left: padding10,

@@ -99,107 +99,112 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
             if (fetchingCount)
               const CircularProgressIndicator()
             else if (totalCount < 0)
-              Column(
-                children: [
-                  const Text("Failed to find any collections backup.",
-                      textAlign: TextAlign.center),
-                  height10,
-                  ElevatedButton(
-                      onPressed: startSyncing, child: const Text('Try Again')),
-                ],
+              FadeIn(
+                child: Column(
+                  children: [
+                    const Text("Failed to find any collections backup.",
+                        textAlign: TextAlign.center),
+                    height10,
+                    ElevatedButton(
+                        onPressed: startSyncing,
+                        child: const Text('Try Again')),
+                  ],
+                ),
               )
             else
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "You have approximately $totalCount collections",
-                    textAlign: TextAlign.center,
-                    style: textTheme.titleMedium,
-                  ),
-                  height12,
-                  const SizedBox(width: 100, height: 20, child: Divider()),
-                  height8,
-                  BlocConsumer<CollectionSyncManagerCubit,
-                      CollectionSyncManagerState>(
-                    listener: (context, state) {},
-                    builder: (context, state) {
-                      switch (state) {
-                        case CollectionSyncDisabled():
-                          return const Text(
-                            "Syncing is currently disabled. Please enable it to continue.",
-                            textAlign: TextAlign.center,
-                          );
-                        case CollectionSyncUnknown() ||
-                              CollectionSyncingUnknown():
-                          return const Text(
-                              "Preparing to sync. Please wait...");
-                        case CollectionSyncComplete(:final syncCount):
-                          return Column(
-                            children: [
-                              const SizedBox(
-                                width: 250,
-                                child: LinearProgressIndicator(
-                                  borderRadius: radius12,
-                                  value: 1,
-                                ),
-                              ),
-                              height10,
-                              Text(
-                                "Your $syncCount collections have been restored successfully.",
-                                textAlign: TextAlign.center,
-                              ),
-                              height10,
-                              ElevatedButton(
-                                onPressed: widget.onContinue,
-                                child: Text(context.locale.continue_),
-                              ),
-                            ],
-                          );
-                        case CollectionSyncFailed(:final failure):
-                          return Column(
-                            children: [
-                              Text("Sync Failed: ${failure.message}"),
-                              height10,
-                              ElevatedButton(
-                                onPressed: startSyncing,
-                                child: const Text('Try Again'),
-                              ),
-                            ],
-                          );
-                        case CollectionSyncing(:final synced):
-                          return Column(
-                            children: [
-                              if (totalCount > 0 || synced > 0)
-                                SizedBox(
+              FadeIn(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "You have approximately $totalCount collections",
+                      textAlign: TextAlign.center,
+                      style: textTheme.titleMedium,
+                    ),
+                    height12,
+                    const SizedBox(width: 100, height: 20, child: Divider()),
+                    height8,
+                    BlocConsumer<CollectionSyncManagerCubit,
+                        CollectionSyncManagerState>(
+                      listener: (context, state) {},
+                      builder: (context, state) {
+                        switch (state) {
+                          case CollectionSyncDisabled():
+                            return const Text(
+                              "Syncing is currently disabled. Please enable it to continue.",
+                              textAlign: TextAlign.center,
+                            );
+                          case CollectionSyncUnknown() ||
+                                CollectionSyncingUnknown():
+                            return const Text(
+                                "Preparing to sync. Please wait...");
+                          case CollectionSyncComplete(:final syncCount):
+                            return Column(
+                              children: [
+                                const SizedBox(
                                   width: 250,
                                   child: LinearProgressIndicator(
                                     borderRadius: radius12,
-                                    value: synced / max(totalCount, synced),
+                                    value: 1,
                                   ),
                                 ),
-                              height10,
-                              Text(
-                                "Restored: $synced of ${max(totalCount, synced)} collections.",
-                              ),
-                              height12,
-                              Text(
-                                "⚠️ Please keep this screen open during syncing to avoid data corruption or inconsistencies.",
-                                textAlign: TextAlign.center,
-                                style: textTheme.bodySmall?.copyWith(
-                                  color: Colors.deepOrange,
-                                  fontStyle: FontStyle.italic,
+                                height10,
+                                Text(
+                                  "Your $syncCount collections have been restored successfully.",
+                                  textAlign: TextAlign.center,
                                 ),
-                              )
-                            ],
-                          );
-                        case _:
-                          // no-op
-                          return const SizedBox.shrink();
-                      }
-                    },
-                  ),
-                ],
+                                height10,
+                                ElevatedButton(
+                                  onPressed: widget.onContinue,
+                                  child: Text(context.locale.continue_),
+                                ),
+                              ],
+                            );
+                          case CollectionSyncFailed(:final failure):
+                            return Column(
+                              children: [
+                                Text("Sync Failed: ${failure.message}"),
+                                height10,
+                                ElevatedButton(
+                                  onPressed: startSyncing,
+                                  child: const Text('Try Again'),
+                                ),
+                              ],
+                            );
+                          case CollectionSyncing(:final synced):
+                            return Column(
+                              children: [
+                                if (totalCount > 0 || synced > 0)
+                                  SizedBox(
+                                    width: 250,
+                                    child: LinearProgressIndicator(
+                                      borderRadius: radius12,
+                                      value: synced / max(totalCount, synced),
+                                    ),
+                                  ),
+                                height10,
+                                Text(
+                                  "Restored: $synced of ${max(totalCount, synced)} collections.",
+                                ),
+                                height12,
+                                Text(
+                                  "⚠️ Please keep this screen open during syncing to avoid data corruption or inconsistencies.",
+                                  textAlign: TextAlign.center,
+                                  style: textTheme.bodySmall?.copyWith(
+                                    color: Colors.deepOrange,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                )
+                              ],
+                            );
+                          case _:
+                            // no-op
+                            return const SizedBox.shrink();
+                        }
+                      },
+                    ),
+                  ],
+                ),
               )
           ],
         ),

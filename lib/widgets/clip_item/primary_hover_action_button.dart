@@ -30,7 +30,7 @@ class PrimaryHoverAction extends StatelessWidget {
     Widget child;
     if (!hovered) {
       final meta = ClipMetaInfo.of(context);
-      if (meta == null) return const SizedBox.shrink();
+      if (meta == null || item.encrypted) return const SizedBox.shrink();
       child = Card.filled(
         margin: const EdgeInsets.only(right: padding8),
         shape: const RoundedRectangleBorder(
@@ -42,7 +42,7 @@ class PrimaryHoverAction extends StatelessWidget {
             height: 20,
             child: Center(
               child: Text(
-                "$metaKey + ${meta.index}",
+                keyboardShortcut(key: meta.index.toString()),
                 textAlign: TextAlign.center,
                 style: textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.w600,

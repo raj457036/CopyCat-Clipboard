@@ -9,13 +9,11 @@ typedef OnFilterChangeCallback = void Function(SearchFilterState filterState);
 class FilterButton extends StatelessWidget {
   final OnFilterChangeCallback onChange;
   final SearchFilterState initialState;
-  final double size;
 
   const FilterButton({
     super.key,
     required this.initialState,
     required this.onChange,
-    this.size = 38,
   });
 
   Future<void> changeFilter(
@@ -33,22 +31,19 @@ class FilterButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final active = initialState.isActive;
-    return SizedBox.square(
-      dimension: size,
-      child: Focus(
-        skipTraversal: true,
-        descendantsAreFocusable: false,
-        child: IconButton(
-          icon: const Icon(Icons.tune_rounded),
-          iconSize: size * .48,
-          tooltip: context.locale.applyFilter,
-          color: active ? colors.secondaryContainer : null,
-          style: IconButton.styleFrom(
-            backgroundColor:
-                active ? colors.primary : colors.surfaceContainerHighest,
-          ),
-          onPressed: () => changeFilter(context, initialState),
+    return Focus(
+      skipTraversal: true,
+      descendantsAreFocusable: false,
+      child: IconButton(
+        icon: const Icon(Icons.filter_alt_rounded),
+        iconSize: 20,
+        tooltip: context.locale.applyFilter,
+        color: active ? colors.secondaryContainer : null,
+        style: IconButton.styleFrom(
+          backgroundColor:
+              active ? colors.primary : colors.surfaceContainerHighest,
         ),
+        onPressed: () => changeFilter(context, initialState),
       ),
     );
   }

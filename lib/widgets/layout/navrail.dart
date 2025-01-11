@@ -46,11 +46,11 @@ class NavLayoutNavrail extends StatelessWidget {
                       NavigationRailDestination(
                         padding: EdgeInsets.zero,
                         icon: Tooltip(
-                          message: "$metaKey + D",
+                          message: keyboardShortcut(key: "D"),
                           child: const Icon(Icons.paste_outlined),
                         ),
                         selectedIcon: Tooltip(
-                          message: "$metaKey + D",
+                          message: keyboardShortcut(key: "D"),
                           child: const Icon(Icons.paste_rounded),
                         ),
                         label: Text(
@@ -61,12 +61,12 @@ class NavLayoutNavrail extends StatelessWidget {
                       NavigationRailDestination(
                         padding: EdgeInsets.zero,
                         icon: Tooltip(
-                          message: "$metaKey + C",
+                          message: keyboardShortcut(key: "C"),
                           child:
                               const Icon(Icons.collections_bookmark_outlined),
                         ),
                         selectedIcon: Tooltip(
-                          message: "$metaKey + C",
+                          message: keyboardShortcut(key: "C"),
                           child: const Icon(Icons.collections_bookmark_rounded),
                         ),
                         label: Text(
@@ -77,11 +77,11 @@ class NavLayoutNavrail extends StatelessWidget {
                       NavigationRailDestination(
                         padding: EdgeInsets.zero,
                         icon: Tooltip(
-                          message: "$metaKey + X",
+                          message: keyboardShortcut(key: "X"),
                           child: const Icon(Icons.settings_outlined),
                         ),
                         selectedIcon: Tooltip(
-                          message: "$metaKey + X",
+                          message: keyboardShortcut(key: "X"),
                           child: const Icon(Icons.settings),
                         ),
                         label: Text(

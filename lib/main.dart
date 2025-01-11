@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/routes/routes.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/debug/gizmo_overlay.dart';
 import 'package:clipboard/widgets/event_bridge.dart';
 import 'package:clipboard/widgets/state_initializer.dart';
 import 'package:clipboard/widgets/system_shortcut_listeners.dart';
@@ -313,15 +314,18 @@ class MainApp extends StatelessWidget {
     );
 
     if (kDebugMode) {
-      return DevicePreview(
+      return GizmoOverlay(
         enabled: false,
-        tools: const [
-          ...DevicePreview.defaultTools,
-          DevicePreviewScreenshot(
-            onScreenshot: screenshotAsFile,
-          ),
-        ],
-        builder: (context) => child,
+        child: DevicePreview(
+          enabled: false,
+          tools: const [
+            ...DevicePreview.defaultTools,
+            DevicePreviewScreenshot(
+              onScreenshot: screenshotAsFile,
+            ),
+          ],
+          builder: (context) => child,
+        ),
       );
     }
     return child;

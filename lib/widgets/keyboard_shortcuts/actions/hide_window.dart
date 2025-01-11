@@ -12,9 +12,11 @@ class HideWindowIntent extends Intent {
 class HideWindowAction extends ContextAction<HideWindowIntent> {
   @override
   Object? invoke(HideWindowIntent intent, [BuildContext? context]) {
-    FocusManager.instance.primaryFocus?.unfocus(
-      disposition: UnfocusDisposition.previouslyFocusedChild,
-    );
+    final primaryFocus = FocusManager.instance.primaryFocus;
+
+    if (primaryFocus?.onKeyEvent != null) {
+      return null;
+    }
 
     if (context == null) return null;
 

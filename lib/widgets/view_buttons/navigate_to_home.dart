@@ -35,8 +35,8 @@ class _NavigationButtonsState extends State<NavigationButtons> {
           ? const Icon(Icons.collections_bookmark)
           : const Icon(Icons.paste_rounded),
       tooltip: !isHome
-          ? "${context.locale.clipboard} • $metaKey + D"
-          : "${context.locale.collections} • $metaKey + C",
+          ? "${context.locale.clipboard} • ${keyboardShortcut(key: 'D')}"
+          : "${context.locale.collections} • ${keyboardShortcut(key: 'C')}",
     );
   }
 }

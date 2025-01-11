@@ -53,7 +53,7 @@ class ClipCardBodyContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (item.displayTitle != null)
+              if (item.displayTitle != null && !item.encrypted)
                 Padding(
                   padding: const EdgeInsets.only(
                     left: padding8,

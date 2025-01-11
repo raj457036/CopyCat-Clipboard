@@ -10,7 +10,8 @@ class PasteFAB extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       onPressed: () => pasteContent(context),
-      tooltip: isDesktopPlatform ? "Paste • $metaKey + V" : 'Paste',
+      tooltip:
+          isDesktopPlatform ? "Paste • ${keyboardShortcut(key: 'V')}" : 'Paste',
       heroTag: "paste-fab",
       child: const Icon(Icons.content_paste_go_rounded),
     );

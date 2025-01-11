@@ -98,7 +98,7 @@ class SyncStatusFAB extends StatelessWidget {
                 onPressed: disabled
                     ? null
                     : () => collectionSyncCubit.syncCollections(manual: true),
-                tooltip: "$message • $metaKey + R",
+                tooltip: "$message • ${keyboardShortcut(key: 'R')}",
                 heroTag: "sync-fab",
                 backgroundColor: colors.secondary,
                 foregroundColor: colors.onSecondary,

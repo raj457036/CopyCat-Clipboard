@@ -1,4 +1,5 @@
 import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
+import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
 import 'package:copycat_base/l10n/l10n.dart';
@@ -28,7 +29,11 @@ class URLClipPreviewCard extends StatelessWidget {
           children: [
             SizedBox.fromSize(
               size: const Size(280, 240),
-              child: LinkPreview(url: item.url!, withProgress: true),
+              child: LinkPreview(
+                url: item.url!,
+                withProgress: true,
+                onTap: () => launchUrl(item),
+              ),
             ),
             SelectableText(
               item.url ?? context.locale.nothingHere,
