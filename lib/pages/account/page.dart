@@ -15,8 +15,8 @@ class AccountPage extends StatelessWidget {
 
   Future<void> deleteAccount(BuildContext context) async {
     final answer = await ConfirmDialog(
-      title: context.locale.accountDeleteDialogTitle,
-      message: context.locale.accountDeleteDialogDesc,
+      title: context.locale.account__dialog__delete_confirm__title,
+      message: context.locale.account__dialog__delete_confirm__description,
     ).show(context);
 
     if (answer) {
@@ -42,16 +42,16 @@ class AccountPage extends StatelessWidget {
         return Column(
           children: [
             ListTile(
-              title: Text(context.locale.displayName),
+              title: Text(context.locale.account__list_tile__display_name),
               subtitle: Text(state.displayName ?? ""),
             ),
             ListTile(
-              title: Text(context.locale.email),
+              title: Text(context.locale.account__list_tile__email),
               subtitle: Text(state.email),
             ),
             const Divider(),
             ListTile(
-              title: Text(context.locale.accountSettings),
+              title: Text(context.locale.account__list_tile__settings),
               subtitle: const Padding(
                 padding: EdgeInsets.only(top: padding16),
                 child: ResetPasswordButton(iconButton: false),
@@ -59,7 +59,7 @@ class AccountPage extends StatelessWidget {
             ),
             const Divider(),
             ListTile(
-              title: Text(context.locale.dangerZone),
+              title: Text(context.locale.account__list_tile__danger_zone),
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: padding16),
                 child: ElevatedButton.icon(
@@ -68,7 +68,7 @@ class AccountPage extends StatelessWidget {
                     color: colors.error,
                   ),
                   onPressed: () => deleteAccount(context),
-                  label: Text(context.locale.requestAccountDeletion),
+                  label: Text(context.locale.account__button__req_delete),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: colors.onError,
                     foregroundColor: colors.error,
@@ -82,7 +82,7 @@ class AccountPage extends StatelessWidget {
     );
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.locale.myAccount),
+        title: Text(context.locale.account__appbar__title),
       ),
       body: Align(
         alignment: isPhone ? Alignment.topCenter : Alignment.center,

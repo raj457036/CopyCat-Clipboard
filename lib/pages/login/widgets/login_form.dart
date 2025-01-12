@@ -69,13 +69,13 @@ class LoginForm extends StatelessWidget {
                 children: [
                   // const Spacer(),
                   Text(
-                    context.locale.copyCatClipboard,
+                    context.locale.app__name,
                     style: textTheme.headlineMedium,
                     textAlign: TextAlign.center,
                   ),
                   height12,
                   Text(
-                    context.locale.oneClipboardLimitlessPosibility,
+                    context.locale.app__slogan,
                     style: textTheme.titleMedium,
                     textAlign: TextAlign.center,
                   ),
@@ -125,20 +125,28 @@ class LoginForm extends StatelessWidget {
                         showFailureSnackbar(failure);
                       },
                       localization: AuthUserFormLocalization(
-                        displayNameLabel: context.locale.fullName,
-                        enterEmail: context.locale.enterEmail,
-                        validEmailError: context.locale.validEmailError,
-                        enterPassword: context.locale.enterPassword,
-                        passwordLengthError: context.locale.passwordLengthError,
-                        signIn: context.locale.signIn,
-                        signUp: context.locale.signUp,
-                        forgotPassword: context.locale.forgotPassword,
-                        dontHaveAccount: context.locale.dontHaveAccount,
-                        haveAccount: context.locale.haveAccount,
-                        sendPasswordReset: context.locale.sendPasswordReset,
-                        passwordResetSent: context.locale.passwordResetSent,
-                        backToSignIn: context.locale.backToSignIn,
-                        unexpectedError: context.locale.unexpectedError,
+                        displayNameLabel:
+                            context.locale.login__form__input__name,
+                        enterEmail: context.locale.login__form__input__email,
+                        validEmailError:
+                            context.locale.login__form__input__error_email,
+                        enterPassword:
+                            context.locale.login__form__input__password,
+                        passwordLengthError: context
+                            .locale.login__form__input__error_password_length,
+                        signIn: context.locale.login__form__button__signin,
+                        signUp: context.locale.login__form__button__signup,
+                        forgotPassword:
+                            context.locale.login__form__button__forgot_password,
+                        dontHaveAccount:
+                            context.locale.login__form__text__signup,
+                        haveAccount: context.locale.login__form__text__old_user,
+                        sendPasswordReset:
+                            context.locale.login__form__text__reset_password,
+                        passwordResetSent:
+                            context.locale.login__form__text__reset_ack,
+                        backToSignIn: context.locale.login__form__button__back,
+                        unexpectedError: context.locale.app__unknown_error,
                       ),
                     ),
                   ),
@@ -147,32 +155,32 @@ class LoginForm extends StatelessWidget {
                   const LocaleDropdownButton(),
                   height10,
                   Text.rich(
-                    TextSpan(text: context.locale.termsAgreeP1, children: [
-                      TextSpan(
-                        text: context.locale.privacyPolicies,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: colors.primary,
-                          decoration: TextDecoration.underline,
+                    TextSpan(
+                      text: context.locale.login__form__text_tnc_p1,
+                      children: [
+                        TextSpan(
+                          text: context.locale.login__form__text_tnc_p2,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: colors.primary,
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = launchPrivacyPolicyPage,
                         ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = launchPrivacyPolicyPage,
-                      ),
-                      TextSpan(
-                        text: context.locale.and,
-                      ),
-                      TextSpan(
-                        text: context.locale.termsOfService,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: colors.primary,
-                          decoration: TextDecoration.underline,
+                        TextSpan(
+                          text: context.locale.login__form__text_tnc_p3,
                         ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = launchTermsOfServicePage,
-                      ),
-                      TextSpan(
-                        text: context.locale.termsAgreeP2,
-                      )
-                    ]),
+                        TextSpan(
+                          text: context.locale.login__form__text_tnc_p4,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: colors.primary,
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = launchTermsOfServicePage,
+                        ),
+                      ],
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   // height12,

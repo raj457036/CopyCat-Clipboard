@@ -17,7 +17,7 @@ class ClipItemPreviewVerticalView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: Text(context.locale.preview),
+        title: Text(context.locale.preview__vert_view__tab1_title),
       ),
       body: SafeArea(
         child: DefaultTabController(
@@ -26,8 +26,8 @@ class ClipItemPreviewVerticalView extends StatelessWidget {
             children: [
               TabBar(
                 tabs: [
-                  Tab(text: context.locale.preview),
-                  Tab(text: context.locale.editDetails),
+                  Tab(text: context.locale.preview__vert_view__tab1_title),
+                  Tab(text: context.locale.preview__vert_view__tab2__title),
                 ],
               ),
               Expanded(

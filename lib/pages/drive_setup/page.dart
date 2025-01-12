@@ -23,7 +23,7 @@ class DriveSetupPage extends StatelessWidget {
           switch (state) {
             case DriveSetupDone():
               Navigator.pop(context);
-              showTextSnackbar(context.locale.driveSetupDone);
+              showTextSnackbar(context.locale.drive__snackbar__success);
           }
         },
         builder: (context, state) {
@@ -40,12 +40,12 @@ class DriveSetupPage extends StatelessWidget {
                     const CircularProgressIndicator(),
                     height10,
                     Text(
-                      context.locale.pleaseWaitWhileWeSetupSyncing,
+                      context.locale.drive__text__setting_up,
                       textAlign: TextAlign.center,
                     ),
                     height10,
                     Text(
-                      context.locale.driveSetupMayTakeFewMin,
+                      context.locale.drive__text__setting_up__warning,
                       textAlign: TextAlign.center,
                     ),
                   ],

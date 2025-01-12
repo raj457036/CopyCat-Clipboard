@@ -13,7 +13,7 @@ class LocalSigninButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Tooltip(
-      message: context.locale.useLocallyDesc,
+      message: context.locale.login__local_signin__tooltip,
       child: FilledButton.icon(
         onPressed: () {
           final cubit = context.read<AuthCubit>();
@@ -24,7 +24,7 @@ class LocalSigninButton extends StatelessWidget {
           foregroundColor: colors.onPrimary,
         ),
         icon: const Icon(Icons.cloud_off_outlined),
-        label: Text(context.locale.useLocally),
+        label: Text(context.locale.login__local_signin__btn__label),
       ),
     );
   }

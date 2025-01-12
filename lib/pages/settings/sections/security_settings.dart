@@ -21,7 +21,9 @@ class SecuritySettings extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                SettingHeader(icon: Icons.key, name: context.locale.encryption),
+                SettingHeader(
+                    icon: Icons.key,
+                    name: context.locale.settings__text__encryption),
                 const E2EESettings(),
               ],
             ),

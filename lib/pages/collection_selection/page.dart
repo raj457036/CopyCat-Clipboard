@@ -21,7 +21,7 @@ class ClipCollectionSelectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.locale.selectCollection),
+        title: Text(context.locale.select_collection__appbar__title),
         actions: const [
           DisableForLocalUser(
             ifLocal: CreateCollectionButton(

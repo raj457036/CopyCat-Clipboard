@@ -14,8 +14,8 @@ class ClipCollectionCreateEditPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title = collection == null
-        ? context.locale.createCollection
-        : context.locale.editCollection;
+        ? context.locale.collections__appbar__title__create
+        : context.locale.collections__appbar__title__edit;
     return ConstrainedBox(
       constraints: BoxConstraints.loose(const Size(320, 430)),
       child: Scaffold(

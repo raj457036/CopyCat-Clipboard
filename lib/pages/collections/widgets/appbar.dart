@@ -11,7 +11,7 @@ class CollectionAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       elevation: 0,
       scrolledUnderElevation: 0,
-      title: Text(context.locale.collections),
+      title: Text(context.locale.collections__appbar__title),
       actions: const [
         ActivePlanAction(),
         width12,

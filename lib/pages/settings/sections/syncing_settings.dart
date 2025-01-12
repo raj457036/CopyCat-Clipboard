@@ -20,7 +20,7 @@ class SyncingSettings extends StatelessWidget {
             ifLocal: ListTile(
               leading: const Icon(Icons.sync_disabled),
               enabled: false,
-              title: Text(context.locale.syncConfigNotAvailable),
+              title: Text(context.locale.settings__text__sync_not_available),
             ),
             child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,

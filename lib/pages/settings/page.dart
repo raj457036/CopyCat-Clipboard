@@ -28,7 +28,7 @@ class SettingsPage extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: colors.surface,
           scrolledUnderElevation: 0,
-          title: Text(context.locale.settings),
+          title: Text(context.locale.settings__appbar__title),
           actions: const [
             ActivePlanAction(),
             width12,
@@ -51,11 +51,11 @@ class SettingsPage extends StatelessWidget {
                   tabAlignment: TabAlignment.start,
                   onTap: print,
                   tabs: [
-                    Tab(text: context.locale.general),
-                    Tab(text: context.locale.customization),
-                    Tab(text: context.locale.syncingLabel),
-                    Tab(text: context.locale.security),
-                    Tab(text: context.locale.experimentalLabel),
+                    Tab(text: context.locale.settings__tab__1),
+                    Tab(text: context.locale.settings__tab__2),
+                    Tab(text: context.locale.settings__tab__3),
+                    Tab(text: context.locale.settings__tab__4),
+                    Tab(text: context.locale.settings__tab__5),
                   ],
                 ),
                 const Expanded(

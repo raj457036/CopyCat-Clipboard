@@ -14,7 +14,7 @@ class ResetPasswordPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.locale.resetYourPassword),
+        title: Text(context.locale.reset_password__appbar__title),
       ),
       body: Center(
         child: BlocSelector<AuthCubit, AuthState, String?>(
@@ -35,11 +35,13 @@ class ResetPasswordPage extends StatelessWidget {
               height: 300,
               child: ResetPasswordForm(
                 localization: AuthUserResetPasswordFormLocalization(
-                  passwordResetSent: context.locale.passwordResetSuccess,
-                  enterPassword: context.locale.enterPassword,
-                  passwordLengthError: context.locale.passwordLengthError,
-                  updatePassword: context.locale.updatePassword,
-                  unexpectedError: context.locale.unexpectedError,
+                  passwordResetSent: context.locale.reset_password__success_ack,
+                  enterPassword: context.locale.login__form__input__password,
+                  passwordLengthError:
+                      context.locale.login__form__input__error_password_length,
+                  updatePassword:
+                      context.locale.login__form__button__update_password,
+                  unexpectedError: context.locale.app__unknown_error,
                 ),
                 accessToken: accessToken,
                 onSuccess: (user) {

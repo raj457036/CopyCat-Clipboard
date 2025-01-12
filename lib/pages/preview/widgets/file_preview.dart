@@ -63,7 +63,7 @@ class FileClipPreviewCard extends StatelessWidget {
                 ElevatedButton.icon(
                   icon: const Icon(Icons.open_in_new),
                   onPressed: open,
-                  label: Text(context.locale.open),
+                  label: Text(context.locale.preview__card__file__open),
                 )
             ],
           ),

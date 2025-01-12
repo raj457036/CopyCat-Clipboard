@@ -17,11 +17,13 @@ class ExportEncryptionKeyStep extends StatefulWidget {
   final String exportableKeyId;
   final String exportableEnc2Key;
   final VoidCallback onContinue;
+  final bool skipExportWarning;
   const ExportEncryptionKeyStep({
     super.key,
     required this.exportableKeyId,
     required this.exportableEnc2Key,
     required this.onContinue,
+    this.skipExportWarning = false,
   });
 
   @override
@@ -57,7 +59,10 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
         if (isDesktopPlatform) {
           await File(path).writeAsString(content);
         }
-        showTextSnackbar(locale.exportSuccess, success: true);
+        showTextSnackbar(
+          locale.onboarding__snackbar__export_success,
+          success: true,
+        );
       }
     } catch (e) {
       showFailureSnackbar(Failure.fromException(e));
@@ -69,17 +74,13 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
   }
 
   Future<void> doItLater() async {
-    if (exported) {
+    if (exported || widget.skipExportWarning) {
       widget.onContinue();
       return;
     }
     final answer = await ConfirmDialog(
-      title: "✋ Backup Your Encryption Key",
-      message:
-          "You haven’t exported your encryption key yet. Without a backup, you won’t be able to access your encrypted clips if the key is lost or you switch devices.\n\n"
-          "👉 If you already have a secure backup of your key, you can safely continue. Otherwise, we strongly recommend exporting the key now to avoid data loss. Do you still want to continue?",
-      yes: context.locale.yes,
-      no: context.locale.no,
+      title: context.locale.onboarding__dialog__skip_export__title,
+      message: context.locale.onboarding__dialog__skip_export__subtitle,
       confirmationDelay: 5,
     ).show(context);
 
@@ -88,12 +89,9 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
   }
 
   Future<void> whyExportKey() async {
-    await const InfoDialog(
-      title: "🤔 Why Export the Encryption Key?",
-      message:
-          "Exporting your encryption key is essential for securely accessing your encrypted data on multiple devices. Without the key, your encrypted data will remain inaccessible after sync.\n\n"
-          "Keep a backup of your encryption key in a secure location to prevent data loss. Remember, the key is unique to your account and cannot be recovered if lost.\n\n"
-          "Note: Copycat cannot access your encrypted clips or your encryption keys. This is because we value your privacy above everything else.",
+    await InfoDialog(
+      title: context.locale.onboarding__dialog__export_info__title,
+      message: context.locale.onboarding__dialog__export_info__subtitle,
     ).open(context);
   }
 
@@ -111,7 +109,7 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
             ),
             height10,
             Text(
-              "Clipboard Encryption",
+              context.locale.onboarding__text__export_key_headline,
               style: textTheme.headlineMedium,
             ),
             height16,
@@ -122,7 +120,7 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
                 child: Column(
                   children: [
                     Text(
-                      "🥳 Great news! Local encryption is already setup on your clipboard.",
+                      context.locale.onboarding__text__export_key_title,
                       textAlign: TextAlign.center,
                       style: textTheme.titleMedium,
                     ),
@@ -131,13 +129,17 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
                       children: [
                         FilledButton.icon(
                           onPressed: exportEnc2Key,
-                          label: const Text('Export Key'),
+                          label: Text(
+                            context.locale.onboarding__button__export_key,
+                          ),
                           icon: const Icon(Icons.key),
                         ),
                         width10,
                         TextButton(
                           onPressed: doItLater,
-                          child: Text(context.locale.continue_),
+                          child: Text(
+                            context.mlocale.continueButtonLabel.title,
+                          ),
                         ),
                       ],
                     ),
@@ -145,7 +147,9 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
                     TextButton.icon(
                       style: TextButton.styleFrom(),
                       onPressed: whyExportKey,
-                      label: const Text("Why Export the Encryption Key?"),
+                      label: Text(
+                        context.locale.onboarding__button__why_important,
+                      ),
                       icon: const Icon(Icons.info),
                     ),
                   ],

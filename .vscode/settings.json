@@ -13,5 +13,20 @@
   ],
   "cSpell.enableFiletypes": [
     "!dart"
+  ],
+  "csv-preview.separator": ";",
+  "csv-preview.resizeColumns": "all",
+  "csv-preview.lineNumbers": "ordinal",
+  "todohighlight.keywordsPattern": "\"@@[A-Z_]+\":.*",
+  "todohighlight.include": [
+    "*.arb"
+  ],
+  "todohighlight.isEnable": true,
+  "todohighlight.defaultStyle": {
+    "color": "#101820",
+    "backgroundColor": "#FEE715"
+  },
+  "arb-editor.suppressedWarnings": [
+    "missing_metadata_for_key",
   ]
 }

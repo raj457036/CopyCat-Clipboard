@@ -81,11 +81,8 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
 
   Future<void> doItLater() async {
     final answer = await ConfirmDialog(
-      title: "✋ Your Clips Will Be Insecure",
-      message:
-          "You haven’t generated an encryption key yet. Without it, your clips will remain unencrypted and insecure. You can generate the key later in Settings ❯ Security. Do you still want to continue?",
-      yes: context.locale.yes,
-      no: context.locale.no,
+      title: context.locale.onboarding__dialog__skip_gen_key__title,
+      message: context.locale.onboarding__dialog__skip_gen_key__subtitle,
       confirmationDelay: 5,
     ).show(context);
 
@@ -94,10 +91,9 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
   }
 
   Future<void> whyDoINeedIt() async {
-    await const InfoDialog(
-      title: "🤔 Why Do I Need Encryption?",
-      message:
-          "Encryption protects your data by converting it into a secure format that can only be accessed with a key. Without encryption, your clips are stored in plain text, making them vulnerable to unauthorized access. Enabling encryption ensures that only you can access your sensitive data, providing an extra layer of security against potential breaches.",
+    await InfoDialog(
+      title: context.locale.onboarding__dialog__gen_key_info__title,
+      message: context.locale.onboarding__dialog__gen_key_info__subtitle,
     ).open(context);
   }
 
@@ -114,7 +110,7 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
             const Icon(Icons.lock, size: 28),
             height10,
             Text(
-              "Setup Clipboard Encryption",
+              context.locale.onboarding__text__gen_key_headline,
               style: textTheme.headlineMedium,
               textAlign: TextAlign.center,
             ),
@@ -125,7 +121,9 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
               Column(
                 children: [
                   Text(
-                    "🎉 Key ${generatedKeys?.$2.sub(end: 6)}*** Generated 🎉",
+                    context.locale.onboarding__text__key_generated_title(
+                      keyPreview: generatedKeys?.$2.sub(end: 6) ?? "",
+                    ),
                     style: textTheme.titleMedium,
                   ),
                   height16,
@@ -133,7 +131,9 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
                     children: [
                       TextButton(
                         onPressed: generateEnc2Key,
-                        child: const Text('Re-Generate Key'),
+                        child: Text(
+                          context.locale.onboarding__button__regenerate_key,
+                        ),
                       ),
                       width10,
                       FilledButton(
@@ -141,7 +141,7 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(context.locale.continue_),
+                            Text(context.mlocale.continueButtonLabel.title),
                             width4,
                             const Icon(Icons.chevron_right),
                           ],
@@ -155,7 +155,7 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
               Column(
                 children: [
                   Text(
-                    "Your account doesn't have any encreyption key",
+                    context.locale.onboarding__text__no_key,
                     style: textTheme.titleMedium,
                   ),
                   height10,
@@ -163,13 +163,17 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
                     children: [
                       FilledButton.icon(
                         onPressed: generateEnc2Key,
-                        label: const Text('Generate Key'),
+                        label: Text(
+                          context.locale.onboarding__button__generate_key,
+                        ),
                         icon: const Icon(Icons.key),
                       ),
                       width10,
                       TextButton(
                         onPressed: doItLater,
-                        child: const Text('Do it later'),
+                        child: Text(
+                          context.locale.onboarding__button__do_it_later,
+                        ),
                       ),
                     ],
                   ),
@@ -177,7 +181,9 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
                   TextButton.icon(
                     style: TextButton.styleFrom(),
                     onPressed: whyDoINeedIt,
-                    label: const Text("Why It's Important?"),
+                    label: Text(
+                      context.locale.onboarding__button__why_important,
+                    ),
                     icon: const Icon(Icons.info),
                   ),
                 ],

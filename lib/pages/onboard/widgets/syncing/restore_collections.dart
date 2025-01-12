@@ -156,7 +156,9 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                                 height10,
                                 ElevatedButton(
                                   onPressed: widget.onContinue,
-                                  child: Text(context.locale.continue_),
+                                  child: Text(
+                                    context.mlocale.continueButtonLabel.title,
+                                  ),
                                 ),
                               ],
                             );

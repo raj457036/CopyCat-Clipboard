@@ -64,7 +64,7 @@ class _PatternExclusionTabState extends State<PatternExclusionTab> {
       children: [
         ListTile(
           title: Text(
-            context.locale.excludePattern,
+            context.locale.custom_er__tile__pattern,
           ),
           subtitle: TextField(
             focusNode: focusNode,
@@ -88,7 +88,9 @@ class _PatternExclusionTabState extends State<PatternExclusionTab> {
             },
             builder: (context, rules) {
               if (rules.isEmpty) {
-                return EmptyNote(note: context.locale.noCustomPatternExcluded);
+                return EmptyNote(
+                  note: context.locale.custom_er__text__no_pattern,
+                );
               }
               return ListView.builder(
                 itemCount: rules.length,
@@ -100,7 +102,7 @@ class _PatternExclusionTabState extends State<PatternExclusionTab> {
                     leading: IconButton(
                       onPressed: () => deleteItem(context, index),
                       icon: const Icon(Icons.remove_circle_rounded),
-                      tooltip: context.locale.removeCustomPattern,
+                      tooltip: context.locale.custom_er__button__remove_pattern,
                     ),
                   );
                 },

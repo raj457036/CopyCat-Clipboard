@@ -92,7 +92,7 @@ class AppExclusionTab extends StatelessWidget {
       children: [
         ListTile(
           leading: const Icon(Icons.add_rounded),
-          title: Text(context.locale.excludeAnApp),
+          title: Text(context.locale.custom_er__tile__add_app),
           dense: true,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
@@ -113,7 +113,7 @@ class AppExclusionTab extends StatelessWidget {
             },
             builder: (context, rules) {
               if (rules.isEmpty) {
-                return EmptyNote(note: context.locale.noCustomAppExcluded);
+                return EmptyNote(note: context.locale.custom_er__text__no_app);
               }
               return ListView.builder(
                 itemCount: rules.length,
@@ -126,7 +126,7 @@ class AppExclusionTab extends StatelessWidget {
                     leading: IconButton(
                       onPressed: () => deleteItem(context, index),
                       icon: const Icon(Icons.remove_circle_rounded),
-                      tooltip: context.locale.removeCustomApp,
+                      tooltip: context.locale.custom_er__button__remove_app,
                     ),
                   );
                 },

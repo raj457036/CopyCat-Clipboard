@@ -63,7 +63,7 @@ class _UrlTextExclusionTabState extends State<UrlTextExclusionTab> {
         ListTile(
           // dense: true,
           title: Text(
-            context.locale.excludeUrl,
+            context.locale.custom_er__tile__url,
           ),
           subtitle: TextField(
             focusNode: focusNode,
@@ -71,8 +71,8 @@ class _UrlTextExclusionTabState extends State<UrlTextExclusionTab> {
             decoration: InputDecoration(
               border: const UnderlineInputBorder(),
               hintText: !Platform.isMacOS
-                  ? context.locale.featureNotSupported
-                  : context.locale.excludeUrlInputHint,
+                  ? context.locale.custom_er__text__not_supported
+                  : context.locale.custom_er__input__url_hint,
             ),
             enabled: Platform.isMacOS,
             onSubmitted: (value) => addEntry(context, value),
@@ -91,7 +91,7 @@ class _UrlTextExclusionTabState extends State<UrlTextExclusionTab> {
             },
             builder: (context, rules) {
               if (rules.isEmpty) {
-                return EmptyNote(note: context.locale.noCustomUrlExcluded);
+                return EmptyNote(note: context.locale.custom_er__text__no_url);
               }
               return ListView.builder(
                 itemCount: rules.length,
@@ -103,7 +103,7 @@ class _UrlTextExclusionTabState extends State<UrlTextExclusionTab> {
                     leading: IconButton(
                       onPressed: () => deleteItem(context, index),
                       icon: const Icon(Icons.remove_circle_rounded),
-                      tooltip: context.locale.removeCustomUrl,
+                      tooltip: context.locale.custom_er__button__remove_url,
                     ),
                   );
                 },

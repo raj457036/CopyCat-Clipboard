@@ -36,7 +36,7 @@ class URLClipPreviewCard extends StatelessWidget {
               ),
             ),
             SelectableText(
-              item.url ?? context.locale.nothingHere,
+              item.url ?? context.locale.preview__card__missing_text,
             )
           ],
         ),

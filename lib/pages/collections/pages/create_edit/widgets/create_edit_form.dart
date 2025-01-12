@@ -3,6 +3,7 @@ import 'package:copycat_base/bloc/clip_collection_cubit/clip_collection_cubit.da
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/clip_collection/clipcollection.dart';
 import 'package:copycat_base/l10n/l10n.dart';
+import 'package:copycat_base/utils/common_extension.dart';
 import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +28,7 @@ class _ClipCollectionCreateEditFormState
   late final ClipCollectionCubit cubit;
   late final GlobalKey<FormState> formKey;
   late final TextEditingController emojiController,
-      titleController,
+      nameController,
       descriptionController;
 
   @override
@@ -38,7 +39,7 @@ class _ClipCollectionCreateEditFormState
     emojiController = TextEditingController(
       text: widget.collection?.emoji ?? "🏆",
     );
-    titleController = TextEditingController(
+    nameController = TextEditingController(
       text: widget.collection?.title,
     );
     descriptionController = TextEditingController(
@@ -49,7 +50,7 @@ class _ClipCollectionCreateEditFormState
   @override
   void dispose() {
     emojiController.dispose();
-    titleController.dispose();
+    nameController.dispose();
     descriptionController.dispose();
     super.dispose();
   }
@@ -71,7 +72,7 @@ class _ClipCollectionCreateEditFormState
     if (widget.collection == null) {
       collection = ClipCollection(
         emoji: emojiController.text,
-        title: titleController.text.trim(),
+        title: nameController.text.trim(),
         description: description,
         created: now(),
         modified: now(),
@@ -79,7 +80,7 @@ class _ClipCollectionCreateEditFormState
     } else {
       collection = widget.collection!.copyWith(
         emoji: emojiController.text,
-        title: titleController.text.trim(),
+        title: nameController.text.trim(),
         description: description,
       )..applyId(widget.collection!);
     }
@@ -92,11 +93,11 @@ class _ClipCollectionCreateEditFormState
     final options = [
       TextButton(
         onPressed: context.pop,
-        child: Text(context.locale.cancel),
+        child: Text(context.mlocale.cancelButtonLabel.title),
       ),
       FilledButton(
         onPressed: submit,
-        child: Text(context.locale.save),
+        child: Text(context.mlocale.saveButtonLabel.title),
       ),
     ];
 
@@ -123,16 +124,16 @@ class _ClipCollectionCreateEditFormState
             height12,
             TextFormField(
               decoration: InputDecoration(
-                labelText: context.locale.title,
+                labelText: context.locale.collections__input__name,
               ),
-              controller: titleController,
+              controller: nameController,
               validator: ValidationBuilder().required().maxLength(100).build(),
               autofocus: true,
             ),
             height12,
             TextFormField(
               decoration: InputDecoration(
-                labelText: context.locale.description,
+                labelText: context.locale.collections__input__description,
               ),
               validator:
                   ValidationBuilder(optional: true).maxLength(255).build(),

@@ -37,7 +37,7 @@ class ExclusionRulesPage extends StatelessWidget {
           appBar: AppBar(
             // automaticallyImplyLeading: true,
             centerTitle: false,
-            title: Text(context.locale.exclusionRules),
+            title: Text(context.locale.settings__appbar__er__title),
             actions: [
               Switch(
                 value: state.enable,
@@ -62,11 +62,12 @@ class ExclusionRulesPage extends StatelessWidget {
                     const Divider(),
                     height8,
                     SettingHeader(
-                      // icon: Icons.filter_alt_rounded,
-                      name: context.locale.predefinedExclRules,
+                      name: context.locale.settings__text__er__predefine,
                     ),
                     SwitchListTile(
-                      title: Text(context.locale.passwordManagers),
+                      title: Text(
+                        context.locale.settings__text__er__pass_manager,
+                      ),
                       value: state.passwordManager,
                       onChanged: enable
                           ? (value) {
@@ -79,7 +80,7 @@ class ExclusionRulesPage extends StatelessWidget {
                     ),
                     if (isDesktopPlatform)
                       SwitchListTile(
-                        title: Text(context.locale.creditCardNumber),
+                        title: Text(context.locale.settings__text__er__cc),
                         value: state.creditCard,
                         onChanged: enable
                             ? (value) {
@@ -91,7 +92,7 @@ class ExclusionRulesPage extends StatelessWidget {
                             : null,
                       ),
                     SwitchListTile(
-                      title: Text(context.locale.phoneNumber),
+                      title: Text(context.locale.settings__text__er__phone),
                       value: state.phone,
                       onChanged: enable
                           ? (value) {
@@ -103,7 +104,7 @@ class ExclusionRulesPage extends StatelessWidget {
                           : null,
                     ),
                     SwitchListTile(
-                      title: Text(context.locale.email),
+                      title: Text(context.locale.settings__text__er__email),
                       value: state.email,
                       onChanged: enable
                           ? (value) {
@@ -116,7 +117,7 @@ class ExclusionRulesPage extends StatelessWidget {
                     ),
                     if (Platform.isMacOS)
                       SwitchListTile(
-                        title: Text(context.locale.sensitiveUrls),
+                        title: Text(context.locale.settings__text__er__url),
                         value: state.sensitiveUrls,
                         onChanged: enable
                             ? (value) {

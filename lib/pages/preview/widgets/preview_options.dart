@@ -46,44 +46,44 @@ class PreviewOptions extends StatelessWidget {
                         Navigator.pop(context);
                       },
                 tooltip: item.downloading
-                    ? context.locale.downloading
-                    : context.locale.downloadForOffline,
+                    ? context.locale.app__downloading
+                    : context.locale.app__download,
                 icon: const Icon(Icons.download_for_offline_outlined),
               ),
             if (item.inCache)
               IconButton.filledTonal(
                 onPressed: () => copyToClipboard(context, item),
-                tooltip: context.locale.copyToClipboard,
+                tooltip: context.mlocale.copyButtonLabel,
                 icon: const Icon(Icons.copy),
               ),
             if (item.inCache)
               IconButton.outlined(
                 icon: const Icon(Icons.ios_share),
-                tooltip: context.locale.share,
+                tooltip: context.mlocale.shareButtonLabel,
                 onPressed: () => shareClipboardItem(context, item),
               ),
             if (item.type == ClipItemType.url)
               IconButton.outlined(
                 icon: const Icon(Icons.open_in_new),
-                tooltip: context.locale.openInBrowser,
+                tooltip: context.locale.app__follow_link,
                 onPressed: () => launchUrl(item),
               ),
             if (item.text != null)
               IconButton.outlined(
                 icon: const Icon(Icons.edit_document),
-                tooltip: context.locale.edit,
+                tooltip: context.locale.app__edit,
                 onPressed: () => updateItem(context),
               ),
             if (canOpen)
               IconButton.outlined(
                 icon: const Icon(Icons.open_in_new),
-                tooltip: context.locale.open,
+                tooltip: context.locale.preview__card__file__open,
                 onPressed: () => openFile(item),
               ),
             if (canOpen)
               IconButton.outlined(
                 icon: const Icon(Icons.save_alt_rounded),
-                tooltip: context.locale.export,
+                tooltip: context.locale.app__export,
                 onPressed: () => copyToClipboard(context, item, saveFile: true),
               ),
             IconButton.outlined(
@@ -92,7 +92,7 @@ class PreviewOptions extends StatelessWidget {
                 // ignore: use_build_context_synchronously
                 if (done) Navigator.pop(context);
               },
-              tooltip: context.locale.delete,
+              tooltip: context.locale.app__delete,
               icon: const Icon(Icons.delete),
             ),
           ],

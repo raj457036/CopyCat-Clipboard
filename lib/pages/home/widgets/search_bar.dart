@@ -157,7 +157,7 @@ class _SearchBarInputState extends State<SearchInputBar> {
                         )
                       : null,
                   prefixIcon: const Icon(Icons.search_rounded),
-                  hintText: context.locale.searchInClipboard,
+                  hintText: context.locale.home__search__hint,
                   contentPadding: const EdgeInsets.only(left: padding12),
                 ),
                 textInputAction: TextInputAction.search,
@@ -174,7 +174,7 @@ class _SearchBarInputState extends State<SearchInputBar> {
                 onPressed: clear,
                 icon: const Icon(Icons.clear_rounded),
                 color: colors.outline,
-                tooltip: context.locale.resetSearch,
+                tooltip: context.locale.home__search__reset,
               ),
             if (size.width > 300)
               FilterButton(

@@ -59,7 +59,7 @@ class MediaClipPreviewCard extends StatelessWidget {
             child: ElevatedButton.icon(
               icon: const Icon(Icons.play_arrow_rounded),
               onPressed: open,
-              label: Text(context.locale.open),
+              label: Text(context.locale.preview__card__video__play),
             ),
           );
         }

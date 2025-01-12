@@ -64,7 +64,7 @@ class _TitleTextExclusionTabState extends State<TitleTextExclusionTab> {
       children: [
         ListTile(
           // dense: true,
-          title: Text(context.locale.excludeTitle),
+          title: Text(context.locale.custom_er__tile__title),
           subtitle: TextField(
             focusNode: focusNode,
             controller: controller,
@@ -87,7 +87,9 @@ class _TitleTextExclusionTabState extends State<TitleTextExclusionTab> {
             },
             builder: (context, rules) {
               if (rules.isEmpty) {
-                return EmptyNote(note: context.locale.noCustomTitleExcluded);
+                return EmptyNote(
+                  note: context.locale.custom_er__text__no_title,
+                );
               }
               return ListView.builder(
                 itemCount: rules.length,
@@ -99,7 +101,7 @@ class _TitleTextExclusionTabState extends State<TitleTextExclusionTab> {
                     leading: IconButton(
                       onPressed: () => deleteItem(context, index),
                       icon: const Icon(Icons.remove_circle_rounded),
-                      tooltip: context.locale.removeCustomTitle,
+                      tooltip: context.locale.custom_er__button__remove_title,
                     ),
                   );
                 },

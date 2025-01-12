@@ -23,12 +23,14 @@ class EncryptionStep extends StatelessWidget {
         );
       },
       builder: (context, user) {
+        bool imported = false;
+
         return BlocSelector<AppConfigCubit, AppConfigState, EncryptionSecret?>(
           selector: (state) {
             return state.config.enc2Key;
           },
           builder: (context, secret) {
-            if (user == null) return const Center(child: ToLoginPage());
+            if (user == null) return const Center(child: ToLoginPageButton());
             final keyId = user.enc2KeyId;
             final enc1 = user.enc1;
 
@@ -44,6 +46,7 @@ class EncryptionStep extends StatelessWidget {
                 clipboardRepository: sl(
                   instanceName: "remote",
                 ),
+                onImportSuccess: () => imported = true,
                 onContinue: onContinue,
               );
             }
@@ -51,6 +54,7 @@ class EncryptionStep extends StatelessWidget {
               exportableKeyId: keyId,
               exportableEnc2Key: secret.serialized,
               onContinue: onContinue,
+              skipExportWarning: imported,
             );
           },
         );

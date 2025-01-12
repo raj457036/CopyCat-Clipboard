@@ -1,5 +1,6 @@
 import 'package:clipboard/widgets/timer_builder.dart';
 import 'package:copycat_base/l10n/l10n.dart';
+import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import "package:universal_io/io.dart";
@@ -29,7 +30,7 @@ class ConfirmDialog extends StatelessWidget {
       TextButton(
         onPressed: () => Navigator.pop(context, false),
         autofocus: focusFor == false,
-        child: Text(no ?? context.locale.cancel),
+        child: Text(no ?? context.mlocale.cancelButtonLabel.title),
       ),
       if (confirmationDelay > 0 &&
           kReleaseMode) // To prevent this in development
@@ -39,15 +40,15 @@ class ConfirmDialog extends StatelessWidget {
             autofocus: remaining > 0 ? false : focusFor == true,
             onPressed:
                 remaining > 0 ? null : () => Navigator.pop(context, true),
-            child:
-                Text("${yes ?? context.locale.confirm} $seconds".trimRight()),
+            child: Text(
+                "${yes ?? context.mlocale.okButtonLabel} $seconds".trimRight()),
           ),
         )
       else
         TextButton(
           autofocus: focusFor == true,
           onPressed: () => Navigator.pop(context, true),
-          child: Text(yes ?? context.locale.confirm),
+          child: Text(yes ?? context.mlocale.okButtonLabel),
         ),
     ];
     return AlertDialog(

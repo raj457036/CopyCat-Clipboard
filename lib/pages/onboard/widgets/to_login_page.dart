@@ -3,8 +3,8 @@ import 'package:copycat_base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ToLoginPage extends StatelessWidget {
-  const ToLoginPage({super.key});
+class ToLoginPageButton extends StatelessWidget {
+  const ToLoginPageButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class ToLoginPage extends StatelessWidget {
       onPressed: () {
         context.goNamed(RouteConstants.login);
       },
-      label: Text(context.locale.signIn),
+      label: Text(context.locale.onboarding__button__to_login),
       icon: const Icon(Icons.login),
     );
   }

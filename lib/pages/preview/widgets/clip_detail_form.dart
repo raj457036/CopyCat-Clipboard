@@ -93,12 +93,12 @@ class _ClipDetailFormState extends State<ClipDetailForm> {
     final options = [
       TextButton(
         onPressed: context.pop,
-        child: Text(context.locale.cancel),
+        child: Text(context.mlocale.cancelButtonLabel),
       ),
       width6,
       FilledButton(
         onPressed: submit,
-        child: Text(context.locale.save),
+        child: Text(context.mlocale.saveButtonLabel),
       ),
     ];
     return Form(
@@ -112,13 +112,13 @@ class _ClipDetailFormState extends State<ClipDetailForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              context.locale.editDetails,
+              context.locale.preview__form__title,
               style: textTheme.titleMedium,
             ),
             height16,
             TextFormField(
               decoration: InputDecoration(
-                labelText: context.locale.title,
+                labelText: context.locale.preview__form__input__title,
               ),
               controller: titleController,
               validator:
@@ -127,7 +127,7 @@ class _ClipDetailFormState extends State<ClipDetailForm> {
             height12,
             TextFormField(
               decoration: InputDecoration(
-                labelText: context.locale.description,
+                labelText: context.locale.preview__form__input__description,
               ),
               minLines: 2,
               maxLines: 6,

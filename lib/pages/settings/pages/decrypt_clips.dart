@@ -112,8 +112,12 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
-    final cancelButton =
-        TextButton.icon(onPressed: cancel, label: Text(context.locale.cancel));
+    final cancelButton = TextButton.icon(
+      onPressed: cancel,
+      label: Text(
+        context.mlocale.cancelButtonLabel,
+      ),
+    );
     return Scaffold(
       body: ScaffoldBody(
         margin: const EdgeInsets.all(padding16),
@@ -143,14 +147,16 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
                       Column(
                         children: [
                           Text(
-                            "🥳 Congratulations! All your clips have been successfully decrypted locally,\n so rebuilding the database is not required.",
+                            context.locale.settings__text__decrypted__note,
                             textAlign: TextAlign.center,
                             style: textTheme.titleMedium,
                           ),
                           height10,
                           FilledButton(
                             onPressed: context.pop,
-                            child: Text(context.locale.continue_),
+                            child: Text(
+                              context.mlocale.continueButtonLabel.title,
+                            ),
                           )
                         ],
                       )

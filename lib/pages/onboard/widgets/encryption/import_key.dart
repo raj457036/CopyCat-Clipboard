@@ -21,11 +21,13 @@ class ImportEncryptionKeyStep extends StatefulWidget {
   final String importableKeyId;
   final ClipboardRepository clipboardRepository;
   final VoidCallback onContinue;
+  final VoidCallback onImportSuccess;
   const ImportEncryptionKeyStep({
     super.key,
     required this.importableKeyId,
     required this.clipboardRepository,
     required this.onContinue,
+    required this.onImportSuccess,
   });
 
   @override
@@ -75,7 +77,11 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
           importedKeyId != widget.importableKeyId ||
           importedKey == null) {
         importedKey = null;
-        showFailureSnackbar(Failure.fromMessage(locale.importE2eeInvalidKey));
+        showFailureSnackbar(
+          Failure.fromMessage(
+            locale.onboarding__snackbar__invalid_key,
+          ),
+        );
         return;
       }
     } catch (e) {
@@ -98,6 +104,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
     try {
       await appConfigCubit.setE2EEKey(importedKey);
       await appConfigCubit.toggleAutoEncrypt(true);
+      widget.onImportSuccess();
     } catch (e) {
       showFailureSnackbar(Failure.fromException(e));
     } finally {
@@ -111,11 +118,8 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
 
   Future<void> doItLater() async {
     final answer = await ConfirmDialog(
-      title: "✋ Encrypted Clips Inaccessible",
-      message:
-          "You haven’t imported the encryption key yet. This means all your encrypted clips will remain inaccessible locally after sync. To access them, import the key from Settings ❯ Security. Do you still want to continue?",
-      yes: context.locale.yes,
-      no: context.locale.no,
+      title: context.locale.onboarding__dialog__skip_import__title,
+      message: context.locale.onboarding__dialog__skip_import__subtitle,
       confirmationDelay: 5,
     ).show(context);
 
@@ -124,10 +128,10 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
   }
 
   Future<void> resetEncryption() async {
-    final answer = await const ConfirmDialog(
-      title: "✋ Permanently Delete Encrypted Data",
-      message:
-          "This action is irreversible. Are you sure you want to permanently delete all encrypted data from the server?",
+    final locale = context.locale;
+    final answer = await ConfirmDialog(
+      title: locale.onboarding__dialog__reset_key__title,
+      message: locale.onboarding__dialog__reset_key__subtitle,
       confirmationDelay: 10,
     ).show(context);
 
@@ -141,7 +145,10 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
       final result = await widget.clipboardRepository.deleteAllEncrypted();
       await result.fold((l) async => showFailureSnackbar(l), (_) async {
         await authCubit.removeEncryptionSetup();
-        showTextSnackbar("Encryption Reset is Complete", success: true);
+        showTextSnackbar(
+          locale.onboarding__snackbar__reset_key__success,
+          success: true,
+        );
       });
     } finally {
       setState(() {
@@ -151,11 +158,9 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
   }
 
   Future<void> whereIsMyKey() async {
-    await const InfoDialog(
-      title: "🤔 Where is my key?",
-      message:
-          "Your encryption key is a secure file generated during the encryption setup process. If you’ve misplaced it, check your downloads folder or any backup location where you might have saved it. Without this key, your encrypted data cannot be accessed.\n\n"
-          "If you’ve set up the encryption key on another device, you can export it by going to Settings ❯ Security ❯ E2EE Vault on that device. Transfer the key securely to this device to regain access to your encrypted data.",
+    await InfoDialog(
+      title: context.locale.onboarding__dialog__import_info__title,
+      message: context.locale.onboarding__dialog__import_info__subtitle,
     ).open(context);
   }
 
@@ -177,7 +182,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
                 ),
                 height10,
                 Text(
-                  "Import Clipboard Encryption Key",
+                  context.locale.onboarding__text__import_key_headline,
                   style: textTheme.headlineMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -189,7 +194,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
                     child: Column(
                       children: [
                         Text(
-                          "🥳 Great news! Your account already has encryption enabled.",
+                          context.locale.onboarding__text__import_key_title,
                           textAlign: TextAlign.center,
                           style: textTheme.titleMedium,
                         ),
@@ -198,13 +203,17 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
                           children: [
                             FilledButton.icon(
                               onPressed: importEnc2Key,
-                              label: const Text('Import Key'),
+                              label: Text(
+                                context.locale.onboarding__button__import_key,
+                              ),
                               icon: const Icon(Icons.key),
                             ),
                             width10,
                             TextButton(
                               onPressed: doItLater,
-                              child: const Text('Do It Later'),
+                              child: Text(
+                                context.locale.onboarding__button__do_it_later,
+                              ),
                             ),
                           ],
                         ),
@@ -212,7 +221,9 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
                         TextButton.icon(
                           style: TextButton.styleFrom(),
                           onPressed: whereIsMyKey,
-                          label: const Text("Where Is My Key?"),
+                          label: Text(
+                            context.locale.onboarding__button__where_key,
+                          ),
                           icon: const Icon(Icons.info),
                         ),
                         const SizedBox(width: 50, child: Divider(height: 40)),
@@ -222,7 +233,9 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
                           ),
                           onPressed: resetEncryption,
                           icon: const Icon(Icons.lock_reset_rounded),
-                          label: const Text("Reset Encryption"),
+                          label: Text(
+                            context.locale.onboarding__button__reset_key,
+                          ),
                         ),
                       ],
                     ),

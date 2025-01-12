@@ -46,7 +46,7 @@ class KeyboardShortcutStep extends StatelessWidget {
               FilledButton(
                 onPressed: onContinue,
                 child: Text(
-                  context.locale.continue_,
+                  context.mlocale.continueButtonLabel.title,
                 ),
               ),
             ],

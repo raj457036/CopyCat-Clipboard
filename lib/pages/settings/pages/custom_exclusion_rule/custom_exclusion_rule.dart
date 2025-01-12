@@ -30,7 +30,7 @@ class _CustomExclusionRulePageState extends State<CustomExclusionRulePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.locale.customExclusionRules),
+        title: Text(context.locale.settings__appbar__cer__title),
         centerTitle: false,
       ),
       body: Platform.isAndroid
@@ -47,21 +47,21 @@ class _CustomExclusionRulePageState extends State<CustomExclusionRulePage> {
                     destinations: [
                       NavigationRailDestination(
                         icon: const Icon(Icons.apps),
-                        label: Text(context.locale.apps),
+                        label: Text(context.locale.custom_er__nav__1),
                       ),
                       NavigationRailDestination(
                         icon: const Icon(Icons.abc),
-                        label: Text(context.locale.title),
+                        label: Text(context.locale.custom_er__nav__2),
                         disabled: !isDesktopPlatform,
                       ),
                       NavigationRailDestination(
                         icon: const Icon(Icons.link),
-                        label: Text(context.locale.url),
+                        label: Text(context.locale.custom_er__nav__3),
                         disabled: !isDesktopPlatform,
                       ),
                       NavigationRailDestination(
                         icon: const Icon(Icons.pattern_rounded),
-                        label: Text(context.locale.pattern),
+                        label: Text(context.locale.custom_er__nav__4),
                         disabled: !isDesktopPlatform,
                       ),
                     ],
