@@ -1,7 +1,6 @@
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
-import 'package:copycat_base/utils/datetime_extension.dart';
 import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,14 +47,13 @@ class PauseTillSwitch extends StatelessWidget {
       builder: (context, state) {
         final isActive = state != null && now().isBefore(state);
         return SwitchListTile(
-          title: Text(context.locale.isPaused),
+          title: Text(context.locale.settings__switch__paused__title),
           subtitle: Text(
-            context.locale.isPausedDesc(
-              "$isActive",
-              isActive
-                  ? dateTimeFormatter(context.locale.localeName).format(state)
-                  : '',
-            ),
+            isActive
+                ? context.locale.settings__switch__paused_active__subtitle(
+                    time: state,
+                  )
+                : context.locale.settings__switch__paused__subtitle,
             style: textTheme.bodyMedium?.copyWith(
               color: colors.outline,
             ),

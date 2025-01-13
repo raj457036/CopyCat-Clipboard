@@ -56,7 +56,7 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
                     clearSelection(context);
                   }
                 },
-                tooltip: context.locale.changeCollection,
+                tooltip: context.locale.app__change_collection,
                 icon: const Icon(Icons.collections_bookmark),
               ),
               IconButton(
@@ -67,7 +67,7 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
                     clearSelection(context);
                   }
                 },
-                tooltip: context.locale.delete,
+                tooltip: context.locale.app__delete,
                 icon: const Icon(Icons.delete),
               ),
               width12,

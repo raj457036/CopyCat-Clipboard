@@ -26,7 +26,7 @@ class ExportE2eeDialog extends StatelessWidget {
           const Icon(Icons.lock),
           width12,
           Text(
-            context.locale.e2eeVault,
+            context.locale.dialog__e2e__title,
             style: textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -49,7 +49,7 @@ class ExportE2eeDialog extends StatelessWidget {
               color: Colors.green.withValues(alpha: 0.2),
               child: ListTile(
                 title: Text(
-                  context.locale.e2eeExportNote,
+                  context.locale.dialog__text__e2e_key_export,
                   textAlign: TextAlign.center,
                 ),
                 titleTextStyle: textTheme.titleSmall,
@@ -58,13 +58,13 @@ class ExportE2eeDialog extends StatelessWidget {
             ),
             height12,
             Text(
-              context.locale.e2eeExportDesc,
+              context.locale.dialog__text__e2e_key_export__note,
               textAlign: TextAlign.center,
             ),
             height10,
             ElevatedButton.icon(
               icon: const Icon(Icons.key),
-              label: Text(context.locale.exportKey),
+              label: Text(context.locale.app__export),
               onPressed: loading ? null : exportEnc2Key,
             ),
             if (bottom != null) ...[

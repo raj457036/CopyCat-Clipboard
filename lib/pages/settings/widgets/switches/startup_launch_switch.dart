@@ -27,9 +27,9 @@ class StartUpLaunchSwitch extends StatelessWidget {
         return SwitchListTile(
           value: state,
           onChanged: cubit.setLaunchAtStartup,
-          title: Text(context.locale.launchAtStartup),
+          title: Text(context.locale.settings__switch__startup__title),
           subtitle: Text(
-            context.locale.launchAtStartupDesc,
+            context.locale.settings__switch__startup__subtitle,
             style: textTheme.bodyMedium?.copyWith(
               color: colors.outline,
             ),

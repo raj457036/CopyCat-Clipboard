@@ -9,8 +9,8 @@ import 'package:copycat_pro/widgets/subscription/subscription_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SyncSpeedDropdown extends StatelessWidget {
-  const SyncSpeedDropdown({super.key});
+class SyncModeDropdown extends StatelessWidget {
+  const SyncModeDropdown({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +35,9 @@ class SyncSpeedDropdown extends StatelessWidget {
             final (speed, enabled) = state;
             return ListTile(
               enabled: enabled,
-              title: Text(context.locale.autoSyncInterval),
+              title: Text(context.locale.settings__dropdown__sync_mode__title),
               subtitle: Text(
-                context.locale.autoSyncIntervalDesc,
+                context.locale.settings__dropdown__sync_mode__subtitle,
                 style: textTheme.bodyMedium?.copyWith(
                   color: colors.outline,
                 ),
@@ -55,20 +55,24 @@ class SyncSpeedDropdown extends StatelessWidget {
                         DropdownMenuItem(
                           enabled: subscription.syncInterval < $10S,
                           value: SyncSpeed.realtime,
-                          child: const Row(
+                          child: Row(
                             spacing: 8,
                             children: [
-                              Text("Realtime"),
-                              ProBadge(),
+                              Text(
+                                context.locale.settings__sync_mode__realtime,
+                              ),
+                              const ProBadge(),
                             ],
                           ),
                         ),
                       DropdownMenuItem(
                         value: SyncSpeed.balanced,
-                        child: Text(context.locale.$45Sec),
+                        child: Text(
+                          context.locale.settings__sync_mode__balanced,
+                        ),
                       ),
                     ],
-                    onChanged: enabled ? cubit.changeAutoSyncDuration : null,
+                    onChanged: enabled ? cubit.changeSyncMode : null,
                   ),
                 ),
               ),

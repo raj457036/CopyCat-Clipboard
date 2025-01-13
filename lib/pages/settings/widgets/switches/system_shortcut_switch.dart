@@ -22,34 +22,41 @@ class ClipboardHotKeySwitch extends StatelessWidget {
       },
       builder: (context, state) {
         return SwitchListTile(
-          title: Text(context.locale.clipboardShortcut),
+          title: Text(context.locale.settings__switch__hotkey__title),
           subtitle: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               height4,
               Text(
-                context.locale.clipboardShortcutDesc,
+                context.locale.settings__switch__hotkey__subtitle,
                 style: textTheme.bodyMedium?.copyWith(
                   color: colors.outline,
                 ),
               ),
               height6,
-              Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  Text(
-                    context.locale.clipboardShortcutPreview(
-                      state == null ? context.locale.unassigned : '',
-                    ),
-                    maxLines: 2,
+              if (state == null)
+                Text(
+                  context.locale.settings__hotkey__unassigned,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: colors.outline,
+                  ),
+                )
+              else
+                RichText(
+                  text: TextSpan(
+                    text: context.locale.settings__hotkey__preview_start,
+                    children: [
+                      WidgetSpan(child: HotKeyVirtualView(hotKey: state)),
+                      TextSpan(
+                          text: context.locale.settings__hotkey__preview_end)
+                    ],
                     style: textTheme.bodySmall?.copyWith(
                       color: colors.outline,
                     ),
                   ),
-                  if (state != null) HotKeyVirtualView(hotKey: state),
-                ],
-              )
+                  maxLines: 2,
+                ),
             ],
           ),
           value: state != null,

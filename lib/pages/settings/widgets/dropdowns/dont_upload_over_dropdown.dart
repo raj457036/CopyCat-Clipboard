@@ -26,10 +26,11 @@ class DontAutoUploadOverDropdown extends StatelessWidget {
       },
       builder: (context, state) {
         return ListTile(
-          title: Text(context.locale.dontAutoUploadOver),
+          title: Text(
+              context.locale.settings__dropdown__no_upload_over_limit__title),
           subtitle: Text(
-            context.locale.dontAutoUploadOverDesc(
-              formatBytes(
+            context.locale.settings__dropdown__no_upload_over_limit__subtitle(
+              fileSize: formatBytes(
                 state,
                 precise: false,
               ),
@@ -51,23 +52,23 @@ class DontAutoUploadOverDropdown extends StatelessWidget {
                 items: [
                   DropdownMenuItem(
                     value: $5MB,
-                    child: Text(context.locale.$5MB),
+                    child: Text(context.locale.settings__text__5MB),
                   ),
                   DropdownMenuItem(
                     value: $10MB,
-                    child: Text(context.locale.$10MB),
+                    child: Text(context.locale.settings__text__10MB),
                   ),
                   DropdownMenuItem(
                     value: $20MB,
-                    child: Text(context.locale.$20MB),
+                    child: Text(context.locale.settings__text__20MB),
                   ),
                   DropdownMenuItem(
                     value: $50MB,
-                    child: Text(context.locale.$50MB),
+                    child: Text(context.locale.settings__text__50MB),
                   ),
                   DropdownMenuItem(
                     value: $100MB,
-                    child: Text(context.locale.$100MB),
+                    child: Text(context.locale.settings__text__100MB),
                   ),
                 ],
                 onChanged: cubit.changeDontUploadOver,

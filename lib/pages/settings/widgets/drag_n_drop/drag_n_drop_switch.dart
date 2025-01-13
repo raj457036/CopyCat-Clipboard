@@ -45,20 +45,20 @@ class DragAndDropSwitchTile extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(context.locale.dragNdrop),
+                    Text(context.locale.settings__switch__drag_n_drop__title),
                     width8,
                     const ProBadge(),
                   ],
                 ),
                 subtitle: isDNDSupported
                     ? Text(
-                        context.locale.dragNdropDesc,
+                        context.locale.settings__switch__drag_n_drop__subtitle,
                         style: textTheme.bodyMedium?.copyWith(
                           color: colors.outline,
                         ),
                       )
                     : Text(
-                        context.locale.featureNotSupported,
+                        context.locale.app__feature_unavailable,
                         style: textTheme.bodyMedium?.copyWith(
                           color: colors.outline,
                         ),

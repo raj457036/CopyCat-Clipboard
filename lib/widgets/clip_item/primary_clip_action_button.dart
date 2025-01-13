@@ -30,8 +30,8 @@ class PrimaryClipActionButton extends StatelessWidget {
     if (item.needDownload) {
       return Tooltip(
         message: item.downloading
-            ? context.locale.downloading
-            : context.locale.downloadForOffline,
+            ? context.locale.app__downloading
+            : context.locale.app__download,
         child: Padding(
           padding: isGrid
               ? const EdgeInsets.all(padding8)

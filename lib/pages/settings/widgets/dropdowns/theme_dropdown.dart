@@ -11,7 +11,7 @@ class ThemeDropdownTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final cubit = context.read<AppConfigCubit>();
     return ListTile(
-      title: Text(context.locale.theme),
+      title: Text(context.locale.settings__dropdown__theme__title),
       contentPadding: const EdgeInsets.only(
         left: padding16,
         right: padding4,
@@ -43,7 +43,7 @@ class ThemeDropdownTile extends StatelessWidget {
                       children: [
                         const Icon(Icons.contrast_rounded),
                         width12,
-                        Text(context.locale.system),
+                        Text(context.locale.settings__theme__system),
                       ],
                     ),
                   ),
@@ -54,7 +54,7 @@ class ThemeDropdownTile extends StatelessWidget {
                       children: [
                         const Icon(Icons.light_mode_rounded),
                         width12,
-                        Text(context.locale.light),
+                        Text(context.locale.settings__theme__light),
                       ],
                     ),
                   ),
@@ -65,7 +65,7 @@ class ThemeDropdownTile extends StatelessWidget {
                       children: [
                         const Icon(Icons.dark_mode_rounded),
                         width12,
-                        Text(context.locale.dark),
+                        Text(context.locale.settings__theme__dark),
                       ],
                     ),
                   ),

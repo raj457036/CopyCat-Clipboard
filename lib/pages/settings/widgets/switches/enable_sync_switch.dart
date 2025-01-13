@@ -25,9 +25,9 @@ class EnableSyncSwitch extends StatelessWidget {
         return SwitchListTile(
           value: state,
           onChanged: cubit.changeSync,
-          title: Text(context.locale.enableSync),
+          title: Text(context.locale.settings__switch__enable_sync__title),
           subtitle: Text(
-            context.locale.enableSyncDesc,
+            context.locale.settings__switch__enable_sync__subtitle,
             style: textTheme.bodyMedium?.copyWith(
               color: colors.outline,
             ),

@@ -15,9 +15,9 @@ class GoogleDriveSetup extends StatelessWidget {
     final cubit = context.read<DriveSetupCubit>();
     if (alreadyConnected) {
       final confirm = await ConfirmDialog(
-              title: context.locale.reconnectGoogleDrive,
-              message: context.locale.reconnectGoogleDriveDesc)
-          .show(context);
+        title: context.locale.settings__dialog__conn_gdrive__title,
+        message: context.locale.settings__dialog__conn_gdrive__subtitle,
+      ).show(context);
 
       if (!confirm) return;
       await cubit.startSetup(force: true);
@@ -32,27 +32,28 @@ class GoogleDriveSetup extends StatelessWidget {
     final colors = context.colors;
     return BlocBuilder<DriveSetupCubit, DriveSetupState>(
       builder: (context, state) {
-        String text = context.locale.connected;
+        String text = context.locale.settings__drive__connected;
         bool buttonDisabled = false;
         bool alreadyConnected = false;
         bool hasError = false;
         switch (state) {
           case DriveSetupFetching() || DriveSetupRefreshingToken():
-            text = context.locale.loading;
+            text = context.locale.settings__drive__loading;
             buttonDisabled = true;
           case DriveSetupVerifyingCode():
-            text = context.locale.authorizing;
+            text = context.locale.settings__drive__authorizing;
             buttonDisabled = true;
           case DriveSetupUnknown(:final waiting):
-            text =
-                waiting ? context.locale.authorizing : context.locale.loading;
+            text = waiting
+                ? context.locale.settings__drive__authorizing
+                : context.locale.settings__drive__loading;
             buttonDisabled = true;
           case DriveSetupDone():
-            text = context.locale.connected;
+            text = context.locale.settings__drive__connected;
             buttonDisabled = false;
             alreadyConnected = true;
           case DriveSetupError():
-            text = context.locale.connectNow;
+            text = context.locale.settings__drive__disconnected;
             buttonDisabled = false;
             hasError = true;
         }
@@ -70,7 +71,7 @@ class GoogleDriveSetup extends StatelessWidget {
                   top: padding16,
                 ),
                 child: Text(
-                  "Cloud Storage",
+                  context.locale.settings__text__cloud__title,
                   style: textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -82,16 +83,13 @@ class GoogleDriveSetup extends StatelessWidget {
                   vertical: padding8,
                 ),
                 child: Text(
-                  context.locale.cloudStorageInfo(
-                    hasError ? context.locale.cloudStorageInfoDefault : '',
-                  ),
-                ),
+                    "${hasError ? context.locale.settings__text__gdrive__error : ''}\n\n${context.locale.settings__text__gdrive__info}"),
               ),
               ListTile(
                 tileColor: colors.secondaryContainer,
                 minLeadingWidth: 20,
                 title: Text(
-                  "Google Drive",
+                  context.locale.settings__text__cloud__name,
                   style: textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -123,9 +121,12 @@ class GoogleDriveSetup extends StatelessWidget {
               //   contentPadding: const EdgeInsets.symmetric(
               //     horizontal: padding16,
               //   ),
-              //   title: const Text('Setup Other Cloud Drive'),
-              //   subtitle: const Text(
-              //       "Setup other cloud drives like Dropbox, OneDrive, etc."),
+              //   title: Text(
+              //     context.locale.settings__tile__other_cloud__title,
+              //   ),
+              //   subtitle: Text(
+              //     context.locale.settings__tile__other_cloud__subtitle,
+              //   ),
               //   trailing: const Icon(Icons.chevron_right),
               //   onTap: () => {},
               // ),

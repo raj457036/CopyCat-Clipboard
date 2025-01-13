@@ -29,7 +29,7 @@ class ImportE2eeDialog extends StatelessWidget {
           const Icon(Icons.lock),
           width12,
           Text(
-            context.locale.importE2eeKey,
+            context.locale.dialog__e2e__title,
             style: textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -53,7 +53,7 @@ class ImportE2eeDialog extends StatelessWidget {
                 color: Colors.deepOrange.withAlpha(51),
                 child: ListTile(
                   title: Text(
-                    context.locale.importE2eeInvalidKey,
+                    context.locale.dialog__text__invalid_e2e_key,
                     textAlign: TextAlign.center,
                   ),
                   titleTextStyle: textTheme.titleSmall,
@@ -62,7 +62,7 @@ class ImportE2eeDialog extends StatelessWidget {
               ),
             if (invalidImportedKey) height12,
             Text(
-              context.locale.importE2eeDesc,
+              context.locale.dialog__text__e2e_key_import__note,
               textAlign: TextAlign.center,
             ),
             height10,
@@ -70,8 +70,8 @@ class ImportE2eeDialog extends StatelessWidget {
               onPressed: loading ? null : importEnc2Key,
               icon: const Icon(Icons.key),
               label: loading
-                  ? Text(context.locale.importing)
-                  : Text(context.locale.importKey),
+                  ? Text(context.locale.dialog__button__e2e_importing_key)
+                  : Text(context.locale.dialog__button__e2e_import_key),
             ),
             if (bottom != null) ...[
               const Divider(height: 30),

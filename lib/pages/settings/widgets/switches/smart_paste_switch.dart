@@ -33,9 +33,9 @@ class SmartPasteSwitch extends StatelessWidget {
               cubit.toggleSmartPaste(value);
             }
           },
-          title: Text(context.locale.smartPaste),
+          title: Text(context.locale.settings__switch__smart_paste__title),
           subtitle: Text(
-            context.locale.smartPasteDesc,
+            context.locale.settings__switch__smart_paste__subtitle,
             style: textTheme.bodyMedium?.copyWith(
               color: colors.outline,
             ),

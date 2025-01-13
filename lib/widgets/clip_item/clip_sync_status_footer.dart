@@ -32,13 +32,13 @@ class ClipSyncStatusFooter extends StatelessWidget {
           final percent = ((item.uploadProgress ?? 0) * 100) ~/ 1;
           buttonText = '↑ $percent%';
         } else {
-          buttonText = context.locale.uploading;
+          buttonText = context.locale.app__uploading;
         }
       } else {
-        buttonText = context.locale.syncing;
+        buttonText = context.locale.app__syncing;
       }
     } else {
-      buttonText = context.locale.sync;
+      buttonText = context.locale.app__sync;
     }
 
     return SizedBox.fromSize(
@@ -62,7 +62,7 @@ class ClipSyncStatusFooter extends StatelessWidget {
                 width6,
                 if (width > 200)
                   Text(
-                    context.locale.local,
+                    context.locale.app__local,
                     style: context.textTheme.labelMedium,
                   ),
                 const Spacer(),

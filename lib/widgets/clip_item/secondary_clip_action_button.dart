@@ -18,7 +18,7 @@ class SecondaryClipActionButton extends StatelessWidget {
           onPressed: () => launchUrl(item),
           icon: const Icon(Icons.outbound_rounded),
           iconSize: 24,
-          tooltip: context.locale.openInBrowser,
+          tooltip: context.locale.app__follow_link,
           style: IconButton.styleFrom(
             padding: EdgeInsets.zero,
           ),
@@ -28,7 +28,7 @@ class SecondaryClipActionButton extends StatelessWidget {
               onPressed: () => openFile(item),
               icon: const Icon(Icons.outbound_rounded),
               iconSize: 24,
-              tooltip: context.locale.open,
+              tooltip: context.locale.app__open_file,
               style: IconButton.styleFrom(
                 padding: EdgeInsets.zero,
               ),
@@ -39,7 +39,7 @@ class SecondaryClipActionButton extends StatelessWidget {
               onPressed: () => launchPhone(item, message: true),
               icon: const Icon(Icons.outbound_rounded),
               iconSize: 24,
-              tooltip: context.locale.open,
+              tooltip: context.locale.app__send_message,
               style: IconButton.styleFrom(
                 padding: EdgeInsets.zero,
               ),
@@ -48,7 +48,7 @@ class SecondaryClipActionButton extends StatelessWidget {
               onPressed: () => launchEmail(item),
               icon: const Icon(Icons.outbound_rounded),
               iconSize: 24,
-              tooltip: context.locale.email,
+              tooltip: context.locale.app__send_email,
               style: IconButton.styleFrom(
                 padding: EdgeInsets.zero,
               ),

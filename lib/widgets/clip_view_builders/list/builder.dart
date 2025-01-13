@@ -47,7 +47,7 @@ class ClipListBuilder extends StatelessWidget {
       if (loading) {
         return const ClipcardLoading();
       }
-      return EmptyNote(note: context.locale.emptyClipboard);
+      return EmptyNote(note: context.locale.app__empty_clipboard);
     }
 
     return OnEvent<EventBusIndexPasteEvent>(

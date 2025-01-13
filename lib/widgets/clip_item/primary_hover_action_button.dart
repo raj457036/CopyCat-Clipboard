@@ -60,7 +60,7 @@ class PrimaryHoverAction extends StatelessWidget {
           child: IconButton(
             onPressed: () => editClip(context),
             iconSize: 22,
-            tooltip: context.locale.previewEdit,
+            tooltip: context.locale.app__preview,
             icon: const Icon(Icons.edit),
           ),
         ),

@@ -31,9 +31,9 @@ class E2EESettings extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ListTile(
-              title: Text(context.locale.endToEndVault),
+              title: Text(context.locale.settings__tile__e2e_setup__title),
               subtitle: Text(
-                context.locale.accessE2eeVault,
+                context.locale.settings__tile__e2e_setup__subtitle,
               ),
               subtitleTextStyle: textTheme.bodyMedium?.copyWith(
                 color: colors.outline,
@@ -46,9 +46,9 @@ class E2EESettings extends StatelessWidget {
               value: autoEncrypt,
               onChanged:
                   setup ? (value) => toggleAutoEncrypt(context, value) : null,
-              title: Text(context.locale.encryptClipboard),
+              title: Text(context.locale.settings__switch__e2e__title),
               subtitle: Text(
-                context.locale.encryptClipboardDesc,
+                context.locale.settings__switch__e2e__subtitle,
                 style: textTheme.bodyMedium?.copyWith(
                   color: colors.outline,
                 ),

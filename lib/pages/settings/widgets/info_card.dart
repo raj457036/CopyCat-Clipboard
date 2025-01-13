@@ -9,8 +9,12 @@ class InfoCard extends StatelessWidget {
   final String? title;
   final String description;
 
-  const InfoCard(
-      {super.key, this.title, this.color, required this.description});
+  const InfoCard({
+    super.key,
+    this.title,
+    this.color,
+    required this.description,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +30,7 @@ class InfoCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title ?? context.locale.attentionNeeded,
+              title ?? context.locale.app__action_required,
               style: textTheme.titleMedium,
             ),
             Text(description),

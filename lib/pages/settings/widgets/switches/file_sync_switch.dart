@@ -31,9 +31,9 @@ class EnableFileSyncSwitch extends StatelessWidget {
             SwitchListTile(
               value: enableFileSync,
               onChanged: enableSync ? cubit.changeFileSync : null,
-              title: Text(context.locale.syncFiles),
+              title: Text(context.locale.settings__switch__sync_file__title),
               subtitle: Text(
-                context.locale.syncFilesDesc,
+                context.locale.settings__switch__sync_file__subtitle,
                 style: textTheme.bodyMedium?.copyWith(
                   color: colors.outline,
                 ),

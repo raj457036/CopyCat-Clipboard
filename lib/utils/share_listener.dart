@@ -34,7 +34,10 @@ class ShareListener {
         closeSnackbar();
       } catch (e) {
         if (context.mounted) {
-          showTextSnackbar("❌ ${context.locale.failed}", closePrevious: true);
+          showTextSnackbar(
+            context.locale.app__unknown_error,
+            closePrevious: true,
+          );
         }
       }
     }, onError: (error) {
@@ -120,7 +123,7 @@ class ShareListener {
     await processImageFilePath(media.imageFilePath, clips);
 
     if (context.mounted) {
-      showSnackbar(context);
+      showSnackbar(context, isFile: media.attachments != null);
       await context
           .read<OfflinePersistenceCubit>()
           .onClips(clips, manualPaste: true);
@@ -143,16 +146,15 @@ class ShareListener {
     if (clip != null) clips.add(clip);
   }
 
-  void showSnackbar(BuildContext context) {
+  void showSnackbar(BuildContext context, {bool isFile = false}) {
     if (Platform.isAndroid) {
       showTextSnackbar(
-        "✅ ${context.locale.done}",
+        context.locale.app__ack__done,
         closePrevious: true,
-        duration: 15,
+        duration: isFile ? 15 : 5,
         isProgress: true,
         action: SnackBarAction(
-          // ignore: use_build_context_synchronously
-          label: context.locale.backToApp,
+          label: context.locale.app__ack__quit_app,
           onPressed: () {
             SystemNavigator.pop(animated: true);
           },

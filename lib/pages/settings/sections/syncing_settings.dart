@@ -1,4 +1,4 @@
-import 'package:clipboard/pages/settings/widgets/dropdowns/sync_speed_dropdown.dart';
+import 'package:clipboard/pages/settings/widgets/dropdowns/sync_mode_dropdown.dart';
 import 'package:clipboard/pages/settings/widgets/switches/enable_sync_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/file_sync_switch.dart';
 import 'package:clipboard/widgets/local_user.dart';
@@ -28,7 +28,7 @@ class SyncingSettings extends StatelessWidget {
               children: [
                 EnableSyncSwitch(),
                 EnableFileSyncSwitch(),
-                SyncSpeedDropdown(),
+                SyncModeDropdown(),
               ],
             ),
           ),

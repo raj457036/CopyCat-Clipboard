@@ -23,22 +23,22 @@ Future<void> copyToClipboard(
   bool saveFile = false,
   bool noAck = false,
 }) async {
+  final ctx = context.mounted ? context : rootNavKey.currentContext!;
   try {
-    final ctx = context.mounted ? context : rootNavKey.currentContext!;
     final cubit = ctx.read<OfflinePersistenceCubit>();
     final result = await cubit.copyToClipboard(item, saveFile: saveFile);
     if (!ctx.mounted) return;
     if (noAck) return;
     if (result) {
       showTextSnackbar(
-        saveFile ? ctx.locale.exportSuccess : ctx.locale.copySuccess,
+        saveFile ? ctx.locale.app__ack__exported : ctx.locale.app__ack__copied,
         closePrevious: true,
         context: ctx,
       );
     }
   } catch (e) {
     showTextSnackbar(
-      "⭕️ Failed to copy. Something went wrong!",
+      ctx.locale.app__unknown_error,
       closePrevious: true,
       context: context,
     );
@@ -64,7 +64,7 @@ Future<void> shareClipboardItem(
     ctx.read<OfflinePersistenceCubit>().shareClipboardItem(ctx, item);
   } catch (e) {
     if (ctx.mounted) {
-      showTextSnackbar(ctx.locale.failed);
+      showTextSnackbar(ctx.locale.app__unknown_error);
     }
   }
 }
@@ -83,7 +83,7 @@ Future<void> decryptItem(BuildContext context, ClipboardItem item) async {
   if (!appConfig.isE2EESetupDone) {
     showFailureSnackbar(
       Failure(
-        message: context.locale.e2eeNotSetup,
+        message: context.locale.app__ack__missing_e2e_setup,
         code: "e2ee-no-setup",
       ),
     );
@@ -142,8 +142,10 @@ Future<bool> deleteClipboardItem(
 ) async {
   final ctx = context.mounted ? context : rootNavKey.currentContext!;
   final confirmation = await ConfirmDialog(
-    title: context.locale.delete,
-    message: context.locale.sureToDeleteItem,
+    title: context.locale.dialog__delete_clip__title,
+    message: context.locale.dialog__delete_clip__subtitle(
+      itemCount: items.length,
+    ),
   ).show(ctx);
 
   if (!confirmation) return false;
@@ -160,29 +162,29 @@ Future<void> openFile(ClipboardItem item) async {
     switch (result.type) {
       case ResultType.error:
       case ResultType.noAppToOpen:
-        final error =
-            rootNavKey.currentContext?.locale.noAppFoundToHandleFile ??
-                "No application found to open this file.";
-        showTextSnackbar(error);
+        final errorMessage =
+            rootNavKey.currentContext?.locale.app__ack__no_app_for_file;
+        if (errorMessage != null) showTextSnackbar(errorMessage);
       case ResultType.permissionDenied:
-        final error =
-            rootNavKey.currentContext?.locale.fileOpenPermissionNotGranted ??
-                "Permission to open this file not granted.";
-        showTextSnackbar(error);
+        final errorMessage =
+            rootNavKey.currentContext?.locale.app__ack__perm_fail_to_open_file;
+        if (errorMessage != null) showTextSnackbar(errorMessage);
       case _:
     }
   }
 }
 
 Future<void> pasteContent(BuildContext context) async {
+  final ctx = context.mounted ? context : rootNavKey.currentContext!;
   showTextSnackbar(
-    "Pasting to clipboard",
+    ctx.locale.app__ack__pasting,
     isLoading: true,
     closePrevious: true,
   );
-  final ctx = context.mounted ? context : rootNavKey.currentContext!;
   await ctx.read<OfflinePersistenceCubit>().paste();
-  showTextSnackbar("Paste success", closePrevious: true);
+  if (ctx.mounted) {
+    showTextSnackbar(ctx.locale.app__ack__pasted, closePrevious: true);
+  }
 }
 
 Future<void> changeCollection(

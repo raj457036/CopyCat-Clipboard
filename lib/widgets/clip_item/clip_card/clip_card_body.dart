@@ -124,7 +124,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
     if (!appConfig.isE2EESetupDone) {
       showFailureSnackbar(
         Failure(
-          message: context.locale.e2eeNotSetup,
+          message: context.locale.app__ack__missing_e2e_setup,
           code: "e2ee-no-setup",
         ),
       );

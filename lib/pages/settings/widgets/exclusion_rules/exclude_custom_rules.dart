@@ -27,7 +27,7 @@ class ExcludeCustomRules extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(context.locale.customRules),
+            Text(context.locale.settings__tile__cer_title),
             width8,
             const ProBadge(),
           ],
@@ -38,7 +38,7 @@ class ExcludeCustomRules extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          context.locale.customRulesDesc,
+          context.locale.settings__tile__cer_subtitle,
         ),
         enabled: enabled && hasAccess,
         trailing: const Icon(Icons.keyboard_arrow_right_rounded),

@@ -27,10 +27,12 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
       },
       builder: (context, state) {
         return ListTile(
-          title: Text(context.locale.dontAutoCopyOver),
+          title: Text(
+            context.locale.settings__dropdown__no_copy_over_limit__title,
+          ),
           subtitle: Text(
-            context.locale.dontAutoCopyOverDesc(
-              formatBytes(
+            context.locale.settings__dropdown__no_copy_over_limit__subtitle(
+              fileSize: formatBytes(
                 state,
                 precise: false,
               ),
@@ -61,7 +63,7 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
                           ),
                         ),
                         width12,
-                        Text(context.locale.$5MB),
+                        Text(context.locale.settings__text__5MB),
                       ],
                     ),
                   ),
@@ -78,7 +80,7 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
                           ),
                         ),
                         width12,
-                        Text(context.locale.$10MB),
+                        Text(context.locale.settings__text__10MB),
                       ],
                     ),
                   ),
@@ -95,7 +97,7 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
                           ),
                         ),
                         width12,
-                        Text(context.locale.$20MB),
+                        Text(context.locale.settings__text__20MB),
                       ],
                     ),
                   ),
@@ -112,7 +114,7 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
                           ),
                         ),
                         width12,
-                        Text(context.locale.$50MB),
+                        Text(context.locale.settings__text__50MB),
                       ],
                     ),
                   ),
@@ -123,7 +125,7 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
                       children: [
                         const Icon(Icons.circle, size: 24),
                         width12,
-                        Text(context.locale.$100MB),
+                        Text(context.locale.settings__text__100MB),
                       ],
                     ),
                   ),

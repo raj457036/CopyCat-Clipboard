@@ -23,13 +23,13 @@ class ThemeVariantDropdown extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(context.locale.colorMode),
+            Text(context.locale.settings__dropdown__color_mode__title),
             width8,
             const ProBadge(),
           ],
         ),
         subtitle: Text(
-          context.locale.colorModeDesc,
+          context.locale.settings__dropdown__color_mode__subtitle,
           style: textTheme.bodyMedium?.copyWith(
             color: colors.outline,
           ),
@@ -51,39 +51,57 @@ class ThemeVariantDropdown extends StatelessWidget {
                   items: [
                     DropdownMenuItem(
                       value: DynamicSchemeVariant.tonalSpot,
-                      child: Text(context.locale.tonalSpot),
+                      child: Text(
+                        context.locale.settings__color_mode__tonalSpot,
+                      ),
                     ),
                     DropdownMenuItem(
                       value: DynamicSchemeVariant.content,
-                      child: Text(context.locale.content),
+                      child: Text(
+                        context.locale.settings__color_mode__content,
+                      ),
                     ),
                     DropdownMenuItem(
                       value: DynamicSchemeVariant.expressive,
-                      child: Text(context.locale.expressive),
+                      child: Text(
+                        context.locale.settings__color_mode__expressive,
+                      ),
                     ),
                     DropdownMenuItem(
                       value: DynamicSchemeVariant.fidelity,
-                      child: Text(context.locale.fidility),
+                      child: Text(
+                        context.locale.settings__color_mode__fidelity,
+                      ),
                     ),
                     DropdownMenuItem(
                       value: DynamicSchemeVariant.fruitSalad,
-                      child: Text(context.locale.fruitSalad),
+                      child: Text(
+                        context.locale.settings__color_mode__fruit_salad,
+                      ),
                     ),
                     DropdownMenuItem(
                       value: DynamicSchemeVariant.monochrome,
-                      child: Text(context.locale.monochrome),
+                      child: Text(
+                        context.locale.settings__color_mode__monochrome,
+                      ),
                     ),
                     DropdownMenuItem(
                       value: DynamicSchemeVariant.neutral,
-                      child: Text(context.locale.neutral),
+                      child: Text(
+                        context.locale.settings__color_mode__neutral,
+                      ),
                     ),
                     DropdownMenuItem(
                       value: DynamicSchemeVariant.rainbow,
-                      child: Text(context.locale.rainbow),
+                      child: Text(
+                        context.locale.settings__color_mode__rainbow,
+                      ),
                     ),
                     DropdownMenuItem(
                       value: DynamicSchemeVariant.vibrant,
-                      child: Text(context.locale.vibrant),
+                      child: Text(
+                        context.locale.settings__color_mode__vibrant,
+                      ),
                     ),
                   ],
                   onChanged: hasAccess ? cubit.setThemeColorVariant : null,

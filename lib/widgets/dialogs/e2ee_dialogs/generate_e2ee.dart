@@ -25,7 +25,7 @@ class GenerateE2eeDialog extends StatelessWidget {
           const Icon(Icons.lock),
           width12,
           Text(
-            context.locale.settingE2eeVault,
+            context.locale.dialog__e2e__title,
             style: textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -45,28 +45,23 @@ class GenerateE2eeDialog extends StatelessWidget {
           children: [
             Card.outlined(
               margin: EdgeInsets.zero,
-              color: Colors.yellow.withAlpha(51),
+              color: const Color.fromARGB(255, 219, 215, 180).withAlpha(51),
               child: ListTile(
                 title: Text(
-                  context.locale.e2eeSetupWarning,
+                  context.locale.dialog__text__e2e_key_generate,
                   textAlign: TextAlign.center,
                 ),
                 titleTextStyle: textTheme.titleSmall,
                 textColor: Colors.orange.shade800,
               ),
             ),
-            height12,
-            Text(
-              context.locale.e2eeSetupDesc,
-              textAlign: TextAlign.center,
-            ),
             height10,
             ElevatedButton.icon(
               onPressed: loading ? null : generateEnc2Key,
               icon: const Icon(Icons.key),
               label: loading
-                  ? Text(context.locale.generating)
-                  : Text(context.locale.generateKey),
+                  ? Text(context.locale.dialog__button__e2e_generating_key)
+                  : Text(context.locale.dialog__button__e2e_generate_key),
             ),
           ],
         ),

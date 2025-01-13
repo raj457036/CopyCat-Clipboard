@@ -66,13 +66,13 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text(context.locale.cancel),
+          child: Text(context.mlocale.cancelButtonLabel.title),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context, color_);
           },
-          child: Text(context.locale.done),
+          child: Text(context.locale.app__select),
         ),
       ],
       contentPadding: EdgeInsets.zero,
@@ -105,7 +105,7 @@ class ColorPickerTile extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(context.locale.themeColor),
+            Text(context.locale.settings__tile__theme_color__title),
             width8,
             const ProBadge(),
           ],
@@ -115,7 +115,7 @@ class ColorPickerTile extends StatelessWidget {
           right: padding4,
         ),
         subtitle: Text(
-          context.locale.themeColorDesc,
+          context.locale.settings__tile__theme_color__subtitle,
           style: textTheme.bodyMedium?.copyWith(
             color: colors.outline,
           ),
@@ -130,7 +130,7 @@ class ColorPickerTile extends StatelessWidget {
             );
             return FilledButton.icon(
               onPressed: hasAccess ? () => chooseColor(context, color) : null,
-              label: Text(context.locale.change),
+              label: Text(context.locale.app__change),
               icon: const Icon(Icons.color_lens_rounded),
               style: ElevatedButton.styleFrom(
                 fixedSize: const Size(150, 46),
