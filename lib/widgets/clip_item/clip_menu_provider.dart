@@ -21,7 +21,7 @@ class ClipMenuProvider extends StatelessWidget {
       items: [
         MenuItem(
           icon: Icons.check_circle_outline_rounded,
-          text: "Select",
+          text: context.locale.app__select,
           onPressed: () => selectClip(context, item),
         ),
         if (!item.inCache)

@@ -91,7 +91,7 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
             ),
             height10,
             Text(
-              "Restore My Collections",
+              context.locale.restore_collections__text__title,
               textAlign: TextAlign.center,
               style: textTheme.headlineMedium,
             ),
@@ -102,12 +102,15 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
               FadeIn(
                 child: Column(
                   children: [
-                    const Text("Failed to find any collections backup.",
-                        textAlign: TextAlign.center),
+                    Text(
+                      context.locale.restore_collections__error__no_backup,
+                      textAlign: TextAlign.center,
+                    ),
                     height10,
                     ElevatedButton(
-                        onPressed: startSyncing,
-                        child: const Text('Try Again')),
+                      onPressed: startSyncing,
+                      child: Text(context.locale.app__try_again),
+                    ),
                   ],
                 ),
               )
@@ -117,7 +120,9 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "You have approximately $totalCount collections",
+                      context.locale.restore_collections__text__total_count(
+                        totalCount: totalCount,
+                      ),
                       textAlign: TextAlign.center,
                       style: textTheme.titleMedium,
                     ),
@@ -130,14 +135,15 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                       builder: (context, state) {
                         switch (state) {
                           case CollectionSyncDisabled():
-                            return const Text(
-                              "Syncing is currently disabled. Please enable it to continue.",
+                            return Text(
+                              context.locale.restore_collections__sync_disable,
                               textAlign: TextAlign.center,
                             );
                           case CollectionSyncUnknown() ||
                                 CollectionSyncingUnknown():
-                            return const Text(
-                                "Preparing to sync. Please wait...");
+                            return Text(
+                              context.locale.restore_collections__preparing,
+                            );
                           case CollectionSyncComplete(:final syncCount):
                             return Column(
                               children: [
@@ -150,7 +156,9 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                                 ),
                                 height10,
                                 Text(
-                                  "Your $syncCount collections have been restored successfully.",
+                                  context.locale.restore_clips__restored(
+                                    syncCount: max(syncCount, totalCount),
+                                  ),
                                   textAlign: TextAlign.center,
                                 ),
                                 height10,
@@ -165,11 +173,16 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                           case CollectionSyncFailed(:final failure):
                             return Column(
                               children: [
-                                Text("Sync Failed: ${failure.message}"),
+                                Text(
+                                  context.locale
+                                      .onboarding__restoration__failed(
+                                    message: failure,
+                                  ),
+                                ),
                                 height10,
                                 ElevatedButton(
                                   onPressed: startSyncing,
-                                  child: const Text('Try Again'),
+                                  child: Text(context.locale.app__try_again),
                                 ),
                               ],
                             );
@@ -186,11 +199,15 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                                   ),
                                 height10,
                                 Text(
-                                  "Restored: $synced of ${max(totalCount, synced)} collections.",
+                                  context.locale.restore_clips__restoring(
+                                    synced: synced,
+                                    totalCount: max(totalCount, synced),
+                                  ),
                                 ),
                                 height12,
                                 Text(
-                                  "⚠️ Please keep this screen open during syncing to avoid data corruption or inconsistencies.",
+                                  context
+                                      .locale.onboarding__restoration_warning,
                                   textAlign: TextAlign.center,
                                   style: textTheme.bodySmall?.copyWith(
                                     color: Colors.deepOrange,

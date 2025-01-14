@@ -36,8 +36,10 @@ class ClipCollectionGridItem extends StatelessWidget {
   Future<void> deleteCollection(BuildContext context) async {
     final cubit = context.read<ClipCollectionCubit>();
     final confirm = await ConfirmDialog(
-      title: "Delete ${collection.title}?",
-      message: "Are you sure to delete this collection?",
+      title: context.locale.dialog__delete_collection__title(
+        collectionName: collection.title,
+      ),
+      message: context.locale.dialog__delete_collection__subtitle,
     ).show(context);
     if (!confirm) return;
     cubit.delete(collection);

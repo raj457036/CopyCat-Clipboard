@@ -6,6 +6,7 @@ import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/sync_status/syncstatus.dart';
 import 'package:copycat_base/domain/repositories/clipboard.dart';
 import 'package:copycat_base/domain/repositories/restoration_status.dart';
+import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
 import 'package:copycat_base/utils/snackbar.dart';
 import 'package:copycat_base/utils/utility.dart';
@@ -124,7 +125,7 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
             ),
             height10,
             Text(
-              "Restore My Clipboard",
+              context.locale.restore_clips__text__title,
               style: textTheme.headlineMedium,
             ),
             height8,
@@ -133,17 +134,23 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
             else if (totalCount < 0)
               Column(
                 children: [
-                  const Text("Failed to find any clips backup."),
+                  Text(context.locale.restore_clips__error__no_backup),
                   height10,
                   ElevatedButton(
-                      onPressed: startSyncing, child: const Text('Try Again')),
+                    onPressed: startSyncing,
+                    child: Text(
+                      context.locale.app__try_again,
+                    ),
+                  ),
                 ],
               )
             else
               Column(
                 children: [
                   Text(
-                    "You have approximately $totalCount clips to restore.",
+                    context.locale.restore_clips__text__total_count(
+                      totalCount: totalCount,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   height12,
@@ -175,13 +182,14 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                     builder: (context, state) {
                       switch (state) {
                         case ClipSyncDisabled():
-                          return const Text(
-                            "Syncing is currently disabled. Please enable it to continue.",
+                          return Text(
+                            context.locale.restore_clips__sync_disable,
                             textAlign: TextAlign.center,
                           );
                         case ClipSyncUnknown() || ClipSyncingUnknown():
-                          return const Text(
-                              "Preparing to sync. Please wait...");
+                          return Text(
+                            context.locale.restore_clips__preparing,
+                          );
                         case ClipSyncComplete(:final syncCount):
                           return Column(
                             children: [
@@ -194,13 +202,16 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                               ),
                               height10,
                               Text(
-                                "Your $syncCount clips have been restored successfully.",
+                                context.locale.restore_clips__restored(
+                                  syncCount: max(syncCount, totalCount),
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                               height10,
                               FilledButton.tonalIcon(
                                 onPressed: widget.onContinue,
-                                label: const Text("Let's Go Home"),
+                                label: Text(
+                                    context.locale.onboarding__text__go_home),
                                 icon: const Icon(Icons.check_rounded),
                               ),
                             ],
@@ -208,11 +219,15 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                         case ClipSyncFailed(:final failure):
                           return Column(
                             children: [
-                              Text("Sync Failed: ${failure.message}"),
+                              Text(
+                                context.locale.onboarding__restoration__failed(
+                                  message: failure,
+                                ),
+                              ),
                               height10,
                               ElevatedButton(
                                 onPressed: startSyncing,
-                                child: const Text('Try Again'),
+                                child: Text(context.locale.app__try_again),
                               ),
                             ],
                           );
@@ -229,12 +244,15 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                                 ),
                               height10,
                               Text(
-                                "Restored: $synced of ${max(totalCount, synced)} clips.",
+                                context.locale.restore_clips__restoring(
+                                  synced: synced,
+                                  totalCount: max(totalCount, synced),
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                               height12,
                               Text(
-                                "⚠️ Please keep this screen open during syncing to avoid data corruption or inconsistencies.",
+                                context.locale.onboarding__restoration_warning,
                                 textAlign: TextAlign.center,
                                 style: textTheme.bodySmall?.copyWith(
                                   color: Colors.deepOrange,
