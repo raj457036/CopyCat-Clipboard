@@ -1,5 +1,5 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:clipboard/pages/settings/widgets/switches/system_shortcut_switch.dart';
+import 'package:clipboard/pages/settings/widgets/switches/clipboard_hotkey_switch.dart';
 import 'package:clipboard/widgets/loop_video_player.dart';
 import 'package:copycat_base/constants/strings/strings.dart';
 import 'package:copycat_base/constants/widget_styles.dart';

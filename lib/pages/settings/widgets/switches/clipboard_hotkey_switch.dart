@@ -47,7 +47,10 @@ class ClipboardHotKeySwitch extends StatelessWidget {
                   text: TextSpan(
                     text: context.locale.settings__hotkey__preview_start,
                     children: [
-                      WidgetSpan(child: HotKeyVirtualView(hotKey: state)),
+                      WidgetSpan(
+                        child: HotKeyVirtualView(hotKey: state),
+                        alignment: PlaceholderAlignment.middle,
+                      ),
                       TextSpan(
                           text: context.locale.settings__hotkey__preview_end)
                     ],
