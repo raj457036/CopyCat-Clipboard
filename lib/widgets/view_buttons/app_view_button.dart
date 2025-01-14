@@ -43,7 +43,7 @@ class AppViewButton extends StatelessWidget {
               ),
               iconSize: 20,
               icon: const Icon(Icons.dashboard_rounded),
-              tooltip: context.locale.changeView,
+              tooltip: context.locale.view_button__change_view,
             );
           },
           menuChildren: [
@@ -52,27 +52,27 @@ class AppViewButton extends StatelessWidget {
                 Icons.crop_landscape,
                 size: 26,
               ),
-              child: Text(context.locale.viewWindow),
+              child: Text(context.locale.view_button__view_window),
               onPressed: () => changeView(context, AppView.windowed),
             ),
             MenuItemButton(
               leadingIcon: const Icon(DockIcons.dockRight),
-              child: Text(context.locale.viewDockRight),
+              child: Text(context.locale.view_button__view_dock_right),
               onPressed: () => changeView(context, AppView.rightDocked),
             ),
             MenuItemButton(
               leadingIcon: const Icon(DockIcons.dockBottom),
-              child: Text(context.locale.viewDockBottom),
+              child: Text(context.locale.view_button__view_dock_bottom),
               onPressed: () => changeView(context, AppView.bottomDocked),
             ),
             MenuItemButton(
               leadingIcon: const Icon(DockIcons.dockLeft),
-              child: Text(context.locale.viewDockLeft),
+              child: Text(context.locale.view_button__view_dock_left),
               onPressed: () => changeView(context, AppView.leftDocked),
             ),
             MenuItemButton(
               leadingIcon: const Icon(DockIcons.dockTop),
-              child: Text(context.locale.viewDockTop),
+              child: Text(context.locale.view_button__view_dock_top),
               onPressed: () => changeView(context, AppView.topDocked),
             ),
           ],

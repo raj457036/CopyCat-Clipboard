@@ -33,23 +33,23 @@ class LocaleDropdownButton extends StatelessWidget {
               items: [
                 DropdownMenuItem(
                   value: const Locale("en"),
-                  child: Text(context.locale.en),
+                  child: Text(context.locale.app__locale_en),
                 ),
                 DropdownMenuItem(
                   value: const Locale("es"),
-                  child: Text(context.locale.es),
+                  child: Text(context.locale.app__locale_es),
                 ),
                 DropdownMenuItem(
                   value: const Locale("fr"),
-                  child: Text(context.locale.fr),
+                  child: Text(context.locale.app__locale_fr),
                 ),
                 DropdownMenuItem(
                   value: const Locale("de"),
-                  child: Text(context.locale.de),
+                  child: Text(context.locale.app__locale_de),
                 ),
                 DropdownMenuItem(
                   value: const Locale("zh"),
-                  child: Text(context.locale.zh),
+                  child: Text(context.locale.app__locale_zh),
                 ),
               ],
               onChanged: (locale) {

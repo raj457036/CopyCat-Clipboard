@@ -101,14 +101,16 @@ class EventBridge extends StatelessWidget {
     context.read<MonetizationCubit>().logout();
     context.read<ClipCollectionCubit>().reset();
     if (isDesktopPlatform) {
-      context.read<WindowActionCubit>()..setWindowdView()..show();
+      context.read<WindowActionCubit>()
+        ..setWindowdView()
+        ..show();
     }
     clearPersistedRootDir();
     db.writeTxn(() => db.clear());
 
-    if (context.mounted) {
+    if (context.mounted && rootNavKey.currentContext != null) {
       showTextSnackbar(
-        rootNavKey.currentContext?.locale.logoutSuccess ?? "Logout Success",
+        rootNavKey.currentContext!.locale.app__ack__logout_success,
         closePrevious: true,
       );
     }
@@ -340,10 +342,12 @@ class EventBridge extends StatelessWidget {
               case OfflinePersistanceError(:final failure):
                 showFailureSnackbar(failure);
               case OfflinePersistanceDeleted(:final items):
-                showTextSnackbar(
-                  locales?.itemDeleted ?? "Item Deleted",
-                  closePrevious: true,
-                );
+                if (locales != null) {
+                  showTextSnackbar(
+                    locales.app__ack__deleted,
+                    closePrevious: true,
+                  );
+                }
                 broadcastBatchEvent(CrossSyncEventType.delete, items);
               case _:
             }
@@ -360,11 +364,13 @@ class EventBridge extends StatelessWidget {
               case CloudPersistanceDeleted(:final items):
                 offlineCubit.delete(items);
               case CloudPersistanceDeleting():
-                showTextSnackbar(
-                  locales?.deletingFromCloud ?? "Deleting from Cloud",
-                  isLoading: true,
-                  closePrevious: true,
-                );
+                if (locales != null) {
+                  showTextSnackbar(
+                    locales.app__ack__deleting,
+                    isLoading: true,
+                    closePrevious: true,
+                  );
+                }
               case CloudPersistanceError(:final failure, :final item):
                 showFailureSnackbar(failure);
                 if (item != null) {

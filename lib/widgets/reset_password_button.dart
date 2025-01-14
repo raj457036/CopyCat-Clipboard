@@ -19,13 +19,13 @@ class ResetPasswordButton extends StatelessWidget {
     if (iconButton) {
       return IconButton.filledTonal(
         icon: const Icon(Icons.lock_person_rounded),
-        tooltip: context.locale.resetYourPassword,
+        tooltip: context.locale.reset_pass__text__label,
         onPressed: () => resetPassword(context),
       );
     }
     return FilledButton.icon(
       icon: const Icon(Icons.lock_person_rounded),
-      label: Text(context.locale.resetYourPassword),
+      label: Text(context.locale.reset_pass__text__label),
       onPressed: () => resetPassword(context),
     );
   }

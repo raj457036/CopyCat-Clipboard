@@ -14,7 +14,7 @@ class NoCollectionAvailable extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          EmptyNote(note: context.locale.noCollectionFound),
+          EmptyNote(note: context.locale.app__no_collection),
           height20,
           TextButton.icon(
             onPressed: () {
@@ -26,7 +26,7 @@ class NoCollectionAvailable extends StatelessWidget {
               );
             },
             icon: const Icon(Icons.library_add),
-            label: Text(context.locale.createCollection),
+            label: Text(context.locale.app__create_collection),
           ),
         ],
       ),

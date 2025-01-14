@@ -25,7 +25,7 @@ class LoadMoreCard extends StatelessWidget {
             children: [
               const Icon(Icons.more_horiz_rounded),
               width8,
-              Text(context.locale.loadMore),
+              Text(context.locale.app__load_more),
             ],
           ),
         ),

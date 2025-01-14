@@ -45,7 +45,7 @@ class AppTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
     return Text(
-      context.locale.appName,
+      context.locale.app__name,
       style: textTheme.labelMedium?.copyWith(
         fontWeight: FontWeight.bold,
       ),

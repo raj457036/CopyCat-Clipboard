@@ -107,6 +107,7 @@ class ClipCollectionGridItem extends StatelessWidget {
                 width16,
                 Expanded(
                   child: Column(
+                    spacing: 6,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -117,18 +118,17 @@ class ClipCollectionGridItem extends StatelessWidget {
                           style: textTheme.titleMedium,
                         ),
                       ),
-                      height6,
-                      Flexible(
-                        child: Text(
-                          collection.description ??
-                              context.locale.noDescription,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: textTheme.bodyMedium?.apply(
-                            color: context.colors.outline,
+                      if (collection.description != null)
+                        Flexible(
+                          child: Text(
+                            collection.description!,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: textTheme.bodyMedium?.apply(
+                              color: context.colors.outline,
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -144,12 +144,12 @@ class ClipCollectionGridItem extends StatelessWidget {
       items: [
         MenuItem(
           icon: Icons.edit,
-          text: context.locale.edit,
+          text: context.locale.app__edit,
           onPressed: () => edit(context),
         ),
         MenuItem(
           icon: Icons.delete,
-          text: context.locale.delete,
+          text: context.locale.app__delete,
           onPressed: () => deleteCollection(context),
         ),
       ],

@@ -41,8 +41,8 @@ class AppLayoutToggleButton extends StatelessWidget {
             ? const Icon(Icons.window)
             : const Icon(Icons.view_agenda),
         tooltip: layout == AppLayout.grid
-            ? context.locale.layoutToList
-            : context.locale.layoutToGrid,
+            ? context.locale.view_button__switch_to_grid
+            : context.locale.view_button__switch_to_list,
       );
     });
   }

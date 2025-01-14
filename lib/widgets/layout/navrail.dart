@@ -1,6 +1,5 @@
 import 'package:clipboard/routes/utils.dart';
 import 'package:clipboard/utils/utility.dart';
-import 'package:clipboard/widgets/attention_button.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +89,8 @@ class NavLayoutNavrail extends StatelessWidget {
                         ),
                       ),
                     ],
-                    trailing: const AttentionButton(),
+                    // TODO(raj): replace with a better ux
+                    // trailing: const AttentionButton(),
                     leading: SizedBox(
                       height: 155,
                       child: floatingActionButton,

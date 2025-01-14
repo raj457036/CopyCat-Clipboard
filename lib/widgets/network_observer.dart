@@ -78,7 +78,7 @@ class _NetworkObserverState extends State<NetworkObserver> {
         wasDisconnected = false;
         refetchStates();
         showTextSnackbar(
-          context.locale.internetConnected,
+          context.locale.app__ack__internet_connected,
           success: true,
           closePrevious: true,
         );
@@ -86,7 +86,7 @@ class _NetworkObserverState extends State<NetworkObserver> {
     } else {
       wasDisconnected = true;
       showTextSnackbar(
-        context.locale.internetDisconnected,
+        context.locale.app__ack__internet_disconnected,
         failure: true,
         closePrevious: true,
       );

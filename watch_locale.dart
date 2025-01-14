@@ -24,7 +24,7 @@ void callFlutterGenerate(FileSystemEvent event) {
 
 void main(List<String> args) {
   final arbFile = File(
-    "./packages/copycat_base/lib/l10n/locale_en_US.arb",
+    "./packages/copycat_base/lib/l10n/locale_en.arb",
   );
 
   print("listening to $arbFile");

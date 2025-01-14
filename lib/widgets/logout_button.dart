@@ -18,13 +18,14 @@ class LogoutButton extends StatelessWidget {
 
   Future<void> logout(BuildContext context) async {
     final confirm = await ConfirmDialog(
-      title: context.locale.logout,
-      message: context.locale.logoutMessage,
+      title: context.locale.dialog__logout__title,
+      message: context.locale.dialog__logout__subtitle,
+      confirmationDelay: 3, // wait 5 second
     ).show(context);
 
     if (confirm) {
       showTextSnackbar(
-        context.locale.loggingYouOut,
+        context.locale.dialog__logging_out__ack,
         isLoading: true,
         closePrevious: true,
       );
@@ -39,13 +40,13 @@ class LogoutButton extends StatelessWidget {
       return IconButton(
         onPressed: enabled ? () => logout(context) : null,
         icon: const Icon(Icons.logout),
-        tooltip: context.locale.logout,
+        tooltip: context.locale.app__logout,
       );
     }
 
     return ElevatedButton.icon(
       onPressed: enabled ? () => logout(context) : null,
-      label: Text(context.locale.logout),
+      label: Text(context.locale.app__logout),
       icon: const Icon(Icons.logout),
     );
   }

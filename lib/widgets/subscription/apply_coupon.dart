@@ -1,5 +1,6 @@
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/l10n/l10n.dart';
+import 'package:copycat_base/utils/common_extension.dart';
 import 'package:copycat_base/utils/snackbar.dart';
 import 'package:copycat_pro/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:flutter/gestures.dart';
@@ -58,7 +59,7 @@ class _ApplyCouponDialogState extends State<ApplyCouponDialog> {
     } else {
       if (context.mounted) {
         // ignore: use_build_context_synchronously
-        showTextSnackbar(context.locale.subscriptionUpdated);
+        showTextSnackbar(context.locale.dialog__ack__sub_updated);
       }
       if (mounted) {
         Navigator.pop(context);
@@ -70,7 +71,7 @@ class _ApplyCouponDialogState extends State<ApplyCouponDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(
-        context.locale.grantedEntitlement,
+        context.locale.dialog__grant_entitlement__title,
         textAlign: TextAlign.center,
       ),
       content: SizedBox(
@@ -81,10 +82,11 @@ class _ApplyCouponDialogState extends State<ApplyCouponDialog> {
             children: [
               Text.rich(
                 TextSpan(
-                  text: context.locale.grantedEntitlementDesc,
+                  text: context.locale.dialog__grant_entitlement__subtitle_p1,
                   children: [
                     TextSpan(
-                      text: context.locale.clickingHere,
+                      text:
+                          context.locale.dialog__grant_entitlement__subtitle_p2,
                       style: const TextStyle(
                         color: Colors.deepOrange,
                         decoration: TextDecoration.underline,
@@ -100,7 +102,8 @@ class _ApplyCouponDialogState extends State<ApplyCouponDialog> {
                 controller: couponController,
                 decoration: InputDecoration(
                   labelText: "Code",
-                  helperText: context.locale.enterCodeSubmit,
+                  helperText:
+                      context.locale.dialog__grant_entitlement__enter_code,
                   errorText: errorMessage,
                 ),
               ),
@@ -117,11 +120,11 @@ class _ApplyCouponDialogState extends State<ApplyCouponDialog> {
       actions: [
         TextButton(
           onPressed: loading ? null : () => Navigator.pop(context),
-          child: Text(context.locale.cancel),
+          child: Text(context.mlocale.cancelButtonLabel.title),
         ),
         TextButton(
           onPressed: loading ? null : apply,
-          child: Text(context.locale.submit),
+          child: Text(context.locale.dialog__grant_entitlement__apply_code),
         ),
       ],
     );

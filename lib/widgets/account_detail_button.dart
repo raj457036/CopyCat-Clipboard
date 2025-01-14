@@ -14,7 +14,7 @@ class AccountDetailButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton.filledTonal(
       icon: const Icon(Icons.account_circle_outlined),
-      tooltip: context.locale.myAccount,
+      tooltip: context.locale.my_account__button__tooltip,
       onPressed: () => viewAccount(context),
     );
   }

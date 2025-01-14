@@ -23,7 +23,9 @@ class ManageSubscriptionButton extends StatelessWidget {
       final till = dateTimeFormatter(context.locale.localeName)
           .format(subscription.activeTill!);
       // ignore: use_build_context_synchronously
-      showTextSnackbar(context.locale.promoSub(till));
+      showTextSnackbar(
+        context.locale.manage_sub__ack__promo_sub(till: till),
+      );
     }
   }
 
@@ -36,7 +38,7 @@ class ManageSubscriptionButton extends StatelessWidget {
             active: (sub) {
               return ElevatedButton(
                 onPressed: () => manageSubscription(context, sub),
-                child: Text(context.locale.manageSubscriptions),
+                child: Text(context.locale.manage_sub__button__text),
               );
             });
       },

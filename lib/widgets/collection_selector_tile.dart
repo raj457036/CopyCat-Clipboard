@@ -75,18 +75,17 @@ class ClipCollectionSelectorStateTile
     final colors = context.colors;
     return ListTile(
       title: collection == null
-          ? Text(context.locale.noCollection)
+          ? Text(context.locale.collection_selector__tile__no_collection)
           : Text("${collection!.emoji} ${collection!.title}"),
-      subtitle: collection == null
-          ? Text(context.locale.chooseCollection)
-          : Text(context.locale.changeCollection),
+      subtitle: Text(context.locale.app__change_collection),
       trailing: collection == null
           ? const Icon(Icons.chevron_right)
           : IconButton.filled(
               onPressed: clear,
               icon: const Icon(Icons.remove),
               color: colors.onPrimary,
-              tooltip: context.locale.removeFromCollection,
+              tooltip:
+                  context.locale.collection_selector__button__remove_collection,
             ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       tileColor: colors.secondaryContainer,

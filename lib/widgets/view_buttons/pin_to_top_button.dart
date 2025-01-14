@@ -31,7 +31,9 @@ class PinToTopButton extends StatelessWidget {
           color: pinned ? colors.primary : colors.outlineVariant,
           iconSize: 20,
           icon: const Icon(Icons.push_pin_rounded),
-          tooltip: pinned ? context.locale.unpin : context.locale.pin,
+          tooltip: pinned
+              ? context.locale.view_button__unpin
+              : context.locale.view_button__pin,
         );
       },
     );

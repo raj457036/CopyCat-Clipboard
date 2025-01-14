@@ -10,7 +10,7 @@ class TextBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: context.locale.experimentalDescription,
+      message: context.locale.badges__tooltip__experimental,
       child: Chip(
         label: Text(message),
         shape: const StadiumBorder(),
@@ -61,7 +61,7 @@ class ProBadge extends StatelessWidget {
 
     if (noTooltip) return chip;
     return Tooltip(
-      message: context.locale.proOnlyTooltip,
+      message: context.locale.badges__tooltip__pro_only,
       child: chip,
     );
   }

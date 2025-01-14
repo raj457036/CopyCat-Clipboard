@@ -23,7 +23,7 @@ class TipTile extends StatelessWidget {
         Icons.lightbulb,
         color: Colors.amber,
       ),
-      title: Text(title ?? context.locale.proTip),
+      title: Text(title ?? context.locale.app__pro_tip),
       subtitle: Text(tip),
       tileColor: colors.secondaryContainer,
     );
