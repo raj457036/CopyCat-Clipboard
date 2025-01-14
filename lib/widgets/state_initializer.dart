@@ -32,7 +32,7 @@ class _StateInitializerState extends State<StateInitializer>
     with WidgetsBindingObserver {
   final appLinkListener = ApplinkListener();
   final shareListener = ShareListener();
-  final powerSaverDebounce = Debouncer(milliseconds: 60000);
+  final powerSaverDebounce = Debouncer(milliseconds: 180000); // 3 minutes
   ui.FlutterView? _view;
   bool renderingDisabled = false;
 
