@@ -26,7 +26,7 @@ class SyncStatusFAB extends StatelessWidget {
         bool disabled = false;
         IconData icon = Icons.sync_rounded;
         bool isSyncing = false;
-        String message = context.locale.syncNow;
+        String message = context.locale.fab__sync;
         return MultiBlocListener(
           listeners: [
             BlocListener<ClipSyncManagerCubit, ClipSyncManagerState>(
@@ -37,7 +37,7 @@ class SyncStatusFAB extends StatelessWidget {
                       disabled = true;
                       isSyncing = false;
                       icon = Icons.sync_lock_rounded;
-                      message = context.locale.syncNotAvailable;
+                      message = context.locale.fab__sync_unavailable;
                     case ClipSyncingUnknown():
                       disabled = true;
                       isSyncing = true;
@@ -48,13 +48,14 @@ class SyncStatusFAB extends StatelessWidget {
                       disabled = false;
                       isSyncing = false;
                       icon = Icons.sync_rounded;
-                      message = context.locale.synced;
+                      message = context.locale.fab__sync_up_to_date;
                     case ClipSyncFailed(:final failure):
                       disabled = false;
                       isSyncing = false;
                       icon = Icons.sync_problem_rounded;
-                      message =
-                          context.locale.syncingCheckFailed(failure.message);
+                      message = context.locale.fab__sync_failed(
+                        message: failure.message,
+                      );
                   }
                 });
               },
@@ -68,7 +69,7 @@ class SyncStatusFAB extends StatelessWidget {
                       disabled = true;
                       isSyncing = false;
                       icon = Icons.sync_lock_rounded;
-                      message = context.locale.syncNotAvailable;
+                      message = context.locale.fab__sync_unavailable;
                     case CollectionSyncingUnknown():
                       disabled = true;
                       isSyncing = true;
@@ -79,13 +80,14 @@ class SyncStatusFAB extends StatelessWidget {
                       disabled = false;
                       isSyncing = false;
                       icon = Icons.sync_rounded;
-                      message = context.locale.synced;
+                      message = context.locale.fab__sync_up_to_date;
                     case CollectionSyncFailed(:final failure):
                       disabled = false;
                       isSyncing = false;
                       icon = Icons.sync_problem_rounded;
-                      message =
-                          context.locale.syncingCheckFailed(failure.message);
+                      message = context.locale.fab__sync_failed(
+                        message: failure.message,
+                      );
                   }
                 });
               },

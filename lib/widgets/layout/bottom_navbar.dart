@@ -32,20 +32,21 @@ class BottomNavBar extends StatelessWidget {
               NavigationDestination(
                 icon: const Icon(Icons.paste_outlined),
                 selectedIcon: const Icon(Icons.paste_rounded),
-                label: context.locale.clipboard.sub(end: 15),
-                tooltip: context.locale.clipboard,
+                label: context.locale.layout__navbar__clipboard.sub(end: 15),
+                tooltip: context.locale.layout__navbar__clipboard,
               ),
               NavigationDestination(
                 icon: const Icon(Icons.collections_bookmark_outlined),
                 selectedIcon: const Icon(Icons.collections_bookmark_rounded),
-                label: context.locale.collections,
-                tooltip: context.locale.collections,
+                label: context.locale.layout__navbar__collections,
+                tooltip: context.locale.layout__navbar__collections,
               ),
               NavigationDestination(
                 icon: const Icon(Icons.settings_outlined),
                 selectedIcon: const Icon(Icons.settings_rounded),
-                label: context.locale.settings.sub(start: 0, end: 8),
-                tooltip: context.locale.settings,
+                label: context.locale.layout__navbar__settings
+                    .sub(start: 0, end: 8),
+                tooltip: context.locale.layout__navbar__settings,
               ),
             ],
           ),

@@ -37,7 +37,7 @@ class FilterButton extends StatelessWidget {
       child: IconButton(
         icon: const Icon(Icons.filter_alt_rounded),
         iconSize: 20,
-        tooltip: context.locale.applyFilter,
+        tooltip: context.locale.search__tooltip__filter,
         color: active ? colors.secondaryContainer : null,
         style: IconButton.styleFrom(
           backgroundColor:

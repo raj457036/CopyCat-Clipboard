@@ -33,6 +33,10 @@ class InconsistentTiming extends StatelessWidget {
     });
   }
 
+  Future<void> autoFix(BuildContext context) async {
+    // TODO(raj): add method to automatically fix the time.
+  }
+
   Future<void> checkAgain(BuildContext context) async {
     final cubit = context.read<AppConfigCubit>();
     final result = await cubit.syncClocks();
@@ -45,34 +49,22 @@ class InconsistentTiming extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog.adaptive(
-      title: Text(context.locale.timeSyncWarning, textAlign: TextAlign.center),
+      title: Text(context.locale.dialog__text__inconsistent_time__title,
+          textAlign: TextAlign.center),
       content: SizedBox(
         width: 250,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            height12,
-            Text(
-              context.locale.timeSyncWarningNote1,
-              textAlign: TextAlign.center,
-            ),
-            height10,
-            Text(
-              context.locale.timeSyncWarningNote2,
-              textAlign: TextAlign.center,
-            ),
-            height10,
-            Text(
-              context.locale.timeSyncWarningNote3,
-              textAlign: TextAlign.center,
-            )
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(padding10),
+          child: Text(
+            context.locale.dialog__text__inconsistent_time__content,
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
       actions: [
         TextButton(
           onPressed: () => checkAgain(context),
-          child: Text(context.locale.checkAgain),
+          child: Text(context.locale.dialog__button__try_again),
         ),
       ],
     );

@@ -4,7 +4,6 @@ import 'package:copycat_base/constants/numbers/breakpoints.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
-import 'package:copycat_base/utils/datetime_extension.dart';
 import 'package:copycat_base/utils/utility.dart';
 import 'package:copycat_pro/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:copycat_pro/utils/monetization.dart';
@@ -21,106 +20,106 @@ class FeatureTabs extends StatelessWidget {
     final freePlanIncludes = [
       (
         null,
-        context.locale.included,
+        context.locale.sub_dialog__text__included,
         null,
       ),
       (
         const Icon(Icons.paste_rounded),
-        context.locale.unlimitedClipboardItems,
-        context.locale.unlimitedClipboardItemsDesc,
+        context.locale.sub_dialog__f1__title,
+        context.locale.sub_dialog__f1__subtitle,
       ),
       (
         const Icon(Icons.devices),
-        context.locale.supportAllMajorPlatforms,
-        context.locale.supportAllMajorPlatformsDesc,
+        context.locale.sub_dialog__f2__title,
+        context.locale.sub_dialog__f2__subtitle,
       ),
       (
         const Icon(Icons.fiber_smart_record_outlined),
-        context.locale.supportsAppleUniversalClipboard,
-        context.locale.supportsAppleUniversalClipboardDesc,
+        context.locale.sub_dialog__f3__title,
+        context.locale.sub_dialog__f3__subtitle,
       ),
       (
         const Icon(Icons.storage_rounded),
-        context.locale.onDeviceStorage,
-        context.locale.onDeviceStorageDesc,
+        context.locale.sub_dialog__f4__title,
+        context.locale.sub_dialog__f4__subtitle,
       ),
       (
         const Icon(Icons.security_rounded),
-        context.locale.supportE2EE,
-        context.locale.supportE2EEDesc,
+        context.locale.sub_dialog__f5__title,
+        context.locale.sub_dialog__f5__subtitle,
       ),
       (
         const Icon(Icons.add_to_drive_rounded),
-        context.locale.googleDriveIntegration,
-        context.locale.googleDriveIntegrationDesc,
+        context.locale.sub_dialog__f6__title,
+        context.locale.sub_dialog__f6__subtitle,
       ),
       (
         const Icon(Icons.manage_search_rounded),
-        context.locale.instantSearch,
-        context.locale.instantSearchDesc,
+        context.locale.sub_dialog__f7__title,
+        context.locale.sub_dialog__f7__subtitle,
       ),
       (
         const Icon(Icons.cloud_sync_rounded),
-        context.locale.syncingUpToLast24Hours,
-        context.locale.syncingUpToLast24HoursDesc,
+        context.locale.sub_dialog__f8__title,
+        context.locale.sub_dialog__f8__subtitle,
       ),
       (
         const Icon(Icons.collections_bookmark_rounded),
-        context.locale.upTo3Collections,
-        context.locale.upTo3CollectionsDesc,
+        context.locale.sub_dialog__f9__title,
+        context.locale.sub_dialog__f9__subtitle,
       ),
       (
         const Icon(Icons.sync_alt_rounded),
-        context.locale.autoSyncEvery45Seconds,
-        context.locale.autoSyncEvery45SecondsDesc,
+        context.locale.sub_dialog__f10__title,
+        context.locale.sub_dialog__f10__subtitle,
       )
     ];
 
     final proPlanIncludes = [
       (
         null,
-        context.locale.withPro,
-        context.locale.withProDesc,
+        context.locale.sub_dialog__text__pro_title,
+        context.locale.sub_dialog__text__pro_subtitle,
       ),
       (
         const Icon(Icons.rule_rounded),
-        context.locale.customExclusionRuleFeature,
-        context.locale.customExclusionRuleFeatureDesc,
+        context.locale.sub_dialog__f11__title,
+        context.locale.sub_dialog__f11__subtitle,
       ),
       (
         const Icon(Icons.highlight_alt_rounded),
-        context.locale.dragNDropFeature,
-        context.locale.dragNDropFeatureDesc,
+        context.locale.sub_dialog__f12__title,
+        context.locale.sub_dialog__f12__subtitle,
       ),
       (
         const Icon(Icons.color_lens_rounded),
-        context.locale.themingFeature,
-        context.locale.themingFeatureDesc,
+        context.locale.sub_dialog__f13__title,
+        context.locale.sub_dialog__f13__subtitle,
       ),
       (
         const Icon(Icons.collections_bookmark_rounded),
-        context.locale.upto50Collection,
-        context.locale.upto50CollectionDesc,
+        context.locale.sub_dialog__f14__title,
+        context.locale.sub_dialog__f14__subtitle,
       ),
       (
         const Icon(Icons.history_rounded),
-        context.locale.syncLast720Hr,
-        context.locale.syncLast720HrDesc,
+        context.locale.sub_dialog__f15__title,
+        context.locale.sub_dialog__f15__subtitle,
       ),
       (
         const Icon(Icons.sync_rounded),
-        context.locale.realtimeSync,
-        context.locale.realtimeSyncDesc,
+        context.locale.sub_dialog__f16__title,
+        context.locale.sub_dialog__f16__subtitle,
       ),
       (
         const Icon(Icons.support_agent_rounded),
-        context.locale.prioritySupport,
-        context.locale.prioritySupportDesc,
+        context.locale.sub_dialog__f17__title,
+        context.locale.sub_dialog__f17__subtitle,
       ),
       (
         const Icon(Icons.new_releases_rounded),
-        context.locale.earlyAccessToNewFeature,
-        context.locale.earlyAccessToNewFeatureDesc,
+        context.locale.sub_dialog__f18__title,
+        context.locale.sub_dialog__f18__subtitle,
       ),
     ];
     return DefaultTabController(
@@ -195,16 +194,16 @@ class SubscriptionInfoDialog extends StatelessWidget {
     }
     CustomPaywallDialog(
       localization: CustomPaywallDialogLocalization(
-        month: context.locale.month,
-        year: context.locale.year,
-        subscription: context.locale.subscription,
+        month: context.locale.paywall_dialog__text__month,
+        year: context.locale.paywall_dialog__text__year,
+        subscription: context.locale.paywall_dialog__text__subscription,
         subscribeInSupportedPlatform:
-            context.locale.subscribeInSupportedPlatform,
-        unlockPremiumFeatures: context.locale.unlockPremiumFeatures,
-        upgradeToPro: context.locale.upgradeToPro,
-        tryAgain: context.locale.tryAgain,
-        continue_: context.locale.continue_,
-        cancel: context.locale.cancel,
+            context.locale.paywall_dialog__text__supported_platform,
+        unlockPremiumFeatures: context.locale.paywall_dialog__text__unlock_pro,
+        upgradeToPro: context.locale.paywall_dialog__text__unlock_pro_p1,
+        tryAgain: context.locale.paywall_dialog__text__try_again,
+        continue_: context.mlocale.continueButtonLabel.title,
+        cancel: context.mlocale.cancelButtonLabel,
       ),
       onSubscription: monetizationCubit.onSubscriptionChange,
     ).open(context);
@@ -221,12 +220,12 @@ class SubscriptionInfoDialog extends StatelessWidget {
           builder: (context, state) {
             if (state == null) {
               return AlertDialog(
-                title: Text(context.locale.subscription),
-                content: Center(
+                title: Text(context.locale.paywall_dialog__text__subscription),
+                content: const Center(
                   child: SizedBox(
                     width: 250,
                     child: Text(
-                      context.locale.nothingHere,
+                      "...",
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -241,7 +240,7 @@ class SubscriptionInfoDialog extends StatelessWidget {
               body: AlertDialog(
                 title: Row(
                   children: [
-                    Text(context.locale.subscription),
+                    Text(context.locale.paywall_dialog__text__subscription),
                     const Spacer(),
                     const CloseButton(),
                   ],
@@ -259,9 +258,10 @@ class SubscriptionInfoDialog extends StatelessWidget {
                       ListTile(
                         title: Text(
                           expired
-                              ? context.locale
-                                  .expiredPlan(context.locale.currentPlan)
-                              : context.locale.currentPlan,
+                              ? context
+                                  .locale.paywall_dialog__text__expired_plan
+                              : context
+                                  .locale.paywall_dialog__text__current_plan,
                         ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,9 +274,8 @@ class SubscriptionInfoDialog extends StatelessWidget {
                             height2,
                             if (isTrial && state.trialEnd != null)
                               Text(
-                                context.locale.trialTill(
-                                  dateTimeFormatter(context.locale.localeName)
-                                      .format(state.trialEnd!),
+                                context.locale.paywall_dialog__text__trial_till(
+                                  till: state.trialEnd!,
                                 ),
                               ),
                           ],
@@ -287,7 +286,9 @@ class SubscriptionInfoDialog extends StatelessWidget {
                                 onLongPress: () => upgradeByPromoCode(context),
                                 icon:
                                     const Icon(Icons.workspace_premium_rounded),
-                                label: Text(context.locale.upgrade),
+                                label: Text(
+                                  context.locale.paywall_dialog__text__upgrade,
+                                ),
                               )
                             : const ManageSubscriptionButton(),
                       ),

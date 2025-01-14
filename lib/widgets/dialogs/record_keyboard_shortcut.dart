@@ -1,5 +1,6 @@
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/l10n/l10n.dart';
+import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
@@ -30,16 +31,16 @@ class _RecordKeyboardShortcutDialogState
     final options = [
       TextButton(
         onPressed: () => Navigator.pop(context, null),
-        child: Text(context.locale.cancel),
+        child: Text(context.mlocale.cancelButtonLabel.title),
       ),
       TextButton(
         onPressed: () => Navigator.pop(context, hotKey),
         autofocus: true,
-        child: Text(context.locale.confirm),
+        child: Text(context.mlocale.okButtonLabel),
       ),
     ];
     return SimpleDialog(
-      title: Text(context.locale.recordKeyboardShortcut),
+      title: Text(context.locale.dialog__record_keys__title),
       contentPadding: const EdgeInsets.all(padding16),
       children: [
         Card(
@@ -65,10 +66,10 @@ class _RecordKeyboardShortcutDialogState
         height12,
         Text.rich(
           TextSpan(
-            text: context.locale.recordKeyboardShortcutDesc,
+            text: context.locale.dialog__record_keys__subtitle,
             children: [
               TextSpan(
-                text: context.locale.confirm,
+                text: context.locale.app__confirm,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),

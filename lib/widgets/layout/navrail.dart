@@ -54,7 +54,7 @@ class NavLayoutNavrail extends StatelessWidget {
                           child: const Icon(Icons.paste_rounded),
                         ),
                         label: Text(
-                          context.locale.clipboard,
+                          context.locale.layout__navbar__clipboard,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -70,7 +70,7 @@ class NavLayoutNavrail extends StatelessWidget {
                           child: const Icon(Icons.collections_bookmark_rounded),
                         ),
                         label: Text(
-                          context.locale.collection,
+                          context.locale.layout__navbar__collections,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -85,7 +85,7 @@ class NavLayoutNavrail extends StatelessWidget {
                           child: const Icon(Icons.settings),
                         ),
                         label: Text(
-                          context.locale.settings,
+                          context.locale.layout__navbar__settings,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),

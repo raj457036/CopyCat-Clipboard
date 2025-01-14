@@ -39,7 +39,6 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
   bool loading = false;
   bool invalidImportedKey = false;
   String? secret;
-  bool rebuilding = false;
 
   late AppConfigCubit appConfigCubit;
 
@@ -112,7 +111,7 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
       }
       if (context.mounted) {
         context.pop();
-        showTextSnackbar(context.locale.exportSuccess);
+        showTextSnackbar(context.locale.app__ack__exported);
       }
     }
   }
@@ -147,19 +146,6 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
             return state.whenOrNull(authenticated: (user, _) => user);
           },
           builder: (context, user) {
-            if (rebuilding) {
-              return Dialog(
-                child: SizedBox.square(
-                  dimension: 250,
-                  child: Center(
-                    child: Text(
-                      context.locale.rebuildingDB,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              );
-            }
             if (user == null) return const SizedBox.shrink();
             final keyId = user.enc2KeyId;
             final enc1 = user.enc1;

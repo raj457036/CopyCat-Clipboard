@@ -53,7 +53,9 @@ class CreateCollectionButton extends StatelessWidget {
               child = IconButton.filledTonal(
                 onPressed: () => createCollection(context),
                 icon: const Icon(Icons.add),
-                tooltip: context.locale.createACollection(remaining),
+                tooltip: context.locale.fab__create_collection(
+                  remaining: remaining,
+                ),
               );
             } else {
               child = FloatingActionButton(
@@ -61,7 +63,9 @@ class CreateCollectionButton extends StatelessWidget {
                 backgroundColor: canCreate ? null : colors.outline,
                 mouseCursor: canCreate ? null : SystemMouseCursors.forbidden,
                 onPressed: canCreate ? () => createCollection(context) : null,
-                tooltip: context.locale.createACollection(remaining),
+                tooltip: context.locale.fab__create_collection(
+                  remaining: remaining,
+                ),
                 child: const Icon(Icons.library_add_rounded),
               );
             }
