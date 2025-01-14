@@ -22,7 +22,7 @@ class LocaleDropdownButton extends StatelessWidget {
       builder: (context, state) {
         return DropdownButtonHideUnderline(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 140),
+            constraints: const BoxConstraints(maxWidth: 150),
             child: DropdownButton<Locale>(
               value: state,
               isExpanded: true,
