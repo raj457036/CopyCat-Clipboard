@@ -83,7 +83,7 @@ class GoogleDriveSetup extends StatelessWidget {
                   vertical: padding8,
                 ),
                 child: Text(
-                    "${hasError ? context.locale.settings__text__gdrive__error : ''}\n\n${context.locale.settings__text__gdrive__info}"),
+                    "${hasError ? "${context.locale.settings__text__gdrive__error}\n\n" : ''}${context.locale.settings__text__gdrive__info}"),
               ),
               ListTile(
                 tileColor: colors.secondaryContainer,
@@ -130,7 +130,7 @@ class GoogleDriveSetup extends StatelessWidget {
               //   trailing: const Icon(Icons.chevron_right),
               //   onTap: () => {},
               // ),
-              height10,
+              height12,
             ],
           ),
         );
