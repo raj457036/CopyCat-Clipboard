@@ -29,6 +29,7 @@ import 'package:copycat_base/constants/strings/strings.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/app_config/appconfig.dart';
 import 'package:copycat_base/l10n/generated/app_localizations.dart';
+import 'package:copycat_base/utils/common_extension.dart';
 import 'package:copycat_base/utils/utility.dart';
 import 'package:copycat_base/utils/windows/update_registry.dart';
 import 'package:copycat_pro/bloc/monetization_cubit/monetization_cubit.dart';
@@ -38,6 +39,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:form_validator/form_validator.dart';
+import 'package:form_validator/src/i18n/all.dart' as fv_locale;
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
@@ -125,6 +128,13 @@ Future<void> initializeDesktopServices() async {
   );
 }
 
+void updateValidatorLanguage(String langCode) {
+  final locale =
+      fv_locale.supportedLocales.findFirst((l) => l.startsWith(langCode)) ??
+          "en";
+  ValidationBuilder.setLocale(locale);
+}
+
 class AppContent extends StatelessWidget {
   const AppContent({super.key});
 
@@ -192,7 +202,7 @@ class AppContent extends StatelessWidget {
           builder: (context, state) {
             final (theme, langCode, lightColorScheme, darkColorScheme, view) =
                 state;
-
+            updateValidatorLanguage(langCode);
             return AnnotatedRegion<SystemUiOverlayStyle>(
               value: getUiOverlay(theme),
               child: MaterialApp.router(
@@ -254,7 +264,8 @@ class AppContent extends StatelessWidget {
                   ),
                 ),
                 debugShowCheckedModeBanner: false,
-                locale: Locale(langCode.isEmpty ? "en" : langCode),
+                locale:
+                    Locale(langCode.isEmpty ? Platform.localeName : langCode),
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
                 builder: (context, child) => UpgraderBuilder(child: child),

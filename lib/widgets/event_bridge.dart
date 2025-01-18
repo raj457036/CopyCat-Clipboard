@@ -118,7 +118,6 @@ class EventBridge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // bool firstTime = true;
     return MultiBlocListener(
       listeners: [
         if (isDesktopPlatform)
@@ -152,10 +151,19 @@ class EventBridge extends StatelessWidget {
             final prev = previous.config;
             final curr = current.config;
             return prev.enableSync != curr.enableSync ||
-                prev.syncSpeed != curr.syncSpeed;
+                prev.syncSpeed != curr.syncSpeed ||
+                prev.onBoardComplete != curr.onBoardComplete;
           },
           listener: (context, state) async {
             final config = state.config;
+
+            if (!config.onBoardComplete) {
+              logger.i(
+                "Preventing syncing before onboarding process completes.",
+              );
+              return;
+            }
+
             final clipSync = context.read<ClipSyncManagerCubit>();
             final realtimeClip = context.read<RealtimeClipSyncCubit>();
             final collectionSync = context.read<CollectionSyncManagerCubit>();
@@ -178,6 +186,8 @@ class EventBridge extends StatelessWidget {
         ),
         BlocListener<RealtimeCollectionSyncCubit, RealtimeCollectionSyncState>(
           listener: (context, state) {
+            final cubit = context.read<RealtimeCollectionSyncCubit>();
+            if (!cubit.isSubscribed) return;
             final collectionSync = context.read<CollectionSyncManagerCubit>();
             switch (state) {
               case RealtimeCollectionSyncConnected():

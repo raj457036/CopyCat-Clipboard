@@ -1,5 +1,6 @@
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:copycat_base/utils/debounce.dart';
 import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 
@@ -8,8 +9,9 @@ class PasteFAB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final debouncer = Debouncer(milliseconds: 350);
     return FloatingActionButton(
-      onPressed: () => pasteContent(context),
+      onPressed: () => debouncer(() => pasteContent(context)),
       tooltip:
           isDesktopPlatform ? "Paste • ${keyboardShortcut(key: 'V')}" : 'Paste',
       heroTag: "paste-fab",

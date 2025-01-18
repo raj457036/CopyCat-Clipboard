@@ -7,7 +7,15 @@ import 'package:flutter/material.dart';
 class TipTile extends StatelessWidget {
   final String? title;
   final String tip;
-  const TipTile({super.key, this.title, required this.tip});
+  final Color? bg;
+  final Widget? icon;
+  const TipTile({
+    super.key,
+    this.title,
+    required this.tip,
+    this.bg,
+    this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +27,14 @@ class TipTile extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: radius12,
       ),
-      leading: const Icon(
-        Icons.lightbulb,
-        color: Colors.amber,
-      ),
+      leading: icon ??
+          const Icon(
+            Icons.lightbulb,
+            color: Colors.amber,
+          ),
       title: Text(title ?? context.locale.app__pro_tip),
       subtitle: Text(tip),
-      tileColor: colors.secondaryContainer,
+      tileColor: bg ?? colors.secondaryContainer,
     );
     if (isMobile) {
       return Padding(

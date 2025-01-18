@@ -6,6 +6,7 @@ import 'package:copycat_base/bloc/clip_sync_manager_cubit/clip_sync_manager_cubi
 import 'package:copycat_base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
+import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,10 +39,7 @@ class SyncStatusFAB extends StatelessWidget {
                       isSyncing = false;
                       icon = Icons.sync_lock_rounded;
                       message = context.locale.fab__sync_unavailable;
-                    case ClipSyncingUnknown():
-                      disabled = true;
-                      isSyncing = true;
-                    case ClipSyncing():
+                    case ClipSyncingUnknown() || ClipSyncing():
                       disabled = true;
                       isSyncing = true;
                     case ClipSyncComplete():
@@ -70,10 +68,7 @@ class SyncStatusFAB extends StatelessWidget {
                       isSyncing = false;
                       icon = Icons.sync_lock_rounded;
                       message = context.locale.fab__sync_unavailable;
-                    case CollectionSyncingUnknown():
-                      disabled = true;
-                      isSyncing = true;
-                    case CollectionSyncing():
+                    case CollectionSyncingUnknown() || CollectionSyncing():
                       disabled = true;
                       isSyncing = true;
                     case CollectionSyncComplete():
@@ -100,18 +95,21 @@ class SyncStatusFAB extends StatelessWidget {
                 onPressed: disabled
                     ? null
                     : () => collectionSyncCubit.syncCollections(manual: true),
-                tooltip: "$message • ${keyboardShortcut(key: 'R')}",
+                tooltip: isDesktopPlatform
+                    ? '$message • ${keyboardShortcut(key: 'R')}'
+                    : message,
                 heroTag: "sync-fab",
                 backgroundColor: colors.secondary,
                 foregroundColor: colors.onSecondary,
-                child: isSyncing
-                    ? Spin(
-                        infinite: true,
-                        spins: -1,
-                        curve: Curves.linear,
-                        child: const Icon(Icons.sync_rounded),
-                      )
-                    : Icon(icon),
+                child: Spin(
+                  infinite: true,
+                  delay: Durations.short4,
+                  spins: -1,
+                  curve: Curves.ease,
+                  animate: isSyncing,
+                  child:
+                      isSyncing ? const Icon(Icons.sync_rounded) : Icon(icon),
+                ),
               ),
             );
           }),

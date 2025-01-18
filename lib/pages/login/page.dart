@@ -66,7 +66,7 @@ class LoginPage extends StatelessWidget {
             return Stack(
               children: [
                 Positioned(
-                  height: 250,
+                  height: 350,
                   child: bg,
                 ),
                 const LoginForm(),

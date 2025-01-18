@@ -156,7 +156,7 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                                 ),
                                 height10,
                                 Text(
-                                  context.locale.restore_clips__restored(
+                                  context.locale.restore_collections__restored(
                                     syncCount: max(syncCount, totalCount),
                                   ),
                                   textAlign: TextAlign.center,
@@ -199,7 +199,7 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                                   ),
                                 height10,
                                 Text(
-                                  context.locale.restore_clips__restoring(
+                                  context.locale.restore_collections__restoring(
                                     synced: synced,
                                     totalCount: max(totalCount, synced),
                                   ),

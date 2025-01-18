@@ -62,15 +62,14 @@ class LoginForm extends StatelessWidget {
               top: 180,
             ),
             child: SizedBox(
-              // height: mq.size.height,
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // const Spacer(),
                   Text(
                     context.locale.app__name,
-                    style: textTheme.headlineMedium,
+                    style: textTheme.headlineLarge
+                        ?.copyWith(fontWeight: FontWeight.w600),
                     textAlign: TextAlign.center,
                   ),
                   height12,
@@ -81,13 +80,13 @@ class LoginForm extends StatelessWidget {
                   ),
                   height24,
                   const LocalSigninButton(),
-                  height10,
+                  height16,
                   Text(
                     "· · ─────── ·𖥸· ─────── · ·",
                     style: textTheme.titleMedium,
                     textAlign: TextAlign.center,
                   ),
-                  height10,
+                  height16,
                   SizedBox(
                     width: 350,
                     // height: 390,

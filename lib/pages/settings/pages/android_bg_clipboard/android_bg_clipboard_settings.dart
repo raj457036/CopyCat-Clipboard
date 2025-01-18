@@ -6,6 +6,8 @@ import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:copycat_base/common/logging.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
+import 'package:copycat_base/l10n/l10n.dart';
+import 'package:copycat_base/utils/color_extension.dart';
 import 'package:copycat_base/utils/common_extension.dart';
 import 'package:copycat_base/utils/snackbar.dart';
 import 'package:copycat_base/utils/utility.dart';
@@ -117,7 +119,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   }
 
   Future<void> setupConfiguration() async {
-    showTextSnackbar("Preparing setup, please wait", isLoading: true);
+    showTextSnackbar(context.locale.abc__ack__preparing, isLoading: true);
     setState(() {
       writingConfig = true;
     });
@@ -150,8 +152,13 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
         secure: true,
       );
       await wait(1000);
-      showTextSnackbar("Setup ready to be configured.",
-          success: true, closePrevious: true);
+      if (mounted) {
+        showTextSnackbar(
+          context.locale.abc__ack__ready,
+          success: true,
+          closePrevious: true,
+        );
+      }
     } catch (e) {
       logger.e(e);
       closeSnackbar();
@@ -163,6 +170,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
 
   @override
   Widget build(BuildContext context) {
+    final isLight = context.theme.brightness == Brightness.light;
     Widget child = const Center(
       child: CircularProgressIndicator(),
     );
@@ -173,17 +181,26 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
 
       child = ListView(
         children: [
-          const TipTile(
-            title: "Clipboard Monitoring",
-            tip:
-                "Enable permissions to ensure CopyCat works seamlessly with your clipboard.",
+          TipTile(
+            title: context.locale.abc__tip__why_title,
+            tip: context.locale.abc__tip__why_subtitle,
+          ),
+          TipTile(
+            icon: const Icon(Icons.warning, color: Colors.amber),
+            bg: Colors.red.darker(50, isLight),
+            title: context.locale.abc__tip__support_title,
+            tip: context.locale.abc__tip__support_subtitle,
           ),
           height5,
-          const SettingHeader(name: "Essential Permissions"),
+          SettingHeader(
+            name: context.locale.abc__heading__req_perm,
+          ),
           SwitchListTile(
-            title: const Text("Notification Access"),
-            subtitle: const Text(
-              "Allows CopyCat to show an active notification for the running service.",
+            title: Text(
+              context.locale.abc__tile__notification_title,
+            ),
+            subtitle: Text(
+              context.locale.abc__tile__notification_subtitle,
             ),
             value: notification,
             enableFeedback: true,
@@ -191,9 +208,25 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
             onChanged: writingConfig ? null : (_) => openNotificationSetting(),
           ),
           SwitchListTile(
-            title: const Text("Overlay Permission"),
-            subtitle: const Text(
-              "Required to detect if something is copied.",
+            title: Text(
+              context.locale.abc__tile__battery_opt_title,
+            ),
+            subtitle: Text(
+              context.locale.abc__tile__battery_opt_subtitle,
+            ),
+            value: batteryOptimization,
+            enableFeedback: true,
+            thumbIcon: batteryOptimization ? checked : unchecked,
+            onChanged: writingConfig || !notification
+                ? null
+                : (_) => openBatteryOptimizationSetting(),
+          ),
+          SwitchListTile(
+            title: Text(
+              context.locale.abc__tile__overlay_title,
+            ),
+            subtitle: Text(
+              context.locale.abc__tile__overlay_subtitle,
             ),
             value: overlay,
             enableFeedback: true,
@@ -203,25 +236,15 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                 : (_) => openOverlaySetting(),
           ),
           SwitchListTile(
-            title: const Text("Unrestricted Battery Optimization"),
-            subtitle: const Text(
-              "To prevent system from closing the CopyCat service",
+            title: Text(
+              context.locale.abc__tile__acc_title,
             ),
-            thumbIcon: batteryOptimization ? checked : unchecked,
-            value: batteryOptimization,
-            enableFeedback: true,
-            onChanged: writingConfig || !notification || !overlay
-                ? null
-                : (_) => openBatteryOptimizationSetting(),
-          ),
-          SwitchListTile(
-            title: const Text("CopyCat Accessibility Service"),
-            subtitle: const Text(
-              "Start the CopyCat background service",
+            subtitle: Text(
+              context.locale.abc__tile__acc_subtitle,
             ),
-            thumbIcon: accessibility ? checked : unchecked,
             value: accessibility,
             enableFeedback: true,
+            thumbIcon: accessibility ? checked : unchecked,
             onChanged: writingConfig ||
                     !notification ||
                     !overlay ||
@@ -233,11 +256,14 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Background Listener"),
+    return PopScope(
+      canPop: !writingConfig,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(context.locale.abc_title),
+        ),
+        body: child,
       ),
-      body: child,
     );
   }
 }

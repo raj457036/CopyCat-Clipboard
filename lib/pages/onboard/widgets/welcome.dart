@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/pages/onboard/widgets/locale_and_logout.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
+import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -23,13 +24,13 @@ class WelcomeStep extends StatelessWidget {
               children: [
                 const Spacer(),
                 Text(
-                  "Welcome to",
+                  context.locale.onboarding__text__welcome,
                   style: textTheme.displaySmall,
                   textAlign: TextAlign.center,
                 ),
                 height10,
                 Text(
-                  "CopyCat Clipboard",
+                  context.locale.app__name,
                   style: textTheme.displayMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -40,7 +41,7 @@ class WelcomeStep extends StatelessWidget {
                 ),
                 height10,
                 Text(
-                  "Let's Continue",
+                  context.locale.onboarding__text__lets_continue,
                   style: textTheme.labelLarge,
                   textAlign: TextAlign.center,
                 ),
