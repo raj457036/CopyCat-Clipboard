@@ -23,7 +23,7 @@ class ActivePlanAction extends StatelessWidget {
           return Focus(
             skipTraversal: true,
             descendantsAreFocusable: false,
-            child: TextButton.icon(
+            child: FilledButton.tonalIcon(
               onPressed: () => action(context),
               onLongPress: () => action(context, entitlementGrantMode: true),
               icon: const Icon(Icons.loyalty_rounded),

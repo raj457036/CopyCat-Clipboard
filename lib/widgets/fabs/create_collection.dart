@@ -14,10 +14,12 @@ import 'package:go_router/go_router.dart';
 class CreateCollectionButton extends StatelessWidget {
   final bool isFab;
   final bool localMode;
+  final bool hideIfCantCreate;
   const CreateCollectionButton({
     super.key,
     this.isFab = true,
     this.localMode = false,
+    this.hideIfCantCreate = false,
   });
 
   void createCollection(BuildContext context) {
@@ -46,12 +48,15 @@ class CreateCollectionButton extends StatelessWidget {
           builder: (context, state) {
             final (collection, count) = state;
             final canCreate = localMode || collection > count;
+
+            if (hideIfCantCreate) return const SizedBox.shrink();
+
             final remaining =
                 localMode ? "∞" : max(collection - count, 0).toString();
             Widget child;
             if (!isFab) {
               child = IconButton.filledTonal(
-                onPressed: () => createCollection(context),
+                onPressed: canCreate ? () => createCollection(context) : null,
                 icon: const Icon(Icons.add),
                 tooltip: context.locale.fab__create_collection(
                   remaining: remaining,
@@ -76,7 +81,7 @@ class CreateCollectionButton extends StatelessWidget {
                 children: [
                   child,
                   const Positioned(
-                    bottom: -10,
+                    bottom: -6,
                     left: 0,
                     right: 0,
                     child: ProBadge(noTooltip: true),

@@ -119,11 +119,13 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
               const CircularProgressIndicator()
             else if (generatedKeys != null)
               Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     context.locale.onboarding__text__key_generated_title(
                       keyPreview: generatedKeys?.$2.sub(end: 6) ?? "",
                     ),
+                    textAlign: TextAlign.center,
                     style: textTheme.titleMedium,
                   ),
                   height16,
@@ -153,10 +155,12 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
               )
             else
               Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     context.locale.onboarding__text__no_key,
                     style: textTheme.titleMedium,
+                    textAlign: TextAlign.center,
                   ),
                   height10,
                   OverflowBar(
