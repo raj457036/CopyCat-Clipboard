@@ -8,6 +8,7 @@ import 'package:copycat_base/common/logging.dart';
 import 'package:copycat_base/constants/key.dart';
 import 'package:copycat_base/constants/strings/route_constants.dart';
 import 'package:copycat_base/utils/common_extension.dart';
+import 'package:copycat_base/utils/snackbar.dart';
 import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,10 +32,13 @@ class ApplinkListener {
 
     final payloadString = uri.pathSegments.firstOrNull;
 
-    if (payloadString == null) return;
-
-    final query = utf8.decode(base64.decode(payloadString));
-    final payload = Uri.splitQueryString(query);
+    final Map<String, String> payload;
+    if (payloadString != null) {
+      final query = utf8.decode(base64.decode(payloadString));
+      payload = Uri.splitQueryString(query);
+    } else {
+      payload = uri.queryParameters;
+    }
 
     if (!context.mounted) return;
     // clipboard://drive-connect?code=4/0AeaYSHB-QUSzN0WX8F-R7Y-64KkUUgAgT5lrHXVmrgFPr7mJIM9p_aHJJpKg0XXBuytu1Q&scope=https://www.googleapis.com/auth/drive.appdata%20https://www.googleapis.com/auth/drive.file
@@ -54,12 +58,17 @@ class ApplinkListener {
       if (error != null) {
         context.read<DriveSetupCubit>().setupError(error);
       }
-    } else if (uri.host == "auth") {
+    } else if (uri.host == "reset-password") {
       final code = payload["code"];
       if (code != null) {
-        final path = await context.read<AuthCubit>().validateAuthCode(code);
+        final (path, failure) =
+            await context.read<AuthCubit>().validateAuthCode(code);
         if (path != null) {
           router.pushNamed(path);
+        }
+        if (failure != null) {
+          logger.e("Failed to validate auth code: $failure");
+          showFailureSnackbar(failure);
         }
       }
     }
