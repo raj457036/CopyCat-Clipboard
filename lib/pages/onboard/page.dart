@@ -5,6 +5,7 @@ import 'package:clipboard/pages/onboard/widgets/smart_paste.dart';
 import 'package:clipboard/pages/onboard/widgets/syncing/restore_clips.dart';
 import 'package:clipboard/pages/onboard/widgets/syncing/restore_collections.dart';
 import 'package:clipboard/pages/onboard/widgets/welcome.dart';
+import 'package:clipboard/widgets/titlebar.dart';
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
 import 'package:copycat_base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
@@ -56,42 +57,46 @@ class _OnBoardPageState extends State<OnBoardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(padding16),
-          child: switch (currentStep) {
-            0 => WelcomeStep(
-                onContinue: () => goToPage(1),
-              ),
-            1 => EncryptionStep(
-                onContinue: () {
-                  if (isDesktopPlatform) {
-                    goToPage(2);
-                  } else {
-                    goToPage(4);
-                  }
-                },
-              ),
-            2 => SmartPasteStep(
-                onContinue: () => goToPage(3),
-              ),
-            3 => KeyboardShortcutStep(
-                onContinue: () => goToPage(4),
-              ),
-            4 => RestoreCollectionStep(
-                onContinue: () => goToPage(5),
-                collectionRepository: sl(),
-              ),
-            5 => RestoreClipsStep(
-                onContinue: goHome,
-                clipboardRepository: sl(
-                  instanceName: "remote",
+    return TitlebarView(
+      hideLayoutToggle: true,
+      hideTabToggle: true,
+      child: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(padding16),
+            child: switch (currentStep) {
+              0 => WelcomeStep(
+                  onContinue: () => goToPage(1),
                 ),
-                restorationStatusRepository: sl(),
-              ),
-            _ => const SizedBox.shrink(),
-          },
+              1 => EncryptionStep(
+                  onContinue: () {
+                    if (isDesktopPlatform) {
+                      goToPage(2);
+                    } else {
+                      goToPage(4);
+                    }
+                  },
+                ),
+              2 => SmartPasteStep(
+                  onContinue: () => goToPage(3),
+                ),
+              3 => KeyboardShortcutStep(
+                  onContinue: () => goToPage(4),
+                ),
+              4 => RestoreCollectionStep(
+                  onContinue: () => goToPage(5),
+                  collectionRepository: sl(),
+                ),
+              5 => RestoreClipsStep(
+                  onContinue: goHome,
+                  clipboardRepository: sl(
+                    instanceName: "remote",
+                  ),
+                  restorationStatusRepository: sl(),
+                ),
+              _ => const SizedBox.shrink(),
+            },
+          ),
         ),
       ),
     );

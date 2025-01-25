@@ -55,9 +55,16 @@ class AppTitle extends StatelessWidget {
 
 class TitlebarView extends StatelessWidget {
   final Widget child;
+  final bool hideTabToggle;
+  final bool hideLayoutToggle;
+  final bool hideViewToggle;
+
   const TitlebarView({
     super.key,
     required this.child,
+    this.hideTabToggle = false,
+    this.hideLayoutToggle = false,
+    this.hideViewToggle = false,
   });
 
   @override
@@ -75,20 +82,21 @@ class TitlebarView extends StatelessWidget {
 
         final dragToMoveHandler = DragToMoveArea2(
           enabled: isWindowMode,
-          child: DecoratedBox(
-            decoration: BoxDecoration(color: colors.surface),
+          child: ColoredBox(
+            color: colors.surface,
             child: SizedBox(
               height: 26,
               width: double.infinity,
               child: Row(
                 children: [
-                  if (!isWindowMode) const NavigationButtons(),
+                  if (!isWindowMode && !hideTabToggle)
+                    const NavigationButtons(),
                   const Spacer(),
                   if (!isWindowMode) const PinToTopButton(),
                   width2,
-                  const AppLayoutToggleButton(),
+                  if (!hideLayoutToggle) const AppLayoutToggleButton(),
                   width2,
-                  const AppViewButton(),
+                  if (!hideViewToggle) const AppViewButton(),
                   if (Platform.isWindows && isWindowMode)
                     WindowCaptionButton.close(
                       brightness: colors.brightness,

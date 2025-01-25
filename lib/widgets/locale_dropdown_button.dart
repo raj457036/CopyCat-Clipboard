@@ -24,7 +24,7 @@ class LocaleDropdownButton extends StatelessWidget {
       builder: (context, state) {
         return DropdownButtonHideUnderline(
           child: Material(
-            color: colors.primaryContainer,
+            color: colors.surfaceContainer,
             borderRadius: radius26,
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 150),

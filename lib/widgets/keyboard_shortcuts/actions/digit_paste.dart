@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 final Set<LogicalKeyboardKey> _metaSynonyms = LogicalKeyboardKey.expandSynonyms(
-    <LogicalKeyboardKey>{LogicalKeyboardKey.meta});
+    <LogicalKeyboardKey>{LogicalKeyboardKey.meta, LogicalKeyboardKey.control});
 
 class PasteByClipIndexShortcutActivator implements ShortcutActivator {
   void Function(int index)? onAccept;
