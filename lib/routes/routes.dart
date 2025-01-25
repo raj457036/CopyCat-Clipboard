@@ -10,7 +10,7 @@ import "package:clipboard/pages/collections/pages/details/page.dart";
 import "package:clipboard/pages/create_clip_note/page.dart";
 import "package:clipboard/pages/drive_setup/page.dart";
 import "package:clipboard/pages/home/page.dart";
-import "package:clipboard/pages/layout/navbar_layout.dart";
+import "package:clipboard/pages/layout/shell_layout_page.dart";
 import "package:clipboard/pages/login/page.dart";
 import "package:clipboard/pages/not_found_page.dart";
 import "package:clipboard/pages/onboard/page.dart";
@@ -92,23 +92,7 @@ final rootRouter = GoRouter(
     ),
     ShellRoute(
       builder: (context, state, child) {
-        final firstSegment = state.uri.pathSegments.first;
-        final depth = state.uri.pathSegments.length;
-        final activeIndex = switch (firstSegment) {
-          "home" => 0,
-          "collections" => 1,
-          "settings" => 2,
-          _ => 0,
-        };
-
-        return FocusScope(
-          autofocus: true,
-          child: NavBarPage(
-            navbarActiveIndex: activeIndex,
-            depth: depth,
-            child: child,
-          ),
-        );
+        return ShellPage(child: child);
       },
       routes: [
         GoRoute(

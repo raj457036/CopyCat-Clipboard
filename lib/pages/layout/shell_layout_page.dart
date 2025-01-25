@@ -4,35 +4,27 @@ import 'package:copycat_base/common/logging.dart';
 import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 
-class NavBarPage extends StatefulWidget {
+class ShellPage extends StatelessWidget {
   final Widget child;
-  final int navbarActiveIndex;
-  final int drawerActiveIndex;
-  final int depth;
 
-  const NavBarPage({
+  const ShellPage({
     super.key,
     required this.child,
-    this.navbarActiveIndex = 0,
-    this.drawerActiveIndex = 0,
-    this.depth = 0,
   });
 
   @override
-  State<NavBarPage> createState() => _NavBarPageState();
-}
-
-class _NavBarPageState extends State<NavBarPage> {
-  @override
   Widget build(BuildContext context) {
-    Widget child = NetworkObserver(child: widget.child);
-    if (isDesktopPlatform) child = TitlebarView(child: child);
+    Widget child_ = NetworkObserver(child: child);
+    if (isDesktopPlatform) child_ = TitlebarView(child: child_);
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, result) {
         logger.i("DID POP: $didPop");
       },
-      child: child,
+      child: FocusScope(
+        autofocus: true,
+        child: child_,
+      ),
     );
   }
 }

@@ -41,6 +41,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:form_validator/src/i18n/all.dart' as fv_locale;
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
@@ -205,6 +206,29 @@ class AppContent extends StatelessWidget {
             final surfaceColor = theme == ThemeMode.light
                 ? lightColorScheme.surface
                 : darkColorScheme.surface;
+
+            final lightTheme = ThemeData(
+              useMaterial3: true,
+              colorScheme: lightColorScheme,
+              brightness: Brightness.light,
+              inputDecorationTheme: const InputDecorationTheme(
+                border: OutlineInputBorder(
+                  borderRadius: radius12,
+                ),
+              ),
+            );
+
+            final darkTheme = ThemeData(
+              useMaterial3: true,
+              colorScheme: darkColorScheme,
+              brightness: Brightness.dark,
+              inputDecorationTheme: const InputDecorationTheme(
+                border: OutlineInputBorder(
+                  borderRadius: radius12,
+                ),
+              ),
+            );
+
             updateValidatorLanguage(langCode);
             return AnnotatedRegion<SystemUiOverlayStyle>(
               value: getUiOverlay(theme),
@@ -246,32 +270,29 @@ class AppContent extends StatelessWidget {
                     NavigateToSettingPageIntent: NavigateToSettingPageAction(),
                   PasteByClipIndexIntent: PasteByClipIndexAction(),
                 },
-                theme: ThemeData(
-                  useMaterial3: true,
-                  colorScheme: lightColorScheme,
-                  brightness: Brightness.light,
-                  inputDecorationTheme: const InputDecorationTheme(
-                    border: OutlineInputBorder(
-                      borderRadius: radius12,
-                    ),
-                  ),
+                theme: lightTheme.copyWith(
+                  textTheme:
+                      GoogleFonts.robotoFlexTextTheme(lightTheme.textTheme),
                 ),
-                darkTheme: ThemeData(
-                  useMaterial3: true,
-                  colorScheme: darkColorScheme,
-                  brightness: Brightness.dark,
-                  inputDecorationTheme: const InputDecorationTheme(
-                    border: OutlineInputBorder(
-                      borderRadius: radius12,
-                    ),
-                  ),
+                darkTheme: darkTheme.copyWith(
+                  textTheme:
+                      GoogleFonts.robotoFlexTextTheme(darkTheme.textTheme),
                 ),
                 debugShowCheckedModeBanner: false,
                 locale:
                     Locale(langCode.isEmpty ? Platform.localeName : langCode),
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
-                builder: (context, child) => UpgraderBuilder(child: child),
+                builder: (context, child) {
+                  final mediaQueryData = MediaQuery.of(context);
+
+                  return MediaQuery(
+                    data: mediaQueryData.copyWith(
+                      textScaler: const TextScaler.linear(1.0),
+                    ),
+                    child: UpgraderBuilder(child: child),
+                  );
+                },
               ),
             );
           },

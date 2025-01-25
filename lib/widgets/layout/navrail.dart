@@ -1,5 +1,6 @@
 import 'package:clipboard/routes/utils.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +18,10 @@ class NavLayoutNavrail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
-    final labelStyle =
-        textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold);
+    final selectedLabelStyle =
+        textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600);
+    final unselectedlabelStyle =
+        textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w400);
     return Focus(
       canRequestFocus: false,
       skipTraversal: true,
@@ -27,7 +30,7 @@ class NavLayoutNavrail extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
+            // physics: const ClampingScrollPhysics(),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 minHeight: constraints.maxHeight,
@@ -36,14 +39,13 @@ class NavLayoutNavrail extends StatelessWidget {
               child: IntrinsicHeight(
                 child: NavigationRailTheme(
                   data: NavigationRailThemeData(
-                    selectedLabelTextStyle: labelStyle,
-                    unselectedLabelTextStyle: labelStyle,
-                    elevation: 0,
+                    selectedLabelTextStyle: selectedLabelStyle,
+                    unselectedLabelTextStyle: unselectedlabelStyle,
                   ),
                   child: NavigationRail(
                     destinations: [
                       NavigationRailDestination(
-                        padding: EdgeInsets.zero,
+                        padding: const EdgeInsets.symmetric(vertical: padding6),
                         icon: Tooltip(
                           message: keyboardShortcut(key: "D"),
                           child: const Icon(Icons.paste_outlined),
@@ -58,7 +60,7 @@ class NavLayoutNavrail extends StatelessWidget {
                         ),
                       ),
                       NavigationRailDestination(
-                        padding: EdgeInsets.zero,
+                        padding: const EdgeInsets.symmetric(vertical: padding6),
                         icon: Tooltip(
                           message: keyboardShortcut(key: "C"),
                           child:
@@ -74,7 +76,7 @@ class NavLayoutNavrail extends StatelessWidget {
                         ),
                       ),
                       NavigationRailDestination(
-                        padding: EdgeInsets.zero,
+                        padding: const EdgeInsets.symmetric(vertical: padding6),
                         icon: Tooltip(
                           message: keyboardShortcut(key: "X"),
                           child: const Icon(Icons.settings_outlined),
