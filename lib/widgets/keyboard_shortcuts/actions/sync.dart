@@ -17,9 +17,8 @@ class SyncIntent extends Intent {
 
 class SyncAction extends ContextAction<SyncIntent> {
   @override
-  Object? invoke(SyncIntent intent, [BuildContext? context]) {
+  void invoke(SyncIntent intent, [BuildContext? context]) {
     final cubit = context?.read<CollectionSyncManagerCubit>();
     cubit?.syncCollections(manual: true);
-    return null;
   }
 }

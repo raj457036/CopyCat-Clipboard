@@ -18,9 +18,7 @@ class NavigateToCollectionPageIntent extends Intent {
 class NavigateToCollectionPageAction
     extends ContextAction<NavigateToCollectionPageIntent> {
   @override
-  Object? invoke(NavigateToCollectionPageIntent intent,
-      [BuildContext? context]) {
+  void invoke(NavigateToCollectionPageIntent intent, [BuildContext? context]) {
     context?.goNamed(RouteConstants.collections);
-    return null;
   }
 }

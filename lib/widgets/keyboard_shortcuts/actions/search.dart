@@ -19,9 +19,8 @@ class FocusOnSearchFieldIntent extends Intent {
 
 class FocusOnSearchFieldAction extends ContextAction<FocusOnSearchFieldIntent> {
   @override
-  Object? invoke(FocusOnSearchFieldIntent intent, [BuildContext? context]) {
+  void invoke(FocusOnSearchFieldIntent intent, [BuildContext? context]) {
     context?.goNamed(RouteConstants.home);
     context?.read<EventBusCubit>().keyboard("search");
-    return null;
   }
 }

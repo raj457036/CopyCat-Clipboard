@@ -17,8 +17,7 @@ class NavigateToHomePageIntent extends Intent {
 
 class NavigateToHomePageAction extends ContextAction<NavigateToHomePageIntent> {
   @override
-  Object? invoke(NavigateToHomePageIntent intent, [BuildContext? context]) {
+  void invoke(NavigateToHomePageIntent intent, [BuildContext? context]) {
     context?.goNamed(RouteConstants.home);
-    return null;
   }
 }

@@ -65,10 +65,9 @@ class PasteByClipIndexIntent extends Intent {
 
 class PasteByClipIndexAction extends ContextAction<PasteByClipIndexIntent> {
   @override
-  Object? invoke(PasteByClipIndexIntent intent, [BuildContext? context]) {
+  void invoke(PasteByClipIndexIntent intent, [BuildContext? context]) {
     final eventBus = context?.read<EventBusCubit>();
-    if (eventBus == null) return null;
+    if (eventBus == null) return;
     eventBus.indexPaste(intent.tappedIndex);
-    return null;
   }
 }

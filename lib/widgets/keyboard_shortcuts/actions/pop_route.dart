@@ -3,31 +3,26 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-class HideWindowIntent extends Intent {
-  const HideWindowIntent();
+class PopRouteIntent extends Intent {
+  const PopRouteIntent();
 
   static const activator = SingleActivator(LogicalKeyboardKey.escape);
 }
 
-class HideWindowAction extends ContextAction<HideWindowIntent> {
+class HideWindowAction extends ContextAction<PopRouteIntent> {
   @override
-  Object? invoke(HideWindowIntent intent, [BuildContext? context]) {
+  void invoke(PopRouteIntent intent, [BuildContext? context]) {
     final primaryFocus = FocusManager.instance.primaryFocus;
 
-    if (primaryFocus?.onKeyEvent != null) {
-      return null;
-    }
+    if (primaryFocus?.onKeyEvent != null) return;
+    if (context == null) return;
 
-    if (context == null) return null;
-
-    final canPop = context.canPop();
+    final canPop = Navigator.canPop(context);
 
     if (!canPop) {
       WindowFocusManager.of(context)?.restore();
     } else {
       context.pop();
     }
-
-    return null;
   }
 }

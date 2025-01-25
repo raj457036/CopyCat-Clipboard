@@ -17,8 +17,7 @@ class CreateNewClipNoteIntent extends Intent {
 
 class CreateNewClipNoteAction extends ContextAction<CreateNewClipNoteIntent> {
   @override
-  Object? invoke(CreateNewClipNoteIntent intent, [BuildContext? context]) {
+  void invoke(CreateNewClipNoteIntent intent, [BuildContext? context]) {
     context?.pushNamed(RouteConstants.createClipNote);
-    return null;
   }
 }

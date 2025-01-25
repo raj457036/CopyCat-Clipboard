@@ -18,10 +18,9 @@ class PasteIntent extends Intent {
 
 class PasteAction extends ContextAction<PasteIntent> {
   @override
-  Object? invoke(PasteIntent intent, [BuildContext? context]) {
-    if (context == null) return null;
+  void invoke(PasteIntent intent, [BuildContext? context]) {
+    if (context == null) return;
     context.goNamed(RouteConstants.home);
     pasteContent(context);
-    return null;
   }
 }

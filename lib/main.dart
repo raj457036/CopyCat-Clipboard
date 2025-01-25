@@ -251,7 +251,7 @@ class AppContent extends StatelessWidget {
                     NavigateToSettingPageIntent.activator:
                         const NavigateToSettingPageIntent(),
                   if (isDesktopPlatform)
-                    HideWindowIntent.activator: const HideWindowIntent(),
+                    PopRouteIntent.activator: const PopRouteIntent(),
                   PasteByClipIndexIntent.i.activator: PasteByClipIndexIntent.i,
                 },
                 actions: {
@@ -263,7 +263,7 @@ class AppContent extends StatelessWidget {
                   SyncIntent: SyncAction(),
                   CreateNewClipNoteIntent: CreateNewClipNoteAction(),
                   PasteIntent: PasteAction(),
-                  if (isDesktopPlatform) HideWindowIntent: HideWindowAction(),
+                  if (isDesktopPlatform) PopRouteIntent: HideWindowAction(),
                   if (view == AppView.windowed)
                     NavigateToSettingPageIntent: NavigateToSettingPageAction(),
                   PasteByClipIndexIntent: PasteByClipIndexAction(),

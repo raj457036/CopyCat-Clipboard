@@ -18,8 +18,7 @@ class NavigateToSettingPageIntent extends Intent {
 class NavigateToSettingPageAction
     extends ContextAction<NavigateToSettingPageIntent> {
   @override
-  Object? invoke(NavigateToSettingPageIntent intent, [BuildContext? context]) {
+  void invoke(NavigateToSettingPageIntent intent, [BuildContext? context]) {
     context?.goNamed(RouteConstants.settings);
-    return null;
   }
 }
