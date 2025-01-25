@@ -161,6 +161,9 @@ class EventBridge extends StatelessWidget {
               logger.i(
                 "Preventing syncing before onboarding process completes.",
               );
+              context.read<WindowActionCubit>()
+                ..setWindowdView()
+                ..show();
               return;
             }
 
@@ -281,7 +284,9 @@ class EventBridge extends StatelessWidget {
               case UnauthenticatedAuthState(:final failure):
                 if (failure == null) resetAll(context);
                 context.read<AppConfigCubit>().reset();
-                context.read<WindowActionCubit>().show();
+                context.read<WindowActionCubit>()
+                  ..setWindowdView()
+                  ..show();
                 rootNavKey.currentContext?.goNamed(RouteConstants.login);
               case UnknownAuthState() || AuthenticatingAuthState():
                 logger.i(
