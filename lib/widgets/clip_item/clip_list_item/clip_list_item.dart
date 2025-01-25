@@ -5,6 +5,7 @@ import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
 import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/widgets/menu.dart';
 import 'package:copycat_base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
+import 'package:copycat_base/constants/font_variations.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/app_config/appconfig.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
@@ -134,7 +135,7 @@ class _ClipListItemState extends State<ClipListItem> {
                     child: Text(
                       widget.item.displayTitle!,
                       style: textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
+                        fontVariations: fontVarW700,
                       ),
                       maxLines: 2,
                     ),

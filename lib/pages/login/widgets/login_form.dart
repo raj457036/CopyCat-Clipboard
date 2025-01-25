@@ -3,6 +3,7 @@ import 'package:clipboard/widgets/locale_dropdown_button.dart';
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:copycat_base/common/failure.dart';
+import 'package:copycat_base/constants/font_variations.dart';
 import 'package:copycat_base/constants/numbers/breakpoints.dart';
 import 'package:copycat_base/constants/strings/asset_constants.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
@@ -69,7 +70,7 @@ class LoginForm extends StatelessWidget {
                   Text(
                     context.locale.app__name,
                     style: textTheme.headlineLarge
-                        ?.copyWith(fontWeight: FontWeight.w600),
+                        ?.copyWith(fontVariations: fontVarW600),
                     textAlign: TextAlign.center,
                   ),
                   height12,

@@ -66,5 +66,5 @@ String keyboardShortcut({bool meta = true, required String key}) {
   if (Platform.isMacOS || Platform.isIOS) {
     return "⌘ + $key";
   }
-  return "⌃$key";
+  return "Ctrl + $key";
 }

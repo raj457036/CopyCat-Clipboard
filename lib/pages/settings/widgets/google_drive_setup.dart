@@ -1,5 +1,6 @@
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:copycat_base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
+import 'package:copycat_base/constants/font_variations.dart';
 import 'package:copycat_base/constants/strings/asset_constants.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/l10n/l10n.dart';
@@ -72,9 +73,8 @@ class GoogleDriveSetup extends StatelessWidget {
                 ),
                 child: Text(
                   context.locale.settings__text__cloud__title,
-                  style: textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: textTheme.titleMedium
+                      ?.copyWith(fontVariations: fontVarW700),
                 ),
               ),
               Padding(
@@ -90,9 +90,8 @@ class GoogleDriveSetup extends StatelessWidget {
                 minLeadingWidth: 20,
                 title: Text(
                   context.locale.settings__text__cloud__name,
-                  style: textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: textTheme.titleMedium
+                      ?.copyWith(fontVariations: fontVarW700),
                 ),
                 // subtitle: const Text(
                 //   "🔗 linked email...",
@@ -101,7 +100,7 @@ class GoogleDriveSetup extends StatelessWidget {
                   style: FilledButton.styleFrom(
                     fixedSize: const Size(185, 40),
                     textStyle: textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                      fontVariations: fontVarW700,
                     ),
                   ),
                   onPressed: buttonDisabled

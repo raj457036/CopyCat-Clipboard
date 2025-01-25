@@ -1,3 +1,4 @@
+import 'package:copycat_base/constants/font_variations.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
@@ -71,7 +72,7 @@ class _RecordKeyboardShortcutDialogState
               TextSpan(
                 text: context.locale.app__confirm,
                 style: const TextStyle(
-                  fontWeight: FontWeight.bold,
+                  fontVariations: fontVarW700,
                 ),
               )
             ],

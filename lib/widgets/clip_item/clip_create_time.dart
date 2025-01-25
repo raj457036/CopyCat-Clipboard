@@ -1,3 +1,4 @@
+import 'package:copycat_base/constants/font_variations.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
@@ -27,7 +28,7 @@ class ClipCreateTime extends StatelessWidget {
       child: Text(
         createdFormatted,
         style: textTheme.labelMedium?.copyWith(
-          fontWeight: FontWeight.w400,
+          fontVariations: fontVarW400,
           color: colors.outline,
         ),
         maxLines: 1,

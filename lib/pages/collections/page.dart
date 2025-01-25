@@ -25,8 +25,14 @@ class CollectionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = context.mq.size.width;
     final isMobile = Breakpoints.isMobile(width);
-    final crossAxisCount =
-        Breakpoints.on<int>(width, default_: 1, tablet: 2, desktop: 3);
+    final crossAxisCount = Breakpoints.on<int>(
+      width,
+      default_: 1,
+      tablet: 2,
+      desktop: 3,
+      xldesktop: 4,
+      xxldesktop: 5,
+    );
     return CustomScaffold(
       activeIndex: 1,
       appBar: isMobilePlatform ? const CollectionAppBar() : null,

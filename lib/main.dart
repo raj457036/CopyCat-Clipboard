@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clipboard/base/text_theme.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/routes/routes.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -26,7 +27,6 @@ import 'package:copycat_base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:copycat_base/common/bloc_config.dart';
 import 'package:copycat_base/constants/key.dart';
 import 'package:copycat_base/constants/strings/strings.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/app_config/appconfig.dart';
 import 'package:copycat_base/l10n/generated/app_localizations.dart';
 import 'package:copycat_base/utils/common_extension.dart';
@@ -40,6 +40,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_validator/form_validator.dart';
+// ignore: implementation_imports
 import 'package:form_validator/src/i18n/all.dart' as fv_locale;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -212,9 +213,8 @@ class AppContent extends StatelessWidget {
               colorScheme: lightColorScheme,
               brightness: Brightness.light,
               inputDecorationTheme: const InputDecorationTheme(
-                border: OutlineInputBorder(
-                  borderRadius: radius12,
-                ),
+                border: OutlineInputBorder(),
+                isDense: true,
               ),
             );
 
@@ -223,9 +223,8 @@ class AppContent extends StatelessWidget {
               colorScheme: darkColorScheme,
               brightness: Brightness.dark,
               inputDecorationTheme: const InputDecorationTheme(
-                border: OutlineInputBorder(
-                  borderRadius: radius12,
-                ),
+                border: OutlineInputBorder(),
+                isDense: true,
               ),
             );
 
@@ -271,12 +270,10 @@ class AppContent extends StatelessWidget {
                   PasteByClipIndexIntent: PasteByClipIndexAction(),
                 },
                 theme: lightTheme.copyWith(
-                  textTheme:
-                      GoogleFonts.robotoFlexTextTheme(lightTheme.textTheme),
+                  textTheme: robotoFlexTextTheme(lightTheme.textTheme),
                 ),
                 darkTheme: darkTheme.copyWith(
-                  textTheme:
-                      GoogleFonts.robotoFlexTextTheme(darkTheme.textTheme),
+                  textTheme: robotoFlexTextTheme(lightTheme.textTheme),
                 ),
                 debugShowCheckedModeBanner: false,
                 locale:

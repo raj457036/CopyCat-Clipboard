@@ -3,6 +3,7 @@ import 'package:clipboard/widgets/view_buttons/app_view_button.dart';
 import 'package:clipboard/widgets/view_buttons/navigate_to_home.dart';
 import 'package:clipboard/widgets/view_buttons/pin_to_top_button.dart';
 import 'package:copycat_base/bloc/window_action_cubit/window_action_cubit.dart';
+import 'package:copycat_base/constants/font_variations.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/app_config/appconfig.dart';
 import 'package:copycat_base/l10n/l10n.dart';
@@ -46,9 +47,7 @@ class AppTitle extends StatelessWidget {
     final textTheme = context.textTheme;
     return Text(
       context.locale.app__name,
-      style: textTheme.labelMedium?.copyWith(
-        fontWeight: FontWeight.bold,
-      ),
+      style: textTheme.labelMedium?.copyWith(fontVariations: fontVarW700),
     );
   }
 }

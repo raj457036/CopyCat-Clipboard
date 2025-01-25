@@ -1,4 +1,5 @@
 import 'package:clipboard/routes/utils.dart';
+import 'package:copycat_base/constants/font_variations.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class BottomNavBar extends StatelessWidget {
         return NavigationBarTheme(
           data: NavigationBarThemeData(
             labelTextStyle:
-                textTheme.labelSmall?.copyWith(fontWeight: FontWeight.bold).msp,
+                textTheme.labelSmall?.copyWith(fontVariations: fontVarW700).msp,
             height: 64,
             // iconTheme: IconThemeData(size: 20).msp,
           ),

@@ -1,5 +1,6 @@
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_item/clip_meta_info.dart';
+import 'package:copycat_base/constants/font_variations.dart';
 import 'package:copycat_base/constants/strings/route_constants.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
@@ -45,7 +46,7 @@ class PrimaryHoverAction extends StatelessWidget {
                 keyboardShortcut(key: meta.index.toString()),
                 textAlign: TextAlign.center,
                 style: textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
+                  fontVariations: fontVarW600,
                 ),
               ),
             ),

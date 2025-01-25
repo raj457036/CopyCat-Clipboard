@@ -1,5 +1,6 @@
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:copycat_base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
+import 'package:copycat_base/constants/font_variations.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
 import 'package:copycat_base/l10n/l10n.dart';
@@ -46,7 +47,7 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
             scrolledUnderElevation: 0,
             titleSpacing: 0,
             titleTextStyle: textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
+              fontVariations: fontVarW700,
             ),
             actions: [
               IconButton(

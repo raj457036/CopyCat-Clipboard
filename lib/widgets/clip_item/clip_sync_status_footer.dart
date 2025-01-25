@@ -1,4 +1,5 @@
 import 'package:copycat_base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
+import 'package:copycat_base/constants/font_variations.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
 import 'package:copycat_base/l10n/l10n.dart';
@@ -85,7 +86,7 @@ class ClipSyncStatusFooter extends StatelessWidget {
                     child: Text(
                       buttonText,
                       style: context.textTheme.labelSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
+                        fontVariations: fontVarW700,
                       ),
                     ),
                   ),

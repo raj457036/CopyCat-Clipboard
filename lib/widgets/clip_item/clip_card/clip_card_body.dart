@@ -8,6 +8,7 @@ import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:copycat_base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:copycat_base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:copycat_base/common/failure.dart';
+import 'package:copycat_base/constants/font_variations.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/app_config/appconfig.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
@@ -64,7 +65,7 @@ class ClipCardBodyContent extends StatelessWidget {
                   child: Text(
                     item.displayTitle!,
                     style: textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
+                      fontVariations: fontVarW700,
                     ),
                     maxLines: 2,
                   ),

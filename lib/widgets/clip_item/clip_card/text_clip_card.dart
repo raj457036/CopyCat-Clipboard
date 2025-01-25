@@ -1,4 +1,5 @@
 import 'package:clipboard/utils/utility.dart';
+import 'package:copycat_base/constants/font_variations.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/db/app_config/appconfig.dart';
 import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
@@ -61,7 +62,7 @@ class TextClipCard extends StatelessWidget {
                 item.text!,
                 style: textTheme.titleMedium?.copyWith(
                   color: getFg(bg),
-                  fontWeight: FontWeight.w500,
+                  fontVariations: fontVarW500,
                 ),
               ),
             ),
@@ -79,7 +80,7 @@ class TextClipCard extends StatelessWidget {
                 item.text!,
                 textAlign: TextAlign.center,
                 style: textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
+                  fontVariations: fontVarW500,
                 ),
                 maxLines: 3,
                 overflow: TextOverflow.fade,

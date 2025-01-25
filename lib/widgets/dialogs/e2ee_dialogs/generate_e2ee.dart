@@ -1,3 +1,4 @@
+import 'package:copycat_base/constants/font_variations.dart';
 import 'package:copycat_base/constants/widget_styles.dart';
 import 'package:copycat_base/l10n/l10n.dart';
 import 'package:copycat_base/utils/common_extension.dart';
@@ -27,7 +28,7 @@ class GenerateE2eeDialog extends StatelessWidget {
           Text(
             context.locale.dialog__e2e__title,
             style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
+              fontVariations: fontVarW700,
             ),
           ),
           width12,
