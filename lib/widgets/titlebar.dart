@@ -82,8 +82,8 @@ class TitlebarView extends StatelessWidget {
 
         final dragToMoveHandler = DragToMoveArea2(
           enabled: isWindowMode,
-          child: DecoratedBox(
-            decoration: BoxDecoration(color: colors.surface),
+          child: ColoredBox(
+            color: colors.surface,
             child: SizedBox(
               height: 26,
               width: double.infinity,

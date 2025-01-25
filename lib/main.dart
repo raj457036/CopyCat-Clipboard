@@ -202,13 +202,16 @@ class AppContent extends StatelessWidget {
           builder: (context, state) {
             final (theme, langCode, lightColorScheme, darkColorScheme, view) =
                 state;
+            final surfaceColor = theme == ThemeMode.light
+                ? lightColorScheme.surface
+                : darkColorScheme.surface;
             updateValidatorLanguage(langCode);
             return AnnotatedRegion<SystemUiOverlayStyle>(
               value: getUiOverlay(theme),
               child: MaterialApp.router(
                 routerConfig: routeConfig,
                 scaffoldMessengerKey: scaffoldMessengerKey,
-                color: Colors.transparent,
+                color: surfaceColor,
                 themeMode: theme,
                 shortcuts: {
                   ...WidgetsApp.defaultShortcuts,
