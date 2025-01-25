@@ -284,14 +284,7 @@ class AppContent extends StatelessWidget {
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
                 builder: (context, child) {
-                  final mediaQueryData = MediaQuery.of(context);
-
-                  return MediaQuery(
-                    data: mediaQueryData.copyWith(
-                      textScaler: const TextScaler.linear(1.0),
-                    ),
-                    child: UpgraderBuilder(child: child),
-                  );
+                  return UpgraderBuilder(child: child);
                 },
               ),
             );
