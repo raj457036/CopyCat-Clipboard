@@ -272,7 +272,7 @@ class AppContent extends StatelessWidget {
                   textTheme: robotoFlexTextTheme(lightTheme.textTheme),
                 ),
                 darkTheme: darkTheme.copyWith(
-                  textTheme: robotoFlexTextTheme(lightTheme.textTheme),
+                  textTheme: robotoFlexTextTheme(darkTheme.textTheme),
                 ),
                 debugShowCheckedModeBanner: false,
                 locale:
