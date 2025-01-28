@@ -121,11 +121,11 @@ flutter_launcher_icons:
   windows:
     generate: true
     icon_size: 256
-    image_path: "./resources/desktop-icon.png"
+    image_path: "./resources/windows-icon.png"
 
   macos:
     generate: true
-    image_path: "./resources/desktop-icon.png"
+    image_path: "./resources/macos-icon.png"
   
   
 
