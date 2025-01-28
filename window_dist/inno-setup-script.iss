@@ -28,8 +28,8 @@ OutputBaseFilename=installer
 Compression=zip
 SolidCompression=yes
 WizardStyle=modern
-SetupIconFile=..\assets\images\icons\icon.ico
-UninstallDisplayIcon=..\assets\images\icons\icon.ico
+SetupIconFile=..\resources\images\icons\icon.ico
+UninstallDisplayIcon=..\resources\images\icons\icon.ico
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

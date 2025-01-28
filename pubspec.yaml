@@ -111,16 +111,23 @@ flutter:
         - asset: fonts/RobotoFlex-VariableFont.ttf
 
 flutter_launcher_icons:
+  image_path: "./resources/icon.png"
   android: true
+  min_sdk_android: 24
+
   ios: true
+  remove_alpha_ios: true
+
   windows:
     generate: true
     icon_size: 256
+    image_path: "./resources/desktop-icon.png"
+
   macos:
     generate: true
-  image_path: "assets/images/icons/icon.png"
-  min_sdk_android: 24
-  remove_alpha_ios: true
+    image_path: "./resources/desktop-icon.png"
+  
+  
 
 sentry:
   upload_debug_symbols: true
