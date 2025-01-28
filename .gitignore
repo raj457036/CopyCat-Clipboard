@@ -11,6 +11,10 @@
 .svn/
 migrate_working_dir/
 **/scripts/temps/**
+*.dmg
+*.exe
+*.apk
+*.ipa
 
 # IntelliJ related
 *.iml
