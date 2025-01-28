@@ -28,8 +28,8 @@ OutputBaseFilename=installer
 Compression=zip
 SolidCompression=yes
 WizardStyle=modern
-SetupIconFile=..\resources\icon.ico
-UninstallDisplayIcon=..\resources\icon.ico
+SetupIconFile=..\windows\runner\resources\app_icon.ico
+UninstallDisplayIcon=..\windows\runner\resources\app_icon.ico
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
