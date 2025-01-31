@@ -45,7 +45,6 @@ Source: "..\build\windows\x64\runner\Release\clipboard_watcher_plugin.dll"; Dest
 Source: "..\build\windows\x64\runner\Release\connectivity_plus_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\x64\runner\Release\emoji_picker_flutter_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\x64\runner\Release\flutter_platform_alert_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\build\windows\x64\runner\Release\firebase_core_plugin.lib"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\x64\runner\Release\Clipboard.lib"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\x64\runner\Release\Clipboard.exp"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\build\windows\x64/runner\Release\tray_manager_plugin.dll"; DestDir: "{app}"; Flags: ignoreversion
