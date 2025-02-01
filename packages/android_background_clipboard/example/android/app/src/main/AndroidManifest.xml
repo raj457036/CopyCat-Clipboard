@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
@@ -12,7 +12,7 @@
 
         <service
             android:name="com.entilitystudio.android_background_clipboard.CopyCatClipboardService"
-            android:foregroundServiceType="mediaPlayback"
+            android:foregroundServiceType="dataSync"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.SYSTEM_ALERT_WINDOW">
