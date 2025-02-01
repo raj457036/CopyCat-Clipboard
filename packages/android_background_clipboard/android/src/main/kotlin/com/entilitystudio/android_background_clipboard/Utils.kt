@@ -12,18 +12,21 @@ import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.accessibility.AccessibilityManager
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.os.bundleOf
 
 
 class Utils {
 
     companion object {
-
         var isActivityOnTop: Boolean = false
+        
         fun isAccessibilityServiceEnabled(
             context: Context,
             service: Class<out AccessibilityService?>
@@ -48,6 +51,7 @@ class Utils {
 
             if (activity != null) {
                 activity.startActivityForResult(intent, 100)
+                Toast.makeText(context, "Grant CopyCat accessibility permission", Toast.LENGTH_LONG).show()
             } else {
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
@@ -67,6 +71,7 @@ class Utils {
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:" + context.packageName)
             )
+
             if (activity != null) {
                 activity.startActivityForResult(intent, 100)
             } else {

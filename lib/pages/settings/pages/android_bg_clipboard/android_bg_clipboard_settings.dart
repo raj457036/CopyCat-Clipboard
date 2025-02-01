@@ -1,5 +1,7 @@
 import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:clipboard/di/di.dart';
+import 'package:clipboard/pages/settings/pages/android_bg_clipboard/accessibility_service_notice.dart';
+import 'package:clipboard/pages/settings/pages/android_bg_clipboard/draw_over_other_app_notice.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
 import 'package:clipboard/widgets/pro_tip_banner.dart';
 import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
@@ -107,6 +109,13 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   }
 
   Future<void> openOverlaySetting() async {
+    if (!overlay) {
+      final agree = await const DrawOverOtherAppNotice().show(context);
+
+      if (!agree) {
+        return;
+      }
+    }
     await widget.bgService.requestOverlayPermission();
   }
 
@@ -115,6 +124,14 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   }
 
   Future<void> openAccessibilitySetting() async {
+    if (!accessibility) {
+      final agree = await const AccessibilityServiceNotice().show(context);
+
+      if (!agree) {
+        return;
+      }
+    }
+
     await widget.bgService.openAccessibilityService();
   }
 
