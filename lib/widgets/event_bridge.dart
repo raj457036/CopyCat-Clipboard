@@ -161,10 +161,12 @@ class EventBridge extends StatelessWidget {
               logger.i(
                 "Preventing syncing before onboarding process completes.",
               );
-              context.read<WindowActionCubit>()
-                ..setWindowdView()
-                ..show();
-              return;
+              if (isDesktopPlatform) {
+                context.read<WindowActionCubit>()
+                  ..setWindowdView()
+                  ..show();
+                return;
+              }
             }
 
             final clipSync = context.read<ClipSyncManagerCubit>();
@@ -284,9 +286,11 @@ class EventBridge extends StatelessWidget {
               case UnauthenticatedAuthState(:final failure):
                 if (failure == null) resetAll(context);
                 context.read<AppConfigCubit>().reset();
-                context.read<WindowActionCubit>()
-                  ..setWindowdView()
-                  ..show();
+                if (isDesktopPlatform) {
+                  context.read<WindowActionCubit>()
+                    ..setWindowdView()
+                    ..show();
+                }
                 rootNavKey.currentContext?.goNamed(RouteConstants.login);
               case UnknownAuthState() || AuthenticatingAuthState():
                 logger.i(
