@@ -49,6 +49,8 @@ class UpgraderBuilder extends StatelessWidget {
       navigatorKey: rootNavKey,
       upgrader: upgrader,
       shouldPopScope: () => true,
+      showLater: kDebugMode,
+      showIgnore: kDebugMode,
       child: child,
     );
   }
