@@ -96,6 +96,10 @@ class CopyCatAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         Log.d(logTag, "Event : $event")
 
+//        if (event?.text?.contains(DetectionText) == true) {
+//            Log.i(logTag, "\n\n\nFOUND EVENT: $event\n\n\n")
+//        }
+
         if (!detectingCopyAck) {
             if (Utils.isActivityOnTop) {
                 Log.d(logTag, "Ignoring events as current activity is CopyCat itself")
@@ -110,28 +114,13 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
 
         when (event?.eventType) {
-            AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED -> {
-//                if (event.fromIndex == -1 && event.toIndex == -1) return
-//                // Step 1: Detect text selection
-//                selectionChanged = true
-//                if (event.fromIndex == event.toIndex) {
-//                    if (event.fromIndex == 0 && event.toIndex == 0) {
-////                        select all
-//                    } else {
-////                        unselect
-//                    }
-//                } else {
-////                    select
-//                }
-            }
-
             AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
                 event.packageName?.let {
                     currentlyActiveApp = it.toString()
                 }
 
                 // Special case for announcement type copy acknowledgement
-                if (event.packageName != "com.android.systemui" || event.className.toString() != "android.widget.FrameLayout" || event.text.isEmpty()) {
+                if ((strictCheck && event.packageName != "com.android.systemui" ||  event.className.toString() != "android.widget.FrameLayout") || event.text.isEmpty()) {
                     return
                 }
 
@@ -140,6 +129,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
                 if (ackTextSplit.size > 1) {
                     val detectionText = ackTextSplit.first()
+
                     val ackText = ackTextSplit.last()
                     if (detectingCopyAck) {
                         if (!detectionText.contains(DetectionText)) return
@@ -149,18 +139,13 @@ class CopyCatAccessibilityService : AccessibilityService() {
                     }
 
                     val copyDetected = ackText == notificationAckText
-                    if (copyDetected) {
-                        onCopyEvent()
-                    }
+                    if (copyDetected) onCopyEvent()
                 }
             }
-
             AccessibilityEvent.TYPE_ANNOUNCEMENT -> {
-                if (event.packageName != "com.android.systemui") {
-                    return
-                }
-                val ackText = event.text.toString()
+                if (strictCheck && event.packageName != "com.android.systemui") return
 
+                val ackText = event.text.toString()
                 if (detectingCopyAck && ackText.isNotEmpty()) {
                     notificationAckText = ackText
                     detectCopyAckComplete()
@@ -168,15 +153,10 @@ class CopyCatAccessibilityService : AccessibilityService() {
                 }
 
                 val copyDetected = ackText == notificationAckText
-                if (copyDetected) {
-                    onCopyEvent()
-                }
+                if (copyDetected) onCopyEvent()
             }
-
             AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED -> {
-                if (event.className != "android.widget.Toast") {
-                    return
-                }
+                if (event.className != "android.widget.Toast") return
 
                 val ackText = event.text.toString()
                 if (detectingCopyAck && ackText.isNotEmpty()) {
@@ -186,11 +166,8 @@ class CopyCatAccessibilityService : AccessibilityService() {
                 }
 
                 val copyDetected = ackText == notificationAckText
-                if (copyDetected && (!strictCheck || event.packageName == "android")) {
-                    onCopyEvent()
-                }
+                if (copyDetected && ((strictCheck && event.packageName == "android") || !strictCheck)) onCopyEvent()
             }
-
             else -> {}
         }
 
