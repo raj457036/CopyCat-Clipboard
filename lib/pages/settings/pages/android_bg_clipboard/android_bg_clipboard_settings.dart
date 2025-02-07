@@ -47,6 +47,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   bool overlay = false;
   bool batteryOptimization = false;
   bool accessibility = false;
+  bool strictMode = true;
   bool enable = false;
 
   @override
@@ -98,6 +99,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
         !await widget.bgService.isBatteryOptimizationEnabled();
     accessibility = await widget.bgService.isAccessibilityPermissionGranted();
     isRunning = await widget.bgService.isServiceRunning();
+    strictMode = await widget.bgService.readShared<bool>("strictMode") ?? true;
 
     setState(() {
       loading = false;
@@ -133,6 +135,22 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     }
 
     await widget.bgService.openAccessibilityService();
+  }
+
+  Future<void> changeStrictMode(bool value) async {
+    if (accessibility) {
+      showTextSnackbar(
+        "⚠️ Please disable the service first to change this setting.",
+        failure: true,
+        closePrevious: true,
+      );
+      return;
+    }
+
+    setState(() {
+      strictMode = value;
+    });
+    await widget.bgService.writeShared("strictMode", strictMode);
   }
 
   Future<void> setupConfiguration() async {
@@ -268,6 +286,23 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                     !batteryOptimization
                 ? null
                 : (_) => openAccessibilitySetting(),
+          ),
+          height5,
+          ExpansionTile(
+            tilePadding: EdgeInsets.zero,
+            title:
+                SettingHeader(name: context.locale.abc__other_setting__title),
+            children: [
+              SwitchListTile(
+                title: Text(context.locale.abc__enhanced_clip_detection__title),
+                subtitle:
+                    Text(context.locale.abc__enhanced_clip_detection__subtitle),
+                value: strictMode,
+                enableFeedback: true,
+                thumbIcon: strictMode ? checked : unchecked,
+                onChanged: changeStrictMode,
+              ),
+            ],
           ),
         ],
       );

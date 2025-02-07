@@ -27,7 +27,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     )
 
     var excludedPackages: Set<String> = emptySet()
-    var strictCheck = false
+    var strictCheck = true
     var showAckToast = true
     var serviceEnabled: Boolean = false
     var excludePasswordManagers: Boolean = false
@@ -42,7 +42,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             excludedPackages = sharedPreferences.getStringSet(key, emptySet())!!
         }
         if (key == "strictCheck") {
-            strictCheck = sharedPreferences.getBoolean(key, false)
+            strictCheck = sharedPreferences.getBoolean(key, true)
         }
         if (key == "showAckToast") {
             showAckToast = sharedPreferences.getBoolean(key, true)
@@ -148,7 +148,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         endId = sp.getInt("endId", -1)
 
         excludedPackages = sp.getStringSet("excludedPackages", emptySet())!!
-        strictCheck = sp.getBoolean("strictCheck", false)
+        strictCheck = sp.getBoolean("strictCheck", true)
         showAckToast = sp.getBoolean("showAckToast", true)
         serviceEnabled = sp.getBoolean("serviceEnabled", false)
         excludePasswordManagers = sp.getBoolean("exclude-pass-mgr", false)
