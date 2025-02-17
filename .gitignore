@@ -58,3 +58,4 @@ firebase.json
 **/secret/**
 
 **/packages/emoji_picker_flutter
+**/packages/installed_apps

@@ -200,7 +200,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         return when (type) {
             "string" -> sp.getString(key, "")
             "int" -> sp.getInt(key, 0)
-            "bool" -> sp.getBoolean(key, false)
+            "bool" -> if (sp.contains(key)) sp.getBoolean(key, false) else null
             "set" -> sp.getStringSet(key, emptySet<String>())
             else -> null
         }

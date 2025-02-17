@@ -1,10 +1,10 @@
 name: clipboard
 description: "CopyCat Clipboard: One Clipboard, Limitless Productivity"
-publish_to: 'none'
-version: 1.0.2+64
+publish_to: "none"
+version: 1.0.2+65
 
 environment:
-  sdk: '>=3.3.3 <4.0.0'
+  sdk: ">=3.3.3 <4.0.0"
 
 dependencies:
   flutter:
@@ -29,7 +29,7 @@ dependencies:
   isar_flutter_libs: 3.1.0+1
   uuid: ^4.4.2
   rxdart: ^0.28.0
-  internet_connection_checker_plus: ^2.3.0 
+  internet_connection_checker_plus: ^2.3.0
   url_launcher: ^6.3.0
   googleapis: ^13.1.0
   file_picker: ^8.1.6
@@ -72,7 +72,9 @@ dependencies:
     path: packages/android_background_clipboard
   sentry_flutter: ^8.12.0
   animate_do: ^3.3.4
-  installed_apps: ^1.5.2
+  installed_apps:
+    git:
+      url: https://github.com/raj457036/installed_apps.git
   media_kit: ^1.1.11
   media_kit_video: ^1.2.5
   media_kit_libs_video: ^1.0.5
@@ -80,13 +82,12 @@ dependencies:
     git:
       url: https://github.com/raj457036/emoji_picker_flutter.git
 
-  
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
   build_runner: ^2.4.13
-  injectable_generator:  ^2.6.2
+  injectable_generator: ^2.6.2
   isar_generator: 3.1.0+1
   freezed: 2.5.7
   json_serializable: ^6.8.0
@@ -104,7 +105,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/icons/
-  
+
   fonts:
     - family: RobotoFlex
       fonts:
@@ -126,8 +127,6 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "./resources/macos-icon.png"
-  
-  
 
 sentry:
   upload_debug_symbols: true

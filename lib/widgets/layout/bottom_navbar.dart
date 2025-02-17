@@ -20,8 +20,10 @@ class BottomNavBar extends StatelessWidget {
         if (constraints.maxWidth <= 330) return const SizedBox.shrink();
         return NavigationBarTheme(
           data: NavigationBarThemeData(
-            labelTextStyle:
-                textTheme.labelSmall?.copyWith(fontVariations: fontVarW700).msp,
+            labelTextStyle: textTheme.labelMedium
+                ?.copyWith(fontVariations: fontVarW500)
+                .msp,
+
             height: 64,
             // iconTheme: IconThemeData(size: 20).msp,
           ),
