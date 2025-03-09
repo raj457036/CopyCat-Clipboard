@@ -26,6 +26,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
     private val strictCheck: Boolean
         get() = clipboardService.copycatStorage.strictCheck
 
+
     private lateinit var clipboardService: CopyCatClipboardService
 
     private val connection = object : ServiceConnection {
@@ -116,18 +117,19 @@ class CopyCatAccessibilityService : AccessibilityService() {
         when (event?.eventType) {
             AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
                 event.packageName?.let {
-                    currentlyActiveApp = it.toString()
+                    if (it != "com.android.systemui")
+                        currentlyActiveApp = it.toString()
                 }
 
                 // Special case for announcement type copy acknowledgement
-                if ((strictCheck && event.packageName != "com.android.systemui" ||  event.className.toString() != "android.widget.FrameLayout") || event.text.isEmpty()) {
+                if ((event.packageName != "com.android.systemui" ||  event.className.toString() != "android.widget.FrameLayout") || event.text.isEmpty()) {
                     return
                 }
 
                 val ackTextSplit = event.text.toString().split(",")
                 Log.d(logTag, "Ack TEXT: ${event.text} | $ackTextSplit")
 
-                if (ackTextSplit.size > 1) {
+                if (strictCheck && ackTextSplit.size > 1 || notificationAckText.isBlank()) {
                     val detectionText = ackTextSplit.first()
 
                     val ackText = ackTextSplit.last()
@@ -138,8 +140,12 @@ class CopyCatAccessibilityService : AccessibilityService() {
                         return
                     }
 
-                    val copyDetected = ackText == notificationAckText
+                    val copyDetected = ackText == notificationAckText || notificationAckText.isBlank()
                     if (copyDetected) onCopyEvent()
+                } else if (!strictCheck && ackTextSplit.size == 1 && event.text.contains(DetectionText) && detectingCopyAck) {
+                    notificationAckText = ""
+                    detectCopyAckComplete()
+                    return
                 }
             }
             AccessibilityEvent.TYPE_ANNOUNCEMENT -> {
