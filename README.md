@@ -2,7 +2,7 @@
 
 # CopyCat Clipboard : The clipboard experience you always wanted
 
-[Download v0.1.24 Here](https://www.entilitystudio.com/copycat-clipboard)
+[Download v1.0.0 Here](https://www.entilitystudio.com/copycat-clipboard)
 
 or Download from [EntiltyStudio Public Repos](https://github.com/raj457036/entility_studio_public)
 
@@ -43,6 +43,9 @@ Features:
 
 **8. Customization and Theming**
 **9. Drag and Drop**
+**10. Realtime Android Background listener** ( Experimental )**
+**11. Extensive keyboard shortcuts** ( Desktops )
+**12. Dock mode, advance filters, theming, duplicate prevention, , ...more**
 
 
 Copycat Clipboard effortlessly helps you keep track of your copied content, making your daily tasks smoother and more efficient.
