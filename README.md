@@ -42,9 +42,13 @@ Features:
 - Add titles and descriptions to clips for easy searching.
 
 **8. Customization and Theming**
-**9. Drag and Drop**
+
+**9. Drag and Drop** ( Desktop and IOS devices, android wip )
+
 **10. Realtime Android Background listener** ( Experimental )**
+
 **11. Extensive keyboard shortcuts** ( Desktops )
+
 **12. Dock mode, advance filters, theming, duplicate prevention, , ...more**
 
 
