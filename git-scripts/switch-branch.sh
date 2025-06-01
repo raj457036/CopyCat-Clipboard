@@ -9,7 +9,7 @@ BRANCH=$1
 
 # Switch the main repository to the specified branch
 echo "Switching main repository to branch: $BRANCH"
-git checkout "$BRANCH"
+git checkout -b "$BRANCH"
 if [ $? -ne 0 ]; then
     echo "Failed to switch main repository to branch: $BRANCH"
     exit 1
@@ -21,7 +21,7 @@ git submodule update --init --recursive
 
 # Switch all submodules to the specified branch
 echo "Switching all submodules to branch: $BRANCH"
-git submodule foreach --recursive "git checkout $BRANCH || echo 'Branch $BRANCH does not exist in submodule'"
+git submodule foreach --recursive "git checkout -b $BRANCH || echo 'Branch $BRANCH does not exist in submodule'"
 
 # Update submodules to match the branch and main repo's references
 echo "Updating submodules to remote tracking branch: $BRANCH"
