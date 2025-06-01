@@ -15,18 +15,17 @@ list(APPEND FLUTTER_PLUGIN_LIST
   isar_flutter_libs
   media_kit_libs_windows_video
   media_kit_video
-  screen_brightness_windows
   screen_retriever_windows
   sentry_flutter
   share_plus
   super_native_extensions
   tray_manager
   url_launcher_windows
+  volume_controller
   window_manager
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
-  media_kit_native_event_loop
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)
