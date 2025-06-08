@@ -69,11 +69,10 @@ String keyboardShortcut({bool meta = true, required String key}) {
   return "Ctrl + $key";
 }
 
+final _mediaMimeTypeRegex = RegExp(
+  r'^(image|video|audio)/',
+  caseSensitive: false,
+);
 bool isMediaType(ClipboardItem item) {
-  return item.type == ClipItemType.media ||
-      (item.fileMimeType?.startsWith(RegExp(
-            r'^(image|video|audio)/',
-            caseSensitive: false,
-          )) ??
-          false);
+  return (item.fileMimeType?.startsWith(_mediaMimeTypeRegex) ?? false);
 }
