@@ -221,7 +221,7 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                             children: [
                               Text(
                                 context.locale.onboarding__restoration__failed(
-                                  message: failure,
+                                  message: failure.toString(),
                                 ),
                               ),
                               height10,

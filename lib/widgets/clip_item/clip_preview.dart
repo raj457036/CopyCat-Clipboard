@@ -1,3 +1,4 @@
+import 'package:clipboard/utils/utility.dart' show isMediaType;
 import 'package:clipboard/widgets/clip_item/clip_card/encrypted_card.dart';
 import 'package:clipboard/widgets/clip_item/clip_card/text_clip_card.dart';
 import 'package:clipboard/widgets/clip_item/clip_card/url_clip_card.dart';
@@ -20,11 +21,19 @@ class ClipPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (item.encrypted) return EncryptedClipItem(item: item);
-    return switch (item.type) {
-      ClipItemType.text => TextClipCard(item: item, layout: layout),
-      ClipItemType.media => MediaClipCard(item: item, layout: layout),
-      ClipItemType.url => UrlClipCard(item: item, layout: layout),
-      ClipItemType.file => FileClipCard(item: item, layout: layout),
-    };
+
+    if (item.type == ClipItemType.text) {
+      return TextClipCard(item: item, layout: layout);
+    }
+    if (item.type == ClipItemType.media || isMediaType(item)) {
+      return MediaClipCard(item: item, layout: layout);
+    }
+    if (item.type == ClipItemType.url) {
+      return UrlClipCard(item: item, layout: layout);
+    }
+    if (item.type == ClipItemType.file) {
+      return FileClipCard(item: item, layout: layout);
+    }
+    return const SizedBox.shrink();
   }
 }

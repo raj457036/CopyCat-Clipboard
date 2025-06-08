@@ -68,3 +68,12 @@ String keyboardShortcut({bool meta = true, required String key}) {
   }
   return "Ctrl + $key";
 }
+
+bool isMediaType(ClipboardItem item) {
+  return item.type == ClipItemType.media ||
+      (item.fileMimeType?.startsWith(RegExp(
+            r'^(image|video|audio)/',
+            caseSensitive: false,
+          )) ??
+          false);
+}

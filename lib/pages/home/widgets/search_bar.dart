@@ -85,6 +85,7 @@ class _SearchBarInputState extends State<SearchInputBar> {
   Future<void> search(String text) async {
     await context.read<ClipboardCubit>().fetch(
           query: text,
+          filterState: filterState,
           fromTop: true,
         );
     setState(() {});

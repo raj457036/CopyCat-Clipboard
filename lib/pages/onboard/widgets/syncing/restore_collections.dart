@@ -176,7 +176,7 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                                 Text(
                                   context.locale
                                       .onboarding__restoration__failed(
-                                    message: failure,
+                                    message: failure.toString(),
                                   ),
                                 ),
                                 height10,
