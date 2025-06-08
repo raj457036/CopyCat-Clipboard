@@ -237,7 +237,7 @@ SPEC CHECKSUMS:
   device_info_plus: ce1b7762849d3ec103d0e0517299f2db7ad60720
   emoji_picker_flutter: 846d4afb3368bc864a3884f02654961198bd72da
   file_picker: e716a70a9fe5fd9e09ebc922d7541464289443af
-  flutter_platform_alert: b21b2b7d801e71c12ce9ffab618ff114ca9fc903
+  flutter_platform_alert: 49f22b31593e29e7a5e65f1b80f8d3de02b95dd4
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   focus_window: c7371ddf4c3009e6d4ba0d7f1b279eccd01aca22
   google_sign_in_ios: 7411fab6948df90490dc4620ecbcabdc3ca04017
