@@ -74,19 +74,19 @@ PODS:
     - Flutter
     - FlutterMacOS
   - PromisesObjC (2.4.0)
-  - purchases_flutter (6.30.2):
+  - purchases_flutter (9.2.0):
     - FlutterMacOS
-    - PurchasesHybridCommon (= 11.1.0)
-  - PurchasesHybridCommon (11.1.0):
-    - RevenueCat (= 4.43.2)
-  - RevenueCat (4.43.2)
+    - PurchasesHybridCommon (= 16.2.0)
+  - PurchasesHybridCommon (16.2.0):
+    - RevenueCat (= 5.34.0)
+  - RevenueCat (5.34.0)
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
-  - Sentry/HybridSDK (8.46.0)
-  - sentry_flutter (8.14.2):
+  - Sentry/HybridSDK (8.52.1)
+  - sentry_flutter (9.6.0):
     - Flutter
     - FlutterMacOS
-    - Sentry/HybridSDK (= 8.46.0)
+    - Sentry/HybridSDK (= 8.52.1)
   - share_plus (0.0.1):
     - FlutterMacOS
   - shared_preferences_foundation (0.0.1):
@@ -254,12 +254,12 @@ SPEC CHECKSUMS:
   package_info_plus: 12f1c5c2cfe8727ca46cbd0b26677728972d9a5b
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  purchases_flutter: 3407100959d2aeb636507b2c98970d850dae57ae
-  PurchasesHybridCommon: 4022d5944cb30ec44ba5159e42aa161fe0e30175
-  RevenueCat: 3d934653b7e8b09af88fd47e9e84cfaf5d0a89ba
+  purchases_flutter: 3d181530f524e41cea139630b0a2f39e7f14aa7a
+  PurchasesHybridCommon: 55e97b4e090015ed138988e6559def2bd4c50ebe
+  RevenueCat: eb2aa042789d9c99ad5172bd96e28b96286d6ada
   screen_retriever_macos: 776e0fa5d42c6163d2bf772d22478df4b302b161
-  Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854
-  sentry_flutter: 2df8b0aab7e4aba81261c230cbea31c82a62dd1b
+  Sentry: 2cbbe3592f30050c60e916c63c7f5a2fa584005e
+  sentry_flutter: feb376a4d8fd37387898b94e00da2060eeab2a41
   share_plus: 1fa619de8392a4398bfaf176d441853922614e89
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sign_in_with_apple: a9e97e744e8edc36aefc2723111f652102a7a727
