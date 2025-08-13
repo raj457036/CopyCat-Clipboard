@@ -7,14 +7,14 @@ PODS:
   - AppAuth/Core (1.7.6)
   - AppAuth/ExternalUserAgent (1.7.6):
     - AppAuth/Core
-  - awesome_notifications (0.9.3):
-    - Flutter
-    - IosAwnCore (~> 0.9.3)
+  - AppCheckCore (11.2.0):
+    - GoogleUtilities/Environment (~> 8.0)
+    - GoogleUtilities/UserDefaults (~> 8.0)
+    - PromisesObjC (~> 2.4)
   - clipboard_watcher (0.0.1):
     - Flutter
   - connectivity_plus (0.0.1):
     - Flutter
-    - FlutterMacOS
   - device_info_plus (0.0.1):
     - Flutter
   - DKImagePickerController/Core (4.3.9):
@@ -56,23 +56,33 @@ PODS:
   - Flutter (1.0.0)
   - flutter_platform_alert (0.0.1):
     - Flutter
-  - Google-Mobile-Ads-SDK (11.10.0):
+  - Google-Mobile-Ads-SDK (12.2.0):
     - GoogleUserMessagingPlatform (>= 1.1)
-  - google_mobile_ads (5.2.0):
+  - google_mobile_ads (6.0.0):
     - Flutter
-    - Google-Mobile-Ads-SDK (~> 11.10.0)
+    - Google-Mobile-Ads-SDK (~> 12.2.0)
     - webview_flutter_wkwebview
   - google_sign_in_ios (0.0.1):
     - AppAuth (>= 1.7.4)
     - Flutter
     - FlutterMacOS
-    - GoogleSignIn (~> 7.1)
+    - GoogleSignIn (~> 8.0)
     - GTMSessionFetcher (>= 3.4.0)
-  - GoogleSignIn (7.1.0):
+  - GoogleSignIn (8.0.0):
     - AppAuth (< 2.0, >= 1.7.3)
+    - AppCheckCore (~> 11.0)
     - GTMAppAuth (< 5.0, >= 4.1.1)
     - GTMSessionFetcher/Core (~> 3.3)
-  - GoogleUserMessagingPlatform (2.7.0)
+  - GoogleUserMessagingPlatform (3.0.0)
+  - GoogleUtilities/Environment (8.1.0):
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Logger (8.1.0):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Privacy (8.1.0)
+  - GoogleUtilities/UserDefaults (8.1.0):
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Privacy
   - GTMAppAuth (4.1.1):
     - AppAuth/Core (~> 1.7)
     - GTMSessionFetcher/Core (< 4.0, >= 3.3)
@@ -81,14 +91,11 @@ PODS:
   - GTMSessionFetcher/Core (3.5.0)
   - GTMSessionFetcher/Full (3.5.0):
     - GTMSessionFetcher/Core
-  - IosAwnCore (0.9.3)
   - irondash_engine_context (0.0.1):
     - Flutter
   - isar_flutter_libs (1.0.0):
     - Flutter
   - media_kit_libs_ios_video (1.0.4):
-    - Flutter
-  - media_kit_native_event_loop (1.0.0):
     - Flutter
   - media_kit_video (0.0.1):
     - Flutter
@@ -99,30 +106,29 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - purchases_flutter (6.30.2):
+  - PromisesObjC (2.4.0)
+  - purchases_flutter (9.2.0):
     - Flutter
-    - PurchasesHybridCommon (= 11.1.0)
-  - purchases_ui_flutter (6.30.2):
+    - PurchasesHybridCommon (= 16.2.0)
+  - purchases_ui_flutter (9.2.0):
     - Flutter
-    - PurchasesHybridCommonUI (= 11.1.0)
-  - PurchasesHybridCommon (11.1.0):
-    - RevenueCat (= 4.43.2)
-  - PurchasesHybridCommonUI (11.1.0):
-    - PurchasesHybridCommon (= 11.1.0)
-    - RevenueCatUI (= 4.43.2)
-  - RevenueCat (4.43.2)
-  - RevenueCatUI (4.43.2):
-    - RevenueCat (= 4.43.2)
-  - screen_brightness_ios (0.1.0):
-    - Flutter
-  - SDWebImage (5.20.0):
-    - SDWebImage/Core (= 5.20.0)
-  - SDWebImage/Core (5.20.0)
-  - Sentry/HybridSDK (8.42.0)
-  - sentry_flutter (8.12.0):
+    - PurchasesHybridCommonUI (= 16.2.0)
+  - PurchasesHybridCommon (16.2.0):
+    - RevenueCat (= 5.34.0)
+  - PurchasesHybridCommonUI (16.2.0):
+    - PurchasesHybridCommon (= 16.2.0)
+    - RevenueCatUI (= 5.34.0)
+  - RevenueCat (5.34.0)
+  - RevenueCatUI (5.34.0):
+    - RevenueCat (= 5.34.0)
+  - SDWebImage (5.21.1):
+    - SDWebImage/Core (= 5.21.1)
+  - SDWebImage/Core (5.21.1)
+  - Sentry/HybridSDK (8.52.1)
+  - sentry_flutter (9.6.0):
     - Flutter
     - FlutterMacOS
-    - Sentry/HybridSDK (= 8.42.0)
+    - Sentry/HybridSDK (= 8.52.1)
   - share_handler_ios (0.0.14):
     - Flutter
     - share_handler_ios/share_handler_ios_models (= 0.0.14)
@@ -156,9 +162,8 @@ PODS:
 
 DEPENDENCIES:
   - app_links (from `.symlinks/plugins/app_links/ios`)
-  - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
   - clipboard_watcher (from `.symlinks/plugins/clipboard_watcher/ios`)
-  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
+  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - emoji_picker_flutter (from `.symlinks/plugins/emoji_picker_flutter/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
@@ -169,14 +174,12 @@ DEPENDENCIES:
   - irondash_engine_context (from `.symlinks/plugins/irondash_engine_context/ios`)
   - isar_flutter_libs (from `.symlinks/plugins/isar_flutter_libs/ios`)
   - media_kit_libs_ios_video (from `.symlinks/plugins/media_kit_libs_ios_video/ios`)
-  - media_kit_native_event_loop (from `.symlinks/plugins/media_kit_native_event_loop/ios`)
   - media_kit_video (from `.symlinks/plugins/media_kit_video/ios`)
   - open_filex (from `.symlinks/plugins/open_filex/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
   - purchases_ui_flutter (from `.symlinks/plugins/purchases_ui_flutter/ios`)
-  - screen_brightness_ios (from `.symlinks/plugins/screen_brightness_ios/ios`)
   - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
   - share_handler_ios (from `.symlinks/plugins/share_handler_ios/ios`)
   - share_handler_ios_models (from `.symlinks/plugins/share_handler_ios/ios/Models`)
@@ -193,14 +196,16 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - AppAuth
+    - AppCheckCore
     - DKImagePickerController
     - DKPhotoGallery
     - Google-Mobile-Ads-SDK
     - GoogleSignIn
     - GoogleUserMessagingPlatform
+    - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
-    - IosAwnCore
+    - PromisesObjC
     - PurchasesHybridCommon
     - PurchasesHybridCommonUI
     - RevenueCat
@@ -212,12 +217,10 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   app_links:
     :path: ".symlinks/plugins/app_links/ios"
-  awesome_notifications:
-    :path: ".symlinks/plugins/awesome_notifications/ios"
   clipboard_watcher:
     :path: ".symlinks/plugins/clipboard_watcher/ios"
   connectivity_plus:
-    :path: ".symlinks/plugins/connectivity_plus/darwin"
+    :path: ".symlinks/plugins/connectivity_plus/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
   emoji_picker_flutter:
@@ -238,8 +241,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/isar_flutter_libs/ios"
   media_kit_libs_ios_video:
     :path: ".symlinks/plugins/media_kit_libs_ios_video/ios"
-  media_kit_native_event_loop:
-    :path: ".symlinks/plugins/media_kit_native_event_loop/ios"
   media_kit_video:
     :path: ".symlinks/plugins/media_kit_video/ios"
   open_filex:
@@ -252,8 +253,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/purchases_flutter/ios"
   purchases_ui_flutter:
     :path: ".symlinks/plugins/purchases_ui_flutter/ios"
-  screen_brightness_ios:
-    :path: ".symlinks/plugins/screen_brightness_ios/ios"
   sentry_flutter:
     :path: ".symlinks/plugins/sentry_flutter/ios"
   share_handler_ios:
@@ -280,44 +279,43 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
-  app_links: e7a6750a915a9e161c58d91bc610e8cd1d4d0ad0
+  app_links: f3e17e4ee5e357b39d8b95290a9b2c299fca71c6
   AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
-  awesome_notifications: 66d28ab7174ca2823b04d275cb043e0a4a3eb9cf
+  AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   clipboard_watcher: 86fb70421aca6f4944e0591a8292605da7784666
-  connectivity_plus: 18382e7311ba19efcaee94442b23b32507b20695
+  connectivity_plus: 2a701ffec2c0ae28a48cf7540e279787e77c447d
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   emoji_picker_flutter: 8e50ec5caac456a23a78637e02c6293ea0ac8771
-  file_picker: 09aa5ec1ab24135ccd7a1621c46c84134bfd6655
+  file_picker: b159e0c068aef54932bb15dc9fd1571818edaf49
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_platform_alert: 6a241c90f3cc350d0286deeefee9f52bee957019
-  Google-Mobile-Ads-SDK: 13e6e98edfd78ad8d8a791edb927658cc260a56f
-  google_mobile_ads: 2a538d8e42b1813809782792e48f8cf4374c2180
-  google_sign_in_ios: 07375bfbf2620bc93a602c0e27160d6afc6ead38
-  GoogleSignIn: d4281ab6cf21542b1cfaff85c191f230b399d2db
-  GoogleUserMessagingPlatform: a8b56893477f67212fbc8411c139e61d463349f5
+  flutter_platform_alert: f507baf17889a38794d3cf16b98b637fb69479bd
+  Google-Mobile-Ads-SDK: 1dfb0c3cb46c7e2b00b0f4de74a1e06d9ea25d67
+  google_mobile_ads: cab27248050510554aa646195eacc393ce7406ad
+  google_sign_in_ios: 7411fab6948df90490dc4620ecbcabdc3ca04017
+  GoogleSignIn: ce8c89bb9b37fb624b92e7514cc67335d1e277e4
+  GoogleUserMessagingPlatform: f8d0cdad3ca835406755d0a69aa634f00e76d576
+  GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   GTMAppAuth: f69bd07d68cd3b766125f7e072c45d7340dea0de
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
-  IosAwnCore: b8601fbb37f7b3560f31b84ebf55a72f65812e05
   irondash_engine_context: 3458bf979b90d616ffb8ae03a150bafe2e860cc9
   isar_flutter_libs: b69f437aeab9c521821c3f376198c4371fa21073
   media_kit_libs_ios_video: a5fe24bc7875ccd6378a0978c13185e1344651c1
-  media_kit_native_event_loop: e6b2ab20cf0746eb1c33be961fcf79667304fa2a
   media_kit_video: 5da63f157170e5bf303bf85453b7ef6971218a2e
   open_filex: 6e26e659846ec990262224a12ef1c528bb4edbe4
   package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  purchases_flutter: 42d5544e7730ea89a88cc2f008b7c700fd147052
-  purchases_ui_flutter: 4d5d616b4aa2b42d603a4133dceb2c6ac7c42323
-  PurchasesHybridCommon: 4022d5944cb30ec44ba5159e42aa161fe0e30175
-  PurchasesHybridCommonUI: fb80871b28d3d21ae2d0a2102e228331931e6856
-  RevenueCat: 3d934653b7e8b09af88fd47e9e84cfaf5d0a89ba
-  RevenueCatUI: 1417f375baf005eaf3afa8bc99724f567abfd6da
-  screen_brightness_ios: 715ca807df953bf676d339f11464e438143ee625
-  SDWebImage: 73c6079366fea25fa4bb9640d5fb58f0893facd8
-  Sentry: 38ed8bf38eab5812787274bf591e528074c19e02
-  sentry_flutter: 7d1f1df30f3768c411603ed449519bbb90a7d87b
+  PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
+  purchases_flutter: 343211332d04ed719fbb649b7efb930f260c8666
+  purchases_ui_flutter: dd8868afa16c55719c69cf692c16411bbf95c201
+  PurchasesHybridCommon: 55e97b4e090015ed138988e6559def2bd4c50ebe
+  PurchasesHybridCommonUI: 25c66f6ddcf8856ecbcffee897b2525eb272a5e7
+  RevenueCat: eb2aa042789d9c99ad5172bd96e28b96286d6ada
+  RevenueCatUI: 03025a80b64ce8ff8e43f47a7eb9dbbb6b4f486e
+  SDWebImage: f29024626962457f3470184232766516dee8dfea
+  Sentry: 2cbbe3592f30050c60e916c63c7f5a2fa584005e
+  sentry_flutter: feb376a4d8fd37387898b94e00da2060eeab2a41
   share_handler_ios: 6dd3a4ac5ca0d955274aec712ba0ecdcaf583e7c
   share_handler_ios_models: fc638c9b4330dc7f082586c92aee9dfa0b87b871
   share_plus: 8b6f8b3447e494cca5317c8c3073de39b3600d1f
@@ -327,10 +325,10 @@ SPEC CHECKSUMS:
   super_native_extensions: 4916b3c627a9c7fffdc48a23a9eca0b1ac228fa7
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
-  volume_controller: 531ddf792994285c9b17f9d8a7e4dcdd29b3eae9
-  wakelock_plus: 78ec7c5b202cab7761af8e2b2b3d0671be6c4ae1
-  webview_flutter_wkwebview: 0982481e3d9c78fd5c6f62a002fcd24fc791f1e4
+  volume_controller: 2e3de73d6e7e81a0067310d17fb70f2f86d71ac7
+  wakelock_plus: 76957ab028e12bfa4e66813c99e46637f367fc7e
+  webview_flutter_wkwebview: a4af96a051138e28e29f60101d094683b9f82188
 
 PODFILE CHECKSUM: 9df484d41aba92b5de2f43a4584c023338f2fa4b
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
