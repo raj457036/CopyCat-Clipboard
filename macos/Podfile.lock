@@ -1,5 +1,5 @@
 PODS:
-  - app_links (1.0.0):
+  - app_links (6.4.1):
     - FlutterMacOS
   - AppAuth (1.7.6):
     - AppAuth/Core (= 1.7.6)
@@ -72,10 +72,10 @@ PODS:
     - Flutter
     - FlutterMacOS
   - PromisesObjC (2.4.0)
-  - purchases_flutter (9.2.0):
+  - purchases_flutter (9.2.1):
     - FlutterMacOS
-    - PurchasesHybridCommon (= 16.2.0)
-  - PurchasesHybridCommon (16.2.0):
+    - PurchasesHybridCommon (= 16.2.2)
+  - PurchasesHybridCommon (16.2.2):
     - RevenueCat (= 5.34.0)
   - RevenueCat (5.34.0)
   - screen_retriever_macos (0.0.1):
@@ -223,7 +223,7 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
 
 SPEC CHECKSUMS:
-  app_links: 86a57d95d4dec830373b8c85c21d1c59a4a5dc21
+  app_links: c3185399a5cabc2e610ee5ad52fb7269b84ff869
   AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   clipboard_watcher: a71da520051c24c1b969a411b3e152d4dcc93ca5
@@ -248,8 +248,8 @@ SPEC CHECKSUMS:
   package_info_plus: 12f1c5c2cfe8727ca46cbd0b26677728972d9a5b
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  purchases_flutter: 3d181530f524e41cea139630b0a2f39e7f14aa7a
-  PurchasesHybridCommon: 55e97b4e090015ed138988e6559def2bd4c50ebe
+  purchases_flutter: aa8737227b7848714e18988b0c4032ae584ed065
+  PurchasesHybridCommon: 62f852419aae7041792217593998f7ac3f8b567d
   RevenueCat: eb2aa042789d9c99ad5172bd96e28b96286d6ada
   screen_retriever_macos: 776e0fa5d42c6163d2bf772d22478df4b302b161
   Sentry: 2cbbe3592f30050c60e916c63c7f5a2fa584005e
