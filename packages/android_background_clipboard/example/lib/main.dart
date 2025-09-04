@@ -24,6 +24,7 @@ class _MyAppState extends State<MyApp> {
   bool isAccessibilityGranted = false;
   bool isBatteryOptEnabled = true;
   bool isServiceRunning = false;
+  bool strictMode = true;
 
   final items = <(String, String)>[];
 
@@ -63,6 +64,7 @@ class _MyAppState extends State<MyApp> {
     isAccessibilityGranted = await _plugin.isAccessibilityPermissionGranted();
     isBatteryOptEnabled = await _plugin.isBatteryOptimizationEnabled();
     isServiceRunning = await _plugin.isServiceRunning();
+    strictMode = await _plugin.readShared("strictCheck") ?? true;
 
     _plugin.writeShared("serviceEnabled", true);
 
@@ -93,6 +95,12 @@ class _MyAppState extends State<MyApp> {
   Future<void> disableBatteryOptimization() async {
     await _plugin.requestUnrestrictedBatteryAccess();
     isBatteryOptEnabled = await _plugin.isBatteryOptimizationEnabled();
+    setState(() {});
+  }
+
+  Future<void> toggleStrictMode() async {
+    strictMode = !strictMode;
+    await _plugin.writeShared("strictCheck", strictMode);
     setState(() {});
   }
 
@@ -167,6 +175,16 @@ class _MyAppState extends State<MyApp> {
                       : const Text("Grant"),
                 ),
               ],
+            ),
+            const SizedBox(height: 10),
+            SwitchListTile(
+              title: const Text("Strict Mode"),
+              subtitle: const Text(
+                  "If enabled, the service will stop if any permission is revoked."),
+              value: strictMode,
+              onChanged: (val) {
+                toggleStrictMode();
+              },
             ),
             OverflowBar(
               children: [

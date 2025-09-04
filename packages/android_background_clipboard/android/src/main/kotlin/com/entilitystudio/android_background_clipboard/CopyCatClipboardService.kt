@@ -1,5 +1,6 @@
 package com.entilitystudio.android_background_clipboard
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -52,6 +53,9 @@ class CopyCatClipboardService : Service() {
     private val nChannelId = "copycat-notification-channel"
     private val logTag = "CopyCatClipboardService"
     private val binder = LocalBinder()
+
+    // Disable duplicate announcement for one read cycle
+    var disableDuplicateAnnouncement: Boolean = false;
 
     private val ackToastEnable: Boolean
         get() = copycatStorage.showAckToast
@@ -155,6 +159,7 @@ class CopyCatClipboardService : Service() {
         }
         lastCopiedText = text
         copycatStorage.writeTextClip(text, type, label ?: "")
+        disableDuplicateAnnouncement = false;
         return ClipAction.Success
     }
 
@@ -206,8 +211,13 @@ class CopyCatClipboardService : Service() {
 
             withContext(Dispatchers.Main) {
                 Log.d(logTag, "Clip Action: $actionStatus")
+                Log.d(logTag, "Clip Content: $lastCopiedText")
                 when (actionStatus) {
-                    ClipAction.Duplicate -> showAck("Detected duplicate item")
+                    ClipAction.Duplicate -> {
+                        if (!disableDuplicateAnnouncement) {
+                            showAck("Detected duplicate item")
+                        }
+                    }
                     ClipAction.Failed -> showAck("CopyCat failed to capture clipboard")
                     ClipAction.Excluded -> showAck("Clip Excluded!")
                     else -> {}
@@ -271,7 +281,20 @@ class CopyCatClipboardService : Service() {
             .setOngoing(true) // Makes the notification non-dismissible
     }
 
+    @SuppressLint("LaunchActivityFromNotification")
     private fun showNotification(): Notification {
+        val pasteIntent = Intent(this, this::class.java).apply {
+            action = "PASTE_ACTION"
+        }
+
+        val pendingPasteIntent = PendingIntent.getService(
+            this,
+            790,
+            pasteIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+
         val deleteIntent = Intent(this, NotificationDeleteReceiver::class.java)
         val pendingDeleteIntent = PendingIntent.getBroadcast(
             this,
@@ -279,10 +302,14 @@ class CopyCatClipboardService : Service() {
             deleteIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+
         return notificationBuilder
             .setDeleteIntent(pendingDeleteIntent)
             .setContentTitle("CopyCat Clipboard")
-            .setContentText("Monitoring clipboard activity")
+            .setContentText("Click To Paste • Swipe to Restart")
+            .setContentIntent(pendingPasteIntent)
+            .setOngoing(true)
+            .setAutoCancel(false)
             .build()
     }
 
@@ -324,8 +351,16 @@ class CopyCatClipboardService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == "RESTART_NOTIFICATION") {
-            prepareAndShowNotification()
+        when (intent?.action) {
+            "RESTART_SERVICE" -> onCreate()
+            "PASTE_ACTION" -> {
+                val delayMills = 1000L;
+                val handler = android.os.Handler(mainLooper)
+                handler.postDelayed({
+                    disableDuplicateAnnouncement = true;
+                    performClipboardRead("");
+                }, delayMills)
+            }
         }
         return START_STICKY
     }

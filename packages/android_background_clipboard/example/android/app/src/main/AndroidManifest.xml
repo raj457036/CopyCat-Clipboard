@@ -4,12 +4,20 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
 
     <application
         android:label="android_background_clipboard_example"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
+        <receiver
+            android:name="com.entilitystudio.android_background_clipboard.NotificationDeleteReceiver"
+            android:exported="false" />
+        <receiver
+            android:name="com.entilitystudio.android_background_clipboard.NotificationTapReceiver"
+            android:enabled="true"
+            android:exported="false" />
         <service
             android:name="com.entilitystudio.android_background_clipboard.CopyCatClipboardService"
             android:foregroundServiceType="dataSync"

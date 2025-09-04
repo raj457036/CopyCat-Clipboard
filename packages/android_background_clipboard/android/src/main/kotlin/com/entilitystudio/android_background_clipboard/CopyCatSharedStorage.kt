@@ -42,6 +42,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             excludedPackages = sharedPreferences.getStringSet(key, emptySet())!!
         }
         if (key == "strictCheck") {
+            Log.d(logTag, "Writing Strict Check to Shared Pref");
             strictCheck = sharedPreferences.getBoolean(key, true)
         }
         if (key == "showAckToast") {
@@ -112,6 +113,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         readConfig()
         syncManager.start()
         sp.registerOnSharedPreferenceChangeListener(listener)
+        Log.i(logTag, "Storage started")
     }
 
     fun readSecure(key: String): String? {
@@ -283,5 +285,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     fun clean() {
         syncManager.stop()
         sp.unregisterOnSharedPreferenceChangeListener(listener)
+        Log.i(logTag, "Storage cleaned up")
     }
 }

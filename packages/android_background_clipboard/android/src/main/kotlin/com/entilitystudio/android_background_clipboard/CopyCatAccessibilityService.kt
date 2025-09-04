@@ -22,6 +22,13 @@ class CopyCatAccessibilityService : AccessibilityService() {
     private var notificationAckText: String = "[Copied]"
     private var isClipboardServiceConnected: Boolean = false
     private var currentlyActiveApp: String = ""
+    private val handler = Handler(Looper.getMainLooper())
+    private val copyRunnable = Runnable {
+        val currentTimestamp = System.currentTimeMillis();
+        if (currentTimestamp - lastCopiedTimestamp > 400) // Ignore if last copy was within 500ms
+            onCopyEvent(true);
+    }
+    private var lastCopiedTimestamp: Long = 0;
 
     private val strictCheck: Boolean
         get() = clipboardService.copycatStorage.strictCheck
@@ -53,9 +60,13 @@ class CopyCatAccessibilityService : AccessibilityService() {
         startClipboardService() // Re-start the service
     }
 
-    private fun onCopyEvent() {
+    private fun onCopyEvent(disableDuplicateAnnouncements: Boolean = false) {
         Log.d(logTag, "Copy Event Detected, Reading Clipboard")
+        if (disableDuplicateAnnouncements) {
+            clipboardService.disableDuplicateAnnouncement = true;
+        }
         clipboardService.performClipboardRead(currentlyActiveApp)
+        lastCopiedTimestamp = System.currentTimeMillis();
     }
 
     private fun startClipboardService() {
@@ -88,9 +99,15 @@ class CopyCatAccessibilityService : AccessibilityService() {
         Log.d(logTag, "CopyCat Service successfully detected ($notificationAckText) ack event.")
     }
 
+    private fun debounceOnCopyEvent(delayMillis: Long = 1200) {
+        handler.removeCallbacks(copyRunnable) // cancel any pending run
+        handler.postDelayed(copyRunnable, delayMillis)
+    }
+
     override fun onServiceConnected() {
         super.onServiceConnected()
         Log.i(logTag, "CopyCat Accessibility Service Connected")
+
         startClipboardService()
     }
 
@@ -115,6 +132,11 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
 
         when (event?.eventType) {
+            AccessibilityEvent.TYPE_VIEW_CLICKED,
+            AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED,
+            AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED -> {
+                if (!strictCheck) debounceOnCopyEvent();
+            }
             AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
                 event.packageName?.let {
                     if (it != "com.android.systemui")
