@@ -894,11 +894,9 @@ packages:
   installed_apps:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "5db8b3d08abdf739a59e36a52d73a77b7c41d739"
-      url: "https://github.com/raj457036/installed_apps.git"
-    source: git
+      path: "packages/installed_apps"
+      relative: true
+    source: path
     version: "1.6.0"
   internet_connection_checker_plus:
     dependency: "direct main"
