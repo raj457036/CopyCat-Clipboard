@@ -80,9 +80,9 @@ dependencies:
   #     url: https://github.com/raj457036/installed_apps.git
   installed_apps:
     path: packages/installed_apps
-  media_kit: ^1.1.11
-  media_kit_video: ^1.2.5
-  media_kit_libs_video: ^1.0.5
+  media_kit: ^1.2.0
+  media_kit_video: ^1.3.0
+  media_kit_libs_video:
   emoji_picker_flutter:
     git:
       url: https://github.com/raj457036/emoji_picker_flutter.git
