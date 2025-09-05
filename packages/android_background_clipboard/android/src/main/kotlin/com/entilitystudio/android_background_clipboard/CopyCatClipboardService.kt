@@ -40,10 +40,10 @@ enum class ClipAction {
 }
 
 class CopyCatClipboardService : Service() {
-    private lateinit var clipboardManager: ClipboardManager
-    private lateinit var notificationManager: NotificationManager
+    private lateinit var clipboardManager: ClipboardManager;
+    private lateinit var notificationManager: NotificationManager;
+    var copycatStorage: CopyCatSharedStorage = CopyCatSharedStorage.getInstance(this)
     private lateinit var windowManager: WindowManager
-    lateinit var copycatStorage: CopyCatSharedStorage
     private val notificationId: Int = 1
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private var lastCopiedText: String? = null
@@ -62,6 +62,10 @@ class CopyCatClipboardService : Service() {
 
     inner class LocalBinder : Binder() {
         fun getService(): CopyCatClipboardService = this@CopyCatClipboardService
+    }
+
+    companion object {
+        var isRunning: Boolean = false
     }
 
     fun performClipboardRead(appPackageName: String) {
@@ -260,10 +264,6 @@ class CopyCatClipboardService : Service() {
         windowManager.addView(overlayLayout, overlayLayout?.layoutParams)
     }
 
-    companion object {
-        var isRunning: Boolean = false
-    }
-
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -339,9 +339,8 @@ class CopyCatClipboardService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        copycatStorage = CopyCatSharedStorage.getInstance(this)
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         copycatStorage.start()
         prepareAndShowNotification()
         isRunning = true

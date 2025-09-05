@@ -24,17 +24,21 @@ class CopyCatAccessibilityService : AccessibilityService() {
     private var currentlyActiveApp: String = ""
     private val handler = Handler(Looper.getMainLooper())
     private val copyRunnable = Runnable {
-        val currentTimestamp = System.currentTimeMillis();
-        if (currentTimestamp - lastCopiedTimestamp > 400) // Ignore if last copy was within 500ms
-            onCopyEvent(true);
+        val currentTimestamp = System.currentTimeMillis()
+        if (currentTimestamp - lastCopiedTimestamp > 400 && isScreenOn()) {
+            onCopyEvent(true)
+        } else {
+            Log.d(logTag, "Skipped onCopyEvent: Screen OFF or duplicate")
+        }
     }
     private var lastCopiedTimestamp: Long = 0;
 
     private val strictCheck: Boolean
-        get() = clipboardService.copycatStorage.strictCheck
+        get() = clipboardService?.copycatStorage?.strictCheck == true
 
 
-    private lateinit var clipboardService: CopyCatClipboardService
+
+    private var clipboardService: CopyCatClipboardService? = null
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
@@ -42,9 +46,12 @@ class CopyCatAccessibilityService : AccessibilityService() {
             clipboardService = (binder as CopyCatClipboardService.LocalBinder).getService()
             isClipboardServiceConnected = true
 
-            Handler(Looper.getMainLooper()).postDelayed({
-                detectCopyAck()
-            }, 500)
+            // Safe to do ack detection later
+            handler.postDelayed({
+                if (isClipboardServiceConnected) {
+                    detectCopyAck()
+                }
+            }, 1500)
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -52,6 +59,11 @@ class CopyCatAccessibilityService : AccessibilityService() {
             isClipboardServiceConnected = false
             restartClipboardService()
         }
+    }
+
+    private fun isScreenOn(): Boolean {
+        val pm = getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
+        return pm.isInteractive
     }
 
     // Method to restart the clipboard service if it's disconnected
@@ -62,10 +74,19 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
     private fun onCopyEvent(disableDuplicateAnnouncements: Boolean = false) {
         Log.d(logTag, "Copy Event Detected, Reading Clipboard")
-        if (disableDuplicateAnnouncements) {
-            clipboardService.disableDuplicateAnnouncement = true;
+
+        if (!isClipboardServiceConnected) {
+            Log.w(logTag, "ClipboardService not connected yet, ignoring onCopyEvent")
+            return
         }
-        clipboardService.performClipboardRead(currentlyActiveApp)
+        if (!isScreenOn()) {
+            Log.d(logTag, "Screen is OFF, skipping onCopyEvent")
+            return
+        }
+        if (disableDuplicateAnnouncements) {
+            clipboardService?.disableDuplicateAnnouncement = true;
+        }
+        clipboardService?.performClipboardRead(currentlyActiveApp)
         lastCopiedTimestamp = System.currentTimeMillis();
     }
 
@@ -79,6 +100,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
         val bindIntent = Intent(this, CopyCatClipboardService::class.java)
         bindService(bindIntent, connection, Context.BIND_AUTO_CREATE)
+        Log.d(logTag, "Clipboard service start requested")
         Toast.makeText(this, "CopyCat Service Starting", Toast.LENGTH_SHORT).show()
     }
 
@@ -90,7 +112,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
     private fun detectCopyAck() {
         Log.d(logTag, "CopyCat Service is detecting ack event...")
         detectingCopyAck = true
-        clipboardService.writeToClipboard(DetectionText)
+        clipboardService?.writeToClipboard(DetectionText)
     }
 
     private fun detectCopyAckComplete() {

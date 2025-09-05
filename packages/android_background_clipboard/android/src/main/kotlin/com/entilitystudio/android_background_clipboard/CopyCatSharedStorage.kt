@@ -33,6 +33,8 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     var excludePasswordManagers: Boolean = false
     var excludeEmail: Boolean = false
     var excludePhone: Boolean = false
+//    For Future Use
+    var autoCopyOtp: Boolean = false
 
     val keystore: CopyCatKeyStore
         get() = CopyCatKeyStore.getInstance()
@@ -42,8 +44,10 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             excludedPackages = sharedPreferences.getStringSet(key, emptySet())!!
         }
         if (key == "strictCheck") {
-            Log.d(logTag, "Writing Strict Check to Shared Pref");
             strictCheck = sharedPreferences.getBoolean(key, true)
+        }
+        if (key == "autoCopyOtp") {
+            autoCopyOtp = sharedPreferences.getBoolean(key, false)
         }
         if (key == "showAckToast") {
             showAckToast = sharedPreferences.getBoolean(key, true)
@@ -151,6 +155,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
         excludedPackages = sp.getStringSet("excludedPackages", emptySet())!!
         strictCheck = sp.getBoolean("strictCheck", true)
+        autoCopyOtp = sp.getBoolean("autoCopyOtp", false)
         showAckToast = sp.getBoolean("showAckToast", true)
         serviceEnabled = sp.getBoolean("serviceEnabled", false)
         excludePasswordManagers = sp.getBoolean("exclude-pass-mgr", false)
