@@ -306,7 +306,7 @@ class CopyCatClipboardService : Service() {
         return notificationBuilder
             .setDeleteIntent(pendingDeleteIntent)
             .setContentTitle("CopyCat Clipboard")
-            .setContentText("Click To Paste • Swipe to Restart")
+            .setContentText("Tap to Capture • Swipe to Restart")
             .setContentIntent(pendingPasteIntent)
             .setOngoing(true)
             .setAutoCancel(false)
