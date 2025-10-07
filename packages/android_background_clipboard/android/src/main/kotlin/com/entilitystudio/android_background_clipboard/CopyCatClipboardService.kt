@@ -23,9 +23,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.InputStream
@@ -42,13 +43,15 @@ enum class ClipAction {
 class CopyCatClipboardService : Service() {
     private lateinit var clipboardManager: ClipboardManager;
     private lateinit var notificationManager: NotificationManager;
-    var copycatStorage: CopyCatSharedStorage = CopyCatSharedStorage.getInstance(this)
+    lateinit var copycatStorage: CopyCatSharedStorage;
     private lateinit var windowManager: WindowManager
     private val notificationId: Int = 1
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private var lastCopiedText: String? = null
 
     private var overlayLayout: LinearLayout? = null
+    
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private val nChannelId = "copycat-notification-channel"
     private val logTag = "CopyCatClipboardService"
@@ -106,12 +109,14 @@ class CopyCatClipboardService : Service() {
         return when (uri.scheme) {
             "content" -> {
                 // Media or File!
-                var inputStream: InputStream? = null
                 try {
-                    inputStream = contentResolver.openInputStream(uri)
+                    contentResolver.openInputStream(uri)?.use { inputStream ->
+                        // Process the stream if needed
+                    }
                     ClipAction.Success
-                } finally {
-                    inputStream?.close()
+                } catch (e: Exception) {
+                    Log.e(logTag, "Failed to read URI clip: ${e.message}")
+                    ClipAction.Failed
                 }
             }
 
@@ -167,11 +172,10 @@ class CopyCatClipboardService : Service() {
         return ClipAction.Success
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun readClipboard() {
         val clipData = clipboardManager.primaryClip
 
-        GlobalScope.launch(Dispatchers.IO) {
+        serviceScope.launch(Dispatchers.IO) {
             var actionStatus: ClipAction = ClipAction.Pending
 
             if (clipData != null && clipData.itemCount > 0) {
@@ -224,6 +228,7 @@ class CopyCatClipboardService : Service() {
                     }
                     ClipAction.Failed -> showAck("CopyCat failed to capture clipboard")
                     ClipAction.Excluded -> showAck("Clip Excluded!")
+                    ClipAction.Success -> showAck("Clip Captured!")
                     else -> {}
                 }
             }
@@ -237,7 +242,14 @@ class CopyCatClipboardService : Service() {
     }
 
     private fun removeFocusOnOverlay() {
-        windowManager.removeView(overlayLayout)
+        overlayLayout?.let {
+            try {
+                windowManager.removeView(it)
+            } catch (e: Exception) {
+                Log.w(logTag, "Failed to remove overlay: ${e.message}")
+            }
+        }
+        overlayLayout = null
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -339,6 +351,7 @@ class CopyCatClipboardService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        copycatStorage = CopyCatSharedStorage.getInstance(this)
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         copycatStorage.start()
@@ -367,6 +380,9 @@ class CopyCatClipboardService : Service() {
     override fun onBind(p0: Intent?): IBinder = binder
 
     override fun onDestroy() {
+        // Cancel all coroutines
+        serviceScope.cancel()
+        
         clipboardManager.removePrimaryClipChangedListener(onClipChangeListener)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_REMOVE)
@@ -378,6 +394,11 @@ class CopyCatClipboardService : Service() {
         showAck("CopyCat Clipboard Stopped")
         isRunning = false
         copycatStorage.clean()
+        
+        // Clear references to prevent memory leaks
+        overlayLayout = null
+        lastCopiedText = null
+        
         super.onDestroy()
     }
 

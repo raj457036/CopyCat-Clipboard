@@ -216,7 +216,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
                 }
 
                 val copyDetected = ackText == notificationAckText
-                if (copyDetected && ((strictCheck && event.packageName == "android") || !strictCheck)) onCopyEvent()
+                if (copyDetected && ((strictCheck && event.packageName.contains("android")) || !strictCheck)) onCopyEvent()
             }
             else -> {}
         }
@@ -229,6 +229,10 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
     override fun onUnbind(intent: Intent?): Boolean {
         Log.i(logTag, "CopyCat Accessibility Service Disconnected")
+
+        // Cancel any pending handler callbacks to prevent leaks
+        handler.removeCallbacks(copyRunnable)
+        handler.removeCallbacksAndMessages(null)
 
         if (isClipboardServiceConnected) unbindService(connection)
         stopClipboardService()

@@ -290,6 +290,10 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     fun clean() {
         syncManager.stop()
         sp.unregisterOnSharedPreferenceChangeListener(listener)
+        
+        // Clear references to help GC
+        encryptor = null
+        
         Log.i(logTag, "Storage cleaned up")
     }
 }
