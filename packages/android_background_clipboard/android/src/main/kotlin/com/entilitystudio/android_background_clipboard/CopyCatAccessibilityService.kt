@@ -136,9 +136,10 @@ class CopyCatAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         Log.d(logTag, "Event : $event")
 
-//        if (event?.text?.contains(DetectionText) == true) {
-//            Log.i(logTag, "\n\n\nFOUND EVENT: $event\n\n\n")
-//        }
+        if (event.packageName == "com.entilitystudio.CopyCat") {
+            Log.d(logTag, "Ignoring CopyCat Clipboard Events")
+            return
+        }
 
         if (!detectingCopyAck) {
             if (Utils.isActivityOnTop) {
@@ -151,7 +152,6 @@ class CopyCatAccessibilityService : AccessibilityService() {
                 return
             }
         }
-
 
         when (event?.eventType) {
             AccessibilityEvent.TYPE_VIEW_CLICKED,
@@ -204,19 +204,21 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
                 val copyDetected = ackText == notificationAckText
                 if (copyDetected) onCopyEvent()
+                else if (!strictCheck) debounceOnCopyEvent()
             }
             AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED -> {
                 if (event.className != "android.widget.Toast") return
-
+                Log.d(logTag, "Toast Event: $event")
                 val ackText = event.text.toString()
                 if (detectingCopyAck && ackText.isNotEmpty()) {
                     notificationAckText = ackText
                     detectCopyAckComplete()
                     return
                 }
-
+                Log.d(logTag, "Notification Text: $ackText | Expected: $notificationAckText")
                 val copyDetected = ackText == notificationAckText
                 if (copyDetected && ((strictCheck && event.packageName.contains("android")) || !strictCheck)) onCopyEvent()
+                else if (!strictCheck) debounceOnCopyEvent()
             }
             else -> {}
         }
