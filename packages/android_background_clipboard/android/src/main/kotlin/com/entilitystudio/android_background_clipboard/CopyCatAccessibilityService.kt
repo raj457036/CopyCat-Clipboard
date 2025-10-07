@@ -136,7 +136,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         Log.d(logTag, "Event : $event")
 
-        if (event.packageName == "com.entilitystudio.CopyCat") {
+        if (event == null || event?.packageName == "com.entilitystudio.CopyCat") {
             Log.d(logTag, "Ignoring CopyCat Clipboard Events")
             return
         }
