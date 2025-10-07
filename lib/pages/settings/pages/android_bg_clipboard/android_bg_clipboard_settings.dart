@@ -139,8 +139,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   }
 
   Future<void> changeStrictCheck(bool value) async {
-    final success =
-        await widget.bgService.writeShared("strictCheck", strictCheck);
+    final success = await widget.bgService.writeShared("strictCheck", value);
 
     if (!success) return;
 
