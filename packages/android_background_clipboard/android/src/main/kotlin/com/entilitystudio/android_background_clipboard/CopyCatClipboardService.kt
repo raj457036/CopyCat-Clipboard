@@ -197,7 +197,6 @@ class CopyCatClipboardService : Service() {
                             } else {
                                 ClipAction.PartialSuccess
                             }
-
                     }
                 }
 
@@ -227,8 +226,16 @@ class CopyCatClipboardService : Service() {
                         }
                     }
                     ClipAction.Failed -> showAck("CopyCat failed to capture clipboard")
-                    ClipAction.Excluded -> showAck("Clip Excluded!")
-                    ClipAction.Success -> showAck("Clip Captured!")
+                    ClipAction.Excluded -> {
+                        if (!disableDuplicateAnnouncement) {
+                            showAck("Clip Excluded!")
+                        }
+                    }
+                    ClipAction.Success -> {
+                        if (!disableDuplicateAnnouncement) {
+                            showAck("Clip Captured!")
+                        }
+                    }
                     else -> {}
                 }
             }

@@ -19,6 +19,10 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private var endId: Int = -1
     private var syncManager: CopyCatSyncManager = CopyCatSyncManager(appContext)
     private var encryptor: CopyCatEncryptor? = null
+    
+    // Use file-based storage for clipboard items to avoid loading everything into memory
+    private val fileStorage: CopyCatFileStorage = CopyCatFileStorage(appContext)
+    
     val passwordManagers: Set<String> = setOf(
         "com.x8bit.bitwarden",
         "proton.android.pass",
@@ -174,7 +178,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
         syncManager.deviceId = deviceId
     }
-
+    
     private fun getNextId(): String {
         return "Clip-${endId + 1}"
     }
@@ -216,45 +220,56 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     fun delete(keys: Iterable<String>) {
         val editor = sp.edit()
         for (key in keys) {
-            editor.remove(key)
+            if (key.startsWith("Clip-")) {
+                fileStorage.deleteClipItem(key)
+            } else {
+                editor.remove(key)
+            }
         }
         editor.apply()
+    }
+
+    fun readClip(key: String): CopyCatFileStorage.ClipData? {
+        Log.d(logTag, "Reading clip $key from file storage")
+        return fileStorage.readClipItem(key)
     }
 
     fun writeTextClip(text: String, type: ClipType, label: String = "") {
         if (!serviceEnabled) return
+        
+        // Get next clip ID (e.g., "Clip-1")
         val nextId = getNextId()
         endId += 1  // Update endId for next usage
-        val editor = sp.edit()
-        editor.putString(nextId, text)
-        // type::description::serverId::userid
-        editor.putString("$nextId-meta", "$type::$label::-::-")
-        editor.putInt("endId", endId)
-        editor.apply()
-
-        // Encrypt clip
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && encryptor != null) {
-            val encryptedText = encryptor?.encrypt(text).toString()
-            writeTextClipToServer(encryptedText, type, "$nextId-meta", true, label)
-        } else {
-            writeTextClipToServer(text, type, "$nextId-meta", false, label)
+        
+        // Write to file storage instead of SharedPreferences to avoid memory bloat
+        val success = fileStorage.writeClipItem(nextId, text, type, label)
+        
+        if (!success) {
+            Log.e(logTag, "Failed to write clip to file storage")
+            return
+        }
+        
+        // Update endId in SharedPreferences
+        sp.edit().putInt("endId", endId).apply()
+        
+        Log.d(logTag, "Wrote $nextId to file storage (${text.length} bytes)")
+        
+        // Sync to server if enabled
+        if (syncEnabled) {
+            // Encrypt clip if encryption is enabled
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && encryptor != null) {
+                val encryptedText = encryptor?.encrypt(text).toString()
+                writeTextClipToServer(encryptedText, type, nextId, true, label)
+            } else {
+                writeTextClipToServer(text, type, nextId, false, label)
+            }
         }
     }
-
-    private fun updateClipId(key: String, id: Long, userId: String) {
-        var meta = sp.getString(key, "")!!
-        if (meta.isBlank()) return
-        val parts = meta.split("::").toMutableList()
-        parts[2] = id.toString()
-        parts[3] = userId
-        meta = parts.joinToString("::")
-        sp.edit().putString(key, meta).apply()
-    }
-
+    
     private fun writeTextClipToServer(
         text: String,
         type: ClipType,
-        metaKey: String,
+        clipId: String,
         encrypted: Boolean,
         label: String? = null
     ) {
@@ -276,9 +291,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         }
 
         try {
-            val id = syncManager.writeClipboardItem(text, type, encrypted, label)
-            if (id != (-1).toLong()) {
-                updateClipId(metaKey, id, syncManager.currentUserId!!)
+            val serverId = syncManager.writeClipboardItem(text, type, encrypted, label)
+            if (serverId != (-1).toLong()) {
+                Log.d(logTag, "Synced $clipId to server with ID $serverId")
+                // Update the file metadata with server ID and user ID
+                fileStorage.updateServerMetadata(clipId, serverId, syncManager.currentUserId ?: "")
                 return
             }
             Log.w(logTag, "Syncing failed")
