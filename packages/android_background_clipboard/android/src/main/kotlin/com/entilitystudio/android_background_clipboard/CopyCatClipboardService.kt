@@ -346,7 +346,38 @@ class CopyCatClipboardService : Service() {
     private fun prepareAndShowNotification() {
         createNotificationChannel()
         prepareNotification()
-        startForeground(notificationId, showNotification())
+        
+        // Handle Android 14+ foreground service type requirements
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                // Android 14+ (API 34+): Use FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                startForeground(
+                    notificationId, 
+                    showNotification(), 
+                    android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                )
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Android 10+ (API 29+): Use FOREGROUND_SERVICE_TYPE_DATA_SYNC
+                startForeground(
+                    notificationId, 
+                    showNotification(), 
+                    android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+                )
+            } else {
+                // Pre-Android 10: No service type needed
+                startForeground(notificationId, showNotification())
+            }
+        } catch (e: Exception) {
+            Log.e(logTag, "Failed to start foreground service with specific type: ${e.message}")
+            // Fallback: try without service type
+            try {
+                startForeground(notificationId, showNotification())
+            } catch (ex: Exception) {
+                Log.e(logTag, "Failed to start foreground service: ${ex.message}", ex)
+                // If we can't start as foreground, stop the service
+                stopSelf()
+            }
+        }
     }
 
     override fun onCreate() {
@@ -363,8 +394,27 @@ class CopyCatClipboardService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // Ensure notification is shown if service was restarted
+        if (!isRunning) {
+            try {
+                prepareAndShowNotification()
+                isRunning = true
+            } catch (e: Exception) {
+                Log.e(logTag, "Failed to show notification on restart: ${e.message}", e)
+                stopSelf()
+                return START_NOT_STICKY
+            }
+        }
+        
         when (intent?.action) {
-            "RESTART_SERVICE" -> onCreate()
+            "RESTART_SERVICE" -> {
+                Log.d(logTag, "Service restart requested")
+                // Just ensure notification is showing, don't call onCreate
+                if (!isRunning) {
+                    prepareAndShowNotification()
+                    isRunning = true
+                }
+            }
             "PASTE_ACTION" -> {
                 val delayMills = 1000L;
                 val handler = android.os.Handler(mainLooper)
