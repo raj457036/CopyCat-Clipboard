@@ -16,7 +16,7 @@ import focus_window
 import google_sign_in_ios
 import hotkey_manager_macos
 import irondash_engine_context
-import isar_flutter_libs
+import isar_community_flutter_libs
 import media_kit_libs_macos_video
 import media_kit_video
 import package_info_plus

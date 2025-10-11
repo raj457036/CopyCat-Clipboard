@@ -2,6 +2,7 @@ import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/widgets/clip_item/clip_list_item/options_header.dart';
 import 'package:clipboard/widgets/clip_item/clip_preview.dart';
 import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
+import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/widgets/menu.dart';
 import 'package:copycat_base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
@@ -70,7 +71,8 @@ class _ClipListItemState extends State<ClipListItem> {
       cubit.unselect(widget.item);
       return;
     }
-    cubit.select(widget.item);
+    final clips = ClipsProvider.of(context)?.clips;
+    cubit.select(widget.item, selectableItems: clips);
   }
 
   @override

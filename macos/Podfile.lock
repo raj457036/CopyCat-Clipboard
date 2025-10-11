@@ -60,7 +60,7 @@ PODS:
     - HotKey
   - irondash_engine_context (0.0.1):
     - FlutterMacOS
-  - isar_flutter_libs (1.0.0):
+  - isar_community_flutter_libs (1.0.0):
     - FlutterMacOS
   - media_kit_libs_macos_video (1.0.4):
     - FlutterMacOS
@@ -72,12 +72,12 @@ PODS:
     - Flutter
     - FlutterMacOS
   - PromisesObjC (2.4.0)
-  - purchases_flutter (9.2.1):
+  - purchases_flutter (9.8.0):
     - FlutterMacOS
-    - PurchasesHybridCommon (= 16.2.2)
-  - PurchasesHybridCommon (16.2.2):
-    - RevenueCat (= 5.34.0)
-  - RevenueCat (5.34.0)
+    - PurchasesHybridCommon (= 17.10.0)
+  - PurchasesHybridCommon (17.10.0):
+    - RevenueCat (= 5.43.0)
+  - RevenueCat (5.43.0)
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
   - Sentry/HybridSDK (8.52.1)
@@ -124,7 +124,7 @@ DEPENDENCIES:
   - google_sign_in_ios (from `Flutter/ephemeral/.symlinks/plugins/google_sign_in_ios/darwin`)
   - hotkey_manager_macos (from `Flutter/ephemeral/.symlinks/plugins/hotkey_manager_macos/macos`)
   - irondash_engine_context (from `Flutter/ephemeral/.symlinks/plugins/irondash_engine_context/macos`)
-  - isar_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/isar_flutter_libs/macos`)
+  - isar_community_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/isar_community_flutter_libs/macos`)
   - media_kit_libs_macos_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_libs_macos_video/macos`)
   - media_kit_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_video/macos`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
@@ -183,8 +183,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/hotkey_manager_macos/macos
   irondash_engine_context:
     :path: Flutter/ephemeral/.symlinks/plugins/irondash_engine_context/macos
-  isar_flutter_libs:
-    :path: Flutter/ephemeral/.symlinks/plugins/isar_flutter_libs/macos
+  isar_community_flutter_libs:
+    :path: Flutter/ephemeral/.symlinks/plugins/isar_community_flutter_libs/macos
   media_kit_libs_macos_video:
     :path: Flutter/ephemeral/.symlinks/plugins/media_kit_libs_macos_video/macos
   media_kit_video:
@@ -232,7 +232,7 @@ SPEC CHECKSUMS:
   emoji_picker_flutter: 846d4afb3368bc864a3884f02654961198bd72da
   file_picker: e716a70a9fe5fd9e09ebc922d7541464289443af
   flutter_platform_alert: 49f22b31593e29e7a5e65f1b80f8d3de02b95dd4
-  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
   focus_window: c7371ddf4c3009e6d4ba0d7f1b279eccd01aca22
   google_sign_in_ios: 7411fab6948df90490dc4620ecbcabdc3ca04017
   GoogleSignIn: ce8c89bb9b37fb624b92e7514cc67335d1e277e4
@@ -242,15 +242,15 @@ SPEC CHECKSUMS:
   HotKey: 400beb7caa29054ea8d864c96f5ba7e5b4852277
   hotkey_manager_macos: 1e2edb0c7ae4fe67108af44a9d3445de41404160
   irondash_engine_context: da62996ee25616d2f01bbeb85dc115d813359478
-  isar_flutter_libs: 43385c99864c168fadba7c9adeddc5d38838ca6a
+  isar_community_flutter_libs: d3749f6775866378fc78328b10f1397a05fba673
   media_kit_libs_macos_video: b3e2bbec2eef97c285f2b1baa7963c67c753fb82
   media_kit_video: c75b07f14d59706c775778e4dd47dd027de8d1e5
   package_info_plus: 12f1c5c2cfe8727ca46cbd0b26677728972d9a5b
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  purchases_flutter: aa8737227b7848714e18988b0c4032ae584ed065
-  PurchasesHybridCommon: 62f852419aae7041792217593998f7ac3f8b567d
-  RevenueCat: eb2aa042789d9c99ad5172bd96e28b96286d6ada
+  purchases_flutter: 68500b756c4a1826bf1375f7e63c44b7e2c7c5ce
+  PurchasesHybridCommon: b7b4eafb55fbaaac19b4c36d4082657a3f0d8490
+  RevenueCat: a51003d4cb33820cc504cf177c627832b462a98e
   screen_retriever_macos: 776e0fa5d42c6163d2bf772d22478df4b302b161
   Sentry: 2cbbe3592f30050c60e916c63c7f5a2fa584005e
   sentry_flutter: feb376a4d8fd37387898b94e00da2060eeab2a41
@@ -262,8 +262,8 @@ SPEC CHECKSUMS:
   tray_manager: 9064e219c56d75c476e46b9a21182087930baf90
   url_launcher_macos: c82c93949963e55b228a30115bd219499a6fe404
   volume_controller: 90a5978956cf18ebb7739bf5382fc1b0cfef66d0
-  wakelock_plus: 4783562c9a43d209c458cb9b30692134af456269
-  webview_flutter_wkwebview: a4af96a051138e28e29f60101d094683b9f82188
+  wakelock_plus: 9d63063ffb7af1c215209769067c57103bde719d
+  webview_flutter_wkwebview: 29eb20d43355b48fe7d07113835b9128f84e3af4
   window_manager: 3a1844359a6295ab1e47659b1a777e36773cd6e8
 
 PODFILE CHECKSUM: 9ebaf0ce3d369aaa26a9ea0e159195ed94724cf3

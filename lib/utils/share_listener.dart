@@ -22,7 +22,7 @@ class ShareListener {
   BuildContext get context => rootNavKey.currentContext!;
   ShareHandlerPlatform get handler => ShareHandlerPlatform.instance;
 
-  init() {
+  void init() {
     if (!isMobilePlatform) return;
     dispose();
     initPlatformState();

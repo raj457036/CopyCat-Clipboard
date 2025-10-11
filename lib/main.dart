@@ -6,6 +6,7 @@ import 'package:clipboard/routes/routes.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/debug/gizmo_overlay.dart';
 import 'package:clipboard/widgets/event_bridge.dart';
+import 'package:clipboard/widgets/keyboard_shortcuts/actions/select_all.dart';
 import 'package:clipboard/widgets/state_initializer.dart';
 import 'package:clipboard/widgets/system_shortcut_listeners.dart';
 import 'package:clipboard/widgets/tray_manager.dart';
@@ -253,6 +254,7 @@ class AppContent extends StatelessWidget {
                   if (isDesktopPlatform)
                     PopRouteIntent.activator: const PopRouteIntent(),
                   PasteByClipIndexIntent.i.activator: PasteByClipIndexIntent.i,
+                  SelectAllIntent.activator: const SelectAllIntent(),
                 },
                 actions: {
                   ...WidgetsApp.defaultActions,
@@ -267,6 +269,7 @@ class AppContent extends StatelessWidget {
                   if (view == AppView.windowed)
                     NavigateToSettingPageIntent: NavigateToSettingPageAction(),
                   PasteByClipIndexIntent: PasteByClipIndexAction(),
+                  SelectAllIntent: SelectAllAction(),
                 },
                 theme: lightTheme.copyWith(
                   textTheme: robotoFlexTextTheme(lightTheme.textTheme),
