@@ -29,7 +29,7 @@ import 'package:copycat_pro/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 import 'package:universal_io/io.dart';
 
 class EventBridge extends StatelessWidget {

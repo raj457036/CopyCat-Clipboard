@@ -1,5 +1,6 @@
 package com.entilitystudio.android_background_clipboard
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -22,9 +23,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.InputStream
@@ -39,25 +41,34 @@ enum class ClipAction {
 }
 
 class CopyCatClipboardService : Service() {
-    private lateinit var clipboardManager: ClipboardManager
-    private lateinit var notificationManager: NotificationManager
+    private lateinit var clipboardManager: ClipboardManager;
+    private lateinit var notificationManager: NotificationManager;
+    lateinit var copycatStorage: CopyCatSharedStorage;
     private lateinit var windowManager: WindowManager
-    lateinit var copycatStorage: CopyCatSharedStorage
     private val notificationId: Int = 1
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private var lastCopiedText: String? = null
 
     private var overlayLayout: LinearLayout? = null
+    
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private val nChannelId = "copycat-notification-channel"
     private val logTag = "CopyCatClipboardService"
     private val binder = LocalBinder()
+
+    // Disable duplicate announcement for one read cycle
+    var disableDuplicateAnnouncement: Boolean = false;
 
     private val ackToastEnable: Boolean
         get() = copycatStorage.showAckToast
 
     inner class LocalBinder : Binder() {
         fun getService(): CopyCatClipboardService = this@CopyCatClipboardService
+    }
+
+    companion object {
+        var isRunning: Boolean = false
     }
 
     fun performClipboardRead(appPackageName: String) {
@@ -98,12 +109,14 @@ class CopyCatClipboardService : Service() {
         return when (uri.scheme) {
             "content" -> {
                 // Media or File!
-                var inputStream: InputStream? = null
                 try {
-                    inputStream = contentResolver.openInputStream(uri)
+                    contentResolver.openInputStream(uri)?.use { inputStream ->
+                        // Process the stream if needed
+                    }
                     ClipAction.Success
-                } finally {
-                    inputStream?.close()
+                } catch (e: Exception) {
+                    Log.e(logTag, "Failed to read URI clip: ${e.message}")
+                    ClipAction.Failed
                 }
             }
 
@@ -155,14 +168,14 @@ class CopyCatClipboardService : Service() {
         }
         lastCopiedText = text
         copycatStorage.writeTextClip(text, type, label ?: "")
+        disableDuplicateAnnouncement = false;
         return ClipAction.Success
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun readClipboard() {
         val clipData = clipboardManager.primaryClip
 
-        GlobalScope.launch(Dispatchers.IO) {
+        serviceScope.launch(Dispatchers.IO) {
             var actionStatus: ClipAction = ClipAction.Pending
 
             if (clipData != null && clipData.itemCount > 0) {
@@ -184,7 +197,6 @@ class CopyCatClipboardService : Service() {
                             } else {
                                 ClipAction.PartialSuccess
                             }
-
                     }
                 }
 
@@ -206,10 +218,24 @@ class CopyCatClipboardService : Service() {
 
             withContext(Dispatchers.Main) {
                 Log.d(logTag, "Clip Action: $actionStatus")
+                Log.d(logTag, "Clip Content: $lastCopiedText")
                 when (actionStatus) {
-                    ClipAction.Duplicate -> showAck("Detected duplicate item")
+                    ClipAction.Duplicate -> {
+                        if (!disableDuplicateAnnouncement) {
+                            showAck("Detected duplicate item")
+                        }
+                    }
                     ClipAction.Failed -> showAck("CopyCat failed to capture clipboard")
-                    ClipAction.Excluded -> showAck("Clip Excluded!")
+                    ClipAction.Excluded -> {
+                        if (!disableDuplicateAnnouncement) {
+                            showAck("Clip Excluded!")
+                        }
+                    }
+                    ClipAction.Success -> {
+                        if (!disableDuplicateAnnouncement) {
+                            showAck("Clip Captured!")
+                        }
+                    }
                     else -> {}
                 }
             }
@@ -223,7 +249,14 @@ class CopyCatClipboardService : Service() {
     }
 
     private fun removeFocusOnOverlay() {
-        windowManager.removeView(overlayLayout)
+        overlayLayout?.let {
+            try {
+                windowManager.removeView(it)
+            } catch (e: Exception) {
+                Log.w(logTag, "Failed to remove overlay: ${e.message}")
+            }
+        }
+        overlayLayout = null
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -250,10 +283,6 @@ class CopyCatClipboardService : Service() {
         windowManager.addView(overlayLayout, overlayLayout?.layoutParams)
     }
 
-    companion object {
-        var isRunning: Boolean = false
-    }
-
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -271,7 +300,20 @@ class CopyCatClipboardService : Service() {
             .setOngoing(true) // Makes the notification non-dismissible
     }
 
+    @SuppressLint("LaunchActivityFromNotification")
     private fun showNotification(): Notification {
+        val pasteIntent = Intent(this, this::class.java).apply {
+            action = "PASTE_ACTION"
+        }
+
+        val pendingPasteIntent = PendingIntent.getService(
+            this,
+            790,
+            pasteIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+
         val deleteIntent = Intent(this, NotificationDeleteReceiver::class.java)
         val pendingDeleteIntent = PendingIntent.getBroadcast(
             this,
@@ -279,10 +321,14 @@ class CopyCatClipboardService : Service() {
             deleteIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+
         return notificationBuilder
             .setDeleteIntent(pendingDeleteIntent)
             .setContentTitle("CopyCat Clipboard")
-            .setContentText("Monitoring clipboard activity")
+            .setContentText("Tap to Capture • Swipe to Restart")
+            .setContentIntent(pendingPasteIntent)
+            .setOngoing(true)
+            .setAutoCancel(false)
             .build()
     }
 
@@ -307,14 +353,45 @@ class CopyCatClipboardService : Service() {
     private fun prepareAndShowNotification() {
         createNotificationChannel()
         prepareNotification()
-        startForeground(notificationId, showNotification())
+        
+        // Handle Android 14+ foreground service type requirements
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                // Android 14+ (API 34+): Use FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                startForeground(
+                    notificationId, 
+                    showNotification(), 
+                    android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                )
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Android 10+ (API 29+): Use FOREGROUND_SERVICE_TYPE_DATA_SYNC
+                startForeground(
+                    notificationId, 
+                    showNotification(), 
+                    android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+                )
+            } else {
+                // Pre-Android 10: No service type needed
+                startForeground(notificationId, showNotification())
+            }
+        } catch (e: Exception) {
+            Log.e(logTag, "Failed to start foreground service with specific type: ${e.message}")
+            // Fallback: try without service type
+            try {
+                startForeground(notificationId, showNotification())
+            } catch (ex: Exception) {
+                Log.e(logTag, "Failed to start foreground service: ${ex.message}", ex)
+                // If we can't start as foreground, stop the service
+                stopSelf()
+            }
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
-        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         copycatStorage = CopyCatSharedStorage.getInstance(this)
+        clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         copycatStorage.start()
         prepareAndShowNotification()
         isRunning = true
@@ -324,8 +401,35 @@ class CopyCatClipboardService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == "RESTART_NOTIFICATION") {
-            prepareAndShowNotification()
+        // Ensure notification is shown if service was restarted
+        if (!isRunning) {
+            try {
+                prepareAndShowNotification()
+                isRunning = true
+            } catch (e: Exception) {
+                Log.e(logTag, "Failed to show notification on restart: ${e.message}", e)
+                stopSelf()
+                return START_NOT_STICKY
+            }
+        }
+        
+        when (intent?.action) {
+            "RESTART_SERVICE" -> {
+                Log.d(logTag, "Service restart requested")
+                // Just ensure notification is showing, don't call onCreate
+                if (!isRunning) {
+                    prepareAndShowNotification()
+                    isRunning = true
+                }
+            }
+            "PASTE_ACTION" -> {
+                val delayMills = 1000L;
+                val handler = android.os.Handler(mainLooper)
+                handler.postDelayed({
+                    disableDuplicateAnnouncement = true;
+                    performClipboardRead("");
+                }, delayMills)
+            }
         }
         return START_STICKY
     }
@@ -333,6 +437,9 @@ class CopyCatClipboardService : Service() {
     override fun onBind(p0: Intent?): IBinder = binder
 
     override fun onDestroy() {
+        // Cancel all coroutines
+        serviceScope.cancel()
+        
         clipboardManager.removePrimaryClipChangedListener(onClipChangeListener)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             stopForeground(STOP_FOREGROUND_REMOVE)
@@ -344,6 +451,11 @@ class CopyCatClipboardService : Service() {
         showAck("CopyCat Clipboard Stopped")
         isRunning = false
         copycatStorage.clean()
+        
+        // Clear references to prevent memory leaks
+        overlayLayout = null
+        lastCopiedText = null
+        
         super.onDestroy()
     }
 

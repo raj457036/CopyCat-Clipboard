@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        // jcenter() // deprecated, don’t use unless absolutely required
+    }
+    
+    dependencies {
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0'
+    }
+}
 allprojects {
     repositories {
         google()

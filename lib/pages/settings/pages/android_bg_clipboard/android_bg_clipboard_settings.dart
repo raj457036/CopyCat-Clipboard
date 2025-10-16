@@ -139,19 +139,13 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   }
 
   Future<void> changeStrictCheck(bool value) async {
-    if (accessibility) {
-      showTextSnackbar(
-        "⚠️ Please disable the service first to change this setting.",
-        failure: true,
-        closePrevious: true,
-      );
-      return;
-    }
+    final success = await widget.bgService.writeShared("strictCheck", value);
+
+    if (!success) return;
 
     setState(() {
       strictCheck = value;
     });
-    await widget.bgService.writeShared("strictCheck", strictCheck);
   }
 
   Future<void> setupConfiguration() async {
@@ -291,6 +285,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
           height5,
           ExpansionTile(
             tilePadding: EdgeInsets.zero,
+            initiallyExpanded: true,
             title:
                 SettingHeader(name: context.locale.abc__other_setting__title),
             children: [

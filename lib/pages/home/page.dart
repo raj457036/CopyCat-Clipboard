@@ -1,5 +1,6 @@
 import 'package:clipboard/pages/home/widgets/appbar.dart';
 import 'package:clipboard/pages/home/widgets/home_body.dart';
+import 'package:clipboard/widgets/keyboard_shortcuts/seq_selection_listener.dart';
 import 'package:clipboard/widgets/layout/custom_scaffold.dart';
 import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:copycat_pro/widgets/drag_drop/drop_region.dart';
@@ -24,6 +25,6 @@ class HomePage extends StatelessWidget {
       scaffold = ClipDropRegionProvider(child: scaffold);
     }
 
-    return scaffold;
+    return SeqSelectionListener(child: scaffold);
   }
 }

@@ -66,7 +66,11 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
                 if (secure) {
                     val value = storage.readSecure(key)
                     result.success(value)
-                } else {
+                } else if (key.startsWith("Clip-")) {
+                    val value = storage.readClip(key)
+                    result.success(value?.toMap())
+                }
+                else {
                     val value = storage.read(key, type ?: "string")
                     result.success(value)
                 }

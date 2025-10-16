@@ -289,7 +289,8 @@ final rootRouter = GoRouter(
   ],
 );
 
-FutureOr<String?> idPresentOrRedirect(context, state, [String? validValue]) {
+FutureOr<String?> idPresentOrRedirect(BuildContext context, state,
+    [String? validValue]) {
   final id = state.pathParameters["id"];
 
   if (validValue != null && id == validValue) return null;

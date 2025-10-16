@@ -1,7 +1,7 @@
 name: clipboard
 description: "CopyCat Clipboard: One Clipboard, Limitless Productivity"
 publish_to: "none"
-version: 1.1.0+68
+version: 1.2.2+73
 
 environment:
   sdk: ">=3.3.3 <4.0.0"
@@ -19,23 +19,19 @@ dependencies:
   path_provider: ^2.1.3
   json_annotation: ^4.9.0
   get_it: ^7.7.0
-  go_router: ^15.1.3
+  go_router: ^16.2.4
   dartz: ^0.10.1
   form_validator: ^2.1.1
   window_manager: ^0.4.2
   timeago: ^3.7.0
-  isar:
-    version: ^3.1.8
-    hosted: https://pub.isar-community.dev
-  isar_flutter_libs:
-    version: ^3.1.8
-    hosted: https://pub.isar-community.dev
+  isar_community: 3.3.0-dev.1
+  isar_community_flutter_libs: 3.3.0-dev.1
   uuid: ^4.4.2
   rxdart: ^0.28.0
   internet_connection_checker_plus: ^2.3.0
   url_launcher: ^6.3.0
   googleapis: ^13.1.0
-  file_picker: ^8.1.6
+  file_picker: ^10.3.2
   http: ^1.2.2
   blurhash_dart: ^1.2.1
   mime: ^1.0.5
@@ -58,7 +54,7 @@ dependencies:
   flutter_platform_alert: ^0.8.0
   device_preview_screenshot: ^1.0.0
   encrypt: ^5.0.3
-  upgrader: ^11.4.0
+  upgrader: 11.4.0
   retry: ^3.1.2
   launch_at_startup: ^0.3.1
   copycat_pro:
@@ -75,14 +71,14 @@ dependencies:
     path: packages/android_background_clipboard
   sentry_flutter: ^9.6.0
   animate_do: ^3.3.4
-  installed_apps:
-    git:
-      url: https://github.com/raj457036/installed_apps.git
   # installed_apps:
-  #   path: packages/installed_apps
-  media_kit: ^1.1.11
-  media_kit_video: ^1.2.5
-  media_kit_libs_video: ^1.0.5
+  #   git:
+  #     url: https://github.com/raj457036/installed_apps.git
+  installed_apps:
+    path: packages/installed_apps
+  media_kit: ^1.2.0
+  media_kit_video: ^1.3.0
+  media_kit_libs_video:
   emoji_picker_flutter:
     git:
       url: https://github.com/raj457036/emoji_picker_flutter.git
@@ -93,17 +89,15 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   build_runner: ^2.4.13
   injectable_generator: ^2.6.2
-  isar_generator:
-    version: ^3.1.8
-    hosted: https://pub.isar-community.dev
-  freezed: 2.5.7
+  isar_community_generator: 3.3.0-dev.1
+  freezed: ^2.5.8
   json_serializable: ^6.8.0
   flutter_launcher_icons: ^0.14.3
-  sentry_dart_plugin: ^2.0.0
+  sentry_dart_plugin: ^3.1.1
 
 dependency_overrides:
   intl: ^0.20.2
-  analyzer: ^6.4.1
+  # analyzer: ^6.4.1
   screen_retriever: ^0.2.0
 
 flutter:

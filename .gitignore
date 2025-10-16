@@ -59,3 +59,4 @@ firebase.json
 
 **/packages/emoji_picker_flutter
 **/packages/installed_apps
+packages/android_background_clipboard/*.md
