@@ -99,7 +99,7 @@ class DraggableItem extends StatelessWidget {
     });
   }
 
-  FutureOr<DragItem?> dragItemProvider(request) async {
+  FutureOr<DragItem?> dragItemProvider(DragItemRequest request) async {
     final dragItem = DragItem(localData: {"itemId": item.id});
 
     switch (item.type) {
