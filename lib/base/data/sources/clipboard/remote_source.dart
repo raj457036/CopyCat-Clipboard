@@ -1,11 +1,11 @@
-import 'package:clipboard/base/common/paginated_results.dart';
 import 'package:clipboard/base/constants/strings.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/sort.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/common/paginated_results.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

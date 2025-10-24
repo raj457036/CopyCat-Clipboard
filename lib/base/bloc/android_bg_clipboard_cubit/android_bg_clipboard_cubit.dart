@@ -1,15 +1,15 @@
 import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
-import 'package:clipboard/base/common/failure.dart';
-import 'package:clipboard/base/common/logging.dart';
 import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/db/exclusion_rules/exclusion_rules.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 

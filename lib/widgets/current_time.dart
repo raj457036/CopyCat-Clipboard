@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 
 class CurentTime extends StatefulWidget {

@@ -1,12 +1,12 @@
-import 'package:clipboard/pages/settings/widgets/exclusion_rules/exclude_custom_rules.dart';
-import 'package:clipboard/pages/settings/widgets/setting_header.dart';
-import 'package:clipboard/widgets/layout/custom_scaffold.dart';
-import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/db/exclusion_rules/exclusion_rules.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/pages/settings/widgets/exclusion_rules/exclude_custom_rules.dart';
+import 'package:clipboard/pages/settings/widgets/setting_header.dart';
+import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/layout/custom_scaffold.dart';
+import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universal_io/io.dart';

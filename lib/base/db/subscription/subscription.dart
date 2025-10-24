@@ -1,7 +1,7 @@
 import 'package:clipboard/base/constants/numbers/duration.dart';
 import 'package:clipboard/base/db/base.dart';
 import 'package:clipboard/base/db/json_converters/datetime_converters.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar_community/isar.dart';
 

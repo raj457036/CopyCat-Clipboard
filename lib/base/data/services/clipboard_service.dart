@@ -2,11 +2,11 @@ import 'dart:async' show Completer, TimeoutException;
 import 'dart:async' show FutureOr;
 import 'dart:convert' show utf8;
 
-import 'package:clipboard/base/common/logging.dart';
 import 'package:clipboard/base/constants/misc.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard_watcher/clipboard_watcher.dart';
 import 'package:crypto/crypto.dart' show sha1, Digest;
 import 'package:easy_worker/easy_worker.dart';

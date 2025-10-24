@@ -1,6 +1,6 @@
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
 import 'package:clipboard/base/domain/repositories/analytics.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: AnalyticsRepository)

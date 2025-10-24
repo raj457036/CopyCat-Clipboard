@@ -1,5 +1,5 @@
 import 'package:clipboard/base/db/subscription/subscription.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
 Future<void> presentPaywall() async {

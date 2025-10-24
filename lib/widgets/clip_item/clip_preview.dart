@@ -1,12 +1,12 @@
-import 'package:clipboard/utils/utility.dart' show isMediaType;
-import 'package:clipboard/widgets/clip_item/clip_card/encrypted_card.dart';
-import 'package:clipboard/widgets/clip_item/clip_card/text_clip_card.dart';
-import 'package:clipboard/widgets/clip_item/clip_card/url_clip_card.dart';
 import 'package:clipboard/base/db/app_config/appconfig.dart';
 import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
-import 'package:clipboard/base/widgets/clip_cards/file_clip_card.dart';
-import 'package:clipboard/base/widgets/clip_cards/media_clip_card.dart';
+import 'package:clipboard/utils/utility.dart' show isMediaType;
+import 'package:clipboard/widgets/clip_cards/file_clip_card.dart';
+import 'package:clipboard/widgets/clip_cards/media_clip_card.dart';
+import 'package:clipboard/widgets/clip_item/clip_card/encrypted_card.dart';
+import 'package:clipboard/widgets/clip_item/clip_card/text_clip_card.dart';
+import 'package:clipboard/widgets/clip_item/clip_card/url_clip_card.dart';
 import 'package:flutter/material.dart';
 
 class ClipPreview extends StatelessWidget {

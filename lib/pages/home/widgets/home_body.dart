@@ -1,11 +1,11 @@
+import 'package:clipboard/base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
+import 'package:clipboard/base/db/app_config/appconfig.dart';
+import 'package:clipboard/widgets/app_layout_builder.dart';
 import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/clip_view_builders/grid/builder.dart';
 import 'package:clipboard/widgets/clip_view_builders/grid/view.dart';
 import 'package:clipboard/widgets/clip_view_builders/list/builder.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
-import 'package:clipboard/base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
-import 'package:clipboard/base/db/app_config/appconfig.dart';
-import 'package:clipboard/base/widgets/app_layout_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

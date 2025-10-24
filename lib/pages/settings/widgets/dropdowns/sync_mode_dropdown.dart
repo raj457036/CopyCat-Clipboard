@@ -3,9 +3,9 @@ import 'package:clipboard/base/constants/numbers/duration.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/db/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/base/widgets/subscription/subscription_provider.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/badges.dart';
+import 'package:clipboard/widgets/subscription/subscription_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -5,9 +5,9 @@ import 'package:clipboard/base/bloc/collection_sync_manager_cubit/collection_syn
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/repositories/clip_collection.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/base/utils/utility.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/snackbar.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

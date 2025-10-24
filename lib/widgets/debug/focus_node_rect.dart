@@ -1,4 +1,4 @@
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 
 class BorderPainter extends CustomPainter {

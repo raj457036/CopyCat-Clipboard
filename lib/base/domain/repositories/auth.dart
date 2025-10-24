@@ -1,5 +1,5 @@
-import 'package:clipboard/base/common/failure.dart';
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
+import 'package:clipboard/common/failure.dart';
 
 abstract class AuthRepository {
   FailureOr<(String?, AuthUser?)> validateAuthCode(String code);

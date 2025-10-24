@@ -2,9 +2,9 @@ import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.
 import 'package:clipboard/base/constants/numbers/breakpoints.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/base/utils/utility.dart';
 import 'package:clipboard/pages/collections/widgets/appbar.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_collection_grid_item.dart';
 import 'package:clipboard/widgets/layout/custom_scaffold.dart';
 import 'package:clipboard/widgets/local_user.dart';

@@ -1,4 +1,4 @@
-import 'package:clipboard/base/common/failure.dart';
+import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';

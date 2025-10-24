@@ -2,13 +2,13 @@ import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/constants/numbers/breakpoints.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/base/utils/utility.dart';
-import 'package:clipboard/base/widgets/subscription/paywall/paywall.dart';
-import 'package:clipboard/base/widgets/subscription/subscription_provider.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/monetization.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/subscription/apply_coupon.dart';
 import 'package:clipboard/widgets/subscription/paywall/manage_subscription_button.dart';
+import 'package:clipboard/widgets/subscription/paywall/paywall.dart';
+import 'package:clipboard/widgets/subscription/subscription_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

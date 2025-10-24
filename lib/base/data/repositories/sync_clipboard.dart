@@ -1,9 +1,9 @@
-import 'package:clipboard/base/common/failure.dart';
-import 'package:clipboard/base/common/paginated_results.dart';
 import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/sync_clipboard.dart';
 import 'package:clipboard/base/domain/sources/sync_clipboard.dart';
+import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/common/paginated_results.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 

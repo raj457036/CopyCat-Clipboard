@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/db/app_config/appconfig.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';

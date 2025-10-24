@@ -1,8 +1,8 @@
-import 'package:clipboard/base/common/logging.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/db/exclusion_rules/exclusion_rules.dart';
 import 'package:clipboard/base/db/exclusion_rules/sensitive_info.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:focus_window/platform/activity_info.dart';
 import 'package:universal_io/io.dart';
 

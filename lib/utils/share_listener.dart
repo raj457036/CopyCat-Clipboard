@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
-import 'package:clipboard/base/common/failure.dart';
-import 'package:clipboard/base/common/logging.dart';
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/snackbar.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

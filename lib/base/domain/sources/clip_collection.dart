@@ -1,5 +1,5 @@
-import 'package:clipboard/base/common/paginated_results.dart';
 import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
+import 'package:clipboard/common/paginated_results.dart';
 
 abstract class ClipCollectionSource {
   Future<ClipCollection?> get({int? id, int? serverId});

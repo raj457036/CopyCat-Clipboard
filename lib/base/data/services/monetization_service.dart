@@ -1,7 +1,7 @@
-import 'package:clipboard/base/common/logging.dart';
 import 'package:clipboard/base/db/subscription/subscription.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/foundation.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:universal_io/io.dart';

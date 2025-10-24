@@ -1,12 +1,12 @@
-import 'package:clipboard/base/common/failure.dart';
-import 'package:clipboard/base/common/logging.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/data/services/encryption.dart';
 import 'package:clipboard/base/db/base.dart';
 import 'package:clipboard/base/db/json_converters/datetime_converters.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:isar_community/isar.dart';
 import 'package:path/path.dart' as p;

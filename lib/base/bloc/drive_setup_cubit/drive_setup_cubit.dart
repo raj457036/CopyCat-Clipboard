@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:clipboard/base/common/failure.dart';
 import 'package:clipboard/base/data/services/google_services.dart';
 import 'package:clipboard/base/domain/model/drive_access_token/drive_access_token.dart';
 import 'package:clipboard/base/domain/repositories/drive_credential.dart';
+import 'package:clipboard/common/failure.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:googleapis/drive/v3.dart';
 import 'package:injectable/injectable.dart';

@@ -1,10 +1,10 @@
-import 'package:clipboard/base/common/failure.dart';
-import 'package:clipboard/base/common/logging.dart';
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/numbers/breakpoints.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/widgets/timer_progress_bar.dart';
+import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/widgets/timer_progress_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:blurhash_dart/blurhash_dart.dart';
-import 'package:clipboard/base/common/logging.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:easy_worker/easy_worker.dart';
 import 'package:image/image.dart' as img;
 import 'package:mime/mime.dart' as mime;

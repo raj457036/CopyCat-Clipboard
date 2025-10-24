@@ -1,7 +1,7 @@
-import 'package:clipboard/base/common/failure.dart';
-import 'package:clipboard/base/common/logging.dart';
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
 import 'package:clipboard/base/domain/repositories/auth.dart';
+import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';

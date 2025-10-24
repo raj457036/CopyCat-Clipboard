@@ -1,5 +1,5 @@
-import 'package:clipboard/base/common/failure.dart';
 import 'package:clipboard/base/db/app_config/appconfig.dart';
+import 'package:clipboard/common/failure.dart';
 
 abstract class AppConfigRepository {
   FailureOr<AppConfig> get();

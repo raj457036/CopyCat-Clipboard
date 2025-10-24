@@ -3,8 +3,8 @@ import 'package:any_link_preview/any_link_preview.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/widgets/image_not_found.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/widgets/image_not_found.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:convert' show jsonEncode;
 
 import 'package:bloc/bloc.dart';
-import 'package:clipboard/base/common/failure.dart';
-import 'package:clipboard/base/common/logging.dart';
 import 'package:clipboard/base/db/app_config/appconfig.dart';
 import 'package:clipboard/base/db/exclusion_rules/exclusion_checker.dart';
 import 'package:clipboard/base/db/exclusion_rules/exclusion_rules.dart';
 import 'package:clipboard/base/db/subscription/subscription.dart';
 import 'package:clipboard/base/domain/repositories/app_config.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:focus_window/focus_window.dart';
 import 'package:focus_window/platform/activity_info.dart';

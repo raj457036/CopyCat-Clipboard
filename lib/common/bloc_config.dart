@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:clipboard/base/common/logging.dart';
+import 'package:clipboard/common/logging.dart';
 
 class CustomBlocObserver extends BlocObserver {
   @override

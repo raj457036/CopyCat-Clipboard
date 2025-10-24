@@ -1,9 +1,9 @@
-import 'package:clipboard/base/common/paginated_results.dart';
 import 'package:clipboard/base/constants/strings.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/sources/clip_collection.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/common/paginated_results.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

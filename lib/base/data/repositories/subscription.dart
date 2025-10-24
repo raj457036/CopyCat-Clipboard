@@ -1,7 +1,7 @@
-import 'package:clipboard/base/common/failure.dart';
 import 'package:clipboard/base/db/subscription/subscription.dart';
 import 'package:clipboard/base/domain/repositories/subscription.dart';
 import 'package:clipboard/base/domain/sources/subscription.dart';
+import 'package:clipboard/common/failure.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 

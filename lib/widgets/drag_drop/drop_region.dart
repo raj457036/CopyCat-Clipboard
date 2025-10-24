@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
-import 'package:clipboard/base/common/logging.dart';
 import 'package:clipboard/base/constants/misc.dart';
 import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/base/widgets/drag_drop/drop_area.dart';
-import 'package:clipboard/base/widgets/subscription/subscription_provider.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/snackbar.dart';
+import 'package:clipboard/widgets/drag_drop/drop_area.dart';
+import 'package:clipboard/widgets/subscription/subscription_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_clipboard/super_clipboard.dart';

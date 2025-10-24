@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:io' as io;
 
-import 'package:clipboard/base/common/failure.dart';
-import 'package:clipboard/base/common/logging.dart';
 import 'package:clipboard/base/constants/numbers/file_sizes.dart';
 import 'package:clipboard/base/data/services/google_services.dart';
 import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:dartz/dartz.dart';
 import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis/oauth2/v2.dart' as oauth2;

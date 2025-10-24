@@ -1,6 +1,6 @@
-import 'package:clipboard/base/common/failure.dart';
 import 'package:clipboard/base/db/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/repositories/app_config.dart';
+import 'package:clipboard/common/failure.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:isar_community/isar.dart';

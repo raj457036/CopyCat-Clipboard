@@ -1,7 +1,7 @@
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/collection_clips_cubit/collection_clips_cubit.dart';
 import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/base/widgets/clipcard_loading.dart';
+import 'package:clipboard/widgets/clipcard_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
