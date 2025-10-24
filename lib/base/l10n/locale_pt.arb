@@ -1,0 +1,666 @@
+{
+    "@@locale": "pt",
+    "@@format": "<App/Funcionalidade>__<Seção/Componente>__<Contexto>[__<Variante>",
+    "@@APP": "Localizações compartilhadas por todo o aplicativo.",
+    "app__name": "CopyCat Clipboard",
+    "@app__name": {
+      "description": "Nome do aplicativo: CopyCat Clipboard"
+    },
+    "app__slogan": "Um Clipboard, Possibilidades Ilimitadas",
+    "@app__slogan": {
+      "description": "Slogan do CopyCat Clipboard"
+    },
+    "app__unknown_error": "Ocorreu um erro inesperado",
+    "app__downloading": "Baixando...",
+    "app__download": "Baixar",
+    "app__follow_link": "Seguir Link",
+    "app__edit": "Editar",
+    "app__export": "Exportar",
+    "app__delete": "Excluir",
+    "app__later": "Pular",
+    "app__select": "Selecionar",
+    "app__change": "Alterar",
+    "app__confirm": "Confirmar",
+    "app__action_required": "Ação Requerida",
+    "app__feature_unavailable": "Este recurso não está disponível para a sua plataforma.",
+    "app__preview": "Pré-visualizar",
+    "app__open_file": "Abrir arquivo",
+    "app__change_collection": "Mudar Coleção",
+    "app__share": "Compartilhar",
+    "app__uploading": "Carregando...",
+    "app__syncing": "Sincronizando...",
+    "app__sync": "Sincronizar",
+    "app__local": "Local",
+    "app__send_message": "Enviar Mensagem",
+    "app__send_email": "Enviar E-mail",
+    "app__empty_clipboard": "Seu clipboard está vazio.",
+    "app__load_more": "Carregar Mais",
+    "app__locale_en": "Inglês",
+    "app__locale_es": "Espanhol",
+    "app__locale_fr": "Francês",
+    "app__locale_de": "Alemão",
+    "app__locale_zh": "Chinês",
+    "app__locale_pt": "Português",
+    "app__language": "Idioma",
+    "app__logout": "Sair",
+    "app__no_collection": "Nenhuma Coleção Encontrada",
+    "app__create_collection": "Criar Coleção",
+    "app__pro_tip": "Dica Pro",
+    "app__try_again": "Tente Novamente",
+    "app__realtime_connected": "Conectado em tempo real",
+    "app__realtime_disconnected": "Desconectado em tempo real",
+    "app__realtime_connecting": "Conectando em tempo real...",
+    "app__ack__exported": "Exportado",
+    "app__ack__copied": "Copiado",
+    "app__ack__pasted": "Colado",
+    "app__ack__pasting": "Colando",
+    "app__ack__done": "Concluído",
+    "app__ack__quit_app": "Fechar Aplicativo",
+    "app__ack__deleted": "Excluído",
+    "app__ack__deleting": "Excluindo",
+    "app__ack__internet_connected": "Internet Conectada",
+    "app__ack__internet_disconnected": "Internet Desconectada",
+    "app__ack__logout_success": "Você saiu com sucesso.",
+    "app__ack__missing_e2e_setup": "Configuração de criptografia ausente",
+    "app__ack__no_app_for_file": "Nenhum aplicativo encontrado para abrir este arquivo.",
+    "app__ack__perm_fail_to_open_file": "Permissão para abrir este arquivo não concedida.",
+    "@@DIALOG": "Dialog Comum",
+    "dialog__delete_clip__title": "Excluir Clip",
+    "dialog__delete_clip__subtitle": "{itemCount, plural, one{Tem certeza de que deseja excluir este clip?} other{Tem certeza de que deseja excluir estes clips?}}",
+    "@dialog__delete_clip__subtitle": {
+      "placeholders": {
+        "itemCount": {
+          "type": "int"
+        }
+      }
+    },
+    "dialog__e2e__title": "Criptografia de Ponta a Ponta",
+    "dialog__text__e2e_key_export": "Parabéns, você configurou com sucesso a criptografia ponta a ponta.",
+    "dialog__text__e2e_key_export__note": "Clique no botão abaixo para exportar sua chave de criptografia.\nSalve a chave em um local seguro para garantir que você possa configurar outros dispositivos para acessar suas informações criptografadas.",
+    "dialog__text__e2e_key_generate": "Gere uma chave de criptografia e armazene-a com segurança. Esta chave é necessária para configurar outros dispositivos para acessar seus dados criptografados.",
+    "dialog__button__e2e_generating_key": "Gerando",
+    "dialog__button__e2e_generate_key": "Gerado",
+    "dialog__text__invalid_e2e_key": "A chave importada é inválida!",
+    "dialog__text__e2e_key_import__note": "Importe sua chave de criptografia abaixo para acessar seus dados criptografados neste dispositivo.",
+    "dialog__button__e2e_importing_key": "Importando",
+    "dialog__button__e2e_import_key": "Importar",
+  
+    "dialog__text__inconsistent_time__title": "Aviso de Sincronização de Tempo",
+    "dialog__text__inconsistent_time__content": "Tempo Inconsistente Detectado no Dispositivo\n\nPara garantir uma sincronização precisa do clipboard, por favor, verifique e corrija as configurações de hora do seu dispositivo.\n\nConfigurações de tempo inconsistente podem causar problemas de sincronização.",
+    "dialog__button__try_again": "Verificar Novamente",
+  
+    "dialog__record_keys__title": "Registrar Atalho de Teclado",
+    "dialog__record_keys__subtitle": "Digite seu atalho usando seu teclado e clique ",
+  
+    "dialog__delete_collection__title": "Excluir {collectionName}",
+    "@dialog__delete_collection__title": {
+      "placeholders": {
+        "collectionName": {
+          "type": "String"
+        }
+      }
+    },
+    "dialog__delete_collection__subtitle": "Você tem certeza que deseja excluir esta coleção?",
+  
+    "@@APPLY_DIALOG": "Dialog Aplicar Cupom",
+    "dialog__ack__sub_updated": "Assinatura Atualizada",
+    "dialog__grant_entitlement__title": "Direito Concedido",
+    "dialog__grant_entitlement__subtitle_p1": "Códigos de Direitos concedidos são compartilhados com indivíduos específicos para direitos personalizados. Você pode verificar se os convites ainda estão disponíveis ",
+    "dialog__grant_entitlement__subtitle_p2": "Clicando Aqui.",
+    "dialog__grant_entitlement__enter_code": "Digite o código e pressione Enviar",
+    "dialog__grant_entitlement__apply_code": "Aplicar",
+  
+    "@@VIEW_BUTTONS": "Botões de Visualização de Layout",
+    "view_button__switch_to_grid": "Mudar para Layout de Grade",
+    "view_button__switch_to_list": "Mudar para Layout de Lista",
+    "view_button__change_view": "Alterar Visualização",
+    "view_button__view_window": "Em Janela",
+    "view_button__view_dock_right": "Ancorar à Direita",
+    "view_button__view_dock_bottom": "Ancorar em Baixo",
+    "view_button__view_dock_left": "Ancorar à Esquerda",
+    "view_button__view_dock_top": "Ancorar no Topo",
+    "view_button__pin": "Fixar no topo",
+    "view_button__unpin": "Desfixar",
+  
+    "@@SUBSCRIPTION_DIALOG": "Dialog de Detalhes da Assinatura",
+    "sub_dialog__text__included": "Incluído",
+    "sub_dialog__f1__title": "Itens Ilimitados no Clipboard",
+    "sub_dialog__f1__subtitle": "Nunca fique sem espaço com itens ilimitados no clipboard, garantindo que você sempre tenha acesso ao que copiou recentemente.",
+    "sub_dialog__f2__title": "Suporte a todas as plataformas principais",
+    "sub_dialog__f2__subtitle": "Sincronize sem emenda em todas as plataformas principais—Android, iOS, Windows, macOS e Linux —para uma produtividade ininterrupta em qualquer lugar.",
+    "sub_dialog__f3__title": "Suporta Apple Universal Clipboard",
+    "sub_dialog__f3__subtitle": "Transfira sem esforço o conteúdo do clipboard entre seus dispositivos Apple com suporte ao Apple Universal Clipboard.",
+    "sub_dialog__f4__title": "Armazenamento no Dispositivo",
+    "sub_dialog__f4__subtitle": "Mantenha seus dados seguros com armazenamento no dispositivo, garantindo que seus itens no clipboard estejam sempre ao seu alcance e sob seu controle.",
+    "sub_dialog__f5__title": "Integração com Google Drive",
+    "sub_dialog__f5__subtitle": "Armazene arquivos e mídias com segurança no Google Drive, integrando-se perfeitamente ao CopyCat Clipboard para um gerenciamento aprimorado de dados.",
+    "sub_dialog__f6__title": "Busca Instantânea",
+    "sub_dialog__f6__subtitle": "Encontre o que você precisa instantaneamente com poderosas capacidades de busca instantânea, tornando a recuperação dos itens do clipboard rápida e eficiente.",
+    "sub_dialog__f7__title": "Sincronizando Até as Últimas 24 Horas",
+    "sub_dialog__f7__subtitle": "Acesse e sincronize o histórico do seu clipboard em todos os seus dispositivos nas últimas 24 horas. Isso garante que você nunca perca itens importantes que copiou, tornando seu fluxo de trabalho perfeito e eficiente.",
+    "sub_dialog__f8__title": "Até 3 Coleções",
+    "sub_dialog__f8__subtitle": "Organize os itens do seu clipboard em até 3 coleções, proporcionando uma categorização simples para um melhor gerenciamento do fluxo de trabalho.",
+    "sub_dialog__f9__title": "Sincronização Automática a Cada 45 Segundos",
+    "sub_dialog__f9__subtitle": "Aproveite a sincronização automática dos itens do clipboard a cada 45 segundos, mantendo seus dispositivos atualizados sem intervenção manual.",
+    "sub_dialog__f10__title": "Suporte à Criptografia de Ponta a Ponta",
+    "sub_dialog__f10__subtitle": "A criptografia ponta a ponta tornará tudo criptografado para uma privacidade superior.",
+  
+    "sub_dialog__text__pro_title": "Com PRO ✨",
+    "sub_dialog__text__pro_subtitle": "Tudo incluído no Grátis +",
+    "sub_dialog__f11__title": "Até 50 Coleções",
+    "sub_dialog__f11__subtitle": "Organize os itens do seu clipboard em até 50 coleções para um gerenciamento definitivo.",
+    "sub_dialog__f12__title": "Sincronizando Até os Últimos 30 Dias",
+    "sub_dialog__f12__subtitle": "O histórico do clipboard é sincronizado em todos os seus dispositivos para clips criados nos últimos 30 dias. Isso significa que você pode acessar qualquer clip que copiou no mês passado, independentemente de qual dispositivo você está usando.",
+    "sub_dialog__f13__title": "Sincronização em Tempo Real",
+    "sub_dialog__f13__subtitle": "Experimente a sincronização em tempo real.",
+    "sub_dialog__f14__title": "Suporte Rápido e Prioritário",
+    "sub_dialog__f14__subtitle": "Obtenha suporte rápido e prioritário como um usuário PRO.",
+    "sub_dialog__f15__title": "Acesso Antecipado a Novos Recursos",
+    "sub_dialog__f15__subtitle": "Seja o primeiro a experimentar novos recursos e atualizações.",
+    "sub_dialog__f16__title": "Regras de Exclusão Personalizadas",
+    "sub_dialog__f16__subtitle": "Controle preciso sobre o seu clipboard. Permite que você defina o que copiar, de onde copiar e quando copiar.",
+    "sub_dialog__f17__title": "Arrastar & Soltar",
+    "sub_dialog__f17__subtitle": "Mova itens de forma fluida em qualquer direção nos seus dispositivos Desktop e Tablet.",
+    "sub_dialog__f18__title": "Tematização",
+    "sub_dialog__f18__subtitle": "Personalize todo o visual e a sensação do aplicativo para corresponder às suas preferências.",
+    "paywall_dialog__text__month": "mês",
+    "paywall_dialog__text__year": "ano",
+    "paywall_dialog__text__subscription": "Assinatura",
+    "paywall_dialog__text__supported_platform": "Para acessar os recursos premium no CopyCat Clipboard, por favor, assine através da Play Store ou Apple App Store. Sua assinatura será sincronizada em todos os seus dispositivos, incluindo Linux e Windows.",
+    "paywall_dialog__text__unlock_pro": "Desbloquear CopyCat PRO",
+    "paywall_dialog__text__unlock_pro_p1": "Desfrute de mais de 30 dias de histórico sincronizado, mais de 50 coleções, criptografia de ponta a ponta, sincronização em tempo real, acesso aos recursos mais novos e muito mais.",
+    "paywall_dialog__text__try_again": "Por favor, tente novamente",
+    "paywall_dialog__text__current_plan": "Plano Atual",
+    "paywall_dialog__text__expired_plan": "Plano Atual • Expirado",
+    "paywall_dialog__text__trial_till": "Teste até {till}",
+    "@paywall_dialog__text__trial_till": {
+      "placeholders": {
+        "till": {
+          "type": "DateTime",
+          "format": "yMMMd"
+        }
+      }
+    },
+    "paywall_dialog__text__upgrade": "Atualizar",
+  
+    "@@FAB": "Botão de Ação Flutuante",
+    "fab__create_collection": "Criar Coleção ( {remaining} Restantes )",
+    "@fab__create_collection": {
+      "placeholders": {
+        "remaining": {
+          "type": "String"
+        }
+      }
+    },
+  
+    "fab__sync": "Sincronizar",
+    "fab__sync_unavailable": "Sincronização Indisponível",
+    "fab__sync_up_to_date": "Já está atualizado.",
+    "fab__sync_failed": "Falha na sincronização: {message}",
+    "@fab__sync_failed": {
+      "placeholders": {
+        "message": {
+          "type": "String"
+        }
+      }
+    },
+  
+    "@@LAYOUT": "Widgets de Layout",
+    "layout__navbar__clipboard": "Clipboard",
+    "layout__navbar__collections": "Coleções",
+    "layout__navbar__settings": "Configurações",
+  
+    "@@WIDGETS": "Widgets Customizados",
+    "search__tooltip__filter": "Filtros de busca",
+    "manage_sub__ack__promo_sub": "Você está usando uma assinatura promocional até {till}",
+    "@manage_sub__ack__promo_sub": {
+      "placeholders": {
+        "till": {
+          "type": "String"
+        }
+      }
+    },
+    "manage_sub__button__text": "Gerenciar Assinaturas",
+  
+    "my_account__button__tooltip": "Minha Conta",
+    "badges__tooltip__experimental": "Este recurso é experimental e pode não funcionar como esperado.",
+    "badges__tooltip__pro_only": "Este recurso está disponível apenas para usuários Pro.",
+  
+    "collection_selector__tile__no_collection": "Nenhuma Coleção",
+    "collection_selector__button__remove_collection": "Remover Coleção",
+  
+    "dialog__logout__title": "Sair",
+    "dialog__logout__subtitle": "⚠️ AVISO ⚠️\n\nSair excluirá as alterações não sincronizadas no banco de dados local. Tem certeza de que deseja continuar?",
+    "dialog__logging_out__ack": "Finalizando sessão! Por favor, aguarde...",
+  
+    "reset_pass__text__label": "Redefinir sua senha",
+  
+    "dnd__text__drop_here": "Solte Aqui",
+    "dnd__ack__error_max_drop_count": "Máximo de {count} itens de arrasto permitidos de uma vez.",
+    "@dnd__ack__error_max_drop_count": {
+      "placeholders": {
+        "count": {
+          "type": "int"
+        }
+      }
+    },
+  
+    "@@SEARCH_FILTER_DIALOG": "Dialogo de filtro de busca",
+    "search_filter__text__title": "Filtros",
+    "search_filter__button__apply": "Aplicar",
+    "search_filter__text__from": "De",
+    "search_filter__text__select": "Selecionar",
+    "search_filter__text__to": "Para",
+    "search_filter__text__now": "Agora",
+    "search_filter__text__including": "Incluindo",
+    "search_filter__chip__text": "Texto",
+    "search_filter__chip__url": "URL",
+    "search_filter__chip__media": "Mídia",
+    "search_filter__chip__docs": "Documentos",
+    "search_filter__text__textCategories": "Categorias de Texto",
+    "search_filter__text__exclusive": "( Exclusivo )",
+    "search_filter__text_cat__email": "E-mail",
+    "search_filter__text_cat__phone": "Telefone",
+    "search_filter__text_cat__color": "Cor",
+    "search_filter__text__sort_by": "Ordenar Por",
+    "search_filter__sort_by__last_mod": "Última Modificação",
+    "search_filter__sort_by__created": "Criado",
+    "search_filter__sort_by__copy_count": "Contagem de Cópias",
+    "search_filter__sort_by__last_copied": "Última Cópia",
+    "search_filter__text__sort_order": "Ordem de Classificação",
+    "search_filter__sort_ord__asc": "Asc",
+    "search_filter__sort_ord__desc": "Desc",
+  
+    "@@LOGIN": "Tela de Login",
+    "login__local_signin__tooltip": "Sem sincronização. Todos os dados permanecem no seu dispositivo.",
+    "login__local_signin__btn__label": "Usar Localmente",
+    "login__form__input__name": "Digite seu bom nome",
+    "login__form__input__email": "Digite seu e-mail",
+    "login__form__input__error_email": "Por favor, insira um endereço de e-mail válido",
+    "login__form__input__password": "Digite sua senha",
+    "login__form__input__error_password_length": "Por favor, insira uma senha com no mínimo 6 caracteres",
+    "login__form__button__signin": "Entrar",
+    "login__form__button__signup": "Inscrever-se",
+    "login__form__button__forgot_password": "Esqueceu sua senha?",
+    "login__form__text__signup": "Não tem uma conta? Inscreva-se",
+    "login__form__text__old_user": "Já tem uma conta? Entrar",
+    "login__form__text__reset_password": "Enviar e-mail de redefinição de senha",
+    "login__form__text__reset_ack": "E-mail de redefinição de senha enviado",
+    "login__form__button__back": "Voltar para entrar",
+    "login__form__button__update_password": "Atualizar Senha",
+    "login__form__text_tnc_p1": "Ao continuar, você concorda com as seguintes ",
+    "login__form__text_tnc_p2": "Políticas de Privacidade",
+    "login__form__text_tnc_p3": " e ",
+    "login__form__text_tnc_p4": "Termos de Serviço.",
+    "@@HOME": "Tela Inicial",
+    "home__search__hint": "Pesquisar no clipboard",
+    "home__search__reset": "Redefinir Pesquisa",
+    "@@PREVIEW": "Tela de Pré-visualização",
+    "preview__vert_view__tab1_title": "Pré-visualização",
+    "preview__vert_view__tab2__title": "Detalhes",
+    "preview__card__missing_text": "Este é um Clip Vazio",
+    "preview__card__video__play": "Reproduzir Vídeo",
+    "preview__card__file__open": "Abrir Arquivo",
+    "preview__form__title": "Editar Detalhes",
+    "preview__form__input__title": "Título",
+    "preview__form__input__description": "Descrição",
+    "@@RESET_PASSWORD": "Tela de Redefinição de Senha",
+    "reset_password__appbar__title": "Redefina sua senha",
+    "reset_password__success_ack": "Senha redefinida com sucesso",
+    "@@ON_BOARDING": "Tela de Introdução",
+    "onboarding__text__welcome": "Bem-vindo ao",
+    "onboarding__text__lets_continue": "Vamos Continuar",
+
+    "onboarding__button__to_login": "Entrar",
+    "onboarding__snackbar__export_success": "Chave de criptografia exportada com sucesso.",
+    "onboarding__dialog__skip_export__title": "✋ Faça Backup da Sua Chave de Criptografia",
+    "onboarding__dialog__skip_export__subtitle": "Você ainda não exportou sua chave de criptografia. Sem um backup, você não poderá acessar seus clips criptografados se a chave for perdida ou se você trocar de dispositivos.\n\n👉 Se você já tem um backup seguro da sua chave, pode continuar com segurança. Caso contrário, recomendamos fortemente a exportação da chave agora para evitar a perda de dados. Você ainda deseja continuar?",
+    "onboarding__dialog__export_info__title": "🤔 Por que Exportar a Chave de Criptografia?",
+    "onboarding__dialog__export_info__subtitle": "Exportar sua chave de criptografia é essencial para acessar seus dados criptografados de forma segura em vários dispositivos. Sem a chave, seus dados criptografados permanecerão inacessíveis após a sincronização.\n\nMantenha um backup da sua chave de criptografia em um local seguro para evitar perda de dados. Lembre-se de que a chave é única para sua conta e não pode ser recuperada se perdida.\n\nNota: O CopyCat não pode acessar seus clips criptografados ou suas chaves de criptografia. Isso porque valorizamos sua privacidade acima de tudo.",
+    "onboarding__text__export_key_headline": "Criptografia do Clipboard",
+    "onboarding__text__export_key_title": "💪 Boa notícia! Criptografia está ativa para o seu clipboard",
+    "onboarding__button__export_key": "Exportar Chave",
+    "onboarding__dialog__skip_gen_key__title": "✋ Seus Clips Ficarão Inseguros",
+    "onboarding__dialog__skip_gen_key__subtitle": "Você ainda não gerou uma chave de criptografia. Sem ela, seus clips permanecerão não criptografados e inseguros. Você pode gerar a chave mais tarde em Configurações ❯ Segurança. Você ainda deseja continuar?",
+    "onboarding__dialog__gen_key_info__title": "🤔 Por que Preciso de Criptografia?",
+    "onboarding__dialog__gen_key_info__subtitle": "A criptografia protege seus dados convertendo-os em um formato seguro que só pode ser acessado com uma chave. Sem criptografia, seus clips são armazenados em texto simples, tornando-os vulneráveis a acessos não autorizados. Ativar a criptografia garante que apenas você possa acessar seus dados sensíveis, proporcionando uma camada extra de segurança contra possíveis invasões.",
+    "onboarding__text__gen_key_headline": "Configurar Criptografia do Clipboard",
+    "onboarding__text__key_generated_title": "🎉 Chave {keyPreview}*** gerada com sucesso 🎉",
+    "@onboarding__text__key_generated_title": {
+      "placeholders": {
+        "keyPreview": {
+          "type": "String"
+        }
+      }
+    },
+    "onboarding__button__regenerate_key": "Regerar Chave",
+    "onboarding__text__no_key": "Sua conta não tem nenhuma chave de criptografia",
+    "onboarding__button__generate_key": "Gerar Chave",
+    "onboarding__button__do_it_later": "Fazer mais tarde",
+    "onboarding__button__why_important": "Por que é importante?",
+    "onboarding__snackbar__invalid_key": "Esta não é uma chave de criptografia CopyCat válida",
+    "onboarding__dialog__skip_import__title": "✋ Clips Criptografados Inacessíveis",
+    "onboarding__dialog__skip_import__subtitle": "Você ainda não importou a chave de criptografia. Isso significa que todos os seus clips criptografados permanecerão inacessíveis localmente após a sincronização.\n\nPara acessá-los, importe a chave em Configurações ❯ Segurança.\nVocê ainda deseja continuar?",
+    "onboarding__dialog__reset_key__title": "✋ Deletar Dados Criptografados Permanentemente",
+    "onboarding__dialog__reset_key__subtitle": "Esta ação é irreversível. Tem certeza de que deseja deletar permanentemente todos os dados criptografados do servidor?",
+    "onboarding__snackbar__reset_key__success": "Criptografia removida com sucesso.",
+    "onboarding__dialog__import_info__title": "🤔 Onde está minha chave?",
+    "onboarding__dialog__import_info__subtitle": "Sua chave de criptografia é um arquivo seguro gerado durante o processo de configuração da criptografia. Se você a perdeu, verifique sua pasta de downloads ou qualquer local de backup onde possa tê-la salvo. Sem esta chave, seus dados criptografados não podem ser acessados.\n\nSe você configurou a chave de criptografia em outro dispositivo, pode exportá-la em Configurações ❯ Segurança ❯ Cofre E2EE nesse dispositivo. Transfira a chave com segurança para este dispositivo para recuperar acesso aos seus dados criptografados.",
+    "onboarding__text__import_key_headline": "Importar Chave de Criptografia do Clipboard",
+    "onboarding__text__import_key_title": "Sua conta possui criptografia ativa atualmente.",
+    "onboarding__button__import_key": "Importar Chave",
+    "onboarding__button__reset_key": "Redefinir Criptografia",
+    "onboarding__button__where_key": "Onde está a chave?",
+    "onboarding__text__go_home": "Vamos para casa",
+    "onboarding__restoration__failed": "Falha na restauração: {message}",
+    "@onboarding__restoration__failed": {
+      "placeholders": {
+        "message": {
+          "type": "String"
+        }
+      }
+    },
+    "onboarding__restoration_warning": "⚠️ Por favor, mantenha esta tela aberta durante a sincronização para evitar corrupção ou inconsistências de dados.",
+  
+    "@@RESTORE_CLIPS": "Restaurar Clips",
+    "restore_clips__text__title": "Restaurar Meu Clipboard",
+    "restore_clips__error__no_backup": "Nenhum backup de clipboard encontrado",
+    "restore_clips__text__total_count": "Você tem aproximadamente {totalCount} {totalCount, plural, one{clip} other{clips}} para restaurar.",
+    "@restore_clips__text__total_count": {
+      "placeholders": {
+        "totalCount": {
+          "type": "int"
+        }
+      }
+    },
+    "restore_clips__sync_disable": "A sincronização está atualmente desativada. Por favor, habilite-a para continuar.",
+    "restore_clips__preparing": "Preparando para restaurar clips. Por favor, aguarde...",
+    "restore_clips__restored": "Seus {syncCount} {syncCount, plural, one{clip} other{clips}} foram restaurados com sucesso.",
+    "@restore_clips__restored": {
+      "placeholders": {
+        "syncCount": {
+          "type": "int"
+        }
+      }
+    },
+    "restore_clips__restoring": "Restaurado: {synced} de {totalCount} clips.",
+    "@restore_clips__restoring": {
+      "placeholders": {
+        "synced": {
+          "type": "int"
+        },
+        "totalCount": {
+          "type": "int"
+        }
+      }
+    },
+  
+    "@@RESTORE_COLLECTION": "Restaurar Coleções",
+    "restore_collections__text__title": "Restaurar Minhas Coleções",
+    "restore_collections__error__no_backup": "Nenhum backup de coleção encontrado",
+    "restore_collections__text__total_count": "Você tem aproximadamente {totalCount} {totalCount, plural, one{coleção} other{coleções}} para restaurar.",
+    "@restore_collections__text__total_count": {
+      "placeholders": {
+        "totalCount": {
+          "type": "int"
+        }
+      }
+    },
+    "restore_collections__sync_disable": "A sincronização está atualmente desativada. Por favor, habilite-a para continuar.",
+    "restore_collections__preparing": "Preparando para restaurar coleções. Por favor, aguarde...",
+    "restore_collections__restored": "Suas {syncCount} {syncCount, plural, one{coleção} other{coleções}} foram restauradas com sucesso.",
+    "@restore_collections__restored": {
+      "placeholders": {
+        "syncCount": {
+          "type": "int"
+        }
+      }
+    },
+    "restore_collections__restoring": "Restaurado: {synced} de {totalCount} coleções.",
+    "@restore_collections__restoring": {
+      "placeholders": {
+        "synced": {
+          "type": "int"
+        },
+        "totalCount": {
+          "type": "int"
+        }
+      }
+    },
+  
+    "@@DRIVE_SETUP": "Tela de Configuração do Drive",
+    "drive__snackbar__success": "Configuração do Drive Agora Completa.",
+    "drive__text__setting_up": "Configurando e sincronizando...",
+    "drive__text__setting_up__warning": "Por favor, aguarde enquanto finalizamos. Não feche o aplicativo.",
+    "@@CREATE_CLIP_NOTE": "Tela de Criação de Nota de Clip",
+    "create_clip__appbar__title__new": "Novo Clip",
+    "create_clip__appbar__title__edit": "Editar Clip",
+    "create_clip__button__save_new": "Salvar como novo",
+    "create_clip__input__hint": "Escreva o conteúdo do seu clip aqui",
+    "@@COLLECTIONS": "Tela de Coleções",
+    "collections__text__tip": "Para garantir que seus clips importantes estejam sempre disponíveis, independentemente do tempo, em todos os seus dispositivos, salve-os em uma coleção!",
+    "collections__appbar__title": "Coleções",
+    "collections__appbar__title__create": "Criar Coleção",
+    "collections__appbar__title__edit": "Editar Coleção",
+    "collections__input__name": "Nome",
+    "collections__input__description": "Descrição",
+    "@@SELECT_COLLECTION": "Tela de Seleção de Coleção",
+    "select_collection__appbar__title": "Selecionar Coleção",
+    "@@ACCOUNT": "Tela de Conta",
+    "account__dialog__delete_confirm__title": "Solicitação de Exclusão de Conta",
+    "account__dialog__delete_confirm__description": "Você será redirecionado para o formulário de solicitação de exclusão de conta, tem certeza?",
+    "account__list_tile__display_name": "Nome de Exibição",
+    "account__list_tile__email": "E-mail",
+    "account__list_tile__settings": "Configurações da Conta",
+    "account__list_tile__danger_zone": "Zona de Perigo",
+    "account__button__req_delete": "Solicitar Exclusão de Conta",
+    "account__appbar__title": "Minha Conta",
+    "@@SETTINGS": "Tela de Configurações",
+    "settings__appbar__title": "Configurações",
+    "settings__tab__1": "Geral",
+    "settings__tab__2": "Personalização",
+    "settings__tab__3": "Sincronização",
+    "settings__tab__4": "Criptografia",
+    "settings__tab__5": "Experimental",
+    "settings__text__encryption": "Criptografia",
+    "settings__text__sync_not_available": "As configurações relacionadas à sincronização não estão disponíveis ao usar o clipboard local.",
+    "settings__appbar__er__title": "Regras de Exclusão",
+    "settings__text__er__predefine": "Regras de Exclusão Predefinidas",
+    "settings__text__er__pass_manager": "Gerenciadores de Senha",
+    "settings__text__er__cc": "Número do Cartão de Crédito",
+    "settings__text__er__phone": "Número de Telefone",
+    "settings__text__er__email": "Endereço de E-mail",
+    "settings__text__er__url": "Url Sensível",
+    "settings__text__decrypted__note": "🥳 Parabéns! Todos os seus clips foram descriptografados com sucesso localmente,\n portanto, a reconstrução do banco de dados não é necessária.",
+    "settings__appbar__cer__title": "Regras de Exclusão Personalizadas",
+    "settings__switch__drag_n_drop__title": "Arrastar e Soltar",
+    "settings__switch__drag_n_drop__subtitle": "Permitir que os itens sejam movidos livremente em ambas as direções dentro do aplicativo.",
+    "settings__dropdown__no_copy_over_limit__title": "Não Copiar Automaticamente Acima de",
+    "settings__dropdown__no_copy_over_limit__subtitle": "Arquivos e Mídias acima de um determinado tamanho ({fileSize}) não serão copiados automaticamente.",
+    "@settings__dropdown__no_copy_over_limit__subtitle": {
+      "placeholders": {
+        "fileSize": {
+          "type": "String"
+        }
+      }
+    },
+    "settings__text__5MB": "5 MB",
+    "settings__text__10MB": "10 MB",
+    "settings__text__20MB": "20 MB",
+    "settings__text__50MB": "50 MB",
+    "settings__text__100MB": "100 MB",
+    "settings__dropdown__no_upload_over_limit__title": "Não Enviar Automaticamente Acima de",
+    "settings__dropdown__no_upload_over_limit__subtitle": "Arquivos e Mídias acima de um determinado tamanho ({fileSize}) não serão enviados automaticamente.",
+    "@settings__dropdown__no_upload_over_limit__subtitle": {
+      "placeholders": {
+        "fileSize": {
+          "type": "String"
+        }
+      }
+    },
+    "settings__dropdown__sync_mode__title": "Modo de Sincronização",
+    "settings__dropdown__sync_mode__subtitle": "Selecione a velocidade de sincronização que melhor funciona para você.",
+    "settings__sync_mode__realtime": "Tempo Real",
+    "settings__sync_mode__balanced": "Balanceado",
+    "settings__dropdown__theme__title": "Modo de Tema",
+    "settings__theme__system": "Sistema",
+    "settings__theme__light": "Claro",
+    "settings__theme__dark": "Escuro",
+    "settings__dropdown__color_mode__title": "Modo de Cor",
+    "settings__dropdown__color_mode__subtitle": "Selecione o modo de cor para personalizar a aparência do aplicativo. A opção padrão é 'Tonal Spot'.",
+    "settings__color_mode__tonalSpot": "Tonal Spot",
+    "settings__color_mode__content": "Conteúdo",
+    "settings__color_mode__expressive": "Expressivo",
+    "settings__color_mode__fidelity": "Fidelidade",
+    "settings__color_mode__fruit_salad": "Salada de Frutas",
+    "settings__color_mode__monochrome": "Monocromático",
+    "settings__color_mode__neutral": "Neutro",
+    "settings__color_mode__rainbow": "Arco-Íris",
+    "settings__color_mode__vibrant": "Vibrante",
+    "settings__tile__cer_title": "Regras Personalizadas",
+    "settings__tile__cer_subtitle": "Exclua por app, título da janela do app/website, url do website ou padrão de regex",
+    "settings__tile__er_title": "Regras de Exclusão",
+    "settings__tile__er_subtitle": "Impeça que informações sejam copiadas para o clipboard. Clique para Controle Avançado.",
+    "settings__switch__enable_sync__title": "Sincronização do Clipboard",
+    "settings__switch__enable_sync__subtitle": "Sincronize seu clipboard entre os dispositivos sem esforço.",
+    "settings__switch__sync_file__title": "Sincronização de Arquivos e Mídias",
+    "settings__switch__sync_file__subtitle": "Alternar para sincronizar arquivos e clipes de mídia entre dispositivos.",
+    "settings__switch__paused__title": "Pausar Monitoramento do Clipboard",
+    "settings__switch__paused__subtitle": "Pause temporariamente o monitoramento do clipboard até um horário definido.",
+    "settings__switch__paused_active__subtitle": "Pausado até {time}. Toque para retomar ou ajustar o tempo.",
+    "@settings__switch__paused_active__subtitle": {
+      "placeholders": {
+        "time": {
+          "type": "DateTime",
+          "format": "h:mm a",
+          "isCustomDateFormat": true
+        }
+      }
+    },
+    "settings__switch__smart_paste__title": "Colagem Inteligente",
+    "settings__switch__smart_paste__subtitle": "Cole o conteúdo diretamente no aplicativo com foco.",
+    "settings__switch__startup__title": "Lançar na Inicialização",
+    "settings__switch__startup__subtitle": "Inicie automaticamente o CopyCat quando seu dispositivo for ligado.",
+    "settings__switch__hotkey__title": "Alternar com Tecla de Atalho",
+    "settings__switch__hotkey__subtitle": "Use um atalho de teclado para acessar rapidamente o CopyCat Clipboard",
+    "settings__hotkey__unassigned": "Não Atribuído",
+    "settings__hotkey__preview_start": "Pressione ",
+    "settings__hotkey__preview_end": " para mostrar ou ocultar o aplicativo.",
+    "settings__tile__theme_color__title": "Cor do Tema",
+    "settings__tile__theme_color__subtitle": "Essa cor influenciará o visual geral e a sensação do aplicativo.",
+    "settings__tile__desk_client__title": "Baixar Cliente para Desktop",
+    "settings__tile__mobile_client__title": "Baixar Cliente para Celular",
+    "settings__tile__client__subtitle": "Acesse seu clipboard em todos os seus dispositivos.",
+    "settings__tile__e2e_setup__title": "Configuração de Criptografia de Ponta a Ponta",
+    "settings__tile__e2e_setup__subtitle": "Configure a criptografia para seus clips.",
+    "settings__switch__e2e__title": "Ativar Criptografia",
+    "settings__switch__e2e__subtitle": "Mude para ativar ou desativar a criptografia de ponta a ponta para seus clips.",
+    "settings__dialog__conn_gdrive__title": "Reconectar Google Drive?",
+    "settings__dialog__conn_gdrive__subtitle": "Seu Google Drive já está conectado! Deseja reconectar?\n\nPara evitar qualquer perda de dados, certifique-se de usar a mesma conta que antes.",
+    "settings__drive__connected": "Conectado",
+    "settings__drive__loading": "Carregando...",
+    "settings__drive__authorizing": "Autorizando...",
+    "settings__drive__disconnected": "Desconectado",
+    "settings__text__cloud__title": "Drive na Nuvem",
+    "settings__text__cloud__name": "Google Drive",
+    "settings__text__gdrive__error": "O Google Drive não está conectado. A sincronização de arquivos e mídias está atualmente desativada.",
+    "settings__text__gdrive__info": "Seus arquivos e mídias são sincronizados com segurança entre os dispositivos via Google Drive, garantindo que sua privacidade seja protegida.",
+    "settings__tile__other_cloud__title": "Configurar Outros Drives na Nuvem",
+    "settings__tile__other_cloud__subtitle": "Configure outros drives na nuvem como Dropbox, OneDrive, etc.",
+    "@@CUSTOM_EXCLUSION_RULES": "Tela de Regras de Exclusão Personalizadas",
+    "custom_er__nav__1": "App",
+    "custom_er__nav__2": "Título da Janela",
+    "custom_er__nav__3": "Url",
+    "custom_er__nav__4": "Padrão de Texto",
+    "custom_er__text__not_supported": "Esta exclusão ainda não é suportada",
+    "custom_er__tile__add_app": "Adicionar um aplicativo",
+    "custom_er__text__no_app": "Nenhum aplicativo personalizado ainda foi excluído",
+    "custom_er__button__remove_app": "Remover este aplicativo",
+    "custom_er__tile__pattern": "Evitar cópia quando o conteúdo copiado corresponder a esses padrões",
+    "custom_er__text__no_pattern": "Nenhum padrão personalizado (s) excluído",
+    "custom_er__button__remove_pattern": "Remover este padrão",
+    "custom_er__tile__url": "Evitar cópia a partir de website correspondendo a estes segmentos de url.",
+    "custom_er__input__url_hint": "Digite uma url ou parte de uma url aqui.",
+    "custom_er__text__no_url": "Nenhuma url personalizada(s) excluída",
+    "custom_er__button__remove_url": "Remover esta url",
+    "custom_er__tile__title": "Evitar cópia de app ou website quando o título da janela corresponder.",
+    "custom_er__text__no_title": "Nenhum título personalizado(s) excluído",
+    "custom_er__button__remove_title": "Remover este título",
+
+    "@@ABOUT": "Sobre o diálogo do aplicativo",
+    "about__tile__discord": "Discord • Conectar",
+    "about__tile__youtube": "YouTube • Tutorial",
+    "about__tile__read_tut": "Ler • Tutorial",
+    "about__tile__github": "Github • Código aberto",
+    "about__tile__website": "EntilityStudio • Site",
+    "about__tile__support": "Suporte",
+
+    "@@ANDROID_BACKGROUND_CLIPBOARD": "Papel de parede de fundo Android",
+    "abc_title": "Papel de parede de fundo",
+    "abc__tile__subtitle": "Ouça o papel de parede em segundo plano",
+
+    "abc__tip__why_title": "Por que essas permissões são necessárias?",
+    "abc__tip__why_subtitle": "Essas permissões garantem que o CopyCat funcione corretamente em segundo plano, permitindo detectar conteúdo copiado e fornecer uma experiência contínua sem interrupções.",
+
+    "abc__tip__support_title": "Suporte limitado",
+    "abc__tip__support_subtitle": "1. Atualmente, apenas clipes de texto são suportados.\n2. Alguns sistemas operacionais, como o HyperOS 1, ainda não são compatíveis.",
+
+    "abc__heading__req_perm": "Permissões necessárias",
+
+    "abc__tile__notification_title": "Acesso à notificação",
+    "abc__tile__notification_subtitle": "Exibe uma notificação persistente para informar que o CopyCat está em execução em segundo plano, garantindo transparência e privacidade.",
+
+    "abc__tile__battery_opt_title": "Otimização de bateria",
+    "abc__tile__battery_opt_subtitle": "Evita que o sistema desligue o CopyCat enquanto ele está em segundo plano, garantindo uma experiência contínua.",
+
+    "abc__tile__overlay_title": "Permissão de sobreposição",
+    "abc__tile__overlay_subtitle": "Permite que o CopyCat leia a área de transferência abrindo brevemente uma janela transparente sobre a tela e a fechando imediatamente depois.",
+
+    "abc__tile__acc_title": "Serviço de acessibilidade",
+    "abc__tile__acc_subtitle": "Inicia o ouvinte em segundo plano do CopyCat para detectar quando você copiar algo e garante que o serviço seja reiniciado automaticamente após uma reinicialização.",
+
+    "abc__ack__ready": "Configuração pronta para ser configurada.",
+    "abc__ack__preparing": "Preparando configuração, aguarde...",
+
+    "abc__perm_alert_open_setting__button": "Abrir configurações",
+
+  "abc__overlay_perm_alert__title": "Permissão de sobreposição",
+  "abc__overlay_perm_alert__subtitle": "O CopyCat Clipboard precisa da permissão 'Desenhar sobre outros aplicativos' para ler o conteúdo da área de transferência em segundo plano.",
+  "abc__overlay_perm_alert__p1_prefix": "Esta permissão é ",
+  "abc__overlay_perm_alert__p1_bold": "usada apenas para detecção da área de transferência",
+  "abc__overlay_perm_alert__p1_suffix": " quando você copia algo em segundo plano.",
+  "abc__overlay_perm_alert__p2_prefix": "Quando habilitado, o CopyCat ",
+  "abc__overlay_perm_alert__p2_bold": "cria uma janela transparente de 0 pixels",
+  "abc__overlay_perm_alert__p2_suffix": " para brevemente trazer o aplicativo para o primeiro plano e ler os dados da área de transferência.",
+  "abc__overlay_perm_alert__p3_prefix": "O aplicativo ",
+  "abc__overlay_perm_alert__p3_bold": "não mostra nada",
+  "abc__overlay_perm_alert__p3_suffix": " na sua tela durante este processo.",
+  "abc__overlay_perm_alert__p4_prefix": "Em alguns dispositivos, o sistema pode mostrar uma mensagem rápida ",
+  "abc__overlay_perm_alert__p4_bold": "'CopyCat colou da sua área de transferência'",
+  "abc__overlay_perm_alert__p4_suffix": " quando o CopyCat lê o conteúdo da sua área de transferência.",
+  "abc__overlay_perm_alert__agree": "Ao conceder esta permissão, você concorda com o uso descrito acima.",
+
+  "abc__accessibility_perm_alert__title": "Permissão de acessibilidade",
+  "abc__accessibility_perm_alert__subtitle": "O CopyCat Clipboard requer o Serviço de Acessibilidade para funcionar em segundo plano e detectar e sincronizar a área de transferência em tempo real.",
+  "abc__accessibility_perm_alert__p1_prefix": "Este serviço é ",
+  "abc__accessibility_perm_alert__p1_bold": "usado apenas",
+  "abc__accessibility_perm_alert__p1_suffix": " para detectar o conteúdo da área de transferência e sincronizá-lo entre dispositivos quando habilitado.",
+  "abc__accessibility_perm_alert__p2_prefix": "Você pode ",
+  "abc__accessibility_perm_alert__p2_bold": "excluir aplicativos específicos",
+  "abc__accessibility_perm_alert__p2_suffix": " usando o recurso de Regras de Exclusão.",
+  "abc__accessibility_perm_alert__p3_prefix": "O aplicativo ",
+  "abc__accessibility_perm_alert__p3_bold": "não acessa nenhum outro dado",
+  "abc__accessibility_perm_alert__p3_suffix": " além do conteúdo da área de transferência.",
+  "abc__accessibility_perm_alert__p4_prefix": "Os dados da área de transferência ",
+  "abc__accessibility_perm_alert__p4_bold": "não são compartilhados externamente",
+  "abc__accessibility_perm_alert__p4_suffix": " e permanecem privados nos seus dispositivos.",
+  "abc__accessibility_perm_alert__p5_prefix": "Os dados da área de transferência ",
+  "abc__accessibility_perm_alert__p5_bold": "são criptografados de ponta a ponta",
+  "abc__accessibility_perm_alert__p5_suffix": " (se habilitado) em trânsito e em repouso, garantindo a privacidade entre dispositivos.",
+  "abc__accessibility_perm_alert__agree": "Ao habilitar o Serviço de Acessibilidade, você reconhece e concorda com os termos acima.",
+
+  "abc__other_setting__title": "Outras configurações",
+  "abc__enhanced_clip_detection__title": "Detecção aprimorada da área de transferência",
+  "abc__enhanced_clip_detection__subtitle": "Ative esta opção para uma detecção mais precisa da área de transferência. Note que ela pode não funcionar em todos os dispositivos."
+
+}

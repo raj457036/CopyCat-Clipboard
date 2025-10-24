@@ -1,9 +1,9 @@
 // TODO(raj): replace with a better ux
 
 // import 'package:clipboard/widgets/dialogs/attention.dart';
-// import 'package:copycat_base/constants/widget_styles.dart';
-// import 'package:copycat_base/l10n/l10n.dart';
-// import 'package:copycat_base/utils/common_extension.dart';
+// import 'package:clipboard/base/constants/widget_styles.dart';
+// import 'package:clipboard/base/l10n/l10n.dart';
+// import 'package:clipboard/base/utils/common_extension.dart';
 // import 'package:flutter/material.dart';
 
 // class AttentionButton extends StatelessWidget {

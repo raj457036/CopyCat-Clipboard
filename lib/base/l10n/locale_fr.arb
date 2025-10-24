@@ -1,0 +1,662 @@
+{
+  "@@locale": "fr",
+  "@@format": "<App/Feature>__<Section/Component>__<Context>[__<Variant>",
+  "@@APP": "Shared locales throughout the app.",
+  "app__name": "Presse-papiers CopyCat",
+  "@app__name": {
+    "description": "Nom de l'application : Presse-papiers CopyCat"
+  },
+  "app__slogan": "Un presse-papiers, des possibilités illimitées",
+  "@app__slogan": {
+    "description": "Slogan du Presse-papiers CopyCat"
+  },
+  "app__unknown_error": "Une erreur inattendue est survenue",
+  "app__downloading": "Téléchargement...",
+  "app__download": "Télécharger",
+  "app__follow_link": "Suivre le lien",
+  "app__edit": "Modifier",
+  "app__export": "Exporter",
+  "app__delete": "Supprimer",
+  "app__later": "Passer",
+  "app__select": "Sélectionner",
+  "app__change": "Changer",
+  "app__confirm": "Confirmer",
+  "app__action_required": "Action requise",
+  "app__feature_unavailable": "Cette fonctionnalité n'est pas disponible pour votre plateforme.",
+  "app__preview": "Aperçu",
+  "app__open_file": "Ouvrir le fichier",
+  "app__change_collection": "Changer de collection",
+  "app__share": "Partager",
+  "app__uploading": "Téléversement...",
+  "app__syncing": "Synchronisation...",
+  "app__sync": "Synchroniser",
+  "app__local": "Local",
+  "app__send_message": "Envoyer un message",
+  "app__send_email": "Envoyer un e-mail",
+  "app__empty_clipboard": "Votre presse-papiers est vide.",
+  "app__load_more": "Charger plus",
+  "app__locale_en": "Anglais",
+  "app__locale_es": "Espagnol",
+  "app__locale_fr": "Français",
+  "app__locale_de": "Allemand",
+  "app__locale_zh": "Chinois",
+  "app__locale_pt": "Portugais",
+  "app__language": "Langue",
+  "app__logout": "Déconnexion",
+  "app__no_collection": "Aucune collection trouvée",
+  "app__create_collection": "Créer une collection",
+  "app__pro_tip": "Conseil pro",
+  "app__try_again": "Essayer à nouveau",
+  "app__realtime_connected": "Connecté en temps réel",
+  "app__realtime_disconnected": "Déconnecté en temps réel",
+  "app__realtime_connecting": "Connexion en temps réel...",
+  "app__ack__exported": "Exporté",
+  "app__ack__copied": "Copié",
+  "app__ack__pasted": "Collé",
+  "app__ack__pasting": "Collage",
+  "app__ack__done": "Terminé",
+  "app__ack__quit_app": "Quitter l'application",
+  "app__ack__deleted": "Supprimé",
+  "app__ack__deleting": "Suppression",
+  "app__ack__internet_connected": "Internet connecté",
+  "app__ack__internet_disconnected": "Internet déconnecté",
+  "app__ack__logout_success": "Vous vous êtes déconnecté avec succès.",
+  "app__ack__missing_e2e_setup": "Configuration du chiffrement manquante",
+  "app__ack__no_app_for_file": "Aucune application trouvée pour ouvrir ce fichier.",
+  "app__ack__perm_fail_to_open_file": "Autorisation pour ouvrir ce fichier non accordée.",
+  "@@DIALOG": "Dialogue commun",
+  "dialog__delete_clip__title": "Supprimer le clip",
+  "dialog__delete_clip__subtitle": "{itemCount, plural, one{Êtes-vous sûr de vouloir supprimer ce clip ?} other{Êtes-vous sûr de vouloir supprimer ces clips ?}}",
+  "@dialog__delete_clip__subtitle": {
+    "placeholders": {
+      "itemCount": {
+        "type": "int"
+      }
+    }
+  },
+  "dialog__e2e__title": "Chiffrement de bout en bout",
+  "dialog__text__e2e_key_export": "Félicitations, vous avez configuré avec succès le chiffrement de bout en bout.",
+  "dialog__text__e2e_key_export__note": "Cliquez sur le bouton ci-dessous pour exporter votre clé de chiffrement.\nEnregistrez la clé dans un endroit sûr pour vous assurer de pouvoir configurer d'autres appareils pour accéder à vos informations chiffrées.",
+  "dialog__text__e2e_key_generate": "Générez une clé de chiffrement et stockez-la en toute sécurité. Cette clé est nécessaire pour configurer d'autres appareils pour accéder à vos données chiffrées.",
+  "dialog__button__e2e_generating_key": "Génération",
+  "dialog__button__e2e_generate_key": "Généré",
+  "dialog__text__invalid_e2e_key": "La clé importée est invalide !",
+  "dialog__text__e2e_key_import__note": "Importez votre clé de chiffrement ci-dessous pour accéder à vos données chiffrées sur cet appareil.",
+  "dialog__button__e2e_importing_key": "Importation",
+  "dialog__button__e2e_import_key": "Importer",
+
+  "dialog__text__inconsistent_time__title": "Avertissement de synchronisation temporelle",
+  "dialog__text__inconsistent_time__content": "Heure de l'appareil incohérente détectée\n\nPour assurer une synchronisation précise du presse-papiers, veuillez vérifier et corriger les paramètres de l'heure de votre appareil.\n\nDes paramètres de temps incohérents peuvent entraîner des problèmes de synchronisation.",
+  "dialog__button__try_again": "Vérifier à nouveau",
+
+  "dialog__record_keys__title": "Enregistrer le raccourci clavier",
+  "dialog__record_keys__subtitle": "Tapez votre raccourci en utilisant votre clavier et cliquez sur ",
+  "dialog__delete_collection__title": "Supprimer {collectionName}",
+  "@dialog__delete_collection__title": {
+    "placeholders": {
+      "collectionName": {
+        "type": "String"
+      }
+    }
+  },
+  "dialog__delete_collection__subtitle": "Êtes-vous sûr de vouloir supprimer cette collection ?",
+
+  "@@APPLY_DIALOG": "Dialogue d'application de coupon",
+  "dialog__ack__sub_updated": "Abonnement mis à jour",
+  "dialog__grant_entitlement__title": "Droit accordé",
+  "dialog__grant_entitlement__subtitle_p1": "Les codes de droit accordés sont partagés avec des personnes spécifiques pour des droits personnalisés. Vous pouvez vérifier si des invitations sont encore disponibles en ",
+  "dialog__grant_entitlement__subtitle_p2": "cliquant ici.",
+  "dialog__grant_entitlement__enter_code": "Saisissez le code et appuyez sur Soumettre",
+  "dialog__grant_entitlement__apply_code": "Appliquer",
+
+  "@@VIEW_BUTTONS": "Boutons de vue de mise en page",
+  "view_button__switch_to_grid": "Passer à la disposition en grille",
+  "view_button__switch_to_list": "Passer à la disposition en liste",
+  "view_button__change_view": "Changer de vue",
+  "view_button__view_window": "Fenêtré",
+  "view_button__view_dock_right": "Ancrer à droite",
+  "view_button__view_dock_bottom": "Ancrer en bas",
+  "view_button__view_dock_left": "Ancrer à gauche",
+  "view_button__view_dock_top": "Ancrer en haut",
+  "view_button__pin": "Épingler en haut",
+  "view_button__unpin": "Désépingler",
+
+  "@@SUBSCRIPTION_DIALOG": "Dialogue de détail de l'abonnement",
+  "sub_dialog__text__included": "Inclus",
+  "sub_dialog__f1__title": "Éléments de presse-papiers illimités",
+  "sub_dialog__f1__subtitle": "Ne manquez jamais d'espace avec des éléments de presse-papiers illimités, en vous assurant d'avoir toujours accès à vos copies les plus récentes.",
+  "sub_dialog__f2__title": "Prise en charge de toutes les principales plateformes",
+  "sub_dialog__f2__subtitle": "Synchronisez sans effort sur toutes les principales plateformes — Android, iOS, Windows, macOS et Linux — pour une productivité ininterrompue partout.",
+  "sub_dialog__f3__title": "Prend en charge le Presse-papiers Universel d'Apple",
+  "sub_dialog__f3__subtitle": "Transférez sans effort le contenu du presse-papiers entre vos appareils Apple avec la prise en charge du Presse-papiers Universel d'Apple.",
+  "sub_dialog__f4__title": "Stockage sur l'appareil",
+  "sub_dialog__f4__subtitle": "Gardez vos données en sécurité avec le stockage sur l'appareil, vous assurant que vos éléments de presse-papiers sont toujours à portée de main et sous votre contrôle.",
+  "sub_dialog__f5__title": "Intégration avec Google Drive",
+  "sub_dialog__f5__subtitle": "Stockez en toute sécurité fichiers et médias sur Google Drive, en s'intégrant parfaitement avec le Presse-papiers CopyCat pour une meilleure gestion des données.",
+  "sub_dialog__f6__title": "Recherche instantanée",
+  "sub_dialog__f6__subtitle": "Trouvez ce dont vous avez besoin instantanément avec de puissantes capacités de recherche instantanée, rendant la récupération des éléments de presse-papiers rapide et efficace.",
+  "sub_dialog__f7__title": "Synchronisation jusqu'aux dernières 24 heures",
+  "sub_dialog__f7__subtitle": "Accédez à votre historique de presse-papiers et synchronisez-le sur tous vos appareils pour les dernières 24 heures. Cela vous assure de ne jamais perdre d'éléments copiés importants, rendant votre flux de travail fluide et efficace.",
+  "sub_dialog__f8__title": "Jusqu'à 3 collections",
+  "sub_dialog__f8__subtitle": "Organisez vos éléments de presse-papiers en jusqu'à 3 collections, fournissant une catégorisation simple pour une meilleure gestion du flux de travail.",
+  "sub_dialog__f9__title": "Synchronisation automatique toutes les 45 secondes",
+  "sub_dialog__f9__subtitle": "Profitez de la synchronisation automatique des éléments de presse-papiers toutes les 45 secondes, gardant vos appareils à jour sans intervention manuelle.",
+  "sub_dialog__f10__title": "Prise en charge du chiffrement de bout en bout",
+  "sub_dialog__f10__subtitle": "Le chiffrement de bout en bout rend tout crypté pour une confidentialité supérieure.",
+
+  "sub_dialog__text__pro_title": "Avec PRO ✨",
+  "sub_dialog__text__pro_subtitle": "Tout inclus dans Gratuit +",
+  "sub_dialog__f11__title": "Jusqu'à 50 collections",
+  "sub_dialog__f11__subtitle": "Organisez vos éléments de presse-papiers en jusqu'à 50 collections pour une gestion ultime.",
+  "sub_dialog__f12__title": "Synchronisation jusqu'aux derniers 30 jours",
+  "sub_dialog__f12__subtitle": "L'historique des presse-papiers est synchronisé sur tous vos appareils pour les clips créés au cours des 30 derniers jours. Cela signifie que vous pouvez accéder à tout clip que vous avez copié au cours du dernier mois, quel que soit l'appareil que vous utilisez.",
+  "sub_dialog__f13__title": "Synchronisation en temps réel",
+  "sub_dialog__f13__subtitle": "Bénéficiez d'une synchronisation à la vitesse de l'éclair.",
+  "sub_dialog__f14__title": "Support rapide et prioritaire",
+  "sub_dialog__f14__subtitle": "Obtenez un support rapide et prioritaire en tant qu'utilisateur PRO.",
+  "sub_dialog__f15__title": "Accès anticipé aux nouvelles fonctionnalités",
+  "sub_dialog__f15__subtitle": "Soyez le premier à essayer de nouvelles fonctionnalités et mises à jour.",
+  "sub_dialog__f16__title": "Règles d'exclusion personnalisées",
+  "sub_dialog__f16__subtitle": "Contrôle précis de votre presse-papiers. Vous permet de définir quoi copier, d'où copier et quand copier.",
+  "sub_dialog__f17__title": "Glisser-déposer",
+  "sub_dialog__f17__subtitle": "Déplacez sans effort les éléments dans toutes les directions sur vos appareils de bureau et tablettes.",
+  "sub_dialog__f18__title": "Thématisation",
+  "sub_dialog__f18__subtitle": "Personnalisez l'apparence et la convivialité de l'application selon vos préférences.",
+  "paywall_dialog__text__month": "mois",
+  "paywall_dialog__text__year": "année",
+  "paywall_dialog__text__subscription": "Abonnement",
+  "paywall_dialog__text__supported_platform": "Pour accéder aux fonctionnalités premium sur le Presse-papiers Copycat, veuillez vous abonner via le Play Store ou l'App Store d'Apple. Votre abonnement sera synchronisé sur tous vos appareils, y compris Linux et Windows.",
+  "paywall_dialog__text__unlock_pro": "Débloquer CopyCat PRO",
+  "paywall_dialog__text__unlock_pro_p1": "Profitez de plus de 30 jours d'historique synchronisé, plus de 50 collections, du chiffrement de bout en bout, de la synchronisation en temps réel, de l'accès aux nouvelles fonctionnalités, et bien plus encore.",
+  "paywall_dialog__text__try_again": "Veuillez réessayer",
+  "paywall_dialog__text__current_plan": "Plan actuel",
+  "paywall_dialog__text__expired_plan": "Plan actuel • Expiré",
+  "paywall_dialog__text__trial_till": "Essai jusqu'à {till}",
+  "@paywall_dialog__text__trial_till": {
+      "placeholders": {
+          "till": {
+              "type": "DateTime",
+              "format": "yMMMd"
+          }
+      }
+  },
+  "paywall_dialog__text__upgrade": "Mise à niveau",
+
+  "@@FAB": "Bouton d'action flottant",
+  "fab__create_collection": "Créer une collection ( {remaining} restant )",
+  "@fab__create_collection": {
+    "placeholders": {
+      "remaining": {
+        "type": "String"
+      }
+    }
+  },
+
+  "fab__sync": "Synchroniser",
+  "fab__sync_unavailable": "Synchronisation indisponible",
+  "fab__sync_up_to_date": "Déjà à jour.",
+  "fab__sync_failed": "Échec de la synchronisation : {message}",
+  "@fab__sync_failed": {
+      "placeholders": {
+          "message": {
+              "type": "String"
+          }
+      }
+  },
+
+  "@@LAYOUT": "Widgets de mise en page",
+  "layout__navbar__clipboard": "Presse-papiers",
+  "layout__navbar__collections": "Collections",
+  "layout__navbar__settings": "Paramètres",
+
+  "@@WIDGETS": "Widgets personnalisés",
+  "search__tooltip__filter": "Filtres de recherche",
+  "manage_sub__ack__promo_sub": "Vous utilisez un abonnement promotionnel jusqu'à {till}",
+  "@manage_sub__ack__promo_sub": {
+      "placeholders": {
+          "till": {
+              "type": "String"
+          }
+      }
+  },
+  "manage_sub__button__text": "Gérer les abonnements",
+
+  "my_account__button__tooltip": "Mon Compte",
+  "badges__tooltip__experimental": "Cette fonctionnalité est expérimentale et peut ne pas fonctionner comme prévu.",
+  "badges__tooltip__pro_only": "Cette fonctionnalité est disponible uniquement pour les utilisateurs Pro.",
+
+  "collection_selector__tile__no_collection": "Aucune collection",
+  "collection_selector__button__remove_collection": "Supprimer la collection",
+
+  "dialog__logout__title": "Déconnexion",
+  "dialog__logout__subtitle": "⚠️ AVERTISSEMENT ⚠️\n\nLa déconnexion supprimera les modifications non synchronisées dans la base de données locale. Êtes-vous sûr de vouloir continuer?",
+  "dialog__logging_out__ack": "Déconnexion en cours! Veuillez patienter...",
+
+  "reset_pass__text__label": "Réinitialiser votre mot de passe",
+
+  "dnd__text__drop_here": "Déposez ici",
+  "dnd__ack__error_max_drop_count": "Un maximum de {count} éléments déposés est autorisé en une seule fois.",
+  "@dnd__ack__error_max_drop_count": {
+      "placeholders": {
+          "count": {
+              "type": "int"
+          }
+      }
+  },
+
+  "@@SEARCH_FILTER_DIALOG": "Dialogue de filtre de recherche",
+  "search_filter__text__title": "Filtres",
+  "search_filter__button__apply": "Appliquer",
+  "search_filter__text__from": "De",
+  "search_filter__text__select": "Sélectionner",
+  "search_filter__text__to": "À",
+  "search_filter__text__now": "Maintenant",
+  "search_filter__text__including": "Incluant",
+  "search_filter__chip__text": "Texte",
+  "search_filter__chip__url": "URL",
+  "search_filter__chip__media": "Médias",
+  "search_filter__chip__docs": "Docs",
+  "search_filter__text__textCategories": "Catégories de texte",
+  "search_filter__text__exclusive": "( Exclusif )",
+  "search_filter__text_cat__email": "E-mail",
+  "search_filter__text_cat__phone": "Téléphone",
+  "search_filter__text_cat__color": "Couleur",
+  "search_filter__text__sort_by": "Trier par",
+  "search_filter__sort_by__last_mod": "Dernière modification",
+  "search_filter__sort_by__created": "Créé",
+  "search_filter__sort_by__copy_count": "Nombre de copies",
+  "search_filter__sort_by__last_copied": "Dernier copié",
+  "search_filter__text__sort_order": "Ordre de tri",
+  "search_filter__sort_ord__asc": "Asc",
+  "search_filter__sort_ord__desc": "Desc",
+
+  "@@LOGIN": "Écran de connexion",
+  "login__local_signin__tooltip": "Pas de synchronisation. Toutes les données restent sur votre appareil.",
+  "login__local_signin__btn__label": "Utiliser localement",
+  "login__form__input__name": "Entrez votre bon nom",
+  "login__form__input__email": "Entrez votre e-mail",
+  "login__form__input__error_email": "Veuillez entrer une adresse e-mail valide",
+  "login__form__input__password": "Entrez votre mot de passe",
+  "login__form__input__error_password_length": "Veuillez entrer un mot de passe d'au moins 6 caractères de long",
+  "login__form__button__signin": "Se connecter",
+  "login__form__button__signup": "S'inscrire",
+  "login__form__button__forgot_password": "Mot de passe oublié?",
+  "login__form__text__signup": "Vous n'avez pas de compte? S'inscrire",
+  "login__form__text__old_user": "Vous avez déjà un compte? Se connecter",
+  "login__form__text__reset_password": "Envoyer un e-mail de réinitialisation de mot de passe",
+  "login__form__text__reset_ack": "Le courriel de réinitialisation de mot de passe a été envoyé",
+  "login__form__button__back": "Retour à la connexion",
+  "login__form__button__update_password": "Mettre à jour le mot de passe",
+  "login__form__text_tnc_p1": "En continuant, vous acceptez les ",
+  "login__form__text_tnc_p2": "politiques de confidentialité",
+  "login__form__text_tnc_p3": " suivantes et ",
+  "login__form__text_tnc_p4": "les conditions d'utilisation.",
+  "@@HOME": "Écran d'accueil",
+  "home__search__hint": "Rechercher dans le presse-papiers",
+  "home__search__reset": "Réinitialiser la recherche",
+  "@@PREVIEW": "Écran d'aperçu",
+  "preview__vert_view__tab1_title": "Aperçu",
+  "preview__vert_view__tab2__title": "Détails",
+  "preview__card__missing_text": "C'est un clip vide",
+  "preview__card__video__play": "Lire la vidéo",
+  "preview__card__file__open": "Ouvrir le fichier",
+  "preview__form__title": "Modifier les détails",
+  "preview__form__input__title": "Titre",
+  "preview__form__input__description": "Description",
+  "@@RESET_PASSWORD": "Écran de réinitialisation du mot de passe",
+  "reset_password__appbar__title": "Réinitialiser votre mot de passe",
+  "reset_password__success_ack": "Mot de passe réinitialisé avec succès",
+  "@@ON_BOARDING": "Écran d'accueil",
+  "onboarding__text__welcome": "Bienvenue à",
+  "onboarding__text__lets_continue": "Continuons",
+
+  "onboarding__button__to_login": "Se connecter",
+  "onboarding__snackbar__export_success": "Clé de chiffrement exportée avec succès.",
+  "onboarding__dialog__skip_export__title": "✋ Sauvegardez votre clé de chiffrement",
+  "onboarding__dialog__skip_export__subtitle": "Vous n'avez pas encore exporté votre clé de chiffrement. Sans sauvegarde, vous ne pourrez pas accéder à vos clips chiffrés si la clé est perdue ou si vous changez d'appareil.\n\n👉 Si vous avez déjà une sauvegarde sécurisée de votre clé, vous pouvez continuer en toute sécurité. Sinon, nous vous recommandons fortement d'exporter la clé maintenant pour éviter toute perte de données. Voulez-vous toujours continuer ?",
+  "onboarding__dialog__export_info__title": "🤔 Pourquoi exporter la clé de chiffrement ?",
+  "onboarding__dialog__export_info__subtitle": "Exporter votre clé de chiffrement est essentiel pour accéder en toute sécurité à vos données chiffrées sur plusieurs appareils. Sans la clé, vos données chiffrées resteront inaccessibles après la synchronisation.\n\nGardez une sauvegarde de votre clé de chiffrement dans un endroit sûr pour éviter la perte de données. Souvenez-vous, la clé est unique à votre compte et ne peut être récupérée si elle est perdue.\n\nRemarque : Copycat ne peut pas accéder à vos clips chiffrés ni à vos clés de chiffrement. Cela est dû au fait que nous valorisons votre confidentialité au-dessus de tout.",
+  "onboarding__text__export_key_headline": "Chiffrement du presse-papiers",
+  "onboarding__text__export_key_title": "💪 Bonne nouvelle ! Le chiffrement est actif pour votre presse-papiers",
+  "onboarding__button__export_key": "Exporter la clé",
+  "onboarding__dialog__skip_gen_key__title": "✋ Vos clips seront non sécurisés",
+  "onboarding__dialog__skip_gen_key__subtitle": "Vous n'avez pas encore généré de clé de chiffrement. Sans cela, vos clips resteront non chiffrés et non sécurisés. Vous pouvez générer la clé plus tard dans Paramètres ❯ Sécurité. Voulez-vous toujours continuer ?",
+  "onboarding__dialog__gen_key_info__title": "🤔 Pourquoi ai-je besoin du chiffrement ?",
+  "onboarding__dialog__gen_key_info__subtitle": "Le chiffrement protège vos données en les convertissant en un format sécurisé qui ne peut être accédé qu'avec une clé. Sans chiffrement, vos clips sont stockés en texte brut, les rendant vulnérables à un accès non autorisé. Activer le chiffrement garantit que vous seul pouvez accéder à vos données sensibles, fournissant une couche supplémentaire de sécurité contre les violations potentielles.",
+  "onboarding__text__gen_key_headline": "Configurer le chiffrement du presse-papiers",
+  "onboarding__text__key_generated_title": "🎉 Clé {keyPreview}*** générée avec succès 🎉",
+  "@onboarding__text__key_generated_title": {
+    "placeholders": {
+      "keyPreview": {
+        "type": "String"
+      }
+    }
+  },
+  "onboarding__button__regenerate_key": "Régénérer la clé",
+  "onboarding__text__no_key": "Votre compte n'a pas de clé de chiffrement",
+  "onboarding__button__generate_key": "Générer la clé",
+  "onboarding__button__do_it_later": "Le faire plus tard",
+  "onboarding__button__why_important": "Pourquoi c'est important ?",
+  "onboarding__snackbar__invalid_key": "Ceci n'est pas une clé de chiffrement CopyCat valide",
+  "onboarding__dialog__skip_import__title": "✋ Clips chiffrés inaccessibles",
+  "onboarding__dialog__skip_import__subtitle": "Vous n'avez pas encore importé la clé de chiffrement. Cela signifie que tous vos clips chiffrés resteront inaccessibles localement après la synchronisation.\n\n Pour y accéder, importez la clé à partir de Paramètres ❯ Sécurité.\nVoulez-vous toujours continuer ?",
+  "onboarding__dialog__reset_key__title": "✋ Supprimer définitivement les données chiffrées",
+  "onboarding__dialog__reset_key__subtitle": "Cette action est irréversible. Êtes-vous sûr de vouloir supprimer définitivement toutes les données chiffrées du serveur ?",
+  "onboarding__snackbar__reset_key__success": "Chiffrement supprimé avec succès.",
+  "onboarding__dialog__import_info__title": "🤔 Où est ma clé ?",
+  "onboarding__dialog__import_info__subtitle": "Votre clé de chiffrement est un fichier sécurisé généré lors du processus de configuration du chiffrement. Si vous l'avez égarée, vérifiez votre dossier de téléchargements ou tout emplacement de sauvegarde où vous auriez pu la sauvegarder. Sans cette clé, vos données chiffrées ne peuvent être accessibles.\n\nSi vous avez configuré la clé de chiffrement sur un autre appareil, vous pouvez l'exporter en allant dans Paramètres ❯ Sécurité ❯ E2EE Vault sur cet appareil. Transférez la clé en toute sécurité vers cet appareil pour reprendre l'accès à vos données chiffrées.",
+  "onboarding__text__import_key_headline": "Importer la clé de chiffrement du presse-papiers",
+  "onboarding__text__import_key_title": "Votre compte a actuellement un chiffrement actif.",
+  "onboarding__button__import_key": "Importer la clé",
+  "onboarding__button__reset_key": "Réinitialiser le chiffrement",
+  "onboarding__button__where_key": "Où est la clé?",
+  "onboarding__text__go_home": "Allons à la maison",
+  "onboarding__restoration__failed": "Échec de la restauration : {message}",
+  "@onboarding__restoration__failed": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "onboarding__restoration_warning": "⚠️ Veuillez garder cet écran ouvert pendant la synchronisation pour éviter la corruption des données ou des incohérences.",
+  "@@RESTORE_CLIPS": "Restaurer les Clips",
+  "restore_clips__text__title": "Restaurer mon presse-papiers",
+  "restore_clips__error__no_backup": "Aucune sauvegarde du presse-papiers trouvée",
+  "restore_clips__text__total_count": "Vous avez environ {totalCount} clip(s) à restaurer.",
+  "@restore_clips__text__total_count": {
+    "placeholders": {
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_clips__sync_disable": "La synchronisation est actuellement désactivée. Veuillez l'activer pour continuer.",
+  "restore_clips__preparing": "Préparation de la restauration des clips. Veuillez patienter...",
+  "restore_clips__restored": "Vos {syncCount} clip(s) ont été restaurés avec succès.",
+  "@restore_clips__restored": {
+    "placeholders": {
+      "syncCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_clips__restoring": "Restauré : {synced} de {totalCount} clips.",
+  "@restore_clips__restoring": {
+    "placeholders": {
+      "synced": {
+        "type": "int"
+      },
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "@@RESTORE_COLLECTION": "Restaurer les Collections",
+  "restore_collections__text__title": "Restaurer mes collections",
+  "restore_collections__error__no_backup": "Aucune sauvegarde de collections trouvée",
+  "restore_collections__text__total_count": "Vous avez environ {totalCount} collection(s) à restaurer.",
+  "@restore_collections__text__total_count": {
+    "placeholders": {
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_collections__sync_disable": "La synchronisation est actuellement désactivée. Veuillez l'activer pour continuer.",
+  "restore_collections__preparing": "Préparation de la restauration des collections. Veuillez patienter...",
+  "restore_collections__restored": "Vos {syncCount} collection(s) ont été restaurées avec succès.",
+  "@restore_collections__restored": {
+    "placeholders": {
+      "syncCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_collections__restoring": "Restauré : {synced} de {totalCount} collections.",
+  "@restore_collections__restoring": {
+    "placeholders": {
+      "synced": {
+        "type": "int"
+      },
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "@@DRIVE_SETUP": "Écran de configuration du lecteur",
+  "drive__snackbar__success": "La configuration du lecteur est maintenant terminée.",
+  "drive__text__setting_up": "Configuration et synchronisation...",
+  "drive__text__setting_up__warning": "Veuillez patienter pendant que nous terminons cela. Ne fermez pas l'application.",
+  "@@CREATE_CLIP_NOTE": "Écran de création d'une note de clip",
+  "create_clip__appbar__title__new": "Nouveau Clip",
+  "create_clip__appbar__title__edit": "Modifier le Clip",
+  "create_clip__button__save_new": "Enregistrer comme nouveau",
+  "create_clip__input__hint": "Écrivez le contenu de votre clip ici",
+  "@@COLLECTIONS": "Écran des collections",
+  "collections__text__tip": "Pour vous assurer que vos clips importants sont toujours disponibles, quel que soit le moment, sur tous vos appareils, enregistrez-les dans une collection !",
+  "collections__appbar__title": "Collections",
+  "collections__appbar__title__create": "Créer une collection",
+  "collections__appbar__title__edit": "Modifier la collection",
+  "collections__input__name": "Nom",
+  "collections__input__description": "Description",
+  "@@SELECT_COLLECTION": "Écran de sélection de la collection",
+  "select_collection__appbar__title": "Sélectionner la collection",
+  "@@ACCOUNT": "Écran de compte",
+  "account__dialog__delete_confirm__title": "Demande de suppression de compte",
+  "account__dialog__delete_confirm__description": "Vous serez redirigé vers le formulaire de demande de suppression de compte, êtes-vous sûr ?",
+  "account__list_tile__display_name": "Nom d'affichage",
+  "account__list_tile__email": "E-mail",
+  "account__list_tile__settings": "Paramètres du compte",
+  "account__list_tile__danger_zone": "Zone dangereuse",
+  "account__button__req_delete": "Demander la suppression du compte",
+  "account__appbar__title": "Mon Compte",
+  "@@SETTINGS": "Écran de paramètres",
+  "settings__appbar__title": "Paramètres",
+  "settings__tab__1": "Général",
+  "settings__tab__2": "Personnalisation",
+  "settings__tab__3": "Synchronisation",
+  "settings__tab__4": "Chiffrement",
+  "settings__tab__5": "Expérimental",
+  "settings__text__encryption": "Chiffrement",
+  "settings__text__sync_not_available": "Les configurations relatives à la synchronisation ne sont pas disponibles lors de l'utilisation du presse-papiers local.",
+  "settings__appbar__er__title": "Règles d'exclusion",
+  "settings__text__er__predefine": "Règles d'exclusion prédéfinies",
+  "settings__text__er__pass_manager": "Gestionnaires de mots de passe",
+  "settings__text__er__cc": "Numéro de carte de crédit",
+  "settings__text__er__phone": "Numéro de téléphone",
+  "settings__text__er__email": "Adresse e-mail",
+  "settings__text__er__url": "URL sensible",
+  "settings__text__decrypted__note": "🥳 Félicitations ! Tous vos clips ont été décryptés avec succès localement,\n il n'est donc pas nécessaire de reconstruire la base de données.",
+  "settings__appbar__cer__title": "Règles d'exclusion personnalisées",
+  "settings__switch__drag_n_drop__title": "Glisser et déposer",
+  "settings__switch__drag_n_drop__subtitle": "Autoriser les éléments à être déplacés librement dans les deux sens au sein de l'application.",
+  "settings__dropdown__no_copy_over_limit__title": "Ne pas copier automatiquement au-delà de",
+  "settings__dropdown__no_copy_over_limit__subtitle": "Les fichiers et médias de plus d'une certaine taille ({fileSize}) ne seront pas copiés automatiquement.",
+  "@settings__dropdown__no_copy_over_limit__subtitle": {
+    "placeholders": {
+      "fileSize": {
+        "type": "String"
+      }
+    }
+  },
+  "settings__text__5MB": "5 Mo",
+  "settings__text__10MB": "10 Mo",
+  "settings__text__20MB": "20 Mo",
+  "settings__text__50MB": "50 Mo",
+  "settings__text__100MB": "100 Mo",
+  "settings__dropdown__no_upload_over_limit__title": "Ne pas téléverser automatiquement au-delà de",
+  "settings__dropdown__no_upload_over_limit__subtitle": "Les fichiers et médias de plus d'une certaine taille ({fileSize}) ne seront pas téléversés automatiquement.",
+  "@settings__dropdown__no_upload_over_limit__subtitle": {
+    "placeholders": {
+      "fileSize": {
+        "type": "String"
+      }
+    }
+  },
+  "settings__dropdown__sync_mode__title": "Mode de synchronisation",
+  "settings__dropdown__sync_mode__subtitle": "Sélectionnez la vitesse de synchronisation qui vous convient le mieux.",
+  "settings__sync_mode__realtime": "Temps réel",
+  "settings__sync_mode__balanced": "Équilibré",
+  "settings__dropdown__theme__title": "Mode thème",
+  "settings__theme__system": "Système",
+  "settings__theme__light": "Clair",
+  "settings__theme__dark": "Sombre",
+  "settings__dropdown__color_mode__title": "Mode couleur",
+  "settings__dropdown__color_mode__subtitle": "Sélectionnez le mode de couleur pour personnaliser l'apparence de l'application. L'option par défaut est \"Spot tonal\".",
+  "settings__color_mode__tonalSpot": "Spot tonal",
+  "settings__color_mode__content": "Contenu",
+  "settings__color_mode__expressive": "Expressif",
+  "settings__color_mode__fidelity": "Fidélité",
+  "settings__color_mode__fruit_salad": "Salade de fruits",
+  "settings__color_mode__monochrome": "Monochrome",
+  "settings__color_mode__neutral": "Neutre",
+  "settings__color_mode__rainbow": "Arc-en-ciel",
+  "settings__color_mode__vibrant": "Vibrant",
+  "settings__tile__cer_title": "Règles personnalisées",
+  "settings__tile__cer_subtitle": "Exclure par application, par fenêtre/application titre, URL de site Web ou motif Regex",
+  "settings__tile__er_title": "Règles d'exclusion",
+  "settings__tile__er_subtitle": "Empêcher les informations de se copier dans le presse-papiers. Cliquez pour un contrôle avancé.",
+  "settings__switch__enable_sync__title": "Synchronisation du presse-papiers",
+  "settings__switch__enable_sync__subtitle": "Synchronisez votre presse-papiers entre les appareils sans effort.",
+  "settings__switch__sync_file__title": "Synchronisation des fichiers et médias",
+  "settings__switch__sync_file__subtitle": "Basculer pour synchroniser les fichiers et les clips multimédias entre les appareils.",
+  "settings__switch__paused__title": "Mettre en pause l'écouteur du presse-papiers",
+  "settings__switch__paused__subtitle": "Suspendre temporairement le suivi du presse-papiers jusqu'à une heure définie.",
+  "settings__switch__paused_active__subtitle": "En pause jusqu'à {time}. Appuyez pour reprendre ou ajuster le temps.",
+  "@settings__switch__paused_active__subtitle": {
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "h:mm a",
+        "isCustomDateFormat": true
+      }
+    }
+  },
+  "settings__switch__smart_paste__title": "Collage intelligent",
+  "settings__switch__smart_paste__subtitle": "Collez du contenu directement sur l'application ciblée.",
+  "settings__switch__startup__title": "Lancer au démarrage",
+  "settings__switch__startup__subtitle": "Lancez automatiquement CopyCat lorsque votre appareil s'allume.",
+  "settings__switch__hotkey__title": "Activer avec le raccourci",
+  "settings__switch__hotkey__subtitle": "Utilisez un raccourci clavier pour accéder rapidement à votre presse-papiers CopyCat",
+  "settings__hotkey__unassigned": "Non assigné",
+  "settings__hotkey__preview_start": "Presser ",
+  "settings__hotkey__preview_end": " pour montrer ou cacher l'application.",
+  "settings__tile__theme_color__title": "Couleur du thème",
+  "settings__tile__theme_color__subtitle": "Cette couleur influencera l'apparence générale de l'application.",
+  "settings__tile__desk_client__title": "Télécharger le client de bureau",
+  "settings__tile__mobile_client__title": "Télécharger le client mobile",
+  "settings__tile__client__subtitle": "Accédez à votre presse-papiers sur tous vos appareils.",
+  "settings__tile__e2e_setup__title": "Configuration du chiffrement de bout en bout",
+  "settings__tile__e2e_setup__subtitle": "Configurer le chiffrement pour vos clips.",
+  "settings__switch__e2e__title": "Activer le chiffrement",
+  "settings__switch__e2e__subtitle": "Basculer pour activer ou désactiver le chiffrement de bout en bout pour vos clips.",
+  "settings__dialog__conn_gdrive__title": "Reconnecter Google Drive?",
+  "settings__dialog__conn_gdrive__subtitle": "Votre Google Drive est déjà connecté ! Souhaitez-vous vous reconnecter ?\n\nPour éviter toute perte de données, assurez-vous d'utiliser le même compte qu'auparavant.",
+  "settings__drive__connected": "Connecté",
+  "settings__drive__loading": "Chargement...",
+  "settings__drive__authorizing": "Autorisation...",
+  "settings__drive__disconnected": "Déconnecté",
+  "settings__text__cloud__title": "Cloud Drive",
+  "settings__text__cloud__name": "Google Drive",
+  "settings__text__gdrive__error": "Google Drive n'est pas connecté. La synchronisation des fichiers et médias est actuellement désactivée.",
+  "settings__text__gdrive__info": "Vos fichiers et médias sont synchronisés en toute sécurité entre les appareils via Google Drive, assurant la protection de votre confidentialité.",
+  "settings__tile__other_cloud__title": "Configurer un autre cloud drive",
+  "settings__tile__other_cloud__subtitle": "Configurez d'autres lecteurs cloud comme Dropbox, OneDrive, etc.",
+  "@@CUSTOM_EXCLUSION_RULES": "Écran des règles d'exclusion personnalisées",
+  "custom_er__nav__1": "Application",
+  "custom_er__nav__2": "Titre de la fenêtre",
+  "custom_er__nav__3": "Url",
+  "custom_er__nav__4": "Modèle de texte",
+  "custom_er__text__not_supported": "Cette exclusion n'est pas encore supportée",
+  "custom_er__tile__add_app": "Ajouter une application",
+  "custom_er__text__no_app": "Aucune application personnalisée exclue pour le moment",
+  "custom_er__button__remove_app": "Retirer cette application",
+  "custom_er__tile__pattern": "Éviter la copie lorsque le contenu copié correspond à ces modèles",
+  "custom_er__text__no_pattern": "Aucun modèle personnalisé exclu",
+  "custom_er__button__remove_pattern": "Retirer ce modèle",
+  "custom_er__tile__url": "Empêcher la copie depuis le site web correspondant à ces segments d'URL.",
+  "custom_er__input__url_hint": "Saisissez une URL ou une partie d'une URL ici.",
+  "custom_er__text__no_url": "Aucune URL personnalisée exclue",
+  "custom_er__button__remove_url": "Retirer cette URL",
+  "custom_er__tile__title": "Empêcher la copie d'une application ou d'un site web lorsque le titre de la fenêtre correspond.",
+  "custom_er__text__no_title": "Aucun titre personnalisé exclu",
+  "custom_er__button__remove_title": "Retirer ce titre",
+
+  "@@ABOUT": "À propos du dialogue de l'app",
+  "about__tile__discord": "Discord • Connexion",
+  "about__tile__youtube": "YouTube • Tutoriel",
+  "about__tile__read_tut": "Lire • Tutoriel",
+  "about__tile__github": "Github • Open source",
+  "about__tile__website": "EntilityStudio • Site web",
+  "about__tile__support": "Support",
+
+  "@@ANDROID_BACKGROUND_CLIPBOARD": "Presse-papiers en arrière-plan Android",
+  "abc_title": "Presse-papiers en arrière-plan",
+  "abc__tile__subtitle": "Écoutez le presse-papiers en arrière-plan",
+
+  "abc__tip__why_title": "Pourquoi ces autorisations sont-elles nécessaires ?",
+  "abc__tip__why_subtitle": "Ces autorisations garantissent que CopyCat fonctionne correctement en arrière-plan, permettant de détecter le contenu copié et de vous offrir une expérience fluide sans interruptions.",
+
+  "abc__tip__support_title": "Support limité",
+  "abc__tip__support_subtitle": "1. Actuellement, seuls les clips texte sont pris en charge.\n2. Certains systèmes d'exploitation, comme HyperOS 1, ne sont pas encore pris en charge.",
+
+  "abc__heading__req_perm": "Autorisations requises",
+
+  "abc__tile__notification_title": "Accès aux notifications",
+  "abc__tile__notification_subtitle": "Affiche une notification persistante pour vous informer que CopyCat fonctionne en arrière-plan, garantissant transparence et confidentialité.",
+
+  "abc__tile__battery_opt_title": "Optimisation de la batterie",
+  "abc__tile__battery_opt_subtitle": "Empêche le système d'arrêter CopyCat lorsqu'il fonctionne en arrière-plan, garantissant une expérience fluide.",
+
+  "abc__tile__overlay_title": "Autorisation de superposition",
+  "abc__tile__overlay_subtitle": "Permet à CopyCat de lire le presse-papiers en ouvrant brièvement une fenêtre transparente au-dessus de l'écran et de la fermer immédiatement après.",
+
+  "abc__tile__acc_title": "Service d'accessibilité",
+  "abc__tile__acc_subtitle": "Démarre l'écouteur en arrière-plan de CopyCat pour détecter lorsque vous copiez quelque chose et assure le redémarrage automatique du service après un redémarrage.",
+
+  "abc__ack__ready": "Configuration prête à être configurée.",
+  "abc__ack__preparing": "Préparation de la configuration, veuillez patienter...",
+  
+  "abc__perm_alert_open_setting__button": "Ouvrir les paramètres",
+
+  "abc__overlay_perm_alert__title": "Permission de superposition",
+  "abc__overlay_perm_alert__subtitle": "CopyCat Clipboard a besoin de la permission 'Dessiner par-dessus d'autres applications' pour lire le contenu du presse-papiers en arrière-plan.",
+  "abc__overlay_perm_alert__p1_prefix": "Cette permission est ",
+  "abc__overlay_perm_alert__p1_bold": "utilisée uniquement pour la détection du presse-papiers",
+  "abc__overlay_perm_alert__p1_suffix": " lorsque vous copiez quelque chose en arrière-plan.",
+  "abc__overlay_perm_alert__p2_prefix": "Lorsqu'elle est activée, CopyCat ",
+  "abc__overlay_perm_alert__p2_bold": "crée une fenêtre transparente de 0 pixel",
+  "abc__overlay_perm_alert__p2_suffix": " pour amener brièvement l'application au premier plan et lire les données du presse-papiers.",
+  "abc__overlay_perm_alert__p3_prefix": "L'application ",
+  "abc__overlay_perm_alert__p3_bold": "n'affiche rien",
+  "abc__overlay_perm_alert__p3_suffix": " sur votre écran pendant ce processus.",
+  "abc__overlay_perm_alert__p4_prefix": "Sur certains appareils, le système peut afficher un message toast ",
+  "abc__overlay_perm_alert__p4_bold": "'CopyCat a collé depuis votre presse-papiers'",
+  "abc__overlay_perm_alert__p4_suffix": " lorsque CopyCat lit le contenu de votre presse-papiers.",
+  "abc__overlay_perm_alert__agree": "En accordant cette permission, vous acceptez l'utilisation décrite ci-dessus.",
+
+  "abc__accessibility_perm_alert__title": "Permission d'accessibilité",
+  "abc__accessibility_perm_alert__subtitle": "CopyCat Clipboard nécessite le Service d'Accessibilité pour fonctionner en arrière-plan et détecter et synchroniser le presse-papiers en temps réel.",
+  "abc__accessibility_perm_alert__p1_prefix": "Ce service est ",
+  "abc__accessibility_perm_alert__p1_bold": "utilisé uniquement",
+  "abc__accessibility_perm_alert__p1_suffix": " pour détecter le contenu du presse-papiers et le synchroniser entre les appareils lorsqu'il est activé.",
+  "abc__accessibility_perm_alert__p2_prefix": "Vous pouvez ",
+  "abc__accessibility_perm_alert__p2_bold": "exclure des applications spécifiques",
+  "abc__accessibility_perm_alert__p2_suffix": " en utilisant la fonctionnalité de Règles d'Exclusion.",
+  "abc__accessibility_perm_alert__p3_prefix": "L'application ",
+  "abc__accessibility_perm_alert__p3_bold": "n'accède à aucune autre donnée",
+  "abc__accessibility_perm_alert__p3_suffix": " au-delà du contenu du presse-papiers.",
+  "abc__accessibility_perm_alert__p4_prefix": "Les données du presse-papiers ",
+  "abc__accessibility_perm_alert__p4_bold": "ne sont pas partagées à l'extérieur",
+  "abc__accessibility_perm_alert__p4_suffix": " et restent privées sur vos appareils.",
+  "abc__accessibility_perm_alert__p5_prefix": "Les données du presse-papiers ",
+  "abc__accessibility_perm_alert__p5_bold": "sont chiffrées de bout en bout",
+  "abc__accessibility_perm_alert__p5_suffix": " (si activé) en transit et au repos, garantissant la confidentialité entre les appareils.",
+  "abc__accessibility_perm_alert__agree": "En activant le Service d'Accessibilité, vous reconnaissez et acceptez les termes ci-dessus.",
+
+  "abc__other_setting__title": "Autres paramètres",
+  "abc__enhanced_clip_detection__title": "Détection améliorée du presse-papiers",
+  "abc__enhanced_clip_detection__subtitle": "Activez cette option pour une détection plus précise du presse-papiers. Notez qu'elle pourrait ne pas fonctionner sur tous les appareils."
+
+}

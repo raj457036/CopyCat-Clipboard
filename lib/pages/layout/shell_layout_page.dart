@@ -1,7 +1,7 @@
 import 'package:clipboard/widgets/network_observer.dart';
 import 'package:clipboard/widgets/titlebar.dart';
-import 'package:copycat_base/common/logging.dart';
-import 'package:copycat_base/utils/utility.dart';
+import 'package:clipboard/base/common/logging.dart';
+import 'package:clipboard/base/utils/utility.dart';
 import 'package:flutter/material.dart';
 
 class ShellPage extends StatelessWidget {

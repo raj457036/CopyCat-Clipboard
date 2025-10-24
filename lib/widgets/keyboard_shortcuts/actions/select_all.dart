@@ -1,5 +1,5 @@
 import 'package:clipboard/widgets/clips_provider.dart';
-import 'package:copycat_base/bloc/selected_clips_cubit/selected_clips_cubit.dart'
+import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart'
     show SelectedClipsCubit;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';

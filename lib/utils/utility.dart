@@ -1,5 +1,5 @@
-import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
-import 'package:copycat_base/enums/clip_type.dart';
+import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:device_preview_screenshot/device_preview_screenshot.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';

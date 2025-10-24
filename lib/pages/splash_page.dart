@@ -1,5 +1,5 @@
-import 'package:copycat_base/bloc/auth_cubit/auth_cubit.dart';
-import 'package:copycat_base/constants/strings/route_constants.dart';
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';

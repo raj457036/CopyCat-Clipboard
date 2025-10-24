@@ -1,18 +1,18 @@
 import 'dart:convert' show jsonEncode, jsonDecode, utf8;
 
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/data/services/encryption.dart';
+import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/base/utils/utility.dart';
 import 'package:clipboard/di/di.dart';
+import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialogs/export_e2ee.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialogs/generate_e2ee.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialogs/import_e2ee.dart';
 import 'package:clipboard/widgets/encrypted_clip_stat.dart';
-import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:copycat_base/bloc/auth_cubit/auth_cubit.dart';
-import 'package:copycat_base/data/services/encryption.dart';
-import 'package:copycat_base/domain/model/auth_user/auth_user.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/common_extension.dart';
-import 'package:copycat_base/utils/snackbar.dart';
-import 'package:copycat_base/utils/utility.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

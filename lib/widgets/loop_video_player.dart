@@ -1,5 +1,5 @@
-import 'package:copycat_base/common/failure.dart';
-import 'package:copycat_base/utils/snackbar.dart';
+import 'package:clipboard/base/common/failure.dart';
+import 'package:clipboard/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';

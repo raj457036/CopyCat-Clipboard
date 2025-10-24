@@ -1,6 +1,5 @@
-import 'package:clipboard/utils/extensions.dart';
-import 'package:copycat_base/constants/strings/asset_constants.dart';
-import 'package:copycat_base/utils/common_extension.dart';
+import 'package:clipboard/base/constants/strings/asset_constants.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

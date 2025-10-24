@@ -1,9 +1,9 @@
 // TODO(raj): replace with a better ux
 
-// import 'package:copycat_base/constants/strings/strings.dart';
-// import 'package:copycat_base/constants/widget_styles.dart';
-// import 'package:copycat_base/l10n/l10n.dart';
-// import 'package:copycat_base/utils/common_extension.dart';
+// import 'package:clipboard/base/constants/strings/strings.dart';
+// import 'package:clipboard/base/constants/widget_styles.dart';
+// import 'package:clipboard/base/l10n/l10n.dart';
+// import 'package:clipboard/base/utils/common_extension.dart';
 // import 'package:flutter/material.dart';
 // import 'package:url_launcher/url_launcher_string.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:math' show min;
 
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/common_extension.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';

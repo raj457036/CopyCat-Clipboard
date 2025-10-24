@@ -1,7 +1,7 @@
+import 'package:clipboard/base/constants/font_variations.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/routes/utils.dart';
-import 'package:copycat_base/constants/font_variations.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/common_extension.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatelessWidget {

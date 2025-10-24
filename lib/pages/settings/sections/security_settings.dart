@@ -2,8 +2,8 @@ import 'package:clipboard/pages/settings/widgets/e2ee_settings.dart';
 import 'package:clipboard/pages/settings/widgets/exclusion_rules/exclusion_rules_switch_tile.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
 import 'package:clipboard/widgets/local_user.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/l10n/l10n.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class SecuritySettings extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:copycat_base/constants/strings/route_constants.dart';
+import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

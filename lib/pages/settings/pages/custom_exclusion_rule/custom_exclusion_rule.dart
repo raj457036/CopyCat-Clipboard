@@ -3,9 +3,9 @@ import 'package:clipboard/pages/settings/pages/custom_exclusion_rule/tabs/patter
 import 'package:clipboard/pages/settings/pages/custom_exclusion_rule/tabs/title_text_exclusion.dart';
 import 'package:clipboard/pages/settings/pages/custom_exclusion_rule/tabs/url_text_exclusion.dart';
 import 'package:clipboard/widgets/scaffold_body.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/utility.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/base/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_io/io.dart';
 

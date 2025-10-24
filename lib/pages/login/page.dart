@@ -1,9 +1,9 @@
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/constants/numbers/breakpoints.dart';
+import 'package:clipboard/base/constants/strings/asset_constants.dart';
 import 'package:clipboard/pages/login/widgets/login_form.dart';
-import 'package:copycat_base/bloc/auth_cubit/auth_cubit.dart';
-import 'package:copycat_base/constants/numbers/breakpoints.dart';
-import 'package:copycat_base/constants/strings/asset_constants.dart';
-import 'package:copycat_base/utils/common_extension.dart';
-import 'package:copycat_base/utils/snackbar.dart';
+import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

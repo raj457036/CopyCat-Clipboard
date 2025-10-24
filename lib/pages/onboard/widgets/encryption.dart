@@ -3,10 +3,10 @@ import 'package:clipboard/pages/onboard/widgets/encryption/export_key.dart';
 import 'package:clipboard/pages/onboard/widgets/encryption/generate_key.dart';
 import 'package:clipboard/pages/onboard/widgets/encryption/import_key.dart';
 import 'package:clipboard/pages/onboard/widgets/to_login_page.dart';
-import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:copycat_base/bloc/auth_cubit/auth_cubit.dart';
-import 'package:copycat_base/data/services/encryption.dart';
-import 'package:copycat_base/domain/model/auth_user/auth_user.dart';
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/data/services/encryption.dart';
+import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

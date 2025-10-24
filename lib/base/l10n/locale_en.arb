@@ -1,0 +1,668 @@
+{
+  "@@locale": "en",
+  "@@format": "<App/Feature>__<Section/Component>__<Context>[__<Variant>",
+  "@@APP": "Shared locales throughout the app.",
+  "app__name": "CopyCat Clipboard",
+  "@app__name": {
+    "description": "App name: CopyCat Clipboard"
+  },
+  "app__slogan": "One Clipboard, Limitless Possibility",
+  "@app__slogan": {
+    "description": "CopyCat Clipboard Slogan"
+  },
+  "app__unknown_error": "An unexpected error occurred",
+  "app__downloading": "Downloading...",
+  "app__download": "Download",
+  "app__follow_link": "Follow Link",
+  "app__edit": "Edit",
+  "app__export": "Export",
+  "app__delete": "Delete",
+  "app__later": "Skip",
+  "app__select": "Select",
+  "app__change": "Change",
+  "app__confirm": "Confirm",
+  "app__action_required": "Action Required",
+  "app__feature_unavailable": "This feature is not available for your platform.",
+  "app__preview": "Preview",
+  "app__open_file": "Open file",
+  "app__change_collection": "Change Collection",
+  "app__share": "Share",
+  "app__uploading": "Uploading...",
+  "app__syncing": "Syncing...",
+  "app__sync": "Sync",
+  "app__local": "Local",
+  "app__send_message": "Send Message",
+  "app__send_email": "Send Email",
+  "app__empty_clipboard": "Your clipboard is empty.",
+  "app__load_more": "Fetch More",
+  "app__locale_en": "English",
+  "app__locale_es": "Spanish",
+  "app__locale_fr": "French",
+  "app__locale_de": "German",
+  "app__locale_zh": "Chinese",
+  "app__locale_pt": "Portuguese",
+  "app__language": "Language",
+  "app__logout": "Logout",
+  "app__no_collection": "No Collection Found",
+  "app__create_collection": "Create Collection",
+  "app__pro_tip": "Pro Tip",
+  "app__try_again": "Try Again",
+  "app__realtime_connected": "Realtime Connected", 
+  "app__realtime_disconnected": "Realtime Disconnected", 
+  "app__realtime_connecting": "Realtime Connecting...", 
+  "app__ack__exported": "Exported",
+  "app__ack__copied": "Copied",
+  "app__ack__pasted": "Pasted",
+  "app__ack__pasting": "Pasting",
+  "app__ack__done": "Done",
+  "app__ack__quit_app": "Quit App",
+  "app__ack__deleted": "Deleted",
+  "app__ack__deleting": "Deleting",
+  "app__ack__internet_connected": "Internet Connected",
+  "app__ack__internet_disconnected": "Internet Disconnected",
+  "app__ack__logout_success": "You are successfully logged out.",
+  "app__ack__missing_e2e_setup": "Missing encryption setup",
+  "app__ack__no_app_for_file": "No application found to open this file.",
+  "app__ack__perm_fail_to_open_file": "Permission to open this file not granted.",
+  "app__ack__missing_e2e_setup": "Missing encryption setup",
+  "@@DIALOG": "Common Dialog",
+  "dialog__delete_clip__title": "Delete Clip",
+  "dialog__delete_clip__subtitle": "{itemCount, plural, other{Are you sure you want to delete these clips?} one{Are you sure you want to delete this clip?}}",
+  "@dialog__delete_clip__subtitle": {
+    "placeholders": {
+      "itemCount": {
+        "type": "int"
+      }
+    }
+  },
+  "dialog__e2e__title": "End to End Encryption",
+  "dialog__text__e2e_key_export": "Congratulations, you have successfully configured the end-to-end encryption.",
+  "dialog__text__e2e_key_export__note": "Click the button below to export your encryption key.\nSave the key in a secure location to ensure you can set up other devices to access your encrypted information.",
+  "dialog__text__e2e_key_generate": "Generate an encryption key and store it securely. This key is required to set up other devices for accessing your encrypted data.",
+  "dialog__button__e2e_generating_key": "Generating",
+  "dialog__button__e2e_generate_key": "Generated",
+  "dialog__text__invalid_e2e_key": "The imported key is invalid!",
+  "dialog__text__e2e_key_import__note": "Import your encryption key below to access your encrypted data on this device.",
+  "dialog__button__e2e_importing_key": "Importing",
+  "dialog__button__e2e_import_key": "Import",
+
+  "dialog__text__inconsistent_time__title": "Time Sync Warning",
+  "dialog__text__inconsistent_time__content": "Inconsistent Device Time Detected\n\nTo ensure accurate clipboard syncing, please check and correct your device's time settings.\n\nInconsistent time settings may cause synchronization issues.",
+  "dialog__button__try_again": "Check Again",
+
+  "dialog__record_keys__title": "Record Keyboard Shortcut",
+  "dialog__record_keys__subtitle": "Type your shortcut using your keyboard and click ",
+
+  "dialog__delete_collection__title": "Delete {collectionName}",
+  "@dialog__delete_collection__title": {
+    "placeholders": {
+      "collectionName": {
+        "type": "String"
+      }
+    }
+  },
+  "dialog__delete_collection__subtitle": "Are you sure to delete this collection?",
+
+  "@@APPLY_DIALOG": "Apply Coupon Dialog",
+  "dialog__ack__sub_updated": "Subscription Updated",
+  "dialog__grant_entitlement__title": "Granted Entitlement",
+  "dialog__grant_entitlement__subtitle_p1": "Granted Entitlement Codes are shared with specific individuals for custom entitlements. You can check if invitations are still available by ",
+  "dialog__grant_entitlement__subtitle_p2": "Clicking Here.",
+  "dialog__grant_entitlement__enter_code": "Enter the code and press Submit",
+  "dialog__grant_entitlement__apply_code": "Apply",
+
+  "@@VIEW_BUTTONS": "Layout View Buttons",
+  "view_button__switch_to_grid": "Switch to Grid Layout",
+  "view_button__switch_to_list": "Switch to List Layout",
+  "view_button__change_view": "Change View",
+  "view_button__view_window": "Windowed",
+  "view_button__view_dock_right": "Dock Right",
+  "view_button__view_dock_bottom": "Dock Bottom",
+  "view_button__view_dock_left": "Dock Left",
+  "view_button__view_dock_top": "Dock Top",
+  "view_button__pin": "Pin to top",
+  "view_button__unpin": "Unpin",
+
+  "@@SUBSCRIPTION_DIALOG": "Subscription detail dialog",
+  "sub_dialog__text__included": "Included",
+  "sub_dialog__f1__title": "Unlimited Clipboard Items",
+  "sub_dialog__f1__subtitle": "Never run out of space with unlimited clipboard items, ensuring you always have access to your most recent copies.",
+  "sub_dialog__f2__title": "Support all major platforms",
+  "sub_dialog__f2__subtitle": "Seamlessly sync across all major platforms—Android, iOS, Windows, macOS, and Linux —for uninterrupted productivity anywhere.",
+  "sub_dialog__f3__title": "Supports Apple Universal Clipboard",
+  "sub_dialog__f3__subtitle": "Effortlessly transfer clipboard content between your Apple devices with support for Apple's Universal Clipboard.",
+  "sub_dialog__f4__title": "On-Device Storage",
+  "sub_dialog__f4__subtitle": "Keep your data secure with on-device storage, ensuring your clipboard items are always within reach and under your control.",
+  "sub_dialog__f5__title": "Google Drive Integration",
+  "sub_dialog__f5__subtitle": "Securely store files and media on Google Drive, integrating seamlessly with CopyCat Clipboard for enhanced data management.",
+  "sub_dialog__f6__title": "Instant Search",
+  "sub_dialog__f6__subtitle": "Find what you need instantly with powerful instant search capabilities, making retrieval of clipboard items fast and efficient.",
+  "sub_dialog__f7__title": "Syncing Up to the Last 24 Hours",
+  "sub_dialog__f7__subtitle": "Access and sync your clipboard history across all your devices for the past 24 hours. This ensures you never lose important copied items, making your workflow seamless and efficient.",
+  "sub_dialog__f8__title": "Up to 3 Collections",
+  "sub_dialog__f8__subtitle": "Organize your clipboard items into up to 3 collections, providing simple categorization for better workflow management.",
+  "sub_dialog__f9__title": "Auto-Sync Every 45 Seconds",
+  "sub_dialog__f9__subtitle": "Enjoy automatic syncing of clipboard items every 45 seconds, keeping your devices up-to-date without manual intervention.",
+  "sub_dialog__f10__title": "Support End-to-End Encryption",
+  "sub_dialog__f10__subtitle": "E2EE will make everything encrypted for superior privacy.",
+
+  "sub_dialog__text__pro_title": "With PRO ✨",
+  "sub_dialog__text__pro_subtitle": "Everything included in Free +",
+  "sub_dialog__f11__title": "Up to 50 Collections",
+  "sub_dialog__f11__subtitle": "Organize your clipboard items into up to 50 collections for ultimate management.",
+  "sub_dialog__f12__title": "Syncing Up to the Last 30 Days",
+  "sub_dialog__f12__subtitle": "Clipboard history is synced across all your devices for clips created within the last 30 days. This means you can access any clip you copied in the past month, no matter which device you are using.",
+  "sub_dialog__f13__title": "Real Time Synchronization",
+  "sub_dialog__f13__subtitle": "Experience lightning-fast syncing.",
+  "sub_dialog__f14__title": "Faster and Priority Support",
+  "sub_dialog__f14__subtitle": "Get prompt and prioritized support as a PRO user.",
+  "sub_dialog__f15__title": "Early Access to New Features",
+  "sub_dialog__f15__subtitle": "Be the first to try out new features and updates.",
+  "sub_dialog__f16__title": "Custom Exclusion Rules",
+  "sub_dialog__f16__subtitle": "Precise control over your clipboard. Allows you to define what to copy, from where to copy and when to copy.",
+  "sub_dialog__f17__title": "Drag & Drop",
+  "sub_dialog__f17__subtitle": "Seamlessly move items in any direction on your Desktop and Tablet devices.",
+  "sub_dialog__f18__title": "Theming",
+  "sub_dialog__f18__subtitle": "Customize the entire look and feel of the app to match your preferences.",
+  "paywall_dialog__text__month": "month",
+  "paywall_dialog__text__year": "year",
+  "paywall_dialog__text__subscription": "Subscription",
+  "paywall_dialog__text__supported_platform": "To access premium features on Copycat Clipboard, please subscribe through the Play Store or Apple App Store. Your subscription will be synced across all your devices, including Linux and Windows.",
+  "paywall_dialog__text__unlock_pro": "Unlock CopyCat PRO",
+  "paywall_dialog__text__unlock_pro_p1": "Enjoy over 30 days of synced history, over 50 collections, end-to-end encryption, real-time syncing, access to the newest features, and much more.",
+  "paywall_dialog__text__try_again": "Please try again",
+  "paywall_dialog__text__current_plan": "Current Plan",
+  "paywall_dialog__text__expired_plan": "Current Plan • Expired",
+  "paywall_dialog__text__trial_till": "Trial till {till}",
+  "@paywall_dialog__text__trial_till": {
+      "placeholders": {
+          "till": {
+              "type": "DateTime",
+              "format": "yMMMd"
+          }
+      }
+  },
+  "paywall_dialog__text__upgrade": "Upgrade",
+
+  "@@FAB": "Floating Action Button",
+  "fab__create_collection": "Create Collection ( {remaining} Remaining )",
+  "@fab__create_collection": {
+    "placeholders": {
+      "remaining": {
+        "type": "String"
+      }
+    }
+  },
+
+  "fab__sync": "Sync",
+  "fab__sync_unavailable": "Sync Unavailable",
+  "fab__sync_up_to_date": "Already up to date.",
+  "fab__sync_failed": "Sync failed : {message}",
+  "@fab__sync_failed": {
+      "placeholders": {
+          "message": {
+              "type": "String"
+          }
+      }
+  },
+
+  "@@LAYOUT": "Layout Widgets",
+  "layout__navbar__clipboard": "Clipboard",
+  "layout__navbar__collections": "Collections",
+  "layout__navbar__settings": "Settings",
+
+  "@@WIDGETS": "Custom Widgets",
+  "search__tooltip__filter": "Search filters",
+  "manage_sub__ack__promo_sub": "You are using a promo subscription till {till}",
+  "@manage_sub__ack__promo_sub": {
+      "placeholders": {
+          "till": {
+              "type": "String"
+          }
+      }
+  },
+  "manage_sub__button__text": "Manage Subscriptions",
+
+  "my_account__button__tooltip": "My Account",
+  "badges__tooltip__experimental": "This feature is experimental and might not work as expected.",
+  "badges__tooltip__pro_only": "This feature is available for Pro users only.",
+
+  "collection_selector__tile__no_collection": "No Collection",
+  "collection_selector__button__remove_collection": "Remove Collection",
+
+  "dialog__logout__title": "Logout",
+  "dialog__logout__subtitle": "⚠️ WARNING ⚠️\n\nLogging out will delete unsynced changes in the local database. Are you sure you want to proceed?",
+  "dialog__logging_out__ack": "Logging you out! Please wait...",
+
+  "reset_pass__text__label": "Reset your password",
+
+  "dnd__text__drop_here": "Drop Here",
+  "dnd__ack__error_max_drop_count": "Maximum {count} drop items are allowed at once.",
+  "@dnd__ack__error_max_drop_count": {
+      "placeholders": {
+          "count": {
+              "type": "int"
+          }
+      }
+  },
+
+  "@@SEARCH_FILTER_DIALOG": "Search filter dialog",
+  "search_filter__text__title": "Filters",
+  "search_filter__button__apply": "Apply",
+  "search_filter__text__from": "From",
+  "search_filter__text__select": "Select",
+  "search_filter__text__to": "To",
+  "search_filter__text__now": "Now",
+  "search_filter__text__including": "Including",
+  "search_filter__chip__text": "Text",
+  "search_filter__chip__url": "URL",
+  "search_filter__chip__media": "Media",
+  "search_filter__chip__docs": "Docs",
+  "search_filter__text__textCategories": "Text Categories",
+  "search_filter__text__exclusive": "( Exclusive )",
+  "search_filter__text_cat__email": "Email",
+  "search_filter__text_cat__phone": "Phone",
+  "search_filter__text_cat__color": "Color",
+  "search_filter__text__sort_by": "Sort By",
+  "search_filter__sort_by__last_mod": "Last Modified",
+  "search_filter__sort_by__created": "Created",
+  "search_filter__sort_by__copy_count": "Copy Count",
+  "search_filter__sort_by__last_copied": "Last Copied",
+  "search_filter__text__sort_order": "Sort Order",
+  "search_filter__sort_ord__asc": "Asc",
+  "search_filter__sort_ord__desc": "Desc",
+
+  "@@LOGIN": "Login Screen",
+  "login__local_signin__tooltip": "No syncing. All data stays on your device.",
+  "login__local_signin__btn__label": "Use Locally",
+  "login__form__input__name": "Enter your good name",
+  "login__form__input__email": "Enter your email",
+  "login__form__input__error_email": "Please enter a valid email address",
+  "login__form__input__password": "Enter your password",
+  "login__form__input__error_password_length": "Please enter a password that is at least 6 characters long",
+  "login__form__button__signin": "Sign In",
+  "login__form__button__signup": "Sign Up",
+  "login__form__button__forgot_password": "Forgot your password?",
+  "login__form__text__signup": "Don't have an account? Sign up",
+  "login__form__text__old_user": "Already have an account? Sign in",
+  "login__form__text__reset_password": "Send password reset email",
+  "login__form__text__reset_ack": "Password reset email has been sent",
+  "login__form__button__back": "Back to sign in",
+  "login__form__button__update_password": "Update Password",
+  "login__form__text_tnc_p1": "By continuing you agree to the following ",
+  "login__form__text_tnc_p2": "Privacy policies",
+  "login__form__text_tnc_p3": " and ",
+  "login__form__text_tnc_p4": "Terms of Service.",
+  "@@HOME": "Home Screen",
+  "home__search__hint": "Search in clipboard",
+  "home__search__reset": "Reset Search",
+  "@@PREVIEW": "Preview Screen",
+  "preview__vert_view__tab1_title": "Preview",
+  "preview__vert_view__tab2__title": "Details",
+  "preview__card__missing_text": "This is an Empty Clip",
+  "preview__card__video__play": "Play Video",
+  "preview__card__file__open": "Open File",
+  "preview__form__title": "Edit Details",
+  "preview__form__input__title": "Title",
+  "preview__form__input__description": "Description",
+  "@@RESET_PASSWORD": "Reset Password Screen",
+  "reset_password__appbar__title": "Reset your password",
+  "reset_password__success_ack": "Password reset successfully",
+  "@@ON_BOARDING": "On Boarding Screen",
+  "onboarding__text__welcome": "Welcome to",
+  "onboarding__text__lets_continue": "Let's Continue",
+
+  "onboarding__button__to_login": "Sign in",
+  "onboarding__snackbar__export_success": "Encryption key successfully exported.",
+  "onboarding__dialog__skip_export__title": "✋ Backup Your Encryption Key",
+  "onboarding__dialog__skip_export__subtitle": "You haven’t exported your encryption key yet. Without a backup, you won’t be able to access your encrypted clips if the key is lost or you switch devices.\n\n👉 If you already have a secure backup of your key, you can safely continue. Otherwise, we strongly recommend exporting the key now to avoid data loss. Do you still want to continue?",
+  "onboarding__dialog__export_info__title": "🤔 Why Export the Encryption Key?",
+  "onboarding__dialog__export_info__subtitle": "Exporting your encryption key is essential for securely accessing your encrypted data on multiple devices. Without the key, your encrypted data will remain inaccessible after sync.\n\nKeep a backup of your encryption key in a secure location to prevent data loss. Remember, the key is unique to your account and cannot be recovered if lost.\n\nNote: Copycat cannot access your encrypted clips or your encryption keys. This is because we value your privacy above everything else.",
+  "onboarding__text__export_key_headline": "Clipboard Encryption",
+  "onboarding__text__export_key_title": "💪 Great News! Encryption is active for your clipboard",
+  "onboarding__button__export_key": "Export Key",
+  "onboarding__dialog__skip_gen_key__title": "✋ Your Clips Will Be Insecure",
+  "onboarding__dialog__skip_gen_key__subtitle": "You haven’t generated an encryption key yet. Without it, your clips will remain unencrypted and insecure. You can generate the key later in Settings ❯ Security. Do you still want to continue?",
+  "onboarding__dialog__gen_key_info__title": "🤔 Why Do I Need Encryption?",
+  "onboarding__dialog__gen_key_info__subtitle": "Encryption protects your data by converting it into a secure format that can only be accessed with a key. Without encryption, your clips are stored in plain text, making them vulnerable to unauthorized access. Enabling encryption ensures that only you can access your sensitive data, providing an extra layer of security against potential breaches.",
+  "onboarding__text__gen_key_headline": "Setup Clipboard Encryption",
+  "onboarding__text__key_generated_title": "🎉 Key {keyPreview}*** successfully generated 🎉",
+  "@onboarding__text__key_generated_title": {
+    "placeholders": {
+      "keyPreview": {
+        "type": "String"
+      }
+    }
+  },
+  "onboarding__button__regenerate_key": "Re-Generate Key",
+  "onboarding__text__no_key": "Your account doesn't have any encryption key",
+  "onboarding__button__generate_key": "Generate Key",
+  "onboarding__button__do_it_later": "Do it later",
+  "onboarding__button__why_important": "Why It's Important?",
+  "onboarding__snackbar__invalid_key": "This is not a valid CopyCat encryption key",
+  "onboarding__dialog__skip_import__title": "✋ Encrypted Clips Inaccessible",
+  "onboarding__dialog__skip_import__subtitle": "You haven’t imported the encryption key yet. This means all your encrypted clips will remain inaccessible locally after sync.\n\nTo access them, import the key from Settings ❯ Security.\nDo you still want to continue?",
+  "onboarding__dialog__reset_key__title": "✋ Permanently Delete Encrypted Data",
+  "onboarding__dialog__reset_key__subtitle": "This action is irreversible. Are you sure you want to permanently delete all encrypted data from the server?",
+  "onboarding__snackbar__reset_key__success": "Encryption successfully removed.",
+  "onboarding__dialog__import_info__title": "🤔 Where is my key?",
+  "onboarding__dialog__import_info__subtitle": "Your encryption key is a secure file generated during the encryption setup process. If you’ve misplaced it, check your downloads folder or any backup location where you might have saved it. Without this key, your encrypted data cannot be accessed.\n\nIf you’ve set up the encryption key on another device, you can export it by going to Settings ❯ Security ❯ E2EE Vault on that device. Transfer the key securely to this device to regain access to your encrypted data.",
+  "onboarding__text__import_key_headline": "Import Clipboard Encryption Key",
+  "onboarding__text__import_key_title": "Your account currently has active encryption.",
+  "onboarding__button__import_key": "Import Key",
+  "onboarding__button__reset_key": "Reset Encryption",
+  "onboarding__button__where_key": "Where is the key?",
+  "onboarding__text__go_home": "Let's go home",
+  "onboarding__restoration__failed": "Restoration failed: {message}",
+  "@onboarding__restoration__failed": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "onboarding__restoration_warning": "⚠️ Please keep this screen open during syncing to avoid data corruption or inconsistencies.",
+
+  "@@RESTORE_CLIPS": "Restore Clips",
+  "restore_clips__text__title": "Restore My Clipboard",
+  "restore_clips__error__no_backup": "No clipboard backup found",
+  "restore_clips__text__total_count": "You have approximately {totalCount} {totalCount, plural, other{clips} one{clip} zero{clip}} to restore.",
+  "@restore_clips__text__total_count": {
+    "placeholders": {
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_clips__sync_disable": "Syncing is currently disabled. Please enable it to continue.",
+  "restore_clips__preparing": "Preparing to restore clips. Please wait...",
+  "restore_clips__restored": "Your {syncCount} {syncCount, plural, other{clips} one{clip} zero{clip}} have been restored successfully.",
+  "@restore_clips__restored": {
+    "placeholders": {
+      "syncCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_clips__restoring": "Restored: {synced} of {totalCount} clips.",
+  "@restore_clips__restoring": {
+    "placeholders": {
+      "synced": {
+        "type": "int"
+      },
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+
+  "@@RESTORE_COLLECTION": "Restore Collections",
+  "restore_collections__text__title": "Restore My Collections",
+  "restore_collections__error__no_backup": "No collection backup found",
+  "restore_collections__text__total_count": "You have approximately {totalCount} {totalCount, plural, other{collections} one{collection} zero{collection}} to restore.",
+  "@restore_collections__text__total_count": {
+    "placeholders": {
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_collections__sync_disable": "Syncing is currently disabled. Please enable it to continue.",
+  "restore_collections__preparing": "Preparing to restore collections. Please wait...",
+  "restore_collections__restored": "Your {syncCount} {syncCount, plural, other{collections} one{collection} zero{collection}} have been restored successfully.",
+  "@restore_collections__restored": {
+    "placeholders": {
+      "syncCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_collections__restoring": "Restored: {synced} of {totalCount} collections.",
+  "@restore_collections__restoring": {
+    "placeholders": {
+      "synced": {
+        "type": "int"
+      },
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+
+
+
+  "@@DRIVE_SETUP": "Drive Setup Screen",
+  "drive__snackbar__success": "Drive Setup is Now Complete.",
+  "drive__text__setting_up": "Setting up and syncing...",
+  "drive__text__setting_up__warning": "Please wait while we finish this up. Do not close the app.",
+  "@@CREATE_CLIP_NOTE": "Create Clip Note Screen",
+  "create_clip__appbar__title__new": "New Clip",
+  "create_clip__appbar__title__edit": "Edit Clip",
+  "create_clip__button__save_new": "Save as new",
+  "create_clip__input__hint": "Write your clip content here",
+  "@@COLLECTIONS": "Collections Screen",
+  "collections__text__tip": "To ensure your important clips are always available regardless of time, across all your devices, save them in a collection!",
+  "collections__appbar__title": "Collections",
+  "collections__appbar__title__create": "Create Collection",
+  "collections__appbar__title__edit": "Edit Collection",
+  "collections__input__name": "Name",
+  "collections__input__description": "Description",
+  "@@SELECT_COLLECTION": "Select Collection Screen",
+  "select_collection__appbar__title": "Select Collection",
+  "@@ACCOUNT": "Account Screen",
+  "account__dialog__delete_confirm__title": "Account Delete Request",
+  "account__dialog__delete_confirm__description": "You will be redirected to the account delete request form, are you sure?",
+  "account__list_tile__display_name": "Display Name",
+  "account__list_tile__email": "Email",
+  "account__list_tile__settings": "Account Settings",
+  "account__list_tile__danger_zone": "Danger Zone",
+  "account__button__req_delete": "Request Account Deletion",
+  "account__appbar__title": "My Account",
+  "@@SETTINGS": "Settings Screen",
+  "settings__appbar__title": "Settings",
+  "settings__tab__1": "General",
+  "settings__tab__2": "Customization",
+  "settings__tab__3": "Syncing",
+  "settings__tab__4": "Encryption",
+  "settings__tab__5": "Experimental",
+  "settings__text__encryption": "Encryption",
+  "settings__text__sync_not_available": "Sync-related configurations are not available while using the local clipboard.",
+  "settings__appbar__er__title": "Exclusion Rules",
+  "settings__text__er__predefine": "Predefined Exclusion Rules",
+  "settings__text__er__pass_manager": "Password Managers",
+  "settings__text__er__cc": "Credit Card Number",
+  "settings__text__er__phone": "Phone number",
+  "settings__text__er__email": "Email Address",
+  "settings__text__er__url": "Sensitive Url",
+  "settings__text__decrypted__note": "🥳 Congratulations! All your clips have been successfully decrypted locally,\n so rebuilding the database is not required.",
+  "settings__appbar__cer__title": "Custom Exclusion Rules",
+  "settings__switch__drag_n_drop__title": "Drag and Drop",
+  "settings__switch__drag_n_drop__subtitle": "Allow items to be moved freely in both directions within the app.",
+  "settings__dropdown__no_copy_over_limit__title": "Don't Auto Copy Over",
+  "settings__dropdown__no_copy_over_limit__subtitle": "Files and Media over a certain size ({fileSize}) will not be copied automatically.",
+  "@settings__dropdown__no_copy_over_limit__subtitle": {
+    "placeholders": {
+      "fileSize": {
+        "type": "String"
+      }
+    }
+  },
+  "settings__text__5MB": "5 MB",
+  "settings__text__10MB": "10 MB",
+  "settings__text__20MB": "20 MB",
+  "settings__text__50MB": "50 MB",
+  "settings__text__100MB": "100 MB",
+  "settings__dropdown__no_upload_over_limit__title": "Don't Auto Upload Over",
+  "settings__dropdown__no_upload_over_limit__subtitle": "Files and Media over a certain size ({fileSize}) will not be uploaded automatically.",
+  "@settings__dropdown__no_upload_over_limit__subtitle": {
+    "placeholders": {
+      "fileSize": {
+        "type": "String"
+      }
+    }
+  },
+  "settings__dropdown__sync_mode__title": "Sync Mode",
+  "settings__dropdown__sync_mode__subtitle": "Select the syncing speed that works best for you.",
+  "settings__sync_mode__realtime": "Realtime",
+  "settings__sync_mode__balanced": "Balanced",
+  "settings__dropdown__theme__title": "Theme Mode",
+  "settings__theme__system": "System",
+  "settings__theme__light": "Light",
+  "settings__theme__dark": "Dark",
+  "settings__dropdown__color_mode__title": "Color Mode",
+  "settings__dropdown__color_mode__subtitle": "Select the color mode to customize the appearance of the app. The default option is 'Tonal Spot'.",
+  "settings__color_mode__tonalSpot": "Tonal Spot",
+  "settings__color_mode__content": "Content",
+  "settings__color_mode__expressive": "Expressive",
+  "settings__color_mode__fidelity": "Fidelity",
+  "settings__color_mode__fruit_salad": "Fruit Salad",
+  "settings__color_mode__monochrome": "Monochrome",
+  "settings__color_mode__neutral": "Neutral",
+  "settings__color_mode__rainbow": "Rainbow",
+  "settings__color_mode__vibrant": "Vibrant",
+  "settings__tile__cer_title": "Custom Rules",
+  "settings__tile__cer_subtitle": "Exclude by app, app window/website title, website url or regex pattern",
+  "settings__tile__er_title": "Exclusion Rules",
+  "settings__tile__er_subtitle": "Prevent information from copying to clipboard. Click for Advance control.",
+  "settings__switch__enable_sync__title": "Clipboard Syncing",
+  "settings__switch__enable_sync__subtitle": "Sync your clipboard across devices effortlessly.",
+  "settings__switch__sync_file__title": "File and Media Syncing",
+  "settings__switch__sync_file__subtitle": "Toggle to sync files and media clips across devices.",
+  "settings__switch__paused__title": "Pause Clipboard Listener",
+  "settings__switch__paused__subtitle": "Temporarily pause clipboard tracking until a set time.",
+  "settings__switch__paused_active__subtitle": "Paused until {time}. Tap to resume or adjust the time.",
+  "@settings__switch__paused_active__subtitle": {
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "h:mm a",
+        "isCustomDateFormat": true
+      }
+    }
+  },
+  "settings__switch__smart_paste__title": "Smart Paste",
+  "settings__switch__smart_paste__subtitle": "Paste content directly on the focused app.",
+  "settings__switch__startup__title": "Launch at Startup",
+  "settings__switch__startup__subtitle": "Automatically start the CopyCat when your device powers on.",
+  "settings__switch__hotkey__title": "Toggle with Hotkey",
+  "settings__switch__hotkey__subtitle": "Use a keyboard shortcut to quickly access your CopyCat Clipboard",
+  "settings__hotkey__unassigned": "Not Assigned",
+  "settings__hotkey__preview_start": "Press ",
+  "settings__hotkey__preview_end": " to show or hide the app.",
+  "settings__tile__theme_color__title": "Theme Color",
+  "settings__tile__theme_color__subtitle": "This color will influence the overall look and feel of the app.",
+  "settings__tile__desk_client__title": "Download Desktop Client",
+  "settings__tile__mobile_client__title": "Download Phone Client",
+  "settings__tile__client__subtitle": "Access your clipboard on all your devices.",
+  "settings__tile__e2e_setup__title": "End to End Encryption Setup",
+  "settings__tile__e2e_setup__subtitle": "Configure encryption for your clips.",
+  "settings__switch__e2e__title": "Enable Encryption",
+  "settings__switch__e2e__subtitle": "Toggle to activate or deactivate end-to-end encryption for your clips.",
+  "settings__dialog__conn_gdrive__title": "Re-Connect Google Drive?",
+  "settings__dialog__conn_gdrive__subtitle": "Your google drive is already connected! Would you like to reconnect?\n\nTo avoid any data loss, please ensure you use the same account as before.",
+  "settings__drive__connected": "Connected",
+  "settings__drive__loading": "Loading...",
+  "settings__drive__authorizing": "Authorizing...",
+  "settings__drive__disconnected": "Disconnected",
+  "settings__text__cloud__title": "Cloud Drive",
+  "settings__text__cloud__name": "Google Drive",
+  "settings__text__gdrive__error": "Google Drive is not connected. File and media syncing are currently disabled.",
+  "settings__text__gdrive__info": "Your files and media are securely synced across devices via Google Drive, ensuring your privacy is protected.",
+  "settings__tile__other_cloud__title": "Setup Other Cloud Drive",
+  "settings__tile__other_cloud__subtitle": "Setup other cloud drives like Dropbox, OneDrive, etc.",
+  "@@CUSTOM_EXCLUSION_RULES": "Custom Exclusion Rules Screen",
+  "custom_er__nav__1": "App",
+  "custom_er__nav__2": "Window Title",
+  "custom_er__nav__3": "Url",
+  "custom_er__nav__4": "Text Pattern",
+  "custom_er__text__not_supported": "This exclusion is not supported yet",
+  "custom_er__tile__add_app": "Add an app",
+  "custom_er__text__no_app": "No custom app excluded yet",
+  "custom_er__button__remove_app": "Remove this app",
+  "custom_er__tile__pattern": "Prevent copy when copied content matches these patterns",
+  "custom_er__text__no_pattern": "No custom pattern(s) excluded",
+  "custom_er__button__remove_pattern": "Remove this pattern",
+  "custom_er__tile__url": "Prevent copy from website matching these url segments.",
+  "custom_er__input__url_hint": "Enter a url or part of a url here.",
+  "custom_er__text__no_url": "No custom url(s) excluded",
+  "custom_er__button__remove_url": "Remove this url",
+  "custom_er__tile__title": "Prevent copy from app or website when window title matches.",
+  "custom_er__text__no_title": "No custom title(s) excluded",
+  "custom_er__button__remove_title": "Remove this title",
+
+  "@@ABOUT": "About App Dialog",
+  "about__tile__discord": "Discord • Connect",
+  "about__tile__youtube": "YouTube • Tutorial",
+  "about__tile__read_tut": "Read • Tutorial",
+  "about__tile__github": "Github • Open Source",
+  "about__tile__website": "EntilityStudio • Website",
+  "about__tile__support": "Support",
+
+  "@@ANDROID_BACKGROUND_CLIPBOARD": "Android Background Clipboard",
+  "abc_title": "Background Clipboard",
+  "abc__tile__subtitle": "Listen to the clipboard in the background",
+
+  "abc__tip__why_title": "Why are these permissions needed?",
+  "abc__tip__why_subtitle": "These permissions ensure CopyCat works correctly in the background, allowing it to detect copied content and provide you with a seamless experience without interruptions.",
+  
+  "abc__tip__support_title": "Limited Support",
+  "abc__tip__support_subtitle": "1. Currently, only text clips are supported.\n2. Some operating systems, like HyperOS 1, are not supported yet.",
+  
+  "abc__heading__req_perm": "Required Permissions",
+  
+  "abc__tile__notification_title": "Notification Access",
+  "abc__tile__notification_subtitle": "Displays a persistent notification to inform you that CopyCat is running in the background, ensuring transparency and privacy.",
+
+  "abc__tile__battery_opt_title": "Battery Optimization",
+  "abc__tile__battery_opt_subtitle": "Prevents the system from shutting down CopyCat while running in the background, ensuring a seamless experience.",
+
+  "abc__tile__overlay_title": "Overlay Permission",
+  "abc__tile__overlay_subtitle": "Allows CopyCat to read the clipboard by briefly opening a transparent window over the screen and closing it immediately after.",
+
+  "abc__tile__acc_title": "Accessibility Service",
+  "abc__tile__acc_subtitle": "Start the CopyCat background listener to detect when you copy something and ensure the service restarts automatically after a reboot.",
+
+  "abc__ack__ready": "Setup ready to be configured.",
+  "abc__ack__preparing": "Preparing setup, please wait...",
+
+  "abc__perm_alert_open_setting__button": "Open Setting",
+
+  "abc__overlay_perm_alert__title": "Overlay Permission",
+  "abc__overlay_perm_alert__subtitle": "CopyCat Clipboard needs the 'Draw Over Other Apps' permission to read clipboard content in the background.",
+  "abc__overlay_perm_alert__p1_prefix": "This permission is ",
+  "abc__overlay_perm_alert__p1_bold": "used only for clipboard detection",
+  "abc__overlay_perm_alert__p1_suffix": " when you're copying something in the background.",
+  "abc__overlay_perm_alert__p2_prefix": "When enabled, CopyCat ",
+  "abc__overlay_perm_alert__p2_bold": "creates a 0-pixel transparent window",
+  "abc__overlay_perm_alert__p2_suffix": " to briefly bring the app to the foreground to read clipboard data.",
+  "abc__overlay_perm_alert__p3_prefix": "The app ",
+  "abc__overlay_perm_alert__p3_bold": "does not show anything",
+  "abc__overlay_perm_alert__p3_suffix": " on your screen during this process.",
+  "abc__overlay_perm_alert__p4_prefix": "On some devices, the system may show a toast message ",
+  "abc__overlay_perm_alert__p4_bold": "'CopyCat pasted from your clipboard'",
+  "abc__overlay_perm_alert__p4_suffix": " when CopyCat reads your clipboard content.",
+  "abc__overlay_perm_alert__agree": "By granting this permission, you agree to the above usage.",
+
+  "abc__accessibility_perm_alert__title": "Accessibility Permission",
+  "abc__accessibility_perm_alert__subtitle": "CopyCat Clipboard requires the Accessibility Service to run in the background for real-time clipboard detection and syncing.",
+  "abc__accessibility_perm_alert__p1_prefix": "This service is ",
+  "abc__accessibility_perm_alert__p1_bold": "only used",
+  "abc__accessibility_perm_alert__p1_suffix": " for detecting clipboard content and syncing it across devices when enabled.",
+  "abc__accessibility_perm_alert__p2_prefix": "You can ",
+  "abc__accessibility_perm_alert__p2_bold": "exclude specific apps",
+  "abc__accessibility_perm_alert__p2_suffix": " using the Exclusion Rules feature.",
+  "abc__accessibility_perm_alert__p3_prefix": "The app ",
+  "abc__accessibility_perm_alert__p3_bold": "does not access any other data",
+  "abc__accessibility_perm_alert__p3_suffix": " beyond clipboard content.",
+  "abc__accessibility_perm_alert__p4_prefix": "Clipboard data ",
+  "abc__accessibility_perm_alert__p4_bold": "is not shared externally",
+  "abc__accessibility_perm_alert__p4_suffix": " and remains private to your devices.",
+  "abc__accessibility_perm_alert__p5_prefix": "Clipboard data ",
+  "abc__accessibility_perm_alert__p5_bold": "is end-to-end encrypted",
+  "abc__accessibility_perm_alert__p5_suffix": " (if enabled) in transit and at rest, ensuring privacy across devices.",
+  "abc__accessibility_perm_alert__agree": "By enabling the Accessibility Service, you acknowledge and agree to the above terms.",
+
+  "abc__other_setting__title": "Other Settings",
+  "abc__enhanced_clip_detection__title": "Enhanced Clipboard Detection",
+  "abc__enhanced_clip_detection__subtitle": "Enable this option for more accurate clipboard detection. Note that it might not work on every device."
+}

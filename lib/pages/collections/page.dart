@@ -1,16 +1,16 @@
+import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
+import 'package:clipboard/base/constants/numbers/breakpoints.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/base/utils/utility.dart';
 import 'package:clipboard/pages/collections/widgets/appbar.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/clip_collection_grid_item.dart';
 import 'package:clipboard/widgets/layout/custom_scaffold.dart';
 import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/widgets/no_collection.dart';
 import 'package:clipboard/widgets/pro_tip_banner.dart';
 import 'package:clipboard/widgets/scaffold_body.dart';
-import 'package:copycat_base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
-import 'package:copycat_base/constants/numbers/breakpoints.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/common_extension.dart';
-import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

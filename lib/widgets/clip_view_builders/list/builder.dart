@@ -1,19 +1,19 @@
+import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
+import 'package:clipboard/base/constants/numbers/breakpoints.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/base/widgets/clipcard_loading.dart';
+import 'package:clipboard/base/widgets/on_event.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/clip_item/clip_list_item/clip_list_item.dart';
 import 'package:clipboard/widgets/clip_item/clip_menu_provider.dart';
 import 'package:clipboard/widgets/clip_item/clip_meta_info.dart';
 import 'package:clipboard/widgets/clip_view_builders/selected_clip_provider.dart';
 import 'package:clipboard/widgets/empty.dart';
 import 'package:clipboard/widgets/load_more_card.dart';
-import 'package:copycat_base/bloc/event_bus_cubit/event_bus_cubit.dart';
-import 'package:copycat_base/constants/numbers/breakpoints.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/common_extension.dart';
-import 'package:copycat_base/utils/utility.dart';
-import 'package:copycat_base/widgets/clipcard_loading.dart';
-import 'package:copycat_base/widgets/on_event.dart';
 import 'package:flutter/material.dart';
 
 class ClipListBuilder extends StatelessWidget {

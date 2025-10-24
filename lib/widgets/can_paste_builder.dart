@@ -1,4 +1,4 @@
-import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -1,5 +1,5 @@
 import 'package:clipboard/widgets/window_focus_manager.dart';
-import 'package:copycat_base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
+import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

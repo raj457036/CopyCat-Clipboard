@@ -4,7 +4,7 @@ import 'package:clipboard/pages/settings/widgets/dropdowns/dont_copy_over_dropdo
 import 'package:clipboard/pages/settings/widgets/switches/pause_till_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/startup_launch_switch.dart';
 import 'package:clipboard/widgets/locale_dropdown.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:flutter/material.dart';
 
 class GeneralSettings extends StatelessWidget {

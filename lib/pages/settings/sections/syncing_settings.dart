@@ -2,8 +2,8 @@ import 'package:clipboard/pages/settings/widgets/dropdowns/sync_mode_dropdown.da
 import 'package:clipboard/pages/settings/widgets/switches/enable_sync_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/file_sync_switch.dart';
 import 'package:clipboard/widgets/local_user.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/l10n/l10n.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class SyncingSettings extends StatelessWidget {

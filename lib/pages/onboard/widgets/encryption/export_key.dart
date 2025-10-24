@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:animate_do/animate_do.dart';
+import 'package:clipboard/base/common/failure.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/base/utils/utility.dart';
+import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:clipboard/widgets/dialogs/info_dialog.dart';
-import 'package:copycat_base/common/failure.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/common_extension.dart';
-import 'package:copycat_base/utils/snackbar.dart';
-import 'package:copycat_base/utils/utility.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_io/io.dart';

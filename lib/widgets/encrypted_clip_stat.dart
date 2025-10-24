@@ -1,8 +1,8 @@
-import 'package:copycat_base/common/failure.dart';
-import 'package:copycat_base/constants/strings/route_constants.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/domain/repositories/clipboard.dart';
-import 'package:copycat_base/utils/common_extension.dart';
+import 'package:clipboard/base/common/failure.dart';
+import 'package:clipboard/base/constants/strings/route_constants.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/domain/repositories/clipboard.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:dartz/dartz.dart' show Either;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

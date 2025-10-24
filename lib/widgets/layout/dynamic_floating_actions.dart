@@ -3,7 +3,7 @@ import 'package:clipboard/widgets/fabs/create_collection.dart';
 import 'package:clipboard/widgets/fabs/paste.dart';
 import 'package:clipboard/widgets/fabs/sync_status.dart';
 import 'package:clipboard/widgets/local_user.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:flutter/material.dart';
 
 class DynamicFloatingActions extends StatelessWidget {

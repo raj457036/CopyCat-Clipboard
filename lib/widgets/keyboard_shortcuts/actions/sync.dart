@@ -1,4 +1,4 @@
-import 'package:copycat_base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
+import 'package:clipboard/base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

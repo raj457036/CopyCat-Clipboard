@@ -1,9 +1,9 @@
 import 'package:clipboard/di/di.dart';
-import 'package:copycat_base/common/custom_icons.dart';
-import 'package:copycat_base/constants/strings/asset_constants.dart';
-import 'package:copycat_base/constants/strings/strings.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/l10n/l10n.dart';
+import 'package:clipboard/base/common/custom_icons.dart';
+import 'package:clipboard/base/constants/strings/asset_constants.dart';
+import 'package:clipboard/base/constants/strings/strings.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
