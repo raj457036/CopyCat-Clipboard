@@ -42,6 +42,7 @@ class InconsistentTiming extends StatefulWidget {
 
 class _InconsistentTimingState extends State<InconsistentTiming> {
   bool autoFixing = false;
+  bool checking = false;
 
   Future<void> autoFix(BuildContext context) async {
     // TODO(raj): add method to automatically fix the time.
@@ -76,8 +77,15 @@ class _InconsistentTimingState extends State<InconsistentTiming> {
   }
 
   Future<bool> checkAgain(BuildContext context) async {
+    if (checking) return false;
+    setState(() {
+      checking = true;
+    });
     final cubit = context.read<AppConfigCubit>();
     final result = await cubit.syncClocks();
+    setState(() {
+      checking = false;
+    });
     if (result == true && context.mounted) {
       context.pop();
       _visible = false;
@@ -88,6 +96,13 @@ class _InconsistentTimingState extends State<InconsistentTiming> {
 
   @override
   Widget build(BuildContext context) {
+    const loading = SizedBox.square(
+      dimension: 22,
+      child: CircularProgressIndicator(
+        strokeWidth: 2,
+      ),
+    );
+    final actionDisabled = autoFixing || checking;
     return AlertDialog.adaptive(
       title: Text(context.locale.dialog__text__inconsistent_time__title,
           textAlign: TextAlign.center),
@@ -104,19 +119,16 @@ class _InconsistentTimingState extends State<InconsistentTiming> {
       actions: [
         if (Platform.isWindows)
           TextButton(
-            onPressed: autoFixing ? null : () => autoFix(context),
+            onPressed: actionDisabled ? null : () => autoFix(context),
             child: autoFixing
-                ? const SizedBox.square(
-                    dimension: 22,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  )
+                ? loading
                 : Text(context.locale.dialog__button__try_fix),
           ),
         TextButton(
-          onPressed: autoFixing ? null : () => checkAgain(context),
-          child: Text(context.locale.dialog__button__try_again),
+          onPressed: actionDisabled ? null : () => checkAgain(context),
+          child: checking
+              ? loading
+              : Text(context.locale.dialog__button__try_again),
         ),
       ],
     );

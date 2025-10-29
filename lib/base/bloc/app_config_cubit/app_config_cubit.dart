@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert' show jsonEncode;
+import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/db/app_config/appconfig.dart';
@@ -24,6 +25,7 @@ part 'app_config_cubit.freezed.dart';
 part 'app_config_state.dart';
 
 ExclusionChecker? exclusionChecker;
+DateTime? currentInternetTime;
 
 @singleton
 class AppConfigCubit extends Cubit<AppConfigState> {
@@ -55,11 +57,22 @@ class AppConfigCubit extends Cubit<AppConfigState> {
 
   Future<bool?> syncClocks() async {
     try {
-      final currentInternetTime = await NTP.now();
+      final timeServers = [
+        'time.google.com',
+        'pool.ntp.org',
+        'time.apple.com',
+        'time.windows.com',
+        'time.cloudflare.com',
+        'time.facebook.com',
+      ];
+      String timeServer = timeServers[Random()
+          .nextInt(timeServers.length)]; // Randomly select a time server
+
+      currentInternetTime ??= await NTP.now(lookUpAddress: timeServer);
       final currentTime = DateTime.now();
 
       final notInSameMoment =
-          currentInternetTime.difference(currentTime).inSeconds.abs() > 5;
+          currentInternetTime!.difference(currentTime).inSeconds.abs() > 5;
       if (notInSameMoment) {
         emit(
           state.copyWith(
