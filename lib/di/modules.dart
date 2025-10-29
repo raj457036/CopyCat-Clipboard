@@ -64,7 +64,8 @@ abstract class RegisterModule {
   @preResolve
   @LazySingleton(dispose: closeIsarDb)
   Future<Isar> get db async {
-    final dir = await getApplicationDocumentsDirectory();
+    String? dbPath = Platform.environment[dbPathEnvKey];
+    dbPath = dbPath ?? (await getApplicationDocumentsDirectory()).path;
 
     final isar = await Isar.open(
       [
@@ -74,7 +75,7 @@ abstract class RegisterModule {
         ClipCollectionSchema,
         SubscriptionSchema,
       ],
-      directory: dir.path,
+      directory: dbPath,
       relaxedDurability: true,
       inspector: kDebugMode,
       name: dbName,

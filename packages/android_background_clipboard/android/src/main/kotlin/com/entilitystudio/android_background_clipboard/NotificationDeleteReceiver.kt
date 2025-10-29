@@ -16,10 +16,6 @@ class NotificationDeleteReceiver : BroadcastReceiver() {
         // Restart the service and show the notification again
         val serviceIntent = Intent(context, CopyCatClipboardService::class.java)
         serviceIntent.action = "RESTART_SERVICE"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(serviceIntent)
-        } else {
-            context.startService(serviceIntent)
-        }
+        context.startForegroundService(serviceIntent)
     }
 }

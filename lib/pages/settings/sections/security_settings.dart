@@ -28,7 +28,7 @@ class SecuritySettings extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(indent: padding12, endIndent: padding12),
+          const DisableForLocalUser(child: Divider(indent: padding12, endIndent: padding12)),
           const ExclusionRulesSwitchTile(),
         ],
       ),

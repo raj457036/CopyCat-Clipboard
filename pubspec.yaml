@@ -68,7 +68,8 @@ dependencies:
   sentry_flutter: ^9.6.0
   animate_do: ^3.3.4
   installed_apps:
-    path: packages/installed_apps
+    git:
+      url: https://github.com/raj457036/installed_apps.git
   media_kit: ^1.2.0
   media_kit_video: ^1.3.0
   media_kit_libs_video:
@@ -82,7 +83,7 @@ dependencies:
   super_clipboard: ^0.9.1
   super_drag_and_drop: ^0.9.1
   easy_worker: ^1.2.3
-  clipboard_watcher: ^0.2.1
+  clipboard_watcher: ^0.3.0
   crypto: ^3.0.6
   logger: ^2.4.0
   ntp: ^2.0.0
@@ -118,10 +119,10 @@ flutter:
     - family: RobotoFlex
       fonts:
         - asset: fonts/RobotoFlex-VariableFont.ttf
-    - family:  DockIcons
+    - family: DockIcons
       fonts:
         - asset: fonts/DockIcons.ttf
-    - family:  CustomIcons
+    - family: CustomIcons
       fonts:
         - asset: fonts/CustomIcons.ttf
 

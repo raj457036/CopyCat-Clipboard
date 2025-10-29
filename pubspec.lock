@@ -268,10 +268,10 @@ packages:
     dependency: "direct main"
     description:
       name: clipboard_watcher
-      sha256: a6c98d9a30c47d1c5655ed48c46f554b04545da018f28992fb2540d1d14d863a
+      sha256: "6a9f11ecfe983e9a211458c37c62a9c2830e6ae0db4afc65f1e9fecdd2c204a3"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.1"
+    version: "0.3.0"
   clock:
     dependency: transitive
     description:
@@ -880,9 +880,11 @@ packages:
   installed_apps:
     dependency: "direct main"
     description:
-      path: "packages/installed_apps"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "16e6dbb6cc55634fd14f370b96e52045fb4ecbac"
+      url: "https://github.com/raj457036/installed_apps.git"
+    source: git
     version: "1.6.0"
   internet_connection_checker_plus:
     dependency: "direct main"

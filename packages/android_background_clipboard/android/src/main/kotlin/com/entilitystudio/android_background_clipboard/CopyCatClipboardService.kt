@@ -85,7 +85,9 @@ class CopyCatClipboardService : Service() {
             )) || copycatStorage.excludedPackages.contains(appPackageName)
         if (excluded) {
             Log.i(logTag, "$appPackageName is excluded by exclusion rules.")
-            showAck("Clip Excluded!")
+            if (!disableDuplicateAnnouncement) {
+                showAck("Clip Excluded!");
+            }
             return
         }
 
@@ -417,8 +419,8 @@ class CopyCatClipboardService : Service() {
             "RESTART_SERVICE" -> {
                 Log.d(logTag, "Service restart requested")
                 // Just ensure notification is showing, don't call onCreate
+                prepareAndShowNotification();
                 if (!isRunning) {
-                    prepareAndShowNotification()
                     isRunning = true
                 }
             }

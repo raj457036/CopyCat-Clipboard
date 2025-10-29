@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/constants/numbers/duration.dart';
+import 'package:clipboard/base/constants/strings/asset_constants.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/clip_collection.dart';
@@ -22,6 +23,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:isar_community/isar.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:universal_io/io.dart' show Platform;
 
 part 'clip_sync_manager_cubit.freezed.dart';
 part 'clip_sync_manager_state.dart';
@@ -83,10 +85,11 @@ final _clipSyncWorker =
         if (token != null) {
           BackgroundIsolateBinaryMessenger.ensureInitialized(token);
         }
-        final dir = await getApplicationDocumentsDirectory();
+        String? dbPath = Platform.environment[dbPathEnvKey];
+        dbPath = dbPath ?? (await getApplicationDocumentsDirectory()).path;
         Isar.openSync(
           [ClipboardItemSchema],
-          directory: dir.path,
+          directory: dbPath,
           relaxedDurability: true,
           inspector: kDebugMode,
           name: dbName,
