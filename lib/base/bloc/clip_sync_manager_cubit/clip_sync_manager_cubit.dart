@@ -5,7 +5,6 @@ import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/constants/numbers/duration.dart';
-import 'package:clipboard/base/constants/strings/asset_constants.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/clip_collection.dart';

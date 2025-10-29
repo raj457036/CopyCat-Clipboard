@@ -89,6 +89,7 @@
   "dialog__text__inconsistent_time__title": "Time Sync Warning",
   "dialog__text__inconsistent_time__content": "Inconsistent Device Time Detected\n\nTo ensure accurate clipboard syncing, please check and correct your device's time settings.\n\nInconsistent time settings may cause synchronization issues.",
   "dialog__button__try_again": "Check Again",
+  "dialog__button__try_fix": "Try Auto-Fix",
 
   "dialog__record_keys__title": "Record Keyboard Shortcut",
   "dialog__record_keys__subtitle": "Type your shortcut using your keyboard and click ",

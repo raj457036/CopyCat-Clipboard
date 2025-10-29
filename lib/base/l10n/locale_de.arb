@@ -89,6 +89,7 @@
   "dialog__text__inconsistent_time__title": "Warnung zur Uhrzeitsynchronisation",
   "dialog__text__inconsistent_time__content": "Inkonsistente Gerätezeit erkannt\n\nUm eine genaue Synchronisation der Zwischenablage zu gewährleisten, überprüfen und korrigieren Sie bitte die Uhrzeiteinstellungen Ihres Geräts.\n\nInkonsistente Uhrzeiteinstellungen können Synchronisationsprobleme verursachen.",
   "dialog__button__try_again": "Erneut überprüfen",
+  "dialog__button__try_fix": "Versuchen Sie es",
 
   "dialog__record_keys__title": "Tastenkombination aufzeichnen",
   "dialog__record_keys__subtitle": "Geben Sie Ihre Tastenkombination über Ihre Tastatur ein und klicken Sie ",

@@ -238,6 +238,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialog__button__try_again => 'Check Again';
 
   @override
+  String get dialog__button__try_fix => 'Try Auto-Fix';
+
+  @override
   String get dialog__record_keys__title => 'Record Keyboard Shortcut';
 
   @override

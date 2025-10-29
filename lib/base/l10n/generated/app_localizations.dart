@@ -531,6 +531,12 @@ abstract class AppLocalizations {
   /// **'Check Again'**
   String get dialog__button__try_again;
 
+  /// No description provided for @dialog__button__try_fix.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Auto-Fix'**
+  String get dialog__button__try_fix;
+
   /// No description provided for @dialog__record_keys__title.
   ///
   /// In en, this message translates to:

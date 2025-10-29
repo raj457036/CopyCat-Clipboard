@@ -87,6 +87,8 @@
   "dialog__text__inconsistent_time__title": "时间同步警告",
   "dialog__text__inconsistent_time__content": "检测到设备时间不一致\n\n为了确保准确的剪贴板同步，请检查并更正您的设备时间设置。\n\n时间设置不一致可能会导致同步问题。",
   "dialog__button__try_again": "再次检查",
+  "dialog__button__try_fix": "尝试自动修复",
+
   "dialog__record_keys__title": "记录键盘快捷键",
   "dialog__record_keys__subtitle": "使用键盘输入您的快捷键并点击 ",
   "dialog__delete_collection__title": "删除 {collectionName}",

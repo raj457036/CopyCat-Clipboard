@@ -240,6 +240,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dialog__button__try_again => 'Erneut überprüfen';
 
   @override
+  String get dialog__button__try_fix => 'Versuchen Sie es';
+
+  @override
   String get dialog__record_keys__title => 'Tastenkombination aufzeichnen';
 
   @override

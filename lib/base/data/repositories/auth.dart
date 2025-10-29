@@ -66,4 +66,14 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   String? get accessToken => client.auth.currentSession?.accessToken;
+
+  @override
+  FailureOr<void> refreshSession() async {
+    try {
+      await client.auth.refreshSession();
+      return const Right(null);
+    } catch (e) {
+      return Left(Failure.fromException(e));
+    }
+  }
 }

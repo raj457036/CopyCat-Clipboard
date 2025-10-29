@@ -88,6 +88,7 @@
     "dialog__text__inconsistent_time__title": "Aviso de Sincronização de Tempo",
     "dialog__text__inconsistent_time__content": "Tempo Inconsistente Detectado no Dispositivo\n\nPara garantir uma sincronização precisa do clipboard, por favor, verifique e corrija as configurações de hora do seu dispositivo.\n\nConfigurações de tempo inconsistente podem causar problemas de sincronização.",
     "dialog__button__try_again": "Verificar Novamente",
+    "dialog__button__try_fix": "Tentar Corrigir",
   
     "dialog__record_keys__title": "Registrar Atalho de Teclado",
     "dialog__record_keys__subtitle": "Digite seu atalho usando seu teclado e clique ",

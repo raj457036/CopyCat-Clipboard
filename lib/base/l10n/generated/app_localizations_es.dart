@@ -241,6 +241,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dialog__button__try_again => 'Revisar de Nuevo';
 
   @override
+  String get dialog__button__try_fix => 'Intentar Corregir';
+
+  @override
   String get dialog__record_keys__title => 'Registrar Atajo de Teclado';
 
   @override

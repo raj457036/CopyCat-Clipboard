@@ -48,7 +48,7 @@ class _NetworkObserverState extends State<NetworkObserver> {
   void initState() {
     super.initState();
     authCubit = BlocProvider.of<AuthCubit>(context);
-    if (authCubit.isLocalAuth || kDebugMode) return;
+    if (authCubit.isLocalAuth) return;
     networkObserver =
         InternetConnection().onStatusChange.map(transformNetworkStatus);
     subscription = networkObserver?.listen(onConnectionChanged);

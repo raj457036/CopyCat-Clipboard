@@ -88,6 +88,7 @@
   "dialog__text__inconsistent_time__title": "Avertissement de synchronisation temporelle",
   "dialog__text__inconsistent_time__content": "Heure de l'appareil incohérente détectée\n\nPour assurer une synchronisation précise du presse-papiers, veuillez vérifier et corriger les paramètres de l'heure de votre appareil.\n\nDes paramètres de temps incohérents peuvent entraîner des problèmes de synchronisation.",
   "dialog__button__try_again": "Vérifier à nouveau",
+  "dialog__button__try_fix": "Essayer à nouveau",
 
   "dialog__record_keys__title": "Enregistrer le raccourci clavier",
   "dialog__record_keys__subtitle": "Tapez votre raccourci en utilisant votre clavier et cliquez sur ",

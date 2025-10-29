@@ -88,6 +88,7 @@
   "dialog__text__inconsistent_time__title": "Advertencia de Sincronización de Hora",
   "dialog__text__inconsistent_time__content": "Se Detectó Hora Inconsistente en el Dispositivo\n\nPara asegurar una sincronización precisa del portapapeles, por favor revisa y corrige la configuración de la hora de tu dispositivo.\n\nLas configuraciones de hora inconsistentes pueden causar problemas de sincronización.",
   "dialog__button__try_again": "Revisar de Nuevo",
+  "dialog__button__try_fix": "Intentar Corregir",
 
   "dialog__record_keys__title": "Registrar Atajo de Teclado",
   "dialog__record_keys__subtitle": "Escribe tu atajo usando el teclado y haz clic en ",

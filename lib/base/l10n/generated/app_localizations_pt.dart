@@ -240,6 +240,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get dialog__button__try_again => 'Verificar Novamente';
 
   @override
+  String get dialog__button__try_fix => 'Tentar Corrigir';
+
+  @override
   String get dialog__record_keys__title => 'Registrar Atalho de Teclado';
 
   @override

@@ -233,6 +233,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dialog__button__try_again => '再次检查';
 
   @override
+  String get dialog__button__try_fix => '尝试自动修复';
+
+  @override
   String get dialog__record_keys__title => '记录键盘快捷键';
 
   @override

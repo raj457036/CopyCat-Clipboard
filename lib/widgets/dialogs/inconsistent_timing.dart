@@ -2,15 +2,21 @@ import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/snackbar.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:universal_io/io.dart';
 
 bool _visible = false;
 
-class InconsistentTiming extends StatelessWidget {
+class InconsistentTiming extends StatefulWidget {
   const InconsistentTiming({super.key});
+
+  @override
+  State<InconsistentTiming> createState() => _InconsistentTimingState();
 
   Future<void> open() async {
     if (_visible) return;
@@ -32,18 +38,52 @@ class InconsistentTiming extends StatelessWidget {
       );
     });
   }
+}
+
+class _InconsistentTimingState extends State<InconsistentTiming> {
+  bool autoFixing = false;
 
   Future<void> autoFix(BuildContext context) async {
     // TODO(raj): add method to automatically fix the time.
+
+    if (!Platform.isWindows || autoFixing) return;
+
+    setState(() {
+      autoFixing = true;
+    });
+
+    await Process.run(
+      'powershell',
+      [
+        '-Command',
+        'Start-Process powershell -Verb runAs -WindowStyle Hidden -ArgumentList \'-Command "w32tm /resync;"\''
+      ],
+      runInShell: true,
+    );
+    await wait(5000);
+    setState(() {
+      autoFixing = false;
+    });
+    if (!context.mounted) return;
+    final fixed = await checkAgain(context);
+    if (!fixed) {
+      await Process.run(
+        'explorer.exe', // Open the URI with Windows Explorer
+        ['ms-settings:dateandtime'],
+        runInShell: true,
+      );
+    }
   }
 
-  Future<void> checkAgain(BuildContext context) async {
+  Future<bool> checkAgain(BuildContext context) async {
     final cubit = context.read<AppConfigCubit>();
     final result = await cubit.syncClocks();
     if (result == true && context.mounted) {
       context.pop();
       _visible = false;
+      return true;
     }
+    return false;
   }
 
   @override
@@ -62,8 +102,20 @@ class InconsistentTiming extends StatelessWidget {
         ),
       ),
       actions: [
+        if (Platform.isWindows)
+          TextButton(
+            onPressed: autoFixing ? null : () => autoFix(context),
+            child: autoFixing
+                ? const SizedBox.square(
+                    dimension: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
+                  )
+                : Text(context.locale.dialog__button__try_fix),
+          ),
         TextButton(
-          onPressed: () => checkAgain(context),
+          onPressed: autoFixing ? null : () => checkAgain(context),
           child: Text(context.locale.dialog__button__try_again),
         ),
       ],

@@ -241,6 +241,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dialog__button__try_again => 'Vérifier à nouveau';
 
   @override
+  String get dialog__button__try_fix => 'Essayer à nouveau';
+
+  @override
   String get dialog__record_keys__title => 'Enregistrer le raccourci clavier';
 
   @override
