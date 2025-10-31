@@ -93,11 +93,9 @@ Duration? systemToInternetTimeOffset;
 DateTime now() {
   final now_ = DateTime.now();
 
-  // if (systemToInternetTimeOffset != null) {
-  //   logger.d(
-  //     "System to internet time offset: $systemToInternetTimeOffset",
-  //   );
-  // }
+  if (systemToInternetTimeOffset != null) {
+    return now_.add(systemToInternetTimeOffset!);
+  }
   return now_;
 }
 

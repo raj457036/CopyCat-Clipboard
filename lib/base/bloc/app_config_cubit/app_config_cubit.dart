@@ -73,6 +73,13 @@ class AppConfigCubit extends Cubit<AppConfigState> {
               .nextInt(timeServers.length)]; // Randomly select a time server
 
           currentInternetTime = await NTP.now(lookUpAddress: timeServer);
+          final now_ = DateTime.now();
+          systemToInternetTimeOffset = currentInternetTime!.difference(now_);
+
+          logger.d(
+            'Current Internet Time: $currentInternetTime, System Time: $now_, '
+            'Difference: ${systemToInternetTimeOffset!.inSeconds} seconds',
+          );
         },
         retryIf: (e) => e is SocketException || e is TimeoutException,
         maxAttempts: 5,
@@ -83,11 +90,6 @@ class AppConfigCubit extends Cubit<AppConfigState> {
 
       final notInSameMoment =
           currentInternetTime!.difference(currentTime).inSeconds.abs() > 5;
-
-      systemToInternetTimeOffset = currentInternetTime!.difference(currentTime);
-      logger.d(
-        'Current Internet Time: $currentInternetTime, System Time: $currentTime, Difference: ${systemToInternetTimeOffset!.inSeconds} seconds',
-      );
 
       if (notInSameMoment) {
         emit(
