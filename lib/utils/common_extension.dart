@@ -112,7 +112,7 @@ extension DateTimeExtension on DateTime {
   }
 
   bool isToday() {
-    return isSameDate(DateTime.now());
+    return isSameDate(now());
   }
 
   String ago([String? locale]) =>

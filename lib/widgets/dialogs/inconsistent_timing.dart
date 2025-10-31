@@ -78,18 +78,23 @@ class _InconsistentTimingState extends State<InconsistentTiming> {
 
   Future<bool> checkAgain(BuildContext context) async {
     if (checking) return false;
-    setState(() {
-      checking = true;
-    });
-    final cubit = context.read<AppConfigCubit>();
-    final result = await cubit.syncClocks();
-    setState(() {
-      checking = false;
-    });
-    if (result == true && context.mounted) {
-      context.pop();
-      _visible = false;
-      return true;
+
+    try {
+      setState(() {
+        checking = true;
+      });
+      final cubit = context.read<AppConfigCubit>();
+      final result = await cubit.syncClocks();
+
+      if (result == true && context.mounted) {
+        context.pop();
+        _visible = false;
+        return true;
+      }
+    } finally {
+      setState(() {
+        checking = false;
+      });
     }
     return false;
   }

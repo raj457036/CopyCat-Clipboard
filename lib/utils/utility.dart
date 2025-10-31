@@ -88,8 +88,17 @@ const _uuid4 = UuidV4();
 /// Generates a random UUID.
 String getId() => _uuid4.generate();
 
+Duration? systemToInternetTimeOffset;
+
 DateTime now() {
-  return DateTime.now();
+  final now_ = DateTime.now();
+
+  // if (systemToInternetTimeOffset != null) {
+  //   logger.d(
+  //     "System to internet time offset: $systemToInternetTimeOffset",
+  //   );
+  // }
+  return now_;
 }
 
 DateTime nowUTC() {

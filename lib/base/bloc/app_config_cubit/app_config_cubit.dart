@@ -19,6 +19,7 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:injectable/injectable.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:ntp/ntp.dart';
+import 'package:retry/retry.dart';
 import 'package:universal_io/io.dart';
 
 part 'app_config_cubit.freezed.dart';
@@ -65,14 +66,29 @@ class AppConfigCubit extends Cubit<AppConfigState> {
         'time.cloudflare.com',
         'time.facebook.com',
       ];
-      String timeServer = timeServers[Random()
-          .nextInt(timeServers.length)]; // Randomly select a time server
 
-      currentInternetTime ??= await NTP.now(lookUpAddress: timeServer);
-      final currentTime = DateTime.now();
+      await retry(
+        () async {
+          String timeServer = timeServers[Random()
+              .nextInt(timeServers.length)]; // Randomly select a time server
+
+          currentInternetTime = await NTP.now(lookUpAddress: timeServer);
+        },
+        retryIf: (e) => e is SocketException || e is TimeoutException,
+        maxAttempts: 5,
+        onRetry: (e) => logger.w('Retrying NTP fetch due to $e'),
+      );
+
+      final currentTime = now();
 
       final notInSameMoment =
           currentInternetTime!.difference(currentTime).inSeconds.abs() > 5;
+
+      systemToInternetTimeOffset = currentInternetTime!.difference(currentTime);
+      logger.d(
+        'Current Internet Time: $currentInternetTime, System Time: $currentTime, Difference: ${systemToInternetTimeOffset!.inSeconds} seconds',
+      );
+
       if (notInSameMoment) {
         emit(
           state.copyWith(
