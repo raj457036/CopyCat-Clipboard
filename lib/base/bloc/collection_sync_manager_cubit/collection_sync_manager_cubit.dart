@@ -106,8 +106,6 @@ class CollectionSyncManagerCubit extends Cubit<CollectionSyncManagerState> {
       closeSnackbar();
     }
 
-    if (_busy) return false;
-
     _busy = true;
     emit(const CollectionSyncManagerState.syncingUnknown());
     try {

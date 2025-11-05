@@ -129,12 +129,15 @@ class LocalClipboardSource implements ClipboardSource {
 
   @override
   Future<ClipboardItem> update(ClipboardItem item) async {
-    final updated = item.copyWith(
+    ClipboardItem updated = item.copyWith(
       modified: now(),
     )..applyId(item);
+
     await db.writeTxn(
       () => db.clipboardItems.put(updated),
     );
+
+    updated.id = item.id;
     return updated;
   }
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:clipboard/base/constants/strings.dart';
 import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
@@ -7,12 +8,13 @@ import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-mixin SBCrossSyncListenerStatusChangeMixin {
+mixin SBCrossSyncListenerStatusChangeMixin<T> {
   CrossSyncListenerStatus _lastStatus = CrossSyncListenerStatus.unknown;
 
   final _statusEvents = StreamController<CrossSyncStatusEvent>();
-  final _channelEvents =
-      StreamController<CrossSyncEvent<Map<String, dynamic>>>();
+  final _changesQueue = Queue<CrossSyncEvent<T>>();
+
+  T castToType(Object? obj);
 
   void _onStatusChange(RealtimeSubscribeStatus status, Object? obj) {
     switch (status) {
@@ -31,11 +33,26 @@ mixin SBCrossSyncListenerStatusChangeMixin {
   void _onChange(PostgresChangePayload payload) {
     switch (payload.eventType) {
       case PostgresChangeEvent.insert:
-        _channelEvents.add((CrossSyncEventType.create, payload.newRecord));
+        _changesQueue.add(
+          (
+            CrossSyncEventType.create,
+            castToType(payload.newRecord),
+          ),
+        );
       case PostgresChangeEvent.update:
-        _channelEvents.add((CrossSyncEventType.update, payload.newRecord));
+        _changesQueue.add(
+          (
+            CrossSyncEventType.update,
+            castToType(payload.newRecord),
+          ),
+        );
       case PostgresChangeEvent.delete:
-        _channelEvents.add((CrossSyncEventType.delete, payload.newRecord));
+        _changesQueue.add(
+          (
+            CrossSyncEventType.delete,
+            castToType(payload.newRecord),
+          ),
+        );
       default:
     }
   }
@@ -43,7 +60,7 @@ mixin SBCrossSyncListenerStatusChangeMixin {
 
 @LazySingleton(as: ClipCrossSyncListener)
 class SBClipCrossSyncListener
-    with SBCrossSyncListenerStatusChangeMixin
+    with SBCrossSyncListenerStatusChangeMixin<ClipboardItem>
     implements ClipCrossSyncListener {
   RealtimeChannel? _channel;
 
@@ -80,19 +97,12 @@ class SBClipCrossSyncListener
   }
 
   @override
-  get onChange {
-    return _channelEvents.stream.map(
-      (e) => (e.$1, ClipboardItem.fromJson(e.$2)),
-    );
-  }
-
-  @override
   get onStatusChange => _statusEvents.stream;
 
   @override
   Future<void> reconnect() async {
     // Reconnect only if not connected
-    if (!isInitiated || _lastStatus == CrossSyncListenerStatus.connected) {
+    if (_lastStatus != CrossSyncListenerStatus.disconnected) {
       return;
     }
     await stop();
@@ -112,11 +122,19 @@ class SBClipCrossSyncListener
 
   @override
   bool get isInitiated => _channel != null;
+
+  @override
+  get changesQueue => _changesQueue;
+
+  @override
+  castToType(Object? obj) {
+    return ClipboardItem.fromJson(obj as Map<String, dynamic>);
+  }
 }
 
 @LazySingleton(as: CollectionCrossSyncListener)
 class SBCollectionCrossSyncListener
-    with SBCrossSyncListenerStatusChangeMixin
+    with SBCrossSyncListenerStatusChangeMixin<ClipCollection>
     implements CollectionCrossSyncListener {
   RealtimeChannel? _channel;
 
@@ -155,10 +173,11 @@ class SBCollectionCrossSyncListener
   }
 
   @override
-  get onChange {
-    return _channelEvents.stream.map(
-      (e) => (e.$1, ClipCollection.fromJson(e.$2)),
-    );
+  get changesQueue => _changesQueue;
+
+  @override
+  castToType(Object? obj) {
+    return ClipCollection.fromJson(obj as Map<String, dynamic>);
   }
 
   @override
