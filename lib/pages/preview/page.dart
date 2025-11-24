@@ -1,6 +1,6 @@
 import 'package:clipboard/pages/preview/view/horizontal.dart';
 import 'package:clipboard/pages/preview/view/vertical.dart';
-import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
 import 'package:flutter/material.dart';
 
 class ClipboardItemPreviewPage extends StatefulWidget {

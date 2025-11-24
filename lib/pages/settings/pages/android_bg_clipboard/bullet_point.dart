@@ -1,5 +1,5 @@
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/utils/common_extension.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
 class BulletPoint extends StatelessWidget {
@@ -17,6 +17,7 @@ class BulletPoint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: padding4),
       child: Row(
@@ -27,6 +28,9 @@ class BulletPoint extends StatelessWidget {
           Expanded(
             child: RichText(
               text: TextSpan(
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colors.onSurface,
+                ),
                 children: [
                   TextSpan(text: prefix),
                   TextSpan(

@@ -23,13 +23,13 @@ import "package:clipboard/pages/settings/pages/decrypt_clips.dart";
 import "package:clipboard/pages/settings/pages/exclusion_rules.dart";
 import "package:clipboard/pages/splash_page.dart";
 import "package:clipboard/widgets/page_route/dynamic_page_route.dart";
-import "package:copycat_base/bloc/clip_collection_cubit/clip_collection_cubit.dart";
-import "package:copycat_base/bloc/clipboard_cubit/clipboard_cubit.dart";
-import "package:copycat_base/bloc/drive_setup_cubit/drive_setup_cubit.dart";
-import "package:copycat_base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart";
-import "package:copycat_base/bloc/selected_clips_cubit/selected_clips_cubit.dart";
-import "package:copycat_base/constants/key.dart";
-import "package:copycat_base/constants/strings/route_constants.dart";
+import "package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart";
+import "package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart";
+import "package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart";
+import "package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart";
+import "package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart";
+import "package:clipboard/base/constants/key.dart";
+import "package:clipboard/base/constants/strings/route_constants.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -289,7 +289,8 @@ final rootRouter = GoRouter(
   ],
 );
 
-FutureOr<String?> idPresentOrRedirect(context, state, [String? validValue]) {
+FutureOr<String?> idPresentOrRedirect(BuildContext context, state,
+    [String? validValue]) {
   final id = state.pathParameters["id"];
 
   if (validValue != null && id == validValue) return null;

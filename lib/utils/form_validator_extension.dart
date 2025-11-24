@@ -1,7 +1,7 @@
 import 'package:form_validator/form_validator.dart';
 
 extension CustomValidationBuilder on ValidationBuilder {
-  integer([int? min, int? max]) => add((value) {
+  ValidationBuilder integer([int? min, int? max]) => add((value) {
         if (value == null) return null;
         final number = int.tryParse(value);
         if (number == null) {

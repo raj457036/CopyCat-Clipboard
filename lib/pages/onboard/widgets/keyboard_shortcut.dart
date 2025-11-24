@@ -1,10 +1,10 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:clipboard/base/constants/strings/strings.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/pages/settings/widgets/switches/clipboard_hotkey_switch.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/loop_video_player.dart';
-import 'package:copycat_base/constants/strings/strings.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_io/io.dart';
 

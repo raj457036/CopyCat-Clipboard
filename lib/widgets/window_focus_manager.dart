@@ -1,15 +1,15 @@
 import 'dart:async';
 
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/db/app_config/appconfig.dart';
+import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
+import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/debounce.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/in_background_state.dart';
-import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:copycat_base/common/logging.dart';
-import 'package:copycat_base/db/app_config/appconfig.dart';
-import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
-import 'package:copycat_base/utils/common_extension.dart';
-import 'package:copycat_base/utils/debounce.dart';
-import 'package:copycat_base/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focus_window/focus_window.dart';

@@ -1,9 +1,9 @@
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/widgets/link_preview.dart';
+import 'package:clipboard/widgets/link_preview.dart';
 import 'package:flutter/material.dart';
 
 class URLClipPreviewCard extends StatelessWidget {

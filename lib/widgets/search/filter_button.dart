@@ -1,7 +1,7 @@
+import 'package:clipboard/base/domain/model/search_filter_state.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/search/filter_dialog.dart';
-import 'package:copycat_base/domain/model/search_filter_state.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
 typedef OnFilterChangeCallback = void Function(SearchFilterState filterState);

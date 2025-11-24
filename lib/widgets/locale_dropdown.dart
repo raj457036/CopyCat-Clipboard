@@ -1,5 +1,5 @@
 import 'package:clipboard/widgets/locale_dropdown_button.dart';
-import 'package:copycat_base/l10n/l10n.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class LocaleDropdownTile extends StatelessWidget {

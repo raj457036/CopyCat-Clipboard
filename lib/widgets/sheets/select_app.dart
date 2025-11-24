@@ -1,4 +1,4 @@
-import 'package:copycat_base/utils/common_extension.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:installed_apps/app_info.dart' as app_info;
 import 'package:installed_apps/installed_apps.dart';

@@ -1,6 +1,6 @@
 import 'package:clipboard/widgets/subscription/active_plan.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/l10n/l10n.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class CollectionAppBar extends StatelessWidget implements PreferredSizeWidget {

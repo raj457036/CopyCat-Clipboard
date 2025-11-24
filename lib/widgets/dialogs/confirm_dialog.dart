@@ -1,6 +1,6 @@
+import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/timer_builder.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import "package:universal_io/io.dart";

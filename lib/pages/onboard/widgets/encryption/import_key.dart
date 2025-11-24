@@ -1,18 +1,18 @@
 import 'dart:convert';
 
 import 'package:animate_do/animate_do.dart';
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/domain/repositories/clipboard.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/pages/onboard/widgets/locale_and_logout.dart';
+import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/snackbar.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:clipboard/widgets/dialogs/info_dialog.dart';
-import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:copycat_base/bloc/auth_cubit/auth_cubit.dart';
-import 'package:copycat_base/common/failure.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/domain/repositories/clipboard.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/common_extension.dart';
-import 'package:copycat_base/utils/snackbar.dart';
-import 'package:copycat_base/utils/utility.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -1,0 +1,664 @@
+{
+  "@@locale": "de",
+  "@@format": "<App/Funktion>__<Bereich/Komponente>__<Kontext>[__<Variante>",
+  "@@APP": "Geteilte Lokalisierungen in der gesamten App.",
+  "app__name": "CopyCat Zwischenablage",
+  "@app__name": {
+    "description": "App-Name: CopyCat Zwischenablage"
+  },
+  "app__slogan": "Eine Zwischenablage, unbegrenzte Möglichkeiten",
+  "@app__slogan": {
+    "description": "CopyCat Zwischenablage Slogan"
+  },
+  "app__unknown_error": "Ein unerwarteter Fehler ist aufgetreten",
+  "app__downloading": "Herunterladen...",
+  "app__download": "Herunterladen",
+  "app__follow_link": "Link folgen",
+  "app__edit": "Bearbeiten",
+  "app__export": "Exportieren",
+  "app__delete": "Löschen",
+  "app__later": "Überspringen",
+  "app__select": "Wählen",
+  "app__change": "Ändern",
+  "app__confirm": "Bestätigen",
+  "app__action_required": "Aktion erforderlich",
+  "app__feature_unavailable": "Diese Funktion ist für Ihre Plattform nicht verfügbar.",
+  "app__preview": "Vorschau",
+  "app__open_file": "Datei öffnen",
+  "app__change_collection": "Sammlung ändern",
+  "app__share": "Teilen",
+  "app__uploading": "Hochladen...",
+  "app__syncing": "Synchronisieren...",
+  "app__sync": "Synchronisieren",
+  "app__local": "Lokal",
+  "app__send_message": "Nachricht senden",
+  "app__send_email": "E-Mail senden",
+  "app__empty_clipboard": "Ihre Zwischenablage ist leer.",
+  "app__load_more": "Mehr laden",
+  "app__locale_en": "Englisch",
+  "app__locale_es": "Spanisch",
+  "app__locale_fr": "Französisch",
+  "app__locale_de": "Deutsch",
+  "app__locale_zh": "Chinesisch",
+  "app__locale_pt": "Portugiesisch",
+  "app__language": "Sprache",
+  "app__logout": "Abmelden",
+  "app__no_collection": "Keine Sammlung gefunden",
+  "app__create_collection": "Sammlung erstellen",
+  "app__pro_tip": "Pro Tipp",
+  "app__try_again": "Erneut versuchen",
+  "app__realtime_connected": "Echtzeit verbunden",
+  "app__realtime_disconnected": "Echtzeit getrennt",
+  "app__realtime_connecting": "Echtzeit Verbindung...",
+  "app__ack__exported": "Exportiert",
+  "app__ack__copied": "Kopiert",
+  "app__ack__pasted": "Eingefügt",
+  "app__ack__pasting": "Einfügen",
+  "app__ack__done": "Fertig",
+  "app__ack__quit_app": "App beenden",
+  "app__ack__deleted": "Gelöscht",
+  "app__ack__deleting": "Löschen",
+  "app__ack__internet_connected": "Internet verbunden",
+  "app__ack__internet_disconnected": "Internet getrennt",
+  "app__ack__logout_success": "Sie wurden erfolgreich abgemeldet.",
+  "app__ack__missing_e2e_setup": "Verschlüsselungseinrichtung fehlt",
+  "app__ack__no_app_for_file": "Keine Anwendung gefunden, um diese Datei zu öffnen.",
+  "app__ack__perm_fail_to_open_file": "Berechtigung zum Öffnen dieser Datei nicht erteilt.",
+  "app__ack__missing_e2e_setup": "Verschlüsselungseinrichtung fehlt",
+  "@@DIALOG": "Allgemeiner Dialog",
+  "dialog__delete_clip__title": "Clip löschen",
+  "dialog__delete_clip__subtitle": "{itemCount, plural, other{Möchten Sie diese Clips wirklich löschen?} one{Möchten Sie diesen Clip wirklich löschen?}}",
+  "@dialog__delete_clip__subtitle": {
+    "placeholders": {
+      "itemCount": {
+        "type": "int"
+      }
+    }
+  },
+  "dialog__e2e__title": "End-to-End-Verschlüsselung",
+  "dialog__text__e2e_key_export": "Glückwunsch, Sie haben die End-to-End-Verschlüsselung erfolgreich konfiguriert.",
+  "dialog__text__e2e_key_export__note": "Klicken Sie auf die Schaltfläche unten, um Ihren Verschlüsselungsschlüssel zu exportieren. \nSpeichern Sie den Schlüssel an einem sicheren Ort, um sicherzustellen, dass Sie andere Geräte einrichten können, um auf Ihre verschlüsselten Informationen zuzugreifen.",
+  "dialog__text__e2e_key_generate": "Generieren Sie einen Verschlüsselungsschlüssel und speichern Sie ihn sicher. Dieser Schlüssel wird benötigt, um andere Geräte einzurichten, die auf Ihre verschlüsselten Daten zugreifen können.",
+  "dialog__button__e2e_generating_key": "Erzeugen",
+  "dialog__button__e2e_generate_key": "Erzeugt",
+  "dialog__text__invalid_e2e_key": "Der importierte Schlüssel ist ungültig!",
+  "dialog__text__e2e_key_import__note": "Importieren Sie Ihren Verschlüsselungsschlüssel unten, um auf Ihre verschlüsselten Daten auf diesem Gerät zuzugreifen.",
+  "dialog__button__e2e_importing_key": "Importieren",
+  "dialog__button__e2e_import_key": "Importieren",
+
+  "dialog__text__inconsistent_time__title": "Warnung zur Uhrzeitsynchronisation",
+  "dialog__text__inconsistent_time__content": "Inkonsistente Gerätezeit erkannt\n\nUm eine genaue Synchronisation der Zwischenablage zu gewährleisten, überprüfen und korrigieren Sie bitte die Uhrzeiteinstellungen Ihres Geräts.\n\nInkonsistente Uhrzeiteinstellungen können Synchronisationsprobleme verursachen.",
+  "dialog__button__try_again": "Erneut überprüfen",
+  "dialog__button__try_fix": "Versuchen Sie es",
+
+  "dialog__record_keys__title": "Tastenkombination aufzeichnen",
+  "dialog__record_keys__subtitle": "Geben Sie Ihre Tastenkombination über Ihre Tastatur ein und klicken Sie ",
+  "dialog__delete_collection__title": "{collectionName} löschen",
+  "@dialog__delete_collection__title": {
+    "placeholders": {
+      "collectionName": {
+        "type": "String"
+      }
+    }
+  },
+  "dialog__delete_collection__subtitle": "Sind Sie sicher, dass Sie diese Sammlung löschen möchten?",
+
+  "@@APPLY_DIALOG": "Gutschein Dialog anwenden",
+  "dialog__ack__sub_updated": "Abonnement aktualisiert",
+  "dialog__grant_entitlement__title": "Berechtigung gewährt",
+  "dialog__grant_entitlement__subtitle_p1": "Berechtigungscodes werden mit bestimmten Personen für benutzerdefinierte Berechtigungen geteilt. Sie können überprüfen, ob Einladungen noch verfügbar sind, indem Sie ",
+  "dialog__grant_entitlement__subtitle_p2": "Hier klicken.",
+  "dialog__grant_entitlement__enter_code": "Geben Sie den Code ein und drücken Sie Absenden",
+  "dialog__grant_entitlement__apply_code": "Anwenden",
+
+  "@@VIEW_BUTTONS": "Layoutansichtsschaltflächen",
+  "view_button__switch_to_grid": "Wechseln zu Raster-Layout",
+  "view_button__switch_to_list": "Wechseln zu Listen-Layout",
+  "view_button__change_view": "Ansicht ändern",
+  "view_button__view_window": "Fensteransicht",
+  "view_button__view_dock_right": "Rechts andocken",
+  "view_button__view_dock_bottom": "Unten andocken",
+  "view_button__view_dock_left": "Links andocken",
+  "view_button__view_dock_top": "Oben andocken",
+  "view_button__pin": "Oben anheften",
+  "view_button__unpin": "Abheften",
+
+  "@@SUBSCRIPTION_DIALOG": "Abonnement-Detail-Dialog",
+  "sub_dialog__text__included": "Enthalten",
+  "sub_dialog__f1__title": "Unbegrenzte Zwischenablage-Elemente",
+  "sub_dialog__f1__subtitle": "Laufen Sie nie aus Platz mit unbegrenzten Zwischenablage-Elementen, die Sie jederzeit auf Ihre zuletzt kopierten Elemente zugreifen lassen.",
+  "sub_dialog__f2__title": "Unterstützung aller großen Plattformen",
+  "sub_dialog__f2__subtitle": "Synchronisieren Sie nahtlos über alle großen Plattformen hinweg – Android, iOS, Windows, macOS und Linux – für ununterbrochene Produktivität überall.",
+  "sub_dialog__f3__title": "Unterstützt Apple Universal Clipboard",
+  "sub_dialog__f3__subtitle": "Übertragen Sie Inhalte der Zwischenablage mühelos zwischen Ihren Apple-Geräten mit Unterstützung des Universal Clipboard von Apple.",
+  "sub_dialog__f4__title": "Speicherung auf dem Gerät",
+  "sub_dialog__f4__subtitle": "Bewahren Sie Ihre Daten sicher mit der Speicherung auf dem Gerät auf, sodass Ihre Zwischenablage-Elemente immer erreichbar und unter Ihrer Kontrolle sind.",
+  "sub_dialog__f5__title": "Google Drive Integration",
+  "sub_dialog__f5__subtitle": "Speichern Sie Dateien und Medien sicher auf Google Drive, nahtlos integriert mit CopyCat Zwischenablage für umfassendes Datenmanagement.",
+  "sub_dialog__f6__title": "Sofortsuche",
+  "sub_dialog__f6__subtitle": "Finden Sie sofort, was Sie brauchen, mit leistungsstarken Sofortsuche-Funktionen, die das Abrufen von Zwischenablage-Elementen schnell und effizient machen.",
+  "sub_dialog__f7__title": "Synchronisation der letzten 24 Stunden",
+  "sub_dialog__f7__subtitle": "Greifen Sie auf die Geschichte Ihrer Zwischenablage zu und synchronisieren Sie sie auf allen Ihren Geräten innerhalb der letzten 24 Stunden. So verlieren Sie nie wichtige kopierte Elemente, was Ihren Arbeitsablauf nahtlos und effizient macht.",
+  "sub_dialog__f8__title": "Bis zu 3 Sammlungen",
+  "sub_dialog__f8__subtitle": "Organisieren Sie Ihre Zwischenablage-Elemente in bis zu 3 Sammlungen, was einfache Kategorisierung für bessere Arbeitsablaufverwaltung bietet.",
+  "sub_dialog__f9__title": "Automatische Synchronisation alle 45 Sekunden",
+  "sub_dialog__f9__subtitle": "Genießen Sie die automatische Synchronisation von Zwischenablage-Elementen alle 45 Sekunden, halten Sie Ihre Geräte immer auf dem neuesten Stand, ohne manuelles Eingreifen.",
+  "sub_dialog__f10__title": "Unterstützung der End-to-End-Verschlüsselung",
+  "sub_dialog__f10__subtitle": "Ende-zu-Ende-Verschlüsselung macht alles für überlegene Privatsphäre verschlüsselt.",
+
+  "sub_dialog__text__pro_title": "Mit PRO ✨",
+  "sub_dialog__text__pro_subtitle": "Alles in Freemium enthalten +",
+  "sub_dialog__f11__title": "Bis zu 50 Sammlungen",
+  "sub_dialog__f11__subtitle": "Organisieren Sie Ihre Zwischenablage-Elemente in bis zu 50 Sammlungen für ultimative Verwaltung.",
+  "sub_dialog__f12__title": "Synchronisation der letzten 30 Tage",
+  "sub_dialog__f12__subtitle": "Die Zwischenablage-Historie ist auf allen Ihren Geräten für Clips synchronisiert, die in den letzten 30 Tagen erstellt wurden. Das bedeutet, dass Sie auf jeden Clip zugreifen können, den Sie im vergangenen Monat kopiert haben, egal welches Gerät Sie verwenden.",
+  "sub_dialog__f13__title": "Echtzeit-Synchronisation",
+  "sub_dialog__f13__subtitle": "Erleben Sie blitzschnelle Synchronisation.",
+  "sub_dialog__f14__title": "Schnellere und Priorisierte Unterstützung",
+  "sub_dialog__f14__subtitle": "Erhalten Sie schnellen und priorisierten Support als PRO-Benutzer.",
+  "sub_dialog__f15__title": "Früher Zugang zu neuen Funktionen",
+  "sub_dialog__f15__subtitle": "Seien Sie der Erste, der neue Funktionen und Updates ausprobieren kann.",
+  "sub_dialog__f16__title": "Benutzerdefinierte Ausschlussregeln",
+  "sub_dialog__f16__subtitle": "Präzise Kontrolle über Ihre Zwischenablage. Ermöglicht es Ihnen zu definieren, was kopiert wird, woher es kopiert wird und wann es kopiert wird.",
+  "sub_dialog__f17__title": "Ziehen & Ablegen",
+  "sub_dialog__f17__subtitle": "Verschieben Sie Elemente nahtlos in jede Richtung auf Ihren Desktop- und Tablet-Geräten.",
+  "sub_dialog__f18__title": "Themen",
+  "sub_dialog__f18__subtitle": "Passen Sie den gesamten Look und das Gefühl der App an, um Ihren Vorlieben zu entsprechen.",
+  "paywall_dialog__text__month": "Monat",
+  "paywall_dialog__text__year": "Jahr",
+  "paywall_dialog__text__subscription": "Abonnement",
+  "paywall_dialog__text__supported_platform": "Um auf Premium-Funktionen in der CopyCat Zwischenablage zuzugreifen, abonnieren Sie bitte über den Play Store oder den Apple App Store. Ihr Abonnement wird auf all Ihren Geräten synchronisiert, einschließlich Linux und Windows.",
+  "paywall_dialog__text__unlock_pro": "CopyCat PRO freischalten",
+  "paywall_dialog__text__unlock_pro_p1": "Genießen Sie über 30 Tage synchronisierte Geschichte, über 50 Sammlungen, Ende-zu-Ende-Verschlüsselung, Echtzeit-Synchronisation, Zugriff auf die neuesten Funktionen und vieles mehr.",
+  "paywall_dialog__text__try_again": "Bitte erneut versuchen",
+  "paywall_dialog__text__current_plan": "Aktueller Plan",
+  "paywall_dialog__text__expired_plan": "Aktueller Plan • Abgelaufen",
+  "paywall_dialog__text__trial_till": "Testversion bis {till}",
+  "@paywall_dialog__text__trial_till": {
+      "placeholders": {
+          "till": {
+              "type": "DateTime",
+              "format": "yMMMd"
+          }
+      }
+  },
+  "paywall_dialog__text__upgrade": "Upgrade",
+
+  "@@FAB": "Schwebende Aktionsschaltfläche",
+  "fab__create_collection": "Sammlung erstellen ( {remaining} verbleibend )",
+  "@fab__create_collection": {
+    "placeholders": {
+      "remaining": {
+        "type": "String"
+      }
+    }
+  },
+
+  "fab__sync": "Synchronisieren",
+  "fab__sync_unavailable": "Synchronisierung nicht verfügbar",
+  "fab__sync_up_to_date": "Bereits auf dem neuesten Stand.",
+  "fab__sync_failed": "Synchronisierung fehlgeschlagen: {message}",
+  "@fab__sync_failed": {
+      "placeholders": {
+          "message": {
+              "type": "String"
+          }
+      }
+  },
+
+  "@@LAYOUT": "Layout-Widgets",
+  "layout__navbar__clipboard": "Zwischenablage",
+  "layout__navbar__collections": "Sammlungen",
+  "layout__navbar__settings": "Einstellungen",
+
+  "@@WIDGETS": "Benutzerdefinierte Widgets",
+  "search__tooltip__filter": "Suchfilter",
+  "manage_sub__ack__promo_sub": "Sie verwenden ein Promo-Abonnement bis {till}",
+  "@manage_sub__ack__promo_sub": {
+      "placeholders": {
+          "till": {
+              "type": "String"
+          }
+      }
+  },
+  "manage_sub__button__text": "Abonnements verwalten",
+
+  "my_account__button__tooltip": "Mein Konto",
+  "badges__tooltip__experimental": "Diese Funktion ist experimentell und funktioniert möglicherweise nicht wie erwartet.",
+  "badges__tooltip__pro_only": "Diese Funktion ist nur für Pro-Benutzer verfügbar.",
+
+  "collection_selector__tile__no_collection": "Keine Sammlung",
+  "collection_selector__button__remove_collection": "Sammlung entfernen",
+
+  "dialog__logout__title": "Abmelden",
+  "dialog__logout__subtitle": "⚠️ WARNUNG ⚠️\n\nDas Abmelden löscht nicht synchronisierte Änderungen in der lokalen Datenbank. Möchten Sie wirklich fortfahren?",
+  "dialog__logging_out__ack": "Sie werden abgemeldet! Bitte warten...",
+
+  "reset_pass__text__label": "Setzen Sie Ihr Passwort zurück",
+
+  "dnd__text__drop_here": "Hier ablegen",
+  "dnd__ack__error_max_drop_count": "Maximal {count} Ablageelemente sind gleichzeitig erlaubt.",
+  "@dnd__ack__error_max_drop_count": {
+      "placeholders": {
+          "count": {
+              "type": "int"
+          }
+      }
+  },
+
+  "@@SEARCH_FILTER_DIALOG": "Suchfilter-Dialog",
+  "search_filter__text__title": "Filter",
+  "search_filter__button__apply": "Anwenden",
+  "search_filter__text__from": "Von",
+  "search_filter__text__select": "Wählen",
+  "search_filter__text__to": "An",
+  "search_filter__text__now": "Jetzt",
+  "search_filter__text__including": "Einschließlich",
+  "search_filter__chip__text": "Text",
+  "search_filter__chip__url": "URL",
+  "search_filter__chip__media": "Medien",
+  "search_filter__chip__docs": "Dokumente",
+  "search_filter__text__textCategories": "Textkategorien",
+  "search_filter__text__exclusive": "( Exklusiv )",
+  "search_filter__text_cat__email": "E-Mail",
+  "search_filter__text_cat__phone": "Telefon",
+  "search_filter__text_cat__color": "Farbe",
+  "search_filter__text__sort_by": "Sortieren nach",
+  "search_filter__sort_by__last_mod": "Zuletzt geändert",
+  "search_filter__sort_by__created": "Erstellt",
+  "search_filter__sort_by__copy_count": "Kopieranzahl",
+  "search_filter__sort_by__last_copied": "Zuletzt kopiert",
+  "search_filter__text__sort_order": "Sortierreihenfolge",
+  "search_filter__sort_ord__asc": "Aufsteigend",
+  "search_filter__sort_ord__desc": "Absteigend",
+
+  "@@LOGIN": "Anmeldebildschirm",
+  "login__local_signin__tooltip": "Keine Synchronisation. Alle Daten bleiben auf Ihrem Gerät.",
+  "login__local_signin__btn__label": "Lokal verwenden",
+  "login__form__input__name": "Geben Sie Ihren Namen ein",
+  "login__form__input__email": "Geben Sie Ihre E-Mail ein",
+  "login__form__input__error_email": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+  "login__form__input__password": "Geben Sie Ihr Passwort ein",
+  "login__form__input__error_password_length": "Bitte geben Sie ein Passwort mit mindestens 6 Zeichen ein",
+  "login__form__button__signin": "Einloggen",
+  "login__form__button__signup": "Registrieren",
+  "login__form__button__forgot_password": "Passwort vergessen?",
+  "login__form__text__signup": "Kein Konto? Jetzt registrieren",
+  "login__form__text__old_user": "Haben Sie bereits ein Konto? Anmelden",
+  "login__form__text__reset_password": "Passwort-Reset-E-Mail senden",
+  "login__form__text__reset_ack": "Passwort-Reset-E-Mail wurde gesendet",
+  "login__form__button__back": "Zurück zur Anmeldung",
+  "login__form__button__update_password": "Passwort aktualisieren",
+  "login__form__text_tnc_p1": "Mit der Fortsetzung stimmen Sie den folgenden ",
+  "login__form__text_tnc_p2": "Datenschutzrichtlinien",
+  "login__form__text_tnc_p3": " und ",
+  "login__form__text_tnc_p4": "Nutzungsbedingungen zu.",
+  "@@HOME": "Startbildschirm",
+  "home__search__hint": "In der Zwischenablage suchen",
+  "home__search__reset": "Suche zurücksetzen",
+  "@@PREVIEW": "Vorschau-Bildschirm",
+  "preview__vert_view__tab1_title": "Vorschau",
+  "preview__vert_view__tab2__title": "Details",
+  "preview__card__missing_text": "Dies ist ein leerer Clip",
+  "preview__card__video__play": "Video abspielen",
+  "preview__card__file__open": "Datei öffnen",
+  "preview__form__title": "Details bearbeiten",
+  "preview__form__input__title": "Titel",
+  "preview__form__input__description": "Beschreibung",
+  "@@RESET_PASSWORD": "Passwort zurücksetzen Bildschirm",
+  "reset_password__appbar__title": "Setzen Sie Ihr Passwort zurück",
+  "reset_password__success_ack": "Passwort erfolgreich zurückgesetzt",
+  "@@ON_BOARDING": "Einführungsbildschirm",
+  "onboarding__text__welcome": "Willkommen bei",
+  "onboarding__text__lets_continue": "Lass uns fortfahren",
+
+  "onboarding__button__to_login": "Anmelden",
+  "onboarding__snackbar__export_success": "Verschlüsselungsschlüssel erfolgreich exportiert.",
+  "onboarding__dialog__skip_export__title": "✋ Sichern Sie Ihren Verschlüsselungsschlüssel",
+  "onboarding__dialog__skip_export__subtitle": "Sie haben Ihren Verschlüsselungsschlüssel noch nicht exportiert. Wenn Sie kein Backup haben, können Sie nicht auf Ihre verschlüsselten Clips zugreifen, falls der Schlüssel verloren geht oder Sie das Gerät wechseln.\n\n👉 Wenn Sie bereits eine sichere Sicherung Ihres Schlüssels haben, können Sie sicher fortfahren. Andernfalls empfehlen wir dringend, den Schlüssel jetzt zu exportieren, um Datenverlust zu vermeiden. Möchten Sie trotzdem fortfahren?",
+  "onboarding__dialog__export_info__title": "🤔 Warum den Verschlüsselungsschlüssel exportieren?",
+  "onboarding__dialog__export_info__subtitle": "Der Export Ihres Verschlüsselungsschlüssels ist wichtig, um sicher auf Ihre verschlüsselten Daten auf mehreren Geräten zugreifen zu können. Ohne den Schlüssel bleiben Ihre verschlüsselten Daten nach der Synchronisation unzugänglich.\n\nBewahren Sie eine Sicherung Ihres Verschlüsselungsschlüssels an einem sicheren Ort auf, um Datenverlust zu vermeiden. Denken Sie daran, der Schlüssel ist einzigartig für Ihr Konto und kann nicht wiederhergestellt werden, wenn er verloren geht.\n\nAchtung: CopyCat hat keinen Zugriff auf Ihre verschlüsselten Clips oder Ihre Verschlüsselungsschlüssel. Dies erfolgt, weil wir Ihre Privatsphäre über alles andere stellen.",
+  "onboarding__text__export_key_headline": "Zwischenablagenverschlüsselung",
+  "onboarding__text__export_key_title": "💪 Gute Nachrichten! Verschlüsselung ist für Ihre Zwischenablage aktiviert",
+  "onboarding__button__export_key": "Schlüssel exportieren",
+  "onboarding__dialog__skip_gen_key__title": "✋ Ihre Clips sind unsicher",
+  "onboarding__dialog__skip_gen_key__subtitle": "Sie haben noch keinen Verschlüsselungsschlüssel erstellt. Ohne ihn bleiben Ihre Clips unverschlüsselt und unsicher. Sie können den Schlüssel später in Einstellungen ❯ Sicherheit generieren. Möchten Sie trotzdem fortfahren?",
+  "onboarding__dialog__gen_key_info__title": "🤔 Warum brauche ich Verschlüsselung?",
+  "onboarding__dialog__gen_key_info__subtitle": "Verschlüsselung schützt Ihre Daten, indem sie in ein sicheres Format umgewandelt wird, auf das nur mit einem Schlüssel zugegriffen werden kann. Ohne Verschlüsselung werden Ihre Clips im Klartext gespeichert und sind anfällig für unberechtigten Zugriff. Die Aktivierung der Verschlüsselung gewährleistet, dass nur Sie auf Ihre sensiblen Daten zugreifen können, was eine zusätzliche Sicherheitsebene gegen mögliche Verstöße bietet.",
+  "onboarding__text__gen_key_headline": "Zwischenablagenverschlüsselung einrichten",
+  "onboarding__text__key_generated_title": "🎉 Schlüssel {keyPreview}*** erfolgreich erstellt 🎉",
+  "@onboarding__text__key_generated_title": {
+    "placeholders": {
+      "keyPreview": {
+        "type": "String"
+      }
+    }
+  },
+  "onboarding__button__regenerate_key": "Schlüssel neu generieren",
+  "onboarding__text__no_key": "Ihr Konto hat keinen Verschlüsselungsschlüssel",
+  "onboarding__button__generate_key": "Schlüssel generieren",
+  "onboarding__button__do_it_later": "Später machen",
+  "onboarding__button__why_important": "Warum ist es wichtig?",
+  "onboarding__snackbar__invalid_key": "Dies ist kein gültiger CopyCat-Verschlüsselungsschlüssel",
+  "onboarding__dialog__skip_import__title": "✋ Verschlüsselte Clips nicht zugänglich",
+  "onboarding__dialog__skip_import__subtitle": "Sie haben Ihren Verschlüsselungsschlüssel noch nicht importiert. Dies bedeutet, dass alle Ihre verschlüsselten Clips lokal nach der Synchronisation unzugänglich bleiben.\n\nUm auf sie zuzugreifen, importieren Sie den Schlüssel aus Einstellungen ❯ Sicherheit.\nMöchten Sie trotzdem fortfahren?",
+  "onboarding__dialog__reset_key__title": "✋ Verschlüsselte Daten dauerhaft löschen",
+  "onboarding__dialog__reset_key__subtitle": "Diese Aktion ist nicht umkehrbar. Möchten Sie wirklich alle verschlüsselten Daten vom Server dauerhaft löschen?",
+  "onboarding__snackbar__reset_key__success": "Verschlüsselung erfolgreich entfernt.",
+  "onboarding__dialog__import_info__title": "🤔 Wo ist mein Schlüssel?",
+  "onboarding__dialog__import_info__subtitle": "Ihr Verschlüsselungsschlüssel ist eine sichere Datei, die während des Verschlüsselungssetups erstellt wurde. Wenn Sie ihn verloren haben, überprüfen Sie Ihren Downloads-Ordner oder jeden Sicherungsort, an dem Sie ihn möglicherweise gespeichert haben. Ohne diesen Schlüssel können Ihre verschlüsselten Daten nicht abgerufen werden.\n\nWenn Sie den Verschlüsselungsschlüssel auf einem anderen Gerät eingerichtet haben, können Sie ihn exportieren, indem Sie auf diesem Gerät zu Einstellungen ❯ Sicherheit ❯ E2EE Tresor wechseln. Übertragen Sie den Schlüssel sicher auf dieses Gerät, um den Zugriff auf Ihre verschlüsselten Daten wiederzuerlangen.",
+  "onboarding__text__import_key_headline": "Zwischenablagenverschlüsselungsschlüssel importieren",
+  "onboarding__text__import_key_title": "Ihr Konto hat derzeit eine aktive Verschlüsselung.",
+  "onboarding__button__import_key": "Schlüssel importieren",
+  "onboarding__button__reset_key": "Verschlüsselung zurücksetzen",
+  "onboarding__button__where_key": "Wo ist der Schlüssel?",
+  "onboarding__text__go_home": "Gehen wir nach Hause",
+  "onboarding__restoration__failed": "Wiederherstellung fehlgeschlagen: {message}",
+  "@onboarding__restoration__failed": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "onboarding__restoration_warning": "⚠️ Bitte lassen Sie diesen Bildschirm während der Synchronisierung geöffnet, um Datenbeschädigung oder Inkonsistenzen zu vermeiden.",
+  "@@RESTORE_CLIPS": "Wiederherstellen von Clips",
+  "restore_clips__text__title": "Mein Zwischenablage wiederherstellen",
+  "restore_clips__error__no_backup": "Kein Zwischenablage-Backup gefunden",
+  "restore_clips__text__total_count": "Sie haben etwa {totalCount} Clip(s), die wiederhergestellt werden müssen.",
+  "@restore_clips__text__total_count": {
+    "placeholders": {
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_clips__sync_disable": "Die Synchronisierung ist derzeit deaktiviert. Bitte aktivieren Sie sie, um fortzufahren.",
+  "restore_clips__preparing": "Vorbereitung der Wiederherstellung der Clips. Bitte warten...",
+  "restore_clips__restored": "Ihre {syncCount} Clip(s) wurden erfolgreich wiederhergestellt.",
+  "@restore_clips__restored": {
+    "placeholders": {
+      "syncCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_clips__restoring": "Wiederhergestellt: {synced} von {totalCount} Clips.",
+  "@restore_clips__restoring": {
+    "placeholders": {
+      "synced": {
+        "type": "int"
+      },
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "@@RESTORE_COLLECTION": "Wiederherstellen von Sammlungen",
+  "restore_collections__text__title": "Meine Sammlungen wiederherstellen",
+  "restore_collections__error__no_backup": "Kein Sammlungs-Backup gefunden",
+  "restore_collections__text__total_count": "Sie haben etwa {totalCount} Sammlung(en), die wiederhergestellt werden müssen.",
+  "@restore_collections__text__total_count": {
+    "placeholders": {
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_collections__sync_disable": "Die Synchronisierung ist derzeit deaktiviert. Bitte aktivieren Sie sie, um fortzufahren.",
+  "restore_collections__preparing": "Vorbereitung der Wiederherstellung der Sammlungen. Bitte warten...",
+  "restore_collections__restored": "Ihre {syncCount} Sammlung(en) wurden erfolgreich wiederhergestellt.",
+  "@restore_collections__restored": {
+    "placeholders": {
+      "syncCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_collections__restoring": "Wiederhergestellt: {synced} von {totalCount} Sammlungen.",
+  "@restore_collections__restoring": {
+    "placeholders": {
+      "synced": {
+        "type": "int"
+      },
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "@@DRIVE_SETUP": "Laufwerksetup-Bildschirm",
+  "drive__snackbar__success": "Laufwerksetup ist nun abgeschlossen.",
+  "drive__text__setting_up": "Einrichten und Synchronisieren...",
+  "drive__text__setting_up__warning": "Bitte warten Sie, während wir dies abschließen. Schließen Sie die App nicht.",
+  "@@CREATE_CLIP_NOTE": "Clip-Notiz erstellen Bildschirm",
+  "create_clip__appbar__title__new": "Neuer Clip",
+  "create_clip__appbar__title__edit": "Clip bearbeiten",
+  "create_clip__button__save_new": "Als neu speichern",
+  "create_clip__input__hint": "Schreiben Sie hier den Inhalt Ihres Clips",
+  "@@COLLECTIONS": "Sammlungen Bildschirm",
+  "collections__text__tip": "Um sicherzustellen, dass Ihre wichtigen Clips jederzeit, unabhängig von der Zeit, auf all Ihren Geräten verfügbar sind, speichern Sie sie in einer Sammlung!",
+  "collections__appbar__title": "Sammlungen",
+  "collections__appbar__title__create": "Sammlung erstellen",
+  "collections__appbar__title__edit": "Sammlung bearbeiten",
+  "collections__input__name": "Name",
+  "collections__input__description": "Beschreibung",
+  "@@SELECT_COLLECTION": "Sammlung auswählen Bildschirm",
+  "select_collection__appbar__title": "Sammlung auswählen",
+  "@@ACCOUNT": "Kontobildschirm",
+  "account__dialog__delete_confirm__title": "Konto-Löschanfrage",
+  "account__dialog__delete_confirm__description": "Sie werden zum Formular für die Konto-Löschanfrage weitergeleitet, sind Sie sicher?",
+  "account__list_tile__display_name": "Anzeigename",
+  "account__list_tile__email": "E-Mail",
+  "account__list_tile__settings": "Kontoeinstellungen",
+  "account__list_tile__danger_zone": "Gefahrenzone",
+  "account__button__req_delete": "Konto-Löschung anfordern",
+  "account__appbar__title": "Mein Konto",
+  "@@SETTINGS": "Einstellungsbildschirm",
+  "settings__appbar__title": "Einstellungen",
+  "settings__tab__1": "Allgemein",
+  "settings__tab__2": "Anpassung",
+  "settings__tab__3": "Synchronisierung",
+  "settings__tab__4": "Verschlüsselung",
+  "settings__tab__5": "Experimentell",
+  "settings__text__encryption": "Verschlüsselung",
+  "settings__text__sync_not_available": "Synchronisierungsbezogene Konfigurationen sind nicht verfügbar, wenn die lokale Zwischenablage verwendet wird.",
+  "settings__appbar__er__title": "Ausschlussregeln",
+  "settings__text__er__predefine": "Vordefinierte Ausschlussregeln",
+  "settings__text__er__pass_manager": "Passwortmanager",
+  "settings__text__er__cc": "Kreditkartennummer",
+  "settings__text__er__phone": "Telefonnummer",
+  "settings__text__er__email": "E-Mail-Adresse",
+  "settings__text__er__url": "Empfindliche URL",
+  "settings__text__decrypted__note": "🥳 Glückwunsch! Alle Ihre Clips wurden erfolgreich lokal entschlüsselt, \n sodass das Erneuern der Datenbank nicht erforderlich ist.",
+  "settings__appbar__cer__title": "Benutzerdefinierte Ausschlussregeln",
+  "settings__switch__drag_n_drop__title": "Ziehen und Ablegen",
+  "settings__switch__drag_n_drop__subtitle": "Ermöglichen Sie es, Elemente innerhalb der App frei in beiden Richtungen zu bewegen.",
+  "settings__dropdown__no_copy_over_limit__title": "Nicht automatisch kopieren über",
+  "settings__dropdown__no_copy_over_limit__subtitle": "Dateien und Medien über eine bestimmte Größe ({fileSize}) werden nicht automatisch kopiert.",
+  "@settings__dropdown__no_copy_over_limit__subtitle": {
+    "placeholders": {
+      "fileSize": {
+        "type": "String"
+      }
+    }
+  },
+  "settings__text__5MB": "5 MB",
+  "settings__text__10MB": "10 MB",
+  "settings__text__20MB": "20 MB",
+  "settings__text__50MB": "50 MB",
+  "settings__text__100MB": "100 MB",
+  "settings__dropdown__no_upload_over_limit__title": "Nicht automatisch hochladen über",
+  "settings__dropdown__no_upload_over_limit__subtitle": "Dateien und Medien über eine bestimmte Größe ({fileSize}) werden nicht automatisch hochgeladen.",
+  "@settings__dropdown__no_upload_over_limit__subtitle": {
+    "placeholders": {
+      "fileSize": {
+        "type": "String"
+      }
+    }
+  },
+  "settings__dropdown__sync_mode__title": "Synchronisierungsmodus",
+  "settings__dropdown__sync_mode__subtitle": "Wählen Sie die Synchronisierungsgeschwindigkeit, die am besten für Sie funktioniert.",
+  "settings__sync_mode__realtime": "Echtzeit",
+  "settings__sync_mode__balanced": "Ausgeglichen",
+  "settings__dropdown__theme__title": "Themenmodus",
+  "settings__theme__system": "System",
+  "settings__theme__light": "Hell",
+  "settings__theme__dark": "Dunkel",
+  "settings__dropdown__color_mode__title": "Farbmodus",
+  "settings__dropdown__color_mode__subtitle": "Wählen Sie den Farbmodus, um das Erscheinungsbild der App anzupassen. Die Standardoption ist 'Tonal Spot'.",
+  "settings__color_mode__tonalSpot": "Tonal Spot",
+  "settings__color_mode__content": "Inhalt",
+  "settings__color_mode__expressive": "Ausdrucksstark",
+  "settings__color_mode__fidelity": "Fidelität",
+  "settings__color_mode__fruit_salad": "Obstsalat",
+  "settings__color_mode__monochrome": "Monochrom",
+  "settings__color_mode__neutral": "Neutral",
+  "settings__color_mode__rainbow": "Regenbogen",
+  "settings__color_mode__vibrant": "Lebendig",
+  "settings__tile__cer_title": "Benutzerdefinierte Regeln",
+  "settings__tile__cer_subtitle": "Ausschluss nach App, App-Fenster/Website-Titel, Website-URL oder Regex-Muster",
+  "settings__tile__er_title": "Ausschlussregeln",
+  "settings__tile__er_subtitle": "Verhindern, dass Informationen in die Zwischenablage kopiert werden. Für erweiterte Kontrolle klicken.",
+  "settings__switch__enable_sync__title": "Zwischenablage-Synchronisierung",
+  "settings__switch__enable_sync__subtitle": "Synchronisieren Sie Ihre Zwischenablage mühelos über mehrere Geräte.",
+  "settings__switch__sync_file__title": "Datei- und Medien-Synchronisierung",
+  "settings__switch__sync_file__subtitle": "Aktivieren, um Dateien und Medien-Clips über Geräte hinweg zu synchronisieren.",
+  "settings__switch__paused__title": "Zwischenablage-Listener pausieren",
+  "settings__switch__paused__subtitle": "Halten Sie das Zwischenablagen-Tracking vorübergehend an, bis zu einer festgelegten Zeit.",
+  "settings__switch__paused_active__subtitle": "Pausiert bis {time}. Tippen Sie, um fortzusetzen oder die Zeit anzupassen.",
+  "@settings__switch__paused_active__subtitle": {
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "h:mm a",
+        "isCustomDateFormat": true
+      }
+    }
+  },
+  "settings__switch__smart_paste__title": "Smartes Einfügen",
+  "settings__switch__smart_paste__subtitle": "Fügen Sie Inhalte direkt in die fokussierte App ein.",
+  "settings__switch__startup__title": "Beim Start starten",
+  "settings__switch__startup__subtitle": "Starten Sie CopyCat automatisch, wenn Ihr Gerät eingeschaltet wird.",
+  "settings__switch__hotkey__title": "Mit Tastenkombination umschalten",
+  "settings__switch__hotkey__subtitle": "Verwenden Sie eine Tastenkombination, um schnell auf Ihre CopyCat Zwischenablage zuzugreifen",
+  "settings__hotkey__unassigned": "Nicht zugewiesen",
+  "settings__hotkey__preview_start": "Drücken ",
+  "settings__hotkey__preview_end": ", um die App anzuzeigen oder auszublenden.",
+  "settings__tile__theme_color__title": "Themenfarbe",
+  "settings__tile__theme_color__subtitle": "Diese Farbe beeinflusst das gesamte Erscheinungsbild der App.",
+  "settings__tile__desk_client__title": "Desktop-Client herunterladen",
+  "settings__tile__mobile_client__title": "Telefonclient herunterladen",
+  "settings__tile__client__subtitle": "Greifen Sie auf Ihrer Zwischenablage auf all Ihren Geräten zu.",
+  "settings__tile__e2e_setup__title": "Einrichtung der Ende-zu-Ende-Verschlüsselung",
+  "settings__tile__e2e_setup__subtitle": "Verschlüsselung für Ihre Clips einrichten.",
+  "settings__switch__e2e__title": "Verschlüsselung aktivieren",
+  "settings__switch__e2e__subtitle": "Umschalten, um Ende-zu-Ende-Verschlüsselung für Ihre Clips zu aktivieren oder zu deaktivieren.",
+  "settings__dialog__conn_gdrive__title": "Google Drive erneut verbinden?",
+  "settings__dialog__conn_gdrive__subtitle": "Ihr Google Drive ist bereits verbunden! Möchten Sie die Verbindung erneut herstellen?\n\nUm jeglichen Datenverlust zu vermeiden, verwenden Sie bitte dasselbe Konto wie zuvor.",
+  "settings__drive__connected": "Verbunden",
+  "settings__drive__loading": "Laden...",
+  "settings__drive__authorizing": "Autorisieren...",
+  "settings__drive__disconnected": "Getrennt",
+  "settings__text__cloud__title": "Cloud-Laufwerk",
+  "settings__text__cloud__name": "Google Drive",
+  "settings__text__gdrive__error": "Google Drive ist nicht verbunden. Datei- und Mediensynchronisation sind derzeit deaktiviert.",
+  "settings__text__gdrive__info": "Ihre Dateien und Medien werden sicher über Google Drive hinweg synchronisiert und gewährleisten so den Schutz Ihrer Privatsphäre.",
+  "settings__tile__other_cloud__title": "Anderen Cloud-Speicher einrichten",
+  "settings__tile__other_cloud__subtitle": "Richten Sie andere Cloud-Speicher wie Dropbox, OneDrive usw. ein.",
+  "@@CUSTOM_EXCLUSION_RULES": "Benutzerdefinierte Ausschlussregeln Bildschirm",
+  "custom_er__nav__1": "App",
+  "custom_er__nav__2": "Fenstertitel",
+  "custom_er__nav__3": "Url",
+  "custom_er__nav__4": "Textmuster",
+  "custom_er__text__not_supported": "Dieser Ausschluss wird noch nicht unterstützt",
+  "custom_er__tile__add_app": "Eine App hinzufügen",
+  "custom_er__text__no_app": "Noch keine benutzerdefinierte App ausgeschlossen",
+  "custom_er__button__remove_app": "Diese App entfernen",
+  "custom_er__tile__pattern": "Kopieren verhindern, wenn der kopierte Inhalt diesen Mustern entspricht",
+  "custom_er__text__no_pattern": "Keine benutzerdefinierten Muster ausgeschlossen",
+  "custom_er__button__remove_pattern": "Dieses Muster entfernen",
+  "custom_er__tile__url": "Kopieren aus einer Website verhindern, die diesen URL-Bereichen entspricht.",
+  "custom_er__input__url_hint": "Geben Sie hier eine URL oder einen Teil einer URL ein.",
+  "custom_er__text__no_url": "Keine benutzerdefinierten URLs ausgeschlossen",
+  "custom_er__button__remove_url": "Diese URL entfernen",
+  "custom_er__tile__title": "Kopieren aus App oder Website verhindern, wenn der Fenstertitel übereinstimmt.",
+  "custom_er__text__no_title": "Keine benutzerdefinierten Titel ausgeschlossen",
+  "custom_er__button__remove_title": "Diesen Titel entfernen",
+
+  "@@ABOUT": "Über App-Dialog",
+  "about__tile__discord": "Discord • Verbinden",
+  "about__tile__youtube": "YouTube • Tutorial",
+  "about__tile__read_tut": "Lesen • Tutorial",
+  "about__tile__github": "Github • Open Source",
+  "about__tile__website": "EntilityStudio • Website",
+  "about__tile__support": "Unterstützung",
+
+  "@@ANDROID_BACKGROUND_CLIPBOARD": "Android Hintergrund-Clipboard",
+  "abc_title": "Hintergrund-Clipboard",
+  "abc__tile__subtitle": "Hören Sie den Clipboard im Hintergrund",
+
+  "abc__tip__why_title": "Warum werden diese Berechtigungen benötigt?",
+  "abc__tip__why_subtitle": "Diese Berechtigungen stellen sicher, dass CopyCat im Hintergrund korrekt funktioniert, kopierte Inhalte erkennt und Ihnen eine nahtlose Erfahrung ohne Unterbrechungen bietet.",
+
+  "abc__tip__support_title": "Begrenzte Unterstützung",
+  "abc__tip__support_subtitle": "1. Derzeit werden nur Textclips unterstützt.\n2. Einige Betriebssysteme, wie HyperOS 1, werden noch nicht unterstützt.",
+
+  "abc__heading__req_perm": "Erforderliche Berechtigungen",
+
+  "abc__tile__notification_title": "Benachrichtigungszugriff",
+  "abc__tile__notification_subtitle": "Zeigt eine persistente Benachrichtigung an, um Sie darüber zu informieren, dass CopyCat im Hintergrund läuft, wodurch Transparenz und Datenschutz gewährleistet werden.",
+
+  "abc__tile__battery_opt_title": "Batterieoptimierung",
+  "abc__tile__battery_opt_subtitle": "Verhindert, dass das System CopyCat im Hintergrund schließt, und sorgt so für eine unterbrechungsfreie Erfahrung.",
+
+  "abc__tile__overlay_title": "Overlay-Berechtigung",
+  "abc__tile__overlay_subtitle": "Ermöglicht es CopyCat, das Clipboard zu lesen, indem ein transparentes Fenster über dem Bildschirm geöffnet und sofort wieder geschlossen wird.",
+
+  "abc__tile__acc_title": "Zugriffsservice",
+  "abc__tile__acc_subtitle": "Startet den Hintergrund-Listener von CopyCat, um zu erkennen, wann Sie etwas kopieren, und stellt sicher, dass der Service nach einem Neustart automatisch neu gestartet wird.",
+
+  "abc__ack__ready": "Setup bereit zur Konfiguration.",
+  "abc__ack__preparing": "Setup wird vorbereitet, bitte warten...",
+
+  "abc__perm_alert_open_setting__button": "Einstellungen öffnen",
+
+  "abc__overlay_perm_alert__title": "Overlay-Berechtigung",
+  "abc__overlay_perm_alert__subtitle": "CopyCat Clipboard benötigt die 'Über andere Apps zeichnen' Berechtigung, um den Inhalt der Zwischenablage im Hintergrund zu lesen.",
+  "abc__overlay_perm_alert__p1_prefix": "Diese Berechtigung wird ",
+  "abc__overlay_perm_alert__p1_bold": "nur zur Zwischenablageerkennung verwendet",
+  "abc__overlay_perm_alert__p1_suffix": " wenn Sie etwas im Hintergrund kopieren.",
+  "abc__overlay_perm_alert__p2_prefix": "Wenn aktiviert, ",
+  "abc__overlay_perm_alert__p2_bold": "erstellt CopyCat ein transparentes Fenster mit 0 Pixel",
+  "abc__overlay_perm_alert__p2_suffix": " um die App kurz in den Vordergrund zu bringen, um die Zwischenablagedaten zu lesen.",
+  "abc__overlay_perm_alert__p3_prefix": "Die App ",
+  "abc__overlay_perm_alert__p3_bold": "zeigt nichts an",
+  "abc__overlay_perm_alert__p3_suffix": " auf Ihrem Bildschirm während dieses Prozesses.",
+  "abc__overlay_perm_alert__p4_prefix": "Auf einigen Geräten kann das System eine Toast-Nachricht anzeigen ",
+  "abc__overlay_perm_alert__p4_bold": "'CopyCat hat aus Ihrer Zwischenablage eingefügt'",
+  "abc__overlay_perm_alert__p4_suffix": " wenn CopyCat Ihren Zwischenablageinhalt liest.",
+  "abc__overlay_perm_alert__agree": "Durch die Erteilung dieser Berechtigung stimmen Sie der oben genannten Nutzung zu.",
+
+  "abc__accessibility_perm_alert__title": "Zugriffsberechtigungsservice",
+  "abc__accessibility_perm_alert__subtitle": "CopyCat Clipboard benötigt den Zugriffsservice, um im Hintergrund zu laufen und die Zwischenablage in Echtzeit zu erkennen und zu synchronisieren.",
+  "abc__accessibility_perm_alert__p1_prefix": "Dieser Service wird ",
+  "abc__accessibility_perm_alert__p1_bold": "nur verwendet",
+  "abc__accessibility_perm_alert__p1_suffix": " zur Erkennung des Zwischenablageinhalts und zur Synchronisierung über Geräte hinweg, wenn er aktiviert ist.",
+  "abc__accessibility_perm_alert__p2_prefix": "Sie können ",
+  "abc__accessibility_perm_alert__p2_bold": "bestimmte Apps ausschließen",
+  "abc__accessibility_perm_alert__p2_suffix": " mit der Funktion Ausschlussregeln.",
+  "abc__accessibility_perm_alert__p3_prefix": "Die App ",
+  "abc__accessibility_perm_alert__p3_bold": "greift nicht auf andere Daten zu",
+  "abc__accessibility_perm_alert__p3_suffix": " über den Zwischenablageinhalt hinaus.",
+  "abc__accessibility_perm_alert__p4_prefix": "Zwischenablagedaten ",
+  "abc__accessibility_perm_alert__p4_bold": "werden nicht extern geteilt",
+  "abc__accessibility_perm_alert__p4_suffix": " und bleiben privat auf Ihren Geräten.",
+  "abc__accessibility_perm_alert__p5_prefix": "Zwischenablagedaten ",
+  "abc__accessibility_perm_alert__p5_bold": "werden Ende-zu-Ende verschlüsselt",
+  "abc__accessibility_perm_alert__p5_suffix": " (wenn aktiviert) während der Übertragung und im Ruhezustand, um die Privatsphäre über Geräte hinweg zu gewährleisten.",
+  "abc__accessibility_perm_alert__agree": "Durch das Aktivieren des Zugriffsservices erkennen Sie die oben genannten Bedingungen an und stimmen ihnen zu.",
+
+  "abc__other_setting__title": "Weitere Einstellungen",
+  "abc__enhanced_clip_detection__title": "Erweiterte Zwischenablage-Erkennung",
+  "abc__enhanced_clip_detection__subtitle": "Aktivieren Sie diese Option für eine genauere Zwischenablage-Erkennung. Beachten Sie, dass sie möglicherweise nicht auf jedem Gerät funktioniert."
+
+}

@@ -1,12 +1,12 @@
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/domain/model/search_filter_state.dart';
-import 'package:copycat_base/domain/sources/clipboard.dart';
-import 'package:copycat_base/enums/clip_type.dart';
-import 'package:copycat_base/enums/sort.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/common_extension.dart';
-import 'package:copycat_base/utils/datetime_extension.dart';
-import 'package:copycat_base/utils/utility.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/domain/model/search_filter_state.dart';
+import 'package:clipboard/base/domain/sources/clipboard.dart';
+import 'package:clipboard/base/enums/clip_type.dart';
+import 'package:clipboard/base/enums/sort.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/datetime_extension.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 
 const _allClipCatergories = {

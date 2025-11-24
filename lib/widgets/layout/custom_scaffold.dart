@@ -1,10 +1,10 @@
+import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
+import 'package:clipboard/base/constants/numbers/breakpoints.dart';
+import 'package:clipboard/base/db/app_config/appconfig.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/layout/bottom_navbar.dart';
 import 'package:clipboard/widgets/layout/dynamic_floating_actions.dart';
 import 'package:clipboard/widgets/layout/navrail_layout.dart';
-import 'package:copycat_base/bloc/window_action_cubit/window_action_cubit.dart';
-import 'package:copycat_base/constants/numbers/breakpoints.dart';
-import 'package:copycat_base/db/app_config/appconfig.dart';
-import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

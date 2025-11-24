@@ -1,7 +1,7 @@
+import 'package:clipboard/base/constants/font_variations.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/routes/utils.dart';
-import 'package:copycat_base/constants/font_variations.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/common_extension.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatelessWidget {
@@ -20,8 +20,10 @@ class BottomNavBar extends StatelessWidget {
         if (constraints.maxWidth <= 330) return const SizedBox.shrink();
         return NavigationBarTheme(
           data: NavigationBarThemeData(
-            labelTextStyle:
-                textTheme.labelSmall?.copyWith(fontVariations: fontVarW700).msp,
+            labelTextStyle: textTheme.labelMedium
+                ?.copyWith(fontVariations: fontVarW500)
+                .msp,
+
             height: 64,
             // iconTheme: IconThemeData(size: 20).msp,
           ),

@@ -1,10 +1,10 @@
+import 'package:clipboard/base/constants/font_variations.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/db/app_config/appconfig.dart';
+import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/enums/clip_type.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
-import 'package:copycat_base/constants/font_variations.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/db/app_config/appconfig.dart';
-import 'package:copycat_base/db/clipboard_item/clipboard_item.dart';
-import 'package:copycat_base/enums/clip_type.dart';
-import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
 class TextPreviewBody extends StatelessWidget {

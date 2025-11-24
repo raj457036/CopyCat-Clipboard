@@ -1,10 +1,10 @@
 name: clipboard
 description: "CopyCat Clipboard: One Clipboard, Limitless Productivity"
-publish_to: 'none'
-version: 1.0.0+62
+publish_to: "none"
+version: 1.2.2+74
 
 environment:
-  sdk: '>=3.3.3 <4.0.0'
+  sdk: ">=3.3.3 <4.0.0"
 
 dependencies:
   flutter:
@@ -15,53 +15,48 @@ dependencies:
   flutter_bloc: ^9.0.0
   bloc: ^9.0.0
   freezed_annotation: ^2.4.4
-  awesome_notifications: ^0.9.3+1
-  path: ^1.9.0
-  path_provider: ^2.1.3
+  path: ^1.9.1
+  path_provider: ^2.1.5
   json_annotation: ^4.9.0
-  get_it: ^7.7.0
-  go_router: ^14.6.2
+  get_it: ^8.2.0
+  go_router: ^16.3.0
   dartz: ^0.10.1
   form_validator: ^2.1.1
-  window_manager: ^0.4.2
+  window_manager: ^0.5.1
   timeago: ^3.7.0
-  isar: 3.1.0+1
-  isar_flutter_libs: 3.1.0+1
+  isar_community: 3.3.0-dev.1
+  isar_community_flutter_libs: 3.3.0-dev.1
   uuid: ^4.4.2
   rxdart: ^0.28.0
-  internet_connection_checker_plus: ^2.3.0 
+  internet_connection_checker_plus: ^2.3.0
   url_launcher: ^6.3.0
   googleapis: ^13.1.0
-  file_picker: ^8.1.6
+  file_picker: ^10.3.2
   http: ^1.2.2
   blurhash_dart: ^1.2.1
   mime: ^1.0.5
   image: ^4.2.0
-  intl: ^0.19.0
+  intl: ^0.20.2
   app_links: ^6.3.3
   device_preview: ^1.2.0
   async: ^2.11.0
   win32_registry: ^1.1.3
   share_handler: ^0.0.21
   universal_io: ^2.2.2
-  duration: ^3.0.13
+  duration: ^4.0.3
   open_filex: ^4.4.0
   hotkey_manager: ^0.2.3
-  google_mobile_ads: ^5.1.0
+  google_mobile_ads: ^6.0.0
   focus_window:
-    path: ./packages/focus_window
+    path: packages/focus_window
   package_info_plus: ^8.0.0
-  tray_manager: ^0.3.1
-  flutter_platform_alert: ^0.5.1
+  tray_manager: ^0.5.0
+  flutter_platform_alert: ^0.8.0
   device_preview_screenshot: ^1.0.0
   encrypt: ^5.0.3
-  upgrader: ^10.3.0
+  upgrader: 11.4.0
   retry: ^3.1.2
   launch_at_startup: ^0.3.1
-  copycat_pro:
-    path: packages/copycat_pro
-  copycat_base:
-    path: packages/copycat_base
   flutter_colorpicker: ^1.1.0
   flutter_svg: ^2.0.10+1
   screen_retriever: ^0.2.0
@@ -70,45 +65,66 @@ dependencies:
       url: https://github.com/raj457036/flutter_svg_provider.git
   android_background_clipboard:
     path: packages/android_background_clipboard
-  sentry_flutter: ^8.12.0
+  sentry_flutter: ^9.6.0
   animate_do: ^3.3.4
-  installed_apps: ^1.5.2
-  media_kit: ^1.1.11
-  media_kit_video: ^1.2.5
-  media_kit_libs_video: ^1.0.5
+  installed_apps:
+    git:
+      url: https://github.com/raj457036/installed_apps.git
+  media_kit: ^1.2.0
+  media_kit_video: ^1.3.0
+  media_kit_libs_video:
   emoji_picker_flutter:
     git:
       url: https://github.com/raj457036/emoji_picker_flutter.git
+  purchases_flutter: ^9.2.0
+  purchases_ui_flutter: ^9.2.0
+  supabase_flutter: ^2.9.1
+  supabase_auth_ui: ^0.5.5
+  super_clipboard: ^0.9.1
+  super_drag_and_drop: ^0.9.1
+  easy_worker: ^1.2.3
+  clipboard_watcher: ^0.3.0
+  crypto: ^3.0.6
+  logger: ^2.4.0
+  ntp: ^2.0.0
+  tiny_storage: ^1.1.0
+  share_plus: ^10.1.2
+  device_info_plus: ^10.0.1
+  equatable: ^2.0.7
+  any_link_preview: ^3.0.2
+  cached_network_svg_image: ^1.2.0
+  cached_network_image: ^3.4.1
 
-  
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   build_runner: ^2.4.13
-  injectable_generator:  ^2.6.2
-  isar_generator: 3.1.0+1
-  freezed: 2.5.7
+  injectable_generator: ^2.6.2
+  isar_community_generator: 3.3.0-dev.1
+  freezed: ^2.5.8
   json_serializable: ^6.8.0
-  flutter_launcher_icons: "^0.13.1"
-  sentry_dart_plugin: ^2.0.0
-
-dependency_overrides:
-  intl: ^0.19.0
-  analyzer: ^6.4.1
-  screen_retriever: ^0.2.0
+  flutter_launcher_icons: ^0.14.3
+  sentry_dart_plugin: ^3.1.1
 
 flutter:
+  generate: true
   uses-material-design: true
   assets:
     - assets/
     - assets/images/
     - assets/images/icons/
-  
+
   fonts:
     - family: RobotoFlex
       fonts:
         - asset: fonts/RobotoFlex-VariableFont.ttf
+    - family: DockIcons
+      fonts:
+        - asset: fonts/DockIcons.ttf
+    - family: CustomIcons
+      fonts:
+        - asset: fonts/CustomIcons.ttf
 
 flutter_launcher_icons:
   image_path: "./resources/icon.png"
@@ -126,8 +142,6 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "./resources/macos-icon.png"
-  
-  
 
 sentry:
   upload_debug_symbols: true

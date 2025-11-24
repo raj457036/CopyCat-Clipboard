@@ -3,7 +3,6 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  awesome_notifications
   clipboard_watcher
   emoji_picker_flutter
   flutter_platform_alert
@@ -11,7 +10,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   gtk
   hotkey_manager_linux
   irondash_engine_context
-  isar_flutter_libs
+  isar_community_flutter_libs
   media_kit_libs_linux
   media_kit_video
   screen_retriever_linux
@@ -19,11 +18,12 @@ list(APPEND FLUTTER_PLUGIN_LIST
   super_native_extensions
   tray_manager
   url_launcher_linux
+  volume_controller
   window_manager
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
-  media_kit_native_event_loop
+  jni
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

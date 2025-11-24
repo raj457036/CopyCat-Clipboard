@@ -19,6 +19,10 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private var endId: Int = -1
     private var syncManager: CopyCatSyncManager = CopyCatSyncManager(appContext)
     private var encryptor: CopyCatEncryptor? = null
+    
+    // Use file-based storage for clipboard items to avoid loading everything into memory
+    private val fileStorage: CopyCatFileStorage = CopyCatFileStorage(appContext)
+    
     val passwordManagers: Set<String> = setOf(
         "com.x8bit.bitwarden",
         "proton.android.pass",
@@ -27,12 +31,14 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     )
 
     var excludedPackages: Set<String> = emptySet()
-    var strictCheck = false
+    var strictCheck = true
     var showAckToast = true
     var serviceEnabled: Boolean = false
     var excludePasswordManagers: Boolean = false
     var excludeEmail: Boolean = false
     var excludePhone: Boolean = false
+//    For Future Use
+    var autoCopyOtp: Boolean = false
 
     val keystore: CopyCatKeyStore
         get() = CopyCatKeyStore.getInstance()
@@ -42,7 +48,10 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             excludedPackages = sharedPreferences.getStringSet(key, emptySet())!!
         }
         if (key == "strictCheck") {
-            strictCheck = sharedPreferences.getBoolean(key, false)
+            strictCheck = sharedPreferences.getBoolean(key, true)
+        }
+        if (key == "autoCopyOtp") {
+            autoCopyOtp = sharedPreferences.getBoolean(key, false)
         }
         if (key == "showAckToast") {
             showAckToast = sharedPreferences.getBoolean(key, true)
@@ -112,6 +121,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         readConfig()
         syncManager.start()
         sp.registerOnSharedPreferenceChangeListener(listener)
+        Log.i(logTag, "Storage started")
     }
 
     fun readSecure(key: String): String? {
@@ -148,7 +158,8 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         endId = sp.getInt("endId", -1)
 
         excludedPackages = sp.getStringSet("excludedPackages", emptySet())!!
-        strictCheck = sp.getBoolean("strictCheck", false)
+        strictCheck = sp.getBoolean("strictCheck", true)
+        autoCopyOtp = sp.getBoolean("autoCopyOtp", false)
         showAckToast = sp.getBoolean("showAckToast", true)
         serviceEnabled = sp.getBoolean("serviceEnabled", false)
         excludePasswordManagers = sp.getBoolean("exclude-pass-mgr", false)
@@ -167,7 +178,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
         syncManager.deviceId = deviceId
     }
-
+    
     private fun getNextId(): String {
         return "Clip-${endId + 1}"
     }
@@ -200,7 +211,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         return when (type) {
             "string" -> sp.getString(key, "")
             "int" -> sp.getInt(key, 0)
-            "bool" -> sp.getBoolean(key, false)
+            "bool" -> if (sp.contains(key)) sp.getBoolean(key, false) else null
             "set" -> sp.getStringSet(key, emptySet<String>())
             else -> null
         }
@@ -209,45 +220,56 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     fun delete(keys: Iterable<String>) {
         val editor = sp.edit()
         for (key in keys) {
-            editor.remove(key)
+            if (key.startsWith("Clip-")) {
+                fileStorage.deleteClipItem(key)
+            } else {
+                editor.remove(key)
+            }
         }
         editor.apply()
+    }
+
+    fun readClip(key: String): CopyCatFileStorage.ClipData? {
+        Log.d(logTag, "Reading clip $key from file storage")
+        return fileStorage.readClipItem(key)
     }
 
     fun writeTextClip(text: String, type: ClipType, label: String = "") {
         if (!serviceEnabled) return
+        
+        // Get next clip ID (e.g., "Clip-1")
         val nextId = getNextId()
         endId += 1  // Update endId for next usage
-        val editor = sp.edit()
-        editor.putString(nextId, text)
-        // type::description::serverId::userid
-        editor.putString("$nextId-meta", "$type::$label::-::-")
-        editor.putInt("endId", endId)
-        editor.apply()
-
-        // Encrypt clip
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && encryptor != null) {
-            val encryptedText = encryptor?.encrypt(text).toString()
-            writeTextClipToServer(encryptedText, type, "$nextId-meta", true, label)
-        } else {
-            writeTextClipToServer(text, type, "$nextId-meta", false, label)
+        
+        // Write to file storage instead of SharedPreferences to avoid memory bloat
+        val success = fileStorage.writeClipItem(nextId, text, type, label)
+        
+        if (!success) {
+            Log.e(logTag, "Failed to write clip to file storage")
+            return
+        }
+        
+        // Update endId in SharedPreferences
+        sp.edit().putInt("endId", endId).apply()
+        
+        Log.d(logTag, "Wrote $nextId to file storage (${text.length} bytes)")
+        
+        // Sync to server if enabled
+        if (syncEnabled) {
+            // Encrypt clip if encryption is enabled
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && encryptor != null) {
+                val encryptedText = encryptor?.encrypt(text).toString()
+                writeTextClipToServer(encryptedText, type, nextId, true, label)
+            } else {
+                writeTextClipToServer(text, type, nextId, false, label)
+            }
         }
     }
-
-    private fun updateClipId(key: String, id: Long, userId: String) {
-        var meta = sp.getString(key, "")!!
-        if (meta.isBlank()) return
-        val parts = meta.split("::").toMutableList()
-        parts[2] = id.toString()
-        parts[3] = userId
-        meta = parts.joinToString("::")
-        sp.edit().putString(key, meta).apply()
-    }
-
+    
     private fun writeTextClipToServer(
         text: String,
         type: ClipType,
-        metaKey: String,
+        clipId: String,
         encrypted: Boolean,
         label: String? = null
     ) {
@@ -269,9 +291,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         }
 
         try {
-            val id = syncManager.writeClipboardItem(text, type, encrypted, label)
-            if (id != (-1).toLong()) {
-                updateClipId(metaKey, id, syncManager.currentUserId!!)
+            val serverId = syncManager.writeClipboardItem(text, type, encrypted, label)
+            if (serverId != (-1).toLong()) {
+                Log.d(logTag, "Synced $clipId to server with ID $serverId")
+                // Update the file metadata with server ID and user ID
+                fileStorage.updateServerMetadata(clipId, serverId, syncManager.currentUserId ?: "")
                 return
             }
             Log.w(logTag, "Syncing failed")
@@ -283,5 +307,10 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     fun clean() {
         syncManager.stop()
         sp.unregisterOnSharedPreferenceChangeListener(listener)
+        
+        // Clear references to help GC
+        encryptor = null
+        
+        Log.i(logTag, "Storage cleaned up")
     }
 }

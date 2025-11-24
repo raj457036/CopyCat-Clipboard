@@ -1,19 +1,19 @@
 import 'package:android_background_clipboard/android_background_clipboard.dart';
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/settings/pages/android_bg_clipboard/accessibility_service_notice.dart';
 import 'package:clipboard/pages/settings/pages/android_bg_clipboard/draw_over_other_app_notice.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
+import 'package:clipboard/utils/color_extension.dart';
+import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/snackbar.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/pro_tip_banner.dart';
-import 'package:copycat_base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:copycat_base/bloc/auth_cubit/auth_cubit.dart';
-import 'package:copycat_base/common/logging.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/color_extension.dart';
-import 'package:copycat_base/utils/common_extension.dart';
-import 'package:copycat_base/utils/snackbar.dart';
-import 'package:copycat_base/utils/utility.dart';
-import 'package:copycat_pro/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -47,6 +47,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   bool overlay = false;
   bool batteryOptimization = false;
   bool accessibility = false;
+  bool strictCheck = true;
   bool enable = false;
 
   @override
@@ -98,6 +99,8 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
         !await widget.bgService.isBatteryOptimizationEnabled();
     accessibility = await widget.bgService.isAccessibilityPermissionGranted();
     isRunning = await widget.bgService.isServiceRunning();
+    strictCheck =
+        await widget.bgService.readShared<bool>("strictCheck") ?? true;
 
     setState(() {
       loading = false;
@@ -133,6 +136,16 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     }
 
     await widget.bgService.openAccessibilityService();
+  }
+
+  Future<void> changeStrictCheck(bool value) async {
+    final success = await widget.bgService.writeShared("strictCheck", value);
+
+    if (!success) return;
+
+    setState(() {
+      strictCheck = value;
+    });
   }
 
   Future<void> setupConfiguration() async {
@@ -268,6 +281,24 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                     !batteryOptimization
                 ? null
                 : (_) => openAccessibilitySetting(),
+          ),
+          height5,
+          ExpansionTile(
+            tilePadding: EdgeInsets.zero,
+            initiallyExpanded: true,
+            title:
+                SettingHeader(name: context.locale.abc__other_setting__title),
+            children: [
+              SwitchListTile(
+                title: Text(context.locale.abc__enhanced_clip_detection__title),
+                subtitle:
+                    Text(context.locale.abc__enhanced_clip_detection__subtitle),
+                value: strictCheck,
+                enableFeedback: true,
+                thumbIcon: strictCheck ? checked : unchecked,
+                onChanged: changeStrictCheck,
+              ),
+            ],
           ),
         ],
       );

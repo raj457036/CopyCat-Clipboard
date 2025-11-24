@@ -1,5 +1,5 @@
 import 'package:clipboard/utils/clipboard_actions.dart';
-import 'package:copycat_base/constants/strings/route_constants.dart';
+import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';

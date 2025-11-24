@@ -1,17 +1,17 @@
+import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/pages/settings/sections/customization_settings.dart';
 import 'package:clipboard/pages/settings/sections/experimental_settings.dart';
 import 'package:clipboard/pages/settings/sections/general_settings.dart';
 import 'package:clipboard/pages/settings/sections/security_settings.dart';
 import 'package:clipboard/pages/settings/sections/syncing_settings.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/account_detail_button.dart';
 import 'package:clipboard/widgets/layout/custom_scaffold.dart';
 import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/widgets/logout_button.dart';
 import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:clipboard/widgets/subscription/active_plan.dart';
-import 'package:copycat_base/constants/widget_styles.dart';
-import 'package:copycat_base/l10n/l10n.dart';
-import 'package:copycat_base/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {

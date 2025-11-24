@@ -1,5 +1,5 @@
-import 'package:copycat_base/bloc/window_action_cubit/window_action_cubit.dart';
-import 'package:copycat_base/db/app_config/appconfig.dart';
+import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
+import 'package:clipboard/base/db/app_config/appconfig.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

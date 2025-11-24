@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import io.flutter.BuildConfig
+import okhttp3.ConnectionPool
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -14,6 +15,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import java.util.concurrent.TimeUnit
 
 
 class CopyCatSyncManager(applicationContext: Context) {
@@ -23,7 +25,15 @@ class CopyCatSyncManager(applicationContext: Context) {
     private val contentType = "application/json"
     private val loggingInterceptor = HttpLoggingInterceptor()
 
-    private val client = OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
+    // Configure OkHttp with memory-efficient settings
+    private val client = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .connectionPool(ConnectionPool(5, 5, TimeUnit.MINUTES)) // Limit connection pool
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(10, TimeUnit.SECONDS)
+        .build()
+        
     private val sp = applicationContext.getSharedPreferences(
         "FlutterSharedPreferences",
         Context.MODE_PRIVATE
@@ -90,6 +100,16 @@ class CopyCatSyncManager(applicationContext: Context) {
         if (!listening) return
         sp.unregisterOnSharedPreferenceChangeListener(listener)
         listening = false
+        
+        // Cleanup OkHttp resources
+        try {
+            client.dispatcher.executorService.shutdown()
+            client.connectionPool.evictAll()
+            client.cache?.close()
+        } catch (e: Exception) {
+            Log.e(logTag, "Error cleaning up OkHttp client: ${e.message}")
+        }
+        
         Log.d(logTag, "Stopped")
     }
 
@@ -125,14 +145,21 @@ class CopyCatSyncManager(applicationContext: Context) {
             .post(requestBody)
             .build()
 
-        client.newCall(request).execute().use { response ->
-            if (response.code == 200 && response.body != null) {
-                val token = response.body?.string() ?: return false
-                writeToSp(tokenKey, token)
-                load()
+        return try {
+            client.newCall(request).execute().use { response ->
+                if (response.code == 200 && response.body != null) {
+                    val token = response.body?.string() ?: return false
+                    writeToSp(tokenKey, token)
+                    load()
+                    true
+                } else {
+                    false
+                }
             }
+        } catch (e: Exception) {
+            Log.e(logTag, "Error refreshing token: ${e.message}")
+            false
         }
-        return true
     }
 
     private fun currentTime(): String {
@@ -216,15 +243,22 @@ class CopyCatSyncManager(applicationContext: Context) {
             .post(requestBody)
             .build()
 
-        // Use the 'use' block to automatically close the response after usage
-        client.newCall(request).execute().use { response ->
-            if (response.code == 201) {
-                val location = response.header("location") ?: return -1
-                val match = regex.find(location) ?: return -1
-                return match.value.toLong()
+        return try {
+            // Use the 'use' block to automatically close the response after usage
+            client.newCall(request).execute().use { response ->
+                if (response.code == 201) {
+                    val location = response.header("location") ?: return -1
+                    val match = regex.find(location) ?: return -1
+                    match.value.toLong()
+                } else {
+                    Log.w(logTag, "Failed to write clipboard item. Response code: ${response.code}")
+                    -1
+                }
             }
+        } catch (e: Exception) {
+            Log.e(logTag, "Error writing clipboard item: ${e.message}")
+            -1
         }
-        return -1
     }
 
 }

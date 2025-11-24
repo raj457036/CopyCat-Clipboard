@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version='1.9.23';
+    ext.kotlin_version='2.2.10';
 
     dependencies {}
 
@@ -28,8 +28,8 @@ subprojects {
         if (project.plugins.hasPlugin("com.android.application") ||
                 project.plugins.hasPlugin("com.android.library")) {
             project.android {
-                compileSdkVersion 34
-                buildToolsVersion "34.0.0"
+                compileSdkVersion 36
+                buildToolsVersion "35.0.0"
             }
         }
     }

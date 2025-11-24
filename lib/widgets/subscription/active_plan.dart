@@ -1,6 +1,6 @@
 import 'package:clipboard/widgets/dialogs/subscription_info.dart';
 import 'package:clipboard/widgets/local_user.dart';
-import 'package:copycat_pro/widgets/subscription/subscription_provider.dart';
+import 'package:clipboard/widgets/subscription/subscription_provider.dart';
 import 'package:flutter/material.dart';
 
 class ActivePlanAction extends StatelessWidget {
