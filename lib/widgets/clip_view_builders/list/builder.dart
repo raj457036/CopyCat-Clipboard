@@ -52,40 +52,42 @@ class ClipListBuilder extends StatelessWidget {
 
     return OnEvent<EventBusIndexPasteEvent>(
       trigger: onIndexPaste,
-      child: SelectedClipProvider(builder: (context, selectedClips) {
-        return ListView.builder(
-          padding: isMobile ? const EdgeInsets.all(padding8) : inset12,
-          primary: true,
-          itemCount: items.length + (hasMore ? 1 : 0),
-          itemBuilder: (context, index) {
-            if (index == items.length) {
-              return LoadMoreCard(
-                key: const ValueKey("clipboard-items-load-more"),
-                loadMore: loadMore,
-              );
-            }
+      child: SelectedClipProvider(
+        builder: (context, selectedClips) {
+          return ListView.builder(
+            padding: isMobile ? const EdgeInsets.all(padding8) : inset12,
+            primary: true,
+            itemCount: items.length + (hasMore ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index == items.length) {
+                return LoadMoreCard(
+                  key: const ValueKey("clipboard-items-load-more"),
+                  loadMore: loadMore,
+                );
+              }
 
-            final item = items[index];
-            final isSelected = selectedClips.contains(item);
-            Widget listItem = ClipMenuProvider(
-              item: item,
-              child: ClipListItem(
-                key: ValueKey("clipboard-item-${item.id}"),
+              final item = items[index];
+              final isSelected = selectedClips.contains(item);
+              Widget listItem = ClipMenuProvider(
                 item: item,
-                autofocus: !isSelected && index == 0 && isDesktopPlatform,
-                canPaste: canPaste,
-                selected: isSelected,
-                selectionActive: selectedClips.isNotEmpty,
-              ),
-            );
+                child: ClipListItem(
+                  key: ValueKey("clipboard-item-${item.id}"),
+                  item: item,
+                  autofocus: !isSelected && index == 0 && isDesktopPlatform,
+                  canPaste: canPaste,
+                  selected: isSelected,
+                  selectionActive: selectedClips.isNotEmpty,
+                ),
+              );
 
-            if (isDesktopPlatform && index < 9) {
-              listItem = ClipMetaInfo(index: index + 1, child: listItem);
-            }
-            return listItem;
-          },
-        );
-      }),
+              if (isDesktopPlatform && index < 9) {
+                listItem = ClipMetaInfo(index: index + 1, child: listItem);
+              }
+              return listItem;
+            },
+          );
+        },
+      ),
     );
   }
 }

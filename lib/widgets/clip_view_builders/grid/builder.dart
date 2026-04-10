@@ -55,39 +55,41 @@ class ClipGridBuilder extends StatelessWidget {
 
     return OnEvent<EventBusIndexPasteEvent>(
       trigger: onIndexPaste,
-      child: SelectedClipProvider(builder: (context, selectedClips) {
-        return GridView.builder(
-          padding: isMobile ? const EdgeInsets.all(padding8) : inset12,
-          primary: true,
-          scrollDirection: scrollDirection,
-          gridDelegate: delegate,
-          itemCount: items.length + (hasMore ? 1 : 0),
-          itemBuilder: (context, index) {
-            if (index == items.length) {
-              return LoadMoreCard(
-                key: const ValueKey("clipboard-items-load-more"),
-                loadMore: loadMore,
+      child: SelectedClipProvider(
+        builder: (context, selectedClips) {
+          return GridView.builder(
+            padding: isMobile ? const EdgeInsets.all(padding8) : inset12,
+            primary: true,
+            scrollDirection: scrollDirection,
+            gridDelegate: delegate,
+            itemCount: items.length + (hasMore ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index == items.length) {
+                return LoadMoreCard(
+                  key: const ValueKey("clipboard-items-load-more"),
+                  loadMore: loadMore,
+                );
+              }
+
+              final item = items[index];
+              final isSelected = selectedClips.contains(item);
+              Widget card = ClipCard(
+                key: ValueKey("clipboard-item-${item.id}"),
+                autoFocus: !isSelected && index == 0 && isDesktopPlatform,
+                item: item,
+                canPaste: canPaste,
+                selected: isSelected,
+                selectionActive: selectedClips.isNotEmpty,
               );
-            }
 
-            final item = items[index];
-            final isSelected = selectedClips.contains(item);
-            Widget card = ClipCard(
-              key: ValueKey("clipboard-item-${item.id}"),
-              autoFocus: !isSelected && index == 0 && isDesktopPlatform,
-              item: item,
-              canPaste: canPaste,
-              selected: isSelected,
-              selectionActive: selectedClips.isNotEmpty,
-            );
-
-            if (isDesktopPlatform && index < 9) {
-              card = ClipMetaInfo(index: index + 1, child: card);
-            }
-            return card;
-          },
-        );
-      }),
+              if (isDesktopPlatform && index < 9) {
+                card = ClipMetaInfo(index: index + 1, child: card);
+              }
+              return card;
+            },
+          );
+        },
+      ),
     );
   }
 }

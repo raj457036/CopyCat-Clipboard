@@ -12,6 +12,7 @@ import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_item/clip_card/clip_card_options_header.dart';
+import 'package:clipboard/widgets/clip_item/clip_collection_indicator.dart';
 import 'package:clipboard/widgets/clip_item/clip_preview.dart';
 import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
@@ -71,6 +72,20 @@ class ClipCardBodyContent extends StatelessWidget {
                     maxLines: 2,
                   ),
                 ),
+              if (!item.encrypted &&
+                  (item.collectionId != null ||
+                      item.serverCollectionId != null))
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: padding8,
+                    right: padding8,
+                    bottom: padding8,
+                  ),
+                  child: ClipCollectionIndicator(
+                    collectionId: item.collectionId,
+                    serverCollectionId: item.serverCollectionId,
+                  ),
+                ),
               Expanded(
                 child: ClipPreview(item: item, layout: AppLayout.grid),
               ),
@@ -78,9 +93,7 @@ class ClipCardBodyContent extends StatelessWidget {
           ),
         ),
         if (!selected)
-          DisableForLocalUser(
-            child: ClipSyncStatusFooter(item: item),
-          ),
+          DisableForLocalUser(child: ClipSyncStatusFooter(item: item)),
       ],
     );
 
@@ -137,9 +150,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       final item_ = await widget.item.decrypt();
       persitCubit.persist([item_]);
     } catch (e) {
-      showFailureSnackbar(
-        Failure.fromException(e),
-      );
+      showFailureSnackbar(Failure.fromException(e));
     }
   }
 

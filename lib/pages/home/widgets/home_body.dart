@@ -5,6 +5,7 @@ import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/clip_view_builders/grid/builder.dart';
 import 'package:clipboard/widgets/clip_view_builders/grid/view.dart';
 import 'package:clipboard/widgets/clip_view_builders/list/builder.dart';
+import 'package:clipboard/widgets/clip_item/clip_collection_indicator_scope.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,12 +20,14 @@ class HomePageBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async => await refresh(context),
-      child: AppLayoutBuilder(
-        builder: (context, layout, _) {
-          return switch (layout) {
-            AppLayout.grid => ClipGrid(
+    return ClipCollectionIndicatorScope(
+      enabled: true,
+      child: RefreshIndicator(
+        onRefresh: () async => await refresh(context),
+        child: AppLayoutBuilder(
+          builder: (context, layout, _) {
+            return switch (layout) {
+              AppLayout.grid => ClipGrid(
                 builder: (delegate, scrollDirection, canPaste) {
                   return ClipsProviderWithBuilder(
                     builder: (context, clips, hasMore, loading, loadMore) {
@@ -41,7 +44,7 @@ class HomePageBody extends StatelessWidget {
                   );
                 },
               ),
-            AppLayout.list => CanPasteBuilder(
+              AppLayout.list => CanPasteBuilder(
                 builder: (context, canPaste) {
                   return ClipsProviderWithBuilder(
                     builder: (context, clips, hasMore, loading, loadMore) {
@@ -56,8 +59,9 @@ class HomePageBody extends StatelessWidget {
                   );
                 },
               ),
-          };
-        },
+            };
+          },
+        ),
       ),
     );
   }

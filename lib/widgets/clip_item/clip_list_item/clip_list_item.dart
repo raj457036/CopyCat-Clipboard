@@ -7,6 +7,7 @@ import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_item/clip_list_item/options_header.dart';
+import 'package:clipboard/widgets/clip_item/clip_collection_indicator.dart';
 import 'package:clipboard/widgets/clip_item/clip_preview.dart';
 import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
@@ -82,8 +83,9 @@ class _ClipListItemState extends State<ClipListItem> {
 
     final selectedShape = RoundedRectangleBorder(
       side: BorderSide(
-        color:
-            focused || widget.selected ? colors.primary : colors.outlineVariant,
+        color: focused || widget.selected
+            ? colors.primary
+            : colors.outlineVariant,
         width: focused || widget.selected ? 2.5 : 1,
         strokeAlign: BorderSide.strokeAlignOutside,
       ),
@@ -101,7 +103,10 @@ class _ClipListItemState extends State<ClipListItem> {
             autofocus: widget.autofocus,
             onTap: !widget.selectionActive
                 ? () => performPrimaryActionOnClip(
-                    context, widget.item, widget.canPaste)
+                    context,
+                    widget.item,
+                    widget.canPaste,
+                  )
                 : () => toggleSelect(context),
             onSecondaryTapDown: !widget.selectionActive
                 ? (detail) async {
@@ -142,11 +147,22 @@ class _ClipListItemState extends State<ClipListItem> {
                       maxLines: 2,
                     ),
                   ),
-                Flexible(
-                  child: ClipPreview(
-                    item: widget.item,
-                    layout: AppLayout.list,
+                if (!widget.item.encrypted &&
+                    (widget.item.collectionId != null ||
+                        widget.item.serverCollectionId != null))
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: padding10,
+                      right: padding10,
+                      bottom: padding8,
+                    ),
+                    child: ClipCollectionIndicator(
+                      collectionId: widget.item.collectionId,
+                      serverCollectionId: widget.item.serverCollectionId,
+                    ),
                   ),
+                Flexible(
+                  child: ClipPreview(item: widget.item, layout: AppLayout.list),
                 ),
                 if (!widget.selected)
                   DisableForLocalUser(
