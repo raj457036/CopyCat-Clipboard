@@ -49,9 +49,7 @@ Future<void> preview(BuildContext context, ClipboardItem item) async {
   final ctx = context.mounted ? context : rootNavKey.currentContext!;
   ctx.pushNamed(
     RouteConstants.preview,
-    pathParameters: {
-      "id": item.id.toString(),
-    },
+    pathParameters: {"id": item.id.toString()},
   );
 }
 
@@ -61,18 +59,40 @@ Future<void> shareClipboardItem(
 ) async {
   final ctx = context.mounted ? context : rootNavKey.currentContext!;
   try {
-    ctx.read<OfflinePersistenceCubit>().shareClipboardItem(ctx, item);
+    final shared = await ctx.read<OfflinePersistenceCubit>().shareClipboardItem(
+      ctx,
+      item,
+    );
+    if (!shared && ctx.mounted) {
+      showTextSnackbar(ctx.locale.app__feature_unavailable, context: ctx);
+    }
   } catch (e) {
     if (ctx.mounted) {
-      showTextSnackbar(ctx.locale.app__unknown_error);
+      showTextSnackbar(ctx.locale.app__unknown_error, context: ctx);
     }
   }
 }
 
-Future<void> selectClip(
+Future<void> shareClipboardItems(
   BuildContext context,
-  ClipboardItem item,
+  List<ClipboardItem> items,
 ) async {
+  final ctx = context.mounted ? context : rootNavKey.currentContext!;
+  try {
+    final shared = await ctx
+        .read<OfflinePersistenceCubit>()
+        .shareClipboardItems(ctx, items);
+    if (!shared && ctx.mounted) {
+      showTextSnackbar(ctx.locale.app__feature_unavailable, context: ctx);
+    }
+  } catch (e) {
+    if (ctx.mounted) {
+      showTextSnackbar(ctx.locale.app__unknown_error, context: ctx);
+    }
+  }
+}
+
+Future<void> selectClip(BuildContext context, ClipboardItem item) async {
   final ctx = context.mounted ? context : rootNavKey.currentContext!;
   ctx.read<SelectedClipsCubit>().select(item);
 }
@@ -94,10 +114,7 @@ Future<void> decryptItem(BuildContext context, ClipboardItem item) async {
   persitCubit.persist([item_]);
 }
 
-Future<void> downloadFile(
-  BuildContext context,
-  ClipboardItem item,
-) async {
+Future<void> downloadFile(BuildContext context, ClipboardItem item) async {
   final ctx = context.mounted ? context : rootNavKey.currentContext!;
   ctx.read<CloudPersistanceCubit>().download(item);
 }
@@ -109,13 +126,13 @@ Future<void> launchUrl(ClipboardItem item) async {
 }
 
 Future<ClipboardItem?> editTextContent(
-    BuildContext context, ClipboardItem item) async {
+  BuildContext context,
+  ClipboardItem item,
+) async {
   final ctx = context.mounted ? context : rootNavKey.currentContext!;
   return await ctx.pushNamed<ClipboardItem?>(
     RouteConstants.createClipNote,
-    queryParameters: {
-      "id": item.id.toString(),
-    },
+    queryParameters: {"id": item.id.toString()},
   );
 }
 
@@ -188,33 +205,39 @@ Future<void> pasteContent(BuildContext context) async {
 }
 
 Future<void> changeCollection(
-    BuildContext context, List<ClipboardItem> items) async {
+  BuildContext context,
+  List<ClipboardItem> items,
+) async {
   final ctx = context.mounted ? context : rootNavKey.currentContext!;
   final cubit = ctx.read<OfflinePersistenceCubit>();
 
-  final selectedCollectionId =
-      items.isNotEmpty ? null : items.firstOrNull?.collectionId;
+  final selectedCollectionId = items.isNotEmpty
+      ? null
+      : items.firstOrNull?.collectionId;
 
   final collection = await ctx.pushNamed<ClipCollection>(
     RouteConstants.clipCollectionSelection,
-    queryParameters: {
-      "id": selectedCollectionId.toString(),
-    },
+    queryParameters: {"id": selectedCollectionId.toString()},
   );
 
   if (collection != null) {
     final updatedItems = items
-        .map((item) => item.copyWith(
-              collectionId: collection.id,
-              serverCollectionId: collection.serverId,
-            )..applyId(item))
+        .map(
+          (item) => item.copyWith(
+            collectionId: collection.id,
+            serverCollectionId: collection.serverId,
+          )..applyId(item),
+        )
         .toList();
     cubit.persist(updatedItems);
   }
 }
 
 Future<void> performPrimaryActionOnClip(
-    BuildContext context, ClipboardItem item, bool canPaste) async {
+  BuildContext context,
+  ClipboardItem item,
+  bool canPaste,
+) async {
   if (item.encrypted) {
     decryptItem(context, item);
   } else if (item.needDownload) {

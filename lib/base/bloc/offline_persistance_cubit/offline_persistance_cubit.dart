@@ -41,17 +41,20 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     this.appConfig,
     this.analyticsRepo,
     @Named("device_id") this.deviceId,
-  )   : copy = CopyToClipboard(clipboard),
-        super(const OfflinePersistanceState.initial());
+  ) : copy = CopyToClipboard(clipboard),
+      super(const OfflinePersistanceState.initial());
 
   Future<ClipboardItem?> getItem({required int id}) async {
     final result = await repo.get(id: id);
-    final item = result.fold((l) {
-      logger.e(l);
-      return null;
-    }, (r) {
-      return r;
-    });
+    final item = result.fold(
+      (l) {
+        logger.e(l);
+        return null;
+      },
+      (r) {
+        return r;
+      },
+    );
     return item;
   }
 
@@ -61,10 +64,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       logger.i("Copying is paused!");
       emit(
         const OfflinePersistanceState.error(
-          Failure(
-            message: "Copying is paused!",
-            code: "copy-paused",
-          ),
+          Failure(message: "Copying is paused!", code: "copy-paused"),
         ),
       );
       return;
@@ -103,43 +103,73 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     }
   }
 
-  Future<void> shareClipboardItem(
+  Future<bool> shareClipboardItem(
     BuildContext context,
     ClipboardItem item,
   ) async {
-    // _onShare method:
+    return shareClipboardItems(context, [item]);
+  }
+
+  Future<bool> shareClipboardItems(
+    BuildContext context,
+    List<ClipboardItem> items,
+  ) async {
+    if (items.isEmpty) return false;
+
     final box = context.findRenderObject() as RenderBox?;
+    final origin = box != null
+        ? box.localToGlobal(Offset.zero) & box.size
+        : null;
 
-    Rect? origin;
+    final shareableItems = items.where((item) => item.inCache).toList();
+    if (shareableItems.isEmpty) return false;
 
-    if (box != null) {
-      origin = box.localToGlobal(Offset.zero) & box.size;
+    final fileItems = <XFile>[];
+    final textPayload = <String>[];
+
+    for (final item in shareableItems) {
+      switch (item.type) {
+        case ClipItemType.text:
+          final text = item.text?.trim();
+          if (text != null && text.isNotEmpty) {
+            textPayload.add(text);
+          }
+        case ClipItemType.url:
+          final url = item.url?.trim();
+          if (url != null && url.isNotEmpty) {
+            textPayload.add(url);
+          }
+        case ClipItemType.media:
+        case ClipItemType.file:
+          final path = item.localPath;
+          if (path != null && path.isNotEmpty) {
+            fileItems.add(XFile(path));
+          }
+      }
     }
 
-    switch (item.type) {
-      case ClipItemType.text:
-        await Share.share(
-          item.text!,
-          subject: item.title,
-          sharePositionOrigin: origin,
-        );
-      case ClipItemType.url:
-        await Share.shareUri(
-          Uri.parse(item.url!),
-          sharePositionOrigin: origin,
-        );
-      case ClipItemType.media:
-      case ClipItemType.file:
-        if (item.localPath == null) return;
-        await Share.shareXFiles(
-          [XFile(item.localPath!)],
-          subject: item.title,
-          text: item.description,
-          sharePositionOrigin: origin,
-        );
+    final text = textPayload.join("\n\n");
+    final firstItem = shareableItems.first;
+
+    if (fileItems.isNotEmpty) {
+      await Share.shareXFiles(
+        fileItems,
+        subject: firstItem.title,
+        text: text.isEmpty ? firstItem.description : text,
+        sharePositionOrigin: origin,
+      );
+    } else if (text.isNotEmpty) {
+      await Share.share(
+        text,
+        subject: firstItem.title,
+        sharePositionOrigin: origin,
+      );
+    } else {
+      return false;
     }
 
     analyticsRepo.logFeatureUsed(feature: "share");
+    return true;
   }
 
   Future<bool> copyToClipboard(
@@ -168,10 +198,8 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     if (copied) {
       persist(
         [
-          item.copyWith(
-            copiedCount: item.copiedCount + 1,
-            lastCopied: now(),
-          )..applyId(item)
+          item.copyWith(copiedCount: item.copiedCount + 1, lastCopied: now())
+            ..applyId(item),
         ],
         updatedFields: ["copiedCount"],
       );
@@ -218,10 +246,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
           );
         }
       case ClipItemType.url:
-        return ClipboardItem.fromURL(
-          clip.uri!,
-          userId: userId,
-        );
+        return ClipboardItem.fromURL(clip.uri!, userId: userId);
     }
   }
 
@@ -263,10 +288,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       if (clip.isDuplicate) {
         emit(
           const OfflinePersistanceState.error(
-            Failure(
-              message: "Duplicate Clip Detected",
-              code: "duplicate-clip",
-            ),
+            Failure(message: "Duplicate Clip Detected", code: "duplicate-clip"),
           ),
         );
         return;
@@ -299,8 +321,9 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
 
     if (nonPersisted.isNotEmpty) {
       emit(OfflinePersistanceState.creatingItems(nonPersisted));
-      final created =
-          await Future.wait(nonPersisted.map((item) => repo.create(item)));
+      final created = await Future.wait(
+        nonPersisted.map((item) => repo.create(item)),
+      );
 
       for (var item in created) {
         emit(
@@ -317,8 +340,9 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       }
     } else {
       emit(OfflinePersistanceState.updatingItems(persited));
-      final updated =
-          await Future.wait(persited.map((item) => repo.update(item)));
+      final updated = await Future.wait(
+        persited.map((item) => repo.update(item)),
+      );
 
       for (var item in updated) {
         emit(
@@ -338,9 +362,9 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   Future<void> delete(List<ClipboardItem> items) async {
     emit(OfflinePersistanceState.deletingItems(items));
     await Future.wait(items.map((item) => item.cleanUp()));
-    final items_ = items.where((item) => !item.isSynced).map(
-          (item) => item.copyWith(deviceId: deviceId)..applyId(item),
-        );
+    final items_ = items
+        .where((item) => !item.isSynced)
+        .map((item) => item.copyWith(deviceId: deviceId)..applyId(item));
     await repo.deleteMany(items_.toList());
     emit(OfflinePersistanceState.deletedItems(items));
   }

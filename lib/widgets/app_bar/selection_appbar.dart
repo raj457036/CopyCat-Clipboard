@@ -51,6 +51,11 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
             ),
             actions: [
               IconButton(
+                onPressed: () => shareClipboardItems(context, items.toList()),
+                tooltip: context.locale.app__share,
+                icon: const Icon(Icons.ios_share),
+              ),
+              IconButton(
                 onPressed: () async {
                   await changeCollection(context, items.toList());
                   if (context.mounted) {
