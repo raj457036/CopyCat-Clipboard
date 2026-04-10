@@ -912,8 +912,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String restore_clips__restoring(
-      {required int synced, required int totalCount}) {
+  String restore_clips__restoring({
+    required int synced,
+    required int totalCount,
+  }) {
     return 'Restaurado: $synced de $totalCount clips.';
   }
 
@@ -943,8 +945,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String restore_collections__restoring(
-      {required int synced, required int totalCount}) {
+  String restore_collections__restoring({
+    required int synced,
+    required int totalCount,
+  }) {
     return 'Restaurado: $synced de $totalCount colecciones.';
   }
 
@@ -1086,8 +1090,9 @@ class AppLocalizationsEs extends AppLocalizations {
       'No Copiar Automáticamente Más de';
 
   @override
-  String settings__dropdown__no_copy_over_limit__subtitle(
-      {required String fileSize}) {
+  String settings__dropdown__no_copy_over_limit__subtitle({
+    required String fileSize,
+  }) {
     return 'Archivos y medios de más de cierto tamaño ($fileSize) no se copiarán automáticamente.';
   }
 
@@ -1111,8 +1116,9 @@ class AppLocalizationsEs extends AppLocalizations {
       'No Subir Automáticamente Más de';
 
   @override
-  String settings__dropdown__no_upload_over_limit__subtitle(
-      {required String fileSize}) {
+  String settings__dropdown__no_upload_over_limit__subtitle({
+    required String fileSize,
+  }) {
     return 'Archivos y medios de más de cierto size ($fileSize) no se subirán automáticamente.';
   }
 
@@ -1215,8 +1221,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String settings__switch__paused_active__subtitle({required DateTime time}) {
-    final intl.DateFormat timeDateFormat =
-        intl.DateFormat('h:mm a', localeName);
+    final intl.DateFormat timeDateFormat = intl.DateFormat(
+      'h:mm a',
+      localeName,
+    );
     final String timeString = timeDateFormat.format(time);
 
     return 'Pausado hasta $timeString. Toca para reanudar o ajustar la hora.';

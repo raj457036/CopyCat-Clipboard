@@ -911,8 +911,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String restore_clips__restoring(
-      {required int synced, required int totalCount}) {
+  String restore_clips__restoring({
+    required int synced,
+    required int totalCount,
+  }) {
     return 'Wiederhergestellt: $synced von $totalCount Clips.';
   }
 
@@ -943,8 +945,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String restore_collections__restoring(
-      {required int synced, required int totalCount}) {
+  String restore_collections__restoring({
+    required int synced,
+    required int totalCount,
+  }) {
     return 'Wiederhergestellt: $synced von $totalCount Sammlungen.';
   }
 
@@ -1084,8 +1088,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Nicht automatisch kopieren über';
 
   @override
-  String settings__dropdown__no_copy_over_limit__subtitle(
-      {required String fileSize}) {
+  String settings__dropdown__no_copy_over_limit__subtitle({
+    required String fileSize,
+  }) {
     return 'Dateien und Medien über eine bestimmte Größe ($fileSize) werden nicht automatisch kopiert.';
   }
 
@@ -1109,8 +1114,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Nicht automatisch hochladen über';
 
   @override
-  String settings__dropdown__no_upload_over_limit__subtitle(
-      {required String fileSize}) {
+  String settings__dropdown__no_upload_over_limit__subtitle({
+    required String fileSize,
+  }) {
     return 'Dateien und Medien über eine bestimmte Größe ($fileSize) werden nicht automatisch hochgeladen.';
   }
 
@@ -1213,8 +1219,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String settings__switch__paused_active__subtitle({required DateTime time}) {
-    final intl.DateFormat timeDateFormat =
-        intl.DateFormat('h:mm a', localeName);
+    final intl.DateFormat timeDateFormat = intl.DateFormat(
+      'h:mm a',
+      localeName,
+    );
     final String timeString = timeDateFormat.format(time);
 
     return 'Pausiert bis $timeString. Tippen Sie, um fortzusetzen oder die Zeit anzupassen.';

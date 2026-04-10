@@ -16,10 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CollectionDetailPage extends StatelessWidget {
   final ClipCollection collection;
-  const CollectionDetailPage({
-    super.key,
-    required this.collection,
-  });
+  const CollectionDetailPage({super.key, required this.collection});
 
   void loadMore(BuildContext context) {
     context.read<CollectionClipsCubit>().search(null);
@@ -28,56 +25,51 @@ class CollectionDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title = "${collection.emoji} • ${collection.title}";
+
     return SeqSelectionListener(
       child: Scaffold(
         appBar: SelectionAppbar(
-          defaultChild: AppBar(
-            title: Text(title),
-            centerTitle: false,
-          ),
+          defaultChild: AppBar(title: Text(title), centerTitle: false),
         ),
         body: ScaffoldBody(
-          margin: const EdgeInsets.only(
-            right: padding12,
-            left: padding12,
-          ),
+          margin: const EdgeInsets.only(right: padding12, left: padding12),
           child: AppLayoutBuilder(
             builder: (context, layout, _) {
               return switch (layout) {
                 AppLayout.grid => ClipGrid(
-                    builder: (delegate, scrollDirection, canPaste) {
-                      return ClipsProviderWithBuilder(
-                        isCollectionClips: true,
-                        builder: (context, clips, hasMore, loading, loadMore) {
-                          return ClipGridBuilder(
-                            items: clips,
-                            hasMore: hasMore,
-                            loading: loading,
-                            loadMore: loadMore,
-                            delegate: delegate,
-                            scrollDirection: scrollDirection,
-                            canPaste: canPaste,
-                          );
-                        },
-                      );
-                    },
-                  ),
+                  builder: (delegate, scrollDirection, canPaste) {
+                    return ClipsProviderWithBuilder(
+                      isCollectionClips: true,
+                      builder: (context, clips, hasMore, loading, loadMore) {
+                        return ClipGridBuilder(
+                          items: clips,
+                          hasMore: hasMore,
+                          loading: loading,
+                          loadMore: loadMore,
+                          delegate: delegate,
+                          scrollDirection: scrollDirection,
+                          canPaste: canPaste,
+                        );
+                      },
+                    );
+                  },
+                ),
                 AppLayout.list => CanPasteBuilder(
-                    builder: (context, canPaste) {
-                      return ClipsProviderWithBuilder(
-                        isCollectionClips: true,
-                        builder: (context, clips, hasMore, loading, loadMore) {
-                          return ClipListBuilder(
-                            items: clips,
-                            hasMore: hasMore,
-                            loading: loading,
-                            loadMore: loadMore,
-                            canPaste: canPaste,
-                          );
-                        },
-                      );
-                    },
-                  ),
+                  builder: (context, canPaste) {
+                    return ClipsProviderWithBuilder(
+                      isCollectionClips: true,
+                      builder: (context, clips, hasMore, loading, loadMore) {
+                        return ClipListBuilder(
+                          items: clips,
+                          hasMore: hasMore,
+                          loading: loading,
+                          loadMore: loadMore,
+                          canPaste: canPaste,
+                        );
+                      },
+                    );
+                  },
+                ),
               };
             },
           ),

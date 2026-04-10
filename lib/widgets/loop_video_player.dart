@@ -1,5 +1,6 @@
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/snackbar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -30,9 +31,15 @@ class LoopVideoPlayer extends StatefulWidget {
 
 class _LoopVideoPlayerState extends State<LoopVideoPlayer> {
   late final player = Player();
-  late final controller = VideoController(player);
+  late final controller = VideoController(
+    player,
+    configuration: defaultTargetPlatform == TargetPlatform.macOS
+        ? const VideoControllerConfiguration(enableHardwareAcceleration: false)
+        : const VideoControllerConfiguration(),
+  );
 
   bool loading = true;
+  bool _disposed = false;
 
   @override
   void initState() {
@@ -48,6 +55,7 @@ class _LoopVideoPlayerState extends State<LoopVideoPlayer> {
 
   @override
   void dispose() {
+    _disposed = true;
     player.dispose();
     super.dispose();
   }
@@ -56,9 +64,13 @@ class _LoopVideoPlayerState extends State<LoopVideoPlayer> {
     try {
       await controller.waitUntilFirstFrameRendered;
     } catch (e) {
-      showFailureSnackbar(Failure.fromException(e));
+      if (mounted && !_disposed) {
+        showFailureSnackbar(Failure.fromException(e));
+      }
     } finally {
-      setState(() => loading = false);
+      if (mounted && !_disposed) {
+        setState(() => loading = false);
+      }
     }
   }
 

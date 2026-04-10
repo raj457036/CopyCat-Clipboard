@@ -10,10 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
   final Widget defaultChild;
-  const SelectionAppbar({
-    super.key,
-    required this.defaultChild,
-  });
+  const SelectionAppbar({super.key, required this.defaultChild});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -25,8 +22,11 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
-    return BlocSelector<SelectedClipsCubit, SelectedClipsState,
-        Set<ClipboardItem>>(
+    return BlocSelector<
+      SelectedClipsCubit,
+      SelectedClipsState,
+      Set<ClipboardItem>
+    >(
       selector: (state) {
         switch (state) {
           case ClipSelected(:final selectedClipIds):
@@ -62,8 +62,10 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
               ),
               IconButton(
                 onPressed: () async {
-                  final done =
-                      await deleteClipboardItem(context, items.toList());
+                  final done = await deleteClipboardItem(
+                    context,
+                    items.toList(),
+                  );
                   if (done && context.mounted) {
                     clearSelection(context);
                   }

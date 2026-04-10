@@ -4,7 +4,7 @@ publish_to: "none"
 version: 1.2.2+74
 
 environment:
-  sdk: ">=3.3.3 <4.0.0"
+  sdk: ">=3.10.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -106,6 +106,9 @@ dev_dependencies:
   json_serializable: ^6.8.0
   flutter_launcher_icons: ^0.14.3
   sentry_dart_plugin: ^3.1.1
+
+dependency_overrides:
+  connectivity_plus: 7.0.0
 
 flutter:
   generate: true
