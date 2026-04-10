@@ -85,21 +85,18 @@ class ClipItem {
   }
 
   factory ClipItem.duplicate() => ClipItem(
-        type: ClipItemType.text,
-        file: null,
-        fileName: null,
-        text: null,
-        uri: null,
-        fileMimeType: null,
-        fileExtension: null,
-        fileSize: null,
-        isDuplicate: true,
-      );
+    type: ClipItemType.text,
+    file: null,
+    fileName: null,
+    text: null,
+    uri: null,
+    fileMimeType: null,
+    fileExtension: null,
+    fileSize: null,
+    isDuplicate: true,
+  );
 
-  factory ClipItem.text({
-    required String text,
-    TextCategory? textCategory,
-  }) =>
+  factory ClipItem.text({required String text, TextCategory? textCategory}) =>
       ClipItem(
         file: null,
         fileName: null,
@@ -112,19 +109,16 @@ class ClipItem {
         textCategory: textCategory,
       );
 
-  factory ClipItem.uri({
-    required Uri uri,
-  }) =>
-      ClipItem(
-        file: null,
-        fileName: null,
-        uri: uri,
-        text: null,
-        type: ClipItemType.url,
-        fileMimeType: null,
-        fileExtension: null,
-        fileSize: null,
-      );
+  factory ClipItem.uri({required Uri uri}) => ClipItem(
+    file: null,
+    fileName: null,
+    uri: uri,
+    text: null,
+    type: ClipItemType.url,
+    fileMimeType: null,
+    fileExtension: null,
+    fileSize: null,
+  );
 
   factory ClipItem.imageFile({
     required File file,
@@ -132,18 +126,17 @@ class ClipItem {
     required String mimeType,
     required int fileSize,
     String? blurHash,
-  }) =>
-      ClipItem(
-        fileName: fileName,
-        file: file,
-        uri: null,
-        text: null,
-        type: ClipItemType.media,
-        fileMimeType: mimeType,
-        fileExtension: p.extension(file.path),
-        fileSize: fileSize,
-        blurHash: blurHash,
-      );
+  }) => ClipItem(
+    fileName: fileName,
+    file: file,
+    uri: null,
+    text: null,
+    type: ClipItemType.media,
+    fileMimeType: mimeType,
+    fileExtension: p.extension(file.path),
+    fileSize: fileSize,
+    blurHash: blurHash,
+  );
 
   factory ClipItem.file({
     required File file,
@@ -151,25 +144,26 @@ class ClipItem {
     String? fileName,
     required String mimeType,
     required int fileSize,
-  }) =>
-      ClipItem(
-        file: file,
-        fileName: fileName,
-        uri: null,
-        text: textPreview,
-        type: ClipItemType.file,
-        fileMimeType: mimeType,
-        fileExtension: p.extension(file.path),
-        fileSize: fileSize,
-      );
+  }) => ClipItem(
+    file: file,
+    fileName: fileName,
+    uri: null,
+    text: textPreview,
+    type: ClipItemType.file,
+    fileMimeType: mimeType,
+    fileExtension: p.extension(file.path),
+    fileSize: fileSize,
+  );
 }
 
 ImmediateClip? _immediateClip;
 const _duplicateTag = "<-Duplicate";
 final rgbRegex = RegExp(
-    r"^#?(?:[0-9a-fA-F]{3}){1,2}$|^#(?:[0-9a-fA-F]{4}){2}$"); // ABC, FFAAAA, #AAA, #FAB, #FFAABBCC
+  r"^#?(?:[0-9a-fA-F]{3}){1,2}$|^#(?:[0-9a-fA-F]{4}){2}$",
+); // ABC, FFAAAA, #AAA, #FAB, #FFAABBCC
 final emailRegex = RegExp(
-    r"^([a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9\-\_]+(\.[a-zA-Z]+)*)$");
+  r"^([a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9\-\_]+(\.[a-zA-Z]+)*)$",
+);
 final phoneRegex = RegExp(r'^\+?\d{0,2}\s?\d{7,15}$');
 
 (bool, String) parseColor(String value) {
@@ -244,11 +238,10 @@ Future<(File?, String?, int)> writeToClipboardCacheFile({
 
   if (file != null) {
     // await copyFile(file.path, path);
-    await EasyWorker.compute(
-      copyFile,
-      (file.uri.toFilePath(windows: Platform.isWindows), path),
-      name: "Copy File",
-    );
+    await EasyWorker.compute(copyFile, (
+      file.uri.toFilePath(windows: Platform.isWindows),
+      path,
+    ), name: "Copy File");
 
     return (file_, mime.lookupMimeType(file.path), await file.length());
   } else if (textContent != null) {
@@ -258,10 +251,7 @@ Future<(File?, String?, int)> writeToClipboardCacheFile({
     await file_.writeAsBytes(content, flush: true);
     return (
       file_,
-      mime.lookupMimeType(
-        path,
-        headerBytes: content.sublist(0, 100),
-      ),
+      mime.lookupMimeType(path, headerBytes: content.sublist(0, 100)),
       content.length,
     );
   }
@@ -286,15 +276,19 @@ class ClipboardFormatProcessor {
     final canProvide = reader.canProvide(format);
     if (!canProvide) return null;
     final completer = Completer<T?>();
-    reader.getValue<T>(format, (value) {
-      if (value != null) {
-        completer.complete(value);
-        return;
-      }
-      completer.complete(null);
-    }, onError: (error) {
-      completer.completeError(error);
-    });
+    reader.getValue<T>(
+      format,
+      (value) {
+        if (value != null) {
+          completer.complete(value);
+          return;
+        }
+        completer.complete(null);
+      },
+      onError: (error) {
+        completer.completeError(error);
+      },
+    );
 
     return completer.future;
   }
@@ -324,7 +318,10 @@ class ClipboardFormatProcessor {
           // duplicate prevention
           if (file.fileName != null &&
               isDuplicate(
-                  type: ClipItemType.file, path: file.fileName, save: true)) {
+                type: ClipItemType.file,
+                path: file.fileName,
+                save: true,
+              )) {
             logger.w("Duplicate File Clip Found!");
             c.complete();
             name = _duplicateTag;
@@ -417,15 +414,31 @@ class ClipboardFormatProcessor {
 
   Future<ClipItem?> _getPlainText(DataReader reader) async {
     String? text;
+    String? fallbackText;
 
     try {
       text = await readValue(reader, Formats.plainText);
     } catch (e) {
-      final data = await service.Clipboard.getData("text/plain");
+      logger.w(
+        "Couldn't read plain text from data reader, falling back.",
+        error: e,
+      );
+    }
 
-      if (data != null) {
-        text = data.text;
+    if (Platform.isMacOS) {
+      final data = await service.Clipboard.getData("text/plain");
+      fallbackText = data?.text;
+      if (fallbackText != null && fallbackText.isNotEmpty) {
+        if (text != null && text != fallbackText) {
+          logger.i(
+            "Using native macOS clipboard text due to plain-text mismatch.",
+          );
+        }
+        text = fallbackText;
       }
+    } else if (text == null) {
+      final data = await service.Clipboard.getData("text/plain");
+      text = data?.text;
     }
 
     if (text == null) {
@@ -444,10 +457,7 @@ class ClipboardFormatProcessor {
         return ClipItem.duplicate();
       }
 
-      return ClipItem.text(
-        text: parsedText,
-        textCategory: textCategory,
-      );
+      return ClipItem.text(text: parsedText, textCategory: textCategory);
     }
   }
 
@@ -543,10 +553,7 @@ class ClipboardFormatProcessor {
     }
   }
 
-  Future<ClipItem?> getFile(
-    DataReader reader,
-    Uri uri,
-  ) async {
+  Future<ClipItem?> getFile(DataReader reader, Uri uri) async {
     File file;
     try {
       final filePath = uri.toFilePath(windows: Platform.isWindows);
@@ -588,15 +595,20 @@ class ClipboardFormatProcessor {
     );
   }
 
-  Future<ClipItem> getUrl(DataReader reader, NamedUri uri) async {
+  Future<ClipItem?> getUrl(DataReader reader, NamedUri uri) async {
     final schema = uri.uri.scheme;
     final isSupported = supportedUriSchemas.contains(schema);
     if (isSupported) {
       return ClipItem.uri(uri: uri.uri);
     } else {
       logger.w("Unsupported uri schema: $schema. Converting to text.");
-      return ClipItem.text(text: cleanText(uri.uri.toString()));
+      return null;
     }
+  }
+
+  bool isValidUri(final Uri uri) {
+    final schema = uri.scheme;
+    return supportedUriSchemas.contains(schema);
   }
 
   Future<ClipItem?> processUri(DataReader reader) async {
@@ -625,7 +637,11 @@ class ClipboardFormatProcessor {
         logger.w("Duplicate Uri Clip Found!");
         return ClipItem.duplicate();
       }
-      return await getUrl(reader, uri);
+      final parsedUrl = await getUrl(reader, uri);
+
+      if (parsedUrl != null) {
+        return parsedUrl;
+      }
     }
 
     logger.i("Uri couldn't be parsed, trying with text.");
@@ -633,8 +649,11 @@ class ClipboardFormatProcessor {
     return await _getPlainText(reader);
   }
 
-  Future<ClipItem?> process(DataReader reader, DataFormat format,
-      {bool preventDuplicate = false}) async {
+  Future<ClipItem?> process(
+    DataReader reader,
+    DataFormat format, {
+    bool preventDuplicate = false,
+  }) async {
     try {
       this.preventDuplicate = preventDuplicate;
       switch (format) {
@@ -769,9 +788,7 @@ class ClipboardService with ClipboardListener {
     for (final item in reader.items) {
       DataFormat? selectedFormat;
       final itemFormats = item.getFormats(allSupportedClipFormats);
-      selectedFormat = filterOutByPriority(
-        itemFormats,
-      );
+      selectedFormat = filterOutByPriority(itemFormats);
       if (selectedFormat != null) {
         res.add(selectedFormat);
       }
@@ -813,12 +830,10 @@ class ClipboardService with ClipboardListener {
     bool manual = false,
   }) async {
     final clips = await Future.wait(
-      readerSet.map(
-        (record) {
-          final (reader, format) = record;
-          return processor.process(reader, format);
-        },
-      ),
+      readerSet.map((record) {
+        final (reader, format) = record;
+        return processor.process(reader, format);
+      }),
     );
 
     if (manual) {
@@ -836,15 +851,13 @@ class ClipboardService with ClipboardListener {
     bool preventDuplicate = false,
   }) async {
     final clips = await Future.wait(
-      data.map(
-        (format) {
-          return processor.process(
-            reader,
-            format,
-            preventDuplicate: preventDuplicate && !manual,
-          );
-        },
-      ),
+      data.map((format) {
+        return processor.process(
+          reader,
+          format,
+          preventDuplicate: preventDuplicate && !manual,
+        );
+      }),
     );
 
     if (manual) {
