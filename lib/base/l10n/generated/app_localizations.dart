@@ -66,7 +66,7 @@ import 'app_localizations_zh.dart' deferred as app_localizations_zh;
 /// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale)
-      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -89,11 +89,11 @@ abstract class AppLocalizations {
   /// of delegates is preferred or required.
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
@@ -102,7 +102,7 @@ abstract class AppLocalizations {
     Locale('es'),
     Locale('fr'),
     Locale('pt'),
-    Locale('zh')
+    Locale('zh'),
   ];
 
   /// App name: CopyCat Clipboard
@@ -1693,8 +1693,10 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Restored: {synced} of {totalCount} clips.'**
-  String restore_clips__restoring(
-      {required int synced, required int totalCount});
+  String restore_clips__restoring({
+    required int synced,
+    required int totalCount,
+  });
 
   /// No description provided for @restore_collections__text__title.
   ///
@@ -1736,8 +1738,10 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Restored: {synced} of {totalCount} collections.'**
-  String restore_collections__restoring(
-      {required int synced, required int totalCount});
+  String restore_collections__restoring({
+    required int synced,
+    required int totalCount,
+  });
 
   /// No description provided for @drive__snackbar__success.
   ///
@@ -1995,8 +1999,9 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Files and Media over a certain size ({fileSize}) will not be copied automatically.'**
-  String settings__dropdown__no_copy_over_limit__subtitle(
-      {required String fileSize});
+  String settings__dropdown__no_copy_over_limit__subtitle({
+    required String fileSize,
+  });
 
   /// No description provided for @settings__text__5MB.
   ///
@@ -2038,8 +2043,9 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Files and Media over a certain size ({fileSize}) will not be uploaded automatically.'**
-  String settings__dropdown__no_upload_over_limit__subtitle(
-      {required String fileSize});
+  String settings__dropdown__no_upload_over_limit__subtitle({
+    required String fileSize,
+  });
 
   /// No description provided for @settings__dropdown__sync_mode__title.
   ///
@@ -2881,13 +2887,13 @@ class _AppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) => <String>[
-        'de',
-        'en',
-        'es',
-        'fr',
-        'pt',
-        'zh'
-      ].contains(locale.languageCode);
+    'de',
+    'en',
+    'es',
+    'fr',
+    'pt',
+    'zh',
+  ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -2897,34 +2903,35 @@ Future<AppLocalizations> lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'de':
-      return app_localizations_de
-          .loadLibrary()
-          .then((dynamic _) => app_localizations_de.AppLocalizationsDe());
+      return app_localizations_de.loadLibrary().then(
+        (dynamic _) => app_localizations_de.AppLocalizationsDe(),
+      );
     case 'en':
-      return app_localizations_en
-          .loadLibrary()
-          .then((dynamic _) => app_localizations_en.AppLocalizationsEn());
+      return app_localizations_en.loadLibrary().then(
+        (dynamic _) => app_localizations_en.AppLocalizationsEn(),
+      );
     case 'es':
-      return app_localizations_es
-          .loadLibrary()
-          .then((dynamic _) => app_localizations_es.AppLocalizationsEs());
+      return app_localizations_es.loadLibrary().then(
+        (dynamic _) => app_localizations_es.AppLocalizationsEs(),
+      );
     case 'fr':
-      return app_localizations_fr
-          .loadLibrary()
-          .then((dynamic _) => app_localizations_fr.AppLocalizationsFr());
+      return app_localizations_fr.loadLibrary().then(
+        (dynamic _) => app_localizations_fr.AppLocalizationsFr(),
+      );
     case 'pt':
-      return app_localizations_pt
-          .loadLibrary()
-          .then((dynamic _) => app_localizations_pt.AppLocalizationsPt());
+      return app_localizations_pt.loadLibrary().then(
+        (dynamic _) => app_localizations_pt.AppLocalizationsPt(),
+      );
     case 'zh':
-      return app_localizations_zh
-          .loadLibrary()
-          .then((dynamic _) => app_localizations_zh.AppLocalizationsZh());
+      return app_localizations_zh.loadLibrary().then(
+        (dynamic _) => app_localizations_zh.AppLocalizationsZh(),
+      );
   }
 
   throw FlutterError(
-      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
 }

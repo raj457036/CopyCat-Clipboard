@@ -915,8 +915,10 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String restore_clips__restoring(
-      {required int synced, required int totalCount}) {
+  String restore_clips__restoring({
+    required int synced,
+    required int totalCount,
+  }) {
     return 'Restauré : $synced de $totalCount clips.';
   }
 
@@ -946,8 +948,10 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String restore_collections__restoring(
-      {required int synced, required int totalCount}) {
+  String restore_collections__restoring({
+    required int synced,
+    required int totalCount,
+  }) {
     return 'Restauré : $synced de $totalCount collections.';
   }
 
@@ -1089,8 +1093,9 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ne pas copier automatiquement au-delà de';
 
   @override
-  String settings__dropdown__no_copy_over_limit__subtitle(
-      {required String fileSize}) {
+  String settings__dropdown__no_copy_over_limit__subtitle({
+    required String fileSize,
+  }) {
     return 'Les fichiers et médias de plus d\'une certaine taille ($fileSize) ne seront pas copiés automatiquement.';
   }
 
@@ -1114,8 +1119,9 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ne pas téléverser automatiquement au-delà de';
 
   @override
-  String settings__dropdown__no_upload_over_limit__subtitle(
-      {required String fileSize}) {
+  String settings__dropdown__no_upload_over_limit__subtitle({
+    required String fileSize,
+  }) {
     return 'Les fichiers et médias de plus d\'une certaine taille ($fileSize) ne seront pas téléversés automatiquement.';
   }
 
@@ -1218,8 +1224,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String settings__switch__paused_active__subtitle({required DateTime time}) {
-    final intl.DateFormat timeDateFormat =
-        intl.DateFormat('h:mm a', localeName);
+    final intl.DateFormat timeDateFormat = intl.DateFormat(
+      'h:mm a',
+      localeName,
+    );
     final String timeString = timeDateFormat.format(time);
 
     return 'En pause jusqu\'à $timeString. Appuyez pour reprendre ou ajuster le temps.';

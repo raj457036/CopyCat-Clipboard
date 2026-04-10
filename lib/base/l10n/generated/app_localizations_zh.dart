@@ -868,8 +868,10 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String restore_clips__restoring(
-      {required int synced, required int totalCount}) {
+  String restore_clips__restoring({
+    required int synced,
+    required int totalCount,
+  }) {
     return '已恢复: $synced / $totalCount 个剪贴板。';
   }
 
@@ -910,8 +912,10 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String restore_collections__restoring(
-      {required int synced, required int totalCount}) {
+  String restore_collections__restoring({
+    required int synced,
+    required int totalCount,
+  }) {
     return '已恢复: $synced / $totalCount 个收藏夹。';
   }
 
@@ -1044,8 +1048,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__dropdown__no_copy_over_limit__title => '不自动复制超过';
 
   @override
-  String settings__dropdown__no_copy_over_limit__subtitle(
-      {required String fileSize}) {
+  String settings__dropdown__no_copy_over_limit__subtitle({
+    required String fileSize,
+  }) {
     return '超过一定大小($fileSize)的文件和媒体不会自动复制。';
   }
 
@@ -1068,8 +1073,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__dropdown__no_upload_over_limit__title => '不自动上传超过';
 
   @override
-  String settings__dropdown__no_upload_over_limit__subtitle(
-      {required String fileSize}) {
+  String settings__dropdown__no_upload_over_limit__subtitle({
+    required String fileSize,
+  }) {
     return '超过一定大小($fileSize)的文件和媒体不会自动上传。';
   }
 
@@ -1163,8 +1169,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String settings__switch__paused_active__subtitle({required DateTime time}) {
-    final intl.DateFormat timeDateFormat =
-        intl.DateFormat('h:mm a', localeName);
+    final intl.DateFormat timeDateFormat = intl.DateFormat(
+      'h:mm a',
+      localeName,
+    );
     final String timeString = timeDateFormat.format(time);
 
     return '暂停到 $timeString 。轻触以恢复或调整时间。';

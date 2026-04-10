@@ -909,8 +909,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String restore_clips__restoring(
-      {required int synced, required int totalCount}) {
+  String restore_clips__restoring({
+    required int synced,
+    required int totalCount,
+  }) {
     return 'Restored: $synced of $totalCount clips.';
   }
 
@@ -954,8 +956,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String restore_collections__restoring(
-      {required int synced, required int totalCount}) {
+  String restore_collections__restoring({
+    required int synced,
+    required int totalCount,
+  }) {
     return 'Restored: $synced of $totalCount collections.';
   }
 
@@ -1093,8 +1097,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Don\'t Auto Copy Over';
 
   @override
-  String settings__dropdown__no_copy_over_limit__subtitle(
-      {required String fileSize}) {
+  String settings__dropdown__no_copy_over_limit__subtitle({
+    required String fileSize,
+  }) {
     return 'Files and Media over a certain size ($fileSize) will not be copied automatically.';
   }
 
@@ -1118,8 +1123,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Don\'t Auto Upload Over';
 
   @override
-  String settings__dropdown__no_upload_over_limit__subtitle(
-      {required String fileSize}) {
+  String settings__dropdown__no_upload_over_limit__subtitle({
+    required String fileSize,
+  }) {
     return 'Files and Media over a certain size ($fileSize) will not be uploaded automatically.';
   }
 
@@ -1219,8 +1225,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String settings__switch__paused_active__subtitle({required DateTime time}) {
-    final intl.DateFormat timeDateFormat =
-        intl.DateFormat('h:mm a', localeName);
+    final intl.DateFormat timeDateFormat = intl.DateFormat(
+      'h:mm a',
+      localeName,
+    );
     final String timeString = timeDateFormat.format(time);
 
     return 'Paused until $timeString. Tap to resume or adjust the time.';
