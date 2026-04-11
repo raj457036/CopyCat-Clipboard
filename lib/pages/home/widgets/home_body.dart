@@ -28,7 +28,7 @@ class HomePageBody extends StatelessWidget {
           builder: (context, layout, _) {
             return switch (layout) {
               AppLayout.grid => ClipGrid(
-                builder: (delegate, scrollDirection, canPaste) {
+                builder: (delegate, scrollDirection) {
                   return ClipsProviderWithBuilder(
                     builder: (context, clips, hasMore, loading, loadMore) {
                       return ClipGridBuilder(
@@ -38,14 +38,13 @@ class HomePageBody extends StatelessWidget {
                         loadMore: loadMore,
                         delegate: delegate,
                         scrollDirection: scrollDirection,
-                        canPaste: canPaste,
                       );
                     },
                   );
                 },
               ),
               AppLayout.list => CanPasteBuilder(
-                builder: (context, canPaste) {
+                builder: (context) {
                   return ClipsProviderWithBuilder(
                     builder: (context, clips, hasMore, loading, loadMore) {
                       return ClipListBuilder(
@@ -53,7 +52,6 @@ class HomePageBody extends StatelessWidget {
                         hasMore: hasMore,
                         loading: loading,
                         loadMore: loadMore,
-                        canPaste: canPaste,
                       );
                     },
                   );

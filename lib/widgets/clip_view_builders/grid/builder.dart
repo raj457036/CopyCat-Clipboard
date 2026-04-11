@@ -6,6 +6,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_card/clip_card.dart';
 import 'package:clipboard/widgets/clip_item/clip_meta_info.dart';
 import 'package:clipboard/widgets/clip_view_builders/selected_clip_provider.dart';
@@ -22,7 +23,6 @@ class ClipGridBuilder extends StatelessWidget {
   final VoidCallback loadMore;
   final SliverGridDelegate delegate;
   final Axis scrollDirection;
-  final bool canPaste;
 
   const ClipGridBuilder({
     super.key,
@@ -32,12 +32,12 @@ class ClipGridBuilder extends StatelessWidget {
     required this.loadMore,
     required this.delegate,
     required this.scrollDirection,
-    required this.canPaste,
   });
 
   void onIndexPaste(BuildContext context, EventBusIndexPasteEvent state) {
     final index = state.index - 1;
     if (!index.isNegative && index < items.length) {
+      final canPaste = CanPasteScope.of(context);
       performPrimaryActionOnClip(context, items[index], canPaste);
     }
   }
@@ -77,7 +77,6 @@ class ClipGridBuilder extends StatelessWidget {
                 key: ValueKey("clipboard-item-${item.id}"),
                 autoFocus: !isSelected && index == 0 && isDesktopPlatform,
                 item: item,
-                canPaste: canPaste,
                 selected: isSelected,
                 selectionActive: selectedClips.isNotEmpty,
               );

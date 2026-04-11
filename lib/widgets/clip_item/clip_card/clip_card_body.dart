@@ -11,8 +11,8 @@ import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_card/clip_card_options_header.dart';
-import 'package:clipboard/widgets/clip_item/clip_collection_indicator.dart';
 import 'package:clipboard/widgets/clip_item/clip_preview.dart';
 import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
@@ -25,14 +25,12 @@ import 'package:universal_io/io.dart';
 
 class ClipCardBodyContent extends StatelessWidget {
   final ClipboardItem item;
-  final bool canPaste;
   final bool hovered;
   final bool selected;
   final bool selectionActive;
   const ClipCardBodyContent({
     super.key,
     required this.item,
-    required this.canPaste,
     required this.selectionActive,
     this.hovered = false,
     this.selected = false,
@@ -40,6 +38,7 @@ class ClipCardBodyContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final canPaste = CanPasteScope.of(context);
     final textTheme = context.textTheme;
     final child = Column(
       mainAxisSize: MainAxisSize.min,
@@ -72,20 +71,7 @@ class ClipCardBodyContent extends StatelessWidget {
                     maxLines: 2,
                   ),
                 ),
-              if (!item.encrypted &&
-                  (item.collectionId != null ||
-                      item.serverCollectionId != null))
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: padding8,
-                    right: padding8,
-                    bottom: padding8,
-                  ),
-                  child: ClipCollectionIndicator(
-                    collectionId: item.collectionId,
-                    serverCollectionId: item.serverCollectionId,
-                  ),
-                ),
+
               Expanded(
                 child: ClipPreview(item: item, layout: AppLayout.grid),
               ),
@@ -108,14 +94,12 @@ class ClipCardBodyContent extends StatelessWidget {
 class ClipCardBody extends StatefulWidget {
   final ClipboardItem item;
   final bool focused;
-  final bool canPaste;
   final bool selected;
   final bool selectionActive;
   const ClipCardBody({
     super.key,
     required this.item,
     required this.focused,
-    required this.canPaste,
     required this.selected,
     required this.selectionActive,
   });
@@ -155,11 +139,12 @@ class _ClipCardBodyState extends State<ClipCardBody> {
   }
 
   Future<void> performPrimaryAction(BuildContext context) async {
+    final canPaste = CanPasteScope.of(context);
     if (widget.item.encrypted) {
       decryptItem(context);
     } else if (widget.item.needDownload) {
       downloadFile(context, widget.item);
-    } else if (widget.canPaste) {
+    } else if (canPaste) {
       pasteOnLastWindow(context, widget.item);
     } else {
       copyToClipboard(context, widget.item);
@@ -216,7 +201,6 @@ class _ClipCardBodyState extends State<ClipCardBody> {
         : null;
 
     final cardContent = ClipCardBodyContent(
-      canPaste: widget.canPaste,
       item: widget.item,
       hovered: hovered,
       selected: widget.selected,

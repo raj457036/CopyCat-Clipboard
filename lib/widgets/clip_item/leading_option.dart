@@ -1,3 +1,4 @@
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/widgets/clip_item/clip_create_time.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
@@ -43,9 +44,7 @@ class LeadingClipboardOption extends StatelessWidget {
           descendantsAreTraversable: false,
           child: IconButton(
             isSelected: selected,
-            style: IconButton.styleFrom(
-              padding: EdgeInsets.zero,
-            ),
+            style: IconButton.styleFrom(padding: EdgeInsets.zero),
             iconSize: iconSize,
             tooltip: context.locale.app__select,
             onPressed: () => toggleSelect(context),
@@ -55,6 +54,12 @@ class LeadingClipboardOption extends StatelessWidget {
         ),
       );
     }
-    return ClipCreateTime(created: created, padding: createdPadding);
+
+    final createTime = ClipCreateTime(
+      created: created,
+      padding: createdPadding,
+    );
+
+    return createTime;
   }
 }

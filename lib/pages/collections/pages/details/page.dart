@@ -40,7 +40,7 @@ class CollectionDetailPage extends StatelessWidget {
               builder: (context, layout, _) {
                 return switch (layout) {
                   AppLayout.grid => ClipGrid(
-                    builder: (delegate, scrollDirection, canPaste) {
+                    builder: (delegate, scrollDirection) {
                       return ClipsProviderWithBuilder(
                         isCollectionClips: true,
                         builder: (context, clips, hasMore, loading, loadMore) {
@@ -51,14 +51,13 @@ class CollectionDetailPage extends StatelessWidget {
                             loadMore: loadMore,
                             delegate: delegate,
                             scrollDirection: scrollDirection,
-                            canPaste: canPaste,
                           );
                         },
                       );
                     },
                   ),
                   AppLayout.list => CanPasteBuilder(
-                    builder: (context, canPaste) {
+                    builder: (context) {
                       return ClipsProviderWithBuilder(
                         isCollectionClips: true,
                         builder: (context, clips, hasMore, loading, loadMore) {
@@ -67,7 +66,6 @@ class CollectionDetailPage extends StatelessWidget {
                             hasMore: hasMore,
                             loading: loading,
                             loadMore: loadMore,
-                            canPaste: canPaste,
                           );
                         },
                       );

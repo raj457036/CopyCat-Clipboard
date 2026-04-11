@@ -6,8 +6,8 @@ import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_list_item/options_header.dart';
-import 'package:clipboard/widgets/clip_item/clip_collection_indicator.dart';
 import 'package:clipboard/widgets/clip_item/clip_preview.dart';
 import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
@@ -20,7 +20,6 @@ import 'package:universal_io/io.dart';
 
 class ClipListItem extends StatefulWidget {
   final bool autofocus;
-  final bool canPaste;
   final bool selected;
   final bool selectionActive;
   final ClipboardItem item;
@@ -29,7 +28,6 @@ class ClipListItem extends StatefulWidget {
     super.key,
     required this.item,
     this.autofocus = false,
-    this.canPaste = false,
     this.selected = false,
     this.selectionActive = false,
   });
@@ -78,6 +76,7 @@ class _ClipListItemState extends State<ClipListItem> {
 
   @override
   Widget build(BuildContext context) {
+    final canPaste = CanPasteScope.of(context);
     final colors = context.colors;
     final textTheme = context.textTheme;
 
@@ -102,11 +101,8 @@ class _ClipListItemState extends State<ClipListItem> {
             borderRadius: radius12,
             autofocus: widget.autofocus,
             onTap: !widget.selectionActive
-                ? () => performPrimaryActionOnClip(
-                    context,
-                    widget.item,
-                    widget.canPaste,
-                  )
+                ? () =>
+                      performPrimaryActionOnClip(context, widget.item, canPaste)
                 : () => toggleSelect(context),
             onSecondaryTapDown: !widget.selectionActive
                 ? (detail) async {
@@ -127,7 +123,7 @@ class _ClipListItemState extends State<ClipListItem> {
               children: [
                 ClipListItemOptionHeader(
                   item: widget.item,
-                  hasFocusForPaste: widget.canPaste,
+                  hasFocusForPaste: canPaste,
                   hovered: hovered,
                   selected: widget.selected,
                   selectionActive: widget.selectionActive,
@@ -145,20 +141,6 @@ class _ClipListItemState extends State<ClipListItem> {
                         fontVariations: fontVarW700,
                       ),
                       maxLines: 2,
-                    ),
-                  ),
-                if (!widget.item.encrypted &&
-                    (widget.item.collectionId != null ||
-                        widget.item.serverCollectionId != null))
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: padding10,
-                      right: padding10,
-                      bottom: padding8,
-                    ),
-                    child: ClipCollectionIndicator(
-                      collectionId: widget.item.collectionId,
-                      serverCollectionId: widget.item.serverCollectionId,
                     ),
                   ),
                 Flexible(

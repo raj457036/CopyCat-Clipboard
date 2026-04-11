@@ -64,19 +64,15 @@ Future<void> appRunner() async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (sentryDSN != "" && !kDebugMode) {
-    await SentryFlutter.init(
-      (options) {
-        options.dsn = sentryDSN;
-        options.environment = kDebugMode
-            ? "Dev"
-            : kProfileMode
-                ? "Profile"
-                : "Prod";
-        options.tracesSampleRate = kDebugMode ? 0 : 0.05;
-        options.profilesSampleRate = kDebugMode ? 0 : 0.5;
-      },
-      appRunner: appRunner,
-    );
+    await SentryFlutter.init((options) {
+      options.dsn = sentryDSN;
+      options.environment = kDebugMode
+          ? "Dev"
+          : kProfileMode
+          ? "Profile"
+          : "Prod";
+      options.tracesSampleRate = kDebugMode ? 0 : 0.05;
+    }, appRunner: appRunner);
   } else {
     appRunner();
   }
@@ -132,7 +128,7 @@ Future<void> initializeDesktopServices() async {
 void updateValidatorLanguage(String langCode) {
   final locale =
       fv_locale.supportedLocales.findFirst((l) => l.startsWith(langCode)) ??
-          "en";
+      "en";
   ValidationBuilder.setLocale(locale);
 }
 
@@ -142,7 +138,7 @@ class AppContent extends StatelessWidget {
   SystemUiOverlayStyle getUiOverlay(ThemeMode mode) {
     var lightTheme =
         SchedulerBinding.instance.platformDispatcher.platformBrightness ==
-            Brightness.light;
+        Brightness.light;
     return mode == ThemeMode.light || (mode == ThemeMode.system && lightTheme)
         ? const SystemUiOverlayStyle(
             systemNavigationBarColor: Colors.transparent,
@@ -173,8 +169,8 @@ class AppContent extends StatelessWidget {
           case MonetizationActive(:final subscription):
             {
               final clipSyncCubit = context.read<ClipSyncManagerCubit>();
-              final collectionSyncCubit =
-                  context.read<CollectionSyncManagerCubit>();
+              final collectionSyncCubit = context
+                  .read<CollectionSyncManagerCubit>();
               final appConfigCubit = context.read<AppConfigCubit>();
               appConfigCubit.load(subscription);
               clipSyncCubit.changeConfig(
@@ -189,105 +185,118 @@ class AppContent extends StatelessWidget {
         }
       },
       child: StateInitializer(
-        child: BlocSelector<AppConfigCubit, AppConfigState,
-            (ThemeMode, String, ColorScheme, ColorScheme, AppView)>(
-          selector: (state) {
-            return (
-              state.config.themeMode,
-              state.config.locale,
-              state.config.lightThemeColorScheme,
-              state.config.darkThemeColorScheme,
-              state.config.view,
-            );
-          },
-          builder: (context, state) {
-            final (theme, langCode, lightColorScheme, darkColorScheme, view) =
-                state;
-            final surfaceColor = theme == ThemeMode.light
-                ? lightColorScheme.surface
-                : darkColorScheme.surface;
+        child:
+            BlocSelector<
+              AppConfigCubit,
+              AppConfigState,
+              (ThemeMode, String, ColorScheme, ColorScheme, AppView)
+            >(
+              selector: (state) {
+                return (
+                  state.config.themeMode,
+                  state.config.locale,
+                  state.config.lightThemeColorScheme,
+                  state.config.darkThemeColorScheme,
+                  state.config.view,
+                );
+              },
+              builder: (context, state) {
+                final (
+                  theme,
+                  langCode,
+                  lightColorScheme,
+                  darkColorScheme,
+                  view,
+                ) = state;
+                final surfaceColor = theme == ThemeMode.light
+                    ? lightColorScheme.surface
+                    : darkColorScheme.surface;
 
-            final lightTheme = ThemeData(
-              useMaterial3: true,
-              colorScheme: lightColorScheme,
-              brightness: Brightness.light,
-              inputDecorationTheme: const InputDecorationTheme(
-                border: OutlineInputBorder(),
-                isDense: true,
-              ),
-            );
+                final lightTheme = ThemeData(
+                  useMaterial3: true,
+                  colorScheme: lightColorScheme,
+                  brightness: Brightness.light,
+                  inputDecorationTheme: const InputDecorationTheme(
+                    border: OutlineInputBorder(),
+                    isDense: true,
+                  ),
+                );
 
-            final darkTheme = ThemeData(
-              useMaterial3: true,
-              colorScheme: darkColorScheme,
-              brightness: Brightness.dark,
-              inputDecorationTheme: const InputDecorationTheme(
-                border: OutlineInputBorder(),
-                isDense: true,
-              ),
-            );
+                final darkTheme = ThemeData(
+                  useMaterial3: true,
+                  colorScheme: darkColorScheme,
+                  brightness: Brightness.dark,
+                  inputDecorationTheme: const InputDecorationTheme(
+                    border: OutlineInputBorder(),
+                    isDense: true,
+                  ),
+                );
 
-            updateValidatorLanguage(langCode);
-            return AnnotatedRegion<SystemUiOverlayStyle>(
-              value: getUiOverlay(theme),
-              child: MaterialApp.router(
-                routerConfig: routeConfig,
-                scaffoldMessengerKey: scaffoldMessengerKey,
-                color: surfaceColor,
-                themeMode: theme,
-                shortcuts: {
-                  ...WidgetsApp.defaultShortcuts,
-                  NavigateToHomePageIntent.activator:
-                      const NavigateToHomePageIntent(),
-                  NavigateToCollectionPageIntent.activator:
-                      const NavigateToCollectionPageIntent(),
-                  FocusOnSearchFieldIntent.activator:
-                      const FocusOnSearchFieldIntent(),
-                  CreateNewClipNoteIntent.activator:
-                      const CreateNewClipNoteIntent(),
-                  SyncIntent.activator: const SyncIntent(),
-                  PasteIntent.activator: const PasteIntent(),
-                  if (view == AppView.windowed)
-                    NavigateToSettingPageIntent.activator:
-                        const NavigateToSettingPageIntent(),
-                  if (isDesktopPlatform)
-                    PopRouteIntent.activator: const PopRouteIntent(),
-                  PasteByClipIndexIntent.i.activator: PasteByClipIndexIntent.i,
-                  SelectAllIntent.activator: const SelectAllIntent(),
-                },
-                actions: {
-                  ...WidgetsApp.defaultActions,
-                  NavigateToHomePageIntent: NavigateToHomePageAction(),
-                  NavigateToCollectionPageIntent:
-                      NavigateToCollectionPageAction(),
-                  FocusOnSearchFieldIntent: FocusOnSearchFieldAction(),
-                  SyncIntent: SyncAction(),
-                  CreateNewClipNoteIntent: CreateNewClipNoteAction(),
-                  PasteIntent: PasteAction(),
-                  if (isDesktopPlatform) PopRouteIntent: HideWindowAction(),
-                  if (view == AppView.windowed)
-                    NavigateToSettingPageIntent: NavigateToSettingPageAction(),
-                  PasteByClipIndexIntent: PasteByClipIndexAction(),
-                  SelectAllIntent: SelectAllAction(),
-                },
-                theme: lightTheme.copyWith(
-                  textTheme: robotoFlexTextTheme(lightTheme.textTheme),
-                ),
-                darkTheme: darkTheme.copyWith(
-                  textTheme: robotoFlexTextTheme(darkTheme.textTheme),
-                ),
-                debugShowCheckedModeBanner: false,
-                locale:
-                    Locale(langCode.isEmpty ? Platform.localeName : langCode),
-                localizationsDelegates: AppLocalizations.localizationsDelegates,
-                supportedLocales: AppLocalizations.supportedLocales,
-                builder: (context, child) {
-                  return UpgraderBuilder(child: child);
-                },
-              ),
-            );
-          },
-        ),
+                updateValidatorLanguage(langCode);
+                return AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: getUiOverlay(theme),
+                  child: MaterialApp.router(
+                    routerConfig: routeConfig,
+                    scaffoldMessengerKey: scaffoldMessengerKey,
+                    color: surfaceColor,
+                    themeMode: theme,
+                    shortcuts: {
+                      ...WidgetsApp.defaultShortcuts,
+                      NavigateToHomePageIntent.activator:
+                          const NavigateToHomePageIntent(),
+                      NavigateToCollectionPageIntent.activator:
+                          const NavigateToCollectionPageIntent(),
+                      FocusOnSearchFieldIntent.activator:
+                          const FocusOnSearchFieldIntent(),
+                      CreateNewClipNoteIntent.activator:
+                          const CreateNewClipNoteIntent(),
+                      SyncIntent.activator: const SyncIntent(),
+                      PasteIntent.activator: const PasteIntent(),
+                      if (view == AppView.windowed)
+                        NavigateToSettingPageIntent.activator:
+                            const NavigateToSettingPageIntent(),
+                      if (isDesktopPlatform)
+                        PopRouteIntent.activator: const PopRouteIntent(),
+                      PasteByClipIndexIntent.i.activator:
+                          PasteByClipIndexIntent.i,
+                      SelectAllIntent.activator: const SelectAllIntent(),
+                    },
+                    actions: {
+                      ...WidgetsApp.defaultActions,
+                      NavigateToHomePageIntent: NavigateToHomePageAction(),
+                      NavigateToCollectionPageIntent:
+                          NavigateToCollectionPageAction(),
+                      FocusOnSearchFieldIntent: FocusOnSearchFieldAction(),
+                      SyncIntent: SyncAction(),
+                      CreateNewClipNoteIntent: CreateNewClipNoteAction(),
+                      PasteIntent: PasteAction(),
+                      if (isDesktopPlatform) PopRouteIntent: HideWindowAction(),
+                      if (view == AppView.windowed)
+                        NavigateToSettingPageIntent:
+                            NavigateToSettingPageAction(),
+                      PasteByClipIndexIntent: PasteByClipIndexAction(),
+                      SelectAllIntent: SelectAllAction(),
+                    },
+                    theme: lightTheme.copyWith(
+                      textTheme: robotoFlexTextTheme(lightTheme.textTheme),
+                    ),
+                    darkTheme: darkTheme.copyWith(
+                      textTheme: robotoFlexTextTheme(darkTheme.textTheme),
+                    ),
+                    debugShowCheckedModeBanner: false,
+                    locale: Locale(
+                      langCode.isEmpty ? Platform.localeName : langCode,
+                    ),
+                    localizationsDelegates:
+                        AppLocalizations.localizationsDelegates,
+                    supportedLocales: AppLocalizations.supportedLocales,
+                    builder: (context, child) {
+                      return UpgraderBuilder(child: child);
+                    },
+                  ),
+                );
+              },
+            ),
       ),
     );
   }
@@ -302,9 +311,7 @@ class MainApp extends StatelessWidget {
       eventBus: sl(),
       child: WindowFocusManager.forPlatform(
         child: TrayManager.forPlatform(
-          child: const SystemShortcutListener(
-            child: AppContent(),
-          ),
+          child: const SystemShortcutListener(child: AppContent()),
         ),
       ),
     );
@@ -346,9 +353,7 @@ class MainApp extends StatelessWidget {
           enabled: false,
           tools: const [
             ...DevicePreview.defaultTools,
-            DevicePreviewScreenshot(
-              onScreenshot: screenshotAsFile,
-            ),
+            DevicePreviewScreenshot(onScreenshot: screenshotAsFile),
           ],
           builder: (context) => child,
         ),

@@ -46,7 +46,6 @@ class ClipboardItem with _$ClipboardItem, IsarIdMixin {
     String? driveFileId,
     int? fileSize, // in KB
     String? imgBlurHash, // only for image
-
     // Source Information
     String? sourceUrl,
     String? sourceApp,
@@ -282,11 +281,8 @@ class ClipboardItem with _$ClipboardItem, IsarIdMixin {
   }
 
   ClipboardItem syncDone([Failure? failure]) {
-    return copyWith(
-      downloading: false,
-      uploading: false,
-      failure: failure,
-    )..applyId(this);
+    return copyWith(downloading: false, uploading: false, failure: failure)
+      ..applyId(this);
   }
 
   @ignore
@@ -305,4 +301,8 @@ class ClipboardItem with _$ClipboardItem, IsarIdMixin {
     if (fileName != null && fileName!.isNotEmpty) return fileName;
     return null;
   }
+
+  @ignore
+  bool get hasCollection =>
+      (serverCollectionId != null || collectionId != null) && !encrypted;
 }
