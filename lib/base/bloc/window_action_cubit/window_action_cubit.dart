@@ -23,7 +23,8 @@ class WindowActionCubit extends Cubit<WindowActionState> {
 
   double get displayHeight {
     if (primaryDisplay != null) {
-      final height = primaryDisplay?.visibleSize?.height ??
+      final height =
+          primaryDisplay?.visibleSize?.height ??
           primaryDisplay!.size.height -
               (primaryDisplay?.visiblePosition?.dy ?? 0);
       return height;
@@ -33,7 +34,8 @@ class WindowActionCubit extends Cubit<WindowActionState> {
 
   double get displayWidth {
     if (primaryDisplay != null) {
-      final width = primaryDisplay?.visibleSize?.width ??
+      final width =
+          primaryDisplay?.visibleSize?.width ??
           primaryDisplay!.size.width -
               (primaryDisplay?.visiblePosition?.dx ?? 0);
       return width;
@@ -50,9 +52,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
   Future<void> setupScreenInfo() async {
     primaryDisplay = await screenRetriever.getPrimaryDisplay();
     checkFocus();
-    emit(
-      const WindowActionState.loaded(loading: false),
-    );
+    emit(const WindowActionState.loaded(loading: false));
   }
 
   Future<void> setup(AppView view, [Size? size]) async {
@@ -70,6 +70,23 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     }
   }
 
+  Future<void> onTop(bool isAlwaysOnTop) async {
+    if (!isDesktopPlatform) return;
+    await windowManager.setAlwaysOnTop(isAlwaysOnTop);
+  }
+
+  Future<void> focus() async {
+    if (!isDesktopPlatform) return;
+    await windowManager.focus();
+    isFocused = true;
+  }
+
+  Future<void> blur() async {
+    if (!isDesktopPlatform) return;
+    await windowManager.blur();
+    isFocused = false;
+  }
+
   Future<void> setDockedView(AppView view, [Size? size]) async {
     if (!isDesktopPlatform) return;
     assert(view != AppView.windowed, "Only docked views allowed");
@@ -83,24 +100,18 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     };
 
     final Size dockedMaxSize = switch (view) {
-      AppView.leftDocked || AppView.rightDocked => Size(
-          dockedLRMaxWidth,
-          displayHeight,
-        ),
+      AppView.leftDocked ||
+      AppView.rightDocked => Size(dockedLRMaxWidth, displayHeight),
       AppView.topDocked ||
-      AppView.bottomDocked =>
-        Size(displayWidth, dockedTBMaxHeight),
+      AppView.bottomDocked => Size(displayWidth, dockedTBMaxHeight),
       _ => initialWindowSize,
     };
 
     final Size dockedMinSize = switch (view) {
-      AppView.leftDocked || AppView.rightDocked => Size(
-          dockedLRMinWidth,
-          displayHeight,
-        ),
+      AppView.leftDocked ||
+      AppView.rightDocked => Size(dockedLRMinWidth, displayHeight),
       AppView.topDocked ||
-      AppView.bottomDocked =>
-        Size(displayWidth, dockedTBMinHeight),
+      AppView.bottomDocked => Size(displayWidth, dockedTBMinHeight),
       _ => initialWindowSize,
     };
 
@@ -142,10 +153,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
       if (animated && primaryDisplay != null) {
         final currentPosition = await windowManager.getPosition();
         windowManager.setPosition(
-          Offset(
-            currentPosition.dx,
-            primaryDisplay?.size.height ?? 600,
-          ),
+          Offset(currentPosition.dx, primaryDisplay?.size.height ?? 600),
           animate: true,
         );
 

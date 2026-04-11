@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
+import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/analytics.dart';
@@ -12,6 +13,7 @@ import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:share_plus/share_plus.dart';
@@ -301,6 +303,9 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         await persist([userItem]);
         continue;
       }
+      rootNavKey.currentContext?.read<PasteStackCubit>().ingestCapturedItems([
+        item,
+      ]);
       await persist([item]);
     }
   }

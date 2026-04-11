@@ -3,6 +3,7 @@ export 'digit_paste.dart';
 export 'home_page.dart';
 export 'new_clip_note.dart';
 export 'paste.dart';
+export 'paste_stack.dart';
 export 'pop_route.dart';
 export 'search.dart';
 export 'settings_page.dart';

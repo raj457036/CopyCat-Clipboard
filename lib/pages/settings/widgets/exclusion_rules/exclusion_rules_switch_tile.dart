@@ -64,15 +64,12 @@ class ExclusionRulesSwitchTile extends StatelessWidget {
             ),
             const SizedBox(
               height: 55,
-              child: VerticalDivider(
-                width: 1,
-                indent: 5,
-                endIndent: 5,
-              ),
+              child: VerticalDivider(width: 1, indent: 5, endIndent: 5),
             ),
             SizedBox(
               height: 55,
               child: InkWell(
+                mouseCursor: SystemMouseCursors.click,
                 onTap: () => onChanged(context, !enabled),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: padding10),

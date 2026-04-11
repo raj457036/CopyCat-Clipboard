@@ -29,10 +29,7 @@ class WindowFocusManager extends StatefulWidget {
     if (isMobilePlatform) {
       return child;
     }
-    return WindowFocusManager(
-      focusWindow: sl(),
-      child: child,
-    );
+    return WindowFocusManager(focusWindow: sl(), child: child);
   }
 
   static WindowFocusManagerState? of(BuildContext context) {
@@ -126,10 +123,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
     final size = await windowManager.getSize();
     logger.d("Resized: $size");
 
-    appConfig.changeWindowSize(
-      width: size.width,
-      height: size.height,
-    );
+    appConfig.changeWindowSize(width: size.width, height: size.height);
   }
 
   @override
@@ -145,8 +139,8 @@ class WindowFocusManagerState extends State<WindowFocusManager>
     if (!appConfigCubit.isPinned && isDocked) {
       context.windowAction?.hide();
     }
-    lastWindowId = null;
-    appConfigCubit.setLastFocusedWindowId(lastWindowId);
+    // lastWindowId = null;
+    // appConfigCubit.setLastFocusedWindowId(lastWindowId);
   }
 
   @override

@@ -27,7 +27,6 @@ import "package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.
 import "package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart";
 import "package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart";
 import "package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart";
-import "package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart";
 import "package:clipboard/base/constants/key.dart";
 import "package:clipboard/base/constants/strings/route_constants.dart";
 import "package:flutter/foundation.dart";
@@ -47,24 +46,18 @@ final rootRouter = GoRouter(
     GoRoute(
       name: RouteConstants.splash,
       path: "/",
-      builder: (context, state) => SplashPage(
-        key: state.pageKey,
-      ),
+      builder: (context, state) => SplashPage(key: state.pageKey),
     ),
     GoRoute(
       name: RouteConstants.login,
       path: '/login',
-      builder: (context, state) => LoginPage(
-        key: state.pageKey,
-      ),
+      builder: (context, state) => LoginPage(key: state.pageKey),
     ),
     GoRoute(
       name: RouteConstants.onboard,
       path: '/onboard',
-      builder: (context, state) => OnBoardPage(
-        key: state.pageKey,
-        startingStep: 0,
-      ),
+      builder: (context, state) =>
+          OnBoardPage(key: state.pageKey, startingStep: 0),
     ),
     GoRoute(
       name: RouteConstants.preview,
@@ -80,9 +73,7 @@ final rootRouter = GoRouter(
             future: item,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (!snapshot.hasData) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               }
               return ClipboardItemPreviewPage(item: snapshot.data);
             },
@@ -101,13 +92,8 @@ final rootRouter = GoRouter(
           pageBuilder: (context, state) {
             return NoTransitionPage(
               key: state.pageKey,
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider<ClipboardCubit>(
-                    create: (context) => sl()..fetch(),
-                  ),
-                  BlocProvider<SelectedClipsCubit>(create: (context) => sl()),
-                ],
+              child: BlocProvider<ClipboardCubit>(
+                create: (context) => sl()..fetch(),
                 child: const HomePage(),
               ),
             );
@@ -122,29 +108,28 @@ final rootRouter = GoRouter(
           ),
           routes: [
             GoRoute(
-                name: RouteConstants.collectionDetail,
-                path: ":id",
-                redirect: idPresentOrRedirect,
-                builder: (context, state) {
-                  final id = int.parse(state.pathParameters["id"]!);
+              name: RouteConstants.collectionDetail,
+              path: ":id",
+              redirect: idPresentOrRedirect,
+              builder: (context, state) {
+                final id = int.parse(state.pathParameters["id"]!);
 
-                  return ClipCollectionProvider(
-                    collectionId: id,
-                    builder: (context, collection) => CollectionDetailPage(
-                      key: state.pageKey,
-                      collection: collection,
-                    ),
-                  );
-                }),
+                return ClipCollectionProvider(
+                  collectionId: id,
+                  builder: (context, collection) => CollectionDetailPage(
+                    key: state.pageKey,
+                    collection: collection,
+                  ),
+                );
+              },
+            ),
           ],
         ),
         GoRoute(
           name: RouteConstants.settings,
           path: '/settings',
-          pageBuilder: (context, state) => NoTransitionPage(
-            key: state.pageKey,
-            child: const SettingsPage(),
-          ),
+          pageBuilder: (context, state) =>
+              NoTransitionPage(key: state.pageKey, child: const SettingsPage()),
           routes: [
             GoRoute(
               name: RouteConstants.androidBgClipboardSettings,
@@ -158,16 +143,14 @@ final rootRouter = GoRouter(
             GoRoute(
               name: RouteConstants.exclusionRules,
               path: "exclusion-rules",
-              builder: (context, state) => ExclusionRulesPage(
-                key: state.pageKey,
-              ),
+              builder: (context, state) =>
+                  ExclusionRulesPage(key: state.pageKey),
               routes: [
                 GoRoute(
                   name: RouteConstants.customExclusionRules,
                   path: "custom",
-                  builder: (context, state) => CustomExclusionRulePage(
-                    key: state.pageKey,
-                  ),
+                  builder: (context, state) =>
+                      CustomExclusionRulePage(key: state.pageKey),
                 ),
               ],
             ),
@@ -177,30 +160,25 @@ final rootRouter = GoRouter(
               builder: (context, state) {
                 final code = state.pathParameters["code"]!;
                 final scopes = state.uri.queryParameters["scopes"]!.split(" ");
-                context
-                    .read<DriveSetupCubit>()
-                    .verifyAuthCodeAndSetup(code, scopes);
-                return DriveSetupPage(
-                  key: state.pageKey,
+                context.read<DriveSetupCubit>().verifyAuthCodeAndSetup(
+                  code,
+                  scopes,
                 );
+                return DriveSetupPage(key: state.pageKey);
               },
             ),
             GoRoute(
               name: RouteConstants.resetPassword,
               path: 'reset-password',
               builder: (context, state) {
-                return ResetPasswordPage(
-                  key: state.pageKey,
-                );
+                return ResetPasswordPage(key: state.pageKey);
               },
             ),
             GoRoute(
               name: RouteConstants.accountDetails,
               path: 'account-details',
               builder: (context, state) {
-                return AccountPage(
-                  key: state.pageKey,
-                );
+                return AccountPage(key: state.pageKey);
               },
             ),
             GoRoute(
@@ -233,9 +211,7 @@ final rootRouter = GoRouter(
                   future: item,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (!snapshot.hasData) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
+                      return const Center(child: CircularProgressIndicator());
                     }
                     return CreateClipNotePage(item: snapshot.data);
                   },
@@ -274,9 +250,7 @@ final rootRouter = GoRouter(
                   future: collection,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (!snapshot.hasData) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
+                      return const Center(child: CircularProgressIndicator());
                     }
                     return ClipCollectionCreateEditPage(
                       collection: snapshot.data,
@@ -289,8 +263,11 @@ final rootRouter = GoRouter(
   ],
 );
 
-FutureOr<String?> idPresentOrRedirect(BuildContext context, state,
-    [String? validValue]) {
+FutureOr<String?> idPresentOrRedirect(
+  BuildContext context,
+  state, [
+  String? validValue,
+]) {
   final id = state.pathParameters["id"];
 
   if (validValue != null && id == validValue) return null;

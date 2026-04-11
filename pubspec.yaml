@@ -117,6 +117,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/icons/
+    - fonts/
 
   fonts:
     - family: RobotoFlex

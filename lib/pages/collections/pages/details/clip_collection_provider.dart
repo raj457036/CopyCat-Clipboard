@@ -1,7 +1,6 @@
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/collection_clips_cubit/collection_clips_cubit.dart';
-import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ClipCollectionProvider extends StatelessWidget {
   final int collectionId;
   final Widget Function(BuildContext context, ClipCollection collection)
-      builder;
+  builder;
   const ClipCollectionProvider({
     super.key,
     required this.collectionId,
@@ -26,13 +25,8 @@ class ClipCollectionProvider extends StatelessWidget {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider<CollectionClipsCubit>(
-              create: (context) => sl(param1: snapshot.data)..search(),
-            ),
-            BlocProvider<SelectedClipsCubit>(create: (context) => sl()),
-          ],
+        return BlocProvider<CollectionClipsCubit>(
+          create: (context) => sl(param1: snapshot.data)..search(),
           child: builder(context, snapshot.data),
         );
       },

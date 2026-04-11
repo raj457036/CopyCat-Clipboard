@@ -212,6 +212,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       elevation: focused ? 2 : 0,
       shape: selectedShape,
       child: InkWell(
+        mouseCursor: SystemMouseCursors.click,
         onHover: onHover,
         focusColor: colors.surface,
         onTap: !widget.selectionActive

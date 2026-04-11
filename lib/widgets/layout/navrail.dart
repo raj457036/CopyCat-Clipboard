@@ -19,10 +19,12 @@ class NavLayoutNavrail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
-    final selectedLabelStyle =
-        textTheme.labelMedium?.copyWith(fontVariations: fontVarW600);
-    final unselectedlabelStyle =
-        textTheme.labelMedium?.copyWith(fontVariations: fontVarW500);
+    final selectedLabelStyle = textTheme.labelMedium?.copyWith(
+      fontVariations: fontVarW600,
+    );
+    final unselectedlabelStyle = textTheme.labelMedium?.copyWith(
+      fontVariations: fontVarW500,
+    );
     return Focus(
       canRequestFocus: false,
       skipTraversal: true,
@@ -63,8 +65,9 @@ class NavLayoutNavrail extends StatelessWidget {
                         padding: const EdgeInsets.all(padding6),
                         icon: Tooltip(
                           message: keyboardShortcut(key: "C"),
-                          child:
-                              const Icon(Icons.collections_bookmark_outlined),
+                          child: const Icon(
+                            Icons.collections_bookmark_outlined,
+                          ),
                         ),
                         selectedIcon: Tooltip(
                           message: keyboardShortcut(key: "C"),
@@ -93,10 +96,7 @@ class NavLayoutNavrail extends StatelessWidget {
                     ],
                     // TODO(raj): replace with a better ux
                     // trailing: const AttentionButton(),
-                    leading: SizedBox(
-                      height: 155,
-                      child: floatingActionButton,
-                    ),
+                    leading: SizedBox(height: 155, child: floatingActionButton),
                     labelType: NavigationRailLabelType.all,
                     groupAlignment: -.5,
                     selectedIndex: navbarActiveIndex,

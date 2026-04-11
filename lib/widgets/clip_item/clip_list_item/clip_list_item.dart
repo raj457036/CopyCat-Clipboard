@@ -98,6 +98,7 @@ class _ClipListItemState extends State<ClipListItem> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 60, maxHeight: 220),
           child: InkWell(
+            mouseCursor: SystemMouseCursors.click,
             borderRadius: radius12,
             autofocus: widget.autofocus,
             onTap: !widget.selectionActive

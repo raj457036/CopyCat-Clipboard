@@ -34,13 +34,16 @@ class CreateCollectionButton extends StatelessWidget {
     final colors = context.colors;
     return SubscriptionBuilder(
       builder: (context, subscription) {
-        return BlocSelector<ClipCollectionCubit, ClipCollectionState,
-            (int, int)>(
+        return BlocSelector<
+          ClipCollectionCubit,
+          ClipCollectionState,
+          (int, int)
+        >(
           selector: (state) {
             if (state is ClipCollectionLoaded) {
               return (
                 subscription?.collections ?? defaultCollectionCount,
-                state.collections.length
+                state.collections.length,
               );
             }
             return (subscription?.collections ?? defaultCollectionCount, 0);
@@ -51,8 +54,9 @@ class CreateCollectionButton extends StatelessWidget {
 
             if (hideIfCantCreate) return const SizedBox.shrink();
 
-            final remaining =
-                localMode ? "∞" : max(collection - count, 0).toString();
+            final remaining = localMode
+                ? "∞"
+                : max(collection - count, 0).toString();
             Widget child;
             if (!isFab) {
               child = IconButton.filledTonal(
@@ -65,8 +69,11 @@ class CreateCollectionButton extends StatelessWidget {
             } else {
               child = FloatingActionButton(
                 heroTag: "collection-fab",
+
                 backgroundColor: canCreate ? null : colors.outline,
-                mouseCursor: canCreate ? null : SystemMouseCursors.forbidden,
+                mouseCursor: canCreate
+                    ? SystemMouseCursors.click
+                    : SystemMouseCursors.forbidden,
                 onPressed: canCreate ? () => createCollection(context) : null,
                 tooltip: context.locale.fab__create_collection(
                   remaining: remaining,

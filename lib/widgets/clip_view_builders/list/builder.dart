@@ -10,11 +10,11 @@ import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_list_item/clip_list_item.dart';
 import 'package:clipboard/widgets/clip_item/clip_menu_provider.dart';
 import 'package:clipboard/widgets/clip_item/clip_meta_info.dart';
-import 'package:clipboard/widgets/clip_view_builders/selected_clip_provider.dart';
 import 'package:clipboard/widgets/clipcard_loading.dart';
 import 'package:clipboard/widgets/empty.dart';
 import 'package:clipboard/widgets/load_more_card.dart';
 import 'package:clipboard/widgets/on_event.dart';
+import 'package:clipboard/widgets/select_clip_builder.dart';
 import 'package:flutter/material.dart';
 
 class ClipListBuilder extends StatelessWidget {
@@ -22,6 +22,7 @@ class ClipListBuilder extends StatelessWidget {
   final bool hasMore;
   final bool loading;
   final VoidCallback loadMore;
+  final bool pasteStackMode;
 
   const ClipListBuilder({
     super.key,
@@ -29,6 +30,7 @@ class ClipListBuilder extends StatelessWidget {
     required this.hasMore,
     required this.loading,
     required this.loadMore,
+    this.pasteStackMode = false,
   });
 
   void onIndexPaste(BuildContext context, EventBusIndexPasteEvent state) {
@@ -52,7 +54,7 @@ class ClipListBuilder extends StatelessWidget {
 
     return OnEvent<EventBusIndexPasteEvent>(
       trigger: onIndexPaste,
-      child: SelectedClipProvider(
+      child: SelectedClipBuilder(
         builder: (context, selectedClips) {
           return ListView.builder(
             padding: isMobile ? const EdgeInsets.all(padding8) : inset12,
@@ -74,7 +76,7 @@ class ClipListBuilder extends StatelessWidget {
                   key: ValueKey("clipboard-item-${item.id}"),
                   item: item,
                   autofocus: !isSelected && index == 0 && isDesktopPlatform,
-                  selected: isSelected,
+                  selected: isSelected || pasteStackMode,
                   selectionActive: selectedClips.isNotEmpty,
                 ),
               );

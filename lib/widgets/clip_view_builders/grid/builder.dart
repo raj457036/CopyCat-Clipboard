@@ -9,11 +9,11 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_card/clip_card.dart';
 import 'package:clipboard/widgets/clip_item/clip_meta_info.dart';
-import 'package:clipboard/widgets/clip_view_builders/selected_clip_provider.dart';
 import 'package:clipboard/widgets/clipcard_loading.dart';
 import 'package:clipboard/widgets/empty.dart';
 import 'package:clipboard/widgets/load_more_card.dart';
 import 'package:clipboard/widgets/on_event.dart';
+import 'package:clipboard/widgets/select_clip_builder.dart';
 import 'package:flutter/material.dart';
 
 class ClipGridBuilder extends StatelessWidget {
@@ -55,7 +55,7 @@ class ClipGridBuilder extends StatelessWidget {
 
     return OnEvent<EventBusIndexPasteEvent>(
       trigger: onIndexPaste,
-      child: SelectedClipProvider(
+      child: SelectedClipBuilder(
         builder: (context, selectedClips) {
           return GridView.builder(
             padding: isMobile ? const EdgeInsets.all(padding8) : inset12,

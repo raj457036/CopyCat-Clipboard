@@ -57,8 +57,10 @@ class SyncStatusFAB extends StatelessWidget {
                 });
               },
             ),
-            BlocListener<CollectionSyncManagerCubit,
-                CollectionSyncManagerState>(
+            BlocListener<
+              CollectionSyncManagerCubit,
+              CollectionSyncManagerState
+            >(
               listener: (context, state) {
                 setState?.call(() {
                   switch (state) {
@@ -87,31 +89,35 @@ class SyncStatusFAB extends StatelessWidget {
               },
             ),
           ],
-          child: StatefulBuilder(builder: (context, updateState) {
-            setState = updateState;
-            return RealTimeConnectionStatus(
-              child: FloatingActionButton.small(
-                onPressed: disabled
-                    ? null
-                    : () => collectionSyncCubit.syncCollections(manual: true),
-                tooltip: isDesktopPlatform
-                    ? '$message • ${keyboardShortcut(key: 'R')}'
-                    : message,
-                heroTag: "sync-fab",
-                backgroundColor: colors.secondary,
-                foregroundColor: colors.onSecondary,
-                child: Spin(
-                  infinite: true,
-                  delay: Durations.short4,
-                  spins: -1,
-                  curve: Curves.ease,
-                  animate: isSyncing,
-                  child:
-                      isSyncing ? const Icon(Icons.sync_rounded) : Icon(icon),
+          child: StatefulBuilder(
+            builder: (context, updateState) {
+              setState = updateState;
+              return RealTimeConnectionStatus(
+                child: FloatingActionButton.small(
+                  onPressed: disabled
+                      ? null
+                      : () => collectionSyncCubit.syncCollections(manual: true),
+                  tooltip: isDesktopPlatform
+                      ? '$message • ${keyboardShortcut(key: 'R')}'
+                      : message,
+                  mouseCursor: SystemMouseCursors.click,
+                  heroTag: "sync-fab",
+                  backgroundColor: colors.secondary,
+                  foregroundColor: colors.onSecondary,
+                  child: Spin(
+                    infinite: true,
+                    delay: Durations.short4,
+                    spins: -1,
+                    curve: Curves.ease,
+                    animate: isSyncing,
+                    child: isSyncing
+                        ? const Icon(Icons.sync_rounded)
+                        : Icon(icon),
+                  ),
                 ),
-              ),
-            );
-          }),
+              );
+            },
+          ),
         );
       },
     );

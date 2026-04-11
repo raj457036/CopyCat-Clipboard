@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PinToTopButton extends StatelessWidget {
-  const PinToTopButton({
-    super.key,
-  });
+  const PinToTopButton({super.key});
 
   void toggle(BuildContext context) {
     final appConfigCubit = context.read<AppConfigCubit>();
@@ -25,9 +23,7 @@ class PinToTopButton extends StatelessWidget {
         return IconButton(
           onPressed: () => toggle(context),
           padding: EdgeInsets.zero,
-          style: IconButton.styleFrom(
-            shape: const RoundedRectangleBorder(),
-          ),
+          style: IconButton.styleFrom(shape: const RoundedRectangleBorder()),
           color: pinned ? colors.primary : colors.outlineVariant,
           iconSize: 20,
           icon: const Icon(Icons.push_pin_rounded),

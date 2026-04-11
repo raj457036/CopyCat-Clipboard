@@ -27,9 +27,7 @@ class ClipCollectionGridItem extends StatelessWidget {
   void edit(BuildContext context) {
     context.pushNamed(
       RouteConstants.createEditCollection,
-      pathParameters: {
-        "id": collection.id.toString(),
-      },
+      pathParameters: {"id": collection.id.toString()},
     );
   }
 
@@ -48,9 +46,7 @@ class ClipCollectionGridItem extends StatelessWidget {
   void showDetail(BuildContext context) {
     context.goNamed(
       RouteConstants.collectionDetail,
-      pathParameters: {
-        "id": collection.id.toString(),
-      },
+      pathParameters: {"id": collection.id.toString()},
     );
   }
 
@@ -67,79 +63,79 @@ class ClipCollectionGridItem extends StatelessWidget {
       ),
       borderRadius: radius12,
     );
-    final collectionTile = StatefulBuilder(builder: (context, setState) {
-      return Card.outlined(
-        color: colors.surface,
-        margin: EdgeInsets.zero,
-        shape: selected ? selectedShape : null,
-        child: InkWell(
-          borderRadius: radius12,
-          onSecondaryTapDown: selectionOnly
-              ? null
-              : (detail) {
-                  final position = detail.globalPosition;
-                  Menu.of(context).openPopupMenu(context, position);
-                },
-          onFocusChange: (isFocused) {
-            setState(() => selected = isFocused);
-            Scrollable.ensureVisible(
-              context,
-              alignment: 0.5,
-              duration: Durations.medium1,
-              curve: Curves.easeOut,
-            );
-          },
-          autofocus: autoFocus,
-          onLongPress: selectionOnly
-              ? null
-              : () => Menu.of(context).openOptionBottomSheet(context),
-          onTap: onTap ?? () => showDetail(context),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: padding12,
-              vertical: padding6,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  collection.emoji,
-                  style: textTheme.displaySmall,
-                ),
-                width16,
-                Expanded(
-                  child: Column(
-                    spacing: 6,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          collection.title,
-                          maxLines: 1,
-                          style: textTheme.titleMedium,
-                        ),
-                      ),
-                      if (collection.description != null)
+    final collectionTile = StatefulBuilder(
+      builder: (context, setState) {
+        return Card.outlined(
+          color: colors.surface,
+          margin: EdgeInsets.zero,
+          shape: selected ? selectedShape : null,
+          child: InkWell(
+            mouseCursor: SystemMouseCursors.click,
+            borderRadius: radius12,
+            onSecondaryTapDown: selectionOnly
+                ? null
+                : (detail) {
+                    final position = detail.globalPosition;
+                    Menu.of(context).openPopupMenu(context, position);
+                  },
+            onFocusChange: (isFocused) {
+              setState(() => selected = isFocused);
+              Scrollable.ensureVisible(
+                context,
+                alignment: 0.5,
+                duration: Durations.medium1,
+                curve: Curves.easeOut,
+              );
+            },
+            autofocus: autoFocus,
+            onLongPress: selectionOnly
+                ? null
+                : () => Menu.of(context).openOptionBottomSheet(context),
+            onTap: onTap ?? () => showDetail(context),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: padding12,
+                vertical: padding6,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(collection.emoji, style: textTheme.displaySmall),
+                  width16,
+                  Expanded(
+                    child: Column(
+                      spacing: 6,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                         Flexible(
                           child: Text(
-                            collection.description!,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: textTheme.bodyMedium?.apply(
-                              color: context.colors.outline,
-                            ),
+                            collection.title,
+                            maxLines: 1,
+                            style: textTheme.titleMedium,
                           ),
                         ),
-                    ],
+                        if (collection.description != null)
+                          Flexible(
+                            child: Text(
+                              collection.description!,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: textTheme.bodyMedium?.apply(
+                                color: context.colors.outline,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
 
     if (selectionOnly) return collectionTile;
     return Menu(

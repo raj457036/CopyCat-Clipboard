@@ -27,9 +27,8 @@ class LinkPreviewImage extends StatelessWidget {
           networkImage.url,
           fit: BoxFit.fitWidth,
           headers: networkImage.headers,
-          placeholderBuilder: (context) => const Center(
-            child: CircularProgressIndicator(),
-          ),
+          placeholderBuilder: (context) =>
+              const Center(child: CircularProgressIndicator()),
         );
       }
 
@@ -79,100 +78,99 @@ class LinkPreview extends StatelessWidget {
     }
 
     return AnyLinkPreview.builder(
-        link: url,
-        placeholderWidget: const SizedBox.shrink(),
-        errorWidget: const SizedBox.shrink(),
-        cache: const Duration(days: 30),
-        itemBuilder: (context, meta, provider, svg) {
-          if (withProgress && !meta.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (meta.title == null && meta.desc == null && provider == null) {
-            return const SizedBox.shrink();
-          }
-          final colors = context.colors;
+      link: url,
+      placeholderWidget: const SizedBox.shrink(),
+      errorWidget: const SizedBox.shrink(),
+      cache: const Duration(days: 30),
+      itemBuilder: (context, meta, provider, svg) {
+        if (withProgress && !meta.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (meta.title == null && meta.desc == null && provider == null) {
+          return const SizedBox.shrink();
+        }
+        final colors = context.colors;
 
-          Widget body = ClipRRect(
-            borderRadius: radius8,
-            child: Column(
-              spacing: 4,
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (provider != null)
-                  Expanded(
-                    child: LinkPreviewImage(provider: provider),
+        Widget body = ClipRRect(
+          borderRadius: radius8,
+          child: Column(
+            spacing: 4,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (provider != null)
+                Expanded(child: LinkPreviewImage(provider: provider)),
+              // else if (svg != null)
+              //   Expanded(child: svg),
+              if ((meta.title != null || meta.desc != null) &&
+                  (!hideDesc || !hideTitle))
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: padding6,
+                    right: padding6,
+                    bottom: padding6,
                   ),
-                // else if (svg != null)
-                //   Expanded(child: svg),
-                if ((meta.title != null || meta.desc != null) &&
-                    (!hideDesc || !hideTitle))
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: padding6,
-                      right: padding6,
-                      bottom: padding6,
-                    ),
-                    child: Column(
-                      spacing: 4,
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (meta.title != null &&
-                            meta.title!.isNotEmpty &&
-                            !hideTitle)
-                          Flexible(
-                            child: Text(
-                              meta.title!,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: maxTitleLines,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontVariations: fontVarW600,
-                              ),
+                  child: Column(
+                    spacing: 4,
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (meta.title != null &&
+                          meta.title!.isNotEmpty &&
+                          !hideTitle)
+                        Flexible(
+                          child: Text(
+                            meta.title!,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: maxTitleLines,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontVariations: fontVarW600,
                             ),
                           ),
-                        if (meta.desc != null &&
-                            meta.desc!.isNotEmpty &&
-                            !hideDesc)
-                          Flexible(
-                            child: Text(
-                              meta.desc!,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: maxDescLines,
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: colors.outline,
-                              ),
+                        ),
+                      if (meta.desc != null &&
+                          meta.desc!.isNotEmpty &&
+                          !hideDesc)
+                        Flexible(
+                          child: Text(
+                            meta.desc!,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: maxDescLines,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: colors.outline,
                             ),
                           ),
-                      ],
-                    ),
-                  )
-              ],
-            ),
-          );
+                        ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        );
 
-          if (onTap != null) {
-            body = InkWell(borderRadius: radius8, onTap: onTap, child: body);
-          }
-          body = Card(
-            elevation: 0.1,
-            margin: EdgeInsets.zero,
-            shape: const RoundedRectangleBorder(
-              borderRadius: radius8,
-            ),
+        if (onTap != null) {
+          body = InkWell(
+            mouseCursor: SystemMouseCursors.click,
+            borderRadius: radius8,
+            onTap: onTap,
             child: body,
           );
-          if (withProgress) {
-            body = FadeIn(
-              delay: const Duration(milliseconds: 150),
-              child: body,
-            );
-          }
-          if (expanded) body = Expanded(child: body);
+        }
+        body = Card(
+          elevation: 0.1,
+          margin: EdgeInsets.zero,
+          shape: const RoundedRectangleBorder(borderRadius: radius8),
+          child: body,
+        );
+        if (withProgress) {
+          body = FadeIn(delay: const Duration(milliseconds: 150), child: body);
+        }
+        if (expanded) body = Expanded(child: body);
 
-          return body;
-        });
+        return body;
+      },
+    );
   }
 }

@@ -38,33 +38,18 @@ const height32 = SizedBox(height: 32);
 const height54 = SizedBox(height: 54);
 
 // radius
-const radius8 = BorderRadius.all(
-  Radius.circular(8),
-);
-const radius12 = BorderRadius.all(
-  Radius.circular(12),
-);
-const radius16 = BorderRadius.all(
-  Radius.circular(16),
-);
-const radius26 = BorderRadius.all(
-  Radius.circular(26),
-);
+const radius8 = BorderRadius.all(Radius.circular(8));
+const radius12 = BorderRadius.all(Radius.circular(12));
+const radius16 = BorderRadius.all(Radius.circular(16));
+const radius26 = BorderRadius.all(Radius.circular(26));
 const circleRadius12 = Radius.circular(12);
 
-const radiusBottom12 = BorderRadius.vertical(
-  bottom: Radius.circular(12),
-);
-const radiusBottom8 = BorderRadius.vertical(
-  bottom: Radius.circular(8),
-);
+const radiusBottom12 = BorderRadius.vertical(bottom: Radius.circular(12));
+const radiusBottom8 = BorderRadius.vertical(bottom: Radius.circular(8));
 
 // edge insets
 
-const insetTB8 = EdgeInsets.only(
-  top: padding8,
-  bottom: padding8,
-);
+const insetTB8 = EdgeInsets.only(top: padding8, bottom: padding8);
 
 const inset12 = EdgeInsets.all(padding12);
 
@@ -79,9 +64,9 @@ const insetAll16 = EdgeInsets.all(padding16);
 const initialWindowWidth = 1280.0;
 const initialWindowHeight = 720.0;
 const dockedLRMaxWidth = 330.0;
-const dockedLRMinWidth = 200.0;
+const dockedLRMinWidth = 230.0;
 const dockedTBMaxHeight = 330.0;
-const dockedTBMinHeight = 200.0;
+const dockedTBMinHeight = 230.0;
 
 const initialWindowSize = Size(initialWindowWidth, initialWindowHeight);
 const minimumWindowSize = Size(dockedLRMinWidth, dockedTBMinHeight);

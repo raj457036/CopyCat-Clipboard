@@ -11,8 +11,11 @@ import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/bloc/realtime_clip_sync_cubit/realtime_clip_sync_cubit.dart';
 import 'package:clipboard/base/bloc/realtime_collection_sync_cubit/realtime_collection_sync_cubit.dart';
+import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart'
+    show SelectedClipsCubit;
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
@@ -27,6 +30,7 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/utils/windows/update_registry.dart';
 import 'package:clipboard/widgets/debug/gizmo_overlay.dart';
 import 'package:clipboard/widgets/event_bridge.dart';
+import 'package:clipboard/widgets/paste_stack_coordinator.dart';
 import 'package:clipboard/widgets/keyboard_shortcuts/actions/select_all.dart';
 import 'package:clipboard/widgets/state_initializer.dart';
 import 'package:clipboard/widgets/system_shortcut_listeners.dart';
@@ -212,6 +216,20 @@ class AppContent extends StatelessWidget {
                     ? lightColorScheme.surface
                     : darkColorScheme.surface;
 
+                final buttonStyle = ButtonStyle(
+                  mouseCursor: WidgetStateProperty.all(
+                    SystemMouseCursors.click,
+                  ),
+                );
+                final iconButtonTheme = IconButtonThemeData(style: buttonStyle);
+                final textButtonTheme = TextButtonThemeData(style: buttonStyle);
+                final elevatedButtonTheme = ElevatedButtonThemeData(
+                  style: buttonStyle,
+                );
+                final outlinedButtonTheme = OutlinedButtonThemeData(
+                  style: buttonStyle,
+                );
+
                 final lightTheme = ThemeData(
                   useMaterial3: true,
                   colorScheme: lightColorScheme,
@@ -220,6 +238,10 @@ class AppContent extends StatelessWidget {
                     border: OutlineInputBorder(),
                     isDense: true,
                   ),
+                  textButtonTheme: textButtonTheme,
+                  elevatedButtonTheme: elevatedButtonTheme,
+                  outlinedButtonTheme: outlinedButtonTheme,
+                  iconButtonTheme: iconButtonTheme,
                 );
 
                 final darkTheme = ThemeData(
@@ -230,6 +252,10 @@ class AppContent extends StatelessWidget {
                     border: OutlineInputBorder(),
                     isDense: true,
                   ),
+                  textButtonTheme: textButtonTheme,
+                  elevatedButtonTheme: elevatedButtonTheme,
+                  outlinedButtonTheme: outlinedButtonTheme,
+                  iconButtonTheme: iconButtonTheme,
                 );
 
                 updateValidatorLanguage(langCode);
@@ -252,6 +278,9 @@ class AppContent extends StatelessWidget {
                           const CreateNewClipNoteIntent(),
                       SyncIntent.activator: const SyncIntent(),
                       PasteIntent.activator: const PasteIntent(),
+                      if (isDesktopPlatform)
+                        TogglePasteStackIntent.activator:
+                            const TogglePasteStackIntent(),
                       if (view == AppView.windowed)
                         NavigateToSettingPageIntent.activator:
                             const NavigateToSettingPageIntent(),
@@ -270,6 +299,8 @@ class AppContent extends StatelessWidget {
                       SyncIntent: SyncAction(),
                       CreateNewClipNoteIntent: CreateNewClipNoteAction(),
                       PasteIntent: PasteAction(),
+                      if (isDesktopPlatform)
+                        TogglePasteStackIntent: TogglePasteStackAction(),
                       if (isDesktopPlatform) PopRouteIntent: HideWindowAction(),
                       if (view == AppView.windowed)
                         NavigateToSettingPageIntent:
@@ -310,8 +341,10 @@ class MainApp extends StatelessWidget {
     Widget content = EventBridge(
       eventBus: sl(),
       child: WindowFocusManager.forPlatform(
-        child: TrayManager.forPlatform(
-          child: const SystemShortcutListener(child: AppContent()),
+        child: PasteStackCoordinator(
+          child: TrayManager.forPlatform(
+            child: const SystemShortcutListener(child: AppContent()),
+          ),
         ),
       ),
     );
@@ -327,9 +360,16 @@ class MainApp extends StatelessWidget {
         BlocProvider<ClipCollectionCubit>(create: (context) => sl()),
         BlocProvider<DriveSetupCubit>(create: (context) => sl()),
         BlocProvider<WindowActionCubit>(create: (context) => sl()),
+        BlocProvider<PasteStackCubit>(
+          create: (context) => PasteStackCubit(
+            context.read<AppConfigCubit>(),
+            context.read<WindowActionCubit>(),
+          ),
+        ),
         BlocProvider<RealtimeClipSyncCubit>(create: (context) => sl()),
         BlocProvider<RealtimeCollectionSyncCubit>(create: (context) => sl()),
         BlocProvider<EventBusCubit>(create: (context) => sl()),
+        BlocProvider<SelectedClipsCubit>(create: (context) => sl()),
         if (Platform.isAndroid)
           BlocProvider<AndroidBgClipboardCubit>(
             lazy: false,

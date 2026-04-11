@@ -35,12 +35,7 @@ class AppConfigCubit extends Cubit<AppConfigState> {
   final FocusWindow focusWindow = FocusWindow();
 
   AppConfigCubit(this.repo)
-      : super(
-          AppConfigState.loaded(
-            isLoading: true,
-            config: AppConfig(),
-          ),
-        );
+    : super(AppConfigState.loaded(isLoading: true, config: AppConfig()));
 
   @override
   void emit(AppConfigState state) {
@@ -69,8 +64,10 @@ class AppConfigCubit extends Cubit<AppConfigState> {
 
       await retry(
         () async {
-          String timeServer = timeServers[Random()
-              .nextInt(timeServers.length)]; // Randomly select a time server
+          String timeServer =
+              timeServers[Random().nextInt(
+                timeServers.length,
+              )]; // Randomly select a time server
 
           currentInternetTime = await NTP.now(lookUpAddress: timeServer);
           final now_ = DateTime.now();
@@ -214,6 +211,13 @@ class AppConfigCubit extends Cubit<AppConfigState> {
     await repo.update(newConfig);
   }
 
+  Future<void> setPinned(bool pinned) async {
+    final newConfig = state.config.copyWith(pinned: pinned)
+      ..applyId(state.config);
+    emit(AppConfigState.loaded(config: newConfig));
+    await repo.update(newConfig);
+  }
+
   Future<void> togglePinned() async {
     final newConfig = state.config.copyWith(pinned: !state.config.pinned)
       ..applyId(state.config);
@@ -232,9 +236,9 @@ class AppConfigCubit extends Cubit<AppConfigState> {
   }
 
   Future<void> setClipboardToggleHotkey(HotKey? key) async {
-    final newConfig = state.config
-        .copyWith(toggleHotkey: key != null ? jsonEncode(key.toJson()) : null)
-      ..applyId(state.config);
+    final newConfig = state.config.copyWith(
+      toggleHotkey: key != null ? jsonEncode(key.toJson()) : null,
+    )..applyId(state.config);
     emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
@@ -392,8 +396,9 @@ class AppConfigCubit extends Cubit<AppConfigState> {
   Future<bool> isCopyingAllowedByActivity() async {
     if (isMobilePlatform) return true;
     try {
-      final activity =
-          await focusWindow.getActivity().timeout(const Duration(seconds: 5));
+      final activity = await focusWindow.getActivity().timeout(
+        const Duration(seconds: 5),
+      );
       logger.w(activity);
       lastActivity = activity;
       final allowed = exclusionChecker?.isActivityAllowed(activity) ?? true;

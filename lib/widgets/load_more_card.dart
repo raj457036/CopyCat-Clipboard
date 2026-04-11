@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 
 class LoadMoreCard extends StatelessWidget {
   final VoidCallback loadMore;
-  const LoadMoreCard({
-    super.key,
-    required this.loadMore,
-  });
+  const LoadMoreCard({super.key, required this.loadMore});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +13,7 @@ class LoadMoreCard extends StatelessWidget {
     return Card.outlined(
       color: colors.secondaryContainer,
       child: InkWell(
+        mouseCursor: SystemMouseCursors.click,
         borderRadius: radius12,
         onTap: loadMore,
         child: Center(
