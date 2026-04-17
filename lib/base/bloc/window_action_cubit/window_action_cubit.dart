@@ -7,8 +7,10 @@ import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:screen_retriever/screen_retriever.dart';
+import 'package:synchronized/synchronized.dart' show Lock;
 import 'package:universal_io/io.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:synchronized/extension.dart';
 
 part 'window_action_cubit.freezed.dart';
 part 'window_action_state.dart';
@@ -62,12 +64,14 @@ class WindowActionCubit extends Cubit<WindowActionState> {
   }
 
   Future<void> changeView(AppView view, [Size? size]) async {
-    await setupScreenInfo();
-    if (view == AppView.windowed) {
-      await setWindowdView(size);
-    } else {
-      await setDockedView(view, size);
-    }
+    await synchronized(() async {
+      await setupScreenInfo();
+      if (view == AppView.windowed) {
+        await setWindowdView(size);
+      } else {
+        await setDockedView(view, size);
+      }
+    });
   }
 
   Future<void> onTop(bool isAlwaysOnTop) async {

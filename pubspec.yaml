@@ -94,6 +94,7 @@ dependencies:
   any_link_preview: ^3.0.2
   cached_network_svg_image: ^1.2.0
   cached_network_image: ^3.4.1
+  synchronized: ^3.4.0
 
 dev_dependencies:
   flutter_test:
