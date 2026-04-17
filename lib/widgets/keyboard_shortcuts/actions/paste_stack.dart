@@ -1,8 +1,6 @@
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
-import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universal_io/io.dart';
 
@@ -10,7 +8,7 @@ class TogglePasteStackIntent extends Intent {
   const TogglePasteStackIntent();
 
   static final activator = SingleActivator(
-    LogicalKeyboardKey.keyP,
+    LogicalKeyboardKey.keyC,
     meta: Platform.isMacOS,
     control: Platform.isWindows || Platform.isLinux,
     shift: true,
@@ -23,6 +21,5 @@ class TogglePasteStackAction extends ContextAction<TogglePasteStackIntent> {
   void invoke(TogglePasteStackIntent intent, [BuildContext? context]) {
     if (context == null) return;
     context.read<PasteStackCubit>().toggle();
-    context.goNamed(RouteConstants.home);
   }
 }

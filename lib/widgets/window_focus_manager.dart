@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/di/di.dart';
@@ -46,7 +45,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
 
   int? lastWindowId;
   StreamSubscription? subscription;
-  final debounce = Debouncer(milliseconds: 650);
+  final debounce = Debouncer(milliseconds: 100);
 
   late final AppConfigCubit appConfigCubit;
 
@@ -121,7 +120,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   Future<void> onResized() async {
     final appConfig = context.read<AppConfigCubit>();
     final size = await windowManager.getSize();
-    logger.d("Resized: $size");
+    logger.i("Resized: $size");
 
     appConfig.changeWindowSize(width: size.width, height: size.height);
   }
@@ -135,12 +134,9 @@ class WindowFocusManagerState extends State<WindowFocusManager>
 
   @override
   Future<void> onWindowBlur() async {
-    final isDocked = appConfigCubit.state.config.view != AppView.windowed;
-    if (!appConfigCubit.isPinned && isDocked) {
+    if (!appConfigCubit.isPinned) {
       context.windowAction?.hide();
     }
-    // lastWindowId = null;
-    // appConfigCubit.setLastFocusedWindowId(lastWindowId);
   }
 
   @override

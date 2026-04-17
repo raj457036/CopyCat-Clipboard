@@ -21,6 +21,7 @@ import 'package:universal_io/io.dart';
 class ClipListItem extends StatefulWidget {
   final bool autofocus;
   final bool selected;
+  final bool noView;
   final bool selectionActive;
   final ClipboardItem item;
 
@@ -29,6 +30,7 @@ class ClipListItem extends StatefulWidget {
     required this.item,
     this.autofocus = false,
     this.selected = false,
+    this.noView = false,
     this.selectionActive = false,
   });
 
@@ -91,37 +93,35 @@ class _ClipListItemState extends State<ClipListItem> {
       borderRadius: radius12,
     );
 
-    final child = Padding(
-      padding: const EdgeInsets.only(bottom: padding10),
-      child: Material(
-        shape: selectedShape,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 60, maxHeight: 220),
-          child: InkWell(
-            mouseCursor: SystemMouseCursors.click,
-            borderRadius: radius12,
-            autofocus: widget.autofocus,
-            onTap: !widget.selectionActive
-                ? () =>
-                      performPrimaryActionOnClip(context, widget.item, canPaste)
-                : () => toggleSelect(context),
-            onSecondaryTapDown: !widget.selectionActive
-                ? (detail) async {
-                    final menu = Menu.of(context);
-                    if (isMobilePlatform) {
-                      menu.openOptionBottomSheet(context);
-                      return;
-                    }
-                    final position = detail.globalPosition;
-                    menu.openPopupMenu(context, position);
+    final child = Card.outlined(
+      shape: selectedShape,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 60, maxHeight: 220),
+        child: InkWell(
+          mouseCursor: SystemMouseCursors.click,
+          borderRadius: radius12,
+          autofocus: widget.autofocus,
+          onTap: !widget.selectionActive
+              ? () => performPrimaryActionOnClip(context, widget.item, canPaste)
+              : () => toggleSelect(context),
+          onSecondaryTapDown: !widget.selectionActive
+              ? (detail) async {
+                  final menu = Menu.of(context);
+                  if (isMobilePlatform) {
+                    menu.openOptionBottomSheet(context);
+                    return;
                   }
-                : null,
-            onFocusChange: onFocusChange,
-            onHover: onHover,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
+                  final position = detail.globalPosition;
+                  menu.openPopupMenu(context, position);
+                }
+              : null,
+          onFocusChange: onFocusChange,
+          onHover: onHover,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (!widget.noView)
                 ClipListItemOptionHeader(
                   item: widget.item,
                   hasFocusForPaste: canPaste,
@@ -129,35 +129,34 @@ class _ClipListItemState extends State<ClipListItem> {
                   selected: widget.selected,
                   selectionActive: widget.selectionActive,
                 ),
-                if (widget.item.displayTitle != null && !widget.item.encrypted)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: padding10,
-                      right: padding10,
-                      bottom: padding8,
-                    ),
-                    child: Text(
-                      widget.item.displayTitle!,
-                      style: textTheme.titleSmall?.copyWith(
-                        fontVariations: fontVarW700,
-                      ),
-                      maxLines: 2,
-                    ),
+              if (widget.item.displayTitle != null && !widget.item.encrypted)
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: padding10,
+                    right: padding10,
+                    bottom: padding8,
                   ),
-                Flexible(
-                  child: ClipPreview(item: widget.item, layout: AppLayout.list),
+                  child: Text(
+                    widget.item.displayTitle!,
+                    style: textTheme.titleSmall?.copyWith(
+                      fontVariations: fontVarW700,
+                    ),
+                    maxLines: 2,
+                  ),
                 ),
-                if (!widget.selected)
-                  DisableForLocalUser(
-                    child: ClipSyncStatusFooter(
-                      item: widget.item,
-                      radius: const BorderRadius.vertical(
-                        bottom: Radius.circular(8),
-                      ),
+              Flexible(
+                child: ClipPreview(item: widget.item, layout: AppLayout.list),
+              ),
+              if (!widget.selected && !widget.noView)
+                DisableForLocalUser(
+                  child: ClipSyncStatusFooter(
+                    item: widget.item,
+                    radius: const BorderRadius.vertical(
+                      bottom: Radius.circular(8),
                     ),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
       ),

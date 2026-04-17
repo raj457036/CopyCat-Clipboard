@@ -30,7 +30,7 @@ class CustomScaffold extends StatelessWidget {
     Widget scaffoldBody = body;
     Widget? bottomNavBar;
 
-    if (smallScreen) {
+    if (smallScreen && activeIndex != -1) {
       bottomNavBar = BottomNavBar(navbarActiveIndex: activeIndex);
     }
 
@@ -39,14 +39,19 @@ class CustomScaffold extends StatelessWidget {
         final verticalDock =
             state.view == AppView.topDocked ||
             state.view == AppView.bottomDocked;
-        final floatingActions = DynamicFloatingActions(
-          activeIndex: activeIndex,
-          reversed: state.view != AppView.windowed || smallScreen,
-          showCopyCatLogo:
-              (activeIndex == 0 || activeIndex == 1) &&
-              !smallScreen &&
-              !verticalDock,
-        );
+
+        Widget? floatingActions;
+
+        if (activeIndex != -1) {
+          floatingActions = DynamicFloatingActions(
+            activeIndex: activeIndex,
+            reversed: state.view != AppView.windowed || smallScreen,
+            showCopyCatLogo:
+                (activeIndex == 0 || activeIndex == 1) &&
+                !smallScreen &&
+                !verticalDock,
+          );
+        }
 
         Widget scaffold = Scaffold(
           appBar: appBar,
@@ -61,7 +66,7 @@ class CustomScaffold extends StatelessWidget {
           bottomNavigationBar: bottomNavBar,
         );
 
-        if (state.view != AppView.windowed || smallScreen) {
+        if (state.view != AppView.windowed || smallScreen || activeIndex == -1) {
           return scaffold;
         }
         return NavrailLayout(

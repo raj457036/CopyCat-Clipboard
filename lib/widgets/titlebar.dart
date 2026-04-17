@@ -108,7 +108,7 @@ class TitlebarView extends StatelessWidget {
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         children: [
-                          if (!isWindowMode) const PinToTopButton(),
+                          const PinToTopButton(),
                           width2,
                           const PasteStackToggleButton(),
                           width2,

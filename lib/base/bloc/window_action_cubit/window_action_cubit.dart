@@ -140,7 +140,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     }
     if (Platform.isMacOS) await windowManager.setMovable(true);
     if (Platform.isWindows) await windowManager.undock();
-    await windowManager.setAlwaysOnTop(false);
+    await windowManager.setAlwaysOnTop(true);
     await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
     await windowManager.setSize(size ?? initialWindowSize);
     await windowManager.center(animate: true);

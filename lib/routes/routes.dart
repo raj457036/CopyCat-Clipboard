@@ -14,6 +14,7 @@ import "package:clipboard/pages/layout/shell_layout_page.dart";
 import "package:clipboard/pages/login/page.dart";
 import "package:clipboard/pages/not_found_page.dart";
 import "package:clipboard/pages/onboard/page.dart";
+import "package:clipboard/pages/paste_stack/page.dart";
 import "package:clipboard/pages/preview/page.dart";
 import "package:clipboard/pages/reset_password/page.dart";
 import "package:clipboard/pages/settings/page.dart";
@@ -96,6 +97,16 @@ final rootRouter = GoRouter(
                 create: (context) => sl()..fetch(),
                 child: const HomePage(),
               ),
+            );
+          },
+        ),
+        GoRoute(
+          name: RouteConstants.pasteStack,
+          path: "/paste-stack",
+          pageBuilder: (context, state) {
+            return NoTransitionPage(
+              key: state.pageKey,
+              child: const PasteStackPage(),
             );
           },
         ),

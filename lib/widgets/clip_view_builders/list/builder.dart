@@ -67,7 +67,6 @@ class ClipListBuilder extends StatelessWidget {
                   loadMore: loadMore,
                 );
               }
-
               final item = items[index];
               final isSelected = selectedClips.contains(item);
               Widget listItem = ClipMenuProvider(
@@ -76,7 +75,8 @@ class ClipListBuilder extends StatelessWidget {
                   key: ValueKey("clipboard-item-${item.id}"),
                   item: item,
                   autofocus: !isSelected && index == 0 && isDesktopPlatform,
-                  selected: isSelected || pasteStackMode,
+                  selected: isSelected,
+                  noView: pasteStackMode,
                   selectionActive: selectedClips.isNotEmpty,
                 ),
               );

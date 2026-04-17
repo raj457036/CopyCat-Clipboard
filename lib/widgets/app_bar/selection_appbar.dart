@@ -1,5 +1,4 @@
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
-import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
@@ -13,7 +12,6 @@ import 'package:clipboard/widgets/select_clip_builder.dart'
     show SelectedClipBuilder;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
   final Widget defaultChild;
@@ -61,13 +59,12 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
                 IconButton(
                   onPressed: () async {
                     final orderedItems = orderedSelection(context, items);
+
+                    clearSelection(context);
+
                     await context.read<PasteStackCubit>().replaceFromSelection(
                       orderedItems,
                     );
-                    if (context.mounted) {
-                      clearSelection(context);
-                      context.goNamed(RouteConstants.home);
-                    }
                   },
                   tooltip: 'Start Paste Stack',
                   icon: const Icon(Icons.vertical_align_top),

@@ -1,6 +1,7 @@
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/select_clip_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +13,7 @@ class PasteStackToggleButton extends StatelessWidget {
   Future<void> toggle(BuildContext context, bool active) async {
     await context.read<PasteStackCubit>().toggle();
     if (context.mounted && !active) {
-      context.goNamed(RouteConstants.home);
+      context.pushNamed(RouteConstants.pasteStack);
     }
   }
 
@@ -28,6 +29,8 @@ class PasteStackToggleButton extends StatelessWidget {
         return BlocSelector<PasteStackCubit, PasteStackState, bool>(
           selector: (state) => state.active,
           builder: (context, active) {
+            final keyShortcut = keyboardShortcut(key: "Shift + C");
+            final tooltipMessage = "Toggle Paste Stack • $keyShortcut";
             return IconButton(
               onPressed: () => toggle(context, active),
               padding: EdgeInsets.zero,
@@ -41,7 +44,7 @@ class PasteStackToggleButton extends StatelessWidget {
                     ? Icons.keyboard_double_arrow_down_rounded
                     : Icons.line_weight_rounded,
               ),
-              tooltip: active ? 'Close Paste Stack' : 'Open Paste Stack',
+              tooltip: tooltipMessage,
             );
           },
         );

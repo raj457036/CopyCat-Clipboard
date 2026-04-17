@@ -81,9 +81,8 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
     }
     await focusManager.pasteOnFocusedWindow();
     pasteStack.completeCurrentPaste();
-    if (pasteStack.state.items.isEmpty) {
-      await pasteStack.deactivate();
-    } else {
+
+    if (pasteStack.state.items.isNotEmpty) {
       await registerPasteHotKey();
     }
   }
@@ -101,16 +100,17 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
           previous.active != current.active || previous.count < current.count,
       listener: (context, state) async {
         if (state.active) {
-          rootNavKey.currentContext?.goNamed(RouteConstants.home);
+          rootNavKey.currentContext?.pushNamed(RouteConstants.pasteStack);
 
           if (state.count > 0) {
             await registerPasteHotKey();
-          } else {
-            await unregisterPasteHotKey();
+            return;
           }
-        } else {
-          await unregisterPasteHotKey();
+        } else if (rootNavKey.currentContext != null &&
+            rootNavKey.currentContext!.canPop()) {
+          rootNavKey.currentContext?.pop();
         }
+        await unregisterPasteHotKey();
       },
       child: widget.child,
     );
