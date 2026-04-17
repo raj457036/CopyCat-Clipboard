@@ -7,7 +7,6 @@ import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:screen_retriever/screen_retriever.dart';
-import 'package:synchronized/synchronized.dart' show Lock;
 import 'package:universal_io/io.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:synchronized/extension.dart';
