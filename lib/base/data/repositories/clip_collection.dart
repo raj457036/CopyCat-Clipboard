@@ -110,7 +110,6 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
   @override
   FailureOr<ClipCollection> update(ClipCollection collection) async {
     try {
-      collection = collection.copyWith(modified: now());
       ClipCollection result = await local.update(collection);
       if (result.id != null) {
         await outbox.enqueue(
@@ -118,14 +117,14 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
             entityType: 'collection',
             localId: result.id!,
             action: SyncOutboxAction.update,
-            createdAt: DateTime.now(),
+            createdAt: now(),
           ),
         );
+        try {
+          result = await remote.update(result);
+          await local.update(result);
+        } catch (_) {}
       }
-      try {
-        result = await remote.update(result);
-        await local.update(result);
-      } catch (_) {}
       return Right(result);
     } catch (e) {
       return Left(Failure.fromException(e));

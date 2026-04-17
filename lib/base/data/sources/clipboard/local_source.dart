@@ -137,12 +137,11 @@ class LocalClipboardSource implements ClipboardSource {
 
   @override
   Future<ClipboardItem> update(ClipboardItem item) async {
-    final updated = item.copyWith(modified: now());
-    final isarItem = IsarClipboardItem.fromDomain(updated);
+    final isarItem = IsarClipboardItem.fromDomain(item);
 
     await db.writeTxn(() => _collection.put(isarItem));
 
-    return updated;
+    return item;
   }
 
   @override
@@ -272,11 +271,8 @@ class LocalClipboardSource implements ClipboardSource {
 
   @override
   Future<List<ClipboardItem>> updateAll(List<ClipboardItem> items) async {
-    final updates = items
-        .map((item) => item.copyWith(modified: now()))
-        .toList();
-    final isarItems = updates.map(IsarClipboardItem.fromDomain).toList();
+    final isarItems = items.map(IsarClipboardItem.fromDomain).toList();
     await db.writeTxn(() => _collection.putAll(isarItems));
-    return updates;
+    return items;
   }
 }

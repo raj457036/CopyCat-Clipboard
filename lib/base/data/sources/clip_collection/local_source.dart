@@ -82,24 +82,20 @@ class LocalClipCollectionSource implements ClipCollectionSource {
 
   @override
   Future<ClipCollection> update(ClipCollection collection) async {
-    final updated = collection.copyWith(modified: now());
-    final isarItem = IsarClipCollection.fromDomain(updated);
+    final isarItem = IsarClipCollection.fromDomain(collection);
     await db.writeTxn(() => _collection.put(isarItem));
-    return updated;
+    return collection;
   }
 
   @override
   Future<List<ClipCollection>> updateMany(
     List<ClipCollection> collections,
   ) async {
-    final updates = collections
-        .map((c) => c.copyWith(modified: now()))
-        .toList();
-    final isarItems = updates.map(IsarClipCollection.fromDomain).toList();
+    final isarItems = collections.map(IsarClipCollection.fromDomain).toList();
     final ids = await db.writeTxn(() => _collection.putAll(isarItems));
 
     return [
-      for (var i = 0; i < ids.length; i++) updates[i].copyWith(id: ids[i]),
+      for (var i = 0; i < ids.length; i++) collections[i].copyWith(id: ids[i]),
     ];
   }
 

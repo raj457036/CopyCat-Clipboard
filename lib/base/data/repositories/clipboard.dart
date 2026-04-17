@@ -76,7 +76,6 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
   @override
   FailureOr<ClipboardItem> update(ClipboardItem item) async {
     try {
-      item = item.copyWith(modified: now());
       final encrypted = await item.encrypt();
       await remote.update(encrypted);
       final clip = item.copyWith(lastSynced: now());
@@ -161,8 +160,12 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
   @override
   FailureOr<List<ClipboardItem>> updateAll(List<ClipboardItem> items) async {
     try {
-      final updates = await remote.updateAll(items);
-      return Right(updates);
+      final encryptedUpdates = await Future.wait(
+        items.map((e) => e.encrypt()),
+      );
+
+      final result = await remote.updateAll(encryptedUpdates);
+      return Right(result);
     } catch (e) {
       return Left(Failure.fromException(e));
     }
@@ -242,7 +245,7 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
             entityType: 'clip',
             localId: result.id!,
             action: SyncOutboxAction.update,
-            createdAt: DateTime.now(),
+            createdAt: now(),
           ),
         );
       }

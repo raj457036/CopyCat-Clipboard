@@ -4,6 +4,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -37,7 +38,7 @@ class _CreateClipNotePageState extends State<CreateClipNotePage> {
     final cubit = context.read<OfflinePersistenceCubit>();
 
     if (note.isNotEmpty && widget.item != null) {
-      final item = widget.item!.copyWith(text: note);
+      final item = widget.item!.copyWith(text: note, modified: now());
       cubit.persist([item]);
       context.pop(item);
     } else {

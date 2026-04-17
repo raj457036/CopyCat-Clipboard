@@ -9,6 +9,7 @@ import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/snackbar.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:flutter/material.dart';
@@ -226,6 +227,7 @@ Future<void> changeCollection(
           (item) => item.copyWith(
             collectionId: collection.id,
             serverCollectionId: collection.serverId,
+            modified: now(),
           ),
         )
         .toList();
