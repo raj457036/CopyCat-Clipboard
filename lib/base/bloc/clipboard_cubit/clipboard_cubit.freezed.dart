@@ -12,7 +12,8 @@ part of 'clipboard_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$ClipboardState {
@@ -27,62 +28,59 @@ mixin _$ClipboardState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            List<ClipboardItem> items,
-            dynamic hasMore,
-            int limit,
-            int offset,
-            bool loading,
-            bool syncing,
-            SearchFilterState filterState,
-            Failure? failure)
-        loaded,
-  }) =>
-      throw _privateConstructorUsedError;
+      List<ClipboardItem> items,
+      dynamic hasMore,
+      int limit,
+      int offset,
+      bool loading,
+      bool syncing,
+      SearchFilterState filterState,
+      Failure? failure,
+    )
+    loaded,
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            List<ClipboardItem> items,
-            dynamic hasMore,
-            int limit,
-            int offset,
-            bool loading,
-            bool syncing,
-            SearchFilterState filterState,
-            Failure? failure)?
-        loaded,
-  }) =>
-      throw _privateConstructorUsedError;
+      List<ClipboardItem> items,
+      dynamic hasMore,
+      int limit,
+      int offset,
+      bool loading,
+      bool syncing,
+      SearchFilterState filterState,
+      Failure? failure,
+    )?
+    loaded,
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            List<ClipboardItem> items,
-            dynamic hasMore,
-            int limit,
-            int offset,
-            bool loading,
-            bool syncing,
-            SearchFilterState filterState,
-            Failure? failure)?
-        loaded,
+      List<ClipboardItem> items,
+      dynamic hasMore,
+      int limit,
+      int offset,
+      bool loading,
+      bool syncing,
+      SearchFilterState filterState,
+      Failure? failure,
+    )?
+    loaded,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(ClipboardLoadedState value) loaded,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ClipboardLoadedState value)? loaded,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ClipboardLoadedState value)? loaded,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 
   /// Create a copy of ClipboardState
   /// with the given fields replaced by the non-null parameter values.
@@ -94,18 +92,20 @@ mixin _$ClipboardState {
 /// @nodoc
 abstract class $ClipboardStateCopyWith<$Res> {
   factory $ClipboardStateCopyWith(
-          ClipboardState value, $Res Function(ClipboardState) then) =
-      _$ClipboardStateCopyWithImpl<$Res, ClipboardState>;
+    ClipboardState value,
+    $Res Function(ClipboardState) then,
+  ) = _$ClipboardStateCopyWithImpl<$Res, ClipboardState>;
   @useResult
-  $Res call(
-      {List<ClipboardItem> items,
-      dynamic hasMore,
-      int limit,
-      int offset,
-      bool loading,
-      bool syncing,
-      SearchFilterState filterState,
-      Failure? failure});
+  $Res call({
+    List<ClipboardItem> items,
+    dynamic hasMore,
+    int limit,
+    int offset,
+    bool loading,
+    bool syncing,
+    SearchFilterState filterState,
+    Failure? failure,
+  });
 }
 
 /// @nodoc
@@ -132,69 +132,75 @@ class _$ClipboardStateCopyWithImpl<$Res, $Val extends ClipboardState>
     Object? filterState = null,
     Object? failure = freezed,
   }) {
-    return _then(_value.copyWith(
-      items: null == items
-          ? _value.items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<ClipboardItem>,
-      hasMore: freezed == hasMore
-          ? _value.hasMore
-          : hasMore // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-      limit: null == limit
-          ? _value.limit
-          : limit // ignore: cast_nullable_to_non_nullable
-              as int,
-      offset: null == offset
-          ? _value.offset
-          : offset // ignore: cast_nullable_to_non_nullable
-              as int,
-      loading: null == loading
-          ? _value.loading
-          : loading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      syncing: null == syncing
-          ? _value.syncing
-          : syncing // ignore: cast_nullable_to_non_nullable
-              as bool,
-      filterState: null == filterState
-          ? _value.filterState
-          : filterState // ignore: cast_nullable_to_non_nullable
-              as SearchFilterState,
-      failure: freezed == failure
-          ? _value.failure
-          : failure // ignore: cast_nullable_to_non_nullable
-              as Failure?,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            items: null == items
+                ? _value.items
+                : items // ignore: cast_nullable_to_non_nullable
+                      as List<ClipboardItem>,
+            hasMore: freezed == hasMore
+                ? _value.hasMore
+                : hasMore // ignore: cast_nullable_to_non_nullable
+                      as dynamic,
+            limit: null == limit
+                ? _value.limit
+                : limit // ignore: cast_nullable_to_non_nullable
+                      as int,
+            offset: null == offset
+                ? _value.offset
+                : offset // ignore: cast_nullable_to_non_nullable
+                      as int,
+            loading: null == loading
+                ? _value.loading
+                : loading // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            syncing: null == syncing
+                ? _value.syncing
+                : syncing // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            filterState: null == filterState
+                ? _value.filterState
+                : filterState // ignore: cast_nullable_to_non_nullable
+                      as SearchFilterState,
+            failure: freezed == failure
+                ? _value.failure
+                : failure // ignore: cast_nullable_to_non_nullable
+                      as Failure?,
+          )
+          as $Val,
+    );
   }
 }
 
 /// @nodoc
 abstract class _$$ClipboardLoadedStateImplCopyWith<$Res>
     implements $ClipboardStateCopyWith<$Res> {
-  factory _$$ClipboardLoadedStateImplCopyWith(_$ClipboardLoadedStateImpl value,
-          $Res Function(_$ClipboardLoadedStateImpl) then) =
-      __$$ClipboardLoadedStateImplCopyWithImpl<$Res>;
+  factory _$$ClipboardLoadedStateImplCopyWith(
+    _$ClipboardLoadedStateImpl value,
+    $Res Function(_$ClipboardLoadedStateImpl) then,
+  ) = __$$ClipboardLoadedStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {List<ClipboardItem> items,
-      dynamic hasMore,
-      int limit,
-      int offset,
-      bool loading,
-      bool syncing,
-      SearchFilterState filterState,
-      Failure? failure});
+  $Res call({
+    List<ClipboardItem> items,
+    dynamic hasMore,
+    int limit,
+    int offset,
+    bool loading,
+    bool syncing,
+    SearchFilterState filterState,
+    Failure? failure,
+  });
 }
 
 /// @nodoc
 class __$$ClipboardLoadedStateImplCopyWithImpl<$Res>
     extends _$ClipboardStateCopyWithImpl<$Res, _$ClipboardLoadedStateImpl>
     implements _$$ClipboardLoadedStateImplCopyWith<$Res> {
-  __$$ClipboardLoadedStateImplCopyWithImpl(_$ClipboardLoadedStateImpl _value,
-      $Res Function(_$ClipboardLoadedStateImpl) _then)
-      : super(_value, _then);
+  __$$ClipboardLoadedStateImplCopyWithImpl(
+    _$ClipboardLoadedStateImpl _value,
+    $Res Function(_$ClipboardLoadedStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of ClipboardState
   /// with the given fields replaced by the non-null parameter values.
@@ -210,53 +216,55 @@ class __$$ClipboardLoadedStateImplCopyWithImpl<$Res>
     Object? filterState = null,
     Object? failure = freezed,
   }) {
-    return _then(_$ClipboardLoadedStateImpl(
-      items: null == items
-          ? _value._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<ClipboardItem>,
-      hasMore: freezed == hasMore ? _value.hasMore! : hasMore,
-      limit: null == limit
-          ? _value.limit
-          : limit // ignore: cast_nullable_to_non_nullable
-              as int,
-      offset: null == offset
-          ? _value.offset
-          : offset // ignore: cast_nullable_to_non_nullable
-              as int,
-      loading: null == loading
-          ? _value.loading
-          : loading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      syncing: null == syncing
-          ? _value.syncing
-          : syncing // ignore: cast_nullable_to_non_nullable
-              as bool,
-      filterState: null == filterState
-          ? _value.filterState
-          : filterState // ignore: cast_nullable_to_non_nullable
-              as SearchFilterState,
-      failure: freezed == failure
-          ? _value.failure
-          : failure // ignore: cast_nullable_to_non_nullable
-              as Failure?,
-    ));
+    return _then(
+      _$ClipboardLoadedStateImpl(
+        items: null == items
+            ? _value._items
+            : items // ignore: cast_nullable_to_non_nullable
+                  as List<ClipboardItem>,
+        hasMore: freezed == hasMore ? _value.hasMore! : hasMore,
+        limit: null == limit
+            ? _value.limit
+            : limit // ignore: cast_nullable_to_non_nullable
+                  as int,
+        offset: null == offset
+            ? _value.offset
+            : offset // ignore: cast_nullable_to_non_nullable
+                  as int,
+        loading: null == loading
+            ? _value.loading
+            : loading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        syncing: null == syncing
+            ? _value.syncing
+            : syncing // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        filterState: null == filterState
+            ? _value.filterState
+            : filterState // ignore: cast_nullable_to_non_nullable
+                  as SearchFilterState,
+        failure: freezed == failure
+            ? _value.failure
+            : failure // ignore: cast_nullable_to_non_nullable
+                  as Failure?,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
-  const _$ClipboardLoadedStateImpl(
-      {required final List<ClipboardItem> items,
-      this.hasMore = true,
-      this.limit = 50,
-      this.offset = 0,
-      this.loading = true,
-      this.syncing = false,
-      this.filterState = const SearchFilterState(),
-      this.failure})
-      : _items = items;
+  const _$ClipboardLoadedStateImpl({
+    required final List<ClipboardItem> items,
+    this.hasMore = true,
+    this.limit = 50,
+    this.offset = 0,
+    this.loading = true,
+    this.syncing = false,
+    this.filterState = const SearchFilterState(),
+    this.failure,
+  }) : _items = items;
 
   final List<ClipboardItem> _items;
   @override
@@ -310,15 +318,16 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_items),
-      const DeepCollectionEquality().hash(hasMore),
-      limit,
-      offset,
-      loading,
-      syncing,
-      filterState,
-      failure);
+    runtimeType,
+    const DeepCollectionEquality().hash(_items),
+    const DeepCollectionEquality().hash(hasMore),
+    limit,
+    offset,
+    loading,
+    syncing,
+    filterState,
+    failure,
+  );
 
   /// Create a copy of ClipboardState
   /// with the given fields replaced by the non-null parameter values.
@@ -326,64 +335,93 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
   @override
   @pragma('vm:prefer-inline')
   _$$ClipboardLoadedStateImplCopyWith<_$ClipboardLoadedStateImpl>
-      get copyWith =>
-          __$$ClipboardLoadedStateImplCopyWithImpl<_$ClipboardLoadedStateImpl>(
-              this, _$identity);
+  get copyWith =>
+      __$$ClipboardLoadedStateImplCopyWithImpl<_$ClipboardLoadedStateImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
-            List<ClipboardItem> items,
-            dynamic hasMore,
-            int limit,
-            int offset,
-            bool loading,
-            bool syncing,
-            SearchFilterState filterState,
-            Failure? failure)
-        loaded,
+      List<ClipboardItem> items,
+      dynamic hasMore,
+      int limit,
+      int offset,
+      bool loading,
+      bool syncing,
+      SearchFilterState filterState,
+      Failure? failure,
+    )
+    loaded,
   }) {
     return loaded(
-        items, hasMore, limit, offset, loading, syncing, filterState, failure);
+      items,
+      hasMore,
+      limit,
+      offset,
+      loading,
+      syncing,
+      filterState,
+      failure,
+    );
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
-            List<ClipboardItem> items,
-            dynamic hasMore,
-            int limit,
-            int offset,
-            bool loading,
-            bool syncing,
-            SearchFilterState filterState,
-            Failure? failure)?
-        loaded,
+      List<ClipboardItem> items,
+      dynamic hasMore,
+      int limit,
+      int offset,
+      bool loading,
+      bool syncing,
+      SearchFilterState filterState,
+      Failure? failure,
+    )?
+    loaded,
   }) {
     return loaded?.call(
-        items, hasMore, limit, offset, loading, syncing, filterState, failure);
+      items,
+      hasMore,
+      limit,
+      offset,
+      loading,
+      syncing,
+      filterState,
+      failure,
+    );
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
-            List<ClipboardItem> items,
-            dynamic hasMore,
-            int limit,
-            int offset,
-            bool loading,
-            bool syncing,
-            SearchFilterState filterState,
-            Failure? failure)?
-        loaded,
+      List<ClipboardItem> items,
+      dynamic hasMore,
+      int limit,
+      int offset,
+      bool loading,
+      bool syncing,
+      SearchFilterState filterState,
+      Failure? failure,
+    )?
+    loaded,
     required TResult orElse(),
   }) {
     if (loaded != null) {
-      return loaded(items, hasMore, limit, offset, loading, syncing,
-          filterState, failure);
+      return loaded(
+        items,
+        hasMore,
+        limit,
+        offset,
+        loading,
+        syncing,
+        filterState,
+        failure,
+      );
     }
     return orElse();
   }
@@ -418,15 +456,16 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
 }
 
 abstract class ClipboardLoadedState implements ClipboardState {
-  const factory ClipboardLoadedState(
-      {required final List<ClipboardItem> items,
-      final dynamic hasMore,
-      final int limit,
-      final int offset,
-      final bool loading,
-      final bool syncing,
-      final SearchFilterState filterState,
-      final Failure? failure}) = _$ClipboardLoadedStateImpl;
+  const factory ClipboardLoadedState({
+    required final List<ClipboardItem> items,
+    final dynamic hasMore,
+    final int limit,
+    final int offset,
+    final bool loading,
+    final bool syncing,
+    final SearchFilterState filterState,
+    final Failure? failure,
+  }) = _$ClipboardLoadedStateImpl;
 
   @override
   List<ClipboardItem> get items;
@@ -450,5 +489,5 @@ abstract class ClipboardLoadedState implements ClipboardState {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ClipboardLoadedStateImplCopyWith<_$ClipboardLoadedStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }

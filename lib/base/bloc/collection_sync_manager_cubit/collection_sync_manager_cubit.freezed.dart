@@ -12,7 +12,8 @@ part of 'collection_sync_manager_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$CollectionSyncManagerState {
@@ -23,10 +24,9 @@ mixin _$CollectionSyncManagerState {
     required TResult Function() syncingUnknown,
     required TResult Function(int synced) syncing,
     required TResult Function(int syncCount, bool manual, dynamic restoration)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? disabled,
@@ -35,8 +35,7 @@ mixin _$CollectionSyncManagerState {
     TResult? Function(int synced)? syncing,
     TResult? Function(int syncCount, bool manual, dynamic restoration)? synced,
     TResult? Function(Failure failure)? failed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? disabled,
@@ -46,8 +45,7 @@ mixin _$CollectionSyncManagerState {
     TResult Function(int syncCount, bool manual, dynamic restoration)? synced,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(CollectionSyncDisabled value) disabled,
@@ -56,8 +54,7 @@ mixin _$CollectionSyncManagerState {
     required TResult Function(CollectionSyncing value) syncing,
     required TResult Function(CollectionSyncComplete value) synced,
     required TResult Function(CollectionSyncFailed value) failed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(CollectionSyncDisabled value)? disabled,
@@ -66,8 +63,7 @@ mixin _$CollectionSyncManagerState {
     TResult? Function(CollectionSyncing value)? syncing,
     TResult? Function(CollectionSyncComplete value)? synced,
     TResult? Function(CollectionSyncFailed value)? failed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(CollectionSyncDisabled value)? disabled,
@@ -77,21 +73,26 @@ mixin _$CollectionSyncManagerState {
     TResult Function(CollectionSyncComplete value)? synced,
     TResult Function(CollectionSyncFailed value)? failed,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $CollectionSyncManagerStateCopyWith<$Res> {
-  factory $CollectionSyncManagerStateCopyWith(CollectionSyncManagerState value,
-          $Res Function(CollectionSyncManagerState) then) =
-      _$CollectionSyncManagerStateCopyWithImpl<$Res,
-          CollectionSyncManagerState>;
+  factory $CollectionSyncManagerStateCopyWith(
+    CollectionSyncManagerState value,
+    $Res Function(CollectionSyncManagerState) then,
+  ) =
+      _$CollectionSyncManagerStateCopyWithImpl<
+        $Res,
+        CollectionSyncManagerState
+      >;
 }
 
 /// @nodoc
-class _$CollectionSyncManagerStateCopyWithImpl<$Res,
-        $Val extends CollectionSyncManagerState>
+class _$CollectionSyncManagerStateCopyWithImpl<
+  $Res,
+  $Val extends CollectionSyncManagerState
+>
     implements $CollectionSyncManagerStateCopyWith<$Res> {
   _$CollectionSyncManagerStateCopyWithImpl(this._value, this._then);
 
@@ -107,20 +108,23 @@ class _$CollectionSyncManagerStateCopyWithImpl<$Res,
 /// @nodoc
 abstract class _$$CollectionSyncDisabledImplCopyWith<$Res> {
   factory _$$CollectionSyncDisabledImplCopyWith(
-          _$CollectionSyncDisabledImpl value,
-          $Res Function(_$CollectionSyncDisabledImpl) then) =
-      __$$CollectionSyncDisabledImplCopyWithImpl<$Res>;
+    _$CollectionSyncDisabledImpl value,
+    $Res Function(_$CollectionSyncDisabledImpl) then,
+  ) = __$$CollectionSyncDisabledImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$CollectionSyncDisabledImplCopyWithImpl<$Res>
-    extends _$CollectionSyncManagerStateCopyWithImpl<$Res,
-        _$CollectionSyncDisabledImpl>
+    extends
+        _$CollectionSyncManagerStateCopyWithImpl<
+          $Res,
+          _$CollectionSyncDisabledImpl
+        >
     implements _$$CollectionSyncDisabledImplCopyWith<$Res> {
   __$$CollectionSyncDisabledImplCopyWithImpl(
-      _$CollectionSyncDisabledImpl _value,
-      $Res Function(_$CollectionSyncDisabledImpl) _then)
-      : super(_value, _then);
+    _$CollectionSyncDisabledImpl _value,
+    $Res Function(_$CollectionSyncDisabledImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CollectionSyncManagerState
   /// with the given fields replaced by the non-null parameter values.
@@ -163,7 +167,7 @@ class _$CollectionSyncDisabledImpl
     required TResult Function() syncingUnknown,
     required TResult Function(int synced) syncing,
     required TResult Function(int syncCount, bool manual, dynamic restoration)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
   }) {
     return disabled();
@@ -250,19 +254,23 @@ abstract class CollectionSyncDisabled implements CollectionSyncManagerState {
 /// @nodoc
 abstract class _$$CollectionSyncUnknownImplCopyWith<$Res> {
   factory _$$CollectionSyncUnknownImplCopyWith(
-          _$CollectionSyncUnknownImpl value,
-          $Res Function(_$CollectionSyncUnknownImpl) then) =
-      __$$CollectionSyncUnknownImplCopyWithImpl<$Res>;
+    _$CollectionSyncUnknownImpl value,
+    $Res Function(_$CollectionSyncUnknownImpl) then,
+  ) = __$$CollectionSyncUnknownImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$CollectionSyncUnknownImplCopyWithImpl<$Res>
-    extends _$CollectionSyncManagerStateCopyWithImpl<$Res,
-        _$CollectionSyncUnknownImpl>
+    extends
+        _$CollectionSyncManagerStateCopyWithImpl<
+          $Res,
+          _$CollectionSyncUnknownImpl
+        >
     implements _$$CollectionSyncUnknownImplCopyWith<$Res> {
-  __$$CollectionSyncUnknownImplCopyWithImpl(_$CollectionSyncUnknownImpl _value,
-      $Res Function(_$CollectionSyncUnknownImpl) _then)
-      : super(_value, _then);
+  __$$CollectionSyncUnknownImplCopyWithImpl(
+    _$CollectionSyncUnknownImpl _value,
+    $Res Function(_$CollectionSyncUnknownImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CollectionSyncManagerState
   /// with the given fields replaced by the non-null parameter values.
@@ -305,7 +313,7 @@ class _$CollectionSyncUnknownImpl
     required TResult Function() syncingUnknown,
     required TResult Function(int synced) syncing,
     required TResult Function(int syncCount, bool manual, dynamic restoration)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
   }) {
     return unknown();
@@ -392,20 +400,23 @@ abstract class CollectionSyncUnknown implements CollectionSyncManagerState {
 /// @nodoc
 abstract class _$$CollectionSyncingUnknownImplCopyWith<$Res> {
   factory _$$CollectionSyncingUnknownImplCopyWith(
-          _$CollectionSyncingUnknownImpl value,
-          $Res Function(_$CollectionSyncingUnknownImpl) then) =
-      __$$CollectionSyncingUnknownImplCopyWithImpl<$Res>;
+    _$CollectionSyncingUnknownImpl value,
+    $Res Function(_$CollectionSyncingUnknownImpl) then,
+  ) = __$$CollectionSyncingUnknownImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$CollectionSyncingUnknownImplCopyWithImpl<$Res>
-    extends _$CollectionSyncManagerStateCopyWithImpl<$Res,
-        _$CollectionSyncingUnknownImpl>
+    extends
+        _$CollectionSyncManagerStateCopyWithImpl<
+          $Res,
+          _$CollectionSyncingUnknownImpl
+        >
     implements _$$CollectionSyncingUnknownImplCopyWith<$Res> {
   __$$CollectionSyncingUnknownImplCopyWithImpl(
-      _$CollectionSyncingUnknownImpl _value,
-      $Res Function(_$CollectionSyncingUnknownImpl) _then)
-      : super(_value, _then);
+    _$CollectionSyncingUnknownImpl _value,
+    $Res Function(_$CollectionSyncingUnknownImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CollectionSyncManagerState
   /// with the given fields replaced by the non-null parameter values.
@@ -426,9 +437,9 @@ class _$CollectionSyncingUnknownImpl
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty(
-          'type', 'CollectionSyncManagerState.syncingUnknown'));
+    properties..add(
+      DiagnosticsProperty('type', 'CollectionSyncManagerState.syncingUnknown'),
+    );
   }
 
   @override
@@ -449,7 +460,7 @@ class _$CollectionSyncingUnknownImpl
     required TResult Function() syncingUnknown,
     required TResult Function(int synced) syncing,
     required TResult Function(int syncCount, bool manual, dynamic restoration)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
   }) {
     return syncingUnknown();
@@ -535,35 +546,37 @@ abstract class CollectionSyncingUnknown implements CollectionSyncManagerState {
 
 /// @nodoc
 abstract class _$$CollectionSyncingImplCopyWith<$Res> {
-  factory _$$CollectionSyncingImplCopyWith(_$CollectionSyncingImpl value,
-          $Res Function(_$CollectionSyncingImpl) then) =
-      __$$CollectionSyncingImplCopyWithImpl<$Res>;
+  factory _$$CollectionSyncingImplCopyWith(
+    _$CollectionSyncingImpl value,
+    $Res Function(_$CollectionSyncingImpl) then,
+  ) = __$$CollectionSyncingImplCopyWithImpl<$Res>;
   @useResult
   $Res call({int synced});
 }
 
 /// @nodoc
 class __$$CollectionSyncingImplCopyWithImpl<$Res>
-    extends _$CollectionSyncManagerStateCopyWithImpl<$Res,
-        _$CollectionSyncingImpl>
+    extends
+        _$CollectionSyncManagerStateCopyWithImpl<$Res, _$CollectionSyncingImpl>
     implements _$$CollectionSyncingImplCopyWith<$Res> {
-  __$$CollectionSyncingImplCopyWithImpl(_$CollectionSyncingImpl _value,
-      $Res Function(_$CollectionSyncingImpl) _then)
-      : super(_value, _then);
+  __$$CollectionSyncingImplCopyWithImpl(
+    _$CollectionSyncingImpl _value,
+    $Res Function(_$CollectionSyncingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CollectionSyncManagerState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? synced = null,
-  }) {
-    return _then(_$CollectionSyncingImpl(
-      synced: null == synced
-          ? _value.synced
-          : synced // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
+  $Res call({Object? synced = null}) {
+    return _then(
+      _$CollectionSyncingImpl(
+        synced: null == synced
+            ? _value.synced
+            : synced // ignore: cast_nullable_to_non_nullable
+                  as int,
+      ),
+    );
   }
 }
 
@@ -608,7 +621,9 @@ class _$CollectionSyncingImpl
   @pragma('vm:prefer-inline')
   _$$CollectionSyncingImplCopyWith<_$CollectionSyncingImpl> get copyWith =>
       __$$CollectionSyncingImplCopyWithImpl<_$CollectionSyncingImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -618,7 +633,7 @@ class _$CollectionSyncingImpl
     required TResult Function() syncingUnknown,
     required TResult Function(int synced) syncing,
     required TResult Function(int syncCount, bool manual, dynamic restoration)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
   }) {
     return syncing(this.synced);
@@ -714,22 +729,25 @@ abstract class CollectionSyncing implements CollectionSyncManagerState {
 /// @nodoc
 abstract class _$$CollectionSyncCompleteImplCopyWith<$Res> {
   factory _$$CollectionSyncCompleteImplCopyWith(
-          _$CollectionSyncCompleteImpl value,
-          $Res Function(_$CollectionSyncCompleteImpl) then) =
-      __$$CollectionSyncCompleteImplCopyWithImpl<$Res>;
+    _$CollectionSyncCompleteImpl value,
+    $Res Function(_$CollectionSyncCompleteImpl) then,
+  ) = __$$CollectionSyncCompleteImplCopyWithImpl<$Res>;
   @useResult
   $Res call({int syncCount, bool manual, dynamic restoration});
 }
 
 /// @nodoc
 class __$$CollectionSyncCompleteImplCopyWithImpl<$Res>
-    extends _$CollectionSyncManagerStateCopyWithImpl<$Res,
-        _$CollectionSyncCompleteImpl>
+    extends
+        _$CollectionSyncManagerStateCopyWithImpl<
+          $Res,
+          _$CollectionSyncCompleteImpl
+        >
     implements _$$CollectionSyncCompleteImplCopyWith<$Res> {
   __$$CollectionSyncCompleteImplCopyWithImpl(
-      _$CollectionSyncCompleteImpl _value,
-      $Res Function(_$CollectionSyncCompleteImpl) _then)
-      : super(_value, _then);
+    _$CollectionSyncCompleteImpl _value,
+    $Res Function(_$CollectionSyncCompleteImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CollectionSyncManagerState
   /// with the given fields replaced by the non-null parameter values.
@@ -740,17 +758,19 @@ class __$$CollectionSyncCompleteImplCopyWithImpl<$Res>
     Object? manual = null,
     Object? restoration = freezed,
   }) {
-    return _then(_$CollectionSyncCompleteImpl(
-      null == syncCount
-          ? _value.syncCount
-          : syncCount // ignore: cast_nullable_to_non_nullable
-              as int,
-      manual: null == manual
-          ? _value.manual
-          : manual // ignore: cast_nullable_to_non_nullable
-              as bool,
-      restoration: freezed == restoration ? _value.restoration! : restoration,
-    ));
+    return _then(
+      _$CollectionSyncCompleteImpl(
+        null == syncCount
+            ? _value.syncCount
+            : syncCount // ignore: cast_nullable_to_non_nullable
+                  as int,
+        manual: null == manual
+            ? _value.manual
+            : manual // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        restoration: freezed == restoration ? _value.restoration! : restoration,
+      ),
+    );
   }
 }
 
@@ -759,8 +779,11 @@ class __$$CollectionSyncCompleteImplCopyWithImpl<$Res>
 class _$CollectionSyncCompleteImpl
     with DiagnosticableTreeMixin
     implements CollectionSyncComplete {
-  const _$CollectionSyncCompleteImpl(this.syncCount,
-      {this.manual = false, this.restoration = true});
+  const _$CollectionSyncCompleteImpl(
+    this.syncCount, {
+    this.manual = false,
+    this.restoration = true,
+  });
 
   @override
   final int syncCount;
@@ -794,13 +817,19 @@ class _$CollectionSyncCompleteImpl
             (identical(other.syncCount, syncCount) ||
                 other.syncCount == syncCount) &&
             (identical(other.manual, manual) || other.manual == manual) &&
-            const DeepCollectionEquality()
-                .equals(other.restoration, restoration));
+            const DeepCollectionEquality().equals(
+              other.restoration,
+              restoration,
+            ));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, syncCount, manual,
-      const DeepCollectionEquality().hash(restoration));
+  int get hashCode => Object.hash(
+    runtimeType,
+    syncCount,
+    manual,
+    const DeepCollectionEquality().hash(restoration),
+  );
 
   /// Create a copy of CollectionSyncManagerState
   /// with the given fields replaced by the non-null parameter values.
@@ -808,8 +837,11 @@ class _$CollectionSyncCompleteImpl
   @override
   @pragma('vm:prefer-inline')
   _$$CollectionSyncCompleteImplCopyWith<_$CollectionSyncCompleteImpl>
-      get copyWith => __$$CollectionSyncCompleteImplCopyWithImpl<
-          _$CollectionSyncCompleteImpl>(this, _$identity);
+  get copyWith =>
+      __$$CollectionSyncCompleteImplCopyWithImpl<_$CollectionSyncCompleteImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -819,7 +851,7 @@ class _$CollectionSyncCompleteImpl
     required TResult Function() syncingUnknown,
     required TResult Function(int synced) syncing,
     required TResult Function(int syncCount, bool manual, dynamic restoration)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
   }) {
     return synced(syncCount, manual, restoration);
@@ -900,9 +932,11 @@ class _$CollectionSyncCompleteImpl
 }
 
 abstract class CollectionSyncComplete implements CollectionSyncManagerState {
-  const factory CollectionSyncComplete(final int syncCount,
-      {final bool manual,
-      final dynamic restoration}) = _$CollectionSyncCompleteImpl;
+  const factory CollectionSyncComplete(
+    final int syncCount, {
+    final bool manual,
+    final dynamic restoration,
+  }) = _$CollectionSyncCompleteImpl;
 
   int get syncCount;
   bool get manual;
@@ -912,40 +946,45 @@ abstract class CollectionSyncComplete implements CollectionSyncManagerState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CollectionSyncCompleteImplCopyWith<_$CollectionSyncCompleteImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$CollectionSyncFailedImplCopyWith<$Res> {
-  factory _$$CollectionSyncFailedImplCopyWith(_$CollectionSyncFailedImpl value,
-          $Res Function(_$CollectionSyncFailedImpl) then) =
-      __$$CollectionSyncFailedImplCopyWithImpl<$Res>;
+  factory _$$CollectionSyncFailedImplCopyWith(
+    _$CollectionSyncFailedImpl value,
+    $Res Function(_$CollectionSyncFailedImpl) then,
+  ) = __$$CollectionSyncFailedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Failure failure});
 }
 
 /// @nodoc
 class __$$CollectionSyncFailedImplCopyWithImpl<$Res>
-    extends _$CollectionSyncManagerStateCopyWithImpl<$Res,
-        _$CollectionSyncFailedImpl>
+    extends
+        _$CollectionSyncManagerStateCopyWithImpl<
+          $Res,
+          _$CollectionSyncFailedImpl
+        >
     implements _$$CollectionSyncFailedImplCopyWith<$Res> {
-  __$$CollectionSyncFailedImplCopyWithImpl(_$CollectionSyncFailedImpl _value,
-      $Res Function(_$CollectionSyncFailedImpl) _then)
-      : super(_value, _then);
+  __$$CollectionSyncFailedImplCopyWithImpl(
+    _$CollectionSyncFailedImpl _value,
+    $Res Function(_$CollectionSyncFailedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CollectionSyncManagerState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? failure = null,
-  }) {
-    return _then(_$CollectionSyncFailedImpl(
-      null == failure
-          ? _value.failure
-          : failure // ignore: cast_nullable_to_non_nullable
-              as Failure,
-    ));
+  $Res call({Object? failure = null}) {
+    return _then(
+      _$CollectionSyncFailedImpl(
+        null == failure
+            ? _value.failure
+            : failure // ignore: cast_nullable_to_non_nullable
+                  as Failure,
+      ),
+    );
   }
 }
 
@@ -989,9 +1028,11 @@ class _$CollectionSyncFailedImpl
   @override
   @pragma('vm:prefer-inline')
   _$$CollectionSyncFailedImplCopyWith<_$CollectionSyncFailedImpl>
-      get copyWith =>
-          __$$CollectionSyncFailedImplCopyWithImpl<_$CollectionSyncFailedImpl>(
-              this, _$identity);
+  get copyWith =>
+      __$$CollectionSyncFailedImplCopyWithImpl<_$CollectionSyncFailedImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -1001,7 +1042,7 @@ class _$CollectionSyncFailedImpl
     required TResult Function() syncingUnknown,
     required TResult Function(int synced) syncing,
     required TResult Function(int syncCount, bool manual, dynamic restoration)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
   }) {
     return failed(failure);
@@ -1091,5 +1132,5 @@ abstract class CollectionSyncFailed implements CollectionSyncManagerState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CollectionSyncFailedImplCopyWith<_$CollectionSyncFailedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }

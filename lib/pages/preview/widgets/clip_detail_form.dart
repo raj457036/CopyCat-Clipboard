@@ -1,7 +1,7 @@
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -82,7 +82,7 @@ class _ClipDetailFormState extends State<ClipDetailForm> {
       description: cleanUpString(description),
       collectionId: collectionId?.$1,
       serverCollectionId: collectionId?.$2,
-    )..applyId(widget.item);
+    );
     cubit.persist([updatedItem]);
     GoRouter.of(context).pop();
   }

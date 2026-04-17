@@ -12,7 +12,8 @@ part of 'selected_clips_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$SelectedClipsState {
@@ -20,47 +21,42 @@ mixin _$SelectedClipsState {
   TResult when<TResult extends Object?>({
     required TResult Function() noClipSelected,
     required TResult Function(Set<ClipboardItem> selectedClipIds) clipSelected,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? noClipSelected,
     TResult? Function(Set<ClipboardItem> selectedClipIds)? clipSelected,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? noClipSelected,
     TResult Function(Set<ClipboardItem> selectedClipIds)? clipSelected,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(NoClipSelected value) noClipSelected,
     required TResult Function(ClipSelected value) clipSelected,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(NoClipSelected value)? noClipSelected,
     TResult? Function(ClipSelected value)? clipSelected,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(NoClipSelected value)? noClipSelected,
     TResult Function(ClipSelected value)? clipSelected,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $SelectedClipsStateCopyWith<$Res> {
   factory $SelectedClipsStateCopyWith(
-          SelectedClipsState value, $Res Function(SelectedClipsState) then) =
-      _$SelectedClipsStateCopyWithImpl<$Res, SelectedClipsState>;
+    SelectedClipsState value,
+    $Res Function(SelectedClipsState) then,
+  ) = _$SelectedClipsStateCopyWithImpl<$Res, SelectedClipsState>;
 }
 
 /// @nodoc
@@ -79,9 +75,10 @@ class _$SelectedClipsStateCopyWithImpl<$Res, $Val extends SelectedClipsState>
 
 /// @nodoc
 abstract class _$$NoClipSelectedImplCopyWith<$Res> {
-  factory _$$NoClipSelectedImplCopyWith(_$NoClipSelectedImpl value,
-          $Res Function(_$NoClipSelectedImpl) then) =
-      __$$NoClipSelectedImplCopyWithImpl<$Res>;
+  factory _$$NoClipSelectedImplCopyWith(
+    _$NoClipSelectedImpl value,
+    $Res Function(_$NoClipSelectedImpl) then,
+  ) = __$$NoClipSelectedImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -89,8 +86,9 @@ class __$$NoClipSelectedImplCopyWithImpl<$Res>
     extends _$SelectedClipsStateCopyWithImpl<$Res, _$NoClipSelectedImpl>
     implements _$$NoClipSelectedImplCopyWith<$Res> {
   __$$NoClipSelectedImplCopyWithImpl(
-      _$NoClipSelectedImpl _value, $Res Function(_$NoClipSelectedImpl) _then)
-      : super(_value, _then);
+    _$NoClipSelectedImpl _value,
+    $Res Function(_$NoClipSelectedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of SelectedClipsState
   /// with the given fields replaced by the non-null parameter values.
@@ -185,8 +183,9 @@ abstract class NoClipSelected implements SelectedClipsState {
 /// @nodoc
 abstract class _$$ClipSelectedImplCopyWith<$Res> {
   factory _$$ClipSelectedImplCopyWith(
-          _$ClipSelectedImpl value, $Res Function(_$ClipSelectedImpl) then) =
-      __$$ClipSelectedImplCopyWithImpl<$Res>;
+    _$ClipSelectedImpl value,
+    $Res Function(_$ClipSelectedImpl) then,
+  ) = __$$ClipSelectedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Set<ClipboardItem> selectedClipIds});
 }
@@ -196,22 +195,23 @@ class __$$ClipSelectedImplCopyWithImpl<$Res>
     extends _$SelectedClipsStateCopyWithImpl<$Res, _$ClipSelectedImpl>
     implements _$$ClipSelectedImplCopyWith<$Res> {
   __$$ClipSelectedImplCopyWithImpl(
-      _$ClipSelectedImpl _value, $Res Function(_$ClipSelectedImpl) _then)
-      : super(_value, _then);
+    _$ClipSelectedImpl _value,
+    $Res Function(_$ClipSelectedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of SelectedClipsState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? selectedClipIds = null,
-  }) {
-    return _then(_$ClipSelectedImpl(
-      selectedClipIds: null == selectedClipIds
-          ? _value._selectedClipIds
-          : selectedClipIds // ignore: cast_nullable_to_non_nullable
-              as Set<ClipboardItem>,
-    ));
+  $Res call({Object? selectedClipIds = null}) {
+    return _then(
+      _$ClipSelectedImpl(
+        selectedClipIds: null == selectedClipIds
+            ? _value._selectedClipIds
+            : selectedClipIds // ignore: cast_nullable_to_non_nullable
+                  as Set<ClipboardItem>,
+      ),
+    );
   }
 }
 
@@ -219,7 +219,7 @@ class __$$ClipSelectedImplCopyWithImpl<$Res>
 
 class _$ClipSelectedImpl implements ClipSelected {
   const _$ClipSelectedImpl({required final Set<ClipboardItem> selectedClipIds})
-      : _selectedClipIds = selectedClipIds;
+    : _selectedClipIds = selectedClipIds;
 
   final Set<ClipboardItem> _selectedClipIds;
   @override
@@ -239,13 +239,17 @@ class _$ClipSelectedImpl implements ClipSelected {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ClipSelectedImpl &&
-            const DeepCollectionEquality()
-                .equals(other._selectedClipIds, _selectedClipIds));
+            const DeepCollectionEquality().equals(
+              other._selectedClipIds,
+              _selectedClipIds,
+            ));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_selectedClipIds));
+    runtimeType,
+    const DeepCollectionEquality().hash(_selectedClipIds),
+  );
 
   /// Create a copy of SelectedClipsState
   /// with the given fields replaced by the non-null parameter values.
@@ -319,8 +323,9 @@ class _$ClipSelectedImpl implements ClipSelected {
 }
 
 abstract class ClipSelected implements SelectedClipsState {
-  const factory ClipSelected(
-      {required final Set<ClipboardItem> selectedClipIds}) = _$ClipSelectedImpl;
+  const factory ClipSelected({
+    required final Set<ClipboardItem> selectedClipIds,
+  }) = _$ClipSelectedImpl;
 
   Set<ClipboardItem> get selectedClipIds;
 

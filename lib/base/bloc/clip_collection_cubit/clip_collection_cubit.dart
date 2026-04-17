@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
-import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
+import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/repositories/clip_collection.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/common/failure.dart';
@@ -76,7 +76,7 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
     final updateIndexMap = <int, int>{};
     for (var i = 0; i < updated.length; i++) {
       final collection = updated[i];
-      updateIndexMap[collection.id] = i;
+      updateIndexMap[collection.id!] = i;
     }
 
     final replaced = <ClipCollection>[];
@@ -139,7 +139,7 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
           final map = <int, int>{};
           for (var collection in loaded.collections) {
             if (collection.serverId == null) continue;
-            map[collection.serverId!] = collection.id;
+            map[collection.serverId!] = collection.id!;
           }
           return map;
         });
@@ -150,7 +150,7 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
       loaded: (loaded) async {
         emit(loaded.copyWith(isLoading: true));
         await repo.delete(
-          collection.copyWith(deviceId: deviceId)..applyId(collection),
+          collection.copyWith(deviceId: deviceId),
         );
         final items =
             loaded.collections.where((c) => c.id != collection.id).toList();
@@ -167,10 +167,10 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
   }
 
   Future<Failure?> upsert(ClipCollection collection) async {
-    collection = collection.copyWith(deviceId: deviceId)..applyId(collection);
+    collection = collection.copyWith(deviceId: deviceId);
     final userId = auth.userId ?? kLocalUserId;
 
-    collection = collection.copyWith(userId: userId)..applyId(collection);
+    collection = collection.copyWith(userId: userId);
 
     return await state.mapOrNull<Future<Failure?>>(loaded: (loaded) async {
       if (collection.isPersisted) {

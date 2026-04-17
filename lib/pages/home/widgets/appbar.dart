@@ -1,5 +1,4 @@
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
-import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/pages/home/widgets/search_bar.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/app_bar/selection_appbar.dart';

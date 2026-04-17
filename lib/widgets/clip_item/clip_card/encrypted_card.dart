@@ -1,4 +1,4 @@
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:flutter/material.dart';
 
 class EncryptedClipItem extends StatelessWidget {

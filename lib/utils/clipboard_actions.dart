@@ -4,8 +4,8 @@ import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistanc
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
-import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/snackbar.dart';
@@ -226,7 +226,7 @@ Future<void> changeCollection(
           (item) => item.copyWith(
             collectionId: collection.id,
             serverCollectionId: collection.serverId,
-          )..applyId(item),
+          ),
         )
         .toList();
     cubit.persist(updatedItems);

@@ -12,7 +12,8 @@ part of 'cloud_persistance_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$CloudPersistanceState {
@@ -27,8 +28,7 @@ mixin _$CloudPersistanceState {
     required TResult Function(ClipboardItem item) downloadingFile,
     required TResult Function(ClipboardItem item, bool created) saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
@@ -40,8 +40,7 @@ mixin _$CloudPersistanceState {
     TResult? Function(ClipboardItem item)? downloadingFile,
     TResult? Function(ClipboardItem item, bool created)? saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
@@ -54,8 +53,7 @@ mixin _$CloudPersistanceState {
     TResult Function(ClipboardItem item, bool created)? saved,
     TResult Function(Failure failure, ClipboardItem? item)? error,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(CloudPersistanceInitial value) initial,
@@ -64,13 +62,12 @@ mixin _$CloudPersistanceState {
     required TResult Function(CloudPersistanceDeleting value) deletingItems,
     required TResult Function(CloudPersistanceDeleted value) deletedItems,
     required TResult Function(CloudPersistanceUploadingFile value)
-        uploadingFile,
+    uploadingFile,
     required TResult Function(CloudPersistanceDownloadingFile value)
-        downloadingFile,
+    downloadingFile,
     required TResult Function(CloudPersistanceSaved value) saved,
     required TResult Function(CloudPersistanceError value) error,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(CloudPersistanceInitial value)? initial,
@@ -82,8 +79,7 @@ mixin _$CloudPersistanceState {
     TResult? Function(CloudPersistanceDownloadingFile value)? downloadingFile,
     TResult? Function(CloudPersistanceSaved value)? saved,
     TResult? Function(CloudPersistanceError value)? error,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(CloudPersistanceInitial value)? initial,
@@ -96,20 +92,22 @@ mixin _$CloudPersistanceState {
     TResult Function(CloudPersistanceSaved value)? saved,
     TResult Function(CloudPersistanceError value)? error,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $CloudPersistanceStateCopyWith<$Res> {
-  factory $CloudPersistanceStateCopyWith(CloudPersistanceState value,
-          $Res Function(CloudPersistanceState) then) =
-      _$CloudPersistanceStateCopyWithImpl<$Res, CloudPersistanceState>;
+  factory $CloudPersistanceStateCopyWith(
+    CloudPersistanceState value,
+    $Res Function(CloudPersistanceState) then,
+  ) = _$CloudPersistanceStateCopyWithImpl<$Res, CloudPersistanceState>;
 }
 
 /// @nodoc
-class _$CloudPersistanceStateCopyWithImpl<$Res,
-        $Val extends CloudPersistanceState>
+class _$CloudPersistanceStateCopyWithImpl<
+  $Res,
+  $Val extends CloudPersistanceState
+>
     implements $CloudPersistanceStateCopyWith<$Res> {
   _$CloudPersistanceStateCopyWithImpl(this._value, this._then);
 
@@ -125,20 +123,20 @@ class _$CloudPersistanceStateCopyWithImpl<$Res,
 /// @nodoc
 abstract class _$$CloudPersistanceInitialImplCopyWith<$Res> {
   factory _$$CloudPersistanceInitialImplCopyWith(
-          _$CloudPersistanceInitialImpl value,
-          $Res Function(_$CloudPersistanceInitialImpl) then) =
-      __$$CloudPersistanceInitialImplCopyWithImpl<$Res>;
+    _$CloudPersistanceInitialImpl value,
+    $Res Function(_$CloudPersistanceInitialImpl) then,
+  ) = __$$CloudPersistanceInitialImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$CloudPersistanceInitialImplCopyWithImpl<$Res>
-    extends _$CloudPersistanceStateCopyWithImpl<$Res,
-        _$CloudPersistanceInitialImpl>
+    extends
+        _$CloudPersistanceStateCopyWithImpl<$Res, _$CloudPersistanceInitialImpl>
     implements _$$CloudPersistanceInitialImplCopyWith<$Res> {
   __$$CloudPersistanceInitialImplCopyWithImpl(
-      _$CloudPersistanceInitialImpl _value,
-      $Res Function(_$CloudPersistanceInitialImpl) _then)
-      : super(_value, _then);
+    _$CloudPersistanceInitialImpl _value,
+    $Res Function(_$CloudPersistanceInitialImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CloudPersistanceState
   /// with the given fields replaced by the non-null parameter values.
@@ -225,9 +223,9 @@ class _$CloudPersistanceInitialImpl implements CloudPersistanceInitial {
     required TResult Function(CloudPersistanceDeleting value) deletingItems,
     required TResult Function(CloudPersistanceDeleted value) deletedItems,
     required TResult Function(CloudPersistanceUploadingFile value)
-        uploadingFile,
+    uploadingFile,
     required TResult Function(CloudPersistanceDownloadingFile value)
-        downloadingFile,
+    downloadingFile,
     required TResult Function(CloudPersistanceSaved value) saved,
     required TResult Function(CloudPersistanceError value) error,
   }) {
@@ -278,9 +276,9 @@ abstract class CloudPersistanceInitial implements CloudPersistanceState {
 /// @nodoc
 abstract class _$$CloudPersistanceCreatingImplCopyWith<$Res> {
   factory _$$CloudPersistanceCreatingImplCopyWith(
-          _$CloudPersistanceCreatingImpl value,
-          $Res Function(_$CloudPersistanceCreatingImpl) then) =
-      __$$CloudPersistanceCreatingImplCopyWithImpl<$Res>;
+    _$CloudPersistanceCreatingImpl value,
+    $Res Function(_$CloudPersistanceCreatingImpl) then,
+  ) = __$$CloudPersistanceCreatingImplCopyWithImpl<$Res>;
   @useResult
   $Res call({ClipboardItem item});
 
@@ -289,27 +287,30 @@ abstract class _$$CloudPersistanceCreatingImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$CloudPersistanceCreatingImplCopyWithImpl<$Res>
-    extends _$CloudPersistanceStateCopyWithImpl<$Res,
-        _$CloudPersistanceCreatingImpl>
+    extends
+        _$CloudPersistanceStateCopyWithImpl<
+          $Res,
+          _$CloudPersistanceCreatingImpl
+        >
     implements _$$CloudPersistanceCreatingImplCopyWith<$Res> {
   __$$CloudPersistanceCreatingImplCopyWithImpl(
-      _$CloudPersistanceCreatingImpl _value,
-      $Res Function(_$CloudPersistanceCreatingImpl) _then)
-      : super(_value, _then);
+    _$CloudPersistanceCreatingImpl _value,
+    $Res Function(_$CloudPersistanceCreatingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CloudPersistanceState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? item = null,
-  }) {
-    return _then(_$CloudPersistanceCreatingImpl(
-      null == item
-          ? _value.item
-          : item // ignore: cast_nullable_to_non_nullable
-              as ClipboardItem,
-    ));
+  $Res call({Object? item = null}) {
+    return _then(
+      _$CloudPersistanceCreatingImpl(
+        null == item
+            ? _value.item
+            : item // ignore: cast_nullable_to_non_nullable
+                  as ClipboardItem,
+      ),
+    );
   }
 
   /// Create a copy of CloudPersistanceState
@@ -353,8 +354,10 @@ class _$CloudPersistanceCreatingImpl implements CloudPersistanceCreating {
   @override
   @pragma('vm:prefer-inline')
   _$$CloudPersistanceCreatingImplCopyWith<_$CloudPersistanceCreatingImpl>
-      get copyWith => __$$CloudPersistanceCreatingImplCopyWithImpl<
-          _$CloudPersistanceCreatingImpl>(this, _$identity);
+  get copyWith =>
+      __$$CloudPersistanceCreatingImplCopyWithImpl<
+        _$CloudPersistanceCreatingImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -417,9 +420,9 @@ class _$CloudPersistanceCreatingImpl implements CloudPersistanceCreating {
     required TResult Function(CloudPersistanceDeleting value) deletingItems,
     required TResult Function(CloudPersistanceDeleted value) deletedItems,
     required TResult Function(CloudPersistanceUploadingFile value)
-        uploadingFile,
+    uploadingFile,
     required TResult Function(CloudPersistanceDownloadingFile value)
-        downloadingFile,
+    downloadingFile,
     required TResult Function(CloudPersistanceSaved value) saved,
     required TResult Function(CloudPersistanceError value) error,
   }) {
@@ -473,15 +476,15 @@ abstract class CloudPersistanceCreating implements CloudPersistanceState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CloudPersistanceCreatingImplCopyWith<_$CloudPersistanceCreatingImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$CloudPersistanceUpdatingImplCopyWith<$Res> {
   factory _$$CloudPersistanceUpdatingImplCopyWith(
-          _$CloudPersistanceUpdatingImpl value,
-          $Res Function(_$CloudPersistanceUpdatingImpl) then) =
-      __$$CloudPersistanceUpdatingImplCopyWithImpl<$Res>;
+    _$CloudPersistanceUpdatingImpl value,
+    $Res Function(_$CloudPersistanceUpdatingImpl) then,
+  ) = __$$CloudPersistanceUpdatingImplCopyWithImpl<$Res>;
   @useResult
   $Res call({ClipboardItem item});
 
@@ -490,27 +493,30 @@ abstract class _$$CloudPersistanceUpdatingImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$CloudPersistanceUpdatingImplCopyWithImpl<$Res>
-    extends _$CloudPersistanceStateCopyWithImpl<$Res,
-        _$CloudPersistanceUpdatingImpl>
+    extends
+        _$CloudPersistanceStateCopyWithImpl<
+          $Res,
+          _$CloudPersistanceUpdatingImpl
+        >
     implements _$$CloudPersistanceUpdatingImplCopyWith<$Res> {
   __$$CloudPersistanceUpdatingImplCopyWithImpl(
-      _$CloudPersistanceUpdatingImpl _value,
-      $Res Function(_$CloudPersistanceUpdatingImpl) _then)
-      : super(_value, _then);
+    _$CloudPersistanceUpdatingImpl _value,
+    $Res Function(_$CloudPersistanceUpdatingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CloudPersistanceState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? item = null,
-  }) {
-    return _then(_$CloudPersistanceUpdatingImpl(
-      null == item
-          ? _value.item
-          : item // ignore: cast_nullable_to_non_nullable
-              as ClipboardItem,
-    ));
+  $Res call({Object? item = null}) {
+    return _then(
+      _$CloudPersistanceUpdatingImpl(
+        null == item
+            ? _value.item
+            : item // ignore: cast_nullable_to_non_nullable
+                  as ClipboardItem,
+      ),
+    );
   }
 
   /// Create a copy of CloudPersistanceState
@@ -554,8 +560,10 @@ class _$CloudPersistanceUpdatingImpl implements CloudPersistanceUpdating {
   @override
   @pragma('vm:prefer-inline')
   _$$CloudPersistanceUpdatingImplCopyWith<_$CloudPersistanceUpdatingImpl>
-      get copyWith => __$$CloudPersistanceUpdatingImplCopyWithImpl<
-          _$CloudPersistanceUpdatingImpl>(this, _$identity);
+  get copyWith =>
+      __$$CloudPersistanceUpdatingImplCopyWithImpl<
+        _$CloudPersistanceUpdatingImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -618,9 +626,9 @@ class _$CloudPersistanceUpdatingImpl implements CloudPersistanceUpdating {
     required TResult Function(CloudPersistanceDeleting value) deletingItems,
     required TResult Function(CloudPersistanceDeleted value) deletedItems,
     required TResult Function(CloudPersistanceUploadingFile value)
-        uploadingFile,
+    uploadingFile,
     required TResult Function(CloudPersistanceDownloadingFile value)
-        downloadingFile,
+    downloadingFile,
     required TResult Function(CloudPersistanceSaved value) saved,
     required TResult Function(CloudPersistanceError value) error,
   }) {
@@ -674,42 +682,45 @@ abstract class CloudPersistanceUpdating implements CloudPersistanceState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CloudPersistanceUpdatingImplCopyWith<_$CloudPersistanceUpdatingImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$CloudPersistanceDeletingImplCopyWith<$Res> {
   factory _$$CloudPersistanceDeletingImplCopyWith(
-          _$CloudPersistanceDeletingImpl value,
-          $Res Function(_$CloudPersistanceDeletingImpl) then) =
-      __$$CloudPersistanceDeletingImplCopyWithImpl<$Res>;
+    _$CloudPersistanceDeletingImpl value,
+    $Res Function(_$CloudPersistanceDeletingImpl) then,
+  ) = __$$CloudPersistanceDeletingImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<ClipboardItem> items});
 }
 
 /// @nodoc
 class __$$CloudPersistanceDeletingImplCopyWithImpl<$Res>
-    extends _$CloudPersistanceStateCopyWithImpl<$Res,
-        _$CloudPersistanceDeletingImpl>
+    extends
+        _$CloudPersistanceStateCopyWithImpl<
+          $Res,
+          _$CloudPersistanceDeletingImpl
+        >
     implements _$$CloudPersistanceDeletingImplCopyWith<$Res> {
   __$$CloudPersistanceDeletingImplCopyWithImpl(
-      _$CloudPersistanceDeletingImpl _value,
-      $Res Function(_$CloudPersistanceDeletingImpl) _then)
-      : super(_value, _then);
+    _$CloudPersistanceDeletingImpl _value,
+    $Res Function(_$CloudPersistanceDeletingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CloudPersistanceState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? items = null,
-  }) {
-    return _then(_$CloudPersistanceDeletingImpl(
-      null == items
-          ? _value._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<ClipboardItem>,
-    ));
+  $Res call({Object? items = null}) {
+    return _then(
+      _$CloudPersistanceDeletingImpl(
+        null == items
+            ? _value._items
+            : items // ignore: cast_nullable_to_non_nullable
+                  as List<ClipboardItem>,
+      ),
+    );
   }
 }
 
@@ -717,7 +728,7 @@ class __$$CloudPersistanceDeletingImplCopyWithImpl<$Res>
 
 class _$CloudPersistanceDeletingImpl implements CloudPersistanceDeleting {
   const _$CloudPersistanceDeletingImpl(final List<ClipboardItem> items)
-      : _items = items;
+    : _items = items;
 
   final List<ClipboardItem> _items;
   @override
@@ -750,8 +761,10 @@ class _$CloudPersistanceDeletingImpl implements CloudPersistanceDeleting {
   @override
   @pragma('vm:prefer-inline')
   _$$CloudPersistanceDeletingImplCopyWith<_$CloudPersistanceDeletingImpl>
-      get copyWith => __$$CloudPersistanceDeletingImplCopyWithImpl<
-          _$CloudPersistanceDeletingImpl>(this, _$identity);
+  get copyWith =>
+      __$$CloudPersistanceDeletingImplCopyWithImpl<
+        _$CloudPersistanceDeletingImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -814,9 +827,9 @@ class _$CloudPersistanceDeletingImpl implements CloudPersistanceDeleting {
     required TResult Function(CloudPersistanceDeleting value) deletingItems,
     required TResult Function(CloudPersistanceDeleted value) deletedItems,
     required TResult Function(CloudPersistanceUploadingFile value)
-        uploadingFile,
+    uploadingFile,
     required TResult Function(CloudPersistanceDownloadingFile value)
-        downloadingFile,
+    downloadingFile,
     required TResult Function(CloudPersistanceSaved value) saved,
     required TResult Function(CloudPersistanceError value) error,
   }) {
@@ -870,42 +883,42 @@ abstract class CloudPersistanceDeleting implements CloudPersistanceState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CloudPersistanceDeletingImplCopyWith<_$CloudPersistanceDeletingImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$CloudPersistanceDeletedImplCopyWith<$Res> {
   factory _$$CloudPersistanceDeletedImplCopyWith(
-          _$CloudPersistanceDeletedImpl value,
-          $Res Function(_$CloudPersistanceDeletedImpl) then) =
-      __$$CloudPersistanceDeletedImplCopyWithImpl<$Res>;
+    _$CloudPersistanceDeletedImpl value,
+    $Res Function(_$CloudPersistanceDeletedImpl) then,
+  ) = __$$CloudPersistanceDeletedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<ClipboardItem> items});
 }
 
 /// @nodoc
 class __$$CloudPersistanceDeletedImplCopyWithImpl<$Res>
-    extends _$CloudPersistanceStateCopyWithImpl<$Res,
-        _$CloudPersistanceDeletedImpl>
+    extends
+        _$CloudPersistanceStateCopyWithImpl<$Res, _$CloudPersistanceDeletedImpl>
     implements _$$CloudPersistanceDeletedImplCopyWith<$Res> {
   __$$CloudPersistanceDeletedImplCopyWithImpl(
-      _$CloudPersistanceDeletedImpl _value,
-      $Res Function(_$CloudPersistanceDeletedImpl) _then)
-      : super(_value, _then);
+    _$CloudPersistanceDeletedImpl _value,
+    $Res Function(_$CloudPersistanceDeletedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CloudPersistanceState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? items = null,
-  }) {
-    return _then(_$CloudPersistanceDeletedImpl(
-      null == items
-          ? _value._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<ClipboardItem>,
-    ));
+  $Res call({Object? items = null}) {
+    return _then(
+      _$CloudPersistanceDeletedImpl(
+        null == items
+            ? _value._items
+            : items // ignore: cast_nullable_to_non_nullable
+                  as List<ClipboardItem>,
+      ),
+    );
   }
 }
 
@@ -913,7 +926,7 @@ class __$$CloudPersistanceDeletedImplCopyWithImpl<$Res>
 
 class _$CloudPersistanceDeletedImpl implements CloudPersistanceDeleted {
   const _$CloudPersistanceDeletedImpl(final List<ClipboardItem> items)
-      : _items = items;
+    : _items = items;
 
   final List<ClipboardItem> _items;
   @override
@@ -946,8 +959,10 @@ class _$CloudPersistanceDeletedImpl implements CloudPersistanceDeleted {
   @override
   @pragma('vm:prefer-inline')
   _$$CloudPersistanceDeletedImplCopyWith<_$CloudPersistanceDeletedImpl>
-      get copyWith => __$$CloudPersistanceDeletedImplCopyWithImpl<
-          _$CloudPersistanceDeletedImpl>(this, _$identity);
+  get copyWith =>
+      __$$CloudPersistanceDeletedImplCopyWithImpl<
+        _$CloudPersistanceDeletedImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1010,9 +1025,9 @@ class _$CloudPersistanceDeletedImpl implements CloudPersistanceDeleted {
     required TResult Function(CloudPersistanceDeleting value) deletingItems,
     required TResult Function(CloudPersistanceDeleted value) deletedItems,
     required TResult Function(CloudPersistanceUploadingFile value)
-        uploadingFile,
+    uploadingFile,
     required TResult Function(CloudPersistanceDownloadingFile value)
-        downloadingFile,
+    downloadingFile,
     required TResult Function(CloudPersistanceSaved value) saved,
     required TResult Function(CloudPersistanceError value) error,
   }) {
@@ -1066,15 +1081,15 @@ abstract class CloudPersistanceDeleted implements CloudPersistanceState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CloudPersistanceDeletedImplCopyWith<_$CloudPersistanceDeletedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$CloudPersistanceUploadingFileImplCopyWith<$Res> {
   factory _$$CloudPersistanceUploadingFileImplCopyWith(
-          _$CloudPersistanceUploadingFileImpl value,
-          $Res Function(_$CloudPersistanceUploadingFileImpl) then) =
-      __$$CloudPersistanceUploadingFileImplCopyWithImpl<$Res>;
+    _$CloudPersistanceUploadingFileImpl value,
+    $Res Function(_$CloudPersistanceUploadingFileImpl) then,
+  ) = __$$CloudPersistanceUploadingFileImplCopyWithImpl<$Res>;
   @useResult
   $Res call({ClipboardItem item});
 
@@ -1083,27 +1098,30 @@ abstract class _$$CloudPersistanceUploadingFileImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$CloudPersistanceUploadingFileImplCopyWithImpl<$Res>
-    extends _$CloudPersistanceStateCopyWithImpl<$Res,
-        _$CloudPersistanceUploadingFileImpl>
+    extends
+        _$CloudPersistanceStateCopyWithImpl<
+          $Res,
+          _$CloudPersistanceUploadingFileImpl
+        >
     implements _$$CloudPersistanceUploadingFileImplCopyWith<$Res> {
   __$$CloudPersistanceUploadingFileImplCopyWithImpl(
-      _$CloudPersistanceUploadingFileImpl _value,
-      $Res Function(_$CloudPersistanceUploadingFileImpl) _then)
-      : super(_value, _then);
+    _$CloudPersistanceUploadingFileImpl _value,
+    $Res Function(_$CloudPersistanceUploadingFileImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CloudPersistanceState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? item = null,
-  }) {
-    return _then(_$CloudPersistanceUploadingFileImpl(
-      null == item
-          ? _value.item
-          : item // ignore: cast_nullable_to_non_nullable
-              as ClipboardItem,
-    ));
+  $Res call({Object? item = null}) {
+    return _then(
+      _$CloudPersistanceUploadingFileImpl(
+        null == item
+            ? _value.item
+            : item // ignore: cast_nullable_to_non_nullable
+                  as ClipboardItem,
+      ),
+    );
   }
 
   /// Create a copy of CloudPersistanceState
@@ -1148,9 +1166,12 @@ class _$CloudPersistanceUploadingFileImpl
   @override
   @pragma('vm:prefer-inline')
   _$$CloudPersistanceUploadingFileImplCopyWith<
-          _$CloudPersistanceUploadingFileImpl>
-      get copyWith => __$$CloudPersistanceUploadingFileImplCopyWithImpl<
-          _$CloudPersistanceUploadingFileImpl>(this, _$identity);
+    _$CloudPersistanceUploadingFileImpl
+  >
+  get copyWith =>
+      __$$CloudPersistanceUploadingFileImplCopyWithImpl<
+        _$CloudPersistanceUploadingFileImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1213,9 +1234,9 @@ class _$CloudPersistanceUploadingFileImpl
     required TResult Function(CloudPersistanceDeleting value) deletingItems,
     required TResult Function(CloudPersistanceDeleted value) deletedItems,
     required TResult Function(CloudPersistanceUploadingFile value)
-        uploadingFile,
+    uploadingFile,
     required TResult Function(CloudPersistanceDownloadingFile value)
-        downloadingFile,
+    downloadingFile,
     required TResult Function(CloudPersistanceSaved value) saved,
     required TResult Function(CloudPersistanceError value) error,
   }) {
@@ -1269,16 +1290,17 @@ abstract class CloudPersistanceUploadingFile implements CloudPersistanceState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CloudPersistanceUploadingFileImplCopyWith<
-          _$CloudPersistanceUploadingFileImpl>
-      get copyWith => throw _privateConstructorUsedError;
+    _$CloudPersistanceUploadingFileImpl
+  >
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$CloudPersistanceDownloadingFileImplCopyWith<$Res> {
   factory _$$CloudPersistanceDownloadingFileImplCopyWith(
-          _$CloudPersistanceDownloadingFileImpl value,
-          $Res Function(_$CloudPersistanceDownloadingFileImpl) then) =
-      __$$CloudPersistanceDownloadingFileImplCopyWithImpl<$Res>;
+    _$CloudPersistanceDownloadingFileImpl value,
+    $Res Function(_$CloudPersistanceDownloadingFileImpl) then,
+  ) = __$$CloudPersistanceDownloadingFileImplCopyWithImpl<$Res>;
   @useResult
   $Res call({ClipboardItem item});
 
@@ -1287,27 +1309,30 @@ abstract class _$$CloudPersistanceDownloadingFileImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$CloudPersistanceDownloadingFileImplCopyWithImpl<$Res>
-    extends _$CloudPersistanceStateCopyWithImpl<$Res,
-        _$CloudPersistanceDownloadingFileImpl>
+    extends
+        _$CloudPersistanceStateCopyWithImpl<
+          $Res,
+          _$CloudPersistanceDownloadingFileImpl
+        >
     implements _$$CloudPersistanceDownloadingFileImplCopyWith<$Res> {
   __$$CloudPersistanceDownloadingFileImplCopyWithImpl(
-      _$CloudPersistanceDownloadingFileImpl _value,
-      $Res Function(_$CloudPersistanceDownloadingFileImpl) _then)
-      : super(_value, _then);
+    _$CloudPersistanceDownloadingFileImpl _value,
+    $Res Function(_$CloudPersistanceDownloadingFileImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CloudPersistanceState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? item = null,
-  }) {
-    return _then(_$CloudPersistanceDownloadingFileImpl(
-      null == item
-          ? _value.item
-          : item // ignore: cast_nullable_to_non_nullable
-              as ClipboardItem,
-    ));
+  $Res call({Object? item = null}) {
+    return _then(
+      _$CloudPersistanceDownloadingFileImpl(
+        null == item
+            ? _value.item
+            : item // ignore: cast_nullable_to_non_nullable
+                  as ClipboardItem,
+      ),
+    );
   }
 
   /// Create a copy of CloudPersistanceState
@@ -1352,9 +1377,12 @@ class _$CloudPersistanceDownloadingFileImpl
   @override
   @pragma('vm:prefer-inline')
   _$$CloudPersistanceDownloadingFileImplCopyWith<
-          _$CloudPersistanceDownloadingFileImpl>
-      get copyWith => __$$CloudPersistanceDownloadingFileImplCopyWithImpl<
-          _$CloudPersistanceDownloadingFileImpl>(this, _$identity);
+    _$CloudPersistanceDownloadingFileImpl
+  >
+  get copyWith =>
+      __$$CloudPersistanceDownloadingFileImplCopyWithImpl<
+        _$CloudPersistanceDownloadingFileImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1417,9 +1445,9 @@ class _$CloudPersistanceDownloadingFileImpl
     required TResult Function(CloudPersistanceDeleting value) deletingItems,
     required TResult Function(CloudPersistanceDeleted value) deletedItems,
     required TResult Function(CloudPersistanceUploadingFile value)
-        uploadingFile,
+    uploadingFile,
     required TResult Function(CloudPersistanceDownloadingFile value)
-        downloadingFile,
+    downloadingFile,
     required TResult Function(CloudPersistanceSaved value) saved,
     required TResult Function(CloudPersistanceError value) error,
   }) {
@@ -1474,16 +1502,17 @@ abstract class CloudPersistanceDownloadingFile
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CloudPersistanceDownloadingFileImplCopyWith<
-          _$CloudPersistanceDownloadingFileImpl>
-      get copyWith => throw _privateConstructorUsedError;
+    _$CloudPersistanceDownloadingFileImpl
+  >
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$CloudPersistanceSavedImplCopyWith<$Res> {
   factory _$$CloudPersistanceSavedImplCopyWith(
-          _$CloudPersistanceSavedImpl value,
-          $Res Function(_$CloudPersistanceSavedImpl) then) =
-      __$$CloudPersistanceSavedImplCopyWithImpl<$Res>;
+    _$CloudPersistanceSavedImpl value,
+    $Res Function(_$CloudPersistanceSavedImpl) then,
+  ) = __$$CloudPersistanceSavedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({ClipboardItem item, bool created});
 
@@ -1492,31 +1521,31 @@ abstract class _$$CloudPersistanceSavedImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$CloudPersistanceSavedImplCopyWithImpl<$Res>
-    extends _$CloudPersistanceStateCopyWithImpl<$Res,
-        _$CloudPersistanceSavedImpl>
+    extends
+        _$CloudPersistanceStateCopyWithImpl<$Res, _$CloudPersistanceSavedImpl>
     implements _$$CloudPersistanceSavedImplCopyWith<$Res> {
-  __$$CloudPersistanceSavedImplCopyWithImpl(_$CloudPersistanceSavedImpl _value,
-      $Res Function(_$CloudPersistanceSavedImpl) _then)
-      : super(_value, _then);
+  __$$CloudPersistanceSavedImplCopyWithImpl(
+    _$CloudPersistanceSavedImpl _value,
+    $Res Function(_$CloudPersistanceSavedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CloudPersistanceState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? item = null,
-    Object? created = null,
-  }) {
-    return _then(_$CloudPersistanceSavedImpl(
-      null == item
-          ? _value.item
-          : item // ignore: cast_nullable_to_non_nullable
-              as ClipboardItem,
-      created: null == created
-          ? _value.created
-          : created // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
+  $Res call({Object? item = null, Object? created = null}) {
+    return _then(
+      _$CloudPersistanceSavedImpl(
+        null == item
+            ? _value.item
+            : item // ignore: cast_nullable_to_non_nullable
+                  as ClipboardItem,
+        created: null == created
+            ? _value.created
+            : created // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
   }
 
   /// Create a copy of CloudPersistanceState
@@ -1564,8 +1593,11 @@ class _$CloudPersistanceSavedImpl implements CloudPersistanceSaved {
   @override
   @pragma('vm:prefer-inline')
   _$$CloudPersistanceSavedImplCopyWith<_$CloudPersistanceSavedImpl>
-      get copyWith => __$$CloudPersistanceSavedImplCopyWithImpl<
-          _$CloudPersistanceSavedImpl>(this, _$identity);
+  get copyWith =>
+      __$$CloudPersistanceSavedImplCopyWithImpl<_$CloudPersistanceSavedImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -1628,9 +1660,9 @@ class _$CloudPersistanceSavedImpl implements CloudPersistanceSaved {
     required TResult Function(CloudPersistanceDeleting value) deletingItems,
     required TResult Function(CloudPersistanceDeleted value) deletedItems,
     required TResult Function(CloudPersistanceUploadingFile value)
-        uploadingFile,
+    uploadingFile,
     required TResult Function(CloudPersistanceDownloadingFile value)
-        downloadingFile,
+    downloadingFile,
     required TResult Function(CloudPersistanceSaved value) saved,
     required TResult Function(CloudPersistanceError value) error,
   }) {
@@ -1675,8 +1707,10 @@ class _$CloudPersistanceSavedImpl implements CloudPersistanceSaved {
 }
 
 abstract class CloudPersistanceSaved implements CloudPersistanceState {
-  const factory CloudPersistanceSaved(final ClipboardItem item,
-      {final bool created}) = _$CloudPersistanceSavedImpl;
+  const factory CloudPersistanceSaved(
+    final ClipboardItem item, {
+    final bool created,
+  }) = _$CloudPersistanceSavedImpl;
 
   ClipboardItem get item;
   bool get created;
@@ -1685,15 +1719,15 @@ abstract class CloudPersistanceSaved implements CloudPersistanceState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CloudPersistanceSavedImplCopyWith<_$CloudPersistanceSavedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$CloudPersistanceErrorImplCopyWith<$Res> {
   factory _$$CloudPersistanceErrorImplCopyWith(
-          _$CloudPersistanceErrorImpl value,
-          $Res Function(_$CloudPersistanceErrorImpl) then) =
-      __$$CloudPersistanceErrorImplCopyWithImpl<$Res>;
+    _$CloudPersistanceErrorImpl value,
+    $Res Function(_$CloudPersistanceErrorImpl) then,
+  ) = __$$CloudPersistanceErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Failure failure, ClipboardItem? item});
 
@@ -1702,31 +1736,31 @@ abstract class _$$CloudPersistanceErrorImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$CloudPersistanceErrorImplCopyWithImpl<$Res>
-    extends _$CloudPersistanceStateCopyWithImpl<$Res,
-        _$CloudPersistanceErrorImpl>
+    extends
+        _$CloudPersistanceStateCopyWithImpl<$Res, _$CloudPersistanceErrorImpl>
     implements _$$CloudPersistanceErrorImplCopyWith<$Res> {
-  __$$CloudPersistanceErrorImplCopyWithImpl(_$CloudPersistanceErrorImpl _value,
-      $Res Function(_$CloudPersistanceErrorImpl) _then)
-      : super(_value, _then);
+  __$$CloudPersistanceErrorImplCopyWithImpl(
+    _$CloudPersistanceErrorImpl _value,
+    $Res Function(_$CloudPersistanceErrorImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CloudPersistanceState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? failure = null,
-    Object? item = freezed,
-  }) {
-    return _then(_$CloudPersistanceErrorImpl(
-      null == failure
-          ? _value.failure
-          : failure // ignore: cast_nullable_to_non_nullable
-              as Failure,
-      freezed == item
-          ? _value.item
-          : item // ignore: cast_nullable_to_non_nullable
-              as ClipboardItem?,
-    ));
+  $Res call({Object? failure = null, Object? item = freezed}) {
+    return _then(
+      _$CloudPersistanceErrorImpl(
+        null == failure
+            ? _value.failure
+            : failure // ignore: cast_nullable_to_non_nullable
+                  as Failure,
+        freezed == item
+            ? _value.item
+            : item // ignore: cast_nullable_to_non_nullable
+                  as ClipboardItem?,
+      ),
+    );
   }
 
   /// Create a copy of CloudPersistanceState
@@ -1777,8 +1811,11 @@ class _$CloudPersistanceErrorImpl implements CloudPersistanceError {
   @override
   @pragma('vm:prefer-inline')
   _$$CloudPersistanceErrorImplCopyWith<_$CloudPersistanceErrorImpl>
-      get copyWith => __$$CloudPersistanceErrorImplCopyWithImpl<
-          _$CloudPersistanceErrorImpl>(this, _$identity);
+  get copyWith =>
+      __$$CloudPersistanceErrorImplCopyWithImpl<_$CloudPersistanceErrorImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -1841,9 +1878,9 @@ class _$CloudPersistanceErrorImpl implements CloudPersistanceError {
     required TResult Function(CloudPersistanceDeleting value) deletingItems,
     required TResult Function(CloudPersistanceDeleted value) deletedItems,
     required TResult Function(CloudPersistanceUploadingFile value)
-        uploadingFile,
+    uploadingFile,
     required TResult Function(CloudPersistanceDownloadingFile value)
-        downloadingFile,
+    downloadingFile,
     required TResult Function(CloudPersistanceSaved value) saved,
     required TResult Function(CloudPersistanceError value) error,
   }) {
@@ -1888,8 +1925,10 @@ class _$CloudPersistanceErrorImpl implements CloudPersistanceError {
 }
 
 abstract class CloudPersistanceError implements CloudPersistanceState {
-  const factory CloudPersistanceError(final Failure failure,
-      [final ClipboardItem? item]) = _$CloudPersistanceErrorImpl;
+  const factory CloudPersistanceError(
+    final Failure failure, [
+    final ClipboardItem? item,
+  ]) = _$CloudPersistanceErrorImpl;
 
   Failure get failure;
   ClipboardItem? get item;
@@ -1898,5 +1937,5 @@ abstract class CloudPersistanceError implements CloudPersistanceState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CloudPersistanceErrorImplCopyWith<_$CloudPersistanceErrorImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }

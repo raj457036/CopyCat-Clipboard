@@ -3,7 +3,7 @@ import 'dart:math' show max;
 import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/bloc/clip_sync_manager_cubit/clip_sync_manager_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/db/sync_status/syncstatus.dart';
+import 'package:clipboard/base/domain/model/sync_status/syncstatus.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/repositories/restoration_status.dart';
 import 'package:clipboard/base/l10n/l10n.dart';

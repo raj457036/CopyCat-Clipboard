@@ -5,7 +5,7 @@ import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/analytics.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
@@ -201,7 +201,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       persist(
         [
           item.copyWith(copiedCount: item.copiedCount + 1, lastCopied: now())
-            ..applyId(item),
+            ,
         ],
         updatedFields: ["copiedCount"],
       );
@@ -299,7 +299,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       final item = await _convertToClipboardItem(clip);
 
       if (manualPaste) {
-        final userItem = item.copyWith(userIntent: manualPaste)..applyId(item);
+        final userItem = item.copyWith(userIntent: manualPaste);
         await persist([userItem]);
         continue;
       }
@@ -317,11 +317,11 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   }) async {
     final persited = items
         .where((item) => item.isPersisted)
-        .map((item) => item.copyWith(deviceId: deviceId)..applyId(item))
+        .map((item) => item.copyWith(deviceId: deviceId))
         .toList();
     final nonPersisted = items
         .where((item) => !item.isPersisted)
-        .map((item) => item.copyWith(deviceId: deviceId)..applyId(item))
+        .map((item) => item.copyWith(deviceId: deviceId))
         .toList();
 
     if (nonPersisted.isNotEmpty) {
@@ -369,7 +369,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     await Future.wait(items.map((item) => item.cleanUp()));
     final items_ = items
         .where((item) => !item.isSynced)
-        .map((item) => item.copyWith(deviceId: deviceId)..applyId(item));
+        .map((item) => item.copyWith(deviceId: deviceId));
     await repo.deleteMany(items_.toList());
     emit(OfflinePersistanceState.deletedItems(items));
   }

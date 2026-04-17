@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
-import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/common/failure.dart';
@@ -175,7 +175,7 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
     final updateIndexMap = <int, int>{};
     for (var i = 0; i < updated.length; i++) {
       final item = updated[i];
-      updateIndexMap[item.id] = i;
+      updateIndexMap[item.id!] = i;
     }
 
     final replaced = <ClipboardItem>[];

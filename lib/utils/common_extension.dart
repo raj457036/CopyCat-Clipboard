@@ -1,7 +1,7 @@
 import 'dart:math' show min;
 
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
-import 'package:clipboard/base/db/subscription/subscription.dart';
+import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
 import 'package:clipboard/utils/monetization.dart';
 import 'package:clipboard/utils/utility.dart';

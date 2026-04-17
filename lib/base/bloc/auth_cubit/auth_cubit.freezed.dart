@@ -12,7 +12,8 @@ part of 'auth_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$AuthState {
@@ -23,8 +24,7 @@ mixin _$AuthState {
     required TResult Function() localAuthenticated,
     required TResult Function() authenticating,
     required TResult Function(Failure? failure) unauthenticated,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
@@ -32,8 +32,7 @@ mixin _$AuthState {
     TResult? Function()? localAuthenticated,
     TResult? Function()? authenticating,
     TResult? Function(Failure? failure)? unauthenticated,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
@@ -42,18 +41,16 @@ mixin _$AuthState {
     TResult Function()? authenticating,
     TResult Function(Failure? failure)? unauthenticated,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(UnknownAuthState value) unknown,
     required TResult Function(AuthenticatedAuthState value) authenticated,
     required TResult Function(LocalAuthenticatedAuthState value)
-        localAuthenticated,
+    localAuthenticated,
     required TResult Function(AuthenticatingAuthState value) authenticating,
     required TResult Function(UnauthenticatedAuthState value) unauthenticated,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(UnknownAuthState value)? unknown,
@@ -61,8 +58,7 @@ mixin _$AuthState {
     TResult? Function(LocalAuthenticatedAuthState value)? localAuthenticated,
     TResult? Function(AuthenticatingAuthState value)? authenticating,
     TResult? Function(UnauthenticatedAuthState value)? unauthenticated,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(UnknownAuthState value)? unknown,
@@ -71,8 +67,7 @@ mixin _$AuthState {
     TResult Function(AuthenticatingAuthState value)? authenticating,
     TResult Function(UnauthenticatedAuthState value)? unauthenticated,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -97,18 +92,20 @@ class _$AuthStateCopyWithImpl<$Res, $Val extends AuthState>
 
 /// @nodoc
 abstract class _$$UnknownAuthStateImplCopyWith<$Res> {
-  factory _$$UnknownAuthStateImplCopyWith(_$UnknownAuthStateImpl value,
-          $Res Function(_$UnknownAuthStateImpl) then) =
-      __$$UnknownAuthStateImplCopyWithImpl<$Res>;
+  factory _$$UnknownAuthStateImplCopyWith(
+    _$UnknownAuthStateImpl value,
+    $Res Function(_$UnknownAuthStateImpl) then,
+  ) = __$$UnknownAuthStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$UnknownAuthStateImplCopyWithImpl<$Res>
     extends _$AuthStateCopyWithImpl<$Res, _$UnknownAuthStateImpl>
     implements _$$UnknownAuthStateImplCopyWith<$Res> {
-  __$$UnknownAuthStateImplCopyWithImpl(_$UnknownAuthStateImpl _value,
-      $Res Function(_$UnknownAuthStateImpl) _then)
-      : super(_value, _then);
+  __$$UnknownAuthStateImplCopyWithImpl(
+    _$UnknownAuthStateImpl _value,
+    $Res Function(_$UnknownAuthStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
@@ -179,7 +176,7 @@ class _$UnknownAuthStateImpl implements UnknownAuthState {
     required TResult Function(UnknownAuthState value) unknown,
     required TResult Function(AuthenticatedAuthState value) authenticated,
     required TResult Function(LocalAuthenticatedAuthState value)
-        localAuthenticated,
+    localAuthenticated,
     required TResult Function(AuthenticatingAuthState value) authenticating,
     required TResult Function(UnauthenticatedAuthState value) unauthenticated,
   }) {
@@ -222,9 +219,9 @@ abstract class UnknownAuthState implements AuthState {
 /// @nodoc
 abstract class _$$AuthenticatedAuthStateImplCopyWith<$Res> {
   factory _$$AuthenticatedAuthStateImplCopyWith(
-          _$AuthenticatedAuthStateImpl value,
-          $Res Function(_$AuthenticatedAuthStateImpl) then) =
-      __$$AuthenticatedAuthStateImplCopyWithImpl<$Res>;
+    _$AuthenticatedAuthStateImpl value,
+    $Res Function(_$AuthenticatedAuthStateImpl) then,
+  ) = __$$AuthenticatedAuthStateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({AuthUser user, String accessToken});
 
@@ -236,28 +233,27 @@ class __$$AuthenticatedAuthStateImplCopyWithImpl<$Res>
     extends _$AuthStateCopyWithImpl<$Res, _$AuthenticatedAuthStateImpl>
     implements _$$AuthenticatedAuthStateImplCopyWith<$Res> {
   __$$AuthenticatedAuthStateImplCopyWithImpl(
-      _$AuthenticatedAuthStateImpl _value,
-      $Res Function(_$AuthenticatedAuthStateImpl) _then)
-      : super(_value, _then);
+    _$AuthenticatedAuthStateImpl _value,
+    $Res Function(_$AuthenticatedAuthStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? user = null,
-    Object? accessToken = null,
-  }) {
-    return _then(_$AuthenticatedAuthStateImpl(
-      user: null == user
-          ? _value.user
-          : user // ignore: cast_nullable_to_non_nullable
-              as AuthUser,
-      accessToken: null == accessToken
-          ? _value.accessToken
-          : accessToken // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? user = null, Object? accessToken = null}) {
+    return _then(
+      _$AuthenticatedAuthStateImpl(
+        user: null == user
+            ? _value.user
+            : user // ignore: cast_nullable_to_non_nullable
+                  as AuthUser,
+        accessToken: null == accessToken
+            ? _value.accessToken
+            : accessToken // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 
   /// Create a copy of AuthState
@@ -274,8 +270,10 @@ class __$$AuthenticatedAuthStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$AuthenticatedAuthStateImpl implements AuthenticatedAuthState {
-  const _$AuthenticatedAuthStateImpl(
-      {required this.user, required this.accessToken});
+  const _$AuthenticatedAuthStateImpl({
+    required this.user,
+    required this.accessToken,
+  });
 
   @override
   final AuthUser user;
@@ -306,8 +304,11 @@ class _$AuthenticatedAuthStateImpl implements AuthenticatedAuthState {
   @override
   @pragma('vm:prefer-inline')
   _$$AuthenticatedAuthStateImplCopyWith<_$AuthenticatedAuthStateImpl>
-      get copyWith => __$$AuthenticatedAuthStateImplCopyWithImpl<
-          _$AuthenticatedAuthStateImpl>(this, _$identity);
+  get copyWith =>
+      __$$AuthenticatedAuthStateImplCopyWithImpl<_$AuthenticatedAuthStateImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -355,7 +356,7 @@ class _$AuthenticatedAuthStateImpl implements AuthenticatedAuthState {
     required TResult Function(UnknownAuthState value) unknown,
     required TResult Function(AuthenticatedAuthState value) authenticated,
     required TResult Function(LocalAuthenticatedAuthState value)
-        localAuthenticated,
+    localAuthenticated,
     required TResult Function(AuthenticatingAuthState value) authenticating,
     required TResult Function(UnauthenticatedAuthState value) unauthenticated,
   }) {
@@ -392,9 +393,10 @@ class _$AuthenticatedAuthStateImpl implements AuthenticatedAuthState {
 }
 
 abstract class AuthenticatedAuthState implements AuthState {
-  const factory AuthenticatedAuthState(
-      {required final AuthUser user,
-      required final String accessToken}) = _$AuthenticatedAuthStateImpl;
+  const factory AuthenticatedAuthState({
+    required final AuthUser user,
+    required final String accessToken,
+  }) = _$AuthenticatedAuthStateImpl;
 
   AuthUser get user;
   String get accessToken;
@@ -403,15 +405,15 @@ abstract class AuthenticatedAuthState implements AuthState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AuthenticatedAuthStateImplCopyWith<_$AuthenticatedAuthStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$LocalAuthenticatedAuthStateImplCopyWith<$Res> {
   factory _$$LocalAuthenticatedAuthStateImplCopyWith(
-          _$LocalAuthenticatedAuthStateImpl value,
-          $Res Function(_$LocalAuthenticatedAuthStateImpl) then) =
-      __$$LocalAuthenticatedAuthStateImplCopyWithImpl<$Res>;
+    _$LocalAuthenticatedAuthStateImpl value,
+    $Res Function(_$LocalAuthenticatedAuthStateImpl) then,
+  ) = __$$LocalAuthenticatedAuthStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -419,9 +421,9 @@ class __$$LocalAuthenticatedAuthStateImplCopyWithImpl<$Res>
     extends _$AuthStateCopyWithImpl<$Res, _$LocalAuthenticatedAuthStateImpl>
     implements _$$LocalAuthenticatedAuthStateImplCopyWith<$Res> {
   __$$LocalAuthenticatedAuthStateImplCopyWithImpl(
-      _$LocalAuthenticatedAuthStateImpl _value,
-      $Res Function(_$LocalAuthenticatedAuthStateImpl) _then)
-      : super(_value, _then);
+    _$LocalAuthenticatedAuthStateImpl _value,
+    $Res Function(_$LocalAuthenticatedAuthStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
@@ -493,7 +495,7 @@ class _$LocalAuthenticatedAuthStateImpl implements LocalAuthenticatedAuthState {
     required TResult Function(UnknownAuthState value) unknown,
     required TResult Function(AuthenticatedAuthState value) authenticated,
     required TResult Function(LocalAuthenticatedAuthState value)
-        localAuthenticated,
+    localAuthenticated,
     required TResult Function(AuthenticatingAuthState value) authenticating,
     required TResult Function(UnauthenticatedAuthState value) unauthenticated,
   }) {
@@ -537,9 +539,9 @@ abstract class LocalAuthenticatedAuthState implements AuthState {
 /// @nodoc
 abstract class _$$AuthenticatingAuthStateImplCopyWith<$Res> {
   factory _$$AuthenticatingAuthStateImplCopyWith(
-          _$AuthenticatingAuthStateImpl value,
-          $Res Function(_$AuthenticatingAuthStateImpl) then) =
-      __$$AuthenticatingAuthStateImplCopyWithImpl<$Res>;
+    _$AuthenticatingAuthStateImpl value,
+    $Res Function(_$AuthenticatingAuthStateImpl) then,
+  ) = __$$AuthenticatingAuthStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -547,9 +549,9 @@ class __$$AuthenticatingAuthStateImplCopyWithImpl<$Res>
     extends _$AuthStateCopyWithImpl<$Res, _$AuthenticatingAuthStateImpl>
     implements _$$AuthenticatingAuthStateImplCopyWith<$Res> {
   __$$AuthenticatingAuthStateImplCopyWithImpl(
-      _$AuthenticatingAuthStateImpl _value,
-      $Res Function(_$AuthenticatingAuthStateImpl) _then)
-      : super(_value, _then);
+    _$AuthenticatingAuthStateImpl _value,
+    $Res Function(_$AuthenticatingAuthStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
@@ -621,7 +623,7 @@ class _$AuthenticatingAuthStateImpl implements AuthenticatingAuthState {
     required TResult Function(UnknownAuthState value) unknown,
     required TResult Function(AuthenticatedAuthState value) authenticated,
     required TResult Function(LocalAuthenticatedAuthState value)
-        localAuthenticated,
+    localAuthenticated,
     required TResult Function(AuthenticatingAuthState value) authenticating,
     required TResult Function(UnauthenticatedAuthState value) unauthenticated,
   }) {
@@ -664,9 +666,9 @@ abstract class AuthenticatingAuthState implements AuthState {
 /// @nodoc
 abstract class _$$UnauthenticatedAuthStateImplCopyWith<$Res> {
   factory _$$UnauthenticatedAuthStateImplCopyWith(
-          _$UnauthenticatedAuthStateImpl value,
-          $Res Function(_$UnauthenticatedAuthStateImpl) then) =
-      __$$UnauthenticatedAuthStateImplCopyWithImpl<$Res>;
+    _$UnauthenticatedAuthStateImpl value,
+    $Res Function(_$UnauthenticatedAuthStateImpl) then,
+  ) = __$$UnauthenticatedAuthStateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Failure? failure});
 }
@@ -676,23 +678,23 @@ class __$$UnauthenticatedAuthStateImplCopyWithImpl<$Res>
     extends _$AuthStateCopyWithImpl<$Res, _$UnauthenticatedAuthStateImpl>
     implements _$$UnauthenticatedAuthStateImplCopyWith<$Res> {
   __$$UnauthenticatedAuthStateImplCopyWithImpl(
-      _$UnauthenticatedAuthStateImpl _value,
-      $Res Function(_$UnauthenticatedAuthStateImpl) _then)
-      : super(_value, _then);
+    _$UnauthenticatedAuthStateImpl _value,
+    $Res Function(_$UnauthenticatedAuthStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? failure = freezed,
-  }) {
-    return _then(_$UnauthenticatedAuthStateImpl(
-      freezed == failure
-          ? _value.failure
-          : failure // ignore: cast_nullable_to_non_nullable
-              as Failure?,
-    ));
+  $Res call({Object? failure = freezed}) {
+    return _then(
+      _$UnauthenticatedAuthStateImpl(
+        freezed == failure
+            ? _value.failure
+            : failure // ignore: cast_nullable_to_non_nullable
+                  as Failure?,
+      ),
+    );
   }
 }
 
@@ -726,8 +728,10 @@ class _$UnauthenticatedAuthStateImpl implements UnauthenticatedAuthState {
   @override
   @pragma('vm:prefer-inline')
   _$$UnauthenticatedAuthStateImplCopyWith<_$UnauthenticatedAuthStateImpl>
-      get copyWith => __$$UnauthenticatedAuthStateImplCopyWithImpl<
-          _$UnauthenticatedAuthStateImpl>(this, _$identity);
+  get copyWith =>
+      __$$UnauthenticatedAuthStateImplCopyWithImpl<
+        _$UnauthenticatedAuthStateImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -775,7 +779,7 @@ class _$UnauthenticatedAuthStateImpl implements UnauthenticatedAuthState {
     required TResult Function(UnknownAuthState value) unknown,
     required TResult Function(AuthenticatedAuthState value) authenticated,
     required TResult Function(LocalAuthenticatedAuthState value)
-        localAuthenticated,
+    localAuthenticated,
     required TResult Function(AuthenticatingAuthState value) authenticating,
     required TResult Function(UnauthenticatedAuthState value) unauthenticated,
   }) {
@@ -821,5 +825,5 @@ abstract class UnauthenticatedAuthState implements AuthState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$UnauthenticatedAuthStateImplCopyWith<_$UnauthenticatedAuthStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }

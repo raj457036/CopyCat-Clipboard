@@ -1,8 +1,8 @@
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/constants/widgets.dart';
-import 'package:clipboard/base/db/app_config/appconfig.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/utils/blur_hash.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';

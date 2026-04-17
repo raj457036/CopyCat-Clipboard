@@ -19,7 +19,7 @@ import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.da
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
-import 'package:clipboard/base/db/app_config/appconfig.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/generated/app_localizations.dart';
 import 'package:clipboard/base/text_theme.dart';
 import 'package:clipboard/common/bloc_config.dart';

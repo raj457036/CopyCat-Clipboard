@@ -2,7 +2,7 @@ import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:clipboard/pages/preview/widgets/clip_detail_form.dart';
 import 'package:clipboard/pages/preview/widgets/preview.dart';
 import 'package:clipboard/pages/preview/widgets/preview_options.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 

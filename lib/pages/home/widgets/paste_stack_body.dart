@@ -1,5 +1,5 @@
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/clip_view_builders/list/builder.dart';
 import 'package:clipboard/widgets/clips_provider.dart';

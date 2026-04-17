@@ -1,6 +1,6 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/db/exclusion_rules/exclusion_rules.dart';
+import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_rules.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/pages/settings/widgets/exclusion_rules/exclude_custom_rules.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';

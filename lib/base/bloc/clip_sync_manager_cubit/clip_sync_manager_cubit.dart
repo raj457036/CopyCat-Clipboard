@@ -5,99 +5,22 @@ import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/constants/numbers/duration.dart';
-import 'package:clipboard/base/constants/strings/strings.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/clip_collection.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/repositories/sync_clipboard.dart';
+import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
-import 'package:easy_worker/easy_worker.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:isar_community/isar.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:universal_io/io.dart' show Platform;
 
 part 'clip_sync_manager_cubit.freezed.dart';
 part 'clip_sync_manager_state.dart';
 
-void _syncingClips(
-  (List<ClipboardItem>, Map<int, int>) record,
-  Sender send,
-) async {
-  final Isar db = Isar.getInstance(dbName)!;
 
-  final events = <ClipCrossSyncEvent>[];
-  var (items, collectionMap) = record;
-
-  db.writeTxnSync(() {
-    for (var index = 0; index < items.length; index++) {
-      var item = items[index];
-      final found = db.clipboardItems
-          .filter()
-          .serverIdEqualTo(item.serverId)
-          .findFirstSync();
-      final collectionId = collectionMap[item.serverCollectionId];
-      if (found == null) {
-        item = item.copyWith(
-          collectionId: collectionId,
-          lastSynced: now(),
-        );
-        items[index] = item;
-        events.add((CrossSyncEventType.create, item));
-        continue;
-      }
-      item = item.copyWith(
-        lastSynced: now(),
-        localPath: found.localPath,
-        collectionId: collectionId,
-      )..applyId(found);
-      items[index] = item;
-      events.add((CrossSyncEventType.update, item));
-    }
-
-    final ids = db.clipboardItems.putAllSync(items);
-    for (int i = 0; i < events.length; i++) {
-      events[i].$2.id = ids[i];
-    }
-  });
-
-  send(events);
-}
-
-final _clipSyncWorker =
-    EasyCompute<List<ClipCrossSyncEvent>, (List<ClipboardItem>, Map<int, int>)>(
-  ComputeEntrypoint(
-    _syncingClips,
-    initData: {
-      "token": ServicesBinding.rootIsolateToken,
-    },
-    onInit: (payload) async {
-      if (payload is Map) {
-        final token = payload["token"];
-        if (token != null) {
-          BackgroundIsolateBinaryMessenger.ensureInitialized(token);
-        }
-        String? dbPath = Platform.environment[dbPathEnvKey];
-        dbPath = dbPath ?? (await getApplicationDocumentsDirectory()).path;
-        Isar.openSync(
-          [ClipboardItemSchema],
-          directory: dbPath,
-          relaxedDurability: true,
-          inspector: kDebugMode,
-          name: dbName,
-        );
-      }
-    },
-  ),
-  workerName: "ClipSyncWorker",
-);
 
 @injectable
 class ClipSyncManagerCubit extends Cubit<ClipSyncManagerState> {
@@ -107,6 +30,7 @@ class ClipSyncManagerCubit extends Cubit<ClipSyncManagerState> {
   final ClipboardRepository clipboardRepository;
   final ClipCollectionRepository clipCollectionRepository;
   final SyncRepository syncRepo;
+  final ClipBatchSyncService batchSyncService;
 
   Timer? _pollingTimer;
   int? _syncHours, _manualDelay;
@@ -120,6 +44,7 @@ class ClipSyncManagerCubit extends Cubit<ClipSyncManagerState> {
     @Named("local") this.clipboardRepository,
     this.clipCollectionRepository,
     @Named("device_id") this.deviceId,
+    this.batchSyncService,
   ) : super(const ClipSyncManagerState.unknown());
 
   int get syncHours => _syncHours ?? 0;
@@ -253,7 +178,7 @@ class ClipSyncManagerCubit extends Cubit<ClipSyncManagerState> {
     DateTime? syncStartTs,
     int lastSyncedCount = 0,
   ]) async {
-    await _clipSyncWorker.waitUntilReady();
+    await batchSyncService.waitUntilReady();
     // Fetch changes from server
     bool hasMore = true;
     int offset = 0;
@@ -299,8 +224,8 @@ class ClipSyncManagerCubit extends Cubit<ClipSyncManagerState> {
 
         if (items.isEmpty) return;
 
-        final syncEvents = await _clipSyncWorker.compute(
-          (items, collectionMapping),
+        final syncEvents = await batchSyncService.syncBatch(
+          items, collectionMapping,
         );
         syncedCount += syncEvents.length;
         broadcastBatchEvent(syncEvents);

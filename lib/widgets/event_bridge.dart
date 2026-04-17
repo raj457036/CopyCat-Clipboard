@@ -16,8 +16,8 @@ import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/encryption.dart';
-import 'package:clipboard/base/db/app_config/appconfig.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
@@ -29,7 +29,7 @@ import 'package:clipboard/widgets/dialogs/inconsistent_timing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:isar_community/isar.dart';
+import 'package:clipboard/base/data/isar/isar_database_service.dart';
 import 'package:universal_io/io.dart';
 
 class EventBridge extends StatelessWidget {
@@ -87,7 +87,7 @@ class EventBridge extends StatelessWidget {
 
   Future<void> resetAll(BuildContext context) async {
     EncryptionWorker.instance.dispose();
-    final Isar db = sl();
+    final IsarDatabaseService dbService = sl();
     context.read<OfflinePersistenceCubit>().stopListeners();
     context.read<DriveSetupCubit>().reset();
     context.read<ClipSyncManagerCubit>().stopPolling();
@@ -106,7 +106,7 @@ class EventBridge extends StatelessWidget {
         ..show();
     }
     clearPersistedRootDir();
-    db.writeTxn(() => db.clear());
+    await dbService.clearAll();
 
     if (context.mounted && rootNavKey.currentContext != null) {
       showTextSnackbar(

@@ -1,4 +1,4 @@
-import 'package:clipboard/base/db/subscription/subscription.dart';
+import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/common/failure.dart';
 
 abstract class SubscriptionRepository {

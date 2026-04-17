@@ -1,7 +1,7 @@
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/db/app_config/appconfig.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';

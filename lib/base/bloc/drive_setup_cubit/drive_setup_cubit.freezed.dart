@@ -12,7 +12,8 @@ part of 'drive_setup_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$DriveSetupState {
@@ -24,8 +25,7 @@ mixin _$DriveSetupState {
     required TResult Function() refreshingToken,
     required TResult Function(DriveAccessToken token) setupDone,
     required TResult Function(Failure failure) setupError,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(bool waiting)? unknown,
@@ -34,8 +34,7 @@ mixin _$DriveSetupState {
     TResult? Function()? refreshingToken,
     TResult? Function(DriveAccessToken token)? setupDone,
     TResult? Function(Failure failure)? setupError,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(bool waiting)? unknown,
@@ -45,8 +44,7 @@ mixin _$DriveSetupState {
     TResult Function(DriveAccessToken token)? setupDone,
     TResult Function(Failure failure)? setupError,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(DriveSetupUnknown value) unknown,
@@ -55,8 +53,7 @@ mixin _$DriveSetupState {
     required TResult Function(DriveSetupRefreshingToken value) refreshingToken,
     required TResult Function(DriveSetupDone value) setupDone,
     required TResult Function(DriveSetupError value) setupError,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(DriveSetupUnknown value)? unknown,
@@ -65,8 +62,7 @@ mixin _$DriveSetupState {
     TResult? Function(DriveSetupRefreshingToken value)? refreshingToken,
     TResult? Function(DriveSetupDone value)? setupDone,
     TResult? Function(DriveSetupError value)? setupError,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(DriveSetupUnknown value)? unknown,
@@ -76,15 +72,15 @@ mixin _$DriveSetupState {
     TResult Function(DriveSetupDone value)? setupDone,
     TResult Function(DriveSetupError value)? setupError,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $DriveSetupStateCopyWith<$Res> {
   factory $DriveSetupStateCopyWith(
-          DriveSetupState value, $Res Function(DriveSetupState) then) =
-      _$DriveSetupStateCopyWithImpl<$Res, DriveSetupState>;
+    DriveSetupState value,
+    $Res Function(DriveSetupState) then,
+  ) = _$DriveSetupStateCopyWithImpl<$Res, DriveSetupState>;
 }
 
 /// @nodoc
@@ -103,9 +99,10 @@ class _$DriveSetupStateCopyWithImpl<$Res, $Val extends DriveSetupState>
 
 /// @nodoc
 abstract class _$$DriveSetupUnknownImplCopyWith<$Res> {
-  factory _$$DriveSetupUnknownImplCopyWith(_$DriveSetupUnknownImpl value,
-          $Res Function(_$DriveSetupUnknownImpl) then) =
-      __$$DriveSetupUnknownImplCopyWithImpl<$Res>;
+  factory _$$DriveSetupUnknownImplCopyWith(
+    _$DriveSetupUnknownImpl value,
+    $Res Function(_$DriveSetupUnknownImpl) then,
+  ) = __$$DriveSetupUnknownImplCopyWithImpl<$Res>;
   @useResult
   $Res call({bool waiting});
 }
@@ -114,23 +111,24 @@ abstract class _$$DriveSetupUnknownImplCopyWith<$Res> {
 class __$$DriveSetupUnknownImplCopyWithImpl<$Res>
     extends _$DriveSetupStateCopyWithImpl<$Res, _$DriveSetupUnknownImpl>
     implements _$$DriveSetupUnknownImplCopyWith<$Res> {
-  __$$DriveSetupUnknownImplCopyWithImpl(_$DriveSetupUnknownImpl _value,
-      $Res Function(_$DriveSetupUnknownImpl) _then)
-      : super(_value, _then);
+  __$$DriveSetupUnknownImplCopyWithImpl(
+    _$DriveSetupUnknownImpl _value,
+    $Res Function(_$DriveSetupUnknownImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of DriveSetupState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? waiting = null,
-  }) {
-    return _then(_$DriveSetupUnknownImpl(
-      waiting: null == waiting
-          ? _value.waiting
-          : waiting // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
+  $Res call({Object? waiting = null}) {
+    return _then(
+      _$DriveSetupUnknownImpl(
+        waiting: null == waiting
+            ? _value.waiting
+            : waiting // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
   }
 }
 
@@ -166,7 +164,9 @@ class _$DriveSetupUnknownImpl implements DriveSetupUnknown {
   @pragma('vm:prefer-inline')
   _$$DriveSetupUnknownImplCopyWith<_$DriveSetupUnknownImpl> get copyWith =>
       __$$DriveSetupUnknownImplCopyWithImpl<_$DriveSetupUnknownImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -270,18 +270,20 @@ abstract class DriveSetupUnknown implements DriveSetupState {
 
 /// @nodoc
 abstract class _$$DriveSetupFetchingImplCopyWith<$Res> {
-  factory _$$DriveSetupFetchingImplCopyWith(_$DriveSetupFetchingImpl value,
-          $Res Function(_$DriveSetupFetchingImpl) then) =
-      __$$DriveSetupFetchingImplCopyWithImpl<$Res>;
+  factory _$$DriveSetupFetchingImplCopyWith(
+    _$DriveSetupFetchingImpl value,
+    $Res Function(_$DriveSetupFetchingImpl) then,
+  ) = __$$DriveSetupFetchingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$DriveSetupFetchingImplCopyWithImpl<$Res>
     extends _$DriveSetupStateCopyWithImpl<$Res, _$DriveSetupFetchingImpl>
     implements _$$DriveSetupFetchingImplCopyWith<$Res> {
-  __$$DriveSetupFetchingImplCopyWithImpl(_$DriveSetupFetchingImpl _value,
-      $Res Function(_$DriveSetupFetchingImpl) _then)
-      : super(_value, _then);
+  __$$DriveSetupFetchingImplCopyWithImpl(
+    _$DriveSetupFetchingImpl _value,
+    $Res Function(_$DriveSetupFetchingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of DriveSetupState
   /// with the given fields replaced by the non-null parameter values.
@@ -400,9 +402,9 @@ abstract class DriveSetupFetching implements DriveSetupState {
 /// @nodoc
 abstract class _$$DriveSetupVerifyingCodeImplCopyWith<$Res> {
   factory _$$DriveSetupVerifyingCodeImplCopyWith(
-          _$DriveSetupVerifyingCodeImpl value,
-          $Res Function(_$DriveSetupVerifyingCodeImpl) then) =
-      __$$DriveSetupVerifyingCodeImplCopyWithImpl<$Res>;
+    _$DriveSetupVerifyingCodeImpl value,
+    $Res Function(_$DriveSetupVerifyingCodeImpl) then,
+  ) = __$$DriveSetupVerifyingCodeImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String code, List<String> scopes});
 }
@@ -412,37 +414,37 @@ class __$$DriveSetupVerifyingCodeImplCopyWithImpl<$Res>
     extends _$DriveSetupStateCopyWithImpl<$Res, _$DriveSetupVerifyingCodeImpl>
     implements _$$DriveSetupVerifyingCodeImplCopyWith<$Res> {
   __$$DriveSetupVerifyingCodeImplCopyWithImpl(
-      _$DriveSetupVerifyingCodeImpl _value,
-      $Res Function(_$DriveSetupVerifyingCodeImpl) _then)
-      : super(_value, _then);
+    _$DriveSetupVerifyingCodeImpl _value,
+    $Res Function(_$DriveSetupVerifyingCodeImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of DriveSetupState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? code = null,
-    Object? scopes = null,
-  }) {
-    return _then(_$DriveSetupVerifyingCodeImpl(
-      code: null == code
-          ? _value.code
-          : code // ignore: cast_nullable_to_non_nullable
-              as String,
-      scopes: null == scopes
-          ? _value._scopes
-          : scopes // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ));
+  $Res call({Object? code = null, Object? scopes = null}) {
+    return _then(
+      _$DriveSetupVerifyingCodeImpl(
+        code: null == code
+            ? _value.code
+            : code // ignore: cast_nullable_to_non_nullable
+                  as String,
+        scopes: null == scopes
+            ? _value._scopes
+            : scopes // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$DriveSetupVerifyingCodeImpl implements DriveSetupVerifyingCode {
-  const _$DriveSetupVerifyingCodeImpl(
-      {required this.code, required final List<String> scopes})
-      : _scopes = scopes;
+  const _$DriveSetupVerifyingCodeImpl({
+    required this.code,
+    required final List<String> scopes,
+  }) : _scopes = scopes;
 
   @override
   final String code;
@@ -470,7 +472,10 @@ class _$DriveSetupVerifyingCodeImpl implements DriveSetupVerifyingCode {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, code, const DeepCollectionEquality().hash(_scopes));
+    runtimeType,
+    code,
+    const DeepCollectionEquality().hash(_scopes),
+  );
 
   /// Create a copy of DriveSetupState
   /// with the given fields replaced by the non-null parameter values.
@@ -478,8 +483,10 @@ class _$DriveSetupVerifyingCodeImpl implements DriveSetupVerifyingCode {
   @override
   @pragma('vm:prefer-inline')
   _$$DriveSetupVerifyingCodeImplCopyWith<_$DriveSetupVerifyingCodeImpl>
-      get copyWith => __$$DriveSetupVerifyingCodeImplCopyWithImpl<
-          _$DriveSetupVerifyingCodeImpl>(this, _$identity);
+  get copyWith =>
+      __$$DriveSetupVerifyingCodeImplCopyWithImpl<
+        _$DriveSetupVerifyingCodeImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -569,9 +576,10 @@ class _$DriveSetupVerifyingCodeImpl implements DriveSetupVerifyingCode {
 }
 
 abstract class DriveSetupVerifyingCode implements DriveSetupState {
-  const factory DriveSetupVerifyingCode(
-      {required final String code,
-      required final List<String> scopes}) = _$DriveSetupVerifyingCodeImpl;
+  const factory DriveSetupVerifyingCode({
+    required final String code,
+    required final List<String> scopes,
+  }) = _$DriveSetupVerifyingCodeImpl;
 
   String get code;
   List<String> get scopes;
@@ -580,15 +588,15 @@ abstract class DriveSetupVerifyingCode implements DriveSetupState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DriveSetupVerifyingCodeImplCopyWith<_$DriveSetupVerifyingCodeImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$DriveSetupRefreshingTokenImplCopyWith<$Res> {
   factory _$$DriveSetupRefreshingTokenImplCopyWith(
-          _$DriveSetupRefreshingTokenImpl value,
-          $Res Function(_$DriveSetupRefreshingTokenImpl) then) =
-      __$$DriveSetupRefreshingTokenImplCopyWithImpl<$Res>;
+    _$DriveSetupRefreshingTokenImpl value,
+    $Res Function(_$DriveSetupRefreshingTokenImpl) then,
+  ) = __$$DriveSetupRefreshingTokenImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -596,9 +604,9 @@ class __$$DriveSetupRefreshingTokenImplCopyWithImpl<$Res>
     extends _$DriveSetupStateCopyWithImpl<$Res, _$DriveSetupRefreshingTokenImpl>
     implements _$$DriveSetupRefreshingTokenImplCopyWith<$Res> {
   __$$DriveSetupRefreshingTokenImplCopyWithImpl(
-      _$DriveSetupRefreshingTokenImpl _value,
-      $Res Function(_$DriveSetupRefreshingTokenImpl) _then)
-      : super(_value, _then);
+    _$DriveSetupRefreshingTokenImpl _value,
+    $Res Function(_$DriveSetupRefreshingTokenImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of DriveSetupState
   /// with the given fields replaced by the non-null parameter values.
@@ -717,9 +725,10 @@ abstract class DriveSetupRefreshingToken implements DriveSetupState {
 
 /// @nodoc
 abstract class _$$DriveSetupDoneImplCopyWith<$Res> {
-  factory _$$DriveSetupDoneImplCopyWith(_$DriveSetupDoneImpl value,
-          $Res Function(_$DriveSetupDoneImpl) then) =
-      __$$DriveSetupDoneImplCopyWithImpl<$Res>;
+  factory _$$DriveSetupDoneImplCopyWith(
+    _$DriveSetupDoneImpl value,
+    $Res Function(_$DriveSetupDoneImpl) then,
+  ) = __$$DriveSetupDoneImplCopyWithImpl<$Res>;
   @useResult
   $Res call({DriveAccessToken token});
 
@@ -731,22 +740,23 @@ class __$$DriveSetupDoneImplCopyWithImpl<$Res>
     extends _$DriveSetupStateCopyWithImpl<$Res, _$DriveSetupDoneImpl>
     implements _$$DriveSetupDoneImplCopyWith<$Res> {
   __$$DriveSetupDoneImplCopyWithImpl(
-      _$DriveSetupDoneImpl _value, $Res Function(_$DriveSetupDoneImpl) _then)
-      : super(_value, _then);
+    _$DriveSetupDoneImpl _value,
+    $Res Function(_$DriveSetupDoneImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of DriveSetupState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? token = null,
-  }) {
-    return _then(_$DriveSetupDoneImpl(
-      token: null == token
-          ? _value.token
-          : token // ignore: cast_nullable_to_non_nullable
-              as DriveAccessToken,
-    ));
+  $Res call({Object? token = null}) {
+    return _then(
+      _$DriveSetupDoneImpl(
+        token: null == token
+            ? _value.token
+            : token // ignore: cast_nullable_to_non_nullable
+                  as DriveAccessToken,
+      ),
+    );
   }
 
   /// Create a copy of DriveSetupState
@@ -791,7 +801,9 @@ class _$DriveSetupDoneImpl implements DriveSetupDone {
   @pragma('vm:prefer-inline')
   _$$DriveSetupDoneImplCopyWith<_$DriveSetupDoneImpl> get copyWith =>
       __$$DriveSetupDoneImplCopyWithImpl<_$DriveSetupDoneImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -895,9 +907,10 @@ abstract class DriveSetupDone implements DriveSetupState {
 
 /// @nodoc
 abstract class _$$DriveSetupErrorImplCopyWith<$Res> {
-  factory _$$DriveSetupErrorImplCopyWith(_$DriveSetupErrorImpl value,
-          $Res Function(_$DriveSetupErrorImpl) then) =
-      __$$DriveSetupErrorImplCopyWithImpl<$Res>;
+  factory _$$DriveSetupErrorImplCopyWith(
+    _$DriveSetupErrorImpl value,
+    $Res Function(_$DriveSetupErrorImpl) then,
+  ) = __$$DriveSetupErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Failure failure});
 }
@@ -907,22 +920,23 @@ class __$$DriveSetupErrorImplCopyWithImpl<$Res>
     extends _$DriveSetupStateCopyWithImpl<$Res, _$DriveSetupErrorImpl>
     implements _$$DriveSetupErrorImplCopyWith<$Res> {
   __$$DriveSetupErrorImplCopyWithImpl(
-      _$DriveSetupErrorImpl _value, $Res Function(_$DriveSetupErrorImpl) _then)
-      : super(_value, _then);
+    _$DriveSetupErrorImpl _value,
+    $Res Function(_$DriveSetupErrorImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of DriveSetupState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? failure = null,
-  }) {
-    return _then(_$DriveSetupErrorImpl(
-      failure: null == failure
-          ? _value.failure
-          : failure // ignore: cast_nullable_to_non_nullable
-              as Failure,
-    ));
+  $Res call({Object? failure = null}) {
+    return _then(
+      _$DriveSetupErrorImpl(
+        failure: null == failure
+            ? _value.failure
+            : failure // ignore: cast_nullable_to_non_nullable
+                  as Failure,
+      ),
+    );
   }
 }
 
@@ -957,7 +971,9 @@ class _$DriveSetupErrorImpl implements DriveSetupError {
   @pragma('vm:prefer-inline')
   _$$DriveSetupErrorImplCopyWith<_$DriveSetupErrorImpl> get copyWith =>
       __$$DriveSetupErrorImplCopyWithImpl<_$DriveSetupErrorImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs

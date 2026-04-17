@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
-import 'package:clipboard/base/db/app_config/appconfig.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:flutter/widgets.dart';
 
 @immutable

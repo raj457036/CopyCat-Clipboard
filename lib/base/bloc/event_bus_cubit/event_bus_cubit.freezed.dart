@@ -12,7 +12,8 @@ part of 'event_bus_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$EventBusState {
@@ -20,60 +21,56 @@ mixin _$EventBusState {
   TResult when<TResult extends Object?>({
     required TResult Function() empty,
     required TResult Function((CrossSyncEventType, ClipboardItem) event)
-        clipSync,
+    clipSync,
     required TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)
-        batchClipSync,
+    batchClipSync,
     required TResult Function((CrossSyncEventType, ClipCollection) event)
-        collectionSync,
+    collectionSync,
     required TResult Function(List<(CrossSyncEventType, ClipCollection)> events)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(KeyboardShortcutEvent event) keyboard,
     required TResult Function(int index) indexPaste,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? empty,
     TResult? Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult? Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult? Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult? Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(KeyboardShortcutEvent event)? keyboard,
     TResult? Function(int index)? indexPaste,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? empty,
     TResult Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(KeyboardShortcutEvent event)? keyboard,
     TResult Function(int index)? indexPaste,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Empty value) empty,
     required TResult Function(EventBusClipCrossSyncEvent value) clipSync,
     required TResult Function(EventBusBatchClipCrossSyncEvent value)
-        batchClipSync,
+    batchClipSync,
     required TResult Function(EventBusCollectionCrossSyncEvent value)
-        collectionSync,
+    collectionSync,
     required TResult Function(EventBusBatchCollectionCrossSyncEvent value)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(EventBusKeyboardEvent value) keyboard,
     required TResult Function(EventBusIndexPasteEvent value) indexPaste,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Empty value)? empty,
@@ -81,11 +78,10 @@ mixin _$EventBusState {
     TResult? Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult? Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult? Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(EventBusKeyboardEvent value)? keyboard,
     TResult? Function(EventBusIndexPasteEvent value)? indexPaste,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Empty value)? empty,
@@ -93,19 +89,19 @@ mixin _$EventBusState {
     TResult Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(EventBusKeyboardEvent value)? keyboard,
     TResult Function(EventBusIndexPasteEvent value)? indexPaste,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $EventBusStateCopyWith<$Res> {
   factory $EventBusStateCopyWith(
-          EventBusState value, $Res Function(EventBusState) then) =
-      _$EventBusStateCopyWithImpl<$Res, EventBusState>;
+    EventBusState value,
+    $Res Function(EventBusState) then,
+  ) = _$EventBusStateCopyWithImpl<$Res, EventBusState>;
 }
 
 /// @nodoc
@@ -125,8 +121,9 @@ class _$EventBusStateCopyWithImpl<$Res, $Val extends EventBusState>
 /// @nodoc
 abstract class _$$EmptyImplCopyWith<$Res> {
   factory _$$EmptyImplCopyWith(
-          _$EmptyImpl value, $Res Function(_$EmptyImpl) then) =
-      __$$EmptyImplCopyWithImpl<$Res>;
+    _$EmptyImpl value,
+    $Res Function(_$EmptyImpl) then,
+  ) = __$$EmptyImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -134,8 +131,9 @@ class __$$EmptyImplCopyWithImpl<$Res>
     extends _$EventBusStateCopyWithImpl<$Res, _$EmptyImpl>
     implements _$$EmptyImplCopyWith<$Res> {
   __$$EmptyImplCopyWithImpl(
-      _$EmptyImpl _value, $Res Function(_$EmptyImpl) _then)
-      : super(_value, _then);
+    _$EmptyImpl _value,
+    $Res Function(_$EmptyImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of EventBusState
   /// with the given fields replaced by the non-null parameter values.
@@ -165,13 +163,13 @@ class _$EmptyImpl implements _Empty {
   TResult when<TResult extends Object?>({
     required TResult Function() empty,
     required TResult Function((CrossSyncEventType, ClipboardItem) event)
-        clipSync,
+    clipSync,
     required TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)
-        batchClipSync,
+    batchClipSync,
     required TResult Function((CrossSyncEventType, ClipCollection) event)
-        collectionSync,
+    collectionSync,
     required TResult Function(List<(CrossSyncEventType, ClipCollection)> events)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(KeyboardShortcutEvent event) keyboard,
     required TResult Function(int index) indexPaste,
   }) {
@@ -184,11 +182,11 @@ class _$EmptyImpl implements _Empty {
     TResult? Function()? empty,
     TResult? Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult? Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult? Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult? Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(KeyboardShortcutEvent event)? keyboard,
     TResult? Function(int index)? indexPaste,
   }) {
@@ -201,11 +199,11 @@ class _$EmptyImpl implements _Empty {
     TResult Function()? empty,
     TResult Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(KeyboardShortcutEvent event)? keyboard,
     TResult Function(int index)? indexPaste,
     required TResult orElse(),
@@ -222,11 +220,11 @@ class _$EmptyImpl implements _Empty {
     required TResult Function(_Empty value) empty,
     required TResult Function(EventBusClipCrossSyncEvent value) clipSync,
     required TResult Function(EventBusBatchClipCrossSyncEvent value)
-        batchClipSync,
+    batchClipSync,
     required TResult Function(EventBusCollectionCrossSyncEvent value)
-        collectionSync,
+    collectionSync,
     required TResult Function(EventBusBatchCollectionCrossSyncEvent value)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(EventBusKeyboardEvent value) keyboard,
     required TResult Function(EventBusIndexPasteEvent value) indexPaste,
   }) {
@@ -241,7 +239,7 @@ class _$EmptyImpl implements _Empty {
     TResult? Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult? Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult? Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(EventBusKeyboardEvent value)? keyboard,
     TResult? Function(EventBusIndexPasteEvent value)? indexPaste,
   }) {
@@ -256,7 +254,7 @@ class _$EmptyImpl implements _Empty {
     TResult Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(EventBusKeyboardEvent value)? keyboard,
     TResult Function(EventBusIndexPasteEvent value)? indexPaste,
     required TResult orElse(),
@@ -275,9 +273,9 @@ abstract class _Empty implements EventBusState {
 /// @nodoc
 abstract class _$$EventBusClipCrossSyncEventImplCopyWith<$Res> {
   factory _$$EventBusClipCrossSyncEventImplCopyWith(
-          _$EventBusClipCrossSyncEventImpl value,
-          $Res Function(_$EventBusClipCrossSyncEventImpl) then) =
-      __$$EventBusClipCrossSyncEventImplCopyWithImpl<$Res>;
+    _$EventBusClipCrossSyncEventImpl value,
+    $Res Function(_$EventBusClipCrossSyncEventImpl) then,
+  ) = __$$EventBusClipCrossSyncEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call({(CrossSyncEventType, ClipboardItem) event});
 }
@@ -287,23 +285,23 @@ class __$$EventBusClipCrossSyncEventImplCopyWithImpl<$Res>
     extends _$EventBusStateCopyWithImpl<$Res, _$EventBusClipCrossSyncEventImpl>
     implements _$$EventBusClipCrossSyncEventImplCopyWith<$Res> {
   __$$EventBusClipCrossSyncEventImplCopyWithImpl(
-      _$EventBusClipCrossSyncEventImpl _value,
-      $Res Function(_$EventBusClipCrossSyncEventImpl) _then)
-      : super(_value, _then);
+    _$EventBusClipCrossSyncEventImpl _value,
+    $Res Function(_$EventBusClipCrossSyncEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of EventBusState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? event = null,
-  }) {
-    return _then(_$EventBusClipCrossSyncEventImpl(
-      null == event
-          ? _value.event
-          : event // ignore: cast_nullable_to_non_nullable
-              as (CrossSyncEventType, ClipboardItem),
-    ));
+  $Res call({Object? event = null}) {
+    return _then(
+      _$EventBusClipCrossSyncEventImpl(
+        null == event
+            ? _value.event
+            : event // ignore: cast_nullable_to_non_nullable
+                  as (CrossSyncEventType, ClipboardItem),
+      ),
+    );
   }
 }
 
@@ -337,21 +335,23 @@ class _$EventBusClipCrossSyncEventImpl implements EventBusClipCrossSyncEvent {
   @override
   @pragma('vm:prefer-inline')
   _$$EventBusClipCrossSyncEventImplCopyWith<_$EventBusClipCrossSyncEventImpl>
-      get copyWith => __$$EventBusClipCrossSyncEventImplCopyWithImpl<
-          _$EventBusClipCrossSyncEventImpl>(this, _$identity);
+  get copyWith =>
+      __$$EventBusClipCrossSyncEventImplCopyWithImpl<
+        _$EventBusClipCrossSyncEventImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() empty,
     required TResult Function((CrossSyncEventType, ClipboardItem) event)
-        clipSync,
+    clipSync,
     required TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)
-        batchClipSync,
+    batchClipSync,
     required TResult Function((CrossSyncEventType, ClipCollection) event)
-        collectionSync,
+    collectionSync,
     required TResult Function(List<(CrossSyncEventType, ClipCollection)> events)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(KeyboardShortcutEvent event) keyboard,
     required TResult Function(int index) indexPaste,
   }) {
@@ -364,11 +364,11 @@ class _$EventBusClipCrossSyncEventImpl implements EventBusClipCrossSyncEvent {
     TResult? Function()? empty,
     TResult? Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult? Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult? Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult? Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(KeyboardShortcutEvent event)? keyboard,
     TResult? Function(int index)? indexPaste,
   }) {
@@ -381,11 +381,11 @@ class _$EventBusClipCrossSyncEventImpl implements EventBusClipCrossSyncEvent {
     TResult Function()? empty,
     TResult Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(KeyboardShortcutEvent event)? keyboard,
     TResult Function(int index)? indexPaste,
     required TResult orElse(),
@@ -402,11 +402,11 @@ class _$EventBusClipCrossSyncEventImpl implements EventBusClipCrossSyncEvent {
     required TResult Function(_Empty value) empty,
     required TResult Function(EventBusClipCrossSyncEvent value) clipSync,
     required TResult Function(EventBusBatchClipCrossSyncEvent value)
-        batchClipSync,
+    batchClipSync,
     required TResult Function(EventBusCollectionCrossSyncEvent value)
-        collectionSync,
+    collectionSync,
     required TResult Function(EventBusBatchCollectionCrossSyncEvent value)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(EventBusKeyboardEvent value) keyboard,
     required TResult Function(EventBusIndexPasteEvent value) indexPaste,
   }) {
@@ -421,7 +421,7 @@ class _$EventBusClipCrossSyncEventImpl implements EventBusClipCrossSyncEvent {
     TResult? Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult? Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult? Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(EventBusKeyboardEvent value)? keyboard,
     TResult? Function(EventBusIndexPasteEvent value)? indexPaste,
   }) {
@@ -436,7 +436,7 @@ class _$EventBusClipCrossSyncEventImpl implements EventBusClipCrossSyncEvent {
     TResult Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(EventBusKeyboardEvent value)? keyboard,
     TResult Function(EventBusIndexPasteEvent value)? indexPaste,
     required TResult orElse(),
@@ -450,8 +450,8 @@ class _$EventBusClipCrossSyncEventImpl implements EventBusClipCrossSyncEvent {
 
 abstract class EventBusClipCrossSyncEvent implements EventBusState {
   const factory EventBusClipCrossSyncEvent(
-          final (CrossSyncEventType, ClipboardItem) event) =
-      _$EventBusClipCrossSyncEventImpl;
+    final (CrossSyncEventType, ClipboardItem) event,
+  ) = _$EventBusClipCrossSyncEventImpl;
 
   (CrossSyncEventType, ClipboardItem) get event;
 
@@ -459,42 +459,42 @@ abstract class EventBusClipCrossSyncEvent implements EventBusState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$EventBusClipCrossSyncEventImplCopyWith<_$EventBusClipCrossSyncEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$EventBusBatchClipCrossSyncEventImplCopyWith<$Res> {
   factory _$$EventBusBatchClipCrossSyncEventImplCopyWith(
-          _$EventBusBatchClipCrossSyncEventImpl value,
-          $Res Function(_$EventBusBatchClipCrossSyncEventImpl) then) =
-      __$$EventBusBatchClipCrossSyncEventImplCopyWithImpl<$Res>;
+    _$EventBusBatchClipCrossSyncEventImpl value,
+    $Res Function(_$EventBusBatchClipCrossSyncEventImpl) then,
+  ) = __$$EventBusBatchClipCrossSyncEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<(CrossSyncEventType, ClipboardItem)> events});
 }
 
 /// @nodoc
 class __$$EventBusBatchClipCrossSyncEventImplCopyWithImpl<$Res>
-    extends _$EventBusStateCopyWithImpl<$Res,
-        _$EventBusBatchClipCrossSyncEventImpl>
+    extends
+        _$EventBusStateCopyWithImpl<$Res, _$EventBusBatchClipCrossSyncEventImpl>
     implements _$$EventBusBatchClipCrossSyncEventImplCopyWith<$Res> {
   __$$EventBusBatchClipCrossSyncEventImplCopyWithImpl(
-      _$EventBusBatchClipCrossSyncEventImpl _value,
-      $Res Function(_$EventBusBatchClipCrossSyncEventImpl) _then)
-      : super(_value, _then);
+    _$EventBusBatchClipCrossSyncEventImpl _value,
+    $Res Function(_$EventBusBatchClipCrossSyncEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of EventBusState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? events = null,
-  }) {
-    return _then(_$EventBusBatchClipCrossSyncEventImpl(
-      null == events
-          ? _value._events
-          : events // ignore: cast_nullable_to_non_nullable
-              as List<(CrossSyncEventType, ClipboardItem)>,
-    ));
+  $Res call({Object? events = null}) {
+    return _then(
+      _$EventBusBatchClipCrossSyncEventImpl(
+        null == events
+            ? _value._events
+            : events // ignore: cast_nullable_to_non_nullable
+                  as List<(CrossSyncEventType, ClipboardItem)>,
+      ),
+    );
   }
 }
 
@@ -503,8 +503,8 @@ class __$$EventBusBatchClipCrossSyncEventImplCopyWithImpl<$Res>
 class _$EventBusBatchClipCrossSyncEventImpl
     implements EventBusBatchClipCrossSyncEvent {
   const _$EventBusBatchClipCrossSyncEventImpl(
-      final List<(CrossSyncEventType, ClipboardItem)> events)
-      : _events = events;
+    final List<(CrossSyncEventType, ClipboardItem)> events,
+  ) : _events = events;
 
   final List<(CrossSyncEventType, ClipboardItem)> _events;
   @override
@@ -537,22 +537,25 @@ class _$EventBusBatchClipCrossSyncEventImpl
   @override
   @pragma('vm:prefer-inline')
   _$$EventBusBatchClipCrossSyncEventImplCopyWith<
-          _$EventBusBatchClipCrossSyncEventImpl>
-      get copyWith => __$$EventBusBatchClipCrossSyncEventImplCopyWithImpl<
-          _$EventBusBatchClipCrossSyncEventImpl>(this, _$identity);
+    _$EventBusBatchClipCrossSyncEventImpl
+  >
+  get copyWith =>
+      __$$EventBusBatchClipCrossSyncEventImplCopyWithImpl<
+        _$EventBusBatchClipCrossSyncEventImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() empty,
     required TResult Function((CrossSyncEventType, ClipboardItem) event)
-        clipSync,
+    clipSync,
     required TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)
-        batchClipSync,
+    batchClipSync,
     required TResult Function((CrossSyncEventType, ClipCollection) event)
-        collectionSync,
+    collectionSync,
     required TResult Function(List<(CrossSyncEventType, ClipCollection)> events)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(KeyboardShortcutEvent event) keyboard,
     required TResult Function(int index) indexPaste,
   }) {
@@ -565,11 +568,11 @@ class _$EventBusBatchClipCrossSyncEventImpl
     TResult? Function()? empty,
     TResult? Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult? Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult? Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult? Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(KeyboardShortcutEvent event)? keyboard,
     TResult? Function(int index)? indexPaste,
   }) {
@@ -582,11 +585,11 @@ class _$EventBusBatchClipCrossSyncEventImpl
     TResult Function()? empty,
     TResult Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(KeyboardShortcutEvent event)? keyboard,
     TResult Function(int index)? indexPaste,
     required TResult orElse(),
@@ -603,11 +606,11 @@ class _$EventBusBatchClipCrossSyncEventImpl
     required TResult Function(_Empty value) empty,
     required TResult Function(EventBusClipCrossSyncEvent value) clipSync,
     required TResult Function(EventBusBatchClipCrossSyncEvent value)
-        batchClipSync,
+    batchClipSync,
     required TResult Function(EventBusCollectionCrossSyncEvent value)
-        collectionSync,
+    collectionSync,
     required TResult Function(EventBusBatchCollectionCrossSyncEvent value)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(EventBusKeyboardEvent value) keyboard,
     required TResult Function(EventBusIndexPasteEvent value) indexPaste,
   }) {
@@ -622,7 +625,7 @@ class _$EventBusBatchClipCrossSyncEventImpl
     TResult? Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult? Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult? Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(EventBusKeyboardEvent value)? keyboard,
     TResult? Function(EventBusIndexPasteEvent value)? indexPaste,
   }) {
@@ -637,7 +640,7 @@ class _$EventBusBatchClipCrossSyncEventImpl
     TResult Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(EventBusKeyboardEvent value)? keyboard,
     TResult Function(EventBusIndexPasteEvent value)? indexPaste,
     required TResult orElse(),
@@ -651,8 +654,8 @@ class _$EventBusBatchClipCrossSyncEventImpl
 
 abstract class EventBusBatchClipCrossSyncEvent implements EventBusState {
   const factory EventBusBatchClipCrossSyncEvent(
-          final List<(CrossSyncEventType, ClipboardItem)> events) =
-      _$EventBusBatchClipCrossSyncEventImpl;
+    final List<(CrossSyncEventType, ClipboardItem)> events,
+  ) = _$EventBusBatchClipCrossSyncEventImpl;
 
   List<(CrossSyncEventType, ClipboardItem)> get events;
 
@@ -660,43 +663,47 @@ abstract class EventBusBatchClipCrossSyncEvent implements EventBusState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$EventBusBatchClipCrossSyncEventImplCopyWith<
-          _$EventBusBatchClipCrossSyncEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
+    _$EventBusBatchClipCrossSyncEventImpl
+  >
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$EventBusCollectionCrossSyncEventImplCopyWith<$Res> {
   factory _$$EventBusCollectionCrossSyncEventImplCopyWith(
-          _$EventBusCollectionCrossSyncEventImpl value,
-          $Res Function(_$EventBusCollectionCrossSyncEventImpl) then) =
-      __$$EventBusCollectionCrossSyncEventImplCopyWithImpl<$Res>;
+    _$EventBusCollectionCrossSyncEventImpl value,
+    $Res Function(_$EventBusCollectionCrossSyncEventImpl) then,
+  ) = __$$EventBusCollectionCrossSyncEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call({(CrossSyncEventType, ClipCollection) event});
 }
 
 /// @nodoc
 class __$$EventBusCollectionCrossSyncEventImplCopyWithImpl<$Res>
-    extends _$EventBusStateCopyWithImpl<$Res,
-        _$EventBusCollectionCrossSyncEventImpl>
+    extends
+        _$EventBusStateCopyWithImpl<
+          $Res,
+          _$EventBusCollectionCrossSyncEventImpl
+        >
     implements _$$EventBusCollectionCrossSyncEventImplCopyWith<$Res> {
   __$$EventBusCollectionCrossSyncEventImplCopyWithImpl(
-      _$EventBusCollectionCrossSyncEventImpl _value,
-      $Res Function(_$EventBusCollectionCrossSyncEventImpl) _then)
-      : super(_value, _then);
+    _$EventBusCollectionCrossSyncEventImpl _value,
+    $Res Function(_$EventBusCollectionCrossSyncEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of EventBusState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? event = null,
-  }) {
-    return _then(_$EventBusCollectionCrossSyncEventImpl(
-      null == event
-          ? _value.event
-          : event // ignore: cast_nullable_to_non_nullable
-              as (CrossSyncEventType, ClipCollection),
-    ));
+  $Res call({Object? event = null}) {
+    return _then(
+      _$EventBusCollectionCrossSyncEventImpl(
+        null == event
+            ? _value.event
+            : event // ignore: cast_nullable_to_non_nullable
+                  as (CrossSyncEventType, ClipCollection),
+      ),
+    );
   }
 }
 
@@ -731,22 +738,25 @@ class _$EventBusCollectionCrossSyncEventImpl
   @override
   @pragma('vm:prefer-inline')
   _$$EventBusCollectionCrossSyncEventImplCopyWith<
-          _$EventBusCollectionCrossSyncEventImpl>
-      get copyWith => __$$EventBusCollectionCrossSyncEventImplCopyWithImpl<
-          _$EventBusCollectionCrossSyncEventImpl>(this, _$identity);
+    _$EventBusCollectionCrossSyncEventImpl
+  >
+  get copyWith =>
+      __$$EventBusCollectionCrossSyncEventImplCopyWithImpl<
+        _$EventBusCollectionCrossSyncEventImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() empty,
     required TResult Function((CrossSyncEventType, ClipboardItem) event)
-        clipSync,
+    clipSync,
     required TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)
-        batchClipSync,
+    batchClipSync,
     required TResult Function((CrossSyncEventType, ClipCollection) event)
-        collectionSync,
+    collectionSync,
     required TResult Function(List<(CrossSyncEventType, ClipCollection)> events)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(KeyboardShortcutEvent event) keyboard,
     required TResult Function(int index) indexPaste,
   }) {
@@ -759,11 +769,11 @@ class _$EventBusCollectionCrossSyncEventImpl
     TResult? Function()? empty,
     TResult? Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult? Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult? Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult? Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(KeyboardShortcutEvent event)? keyboard,
     TResult? Function(int index)? indexPaste,
   }) {
@@ -776,11 +786,11 @@ class _$EventBusCollectionCrossSyncEventImpl
     TResult Function()? empty,
     TResult Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(KeyboardShortcutEvent event)? keyboard,
     TResult Function(int index)? indexPaste,
     required TResult orElse(),
@@ -797,11 +807,11 @@ class _$EventBusCollectionCrossSyncEventImpl
     required TResult Function(_Empty value) empty,
     required TResult Function(EventBusClipCrossSyncEvent value) clipSync,
     required TResult Function(EventBusBatchClipCrossSyncEvent value)
-        batchClipSync,
+    batchClipSync,
     required TResult Function(EventBusCollectionCrossSyncEvent value)
-        collectionSync,
+    collectionSync,
     required TResult Function(EventBusBatchCollectionCrossSyncEvent value)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(EventBusKeyboardEvent value) keyboard,
     required TResult Function(EventBusIndexPasteEvent value) indexPaste,
   }) {
@@ -816,7 +826,7 @@ class _$EventBusCollectionCrossSyncEventImpl
     TResult? Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult? Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult? Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(EventBusKeyboardEvent value)? keyboard,
     TResult? Function(EventBusIndexPasteEvent value)? indexPaste,
   }) {
@@ -831,7 +841,7 @@ class _$EventBusCollectionCrossSyncEventImpl
     TResult Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(EventBusKeyboardEvent value)? keyboard,
     TResult Function(EventBusIndexPasteEvent value)? indexPaste,
     required TResult orElse(),
@@ -845,8 +855,8 @@ class _$EventBusCollectionCrossSyncEventImpl
 
 abstract class EventBusCollectionCrossSyncEvent implements EventBusState {
   const factory EventBusCollectionCrossSyncEvent(
-          final (CrossSyncEventType, ClipCollection) event) =
-      _$EventBusCollectionCrossSyncEventImpl;
+    final (CrossSyncEventType, ClipCollection) event,
+  ) = _$EventBusCollectionCrossSyncEventImpl;
 
   (CrossSyncEventType, ClipCollection) get event;
 
@@ -854,43 +864,47 @@ abstract class EventBusCollectionCrossSyncEvent implements EventBusState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$EventBusCollectionCrossSyncEventImplCopyWith<
-          _$EventBusCollectionCrossSyncEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
+    _$EventBusCollectionCrossSyncEventImpl
+  >
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$EventBusBatchCollectionCrossSyncEventImplCopyWith<$Res> {
   factory _$$EventBusBatchCollectionCrossSyncEventImplCopyWith(
-          _$EventBusBatchCollectionCrossSyncEventImpl value,
-          $Res Function(_$EventBusBatchCollectionCrossSyncEventImpl) then) =
-      __$$EventBusBatchCollectionCrossSyncEventImplCopyWithImpl<$Res>;
+    _$EventBusBatchCollectionCrossSyncEventImpl value,
+    $Res Function(_$EventBusBatchCollectionCrossSyncEventImpl) then,
+  ) = __$$EventBusBatchCollectionCrossSyncEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<(CrossSyncEventType, ClipCollection)> events});
 }
 
 /// @nodoc
 class __$$EventBusBatchCollectionCrossSyncEventImplCopyWithImpl<$Res>
-    extends _$EventBusStateCopyWithImpl<$Res,
-        _$EventBusBatchCollectionCrossSyncEventImpl>
+    extends
+        _$EventBusStateCopyWithImpl<
+          $Res,
+          _$EventBusBatchCollectionCrossSyncEventImpl
+        >
     implements _$$EventBusBatchCollectionCrossSyncEventImplCopyWith<$Res> {
   __$$EventBusBatchCollectionCrossSyncEventImplCopyWithImpl(
-      _$EventBusBatchCollectionCrossSyncEventImpl _value,
-      $Res Function(_$EventBusBatchCollectionCrossSyncEventImpl) _then)
-      : super(_value, _then);
+    _$EventBusBatchCollectionCrossSyncEventImpl _value,
+    $Res Function(_$EventBusBatchCollectionCrossSyncEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of EventBusState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? events = null,
-  }) {
-    return _then(_$EventBusBatchCollectionCrossSyncEventImpl(
-      null == events
-          ? _value._events
-          : events // ignore: cast_nullable_to_non_nullable
-              as List<(CrossSyncEventType, ClipCollection)>,
-    ));
+  $Res call({Object? events = null}) {
+    return _then(
+      _$EventBusBatchCollectionCrossSyncEventImpl(
+        null == events
+            ? _value._events
+            : events // ignore: cast_nullable_to_non_nullable
+                  as List<(CrossSyncEventType, ClipCollection)>,
+      ),
+    );
   }
 }
 
@@ -899,8 +913,8 @@ class __$$EventBusBatchCollectionCrossSyncEventImplCopyWithImpl<$Res>
 class _$EventBusBatchCollectionCrossSyncEventImpl
     implements EventBusBatchCollectionCrossSyncEvent {
   const _$EventBusBatchCollectionCrossSyncEventImpl(
-      final List<(CrossSyncEventType, ClipCollection)> events)
-      : _events = events;
+    final List<(CrossSyncEventType, ClipCollection)> events,
+  ) : _events = events;
 
   final List<(CrossSyncEventType, ClipCollection)> _events;
   @override
@@ -933,22 +947,25 @@ class _$EventBusBatchCollectionCrossSyncEventImpl
   @override
   @pragma('vm:prefer-inline')
   _$$EventBusBatchCollectionCrossSyncEventImplCopyWith<
-          _$EventBusBatchCollectionCrossSyncEventImpl>
-      get copyWith => __$$EventBusBatchCollectionCrossSyncEventImplCopyWithImpl<
-          _$EventBusBatchCollectionCrossSyncEventImpl>(this, _$identity);
+    _$EventBusBatchCollectionCrossSyncEventImpl
+  >
+  get copyWith =>
+      __$$EventBusBatchCollectionCrossSyncEventImplCopyWithImpl<
+        _$EventBusBatchCollectionCrossSyncEventImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() empty,
     required TResult Function((CrossSyncEventType, ClipboardItem) event)
-        clipSync,
+    clipSync,
     required TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)
-        batchClipSync,
+    batchClipSync,
     required TResult Function((CrossSyncEventType, ClipCollection) event)
-        collectionSync,
+    collectionSync,
     required TResult Function(List<(CrossSyncEventType, ClipCollection)> events)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(KeyboardShortcutEvent event) keyboard,
     required TResult Function(int index) indexPaste,
   }) {
@@ -961,11 +978,11 @@ class _$EventBusBatchCollectionCrossSyncEventImpl
     TResult? Function()? empty,
     TResult? Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult? Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult? Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult? Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(KeyboardShortcutEvent event)? keyboard,
     TResult? Function(int index)? indexPaste,
   }) {
@@ -978,11 +995,11 @@ class _$EventBusBatchCollectionCrossSyncEventImpl
     TResult Function()? empty,
     TResult Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(KeyboardShortcutEvent event)? keyboard,
     TResult Function(int index)? indexPaste,
     required TResult orElse(),
@@ -999,11 +1016,11 @@ class _$EventBusBatchCollectionCrossSyncEventImpl
     required TResult Function(_Empty value) empty,
     required TResult Function(EventBusClipCrossSyncEvent value) clipSync,
     required TResult Function(EventBusBatchClipCrossSyncEvent value)
-        batchClipSync,
+    batchClipSync,
     required TResult Function(EventBusCollectionCrossSyncEvent value)
-        collectionSync,
+    collectionSync,
     required TResult Function(EventBusBatchCollectionCrossSyncEvent value)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(EventBusKeyboardEvent value) keyboard,
     required TResult Function(EventBusIndexPasteEvent value) indexPaste,
   }) {
@@ -1018,7 +1035,7 @@ class _$EventBusBatchCollectionCrossSyncEventImpl
     TResult? Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult? Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult? Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(EventBusKeyboardEvent value)? keyboard,
     TResult? Function(EventBusIndexPasteEvent value)? indexPaste,
   }) {
@@ -1033,7 +1050,7 @@ class _$EventBusBatchCollectionCrossSyncEventImpl
     TResult Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(EventBusKeyboardEvent value)? keyboard,
     TResult Function(EventBusIndexPasteEvent value)? indexPaste,
     required TResult orElse(),
@@ -1047,8 +1064,8 @@ class _$EventBusBatchCollectionCrossSyncEventImpl
 
 abstract class EventBusBatchCollectionCrossSyncEvent implements EventBusState {
   const factory EventBusBatchCollectionCrossSyncEvent(
-          final List<(CrossSyncEventType, ClipCollection)> events) =
-      _$EventBusBatchCollectionCrossSyncEventImpl;
+    final List<(CrossSyncEventType, ClipCollection)> events,
+  ) = _$EventBusBatchCollectionCrossSyncEventImpl;
 
   List<(CrossSyncEventType, ClipCollection)> get events;
 
@@ -1056,16 +1073,17 @@ abstract class EventBusBatchCollectionCrossSyncEvent implements EventBusState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$EventBusBatchCollectionCrossSyncEventImplCopyWith<
-          _$EventBusBatchCollectionCrossSyncEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
+    _$EventBusBatchCollectionCrossSyncEventImpl
+  >
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$EventBusKeyboardEventImplCopyWith<$Res> {
   factory _$$EventBusKeyboardEventImplCopyWith(
-          _$EventBusKeyboardEventImpl value,
-          $Res Function(_$EventBusKeyboardEventImpl) then) =
-      __$$EventBusKeyboardEventImplCopyWithImpl<$Res>;
+    _$EventBusKeyboardEventImpl value,
+    $Res Function(_$EventBusKeyboardEventImpl) then,
+  ) = __$$EventBusKeyboardEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call({KeyboardShortcutEvent event});
 }
@@ -1074,23 +1092,24 @@ abstract class _$$EventBusKeyboardEventImplCopyWith<$Res> {
 class __$$EventBusKeyboardEventImplCopyWithImpl<$Res>
     extends _$EventBusStateCopyWithImpl<$Res, _$EventBusKeyboardEventImpl>
     implements _$$EventBusKeyboardEventImplCopyWith<$Res> {
-  __$$EventBusKeyboardEventImplCopyWithImpl(_$EventBusKeyboardEventImpl _value,
-      $Res Function(_$EventBusKeyboardEventImpl) _then)
-      : super(_value, _then);
+  __$$EventBusKeyboardEventImplCopyWithImpl(
+    _$EventBusKeyboardEventImpl _value,
+    $Res Function(_$EventBusKeyboardEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of EventBusState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? event = null,
-  }) {
-    return _then(_$EventBusKeyboardEventImpl(
-      null == event
-          ? _value.event
-          : event // ignore: cast_nullable_to_non_nullable
-              as KeyboardShortcutEvent,
-    ));
+  $Res call({Object? event = null}) {
+    return _then(
+      _$EventBusKeyboardEventImpl(
+        null == event
+            ? _value.event
+            : event // ignore: cast_nullable_to_non_nullable
+                  as KeyboardShortcutEvent,
+      ),
+    );
   }
 }
 
@@ -1124,21 +1143,24 @@ class _$EventBusKeyboardEventImpl implements EventBusKeyboardEvent {
   @override
   @pragma('vm:prefer-inline')
   _$$EventBusKeyboardEventImplCopyWith<_$EventBusKeyboardEventImpl>
-      get copyWith => __$$EventBusKeyboardEventImplCopyWithImpl<
-          _$EventBusKeyboardEventImpl>(this, _$identity);
+  get copyWith =>
+      __$$EventBusKeyboardEventImplCopyWithImpl<_$EventBusKeyboardEventImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() empty,
     required TResult Function((CrossSyncEventType, ClipboardItem) event)
-        clipSync,
+    clipSync,
     required TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)
-        batchClipSync,
+    batchClipSync,
     required TResult Function((CrossSyncEventType, ClipCollection) event)
-        collectionSync,
+    collectionSync,
     required TResult Function(List<(CrossSyncEventType, ClipCollection)> events)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(KeyboardShortcutEvent event) keyboard,
     required TResult Function(int index) indexPaste,
   }) {
@@ -1151,11 +1173,11 @@ class _$EventBusKeyboardEventImpl implements EventBusKeyboardEvent {
     TResult? Function()? empty,
     TResult? Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult? Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult? Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult? Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(KeyboardShortcutEvent event)? keyboard,
     TResult? Function(int index)? indexPaste,
   }) {
@@ -1168,11 +1190,11 @@ class _$EventBusKeyboardEventImpl implements EventBusKeyboardEvent {
     TResult Function()? empty,
     TResult Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(KeyboardShortcutEvent event)? keyboard,
     TResult Function(int index)? indexPaste,
     required TResult orElse(),
@@ -1189,11 +1211,11 @@ class _$EventBusKeyboardEventImpl implements EventBusKeyboardEvent {
     required TResult Function(_Empty value) empty,
     required TResult Function(EventBusClipCrossSyncEvent value) clipSync,
     required TResult Function(EventBusBatchClipCrossSyncEvent value)
-        batchClipSync,
+    batchClipSync,
     required TResult Function(EventBusCollectionCrossSyncEvent value)
-        collectionSync,
+    collectionSync,
     required TResult Function(EventBusBatchCollectionCrossSyncEvent value)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(EventBusKeyboardEvent value) keyboard,
     required TResult Function(EventBusIndexPasteEvent value) indexPaste,
   }) {
@@ -1208,7 +1230,7 @@ class _$EventBusKeyboardEventImpl implements EventBusKeyboardEvent {
     TResult? Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult? Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult? Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(EventBusKeyboardEvent value)? keyboard,
     TResult? Function(EventBusIndexPasteEvent value)? indexPaste,
   }) {
@@ -1223,7 +1245,7 @@ class _$EventBusKeyboardEventImpl implements EventBusKeyboardEvent {
     TResult Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(EventBusKeyboardEvent value)? keyboard,
     TResult Function(EventBusIndexPasteEvent value)? indexPaste,
     required TResult orElse(),
@@ -1245,15 +1267,15 @@ abstract class EventBusKeyboardEvent implements EventBusState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$EventBusKeyboardEventImplCopyWith<_$EventBusKeyboardEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$EventBusIndexPasteEventImplCopyWith<$Res> {
   factory _$$EventBusIndexPasteEventImplCopyWith(
-          _$EventBusIndexPasteEventImpl value,
-          $Res Function(_$EventBusIndexPasteEventImpl) then) =
-      __$$EventBusIndexPasteEventImplCopyWithImpl<$Res>;
+    _$EventBusIndexPasteEventImpl value,
+    $Res Function(_$EventBusIndexPasteEventImpl) then,
+  ) = __$$EventBusIndexPasteEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call({int index});
 }
@@ -1263,23 +1285,23 @@ class __$$EventBusIndexPasteEventImplCopyWithImpl<$Res>
     extends _$EventBusStateCopyWithImpl<$Res, _$EventBusIndexPasteEventImpl>
     implements _$$EventBusIndexPasteEventImplCopyWith<$Res> {
   __$$EventBusIndexPasteEventImplCopyWithImpl(
-      _$EventBusIndexPasteEventImpl _value,
-      $Res Function(_$EventBusIndexPasteEventImpl) _then)
-      : super(_value, _then);
+    _$EventBusIndexPasteEventImpl _value,
+    $Res Function(_$EventBusIndexPasteEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of EventBusState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? index = null,
-  }) {
-    return _then(_$EventBusIndexPasteEventImpl(
-      null == index
-          ? _value.index
-          : index // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
+  $Res call({Object? index = null}) {
+    return _then(
+      _$EventBusIndexPasteEventImpl(
+        null == index
+            ? _value.index
+            : index // ignore: cast_nullable_to_non_nullable
+                  as int,
+      ),
+    );
   }
 }
 
@@ -1313,21 +1335,23 @@ class _$EventBusIndexPasteEventImpl implements EventBusIndexPasteEvent {
   @override
   @pragma('vm:prefer-inline')
   _$$EventBusIndexPasteEventImplCopyWith<_$EventBusIndexPasteEventImpl>
-      get copyWith => __$$EventBusIndexPasteEventImplCopyWithImpl<
-          _$EventBusIndexPasteEventImpl>(this, _$identity);
+  get copyWith =>
+      __$$EventBusIndexPasteEventImplCopyWithImpl<
+        _$EventBusIndexPasteEventImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() empty,
     required TResult Function((CrossSyncEventType, ClipboardItem) event)
-        clipSync,
+    clipSync,
     required TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)
-        batchClipSync,
+    batchClipSync,
     required TResult Function((CrossSyncEventType, ClipCollection) event)
-        collectionSync,
+    collectionSync,
     required TResult Function(List<(CrossSyncEventType, ClipCollection)> events)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(KeyboardShortcutEvent event) keyboard,
     required TResult Function(int index) indexPaste,
   }) {
@@ -1340,11 +1364,11 @@ class _$EventBusIndexPasteEventImpl implements EventBusIndexPasteEvent {
     TResult? Function()? empty,
     TResult? Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult? Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult? Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult? Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(KeyboardShortcutEvent event)? keyboard,
     TResult? Function(int index)? indexPaste,
   }) {
@@ -1357,11 +1381,11 @@ class _$EventBusIndexPasteEventImpl implements EventBusIndexPasteEvent {
     TResult Function()? empty,
     TResult Function((CrossSyncEventType, ClipboardItem) event)? clipSync,
     TResult Function(List<(CrossSyncEventType, ClipboardItem)> events)?
-        batchClipSync,
+    batchClipSync,
     TResult Function((CrossSyncEventType, ClipCollection) event)?
-        collectionSync,
+    collectionSync,
     TResult Function(List<(CrossSyncEventType, ClipCollection)> events)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(KeyboardShortcutEvent event)? keyboard,
     TResult Function(int index)? indexPaste,
     required TResult orElse(),
@@ -1378,11 +1402,11 @@ class _$EventBusIndexPasteEventImpl implements EventBusIndexPasteEvent {
     required TResult Function(_Empty value) empty,
     required TResult Function(EventBusClipCrossSyncEvent value) clipSync,
     required TResult Function(EventBusBatchClipCrossSyncEvent value)
-        batchClipSync,
+    batchClipSync,
     required TResult Function(EventBusCollectionCrossSyncEvent value)
-        collectionSync,
+    collectionSync,
     required TResult Function(EventBusBatchCollectionCrossSyncEvent value)
-        batchCollectionSync,
+    batchCollectionSync,
     required TResult Function(EventBusKeyboardEvent value) keyboard,
     required TResult Function(EventBusIndexPasteEvent value) indexPaste,
   }) {
@@ -1397,7 +1421,7 @@ class _$EventBusIndexPasteEventImpl implements EventBusIndexPasteEvent {
     TResult? Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult? Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult? Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult? Function(EventBusKeyboardEvent value)? keyboard,
     TResult? Function(EventBusIndexPasteEvent value)? indexPaste,
   }) {
@@ -1412,7 +1436,7 @@ class _$EventBusIndexPasteEventImpl implements EventBusIndexPasteEvent {
     TResult Function(EventBusBatchClipCrossSyncEvent value)? batchClipSync,
     TResult Function(EventBusCollectionCrossSyncEvent value)? collectionSync,
     TResult Function(EventBusBatchCollectionCrossSyncEvent value)?
-        batchCollectionSync,
+    batchCollectionSync,
     TResult Function(EventBusKeyboardEvent value)? keyboard,
     TResult Function(EventBusIndexPasteEvent value)? indexPaste,
     required TResult orElse(),
@@ -1434,5 +1458,5 @@ abstract class EventBusIndexPasteEvent implements EventBusState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$EventBusIndexPasteEventImplCopyWith<_$EventBusIndexPasteEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }

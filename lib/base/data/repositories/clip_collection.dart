@@ -1,4 +1,4 @@
-import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
+import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/repositories/clip_collection.dart';
 import 'package:clipboard/base/domain/sources/clip_collection.dart';
 import 'package:clipboard/common/failure.dart';
@@ -20,7 +20,7 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
   @override
   FailureOr<ClipCollection> create(ClipCollection collection) async {
     try {
-      collection = collection.copyWith(modified: now())..applyId(collection);
+      collection = collection.copyWith(modified: now());
       ClipCollection result = await remote.create(collection);
       result = await local.create(result);
       return Right(result);
@@ -81,7 +81,7 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
   @override
   FailureOr<ClipCollection> update(ClipCollection collection) async {
     try {
-      collection = collection.copyWith(modified: now())..applyId(collection);
+      collection = collection.copyWith(modified: now());
       ClipCollection result = await remote.update(collection);
       result = await local.update(result);
       return Right(result);

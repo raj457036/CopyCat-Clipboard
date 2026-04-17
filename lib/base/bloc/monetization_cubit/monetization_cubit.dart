@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/data/services/monetization_service.dart';
-import 'package:clipboard/base/db/subscription/subscription.dart';
+import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/repositories/subscription.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';

@@ -12,7 +12,8 @@ part of 'monetization_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$MonetizationState {
@@ -20,47 +21,42 @@ mixin _$MonetizationState {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function(Subscription subscription) active,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function(Subscription subscription)? active,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function(Subscription subscription)? active,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(MonetizationUnknown value) unknown,
     required TResult Function(MonetizationActive value) active,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(MonetizationUnknown value)? unknown,
     TResult? Function(MonetizationActive value)? active,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(MonetizationUnknown value)? unknown,
     TResult Function(MonetizationActive value)? active,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $MonetizationStateCopyWith<$Res> {
   factory $MonetizationStateCopyWith(
-          MonetizationState value, $Res Function(MonetizationState) then) =
-      _$MonetizationStateCopyWithImpl<$Res, MonetizationState>;
+    MonetizationState value,
+    $Res Function(MonetizationState) then,
+  ) = _$MonetizationStateCopyWithImpl<$Res, MonetizationState>;
 }
 
 /// @nodoc
@@ -79,18 +75,20 @@ class _$MonetizationStateCopyWithImpl<$Res, $Val extends MonetizationState>
 
 /// @nodoc
 abstract class _$$MonetizationUnknownImplCopyWith<$Res> {
-  factory _$$MonetizationUnknownImplCopyWith(_$MonetizationUnknownImpl value,
-          $Res Function(_$MonetizationUnknownImpl) then) =
-      __$$MonetizationUnknownImplCopyWithImpl<$Res>;
+  factory _$$MonetizationUnknownImplCopyWith(
+    _$MonetizationUnknownImpl value,
+    $Res Function(_$MonetizationUnknownImpl) then,
+  ) = __$$MonetizationUnknownImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$MonetizationUnknownImplCopyWithImpl<$Res>
     extends _$MonetizationStateCopyWithImpl<$Res, _$MonetizationUnknownImpl>
     implements _$$MonetizationUnknownImplCopyWith<$Res> {
-  __$$MonetizationUnknownImplCopyWithImpl(_$MonetizationUnknownImpl _value,
-      $Res Function(_$MonetizationUnknownImpl) _then)
-      : super(_value, _then);
+  __$$MonetizationUnknownImplCopyWithImpl(
+    _$MonetizationUnknownImpl _value,
+    $Res Function(_$MonetizationUnknownImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of MonetizationState
   /// with the given fields replaced by the non-null parameter values.
@@ -185,9 +183,10 @@ abstract class MonetizationUnknown implements MonetizationState {
 
 /// @nodoc
 abstract class _$$MonetizationActiveImplCopyWith<$Res> {
-  factory _$$MonetizationActiveImplCopyWith(_$MonetizationActiveImpl value,
-          $Res Function(_$MonetizationActiveImpl) then) =
-      __$$MonetizationActiveImplCopyWithImpl<$Res>;
+  factory _$$MonetizationActiveImplCopyWith(
+    _$MonetizationActiveImpl value,
+    $Res Function(_$MonetizationActiveImpl) then,
+  ) = __$$MonetizationActiveImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Subscription subscription});
 
@@ -198,23 +197,24 @@ abstract class _$$MonetizationActiveImplCopyWith<$Res> {
 class __$$MonetizationActiveImplCopyWithImpl<$Res>
     extends _$MonetizationStateCopyWithImpl<$Res, _$MonetizationActiveImpl>
     implements _$$MonetizationActiveImplCopyWith<$Res> {
-  __$$MonetizationActiveImplCopyWithImpl(_$MonetizationActiveImpl _value,
-      $Res Function(_$MonetizationActiveImpl) _then)
-      : super(_value, _then);
+  __$$MonetizationActiveImplCopyWithImpl(
+    _$MonetizationActiveImpl _value,
+    $Res Function(_$MonetizationActiveImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of MonetizationState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? subscription = null,
-  }) {
-    return _then(_$MonetizationActiveImpl(
-      subscription: null == subscription
-          ? _value.subscription
-          : subscription // ignore: cast_nullable_to_non_nullable
-              as Subscription,
-    ));
+  $Res call({Object? subscription = null}) {
+    return _then(
+      _$MonetizationActiveImpl(
+        subscription: null == subscription
+            ? _value.subscription
+            : subscription // ignore: cast_nullable_to_non_nullable
+                  as Subscription,
+      ),
+    );
   }
 
   /// Create a copy of MonetizationState
@@ -260,7 +260,9 @@ class _$MonetizationActiveImpl implements MonetizationActive {
   @pragma('vm:prefer-inline')
   _$$MonetizationActiveImplCopyWith<_$MonetizationActiveImpl> get copyWith =>
       __$$MonetizationActiveImplCopyWithImpl<_$MonetizationActiveImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs

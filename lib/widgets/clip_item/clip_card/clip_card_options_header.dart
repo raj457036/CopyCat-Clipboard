@@ -4,8 +4,8 @@ import 'package:clipboard/widgets/clip_item/leading_option.dart';
 import 'package:clipboard/widgets/clip_item/primary_clip_action_button.dart';
 import 'package:clipboard/widgets/clip_item/primary_hover_action_button.dart';
 import 'package:clipboard/widgets/clip_item/secondary_clip_action_button.dart';
-import 'package:clipboard/base/db/app_config/appconfig.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:flutter/material.dart';
 

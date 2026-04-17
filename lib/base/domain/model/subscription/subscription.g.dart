@@ -1,0 +1,86 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'subscription.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$SubscriptionImpl _$$SubscriptionImplFromJson(Map<String, dynamic> json) =>
+    _$SubscriptionImpl(
+      serverId: (json['id'] as num?)?.toInt(),
+      created: const DateTimeConverter().fromJson(json['created'] as String),
+      modified: const DateTimeConverter().fromJson(json['modified'] as String),
+      userId: json['userId'] as String,
+      planName: json['planName'] as String,
+      subId: json['subId'] as String,
+      source: json['source'] as String,
+      trialStart: _$JsonConverterFromJson<String, DateTime>(
+        json['trialStart'],
+        const DateTimeConverter().fromJson,
+      ),
+      trialEnd: _$JsonConverterFromJson<String, DateTime>(
+        json['trialEnd'],
+        const DateTimeConverter().fromJson,
+      ),
+      collections: (json['collections'] as num?)?.toInt() ?? 3,
+      itemsPerCollection: (json['itemsPerCollection'] as num?)?.toInt() ?? 50,
+      dragNdrop: json['dragNdrop'] as bool? ?? false,
+      theming: json['theming'] as bool? ?? false,
+      syncHours: (json['syncHr'] as num?)?.toInt() ?? 24,
+      ads: json['ads'] as bool? ?? true,
+      syncInterval: (json['syncInt'] as num?)?.toInt() ?? $45S,
+      edit: json['edit'] as bool? ?? false,
+      activeTill: _$JsonConverterFromJson<String, DateTime>(
+        json['activeTill'],
+        const DateTimeConverter().fromJson,
+      ),
+      maxSyncDevices: (json['devices'] as num?)?.toInt() ?? 3,
+      customExclusionRules: json['cers'] as bool? ?? false,
+      grants: (json['grants'] as num?)?.toInt() ?? 0,
+      tkn: json['tkn'] as String?,
+    );
+
+Map<String, dynamic> _$$SubscriptionImplToJson(_$SubscriptionImpl instance) =>
+    <String, dynamic>{
+      'created': const DateTimeConverter().toJson(instance.created),
+      'modified': const DateTimeConverter().toJson(instance.modified),
+      'userId': instance.userId,
+      'planName': instance.planName,
+      'subId': instance.subId,
+      'source': instance.source,
+      'trialStart': _$JsonConverterToJson<String, DateTime>(
+        instance.trialStart,
+        const DateTimeConverter().toJson,
+      ),
+      'trialEnd': _$JsonConverterToJson<String, DateTime>(
+        instance.trialEnd,
+        const DateTimeConverter().toJson,
+      ),
+      'collections': instance.collections,
+      'itemsPerCollection': instance.itemsPerCollection,
+      'dragNdrop': instance.dragNdrop,
+      'theming': instance.theming,
+      'syncHr': instance.syncHours,
+      'ads': instance.ads,
+      'syncInt': instance.syncInterval,
+      'edit': instance.edit,
+      'activeTill': _$JsonConverterToJson<String, DateTime>(
+        instance.activeTill,
+        const DateTimeConverter().toJson,
+      ),
+      'devices': instance.maxSyncDevices,
+      'cers': instance.customExclusionRules,
+      'grants': instance.grants,
+      'tkn': instance.tkn,
+    };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) => json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) => value == null ? null : toJson(value);

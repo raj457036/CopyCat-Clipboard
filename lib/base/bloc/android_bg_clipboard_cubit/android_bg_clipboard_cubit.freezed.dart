@@ -12,7 +12,8 @@ part of 'android_bg_clipboard_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$AndroidBgClipboardState {
@@ -22,16 +23,14 @@ mixin _$AndroidBgClipboardState {
     required TResult Function() reading,
     required TResult Function() completed,
     required TResult Function(Failure? failure) failed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function()? reading,
     TResult? Function()? completed,
     TResult? Function(Failure? failure)? failed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
@@ -39,24 +38,21 @@ mixin _$AndroidBgClipboardState {
     TResult Function()? completed,
     TResult Function(Failure? failure)? failed,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(AndroidBgClipboardUnknown value) unknown,
     required TResult Function(AndroidBgClipboardReading value) reading,
     required TResult Function(AndroidBgClipboardCompleted value) completed,
     required TResult Function(AndroidBgClipboardFailed value) failed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(AndroidBgClipboardUnknown value)? unknown,
     TResult? Function(AndroidBgClipboardReading value)? reading,
     TResult? Function(AndroidBgClipboardCompleted value)? completed,
     TResult? Function(AndroidBgClipboardFailed value)? failed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(AndroidBgClipboardUnknown value)? unknown,
@@ -64,20 +60,22 @@ mixin _$AndroidBgClipboardState {
     TResult Function(AndroidBgClipboardCompleted value)? completed,
     TResult Function(AndroidBgClipboardFailed value)? failed,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $AndroidBgClipboardStateCopyWith<$Res> {
-  factory $AndroidBgClipboardStateCopyWith(AndroidBgClipboardState value,
-          $Res Function(AndroidBgClipboardState) then) =
-      _$AndroidBgClipboardStateCopyWithImpl<$Res, AndroidBgClipboardState>;
+  factory $AndroidBgClipboardStateCopyWith(
+    AndroidBgClipboardState value,
+    $Res Function(AndroidBgClipboardState) then,
+  ) = _$AndroidBgClipboardStateCopyWithImpl<$Res, AndroidBgClipboardState>;
 }
 
 /// @nodoc
-class _$AndroidBgClipboardStateCopyWithImpl<$Res,
-        $Val extends AndroidBgClipboardState>
+class _$AndroidBgClipboardStateCopyWithImpl<
+  $Res,
+  $Val extends AndroidBgClipboardState
+>
     implements $AndroidBgClipboardStateCopyWith<$Res> {
   _$AndroidBgClipboardStateCopyWithImpl(this._value, this._then);
 
@@ -93,20 +91,23 @@ class _$AndroidBgClipboardStateCopyWithImpl<$Res,
 /// @nodoc
 abstract class _$$AndroidBgClipboardUnknownImplCopyWith<$Res> {
   factory _$$AndroidBgClipboardUnknownImplCopyWith(
-          _$AndroidBgClipboardUnknownImpl value,
-          $Res Function(_$AndroidBgClipboardUnknownImpl) then) =
-      __$$AndroidBgClipboardUnknownImplCopyWithImpl<$Res>;
+    _$AndroidBgClipboardUnknownImpl value,
+    $Res Function(_$AndroidBgClipboardUnknownImpl) then,
+  ) = __$$AndroidBgClipboardUnknownImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$AndroidBgClipboardUnknownImplCopyWithImpl<$Res>
-    extends _$AndroidBgClipboardStateCopyWithImpl<$Res,
-        _$AndroidBgClipboardUnknownImpl>
+    extends
+        _$AndroidBgClipboardStateCopyWithImpl<
+          $Res,
+          _$AndroidBgClipboardUnknownImpl
+        >
     implements _$$AndroidBgClipboardUnknownImplCopyWith<$Res> {
   __$$AndroidBgClipboardUnknownImplCopyWithImpl(
-      _$AndroidBgClipboardUnknownImpl _value,
-      $Res Function(_$AndroidBgClipboardUnknownImpl) _then)
-      : super(_value, _then);
+    _$AndroidBgClipboardUnknownImpl _value,
+    $Res Function(_$AndroidBgClipboardUnknownImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AndroidBgClipboardState
   /// with the given fields replaced by the non-null parameter values.
@@ -214,20 +215,23 @@ abstract class AndroidBgClipboardUnknown implements AndroidBgClipboardState {
 /// @nodoc
 abstract class _$$AndroidBgClipboardReadingImplCopyWith<$Res> {
   factory _$$AndroidBgClipboardReadingImplCopyWith(
-          _$AndroidBgClipboardReadingImpl value,
-          $Res Function(_$AndroidBgClipboardReadingImpl) then) =
-      __$$AndroidBgClipboardReadingImplCopyWithImpl<$Res>;
+    _$AndroidBgClipboardReadingImpl value,
+    $Res Function(_$AndroidBgClipboardReadingImpl) then,
+  ) = __$$AndroidBgClipboardReadingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$AndroidBgClipboardReadingImplCopyWithImpl<$Res>
-    extends _$AndroidBgClipboardStateCopyWithImpl<$Res,
-        _$AndroidBgClipboardReadingImpl>
+    extends
+        _$AndroidBgClipboardStateCopyWithImpl<
+          $Res,
+          _$AndroidBgClipboardReadingImpl
+        >
     implements _$$AndroidBgClipboardReadingImplCopyWith<$Res> {
   __$$AndroidBgClipboardReadingImplCopyWithImpl(
-      _$AndroidBgClipboardReadingImpl _value,
-      $Res Function(_$AndroidBgClipboardReadingImpl) _then)
-      : super(_value, _then);
+    _$AndroidBgClipboardReadingImpl _value,
+    $Res Function(_$AndroidBgClipboardReadingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AndroidBgClipboardState
   /// with the given fields replaced by the non-null parameter values.
@@ -335,20 +339,23 @@ abstract class AndroidBgClipboardReading implements AndroidBgClipboardState {
 /// @nodoc
 abstract class _$$AndroidBgClipboardCompletedImplCopyWith<$Res> {
   factory _$$AndroidBgClipboardCompletedImplCopyWith(
-          _$AndroidBgClipboardCompletedImpl value,
-          $Res Function(_$AndroidBgClipboardCompletedImpl) then) =
-      __$$AndroidBgClipboardCompletedImplCopyWithImpl<$Res>;
+    _$AndroidBgClipboardCompletedImpl value,
+    $Res Function(_$AndroidBgClipboardCompletedImpl) then,
+  ) = __$$AndroidBgClipboardCompletedImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$AndroidBgClipboardCompletedImplCopyWithImpl<$Res>
-    extends _$AndroidBgClipboardStateCopyWithImpl<$Res,
-        _$AndroidBgClipboardCompletedImpl>
+    extends
+        _$AndroidBgClipboardStateCopyWithImpl<
+          $Res,
+          _$AndroidBgClipboardCompletedImpl
+        >
     implements _$$AndroidBgClipboardCompletedImplCopyWith<$Res> {
   __$$AndroidBgClipboardCompletedImplCopyWithImpl(
-      _$AndroidBgClipboardCompletedImpl _value,
-      $Res Function(_$AndroidBgClipboardCompletedImpl) _then)
-      : super(_value, _then);
+    _$AndroidBgClipboardCompletedImpl _value,
+    $Res Function(_$AndroidBgClipboardCompletedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AndroidBgClipboardState
   /// with the given fields replaced by the non-null parameter values.
@@ -457,36 +464,39 @@ abstract class AndroidBgClipboardCompleted implements AndroidBgClipboardState {
 /// @nodoc
 abstract class _$$AndroidBgClipboardFailedImplCopyWith<$Res> {
   factory _$$AndroidBgClipboardFailedImplCopyWith(
-          _$AndroidBgClipboardFailedImpl value,
-          $Res Function(_$AndroidBgClipboardFailedImpl) then) =
-      __$$AndroidBgClipboardFailedImplCopyWithImpl<$Res>;
+    _$AndroidBgClipboardFailedImpl value,
+    $Res Function(_$AndroidBgClipboardFailedImpl) then,
+  ) = __$$AndroidBgClipboardFailedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Failure? failure});
 }
 
 /// @nodoc
 class __$$AndroidBgClipboardFailedImplCopyWithImpl<$Res>
-    extends _$AndroidBgClipboardStateCopyWithImpl<$Res,
-        _$AndroidBgClipboardFailedImpl>
+    extends
+        _$AndroidBgClipboardStateCopyWithImpl<
+          $Res,
+          _$AndroidBgClipboardFailedImpl
+        >
     implements _$$AndroidBgClipboardFailedImplCopyWith<$Res> {
   __$$AndroidBgClipboardFailedImplCopyWithImpl(
-      _$AndroidBgClipboardFailedImpl _value,
-      $Res Function(_$AndroidBgClipboardFailedImpl) _then)
-      : super(_value, _then);
+    _$AndroidBgClipboardFailedImpl _value,
+    $Res Function(_$AndroidBgClipboardFailedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AndroidBgClipboardState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? failure = freezed,
-  }) {
-    return _then(_$AndroidBgClipboardFailedImpl(
-      freezed == failure
-          ? _value.failure
-          : failure // ignore: cast_nullable_to_non_nullable
-              as Failure?,
-    ));
+  $Res call({Object? failure = freezed}) {
+    return _then(
+      _$AndroidBgClipboardFailedImpl(
+        freezed == failure
+            ? _value.failure
+            : failure // ignore: cast_nullable_to_non_nullable
+                  as Failure?,
+      ),
+    );
   }
 }
 
@@ -520,8 +530,10 @@ class _$AndroidBgClipboardFailedImpl implements AndroidBgClipboardFailed {
   @override
   @pragma('vm:prefer-inline')
   _$$AndroidBgClipboardFailedImplCopyWith<_$AndroidBgClipboardFailedImpl>
-      get copyWith => __$$AndroidBgClipboardFailedImplCopyWithImpl<
-          _$AndroidBgClipboardFailedImpl>(this, _$identity);
+  get copyWith =>
+      __$$AndroidBgClipboardFailedImplCopyWithImpl<
+        _$AndroidBgClipboardFailedImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -608,5 +620,5 @@ abstract class AndroidBgClipboardFailed implements AndroidBgClipboardState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AndroidBgClipboardFailedImplCopyWith<_$AndroidBgClipboardFailedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }

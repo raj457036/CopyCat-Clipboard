@@ -3,7 +3,7 @@ import 'dart:io' as io;
 
 import 'package:clipboard/base/constants/numbers/file_sizes.dart';
 import 'package:clipboard/base/data/services/google_services.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -63,7 +63,7 @@ class GoogleDriveService implements DriveService {
     StreamSubscription? subscription;
 
     final completer = Completer();
-    _downloadOperations[item.id] = completer;
+    _downloadOperations[item.id!] = completer;
     completer.future.then((value) => client.close());
 
     if (onProgress != null) {
@@ -88,7 +88,7 @@ class GoogleDriveService implements DriveService {
       final file = io.File(filePath).openWrite();
 
       await file.addStream(media.stream);
-      return Right(item.copyWith(localPath: filePath)..applyId(item));
+      return Right(item.copyWith(localPath: filePath));
     } catch (e) {
       logger.e(e, error: e);
       return Left(Failure.fromException(e));
@@ -107,7 +107,7 @@ class GoogleDriveService implements DriveService {
     final client = authClient;
 
     final completer = Completer();
-    _uploadOperations[item.id] = completer;
+    _uploadOperations[item.id!] = completer;
     completer.future.then((value) => client.close());
     StreamSubscription? subscription;
     try {
@@ -144,7 +144,7 @@ class GoogleDriveService implements DriveService {
 
       item = item.copyWith(
         driveFileId: result.id,
-      )..applyId(item);
+      );
       logger.i("File uploaded successfully!");
       return Right(item);
     } catch (e) {

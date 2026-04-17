@@ -1,6 +1,6 @@
 import 'package:clipboard/base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
-import 'package:clipboard/base/db/app_config/appconfig.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/pages/home/widgets/paste_stack_body.dart';
 import 'package:clipboard/widgets/app_layout_builder.dart';
 import 'package:clipboard/widgets/can_paste_builder.dart';

@@ -1,4 +1,4 @@
-import 'package:clipboard/base/db/sync_status/syncstatus.dart';
+import 'package:clipboard/base/domain/model/sync_status/syncstatus.dart';
 import 'package:clipboard/base/domain/repositories/restoration_status.dart';
 import 'package:clipboard/base/domain/sources/restoration_status.dart';
 import 'package:clipboard/common/failure.dart';

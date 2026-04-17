@@ -1,5 +1,5 @@
-import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/sources/sync_clipboard.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/common/paginated_results.dart';

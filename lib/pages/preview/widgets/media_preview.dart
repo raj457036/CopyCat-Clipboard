@@ -4,7 +4,7 @@ import 'package:blurhash_dart/blurhash_dart.dart';
 import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/base/constants/strings/asset_constants.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';

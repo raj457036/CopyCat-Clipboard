@@ -1,6 +1,7 @@
 // ignore_for_file: invalid_use_of_protected_member
 
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/data/isar/adapters/isar_clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/sort.dart';
@@ -18,11 +19,14 @@ class LocalClipboardSource implements ClipboardSource {
 
   LocalClipboardSource(this.db, @Named('device_id') this.deviceId);
 
+  IsarCollection<IsarClipboardItem> get _collection =>
+      db.collection<IsarClipboardItem>();
+
   @override
   Future<ClipboardItem> create(ClipboardItem item) async {
-    final id = await db.writeTxn(() => db.clipboardItems.put(item));
-    item.id = id;
-    return item;
+    final isarItem = IsarClipboardItem.fromDomain(item);
+    final id = await db.writeTxn(() => _collection.put(isarItem));
+    return item.copyWith(id: id);
   }
 
   @override
@@ -39,12 +43,13 @@ class LocalClipboardSource implements ClipboardSource {
     DateTime? to,
     bool? encrypted,
   }) async {
-    QueryBuilder<ClipboardItem, ClipboardItem, QFilterCondition> resultsQuery;
+    QueryBuilder<IsarClipboardItem, IsarClipboardItem, QFilterCondition>
+        resultsQuery;
 
     if (search == null && collectionId == null) {
-      resultsQuery = db.clipboardItems.filter();
+      resultsQuery = _collection.filter();
     } else {
-      resultsQuery = db.clipboardItems.filter();
+      resultsQuery = _collection.filter();
 
       if (collectionId != null) {
         resultsQuery = resultsQuery.collectionIdEqualTo(collectionId);
@@ -94,7 +99,8 @@ class LocalClipboardSource implements ClipboardSource {
 
     var query = resultsQuery.deletedAtIsNull();
 
-    QueryBuilder<ClipboardItem, ClipboardItem, QAfterSortBy> sortedQuery;
+    QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+        sortedQuery;
 
     switch (sortBy) {
       case ClipboardSortKey.modified:
@@ -119,7 +125,8 @@ class LocalClipboardSource implements ClipboardSource {
 
     var paginatedQuery = sortedQuery.offset(offset).limit(limit).findAll();
 
-    final results = await db.txn(() async => await paginatedQuery);
+    final isarResults = await db.txn(() async => await paginatedQuery);
+    final results = isarResults.map((e) => e.toDomain()).toList();
 
     return PaginatedResult(
       results: results,
@@ -129,39 +136,39 @@ class LocalClipboardSource implements ClipboardSource {
 
   @override
   Future<ClipboardItem> update(ClipboardItem item) async {
-    ClipboardItem updated = item.copyWith(
-      modified: now(),
-    )..applyId(item);
+    final updated = item.copyWith(modified: now());
+    final isarItem = IsarClipboardItem.fromDomain(updated);
 
     await db.writeTxn(
-      () => db.clipboardItems.put(updated),
+      () => _collection.put(isarItem),
     );
 
-    updated.id = item.id;
     return updated;
   }
 
   @override
   Future<bool> delete(ClipboardItem item) async {
-    final result = await db.writeTxn(() => db.clipboardItems.delete(item.id));
+    if (item.id == null) return false;
+    final result =
+        await db.writeTxn(() => _collection.delete(item.id!));
     return result;
   }
 
   @override
   Future<void> deleteAll() async {
-    await db.writeTxn(() => db.clipboardItems.clear());
+    await db.writeTxn(() => _collection.clear());
   }
 
   @override
   Future<ClipboardItem?> get({int? id, int? serverId}) async {
     if (serverId != null) {
       final result = await db.txn(() =>
-          db.clipboardItems.filter().serverIdEqualTo(serverId).findFirst());
-      return result;
+          _collection.filter().serverIdEqualTo(serverId).findFirst());
+      return result?.toDomain();
     }
     if (id != null) {
-      final result = await db.txn(() => db.clipboardItems.get(id));
-      return result;
+      final result = await db.txn(() => _collection.get(id));
+      return result?.toDomain();
     }
     return null;
   }
@@ -170,7 +177,7 @@ class LocalClipboardSource implements ClipboardSource {
   Future<ClipboardItem?> getLatestFromOthers({bool? synced}) async {
     final result = await db.txn(() {
       if (synced == true) {
-        final q = db.clipboardItems
+        final q = _collection
             .filter()
             .not()
             .deviceIdEqualTo(deviceId)
@@ -179,20 +186,20 @@ class LocalClipboardSource implements ClipboardSource {
             .sortByLastSyncedDesc();
         return q.findFirst();
       }
-      final q = db.clipboardItems
+      final q = _collection
           .filter()
           .not()
           .deviceIdEqualTo(deviceId)
           .sortByModifiedDesc();
       return q.findFirst();
     });
-    return result;
+    return result?.toDomain();
   }
 
   @override
   Future<int> fetchEncryptedCount() async {
     final count = await db.txn(() async {
-      return db.clipboardItems.filter().encryptedEqualTo(true).count();
+      return _collection.filter().encryptedEqualTo(true).count();
     });
     return count;
   }
@@ -200,9 +207,12 @@ class LocalClipboardSource implements ClipboardSource {
   @override
   Future<List<ClipboardItem>> deleteMany(List<ClipboardItem> items) async {
     final result = await db.writeTxn(() async {
-      final q = db.clipboardItems
+      final q = _collection
           .filter()
-          .anyOf(items, (q, item) => q.idEqualTo(item.id))
+          .anyOf(
+              items,
+              (q, item) =>
+                  item.id != null ? q.isarIdEqualTo(item.id!) : q.isarIdEqualTo(-1))
           .or()
           .anyOf(
               items,
@@ -213,8 +223,8 @@ class LocalClipboardSource implements ClipboardSource {
 
       // Delete cached media
       logger.i("Deleting Cached Media");
-      for (var item in clipsWithLocalCache) {
-        await item.cleanUp();
+      for (var isarItem in clipsWithLocalCache) {
+        await isarItem.toDomain().cleanUp();
       }
 
       // Find all items to delete at once
@@ -222,7 +232,7 @@ class LocalClipboardSource implements ClipboardSource {
 
       await q.deleteAll();
 
-      return deleted;
+      return deleted.map((e) => e.toDomain()).toList();
     });
     return result;
   }
@@ -235,9 +245,10 @@ class LocalClipboardSource implements ClipboardSource {
       final existingClip = await get(serverId: item.serverId!);
       if (existingClip != null) {
         item = item.copyWith(
+          id: existingClip.id,
           localPath: existingClip.localPath,
           localOnly: existingClip.localOnly,
-        )..applyId(existingClip);
+        );
         return update(item);
       }
     }
@@ -252,20 +263,19 @@ class LocalClipboardSource implements ClipboardSource {
   @override
   Future<int> getClipCounts([DateTime? fromTs]) async {
     final count = await db.txn(() async {
-      return db.clipboardItems.count();
+      return _collection.count();
     });
     return count;
   }
 
   @override
   Future<List<ClipboardItem>> updateAll(List<ClipboardItem> items) async {
-    final updates = items
-        .map((item) => item.copyWith(
-              modified: now(),
-            )..applyId(item))
-        .toList();
+    final updates =
+        items.map((item) => item.copyWith(modified: now())).toList();
+    final isarItems =
+        updates.map(IsarClipboardItem.fromDomain).toList();
     await db.writeTxn(
-      () => db.clipboardItems.putAll(updates),
+      () => _collection.putAll(isarItems),
     );
     return updates;
   }

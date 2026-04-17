@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 
 enum CrossSyncEventType { create, update, delete }
 

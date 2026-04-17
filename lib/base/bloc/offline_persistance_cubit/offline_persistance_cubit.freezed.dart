@@ -12,7 +12,8 @@ part of 'offline_persistance_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$OfflinePersistanceState {
@@ -23,12 +24,15 @@ mixin _$OfflinePersistanceState {
     required TResult Function(List<ClipboardItem> items) updatingItems,
     required TResult Function(List<ClipboardItem> items) deletingItems,
     required TResult Function(List<ClipboardItem> items) deletedItems,
-    required TResult Function(List<ClipboardItem> items, bool created,
-            bool synced, List<String>? updatedFields)
-        saved,
+    required TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )
+    saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
@@ -36,12 +40,15 @@ mixin _$OfflinePersistanceState {
     TResult? Function(List<ClipboardItem> items)? updatingItems,
     TResult? Function(List<ClipboardItem> items)? deletingItems,
     TResult? Function(List<ClipboardItem> items)? deletedItems,
-    TResult? Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult? Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
@@ -49,13 +56,16 @@ mixin _$OfflinePersistanceState {
     TResult Function(List<ClipboardItem> items)? updatingItems,
     TResult Function(List<ClipboardItem> items)? deletingItems,
     TResult Function(List<ClipboardItem> items)? deletedItems,
-    TResult Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult Function(Failure failure, ClipboardItem? item)? error,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OfflinePersistanceInitial value) initial,
@@ -65,8 +75,7 @@ mixin _$OfflinePersistanceState {
     required TResult Function(OfflinePersistanceDeleted value) deletedItems,
     required TResult Function(OfflinePersistanceSaved value) saved,
     required TResult Function(OfflinePersistanceError value) error,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OfflinePersistanceInitial value)? initial,
@@ -76,8 +85,7 @@ mixin _$OfflinePersistanceState {
     TResult? Function(OfflinePersistanceDeleted value)? deletedItems,
     TResult? Function(OfflinePersistanceSaved value)? saved,
     TResult? Function(OfflinePersistanceError value)? error,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OfflinePersistanceInitial value)? initial,
@@ -88,20 +96,22 @@ mixin _$OfflinePersistanceState {
     TResult Function(OfflinePersistanceSaved value)? saved,
     TResult Function(OfflinePersistanceError value)? error,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $OfflinePersistanceStateCopyWith<$Res> {
-  factory $OfflinePersistanceStateCopyWith(OfflinePersistanceState value,
-          $Res Function(OfflinePersistanceState) then) =
-      _$OfflinePersistanceStateCopyWithImpl<$Res, OfflinePersistanceState>;
+  factory $OfflinePersistanceStateCopyWith(
+    OfflinePersistanceState value,
+    $Res Function(OfflinePersistanceState) then,
+  ) = _$OfflinePersistanceStateCopyWithImpl<$Res, OfflinePersistanceState>;
 }
 
 /// @nodoc
-class _$OfflinePersistanceStateCopyWithImpl<$Res,
-        $Val extends OfflinePersistanceState>
+class _$OfflinePersistanceStateCopyWithImpl<
+  $Res,
+  $Val extends OfflinePersistanceState
+>
     implements $OfflinePersistanceStateCopyWith<$Res> {
   _$OfflinePersistanceStateCopyWithImpl(this._value, this._then);
 
@@ -117,20 +127,23 @@ class _$OfflinePersistanceStateCopyWithImpl<$Res,
 /// @nodoc
 abstract class _$$OfflinePersistanceInitialImplCopyWith<$Res> {
   factory _$$OfflinePersistanceInitialImplCopyWith(
-          _$OfflinePersistanceInitialImpl value,
-          $Res Function(_$OfflinePersistanceInitialImpl) then) =
-      __$$OfflinePersistanceInitialImplCopyWithImpl<$Res>;
+    _$OfflinePersistanceInitialImpl value,
+    $Res Function(_$OfflinePersistanceInitialImpl) then,
+  ) = __$$OfflinePersistanceInitialImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$OfflinePersistanceInitialImplCopyWithImpl<$Res>
-    extends _$OfflinePersistanceStateCopyWithImpl<$Res,
-        _$OfflinePersistanceInitialImpl>
+    extends
+        _$OfflinePersistanceStateCopyWithImpl<
+          $Res,
+          _$OfflinePersistanceInitialImpl
+        >
     implements _$$OfflinePersistanceInitialImplCopyWith<$Res> {
   __$$OfflinePersistanceInitialImplCopyWithImpl(
-      _$OfflinePersistanceInitialImpl _value,
-      $Res Function(_$OfflinePersistanceInitialImpl) _then)
-      : super(_value, _then);
+    _$OfflinePersistanceInitialImpl _value,
+    $Res Function(_$OfflinePersistanceInitialImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
@@ -164,9 +177,13 @@ class _$OfflinePersistanceInitialImpl implements OfflinePersistanceInitial {
     required TResult Function(List<ClipboardItem> items) updatingItems,
     required TResult Function(List<ClipboardItem> items) deletingItems,
     required TResult Function(List<ClipboardItem> items) deletedItems,
-    required TResult Function(List<ClipboardItem> items, bool created,
-            bool synced, List<String>? updatedFields)
-        saved,
+    required TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )
+    saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
   }) {
     return initial();
@@ -180,9 +197,13 @@ class _$OfflinePersistanceInitialImpl implements OfflinePersistanceInitial {
     TResult? Function(List<ClipboardItem> items)? updatingItems,
     TResult? Function(List<ClipboardItem> items)? deletingItems,
     TResult? Function(List<ClipboardItem> items)? deletedItems,
-    TResult? Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult? Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
   }) {
     return initial?.call();
@@ -196,9 +217,13 @@ class _$OfflinePersistanceInitialImpl implements OfflinePersistanceInitial {
     TResult Function(List<ClipboardItem> items)? updatingItems,
     TResult Function(List<ClipboardItem> items)? deletingItems,
     TResult Function(List<ClipboardItem> items)? deletedItems,
-    TResult Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult Function(Failure failure, ClipboardItem? item)? error,
     required TResult orElse(),
   }) {
@@ -262,36 +287,39 @@ abstract class OfflinePersistanceInitial implements OfflinePersistanceState {
 /// @nodoc
 abstract class _$$OfflinePersistanceCreatingImplCopyWith<$Res> {
   factory _$$OfflinePersistanceCreatingImplCopyWith(
-          _$OfflinePersistanceCreatingImpl value,
-          $Res Function(_$OfflinePersistanceCreatingImpl) then) =
-      __$$OfflinePersistanceCreatingImplCopyWithImpl<$Res>;
+    _$OfflinePersistanceCreatingImpl value,
+    $Res Function(_$OfflinePersistanceCreatingImpl) then,
+  ) = __$$OfflinePersistanceCreatingImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<ClipboardItem> items});
 }
 
 /// @nodoc
 class __$$OfflinePersistanceCreatingImplCopyWithImpl<$Res>
-    extends _$OfflinePersistanceStateCopyWithImpl<$Res,
-        _$OfflinePersistanceCreatingImpl>
+    extends
+        _$OfflinePersistanceStateCopyWithImpl<
+          $Res,
+          _$OfflinePersistanceCreatingImpl
+        >
     implements _$$OfflinePersistanceCreatingImplCopyWith<$Res> {
   __$$OfflinePersistanceCreatingImplCopyWithImpl(
-      _$OfflinePersistanceCreatingImpl _value,
-      $Res Function(_$OfflinePersistanceCreatingImpl) _then)
-      : super(_value, _then);
+    _$OfflinePersistanceCreatingImpl _value,
+    $Res Function(_$OfflinePersistanceCreatingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? items = null,
-  }) {
-    return _then(_$OfflinePersistanceCreatingImpl(
-      null == items
-          ? _value._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<ClipboardItem>,
-    ));
+  $Res call({Object? items = null}) {
+    return _then(
+      _$OfflinePersistanceCreatingImpl(
+        null == items
+            ? _value._items
+            : items // ignore: cast_nullable_to_non_nullable
+                  as List<ClipboardItem>,
+      ),
+    );
   }
 }
 
@@ -299,7 +327,7 @@ class __$$OfflinePersistanceCreatingImplCopyWithImpl<$Res>
 
 class _$OfflinePersistanceCreatingImpl implements OfflinePersistanceCreating {
   const _$OfflinePersistanceCreatingImpl(final List<ClipboardItem> items)
-      : _items = items;
+    : _items = items;
 
   final List<ClipboardItem> _items;
   @override
@@ -332,8 +360,10 @@ class _$OfflinePersistanceCreatingImpl implements OfflinePersistanceCreating {
   @override
   @pragma('vm:prefer-inline')
   _$$OfflinePersistanceCreatingImplCopyWith<_$OfflinePersistanceCreatingImpl>
-      get copyWith => __$$OfflinePersistanceCreatingImplCopyWithImpl<
-          _$OfflinePersistanceCreatingImpl>(this, _$identity);
+  get copyWith =>
+      __$$OfflinePersistanceCreatingImplCopyWithImpl<
+        _$OfflinePersistanceCreatingImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -343,9 +373,13 @@ class _$OfflinePersistanceCreatingImpl implements OfflinePersistanceCreating {
     required TResult Function(List<ClipboardItem> items) updatingItems,
     required TResult Function(List<ClipboardItem> items) deletingItems,
     required TResult Function(List<ClipboardItem> items) deletedItems,
-    required TResult Function(List<ClipboardItem> items, bool created,
-            bool synced, List<String>? updatedFields)
-        saved,
+    required TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )
+    saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
   }) {
     return creatingItems(items);
@@ -359,9 +393,13 @@ class _$OfflinePersistanceCreatingImpl implements OfflinePersistanceCreating {
     TResult? Function(List<ClipboardItem> items)? updatingItems,
     TResult? Function(List<ClipboardItem> items)? deletingItems,
     TResult? Function(List<ClipboardItem> items)? deletedItems,
-    TResult? Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult? Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
   }) {
     return creatingItems?.call(items);
@@ -375,9 +413,13 @@ class _$OfflinePersistanceCreatingImpl implements OfflinePersistanceCreating {
     TResult Function(List<ClipboardItem> items)? updatingItems,
     TResult Function(List<ClipboardItem> items)? deletingItems,
     TResult Function(List<ClipboardItem> items)? deletedItems,
-    TResult Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult Function(Failure failure, ClipboardItem? item)? error,
     required TResult orElse(),
   }) {
@@ -444,42 +486,45 @@ abstract class OfflinePersistanceCreating implements OfflinePersistanceState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$OfflinePersistanceCreatingImplCopyWith<_$OfflinePersistanceCreatingImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$OfflinePersistanceUpdatingImplCopyWith<$Res> {
   factory _$$OfflinePersistanceUpdatingImplCopyWith(
-          _$OfflinePersistanceUpdatingImpl value,
-          $Res Function(_$OfflinePersistanceUpdatingImpl) then) =
-      __$$OfflinePersistanceUpdatingImplCopyWithImpl<$Res>;
+    _$OfflinePersistanceUpdatingImpl value,
+    $Res Function(_$OfflinePersistanceUpdatingImpl) then,
+  ) = __$$OfflinePersistanceUpdatingImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<ClipboardItem> items});
 }
 
 /// @nodoc
 class __$$OfflinePersistanceUpdatingImplCopyWithImpl<$Res>
-    extends _$OfflinePersistanceStateCopyWithImpl<$Res,
-        _$OfflinePersistanceUpdatingImpl>
+    extends
+        _$OfflinePersistanceStateCopyWithImpl<
+          $Res,
+          _$OfflinePersistanceUpdatingImpl
+        >
     implements _$$OfflinePersistanceUpdatingImplCopyWith<$Res> {
   __$$OfflinePersistanceUpdatingImplCopyWithImpl(
-      _$OfflinePersistanceUpdatingImpl _value,
-      $Res Function(_$OfflinePersistanceUpdatingImpl) _then)
-      : super(_value, _then);
+    _$OfflinePersistanceUpdatingImpl _value,
+    $Res Function(_$OfflinePersistanceUpdatingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? items = null,
-  }) {
-    return _then(_$OfflinePersistanceUpdatingImpl(
-      null == items
-          ? _value._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<ClipboardItem>,
-    ));
+  $Res call({Object? items = null}) {
+    return _then(
+      _$OfflinePersistanceUpdatingImpl(
+        null == items
+            ? _value._items
+            : items // ignore: cast_nullable_to_non_nullable
+                  as List<ClipboardItem>,
+      ),
+    );
   }
 }
 
@@ -487,7 +532,7 @@ class __$$OfflinePersistanceUpdatingImplCopyWithImpl<$Res>
 
 class _$OfflinePersistanceUpdatingImpl implements OfflinePersistanceUpdating {
   const _$OfflinePersistanceUpdatingImpl(final List<ClipboardItem> items)
-      : _items = items;
+    : _items = items;
 
   final List<ClipboardItem> _items;
   @override
@@ -520,8 +565,10 @@ class _$OfflinePersistanceUpdatingImpl implements OfflinePersistanceUpdating {
   @override
   @pragma('vm:prefer-inline')
   _$$OfflinePersistanceUpdatingImplCopyWith<_$OfflinePersistanceUpdatingImpl>
-      get copyWith => __$$OfflinePersistanceUpdatingImplCopyWithImpl<
-          _$OfflinePersistanceUpdatingImpl>(this, _$identity);
+  get copyWith =>
+      __$$OfflinePersistanceUpdatingImplCopyWithImpl<
+        _$OfflinePersistanceUpdatingImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -531,9 +578,13 @@ class _$OfflinePersistanceUpdatingImpl implements OfflinePersistanceUpdating {
     required TResult Function(List<ClipboardItem> items) updatingItems,
     required TResult Function(List<ClipboardItem> items) deletingItems,
     required TResult Function(List<ClipboardItem> items) deletedItems,
-    required TResult Function(List<ClipboardItem> items, bool created,
-            bool synced, List<String>? updatedFields)
-        saved,
+    required TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )
+    saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
   }) {
     return updatingItems(items);
@@ -547,9 +598,13 @@ class _$OfflinePersistanceUpdatingImpl implements OfflinePersistanceUpdating {
     TResult? Function(List<ClipboardItem> items)? updatingItems,
     TResult? Function(List<ClipboardItem> items)? deletingItems,
     TResult? Function(List<ClipboardItem> items)? deletedItems,
-    TResult? Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult? Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
   }) {
     return updatingItems?.call(items);
@@ -563,9 +618,13 @@ class _$OfflinePersistanceUpdatingImpl implements OfflinePersistanceUpdating {
     TResult Function(List<ClipboardItem> items)? updatingItems,
     TResult Function(List<ClipboardItem> items)? deletingItems,
     TResult Function(List<ClipboardItem> items)? deletedItems,
-    TResult Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult Function(Failure failure, ClipboardItem? item)? error,
     required TResult orElse(),
   }) {
@@ -632,42 +691,45 @@ abstract class OfflinePersistanceUpdating implements OfflinePersistanceState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$OfflinePersistanceUpdatingImplCopyWith<_$OfflinePersistanceUpdatingImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$OfflinePersistanceDeletingImplCopyWith<$Res> {
   factory _$$OfflinePersistanceDeletingImplCopyWith(
-          _$OfflinePersistanceDeletingImpl value,
-          $Res Function(_$OfflinePersistanceDeletingImpl) then) =
-      __$$OfflinePersistanceDeletingImplCopyWithImpl<$Res>;
+    _$OfflinePersistanceDeletingImpl value,
+    $Res Function(_$OfflinePersistanceDeletingImpl) then,
+  ) = __$$OfflinePersistanceDeletingImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<ClipboardItem> items});
 }
 
 /// @nodoc
 class __$$OfflinePersistanceDeletingImplCopyWithImpl<$Res>
-    extends _$OfflinePersistanceStateCopyWithImpl<$Res,
-        _$OfflinePersistanceDeletingImpl>
+    extends
+        _$OfflinePersistanceStateCopyWithImpl<
+          $Res,
+          _$OfflinePersistanceDeletingImpl
+        >
     implements _$$OfflinePersistanceDeletingImplCopyWith<$Res> {
   __$$OfflinePersistanceDeletingImplCopyWithImpl(
-      _$OfflinePersistanceDeletingImpl _value,
-      $Res Function(_$OfflinePersistanceDeletingImpl) _then)
-      : super(_value, _then);
+    _$OfflinePersistanceDeletingImpl _value,
+    $Res Function(_$OfflinePersistanceDeletingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? items = null,
-  }) {
-    return _then(_$OfflinePersistanceDeletingImpl(
-      null == items
-          ? _value._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<ClipboardItem>,
-    ));
+  $Res call({Object? items = null}) {
+    return _then(
+      _$OfflinePersistanceDeletingImpl(
+        null == items
+            ? _value._items
+            : items // ignore: cast_nullable_to_non_nullable
+                  as List<ClipboardItem>,
+      ),
+    );
   }
 }
 
@@ -675,7 +737,7 @@ class __$$OfflinePersistanceDeletingImplCopyWithImpl<$Res>
 
 class _$OfflinePersistanceDeletingImpl implements OfflinePersistanceDeleting {
   const _$OfflinePersistanceDeletingImpl(final List<ClipboardItem> items)
-      : _items = items;
+    : _items = items;
 
   final List<ClipboardItem> _items;
   @override
@@ -708,8 +770,10 @@ class _$OfflinePersistanceDeletingImpl implements OfflinePersistanceDeleting {
   @override
   @pragma('vm:prefer-inline')
   _$$OfflinePersistanceDeletingImplCopyWith<_$OfflinePersistanceDeletingImpl>
-      get copyWith => __$$OfflinePersistanceDeletingImplCopyWithImpl<
-          _$OfflinePersistanceDeletingImpl>(this, _$identity);
+  get copyWith =>
+      __$$OfflinePersistanceDeletingImplCopyWithImpl<
+        _$OfflinePersistanceDeletingImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -719,9 +783,13 @@ class _$OfflinePersistanceDeletingImpl implements OfflinePersistanceDeleting {
     required TResult Function(List<ClipboardItem> items) updatingItems,
     required TResult Function(List<ClipboardItem> items) deletingItems,
     required TResult Function(List<ClipboardItem> items) deletedItems,
-    required TResult Function(List<ClipboardItem> items, bool created,
-            bool synced, List<String>? updatedFields)
-        saved,
+    required TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )
+    saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
   }) {
     return deletingItems(items);
@@ -735,9 +803,13 @@ class _$OfflinePersistanceDeletingImpl implements OfflinePersistanceDeleting {
     TResult? Function(List<ClipboardItem> items)? updatingItems,
     TResult? Function(List<ClipboardItem> items)? deletingItems,
     TResult? Function(List<ClipboardItem> items)? deletedItems,
-    TResult? Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult? Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
   }) {
     return deletingItems?.call(items);
@@ -751,9 +823,13 @@ class _$OfflinePersistanceDeletingImpl implements OfflinePersistanceDeleting {
     TResult Function(List<ClipboardItem> items)? updatingItems,
     TResult Function(List<ClipboardItem> items)? deletingItems,
     TResult Function(List<ClipboardItem> items)? deletedItems,
-    TResult Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult Function(Failure failure, ClipboardItem? item)? error,
     required TResult orElse(),
   }) {
@@ -820,42 +896,45 @@ abstract class OfflinePersistanceDeleting implements OfflinePersistanceState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$OfflinePersistanceDeletingImplCopyWith<_$OfflinePersistanceDeletingImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$OfflinePersistanceDeletedImplCopyWith<$Res> {
   factory _$$OfflinePersistanceDeletedImplCopyWith(
-          _$OfflinePersistanceDeletedImpl value,
-          $Res Function(_$OfflinePersistanceDeletedImpl) then) =
-      __$$OfflinePersistanceDeletedImplCopyWithImpl<$Res>;
+    _$OfflinePersistanceDeletedImpl value,
+    $Res Function(_$OfflinePersistanceDeletedImpl) then,
+  ) = __$$OfflinePersistanceDeletedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<ClipboardItem> items});
 }
 
 /// @nodoc
 class __$$OfflinePersistanceDeletedImplCopyWithImpl<$Res>
-    extends _$OfflinePersistanceStateCopyWithImpl<$Res,
-        _$OfflinePersistanceDeletedImpl>
+    extends
+        _$OfflinePersistanceStateCopyWithImpl<
+          $Res,
+          _$OfflinePersistanceDeletedImpl
+        >
     implements _$$OfflinePersistanceDeletedImplCopyWith<$Res> {
   __$$OfflinePersistanceDeletedImplCopyWithImpl(
-      _$OfflinePersistanceDeletedImpl _value,
-      $Res Function(_$OfflinePersistanceDeletedImpl) _then)
-      : super(_value, _then);
+    _$OfflinePersistanceDeletedImpl _value,
+    $Res Function(_$OfflinePersistanceDeletedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? items = null,
-  }) {
-    return _then(_$OfflinePersistanceDeletedImpl(
-      null == items
-          ? _value._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<ClipboardItem>,
-    ));
+  $Res call({Object? items = null}) {
+    return _then(
+      _$OfflinePersistanceDeletedImpl(
+        null == items
+            ? _value._items
+            : items // ignore: cast_nullable_to_non_nullable
+                  as List<ClipboardItem>,
+      ),
+    );
   }
 }
 
@@ -863,7 +942,7 @@ class __$$OfflinePersistanceDeletedImplCopyWithImpl<$Res>
 
 class _$OfflinePersistanceDeletedImpl implements OfflinePersistanceDeleted {
   const _$OfflinePersistanceDeletedImpl(final List<ClipboardItem> items)
-      : _items = items;
+    : _items = items;
 
   final List<ClipboardItem> _items;
   @override
@@ -896,8 +975,10 @@ class _$OfflinePersistanceDeletedImpl implements OfflinePersistanceDeleted {
   @override
   @pragma('vm:prefer-inline')
   _$$OfflinePersistanceDeletedImplCopyWith<_$OfflinePersistanceDeletedImpl>
-      get copyWith => __$$OfflinePersistanceDeletedImplCopyWithImpl<
-          _$OfflinePersistanceDeletedImpl>(this, _$identity);
+  get copyWith =>
+      __$$OfflinePersistanceDeletedImplCopyWithImpl<
+        _$OfflinePersistanceDeletedImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -907,9 +988,13 @@ class _$OfflinePersistanceDeletedImpl implements OfflinePersistanceDeleted {
     required TResult Function(List<ClipboardItem> items) updatingItems,
     required TResult Function(List<ClipboardItem> items) deletingItems,
     required TResult Function(List<ClipboardItem> items) deletedItems,
-    required TResult Function(List<ClipboardItem> items, bool created,
-            bool synced, List<String>? updatedFields)
-        saved,
+    required TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )
+    saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
   }) {
     return deletedItems(items);
@@ -923,9 +1008,13 @@ class _$OfflinePersistanceDeletedImpl implements OfflinePersistanceDeleted {
     TResult? Function(List<ClipboardItem> items)? updatingItems,
     TResult? Function(List<ClipboardItem> items)? deletingItems,
     TResult? Function(List<ClipboardItem> items)? deletedItems,
-    TResult? Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult? Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
   }) {
     return deletedItems?.call(items);
@@ -939,9 +1028,13 @@ class _$OfflinePersistanceDeletedImpl implements OfflinePersistanceDeleted {
     TResult Function(List<ClipboardItem> items)? updatingItems,
     TResult Function(List<ClipboardItem> items)? deletingItems,
     TResult Function(List<ClipboardItem> items)? deletedItems,
-    TResult Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult Function(Failure failure, ClipboardItem? item)? error,
     required TResult orElse(),
   }) {
@@ -1008,32 +1101,36 @@ abstract class OfflinePersistanceDeleted implements OfflinePersistanceState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$OfflinePersistanceDeletedImplCopyWith<_$OfflinePersistanceDeletedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$OfflinePersistanceSavedImplCopyWith<$Res> {
   factory _$$OfflinePersistanceSavedImplCopyWith(
-          _$OfflinePersistanceSavedImpl value,
-          $Res Function(_$OfflinePersistanceSavedImpl) then) =
-      __$$OfflinePersistanceSavedImplCopyWithImpl<$Res>;
+    _$OfflinePersistanceSavedImpl value,
+    $Res Function(_$OfflinePersistanceSavedImpl) then,
+  ) = __$$OfflinePersistanceSavedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call(
-      {List<ClipboardItem> items,
-      bool created,
-      bool synced,
-      List<String>? updatedFields});
+  $Res call({
+    List<ClipboardItem> items,
+    bool created,
+    bool synced,
+    List<String>? updatedFields,
+  });
 }
 
 /// @nodoc
 class __$$OfflinePersistanceSavedImplCopyWithImpl<$Res>
-    extends _$OfflinePersistanceStateCopyWithImpl<$Res,
-        _$OfflinePersistanceSavedImpl>
+    extends
+        _$OfflinePersistanceStateCopyWithImpl<
+          $Res,
+          _$OfflinePersistanceSavedImpl
+        >
     implements _$$OfflinePersistanceSavedImplCopyWith<$Res> {
   __$$OfflinePersistanceSavedImplCopyWithImpl(
-      _$OfflinePersistanceSavedImpl _value,
-      $Res Function(_$OfflinePersistanceSavedImpl) _then)
-      : super(_value, _then);
+    _$OfflinePersistanceSavedImpl _value,
+    $Res Function(_$OfflinePersistanceSavedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
@@ -1045,36 +1142,39 @@ class __$$OfflinePersistanceSavedImplCopyWithImpl<$Res>
     Object? synced = null,
     Object? updatedFields = freezed,
   }) {
-    return _then(_$OfflinePersistanceSavedImpl(
-      null == items
-          ? _value._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<ClipboardItem>,
-      created: null == created
-          ? _value.created
-          : created // ignore: cast_nullable_to_non_nullable
-              as bool,
-      synced: null == synced
-          ? _value.synced
-          : synced // ignore: cast_nullable_to_non_nullable
-              as bool,
-      updatedFields: freezed == updatedFields
-          ? _value._updatedFields
-          : updatedFields // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ));
+    return _then(
+      _$OfflinePersistanceSavedImpl(
+        null == items
+            ? _value._items
+            : items // ignore: cast_nullable_to_non_nullable
+                  as List<ClipboardItem>,
+        created: null == created
+            ? _value.created
+            : created // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        synced: null == synced
+            ? _value.synced
+            : synced // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        updatedFields: freezed == updatedFields
+            ? _value._updatedFields
+            : updatedFields // ignore: cast_nullable_to_non_nullable
+                  as List<String>?,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
-  const _$OfflinePersistanceSavedImpl(final List<ClipboardItem> items,
-      {this.created = false,
-      this.synced = false,
-      final List<String>? updatedFields})
-      : _items = items,
-        _updatedFields = updatedFields;
+  const _$OfflinePersistanceSavedImpl(
+    final List<ClipboardItem> items, {
+    this.created = false,
+    this.synced = false,
+    final List<String>? updatedFields,
+  }) : _items = items,
+       _updatedFields = updatedFields;
 
   final List<ClipboardItem> _items;
   @override
@@ -1113,17 +1213,20 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
             const DeepCollectionEquality().equals(other._items, _items) &&
             (identical(other.created, created) || other.created == created) &&
             (identical(other.synced, synced) || other.synced == synced) &&
-            const DeepCollectionEquality()
-                .equals(other._updatedFields, _updatedFields));
+            const DeepCollectionEquality().equals(
+              other._updatedFields,
+              _updatedFields,
+            ));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_items),
-      created,
-      synced,
-      const DeepCollectionEquality().hash(_updatedFields));
+    runtimeType,
+    const DeepCollectionEquality().hash(_items),
+    created,
+    synced,
+    const DeepCollectionEquality().hash(_updatedFields),
+  );
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
@@ -1131,8 +1234,10 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
   @override
   @pragma('vm:prefer-inline')
   _$$OfflinePersistanceSavedImplCopyWith<_$OfflinePersistanceSavedImpl>
-      get copyWith => __$$OfflinePersistanceSavedImplCopyWithImpl<
-          _$OfflinePersistanceSavedImpl>(this, _$identity);
+  get copyWith =>
+      __$$OfflinePersistanceSavedImplCopyWithImpl<
+        _$OfflinePersistanceSavedImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1142,9 +1247,13 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
     required TResult Function(List<ClipboardItem> items) updatingItems,
     required TResult Function(List<ClipboardItem> items) deletingItems,
     required TResult Function(List<ClipboardItem> items) deletedItems,
-    required TResult Function(List<ClipboardItem> items, bool created,
-            bool synced, List<String>? updatedFields)
-        saved,
+    required TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )
+    saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
   }) {
     return saved(items, created, synced, updatedFields);
@@ -1158,9 +1267,13 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
     TResult? Function(List<ClipboardItem> items)? updatingItems,
     TResult? Function(List<ClipboardItem> items)? deletingItems,
     TResult? Function(List<ClipboardItem> items)? deletedItems,
-    TResult? Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult? Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
   }) {
     return saved?.call(items, created, synced, updatedFields);
@@ -1174,9 +1287,13 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
     TResult Function(List<ClipboardItem> items)? updatingItems,
     TResult Function(List<ClipboardItem> items)? deletingItems,
     TResult Function(List<ClipboardItem> items)? deletedItems,
-    TResult Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult Function(Failure failure, ClipboardItem? item)? error,
     required TResult orElse(),
   }) {
@@ -1234,10 +1351,12 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
 }
 
 abstract class OfflinePersistanceSaved implements OfflinePersistanceState {
-  const factory OfflinePersistanceSaved(final List<ClipboardItem> items,
-      {final bool created,
-      final bool synced,
-      final List<String>? updatedFields}) = _$OfflinePersistanceSavedImpl;
+  const factory OfflinePersistanceSaved(
+    final List<ClipboardItem> items, {
+    final bool created,
+    final bool synced,
+    final List<String>? updatedFields,
+  }) = _$OfflinePersistanceSavedImpl;
 
   List<ClipboardItem> get items;
   bool get created;
@@ -1248,15 +1367,15 @@ abstract class OfflinePersistanceSaved implements OfflinePersistanceState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$OfflinePersistanceSavedImplCopyWith<_$OfflinePersistanceSavedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$OfflinePersistanceErrorImplCopyWith<$Res> {
   factory _$$OfflinePersistanceErrorImplCopyWith(
-          _$OfflinePersistanceErrorImpl value,
-          $Res Function(_$OfflinePersistanceErrorImpl) then) =
-      __$$OfflinePersistanceErrorImplCopyWithImpl<$Res>;
+    _$OfflinePersistanceErrorImpl value,
+    $Res Function(_$OfflinePersistanceErrorImpl) then,
+  ) = __$$OfflinePersistanceErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Failure failure, ClipboardItem? item});
 
@@ -1265,32 +1384,34 @@ abstract class _$$OfflinePersistanceErrorImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$OfflinePersistanceErrorImplCopyWithImpl<$Res>
-    extends _$OfflinePersistanceStateCopyWithImpl<$Res,
-        _$OfflinePersistanceErrorImpl>
+    extends
+        _$OfflinePersistanceStateCopyWithImpl<
+          $Res,
+          _$OfflinePersistanceErrorImpl
+        >
     implements _$$OfflinePersistanceErrorImplCopyWith<$Res> {
   __$$OfflinePersistanceErrorImplCopyWithImpl(
-      _$OfflinePersistanceErrorImpl _value,
-      $Res Function(_$OfflinePersistanceErrorImpl) _then)
-      : super(_value, _then);
+    _$OfflinePersistanceErrorImpl _value,
+    $Res Function(_$OfflinePersistanceErrorImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? failure = null,
-    Object? item = freezed,
-  }) {
-    return _then(_$OfflinePersistanceErrorImpl(
-      null == failure
-          ? _value.failure
-          : failure // ignore: cast_nullable_to_non_nullable
-              as Failure,
-      freezed == item
-          ? _value.item
-          : item // ignore: cast_nullable_to_non_nullable
-              as ClipboardItem?,
-    ));
+  $Res call({Object? failure = null, Object? item = freezed}) {
+    return _then(
+      _$OfflinePersistanceErrorImpl(
+        null == failure
+            ? _value.failure
+            : failure // ignore: cast_nullable_to_non_nullable
+                  as Failure,
+        freezed == item
+            ? _value.item
+            : item // ignore: cast_nullable_to_non_nullable
+                  as ClipboardItem?,
+      ),
+    );
   }
 
   /// Create a copy of OfflinePersistanceState
@@ -1341,8 +1462,10 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
   @override
   @pragma('vm:prefer-inline')
   _$$OfflinePersistanceErrorImplCopyWith<_$OfflinePersistanceErrorImpl>
-      get copyWith => __$$OfflinePersistanceErrorImplCopyWithImpl<
-          _$OfflinePersistanceErrorImpl>(this, _$identity);
+  get copyWith =>
+      __$$OfflinePersistanceErrorImplCopyWithImpl<
+        _$OfflinePersistanceErrorImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1352,9 +1475,13 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
     required TResult Function(List<ClipboardItem> items) updatingItems,
     required TResult Function(List<ClipboardItem> items) deletingItems,
     required TResult Function(List<ClipboardItem> items) deletedItems,
-    required TResult Function(List<ClipboardItem> items, bool created,
-            bool synced, List<String>? updatedFields)
-        saved,
+    required TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )
+    saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
   }) {
     return error(failure, item);
@@ -1368,9 +1495,13 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
     TResult? Function(List<ClipboardItem> items)? updatingItems,
     TResult? Function(List<ClipboardItem> items)? deletingItems,
     TResult? Function(List<ClipboardItem> items)? deletedItems,
-    TResult? Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult? Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
   }) {
     return error?.call(failure, item);
@@ -1384,9 +1515,13 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
     TResult Function(List<ClipboardItem> items)? updatingItems,
     TResult Function(List<ClipboardItem> items)? deletingItems,
     TResult Function(List<ClipboardItem> items)? deletedItems,
-    TResult Function(List<ClipboardItem> items, bool created, bool synced,
-            List<String>? updatedFields)?
-        saved,
+    TResult Function(
+      List<ClipboardItem> items,
+      bool created,
+      bool synced,
+      List<String>? updatedFields,
+    )?
+    saved,
     TResult Function(Failure failure, ClipboardItem? item)? error,
     required TResult orElse(),
   }) {
@@ -1444,8 +1579,10 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
 }
 
 abstract class OfflinePersistanceError implements OfflinePersistanceState {
-  const factory OfflinePersistanceError(final Failure failure,
-      [final ClipboardItem? item]) = _$OfflinePersistanceErrorImpl;
+  const factory OfflinePersistanceError(
+    final Failure failure, [
+    final ClipboardItem? item,
+  ]) = _$OfflinePersistanceErrorImpl;
 
   Failure get failure;
   ClipboardItem? get item;
@@ -1454,5 +1591,5 @@ abstract class OfflinePersistanceError implements OfflinePersistanceState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$OfflinePersistanceErrorImplCopyWith<_$OfflinePersistanceErrorImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }

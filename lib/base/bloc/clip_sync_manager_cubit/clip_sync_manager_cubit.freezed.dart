@@ -12,7 +12,8 @@ part of 'clip_sync_manager_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$ClipSyncManagerState {
@@ -22,12 +23,11 @@ mixin _$ClipSyncManagerState {
     required TResult Function() unknown,
     required TResult Function() syncingUnknown,
     required TResult Function(int synced, DateTime fromTs, DateTime toTs)
-        syncing,
+    syncing,
     required TResult Function(int syncCount, DateTime fromTs, DateTime toTs)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? disabled,
@@ -36,8 +36,7 @@ mixin _$ClipSyncManagerState {
     TResult? Function(int synced, DateTime fromTs, DateTime toTs)? syncing,
     TResult? Function(int syncCount, DateTime fromTs, DateTime toTs)? synced,
     TResult? Function(Failure failure)? failed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? disabled,
@@ -47,8 +46,7 @@ mixin _$ClipSyncManagerState {
     TResult Function(int syncCount, DateTime fromTs, DateTime toTs)? synced,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(ClipSyncDisabled value) disabled,
@@ -57,8 +55,7 @@ mixin _$ClipSyncManagerState {
     required TResult Function(ClipSyncing value) syncing,
     required TResult Function(ClipSyncComplete value) synced,
     required TResult Function(ClipSyncFailed value) failed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(ClipSyncDisabled value)? disabled,
@@ -67,8 +64,7 @@ mixin _$ClipSyncManagerState {
     TResult? Function(ClipSyncing value)? syncing,
     TResult? Function(ClipSyncComplete value)? synced,
     TResult? Function(ClipSyncFailed value)? failed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(ClipSyncDisabled value)? disabled,
@@ -78,20 +74,22 @@ mixin _$ClipSyncManagerState {
     TResult Function(ClipSyncComplete value)? synced,
     TResult Function(ClipSyncFailed value)? failed,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $ClipSyncManagerStateCopyWith<$Res> {
-  factory $ClipSyncManagerStateCopyWith(ClipSyncManagerState value,
-          $Res Function(ClipSyncManagerState) then) =
-      _$ClipSyncManagerStateCopyWithImpl<$Res, ClipSyncManagerState>;
+  factory $ClipSyncManagerStateCopyWith(
+    ClipSyncManagerState value,
+    $Res Function(ClipSyncManagerState) then,
+  ) = _$ClipSyncManagerStateCopyWithImpl<$Res, ClipSyncManagerState>;
 }
 
 /// @nodoc
-class _$ClipSyncManagerStateCopyWithImpl<$Res,
-        $Val extends ClipSyncManagerState>
+class _$ClipSyncManagerStateCopyWithImpl<
+  $Res,
+  $Val extends ClipSyncManagerState
+>
     implements $ClipSyncManagerStateCopyWith<$Res> {
   _$ClipSyncManagerStateCopyWithImpl(this._value, this._then);
 
@@ -106,18 +104,20 @@ class _$ClipSyncManagerStateCopyWithImpl<$Res,
 
 /// @nodoc
 abstract class _$$ClipSyncDisabledImplCopyWith<$Res> {
-  factory _$$ClipSyncDisabledImplCopyWith(_$ClipSyncDisabledImpl value,
-          $Res Function(_$ClipSyncDisabledImpl) then) =
-      __$$ClipSyncDisabledImplCopyWithImpl<$Res>;
+  factory _$$ClipSyncDisabledImplCopyWith(
+    _$ClipSyncDisabledImpl value,
+    $Res Function(_$ClipSyncDisabledImpl) then,
+  ) = __$$ClipSyncDisabledImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$ClipSyncDisabledImplCopyWithImpl<$Res>
     extends _$ClipSyncManagerStateCopyWithImpl<$Res, _$ClipSyncDisabledImpl>
     implements _$$ClipSyncDisabledImplCopyWith<$Res> {
-  __$$ClipSyncDisabledImplCopyWithImpl(_$ClipSyncDisabledImpl _value,
-      $Res Function(_$ClipSyncDisabledImpl) _then)
-      : super(_value, _then);
+  __$$ClipSyncDisabledImplCopyWithImpl(
+    _$ClipSyncDisabledImpl _value,
+    $Res Function(_$ClipSyncDisabledImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of ClipSyncManagerState
   /// with the given fields replaced by the non-null parameter values.
@@ -125,21 +125,12 @@ class __$$ClipSyncDisabledImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ClipSyncDisabledImpl
-    with DiagnosticableTreeMixin
-    implements ClipSyncDisabled {
+class _$ClipSyncDisabledImpl implements ClipSyncDisabled {
   const _$ClipSyncDisabledImpl();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'ClipSyncManagerState.disabled()';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'ClipSyncManagerState.disabled'));
   }
 
   @override
@@ -158,9 +149,9 @@ class _$ClipSyncDisabledImpl
     required TResult Function() unknown,
     required TResult Function() syncingUnknown,
     required TResult Function(int synced, DateTime fromTs, DateTime toTs)
-        syncing,
+    syncing,
     required TResult Function(int syncCount, DateTime fromTs, DateTime toTs)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
   }) {
     return disabled();
@@ -246,9 +237,10 @@ abstract class ClipSyncDisabled implements ClipSyncManagerState {
 
 /// @nodoc
 abstract class _$$ClipSyncUnknownImplCopyWith<$Res> {
-  factory _$$ClipSyncUnknownImplCopyWith(_$ClipSyncUnknownImpl value,
-          $Res Function(_$ClipSyncUnknownImpl) then) =
-      __$$ClipSyncUnknownImplCopyWithImpl<$Res>;
+  factory _$$ClipSyncUnknownImplCopyWith(
+    _$ClipSyncUnknownImpl value,
+    $Res Function(_$ClipSyncUnknownImpl) then,
+  ) = __$$ClipSyncUnknownImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -256,8 +248,9 @@ class __$$ClipSyncUnknownImplCopyWithImpl<$Res>
     extends _$ClipSyncManagerStateCopyWithImpl<$Res, _$ClipSyncUnknownImpl>
     implements _$$ClipSyncUnknownImplCopyWith<$Res> {
   __$$ClipSyncUnknownImplCopyWithImpl(
-      _$ClipSyncUnknownImpl _value, $Res Function(_$ClipSyncUnknownImpl) _then)
-      : super(_value, _then);
+    _$ClipSyncUnknownImpl _value,
+    $Res Function(_$ClipSyncUnknownImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of ClipSyncManagerState
   /// with the given fields replaced by the non-null parameter values.
@@ -265,21 +258,12 @@ class __$$ClipSyncUnknownImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ClipSyncUnknownImpl
-    with DiagnosticableTreeMixin
-    implements ClipSyncUnknown {
+class _$ClipSyncUnknownImpl implements ClipSyncUnknown {
   const _$ClipSyncUnknownImpl();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'ClipSyncManagerState.unknown()';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'ClipSyncManagerState.unknown'));
   }
 
   @override
@@ -298,9 +282,9 @@ class _$ClipSyncUnknownImpl
     required TResult Function() unknown,
     required TResult Function() syncingUnknown,
     required TResult Function(int synced, DateTime fromTs, DateTime toTs)
-        syncing,
+    syncing,
     required TResult Function(int syncCount, DateTime fromTs, DateTime toTs)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
   }) {
     return unknown();
@@ -386,18 +370,20 @@ abstract class ClipSyncUnknown implements ClipSyncManagerState {
 
 /// @nodoc
 abstract class _$$ClipSyncingUnknownImplCopyWith<$Res> {
-  factory _$$ClipSyncingUnknownImplCopyWith(_$ClipSyncingUnknownImpl value,
-          $Res Function(_$ClipSyncingUnknownImpl) then) =
-      __$$ClipSyncingUnknownImplCopyWithImpl<$Res>;
+  factory _$$ClipSyncingUnknownImplCopyWith(
+    _$ClipSyncingUnknownImpl value,
+    $Res Function(_$ClipSyncingUnknownImpl) then,
+  ) = __$$ClipSyncingUnknownImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$ClipSyncingUnknownImplCopyWithImpl<$Res>
     extends _$ClipSyncManagerStateCopyWithImpl<$Res, _$ClipSyncingUnknownImpl>
     implements _$$ClipSyncingUnknownImplCopyWith<$Res> {
-  __$$ClipSyncingUnknownImplCopyWithImpl(_$ClipSyncingUnknownImpl _value,
-      $Res Function(_$ClipSyncingUnknownImpl) _then)
-      : super(_value, _then);
+  __$$ClipSyncingUnknownImplCopyWithImpl(
+    _$ClipSyncingUnknownImpl _value,
+    $Res Function(_$ClipSyncingUnknownImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of ClipSyncManagerState
   /// with the given fields replaced by the non-null parameter values.
@@ -405,21 +391,12 @@ class __$$ClipSyncingUnknownImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$ClipSyncingUnknownImpl
-    with DiagnosticableTreeMixin
-    implements ClipSyncingUnknown {
+class _$ClipSyncingUnknownImpl implements ClipSyncingUnknown {
   const _$ClipSyncingUnknownImpl();
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'ClipSyncManagerState.syncingUnknown()';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'ClipSyncManagerState.syncingUnknown'));
   }
 
   @override
@@ -438,9 +415,9 @@ class _$ClipSyncingUnknownImpl
     required TResult Function() unknown,
     required TResult Function() syncingUnknown,
     required TResult Function(int synced, DateTime fromTs, DateTime toTs)
-        syncing,
+    syncing,
     required TResult Function(int syncCount, DateTime fromTs, DateTime toTs)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
   }) {
     return syncingUnknown();
@@ -527,8 +504,9 @@ abstract class ClipSyncingUnknown implements ClipSyncManagerState {
 /// @nodoc
 abstract class _$$ClipSyncingImplCopyWith<$Res> {
   factory _$$ClipSyncingImplCopyWith(
-          _$ClipSyncingImpl value, $Res Function(_$ClipSyncingImpl) then) =
-      __$$ClipSyncingImplCopyWithImpl<$Res>;
+    _$ClipSyncingImpl value,
+    $Res Function(_$ClipSyncingImpl) then,
+  ) = __$$ClipSyncingImplCopyWithImpl<$Res>;
   @useResult
   $Res call({int synced, DateTime fromTs, DateTime toTs});
 }
@@ -538,8 +516,9 @@ class __$$ClipSyncingImplCopyWithImpl<$Res>
     extends _$ClipSyncManagerStateCopyWithImpl<$Res, _$ClipSyncingImpl>
     implements _$$ClipSyncingImplCopyWith<$Res> {
   __$$ClipSyncingImplCopyWithImpl(
-      _$ClipSyncingImpl _value, $Res Function(_$ClipSyncingImpl) _then)
-      : super(_value, _then);
+    _$ClipSyncingImpl _value,
+    $Res Function(_$ClipSyncingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of ClipSyncManagerState
   /// with the given fields replaced by the non-null parameter values.
@@ -550,28 +529,33 @@ class __$$ClipSyncingImplCopyWithImpl<$Res>
     Object? fromTs = null,
     Object? toTs = null,
   }) {
-    return _then(_$ClipSyncingImpl(
-      synced: null == synced
-          ? _value.synced
-          : synced // ignore: cast_nullable_to_non_nullable
-              as int,
-      fromTs: null == fromTs
-          ? _value.fromTs
-          : fromTs // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      toTs: null == toTs
-          ? _value.toTs
-          : toTs // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-    ));
+    return _then(
+      _$ClipSyncingImpl(
+        synced: null == synced
+            ? _value.synced
+            : synced // ignore: cast_nullable_to_non_nullable
+                  as int,
+        fromTs: null == fromTs
+            ? _value.fromTs
+            : fromTs // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        toTs: null == toTs
+            ? _value.toTs
+            : toTs // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
-class _$ClipSyncingImpl with DiagnosticableTreeMixin implements ClipSyncing {
-  const _$ClipSyncingImpl(
-      {required this.synced, required this.fromTs, required this.toTs});
+class _$ClipSyncingImpl implements ClipSyncing {
+  const _$ClipSyncingImpl({
+    required this.synced,
+    required this.fromTs,
+    required this.toTs,
+  });
 
   @override
   final int synced;
@@ -581,18 +565,8 @@ class _$ClipSyncingImpl with DiagnosticableTreeMixin implements ClipSyncing {
   final DateTime toTs;
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'ClipSyncManagerState.syncing(synced: $synced, fromTs: $fromTs, toTs: $toTs)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'ClipSyncManagerState.syncing'))
-      ..add(DiagnosticsProperty('synced', synced))
-      ..add(DiagnosticsProperty('fromTs', fromTs))
-      ..add(DiagnosticsProperty('toTs', toTs));
   }
 
   @override
@@ -623,9 +597,9 @@ class _$ClipSyncingImpl with DiagnosticableTreeMixin implements ClipSyncing {
     required TResult Function() unknown,
     required TResult Function() syncingUnknown,
     required TResult Function(int synced, DateTime fromTs, DateTime toTs)
-        syncing,
+    syncing,
     required TResult Function(int syncCount, DateTime fromTs, DateTime toTs)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
   }) {
     return syncing(this.synced, fromTs, toTs);
@@ -706,10 +680,11 @@ class _$ClipSyncingImpl with DiagnosticableTreeMixin implements ClipSyncing {
 }
 
 abstract class ClipSyncing implements ClipSyncManagerState {
-  const factory ClipSyncing(
-      {required final int synced,
-      required final DateTime fromTs,
-      required final DateTime toTs}) = _$ClipSyncingImpl;
+  const factory ClipSyncing({
+    required final int synced,
+    required final DateTime fromTs,
+    required final DateTime toTs,
+  }) = _$ClipSyncingImpl;
 
   int get synced;
   DateTime get fromTs;
@@ -724,9 +699,10 @@ abstract class ClipSyncing implements ClipSyncManagerState {
 
 /// @nodoc
 abstract class _$$ClipSyncCompleteImplCopyWith<$Res> {
-  factory _$$ClipSyncCompleteImplCopyWith(_$ClipSyncCompleteImpl value,
-          $Res Function(_$ClipSyncCompleteImpl) then) =
-      __$$ClipSyncCompleteImplCopyWithImpl<$Res>;
+  factory _$$ClipSyncCompleteImplCopyWith(
+    _$ClipSyncCompleteImpl value,
+    $Res Function(_$ClipSyncCompleteImpl) then,
+  ) = __$$ClipSyncCompleteImplCopyWithImpl<$Res>;
   @useResult
   $Res call({int syncCount, DateTime fromTs, DateTime toTs});
 }
@@ -735,9 +711,10 @@ abstract class _$$ClipSyncCompleteImplCopyWith<$Res> {
 class __$$ClipSyncCompleteImplCopyWithImpl<$Res>
     extends _$ClipSyncManagerStateCopyWithImpl<$Res, _$ClipSyncCompleteImpl>
     implements _$$ClipSyncCompleteImplCopyWith<$Res> {
-  __$$ClipSyncCompleteImplCopyWithImpl(_$ClipSyncCompleteImpl _value,
-      $Res Function(_$ClipSyncCompleteImpl) _then)
-      : super(_value, _then);
+  __$$ClipSyncCompleteImplCopyWithImpl(
+    _$ClipSyncCompleteImpl _value,
+    $Res Function(_$ClipSyncCompleteImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of ClipSyncManagerState
   /// with the given fields replaced by the non-null parameter values.
@@ -748,30 +725,33 @@ class __$$ClipSyncCompleteImplCopyWithImpl<$Res>
     Object? fromTs = null,
     Object? toTs = null,
   }) {
-    return _then(_$ClipSyncCompleteImpl(
-      null == syncCount
-          ? _value.syncCount
-          : syncCount // ignore: cast_nullable_to_non_nullable
-              as int,
-      fromTs: null == fromTs
-          ? _value.fromTs
-          : fromTs // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      toTs: null == toTs
-          ? _value.toTs
-          : toTs // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-    ));
+    return _then(
+      _$ClipSyncCompleteImpl(
+        null == syncCount
+            ? _value.syncCount
+            : syncCount // ignore: cast_nullable_to_non_nullable
+                  as int,
+        fromTs: null == fromTs
+            ? _value.fromTs
+            : fromTs // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        toTs: null == toTs
+            ? _value.toTs
+            : toTs // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
-class _$ClipSyncCompleteImpl
-    with DiagnosticableTreeMixin
-    implements ClipSyncComplete {
-  const _$ClipSyncCompleteImpl(this.syncCount,
-      {required this.fromTs, required this.toTs});
+class _$ClipSyncCompleteImpl implements ClipSyncComplete {
+  const _$ClipSyncCompleteImpl(
+    this.syncCount, {
+    required this.fromTs,
+    required this.toTs,
+  });
 
   @override
   final int syncCount;
@@ -781,18 +761,8 @@ class _$ClipSyncCompleteImpl
   final DateTime toTs;
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'ClipSyncManagerState.synced(syncCount: $syncCount, fromTs: $fromTs, toTs: $toTs)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'ClipSyncManagerState.synced'))
-      ..add(DiagnosticsProperty('syncCount', syncCount))
-      ..add(DiagnosticsProperty('fromTs', fromTs))
-      ..add(DiagnosticsProperty('toTs', toTs));
   }
 
   @override
@@ -816,7 +786,9 @@ class _$ClipSyncCompleteImpl
   @pragma('vm:prefer-inline')
   _$$ClipSyncCompleteImplCopyWith<_$ClipSyncCompleteImpl> get copyWith =>
       __$$ClipSyncCompleteImplCopyWithImpl<_$ClipSyncCompleteImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -825,9 +797,9 @@ class _$ClipSyncCompleteImpl
     required TResult Function() unknown,
     required TResult Function() syncingUnknown,
     required TResult Function(int synced, DateTime fromTs, DateTime toTs)
-        syncing,
+    syncing,
     required TResult Function(int syncCount, DateTime fromTs, DateTime toTs)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
   }) {
     return synced(syncCount, fromTs, toTs);
@@ -908,9 +880,11 @@ class _$ClipSyncCompleteImpl
 }
 
 abstract class ClipSyncComplete implements ClipSyncManagerState {
-  const factory ClipSyncComplete(final int syncCount,
-      {required final DateTime fromTs,
-      required final DateTime toTs}) = _$ClipSyncCompleteImpl;
+  const factory ClipSyncComplete(
+    final int syncCount, {
+    required final DateTime fromTs,
+    required final DateTime toTs,
+  }) = _$ClipSyncCompleteImpl;
 
   int get syncCount;
   DateTime get fromTs;
@@ -925,9 +899,10 @@ abstract class ClipSyncComplete implements ClipSyncManagerState {
 
 /// @nodoc
 abstract class _$$ClipSyncFailedImplCopyWith<$Res> {
-  factory _$$ClipSyncFailedImplCopyWith(_$ClipSyncFailedImpl value,
-          $Res Function(_$ClipSyncFailedImpl) then) =
-      __$$ClipSyncFailedImplCopyWithImpl<$Res>;
+  factory _$$ClipSyncFailedImplCopyWith(
+    _$ClipSyncFailedImpl value,
+    $Res Function(_$ClipSyncFailedImpl) then,
+  ) = __$$ClipSyncFailedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Failure failure});
 }
@@ -937,46 +912,37 @@ class __$$ClipSyncFailedImplCopyWithImpl<$Res>
     extends _$ClipSyncManagerStateCopyWithImpl<$Res, _$ClipSyncFailedImpl>
     implements _$$ClipSyncFailedImplCopyWith<$Res> {
   __$$ClipSyncFailedImplCopyWithImpl(
-      _$ClipSyncFailedImpl _value, $Res Function(_$ClipSyncFailedImpl) _then)
-      : super(_value, _then);
+    _$ClipSyncFailedImpl _value,
+    $Res Function(_$ClipSyncFailedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of ClipSyncManagerState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? failure = null,
-  }) {
-    return _then(_$ClipSyncFailedImpl(
-      null == failure
-          ? _value.failure
-          : failure // ignore: cast_nullable_to_non_nullable
-              as Failure,
-    ));
+  $Res call({Object? failure = null}) {
+    return _then(
+      _$ClipSyncFailedImpl(
+        null == failure
+            ? _value.failure
+            : failure // ignore: cast_nullable_to_non_nullable
+                  as Failure,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
-class _$ClipSyncFailedImpl
-    with DiagnosticableTreeMixin
-    implements ClipSyncFailed {
+class _$ClipSyncFailedImpl implements ClipSyncFailed {
   const _$ClipSyncFailedImpl(this.failure);
 
   @override
   final Failure failure;
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'ClipSyncManagerState.failed(failure: $failure)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'ClipSyncManagerState.failed'))
-      ..add(DiagnosticsProperty('failure', failure));
   }
 
   @override
@@ -997,7 +963,9 @@ class _$ClipSyncFailedImpl
   @pragma('vm:prefer-inline')
   _$$ClipSyncFailedImplCopyWith<_$ClipSyncFailedImpl> get copyWith =>
       __$$ClipSyncFailedImplCopyWithImpl<_$ClipSyncFailedImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -1006,9 +974,9 @@ class _$ClipSyncFailedImpl
     required TResult Function() unknown,
     required TResult Function() syncingUnknown,
     required TResult Function(int synced, DateTime fromTs, DateTime toTs)
-        syncing,
+    syncing,
     required TResult Function(int syncCount, DateTime fromTs, DateTime toTs)
-        synced,
+    synced,
     required TResult Function(Failure failure) failed,
   }) {
     return failed(failure);

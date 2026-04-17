@@ -12,7 +12,8 @@ part of 'realtime_clip_sync_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$RealtimeClipSyncState {
@@ -22,16 +23,14 @@ mixin _$RealtimeClipSyncState {
     required TResult Function() connecting,
     required TResult Function() connected,
     required TResult Function() disconnected,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? connecting,
     TResult? Function()? connected,
     TResult? Function()? disconnected,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
@@ -39,24 +38,21 @@ mixin _$RealtimeClipSyncState {
     TResult Function()? connected,
     TResult Function()? disconnected,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(RealtimeClipSyncUnknown value) initial,
     required TResult Function(RealtimeClipSyncConnecting value) connecting,
     required TResult Function(RealtimeClipSyncConnected value) connected,
     required TResult Function(RealtimeClipSyncDisconnected value) disconnected,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(RealtimeClipSyncUnknown value)? initial,
     TResult? Function(RealtimeClipSyncConnecting value)? connecting,
     TResult? Function(RealtimeClipSyncConnected value)? connected,
     TResult? Function(RealtimeClipSyncDisconnected value)? disconnected,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RealtimeClipSyncUnknown value)? initial,
@@ -64,20 +60,22 @@ mixin _$RealtimeClipSyncState {
     TResult Function(RealtimeClipSyncConnected value)? connected,
     TResult Function(RealtimeClipSyncDisconnected value)? disconnected,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $RealtimeClipSyncStateCopyWith<$Res> {
-  factory $RealtimeClipSyncStateCopyWith(RealtimeClipSyncState value,
-          $Res Function(RealtimeClipSyncState) then) =
-      _$RealtimeClipSyncStateCopyWithImpl<$Res, RealtimeClipSyncState>;
+  factory $RealtimeClipSyncStateCopyWith(
+    RealtimeClipSyncState value,
+    $Res Function(RealtimeClipSyncState) then,
+  ) = _$RealtimeClipSyncStateCopyWithImpl<$Res, RealtimeClipSyncState>;
 }
 
 /// @nodoc
-class _$RealtimeClipSyncStateCopyWithImpl<$Res,
-        $Val extends RealtimeClipSyncState>
+class _$RealtimeClipSyncStateCopyWithImpl<
+  $Res,
+  $Val extends RealtimeClipSyncState
+>
     implements $RealtimeClipSyncStateCopyWith<$Res> {
   _$RealtimeClipSyncStateCopyWithImpl(this._value, this._then);
 
@@ -93,20 +91,20 @@ class _$RealtimeClipSyncStateCopyWithImpl<$Res,
 /// @nodoc
 abstract class _$$RealtimeClipSyncUnknownImplCopyWith<$Res> {
   factory _$$RealtimeClipSyncUnknownImplCopyWith(
-          _$RealtimeClipSyncUnknownImpl value,
-          $Res Function(_$RealtimeClipSyncUnknownImpl) then) =
-      __$$RealtimeClipSyncUnknownImplCopyWithImpl<$Res>;
+    _$RealtimeClipSyncUnknownImpl value,
+    $Res Function(_$RealtimeClipSyncUnknownImpl) then,
+  ) = __$$RealtimeClipSyncUnknownImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$RealtimeClipSyncUnknownImplCopyWithImpl<$Res>
-    extends _$RealtimeClipSyncStateCopyWithImpl<$Res,
-        _$RealtimeClipSyncUnknownImpl>
+    extends
+        _$RealtimeClipSyncStateCopyWithImpl<$Res, _$RealtimeClipSyncUnknownImpl>
     implements _$$RealtimeClipSyncUnknownImplCopyWith<$Res> {
   __$$RealtimeClipSyncUnknownImplCopyWithImpl(
-      _$RealtimeClipSyncUnknownImpl _value,
-      $Res Function(_$RealtimeClipSyncUnknownImpl) _then)
-      : super(_value, _then);
+    _$RealtimeClipSyncUnknownImpl _value,
+    $Res Function(_$RealtimeClipSyncUnknownImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of RealtimeClipSyncState
   /// with the given fields replaced by the non-null parameter values.
@@ -214,20 +212,23 @@ abstract class RealtimeClipSyncUnknown implements RealtimeClipSyncState {
 /// @nodoc
 abstract class _$$RealtimeClipSyncConnectingImplCopyWith<$Res> {
   factory _$$RealtimeClipSyncConnectingImplCopyWith(
-          _$RealtimeClipSyncConnectingImpl value,
-          $Res Function(_$RealtimeClipSyncConnectingImpl) then) =
-      __$$RealtimeClipSyncConnectingImplCopyWithImpl<$Res>;
+    _$RealtimeClipSyncConnectingImpl value,
+    $Res Function(_$RealtimeClipSyncConnectingImpl) then,
+  ) = __$$RealtimeClipSyncConnectingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$RealtimeClipSyncConnectingImplCopyWithImpl<$Res>
-    extends _$RealtimeClipSyncStateCopyWithImpl<$Res,
-        _$RealtimeClipSyncConnectingImpl>
+    extends
+        _$RealtimeClipSyncStateCopyWithImpl<
+          $Res,
+          _$RealtimeClipSyncConnectingImpl
+        >
     implements _$$RealtimeClipSyncConnectingImplCopyWith<$Res> {
   __$$RealtimeClipSyncConnectingImplCopyWithImpl(
-      _$RealtimeClipSyncConnectingImpl _value,
-      $Res Function(_$RealtimeClipSyncConnectingImpl) _then)
-      : super(_value, _then);
+    _$RealtimeClipSyncConnectingImpl _value,
+    $Res Function(_$RealtimeClipSyncConnectingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of RealtimeClipSyncState
   /// with the given fields replaced by the non-null parameter values.
@@ -335,20 +336,23 @@ abstract class RealtimeClipSyncConnecting implements RealtimeClipSyncState {
 /// @nodoc
 abstract class _$$RealtimeClipSyncConnectedImplCopyWith<$Res> {
   factory _$$RealtimeClipSyncConnectedImplCopyWith(
-          _$RealtimeClipSyncConnectedImpl value,
-          $Res Function(_$RealtimeClipSyncConnectedImpl) then) =
-      __$$RealtimeClipSyncConnectedImplCopyWithImpl<$Res>;
+    _$RealtimeClipSyncConnectedImpl value,
+    $Res Function(_$RealtimeClipSyncConnectedImpl) then,
+  ) = __$$RealtimeClipSyncConnectedImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$RealtimeClipSyncConnectedImplCopyWithImpl<$Res>
-    extends _$RealtimeClipSyncStateCopyWithImpl<$Res,
-        _$RealtimeClipSyncConnectedImpl>
+    extends
+        _$RealtimeClipSyncStateCopyWithImpl<
+          $Res,
+          _$RealtimeClipSyncConnectedImpl
+        >
     implements _$$RealtimeClipSyncConnectedImplCopyWith<$Res> {
   __$$RealtimeClipSyncConnectedImplCopyWithImpl(
-      _$RealtimeClipSyncConnectedImpl _value,
-      $Res Function(_$RealtimeClipSyncConnectedImpl) _then)
-      : super(_value, _then);
+    _$RealtimeClipSyncConnectedImpl _value,
+    $Res Function(_$RealtimeClipSyncConnectedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of RealtimeClipSyncState
   /// with the given fields replaced by the non-null parameter values.
@@ -456,20 +460,23 @@ abstract class RealtimeClipSyncConnected implements RealtimeClipSyncState {
 /// @nodoc
 abstract class _$$RealtimeClipSyncDisconnectedImplCopyWith<$Res> {
   factory _$$RealtimeClipSyncDisconnectedImplCopyWith(
-          _$RealtimeClipSyncDisconnectedImpl value,
-          $Res Function(_$RealtimeClipSyncDisconnectedImpl) then) =
-      __$$RealtimeClipSyncDisconnectedImplCopyWithImpl<$Res>;
+    _$RealtimeClipSyncDisconnectedImpl value,
+    $Res Function(_$RealtimeClipSyncDisconnectedImpl) then,
+  ) = __$$RealtimeClipSyncDisconnectedImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$RealtimeClipSyncDisconnectedImplCopyWithImpl<$Res>
-    extends _$RealtimeClipSyncStateCopyWithImpl<$Res,
-        _$RealtimeClipSyncDisconnectedImpl>
+    extends
+        _$RealtimeClipSyncStateCopyWithImpl<
+          $Res,
+          _$RealtimeClipSyncDisconnectedImpl
+        >
     implements _$$RealtimeClipSyncDisconnectedImplCopyWith<$Res> {
   __$$RealtimeClipSyncDisconnectedImplCopyWithImpl(
-      _$RealtimeClipSyncDisconnectedImpl _value,
-      $Res Function(_$RealtimeClipSyncDisconnectedImpl) _then)
-      : super(_value, _then);
+    _$RealtimeClipSyncDisconnectedImpl _value,
+    $Res Function(_$RealtimeClipSyncDisconnectedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of RealtimeClipSyncState
   /// with the given fields replaced by the non-null parameter values.

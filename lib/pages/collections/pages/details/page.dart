@@ -1,7 +1,7 @@
 import 'package:clipboard/base/bloc/collection_clips_cubit/collection_clips_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/db/app_config/appconfig.dart';
-import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
+import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/widgets/app_bar/selection_appbar.dart';
 import 'package:clipboard/widgets/app_layout_builder.dart';
 import 'package:clipboard/widgets/can_paste_builder.dart';

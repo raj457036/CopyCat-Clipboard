@@ -1,4 +1,4 @@
-import 'package:clipboard/base/db/sync_status/syncstatus.dart';
+import 'package:clipboard/base/domain/model/sync_status/syncstatus.dart';
 
 abstract class RestorationStatusSource {
   Future<SyncStatus?> getStatus();

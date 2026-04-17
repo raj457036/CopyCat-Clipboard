@@ -210,14 +210,14 @@ class CollectionSyncManagerCubit extends Cubit<CollectionSyncManagerState> {
         if (items.isEmpty) return;
 
         final syncEvents = <CollectionCrossSyncEvent>[];
-        for (var item in items) {
-          final serverId = item.serverId;
+        for (var i = 0; i < items.length; i++) {
+          final serverId = items[i].serverId;
           final localId = collectionMapping[serverId];
           if (localId != null) {
-            syncEvents.add((CrossSyncEventType.update, item));
-            item.id = localId;
+            items[i] = items[i].copyWith(id: localId);
+            syncEvents.add((CrossSyncEventType.update, items[i]));
           } else {
-            syncEvents.add((CrossSyncEventType.create, item));
+            syncEvents.add((CrossSyncEventType.create, items[i]));
           }
         }
 
@@ -229,7 +229,7 @@ class CollectionSyncManagerCubit extends Cubit<CollectionSyncManagerState> {
         }, (collections) {
           syncedCount = collections.length;
           for (var i = 0; i < collections.length; i++) {
-            syncEvents[i].$2.id = collections[i].id;
+            syncEvents[i] = (syncEvents[i].$1, collections[i]);
           }
           broadcastBatchEvent(syncEvents);
         });

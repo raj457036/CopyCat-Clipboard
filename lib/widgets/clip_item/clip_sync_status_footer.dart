@@ -1,7 +1,7 @@
 import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
@@ -77,10 +77,7 @@ class ClipSyncStatusFooter extends StatelessWidget {
                         ? null
                         : () {
                             context.read<CloudPersistanceCubit>().persist(
-                                  item.copyWith(userIntent: true)
-                                    ..applyId(
-                                      item,
-                                    ),
+                                  item.copyWith(userIntent: true),
                                 );
                           },
                     child: Text(

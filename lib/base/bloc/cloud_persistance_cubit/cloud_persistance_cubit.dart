@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/common/failure.dart';
@@ -142,7 +142,7 @@ class CloudPersistanceCubit extends Cubit<CloudPersistanceState> {
 
     emit(
       CloudPersistanceState.uploadingFile(
-        item.copyWith(uploading: true)..applyId(item),
+        item.copyWith(uploading: true),
       ),
     );
     final userId = auth.userId;
@@ -176,7 +176,7 @@ class CloudPersistanceCubit extends Cubit<CloudPersistanceState> {
               item.copyWith(
                 uploading: true,
                 uploadProgress: uploaded / total,
-              )..applyId(item),
+              ),
             ),
           );
         },
@@ -189,15 +189,13 @@ class CloudPersistanceCubit extends Cubit<CloudPersistanceState> {
 
     result.fold(
       (failure) {
-        item = item.copyWith(imgBlurHash: blurhash)..applyId(item);
+        item = item.copyWith(imgBlurHash: blurhash);
         emit(
           CloudPersistanceState.error(failure, item),
         );
       },
       (updatedItem) async {
-        updatedItem = updatedItem.copyWith(imgBlurHash: blurhash)
-          ..applyId(updatedItem);
-        if (updatedItem.driveFileId != null) {
+        updatedItem = updatedItem.copyWith(imgBlurHash: blurhash);        if (updatedItem.driveFileId != null) {
           await _create(updatedItem);
         }
       },
@@ -221,19 +219,19 @@ class CloudPersistanceCubit extends Cubit<CloudPersistanceState> {
 
       await drive.delete(item);
 
-      item = item.copyWith(driveFileId: null)..applyId(item);
+      item = item.copyWith(driveFileId: null);
     }
 
     if (item.serverId == null) {
       emit(
         CloudPersistanceState.deletedItems(
-          [item.copyWith(lastSynced: null)..applyId(item)],
+          [item.copyWith(lastSynced: null)],
         ),
       );
       return;
     }
 
-    item = item.copyWith(deviceId: deviceId)..applyId(item);
+    item = item.copyWith(deviceId: deviceId);
     final result = await repo.delete(item);
 
     result.fold(
@@ -247,7 +245,7 @@ class CloudPersistanceCubit extends Cubit<CloudPersistanceState> {
             item.copyWith(
               serverId: null,
               lastSynced: null,
-            )..applyId(item)
+            )
           ],
         ),
       ),
@@ -261,7 +259,7 @@ class CloudPersistanceCubit extends Cubit<CloudPersistanceState> {
     await drive?.deleteMany(items);
 
     final items_ = items.map(
-      (item) => item.copyWith(deviceId: deviceId)..applyId(item),
+      (item) => item.copyWith(deviceId: deviceId),
     );
     final result = await repo.deleteMany(items_.toList());
 
@@ -272,7 +270,7 @@ class CloudPersistanceCubit extends Cubit<CloudPersistanceState> {
             .map((item) => item.copyWith(
                   serverId: null,
                   lastSynced: null,
-                )..applyId(item))
+                ))
             .toList()),
       ),
     );
@@ -290,7 +288,7 @@ class CloudPersistanceCubit extends Cubit<CloudPersistanceState> {
 
     emit(
       CloudPersistanceState.downloadingFile(
-        item.copyWith(downloading: true)..applyId(item),
+        item.copyWith(downloading: true),
       ),
     );
     final userId = auth.userId;
@@ -320,7 +318,7 @@ class CloudPersistanceCubit extends Cubit<CloudPersistanceState> {
       //     item.copyWith(
       //       downloading: true,
       //       downloadProgress: downloaded / total,
-      //     )..applyId(item),
+      //     ),
       //    ),
       //   );
       // }

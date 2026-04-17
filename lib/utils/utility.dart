@@ -1,6 +1,6 @@
 import 'dart:math' show Random;
 
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:device_preview_screenshot/device_preview_screenshot.dart';

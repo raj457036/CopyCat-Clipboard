@@ -1,4 +1,5 @@
-import 'package:clipboard/base/db/app_config/appconfig.dart';
+import 'package:clipboard/base/data/isar/adapters/isar_app_config.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/repositories/app_config.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:dartz/dartz.dart';
@@ -12,24 +13,25 @@ class AppConfigRepositoryImpl implements AppConfigRepository {
 
   AppConfigRepositoryImpl(this.db);
 
+  IsarCollection<IsarAppConfig> get _collection =>
+      db.collection<IsarAppConfig>();
+
   Future<AppConfig> create() async {
-    final appConfig = AppConfig();
-    appConfig.id = _fixedId;
-    await db.writeTxn(
-      () async => await db.appConfigs.put(appConfig),
-    );
+    final appConfig = AppConfig(id: _fixedId);
+    final isarConfig = IsarAppConfig.fromDomain(appConfig);
+    await db.writeTxn(() async => await _collection.put(isarConfig));
     return appConfig;
   }
 
   @override
   FailureOr<AppConfig> get() async {
     try {
-      final result = await db.appConfigs.get(_fixedId);
+      final result = await _collection.get(_fixedId);
       if (result == null) {
-        final result = await create();
-        return Right(result);
+        final created = await create();
+        return Right(created);
       }
-      return Right(result);
+      return Right(result.toDomain());
     } catch (e) {
       return Left(Failure.fromException(e));
     }
@@ -38,9 +40,10 @@ class AppConfigRepositoryImpl implements AppConfigRepository {
   @override
   FailureOr<AppConfig> update(AppConfig config) async {
     try {
-      await db.writeTxn(
-        () async => await db.appConfigs.put(config),
+      final isarConfig = IsarAppConfig.fromDomain(
+        config.copyWith(id: config.id ?? _fixedId),
       );
+      await db.writeTxn(() async => await _collection.put(isarConfig));
       return Right(config);
     } catch (e) {
       return Left(Failure.fromException(e));

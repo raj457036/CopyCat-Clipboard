@@ -1,7 +1,8 @@
 // ignore_for_file: invalid_use_of_protected_member
 
-import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/data/isar/adapters/isar_clip_collection.dart';
+import 'package:clipboard/base/data/isar/adapters/isar_clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/sources/clip_collection.dart';
 import 'package:clipboard/common/paginated_results.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -16,11 +17,17 @@ class LocalClipCollectionSource implements ClipCollectionSource {
 
   LocalClipCollectionSource(this.db, @Named("device_id") this.deviceId);
 
+  IsarCollection<IsarClipCollection> get _collection =>
+      db.collection<IsarClipCollection>();
+
+  IsarCollection<IsarClipboardItem> get _clipboardItems =>
+      db.collection<IsarClipboardItem>();
+
   @override
   Future<ClipCollection> create(ClipCollection collection) async {
-    final id = await db.writeTxn(() => db.clipCollections.put(collection));
-    collection.id = id;
-    return collection;
+    final isarItem = IsarClipCollection.fromDomain(collection);
+    final id = await db.writeTxn(() => _collection.put(isarItem));
+    return collection.copyWith(id: id);
   }
 
   @override
@@ -29,18 +36,18 @@ class LocalClipCollectionSource implements ClipCollectionSource {
     int offset = 0,
     String? search,
   }) async {
-    List<ClipCollection> results;
+    List<IsarClipCollection> isarResults;
 
     if (search == null) {
-      results = await db.txn(() async => await db.clipCollections
+      isarResults = await db.txn(() async => await _collection
           .where()
           .sortByCreatedDesc()
           .offset(offset)
           .limit(limit)
           .findAll());
     } else {
-      results = await db.txn(() async {
-        var filter = db.clipCollections.filter();
+      isarResults = await db.txn(() async {
+        var filter = _collection.filter();
 
         for (final word in Isar.splitWords(search)) {
           filter = filter
@@ -67,6 +74,7 @@ class LocalClipCollectionSource implements ClipCollectionSource {
       });
     }
 
+    final results = isarResults.map((e) => e.toDomain()).toList();
     return PaginatedResult(
       results: results,
       hasMore: results.length == limit,
@@ -75,11 +83,10 @@ class LocalClipCollectionSource implements ClipCollectionSource {
 
   @override
   Future<ClipCollection> update(ClipCollection collection) async {
-    final updated = collection.copyWith(
-      modified: now(),
-    )..applyId(collection);
+    final updated = collection.copyWith(modified: now());
+    final isarItem = IsarClipCollection.fromDomain(updated);
     await db.writeTxn(
-      () => db.clipCollections.put(updated),
+      () => _collection.put(isarItem),
     );
     return updated;
   }
@@ -88,57 +95,58 @@ class LocalClipCollectionSource implements ClipCollectionSource {
   Future<List<ClipCollection>> updateMany(
     List<ClipCollection> collections,
   ) async {
-    final updates = collections
-        .map((collection) => collection.copyWith(
-              modified: now(),
-            )..applyId(collection))
-        .toList();
+    final updates =
+        collections.map((c) => c.copyWith(modified: now())).toList();
+    final isarItems =
+        updates.map(IsarClipCollection.fromDomain).toList();
     final ids = await db.writeTxn(
-      () => db.clipCollections.putAll(updates),
+      () => _collection.putAll(isarItems),
     );
 
-    for (var i = 0; i < ids.length; i++) {
-      collections[i].id = ids[i];
-    }
-    return collections;
+    return [
+      for (var i = 0; i < ids.length; i++) updates[i].copyWith(id: ids[i]),
+    ];
   }
 
   @override
   Future<bool> delete(ClipCollection collection) async {
+    if (collection.id == null) return false;
     final result = await db.writeTxn(() async {
-      final items = await db.clipboardItems
+      final items = await _clipboardItems
           .filter()
           .collectionIdEqualTo(collection.id)
           .findAll();
-      final updates = items
+      final updatedItems = items
           .map(
-            (e) => e.copyWith(
-              collectionId: null,
-              modified: now(),
-            )..applyId(e),
+            (e) {
+              final domain = e.toDomain();
+              return IsarClipboardItem.fromDomain(
+                domain.copyWith(collectionId: null, modified: now()),
+              );
+            },
           )
           .toList();
-      await db.clipboardItems.putAll(updates);
-      await db.clipCollections.delete(collection.id);
+      await _clipboardItems.putAll(updatedItems);
+      await _collection.delete(collection.id!);
     });
     return result;
   }
 
   @override
   Future<void> deleteAll() async {
-    await db.writeTxn(() => db.clipCollections.clear());
+    await db.writeTxn(() => _collection.clear());
   }
 
   @override
   Future<ClipCollection?> get({int? id, int? serverId}) async {
     if (serverId != null) {
       final result = await db.txn(() =>
-          db.clipCollections.filter().serverIdEqualTo(serverId).findFirst());
-      return result;
+          _collection.filter().serverIdEqualTo(serverId).findFirst());
+      return result?.toDomain();
     }
     if (id != null) {
-      final result = await db.txn(() => db.clipCollections.get(id));
-      return result;
+      final result = await db.txn(() => _collection.get(id));
+      return result?.toDomain();
     }
     return null;
   }
@@ -148,8 +156,7 @@ class LocalClipCollectionSource implements ClipCollectionSource {
     if (collection.serverId != null) {
       final existingClip = await get(serverId: collection.serverId!);
       if (existingClip != null) {
-        collection.id = existingClip.id;
-        return update(collection);
+        return update(collection.copyWith(id: existingClip.id));
       }
     }
     return create(collection);
@@ -159,7 +166,7 @@ class LocalClipCollectionSource implements ClipCollectionSource {
   Future<ClipCollection?> getLatestFromOthers({bool? synced}) async {
     final result = await db.txn(() {
       if (synced == true) {
-        final q = db.clipCollections
+        final q = _collection
             .filter()
             .not()
             .deviceIdEqualTo(deviceId)
@@ -169,7 +176,7 @@ class LocalClipCollectionSource implements ClipCollectionSource {
             .findFirst();
         return q;
       }
-      final q = db.clipCollections
+      final q = _collection
           .filter()
           .not()
           .deviceIdEqualTo(deviceId)
@@ -177,15 +184,19 @@ class LocalClipCollectionSource implements ClipCollectionSource {
           .findFirst();
       return q;
     });
-    return result;
+    return result?.toDomain();
   }
 
   @override
   Future<List<ClipCollection>> deleteMany(List<ClipCollection> items) async {
     final result = await db.writeTxn(() async {
-      final q = db.clipCollections
+      final q = _collection
           .filter()
-          .anyOf(items, (q, item) => q.idEqualTo(item.id))
+          .anyOf(
+              items,
+              (q, item) => item.id != null
+                  ? q.isarIdEqualTo(item.id!)
+                  : q.isarIdEqualTo(-1))
           .or()
           .anyOf(items, (q, item) => q.serverIdEqualTo(item.serverId));
 
@@ -194,7 +205,7 @@ class LocalClipCollectionSource implements ClipCollectionSource {
 
       await q.deleteAll();
 
-      return deleted;
+      return deleted.map((e) => e.toDomain()).toList();
     });
     return result;
   }
@@ -202,7 +213,7 @@ class LocalClipCollectionSource implements ClipCollectionSource {
   @override
   Future<int> getCount() async {
     final count = await db.txn(() {
-      return db.clipCollections.count();
+      return _collection.count();
     });
     return count;
   }

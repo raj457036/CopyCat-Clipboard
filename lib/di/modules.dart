@@ -1,10 +1,7 @@
 import "package:android_background_clipboard/android_background_clipboard.dart";
 import "package:clipboard/base/constants/strings/strings.dart";
-import "package:clipboard/base/db/app_config/appconfig.dart";
-import "package:clipboard/base/db/clip_collection/clipcollection.dart";
-import "package:clipboard/base/db/clipboard_item/clipboard_item.dart";
-import "package:clipboard/base/db/subscription/subscription.dart";
-import "package:clipboard/base/db/sync_status/syncstatus.dart";
+import "package:clipboard/base/data/isar/isar_database.dart";
+import "package:clipboard/base/data/isar/isar_database_service.dart";
 import 'package:device_info_plus/device_info_plus.dart';
 import "package:flutter/foundation.dart";
 import "package:focus_window/focus_window.dart";
@@ -66,22 +63,11 @@ abstract class RegisterModule {
   Future<Isar> get db async {
     String? dbPath = Platform.environment[dbPathEnvKey];
     dbPath = dbPath ?? (await getApplicationDocumentsDirectory()).path;
-
-    final isar = await Isar.open(
-      [
-        ClipboardItemSchema,
-        AppConfigSchema,
-        SyncStatusSchema,
-        ClipCollectionSchema,
-        SubscriptionSchema,
-      ],
-      directory: dbPath,
-      relaxedDurability: true,
-      inspector: kDebugMode,
-      name: dbName,
-    );
-    return isar;
+    return openIsarDatabase(dbPath, dbName);
   }
+
+  @LazySingleton()
+  IsarDatabaseService databaseService(Isar db) => IsarDatabaseService(db);
 
   @preResolve
   @Named("device_id")

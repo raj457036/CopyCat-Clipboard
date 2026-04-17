@@ -12,7 +12,8 @@ part of 'window_action_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$WindowActionState {
@@ -21,35 +22,29 @@ mixin _$WindowActionState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(AppView view, bool loading) loaded,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(AppView view, bool loading)? loaded,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(AppView view, bool loading)? loaded,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(WindowActionLoaded value) loaded,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(WindowActionLoaded value)? loaded,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(WindowActionLoaded value)? loaded,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 
   /// Create a copy of WindowActionState
   /// with the given fields replaced by the non-null parameter values.
@@ -61,8 +56,9 @@ mixin _$WindowActionState {
 /// @nodoc
 abstract class $WindowActionStateCopyWith<$Res> {
   factory $WindowActionStateCopyWith(
-          WindowActionState value, $Res Function(WindowActionState) then) =
-      _$WindowActionStateCopyWithImpl<$Res, WindowActionState>;
+    WindowActionState value,
+    $Res Function(WindowActionState) then,
+  ) = _$WindowActionStateCopyWithImpl<$Res, WindowActionState>;
   @useResult
   $Res call({AppView view, bool loading});
 }
@@ -81,29 +77,30 @@ class _$WindowActionStateCopyWithImpl<$Res, $Val extends WindowActionState>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? view = null,
-    Object? loading = null,
-  }) {
-    return _then(_value.copyWith(
-      view: null == view
-          ? _value.view
-          : view // ignore: cast_nullable_to_non_nullable
-              as AppView,
-      loading: null == loading
-          ? _value.loading
-          : loading // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
+  $Res call({Object? view = null, Object? loading = null}) {
+    return _then(
+      _value.copyWith(
+            view: null == view
+                ? _value.view
+                : view // ignore: cast_nullable_to_non_nullable
+                      as AppView,
+            loading: null == loading
+                ? _value.loading
+                : loading // ignore: cast_nullable_to_non_nullable
+                      as bool,
+          )
+          as $Val,
+    );
   }
 }
 
 /// @nodoc
 abstract class _$$WindowActionLoadedImplCopyWith<$Res>
     implements $WindowActionStateCopyWith<$Res> {
-  factory _$$WindowActionLoadedImplCopyWith(_$WindowActionLoadedImpl value,
-          $Res Function(_$WindowActionLoadedImpl) then) =
-      __$$WindowActionLoadedImplCopyWithImpl<$Res>;
+  factory _$$WindowActionLoadedImplCopyWith(
+    _$WindowActionLoadedImpl value,
+    $Res Function(_$WindowActionLoadedImpl) then,
+  ) = __$$WindowActionLoadedImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({AppView view, bool loading});
@@ -113,28 +110,28 @@ abstract class _$$WindowActionLoadedImplCopyWith<$Res>
 class __$$WindowActionLoadedImplCopyWithImpl<$Res>
     extends _$WindowActionStateCopyWithImpl<$Res, _$WindowActionLoadedImpl>
     implements _$$WindowActionLoadedImplCopyWith<$Res> {
-  __$$WindowActionLoadedImplCopyWithImpl(_$WindowActionLoadedImpl _value,
-      $Res Function(_$WindowActionLoadedImpl) _then)
-      : super(_value, _then);
+  __$$WindowActionLoadedImplCopyWithImpl(
+    _$WindowActionLoadedImpl _value,
+    $Res Function(_$WindowActionLoadedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of WindowActionState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? view = null,
-    Object? loading = null,
-  }) {
-    return _then(_$WindowActionLoadedImpl(
-      view: null == view
-          ? _value.view
-          : view // ignore: cast_nullable_to_non_nullable
-              as AppView,
-      loading: null == loading
-          ? _value.loading
-          : loading // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
+  $Res call({Object? view = null, Object? loading = null}) {
+    return _then(
+      _$WindowActionLoadedImpl(
+        view: null == view
+            ? _value.view
+            : view // ignore: cast_nullable_to_non_nullable
+                  as AppView,
+        loading: null == loading
+            ? _value.loading
+            : loading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
   }
 }
 
@@ -143,8 +140,10 @@ class __$$WindowActionLoadedImplCopyWithImpl<$Res>
 class _$WindowActionLoadedImpl
     with DiagnosticableTreeMixin
     implements WindowActionLoaded {
-  const _$WindowActionLoadedImpl(
-      {this.view = AppView.windowed, this.loading = true});
+  const _$WindowActionLoadedImpl({
+    this.view = AppView.windowed,
+    this.loading = true,
+  });
 
   @override
   @JsonKey()
@@ -186,7 +185,9 @@ class _$WindowActionLoadedImpl
   @pragma('vm:prefer-inline')
   _$$WindowActionLoadedImplCopyWith<_$WindowActionLoadedImpl> get copyWith =>
       __$$WindowActionLoadedImplCopyWithImpl<_$WindowActionLoadedImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs

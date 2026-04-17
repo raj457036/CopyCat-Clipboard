@@ -1,5 +1,5 @@
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
-import 'package:clipboard/base/db/subscription/subscription.dart';
+import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/datetime_extension.dart';
 import 'package:clipboard/utils/snackbar.dart';

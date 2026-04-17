@@ -1,6 +1,6 @@
 import 'package:clipboard/base/constants/strings.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
-import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
+import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/sources/clip_collection.dart';
 import 'package:clipboard/common/paginated_results.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -26,7 +26,7 @@ class RemoteClipCollectionSource implements ClipCollectionSource {
     return collection.copyWith(
       serverId: result.first["id"],
       lastSynced: now(),
-    )..applyId(collection);
+    );
   }
 
   @override
@@ -79,7 +79,7 @@ class RemoteClipCollectionSource implements ClipCollectionSource {
         .eq("id", collection.serverId!);
     final updatedCollection = collection.copyWith(
       lastSynced: now(),
-    )..applyId(collection);
+    );
     return updatedCollection;
   }
 

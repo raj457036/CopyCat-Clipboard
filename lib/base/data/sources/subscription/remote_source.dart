@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:clipboard/base/db/subscription/subscription.dart';
+import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/sources/subscription.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/common_extension.dart';

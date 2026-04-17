@@ -1,4 +1,4 @@
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
@@ -21,13 +21,13 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
   @override
   FailureOr<ClipboardItem> create(ClipboardItem item) async {
     try {
-      item = item.copyWith(modified: now())..applyId(item);
+      item = item.copyWith(modified: now());
       final encrypted = await item.encrypt();
       final result = await remote.create(encrypted);
       final clip = item.copyWith(
         serverId: result.serverId,
         lastSynced: result.lastSynced,
-      )..applyId(result);
+      );
       return Right(clip);
     } catch (e) {
       return Left(Failure.fromException(e));
@@ -81,12 +81,12 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
   @override
   FailureOr<ClipboardItem> update(ClipboardItem item) async {
     try {
-      item = item.copyWith(modified: now())..applyId(item);
+      item = item.copyWith(modified: now());
       final encrypted = await item.encrypt();
-      final result = await remote.update(encrypted);
+      await remote.update(encrypted);
       final clip = item.copyWith(
         lastSynced: now(),
-      )..applyId(result);
+      );
       return Right(clip);
     } catch (e) {
       return Left(Failure.fromException(e));

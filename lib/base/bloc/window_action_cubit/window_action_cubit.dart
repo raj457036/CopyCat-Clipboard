@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/db/app_config/appconfig.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';

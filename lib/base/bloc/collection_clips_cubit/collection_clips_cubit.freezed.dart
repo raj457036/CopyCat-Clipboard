@@ -12,7 +12,8 @@ part of 'collection_clips_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$CollectionClipsState {
@@ -20,49 +21,59 @@ mixin _$CollectionClipsState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function(String? query) searching,
-    required TResult Function(String? query, List<ClipboardItem> results,
-            bool hasMore, bool isLoading, int offset)
-        results,
+    required TResult Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )
+    results,
     required TResult Function(Failure failure) error,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function(String? query)? searching,
-    TResult? Function(String? query, List<ClipboardItem> results, bool hasMore,
-            bool isLoading, int offset)?
-        results,
+    TResult? Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )?
+    results,
     TResult? Function(Failure failure)? error,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function(String? query)? searching,
-    TResult Function(String? query, List<ClipboardItem> results, bool hasMore,
-            bool isLoading, int offset)?
-        results,
+    TResult Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )?
+    results,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(InitialCollectionClipsState value) initial,
     required TResult Function(SearchingCollectionClipsState value) searching,
     required TResult Function(CollectionClipsResultsState value) results,
     required TResult Function(CollectionClipsErrorState value) error,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(InitialCollectionClipsState value)? initial,
     TResult? Function(SearchingCollectionClipsState value)? searching,
     TResult? Function(CollectionClipsResultsState value)? results,
     TResult? Function(CollectionClipsErrorState value)? error,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(InitialCollectionClipsState value)? initial,
@@ -70,20 +81,22 @@ mixin _$CollectionClipsState {
     TResult Function(CollectionClipsResultsState value)? results,
     TResult Function(CollectionClipsErrorState value)? error,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $CollectionClipsStateCopyWith<$Res> {
-  factory $CollectionClipsStateCopyWith(CollectionClipsState value,
-          $Res Function(CollectionClipsState) then) =
-      _$CollectionClipsStateCopyWithImpl<$Res, CollectionClipsState>;
+  factory $CollectionClipsStateCopyWith(
+    CollectionClipsState value,
+    $Res Function(CollectionClipsState) then,
+  ) = _$CollectionClipsStateCopyWithImpl<$Res, CollectionClipsState>;
 }
 
 /// @nodoc
-class _$CollectionClipsStateCopyWithImpl<$Res,
-        $Val extends CollectionClipsState>
+class _$CollectionClipsStateCopyWithImpl<
+  $Res,
+  $Val extends CollectionClipsState
+>
     implements $CollectionClipsStateCopyWith<$Res> {
   _$CollectionClipsStateCopyWithImpl(this._value, this._then);
 
@@ -99,20 +112,23 @@ class _$CollectionClipsStateCopyWithImpl<$Res,
 /// @nodoc
 abstract class _$$InitialCollectionClipsStateImplCopyWith<$Res> {
   factory _$$InitialCollectionClipsStateImplCopyWith(
-          _$InitialCollectionClipsStateImpl value,
-          $Res Function(_$InitialCollectionClipsStateImpl) then) =
-      __$$InitialCollectionClipsStateImplCopyWithImpl<$Res>;
+    _$InitialCollectionClipsStateImpl value,
+    $Res Function(_$InitialCollectionClipsStateImpl) then,
+  ) = __$$InitialCollectionClipsStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$InitialCollectionClipsStateImplCopyWithImpl<$Res>
-    extends _$CollectionClipsStateCopyWithImpl<$Res,
-        _$InitialCollectionClipsStateImpl>
+    extends
+        _$CollectionClipsStateCopyWithImpl<
+          $Res,
+          _$InitialCollectionClipsStateImpl
+        >
     implements _$$InitialCollectionClipsStateImplCopyWith<$Res> {
   __$$InitialCollectionClipsStateImplCopyWithImpl(
-      _$InitialCollectionClipsStateImpl _value,
-      $Res Function(_$InitialCollectionClipsStateImpl) _then)
-      : super(_value, _then);
+    _$InitialCollectionClipsStateImpl _value,
+    $Res Function(_$InitialCollectionClipsStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CollectionClipsState
   /// with the given fields replaced by the non-null parameter values.
@@ -143,9 +159,14 @@ class _$InitialCollectionClipsStateImpl implements InitialCollectionClipsState {
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function(String? query) searching,
-    required TResult Function(String? query, List<ClipboardItem> results,
-            bool hasMore, bool isLoading, int offset)
-        results,
+    required TResult Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )
+    results,
     required TResult Function(Failure failure) error,
   }) {
     return initial();
@@ -156,9 +177,14 @@ class _$InitialCollectionClipsStateImpl implements InitialCollectionClipsState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function(String? query)? searching,
-    TResult? Function(String? query, List<ClipboardItem> results, bool hasMore,
-            bool isLoading, int offset)?
-        results,
+    TResult? Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )?
+    results,
     TResult? Function(Failure failure)? error,
   }) {
     return initial?.call();
@@ -169,9 +195,14 @@ class _$InitialCollectionClipsStateImpl implements InitialCollectionClipsState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function(String? query)? searching,
-    TResult Function(String? query, List<ClipboardItem> results, bool hasMore,
-            bool isLoading, int offset)?
-        results,
+    TResult Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )?
+    results,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {
@@ -227,36 +258,39 @@ abstract class InitialCollectionClipsState implements CollectionClipsState {
 /// @nodoc
 abstract class _$$SearchingCollectionClipsStateImplCopyWith<$Res> {
   factory _$$SearchingCollectionClipsStateImplCopyWith(
-          _$SearchingCollectionClipsStateImpl value,
-          $Res Function(_$SearchingCollectionClipsStateImpl) then) =
-      __$$SearchingCollectionClipsStateImplCopyWithImpl<$Res>;
+    _$SearchingCollectionClipsStateImpl value,
+    $Res Function(_$SearchingCollectionClipsStateImpl) then,
+  ) = __$$SearchingCollectionClipsStateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String? query});
 }
 
 /// @nodoc
 class __$$SearchingCollectionClipsStateImplCopyWithImpl<$Res>
-    extends _$CollectionClipsStateCopyWithImpl<$Res,
-        _$SearchingCollectionClipsStateImpl>
+    extends
+        _$CollectionClipsStateCopyWithImpl<
+          $Res,
+          _$SearchingCollectionClipsStateImpl
+        >
     implements _$$SearchingCollectionClipsStateImplCopyWith<$Res> {
   __$$SearchingCollectionClipsStateImplCopyWithImpl(
-      _$SearchingCollectionClipsStateImpl _value,
-      $Res Function(_$SearchingCollectionClipsStateImpl) _then)
-      : super(_value, _then);
+    _$SearchingCollectionClipsStateImpl _value,
+    $Res Function(_$SearchingCollectionClipsStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CollectionClipsState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? query = freezed,
-  }) {
-    return _then(_$SearchingCollectionClipsStateImpl(
-      query: freezed == query
-          ? _value.query
-          : query // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
+  $Res call({Object? query = freezed}) {
+    return _then(
+      _$SearchingCollectionClipsStateImpl(
+        query: freezed == query
+            ? _value.query
+            : query // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
   }
 }
 
@@ -291,18 +325,26 @@ class _$SearchingCollectionClipsStateImpl
   @override
   @pragma('vm:prefer-inline')
   _$$SearchingCollectionClipsStateImplCopyWith<
-          _$SearchingCollectionClipsStateImpl>
-      get copyWith => __$$SearchingCollectionClipsStateImplCopyWithImpl<
-          _$SearchingCollectionClipsStateImpl>(this, _$identity);
+    _$SearchingCollectionClipsStateImpl
+  >
+  get copyWith =>
+      __$$SearchingCollectionClipsStateImplCopyWithImpl<
+        _$SearchingCollectionClipsStateImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function(String? query) searching,
-    required TResult Function(String? query, List<ClipboardItem> results,
-            bool hasMore, bool isLoading, int offset)
-        results,
+    required TResult Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )
+    results,
     required TResult Function(Failure failure) error,
   }) {
     return searching(query);
@@ -313,9 +355,14 @@ class _$SearchingCollectionClipsStateImpl
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function(String? query)? searching,
-    TResult? Function(String? query, List<ClipboardItem> results, bool hasMore,
-            bool isLoading, int offset)?
-        results,
+    TResult? Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )?
+    results,
     TResult? Function(Failure failure)? error,
   }) {
     return searching?.call(query);
@@ -326,9 +373,14 @@ class _$SearchingCollectionClipsStateImpl
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function(String? query)? searching,
-    TResult Function(String? query, List<ClipboardItem> results, bool hasMore,
-            bool isLoading, int offset)?
-        results,
+    TResult Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )?
+    results,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {
@@ -386,34 +438,39 @@ abstract class SearchingCollectionClipsState implements CollectionClipsState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SearchingCollectionClipsStateImplCopyWith<
-          _$SearchingCollectionClipsStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
+    _$SearchingCollectionClipsStateImpl
+  >
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$CollectionClipsResultsStateImplCopyWith<$Res> {
   factory _$$CollectionClipsResultsStateImplCopyWith(
-          _$CollectionClipsResultsStateImpl value,
-          $Res Function(_$CollectionClipsResultsStateImpl) then) =
-      __$$CollectionClipsResultsStateImplCopyWithImpl<$Res>;
+    _$CollectionClipsResultsStateImpl value,
+    $Res Function(_$CollectionClipsResultsStateImpl) then,
+  ) = __$$CollectionClipsResultsStateImplCopyWithImpl<$Res>;
   @useResult
-  $Res call(
-      {String? query,
-      List<ClipboardItem> results,
-      bool hasMore,
-      bool isLoading,
-      int offset});
+  $Res call({
+    String? query,
+    List<ClipboardItem> results,
+    bool hasMore,
+    bool isLoading,
+    int offset,
+  });
 }
 
 /// @nodoc
 class __$$CollectionClipsResultsStateImplCopyWithImpl<$Res>
-    extends _$CollectionClipsStateCopyWithImpl<$Res,
-        _$CollectionClipsResultsStateImpl>
+    extends
+        _$CollectionClipsStateCopyWithImpl<
+          $Res,
+          _$CollectionClipsResultsStateImpl
+        >
     implements _$$CollectionClipsResultsStateImplCopyWith<$Res> {
   __$$CollectionClipsResultsStateImplCopyWithImpl(
-      _$CollectionClipsResultsStateImpl _value,
-      $Res Function(_$CollectionClipsResultsStateImpl) _then)
-      : super(_value, _then);
+    _$CollectionClipsResultsStateImpl _value,
+    $Res Function(_$CollectionClipsResultsStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CollectionClipsState
   /// with the given fields replaced by the non-null parameter values.
@@ -426,41 +483,43 @@ class __$$CollectionClipsResultsStateImplCopyWithImpl<$Res>
     Object? isLoading = null,
     Object? offset = null,
   }) {
-    return _then(_$CollectionClipsResultsStateImpl(
-      query: freezed == query
-          ? _value.query
-          : query // ignore: cast_nullable_to_non_nullable
-              as String?,
-      results: null == results
-          ? _value._results
-          : results // ignore: cast_nullable_to_non_nullable
-              as List<ClipboardItem>,
-      hasMore: null == hasMore
-          ? _value.hasMore
-          : hasMore // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      offset: null == offset
-          ? _value.offset
-          : offset // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
+    return _then(
+      _$CollectionClipsResultsStateImpl(
+        query: freezed == query
+            ? _value.query
+            : query // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        results: null == results
+            ? _value._results
+            : results // ignore: cast_nullable_to_non_nullable
+                  as List<ClipboardItem>,
+        hasMore: null == hasMore
+            ? _value.hasMore
+            : hasMore // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        isLoading: null == isLoading
+            ? _value.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        offset: null == offset
+            ? _value.offset
+            : offset // ignore: cast_nullable_to_non_nullable
+                  as int,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$CollectionClipsResultsStateImpl implements CollectionClipsResultsState {
-  const _$CollectionClipsResultsStateImpl(
-      {this.query,
-      required final List<ClipboardItem> results,
-      this.hasMore = false,
-      this.isLoading = false,
-      this.offset = 0})
-      : _results = results;
+  const _$CollectionClipsResultsStateImpl({
+    this.query,
+    required final List<ClipboardItem> results,
+    this.hasMore = false,
+    this.isLoading = false,
+    this.offset = 0,
+  }) : _results = results;
 
   @override
   final String? query;
@@ -502,12 +561,13 @@ class _$CollectionClipsResultsStateImpl implements CollectionClipsResultsState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      query,
-      const DeepCollectionEquality().hash(_results),
-      hasMore,
-      isLoading,
-      offset);
+    runtimeType,
+    query,
+    const DeepCollectionEquality().hash(_results),
+    hasMore,
+    isLoading,
+    offset,
+  );
 
   /// Create a copy of CollectionClipsState
   /// with the given fields replaced by the non-null parameter values.
@@ -515,17 +575,24 @@ class _$CollectionClipsResultsStateImpl implements CollectionClipsResultsState {
   @override
   @pragma('vm:prefer-inline')
   _$$CollectionClipsResultsStateImplCopyWith<_$CollectionClipsResultsStateImpl>
-      get copyWith => __$$CollectionClipsResultsStateImplCopyWithImpl<
-          _$CollectionClipsResultsStateImpl>(this, _$identity);
+  get copyWith =>
+      __$$CollectionClipsResultsStateImplCopyWithImpl<
+        _$CollectionClipsResultsStateImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function(String? query) searching,
-    required TResult Function(String? query, List<ClipboardItem> results,
-            bool hasMore, bool isLoading, int offset)
-        results,
+    required TResult Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )
+    results,
     required TResult Function(Failure failure) error,
   }) {
     return results(query, this.results, hasMore, isLoading, offset);
@@ -536,9 +603,14 @@ class _$CollectionClipsResultsStateImpl implements CollectionClipsResultsState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function(String? query)? searching,
-    TResult? Function(String? query, List<ClipboardItem> results, bool hasMore,
-            bool isLoading, int offset)?
-        results,
+    TResult? Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )?
+    results,
     TResult? Function(Failure failure)? error,
   }) {
     return results?.call(query, this.results, hasMore, isLoading, offset);
@@ -549,9 +621,14 @@ class _$CollectionClipsResultsStateImpl implements CollectionClipsResultsState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function(String? query)? searching,
-    TResult Function(String? query, List<ClipboardItem> results, bool hasMore,
-            bool isLoading, int offset)?
-        results,
+    TResult Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )?
+    results,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {
@@ -600,12 +677,13 @@ class _$CollectionClipsResultsStateImpl implements CollectionClipsResultsState {
 }
 
 abstract class CollectionClipsResultsState implements CollectionClipsState {
-  const factory CollectionClipsResultsState(
-      {final String? query,
-      required final List<ClipboardItem> results,
-      final bool hasMore,
-      final bool isLoading,
-      final int offset}) = _$CollectionClipsResultsStateImpl;
+  const factory CollectionClipsResultsState({
+    final String? query,
+    required final List<ClipboardItem> results,
+    final bool hasMore,
+    final bool isLoading,
+    final int offset,
+  }) = _$CollectionClipsResultsStateImpl;
 
   String? get query;
   List<ClipboardItem> get results;
@@ -617,42 +695,45 @@ abstract class CollectionClipsResultsState implements CollectionClipsState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CollectionClipsResultsStateImplCopyWith<_$CollectionClipsResultsStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$CollectionClipsErrorStateImplCopyWith<$Res> {
   factory _$$CollectionClipsErrorStateImplCopyWith(
-          _$CollectionClipsErrorStateImpl value,
-          $Res Function(_$CollectionClipsErrorStateImpl) then) =
-      __$$CollectionClipsErrorStateImplCopyWithImpl<$Res>;
+    _$CollectionClipsErrorStateImpl value,
+    $Res Function(_$CollectionClipsErrorStateImpl) then,
+  ) = __$$CollectionClipsErrorStateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({Failure failure});
 }
 
 /// @nodoc
 class __$$CollectionClipsErrorStateImplCopyWithImpl<$Res>
-    extends _$CollectionClipsStateCopyWithImpl<$Res,
-        _$CollectionClipsErrorStateImpl>
+    extends
+        _$CollectionClipsStateCopyWithImpl<
+          $Res,
+          _$CollectionClipsErrorStateImpl
+        >
     implements _$$CollectionClipsErrorStateImplCopyWith<$Res> {
   __$$CollectionClipsErrorStateImplCopyWithImpl(
-      _$CollectionClipsErrorStateImpl _value,
-      $Res Function(_$CollectionClipsErrorStateImpl) _then)
-      : super(_value, _then);
+    _$CollectionClipsErrorStateImpl _value,
+    $Res Function(_$CollectionClipsErrorStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CollectionClipsState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? failure = null,
-  }) {
-    return _then(_$CollectionClipsErrorStateImpl(
-      failure: null == failure
-          ? _value.failure
-          : failure // ignore: cast_nullable_to_non_nullable
-              as Failure,
-    ));
+  $Res call({Object? failure = null}) {
+    return _then(
+      _$CollectionClipsErrorStateImpl(
+        failure: null == failure
+            ? _value.failure
+            : failure // ignore: cast_nullable_to_non_nullable
+                  as Failure,
+      ),
+    );
   }
 }
 
@@ -686,17 +767,24 @@ class _$CollectionClipsErrorStateImpl implements CollectionClipsErrorState {
   @override
   @pragma('vm:prefer-inline')
   _$$CollectionClipsErrorStateImplCopyWith<_$CollectionClipsErrorStateImpl>
-      get copyWith => __$$CollectionClipsErrorStateImplCopyWithImpl<
-          _$CollectionClipsErrorStateImpl>(this, _$identity);
+  get copyWith =>
+      __$$CollectionClipsErrorStateImplCopyWithImpl<
+        _$CollectionClipsErrorStateImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
     required TResult Function(String? query) searching,
-    required TResult Function(String? query, List<ClipboardItem> results,
-            bool hasMore, bool isLoading, int offset)
-        results,
+    required TResult Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )
+    results,
     required TResult Function(Failure failure) error,
   }) {
     return error(failure);
@@ -707,9 +795,14 @@ class _$CollectionClipsErrorStateImpl implements CollectionClipsErrorState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function(String? query)? searching,
-    TResult? Function(String? query, List<ClipboardItem> results, bool hasMore,
-            bool isLoading, int offset)?
-        results,
+    TResult? Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )?
+    results,
     TResult? Function(Failure failure)? error,
   }) {
     return error?.call(failure);
@@ -720,9 +813,14 @@ class _$CollectionClipsErrorStateImpl implements CollectionClipsErrorState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function(String? query)? searching,
-    TResult Function(String? query, List<ClipboardItem> results, bool hasMore,
-            bool isLoading, int offset)?
-        results,
+    TResult Function(
+      String? query,
+      List<ClipboardItem> results,
+      bool hasMore,
+      bool isLoading,
+      int offset,
+    )?
+    results,
     TResult Function(Failure failure)? error,
     required TResult orElse(),
   }) {
@@ -780,5 +878,5 @@ abstract class CollectionClipsErrorState implements CollectionClipsState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CollectionClipsErrorStateImplCopyWith<_$CollectionClipsErrorStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }

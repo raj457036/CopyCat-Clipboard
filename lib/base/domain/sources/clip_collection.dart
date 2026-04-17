@@ -1,4 +1,4 @@
-import 'package:clipboard/base/db/clip_collection/clipcollection.dart';
+import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/common/paginated_results.dart';
 
 abstract class ClipCollectionSource {

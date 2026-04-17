@@ -44,6 +44,9 @@ import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.da
     as _i653;
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart'
     as _i657;
+import 'package:clipboard/base/data/isar/isar_database_service.dart' as _i469;
+import 'package:clipboard/base/data/isar/services/isar_clip_batch_sync_service.dart'
+    as _i639;
 import 'package:clipboard/base/data/repositories/analytics.dart' as _i202;
 import 'package:clipboard/base/data/repositories/app_config.dart' as _i655;
 import 'package:clipboard/base/data/repositories/auth.dart' as _i346;
@@ -74,7 +77,8 @@ import 'package:clipboard/base/data/sources/subscription/remote_source.dart'
     as _i35;
 import 'package:clipboard/base/data/sources/sync_clipboard/remote_source.dart'
     as _i425;
-import 'package:clipboard/base/db/clip_collection/clipcollection.dart' as _i789;
+import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart'
+    as _i687;
 import 'package:clipboard/base/domain/repositories/analytics.dart' as _i707;
 import 'package:clipboard/base/domain/repositories/app_config.dart' as _i891;
 import 'package:clipboard/base/domain/repositories/auth.dart' as _i579;
@@ -87,6 +91,8 @@ import 'package:clipboard/base/domain/repositories/restoration_status.dart'
     as _i1069;
 import 'package:clipboard/base/domain/repositories/subscription.dart' as _i956;
 import 'package:clipboard/base/domain/repositories/sync_clipboard.dart' as _i61;
+import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart'
+    as _i616;
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart'
     as _i543;
 import 'package:clipboard/base/domain/sources/clip_collection.dart' as _i670;
@@ -104,16 +110,12 @@ import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 import 'package:tiny_storage/tiny_storage.dart' as _i829;
 
 extension GetItInjectableX on _i174.GetIt {
-// initializes the registration of main-scope dependencies inside of GetIt
+  // initializes the registration of main-scope dependencies inside of GetIt
   Future<_i174.GetIt> init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
   }) async {
-    final gh = _i526.GetItHelper(
-      this,
-      environment,
-      environmentFilter,
-    );
+    final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
     await gh.factoryAsync<_i655.PackageInfo>(
       () => registerModule.packageInfo,
@@ -134,11 +136,20 @@ extension GetItInjectableX on _i174.GetIt {
       dispose: _i234.closeIsarDb,
     );
     gh.lazySingleton<_i565.AndroidBackgroundClipboard>(
-        () => registerModule.bgService);
+      () => registerModule.bgService,
+    );
     gh.lazySingleton<_i1025.GoogleOAuth2Service>(
-        () => _i1025.GoogleOAuth2Service());
+      () => _i1025.GoogleOAuth2Service(),
+    );
     gh.lazySingleton<_i707.AnalyticsRepository>(
-        () => const _i202.AnalyticsRepositoryImpl());
+      () => const _i202.AnalyticsRepositoryImpl(),
+    );
+    gh.lazySingleton<_i616.ClipBatchSyncService>(
+      () => _i639.IsarClipBatchSyncService(),
+    );
+    gh.lazySingleton<_i469.IsarDatabaseService>(
+      () => registerModule.databaseService(gh<_i214.Isar>()),
+    );
     gh.factory<String>(
       () => registerModule.supabaseProjectKey,
       instanceName: 'supabase_project_key',
@@ -152,13 +163,15 @@ extension GetItInjectableX on _i174.GetIt {
       instanceName: 'supabase_url',
     );
     gh.lazySingleton<_i922.RestorationStatusSource>(
-        () => _i364.RestorationStatusSourceImpl(db: gh<_i214.Isar>()));
+      () => _i364.RestorationStatusSourceImpl(db: gh<_i214.Isar>()),
+    );
     gh.factory<String>(
       () => registerModule.supabaseKey,
       instanceName: 'supabase_key',
     );
     gh.lazySingleton<_i891.AppConfigRepository>(
-        () => _i655.AppConfigRepositoryImpl(gh<_i214.Isar>()));
+      () => _i655.AppConfigRepositoryImpl(gh<_i214.Isar>()),
+    );
     await gh.factoryAsync<String>(
       () => registerModule.deviceId(gh<_i829.TinyStorage>()),
       instanceName: 'device_id',
@@ -171,14 +184,17 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       preResolve: true,
     );
-    gh.lazySingleton<_i1069.RestorationStatusRepository>(() =>
-        _i970.RestorationStatusRepositoryImpl(
-            gh<_i922.RestorationStatusSource>()));
+    gh.lazySingleton<_i1069.RestorationStatusRepository>(
+      () => _i970.RestorationStatusRepositoryImpl(
+        gh<_i922.RestorationStatusSource>(),
+      ),
+    );
     gh.lazySingleton<_i543.ClipCrossSyncListener>(
-        () => _i95.SBClipCrossSyncListener(
-              gh<_i454.SupabaseClient>(),
-              gh<String>(instanceName: 'device_id'),
-            ));
+      () => _i95.SBClipCrossSyncListener(
+        gh<_i454.SupabaseClient>(),
+        gh<String>(instanceName: 'device_id'),
+      ),
+    );
     gh.lazySingleton<_i23.ClipboardSource>(
       () => _i730.LocalClipboardSource(
         gh<_i214.Isar>(),
@@ -191,14 +207,17 @@ extension GetItInjectableX on _i174.GetIt {
       instanceName: 'remote',
     );
     gh.lazySingleton<_i579.AuthRepository>(
-        () => _i346.AuthRepositoryImpl(client: gh<_i454.SupabaseClient>()));
+      () => _i346.AuthRepositoryImpl(client: gh<_i454.SupabaseClient>()),
+    );
     gh.singleton<_i542.AppConfigCubit>(
-        () => _i542.AppConfigCubit(gh<_i891.AppConfigRepository>()));
+      () => _i542.AppConfigCubit(gh<_i891.AppConfigRepository>()),
+    );
     gh.lazySingleton<_i543.CollectionCrossSyncListener>(
-        () => _i95.SBCollectionCrossSyncListener(
-              gh<_i454.SupabaseClient>(),
-              gh<String>(instanceName: 'device_id'),
-            ));
+      () => _i95.SBCollectionCrossSyncListener(
+        gh<_i454.SupabaseClient>(),
+        gh<String>(instanceName: 'device_id'),
+      ),
+    );
     gh.lazySingleton<_i670.ClipCollectionSource>(
       () => _i173.LocalClipCollectionSource(
         gh<_i214.Isar>(),
@@ -207,16 +226,18 @@ extension GetItInjectableX on _i174.GetIt {
       instanceName: 'local',
     );
     gh.lazySingleton<_i460.DriveCredentialRepository>(
-        () => _i477.DriveCredentialRepositoryImpl(gh<_i454.SupabaseClient>()));
+      () => _i477.DriveCredentialRepositoryImpl(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i422.SubscriptionSource>(
       () => _i35.RemoteSubscriptionSource(client: gh<_i454.SupabaseClient>()),
       instanceName: 'remote',
     );
     gh.lazySingleton<_i276.ClipCollectionRepository>(
-        () => _i432.ClipCollectionRepositoryImpl(
-              gh<_i670.ClipCollectionSource>(instanceName: 'remote'),
-              gh<_i670.ClipCollectionSource>(instanceName: 'local'),
-            ));
+      () => _i432.ClipCollectionRepositoryImpl(
+        gh<_i670.ClipCollectionSource>(instanceName: 'remote'),
+        gh<_i670.ClipCollectionSource>(instanceName: 'local'),
+      ),
+    );
     gh.lazySingleton<_i23.ClipboardSource>(
       () => _i411.RemoteClipboardSource(gh<_i454.SupabaseClient>()),
       instanceName: 'remote',
@@ -227,101 +248,125 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i230.ClipboardRepository>(
       () => _i378.ClipboardRepositoryOfflineImpl(
-          gh<_i23.ClipboardSource>(instanceName: 'local')),
+        gh<_i23.ClipboardSource>(instanceName: 'local'),
+      ),
       instanceName: 'local',
     );
-    gh.lazySingleton<_i521.DriveSetupCubit>(() => _i521.DriveSetupCubit(
-          gh<_i460.DriveCredentialRepository>(),
-          gh<_i679.DriveService>(instanceName: 'google_drive'),
-        ));
+    gh.lazySingleton<_i521.DriveSetupCubit>(
+      () => _i521.DriveSetupCubit(
+        gh<_i460.DriveCredentialRepository>(),
+        gh<_i679.DriveService>(instanceName: 'google_drive'),
+      ),
+    );
     gh.lazySingleton<_i230.ClipboardRepository>(
       () => _i378.ClipboardRepositoryCloudImpl(
-          gh<_i23.ClipboardSource>(instanceName: 'remote')),
+        gh<_i23.ClipboardSource>(instanceName: 'remote'),
+      ),
       instanceName: 'remote',
     );
-    gh.factory<_i489.ClipboardCubit>(() => _i489.ClipboardCubit(
-          gh<_i588.EventBusCubit>(),
-          gh<_i230.ClipboardRepository>(instanceName: 'local'),
-        ));
-    gh.singleton<_i29.AuthCubit>(() => _i29.AuthCubit(
-          gh<_i579.AuthRepository>(),
-          gh<_i829.TinyStorage>(),
-          gh<_i707.AnalyticsRepository>(),
-        ));
+    gh.factory<_i489.ClipboardCubit>(
+      () => _i489.ClipboardCubit(
+        gh<_i588.EventBusCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+      ),
+    );
+    gh.singleton<_i29.AuthCubit>(
+      () => _i29.AuthCubit(
+        gh<_i579.AuthRepository>(),
+        gh<_i829.TinyStorage>(),
+        gh<_i707.AnalyticsRepository>(),
+      ),
+    );
     gh.lazySingleton<_i283.CloudPersistanceCubit>(
-        () => _i283.CloudPersistanceCubit(
-              gh<_i29.AuthCubit>(),
-              gh<_i521.DriveSetupCubit>(),
-              gh<_i542.AppConfigCubit>(),
-              gh<String>(instanceName: 'device_id'),
-              gh<_i230.ClipboardRepository>(instanceName: 'remote'),
-            ));
-    gh.lazySingleton<_i61.SyncRepository>(() => _i223.SyncRepositoryImpl(
-        gh<_i782.SyncClipboardSource>(instanceName: 'remote')));
+      () => _i283.CloudPersistanceCubit(
+        gh<_i29.AuthCubit>(),
+        gh<_i521.DriveSetupCubit>(),
+        gh<_i542.AppConfigCubit>(),
+        gh<String>(instanceName: 'device_id'),
+        gh<_i230.ClipboardRepository>(instanceName: 'remote'),
+      ),
+    );
+    gh.lazySingleton<_i61.SyncRepository>(
+      () => _i223.SyncRepositoryImpl(
+        gh<_i782.SyncClipboardSource>(instanceName: 'remote'),
+      ),
+    );
     gh.lazySingleton<_i706.OfflinePersistenceCubit>(
-        () => _i706.OfflinePersistenceCubit(
-              gh<_i29.AuthCubit>(),
-              gh<_i230.ClipboardRepository>(instanceName: 'local'),
-              gh<_i63.ClipboardService>(),
-              gh<_i542.AppConfigCubit>(),
-              gh<_i707.AnalyticsRepository>(),
-              gh<String>(instanceName: 'device_id'),
-            ));
-    gh.lazySingleton<_i956.SubscriptionRepository>(() =>
-        _i623.SubscriptionRepositoryImpl(
-            remote: gh<_i422.SubscriptionSource>(instanceName: 'remote')));
+      () => _i706.OfflinePersistenceCubit(
+        gh<_i29.AuthCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i63.ClipboardService>(),
+        gh<_i542.AppConfigCubit>(),
+        gh<_i707.AnalyticsRepository>(),
+        gh<String>(instanceName: 'device_id'),
+      ),
+    );
+    gh.lazySingleton<_i956.SubscriptionRepository>(
+      () => _i623.SubscriptionRepositoryImpl(
+        remote: gh<_i422.SubscriptionSource>(instanceName: 'remote'),
+      ),
+    );
     gh.factory<_i557.RealtimeCollectionSyncCubit>(
-        () => _i557.RealtimeCollectionSyncCubit(
-              gh<_i588.EventBusCubit>(),
-              gh<_i543.CollectionCrossSyncListener>(),
-              gh<_i276.ClipCollectionRepository>(),
-            ));
-    gh.factory<_i654.RealtimeClipSyncCubit>(() => _i654.RealtimeClipSyncCubit(
-          gh<_i543.ClipCrossSyncListener>(),
-          gh<_i588.EventBusCubit>(),
-          gh<_i230.ClipboardRepository>(instanceName: 'local'),
-          gh<_i276.ClipCollectionRepository>(),
-        ));
-    gh.singleton<_i246.MonetizationCubit>(() =>
-        _i246.MonetizationCubit(repo: gh<_i956.SubscriptionRepository>()));
+      () => _i557.RealtimeCollectionSyncCubit(
+        gh<_i588.EventBusCubit>(),
+        gh<_i543.CollectionCrossSyncListener>(),
+        gh<_i276.ClipCollectionRepository>(),
+      ),
+    );
+    gh.factory<_i654.RealtimeClipSyncCubit>(
+      () => _i654.RealtimeClipSyncCubit(
+        gh<_i543.ClipCrossSyncListener>(),
+        gh<_i588.EventBusCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i276.ClipCollectionRepository>(),
+      ),
+    );
+    gh.singleton<_i246.MonetizationCubit>(
+      () => _i246.MonetizationCubit(repo: gh<_i956.SubscriptionRepository>()),
+    );
     gh.factory<_i643.AndroidBgClipboardCubit>(
-        () => _i643.AndroidBgClipboardCubit(
-              gh<_i565.AndroidBackgroundClipboard>(),
-              gh<_i588.EventBusCubit>(),
-              gh<_i230.ClipboardRepository>(instanceName: 'local'),
-              gh<String>(instanceName: 'device_id'),
-            ));
-    gh.factoryParam<_i46.CollectionClipsCubit, _i789.ClipCollection, dynamic>((
-      collection,
-      _,
-    ) =>
-        _i46.CollectionClipsCubit(
-          gh<_i588.EventBusCubit>(),
-          gh<_i230.ClipboardRepository>(instanceName: 'local'),
-          collection: collection,
-        ));
-    gh.lazySingleton<_i620.ClipCollectionCubit>(() => _i620.ClipCollectionCubit(
-          gh<_i588.EventBusCubit>(),
-          gh<_i29.AuthCubit>(),
-          gh<_i276.ClipCollectionRepository>(),
-          gh<String>(instanceName: 'device_id'),
-        ));
-    gh.factory<_i624.ClipSyncManagerCubit>(() => _i624.ClipSyncManagerCubit(
-          gh<_i588.EventBusCubit>(),
-          gh<_i61.SyncRepository>(),
-          gh<_i620.ClipCollectionCubit>(),
-          gh<_i230.ClipboardRepository>(instanceName: 'local'),
-          gh<_i276.ClipCollectionRepository>(),
-          gh<String>(instanceName: 'device_id'),
-        ));
+      () => _i643.AndroidBgClipboardCubit(
+        gh<_i565.AndroidBackgroundClipboard>(),
+        gh<_i588.EventBusCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<String>(instanceName: 'device_id'),
+      ),
+    );
+    gh.lazySingleton<_i620.ClipCollectionCubit>(
+      () => _i620.ClipCollectionCubit(
+        gh<_i588.EventBusCubit>(),
+        gh<_i29.AuthCubit>(),
+        gh<_i276.ClipCollectionRepository>(),
+        gh<String>(instanceName: 'device_id'),
+      ),
+    );
+    gh.factoryParam<_i46.CollectionClipsCubit, _i687.ClipCollection, dynamic>(
+      (collection, _) => _i46.CollectionClipsCubit(
+        gh<_i588.EventBusCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        collection: collection,
+      ),
+    );
     gh.factory<_i362.CollectionSyncManagerCubit>(
-        () => _i362.CollectionSyncManagerCubit(
-              gh<_i588.EventBusCubit>(),
-              gh<_i61.SyncRepository>(),
-              gh<_i620.ClipCollectionCubit>(),
-              gh<_i276.ClipCollectionRepository>(),
-              gh<String>(instanceName: 'device_id'),
-            ));
+      () => _i362.CollectionSyncManagerCubit(
+        gh<_i588.EventBusCubit>(),
+        gh<_i61.SyncRepository>(),
+        gh<_i620.ClipCollectionCubit>(),
+        gh<_i276.ClipCollectionRepository>(),
+        gh<String>(instanceName: 'device_id'),
+      ),
+    );
+    gh.factory<_i624.ClipSyncManagerCubit>(
+      () => _i624.ClipSyncManagerCubit(
+        gh<_i588.EventBusCubit>(),
+        gh<_i61.SyncRepository>(),
+        gh<_i620.ClipCollectionCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i276.ClipCollectionRepository>(),
+        gh<String>(instanceName: 'device_id'),
+        gh<_i616.ClipBatchSyncService>(),
+      ),
+    );
     return this;
   }
 }

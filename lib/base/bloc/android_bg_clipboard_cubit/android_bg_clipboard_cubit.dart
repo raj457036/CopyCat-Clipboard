@@ -1,8 +1,8 @@
 import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/base/db/exclusion_rules/exclusion_rules.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_rules.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/enums/clip_type.dart';

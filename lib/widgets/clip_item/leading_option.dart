@@ -1,6 +1,6 @@
 import 'package:clipboard/widgets/clip_item/clip_create_time.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
-import 'package:clipboard/base/db/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

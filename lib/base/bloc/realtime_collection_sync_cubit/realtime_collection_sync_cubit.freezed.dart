@@ -12,7 +12,8 @@ part of 'realtime_collection_sync_cubit.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$RealtimeCollectionSyncState {
@@ -22,16 +23,14 @@ mixin _$RealtimeCollectionSyncState {
     required TResult Function() connecting,
     required TResult Function() connected,
     required TResult Function() disconnected,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? connecting,
     TResult? Function()? connected,
     TResult? Function()? disconnected,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
@@ -39,26 +38,23 @@ mixin _$RealtimeCollectionSyncState {
     TResult Function()? connected,
     TResult Function()? disconnected,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(RealtimeCollectionSyncUnknown value) initial,
     required TResult Function(RealtimeCollectionSyncConnecting value)
-        connecting,
+    connecting,
     required TResult Function(RealtimeCollectionSyncConnected value) connected,
     required TResult Function(RealtimeCollectionSyncDisconnected value)
-        disconnected,
-  }) =>
-      throw _privateConstructorUsedError;
+    disconnected,
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(RealtimeCollectionSyncUnknown value)? initial,
     TResult? Function(RealtimeCollectionSyncConnecting value)? connecting,
     TResult? Function(RealtimeCollectionSyncConnected value)? connected,
     TResult? Function(RealtimeCollectionSyncDisconnected value)? disconnected,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(RealtimeCollectionSyncUnknown value)? initial,
@@ -66,22 +62,26 @@ mixin _$RealtimeCollectionSyncState {
     TResult Function(RealtimeCollectionSyncConnected value)? connected,
     TResult Function(RealtimeCollectionSyncDisconnected value)? disconnected,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $RealtimeCollectionSyncStateCopyWith<$Res> {
   factory $RealtimeCollectionSyncStateCopyWith(
-          RealtimeCollectionSyncState value,
-          $Res Function(RealtimeCollectionSyncState) then) =
-      _$RealtimeCollectionSyncStateCopyWithImpl<$Res,
-          RealtimeCollectionSyncState>;
+    RealtimeCollectionSyncState value,
+    $Res Function(RealtimeCollectionSyncState) then,
+  ) =
+      _$RealtimeCollectionSyncStateCopyWithImpl<
+        $Res,
+        RealtimeCollectionSyncState
+      >;
 }
 
 /// @nodoc
-class _$RealtimeCollectionSyncStateCopyWithImpl<$Res,
-        $Val extends RealtimeCollectionSyncState>
+class _$RealtimeCollectionSyncStateCopyWithImpl<
+  $Res,
+  $Val extends RealtimeCollectionSyncState
+>
     implements $RealtimeCollectionSyncStateCopyWith<$Res> {
   _$RealtimeCollectionSyncStateCopyWithImpl(this._value, this._then);
 
@@ -97,20 +97,23 @@ class _$RealtimeCollectionSyncStateCopyWithImpl<$Res,
 /// @nodoc
 abstract class _$$RealtimeCollectionSyncUnknownImplCopyWith<$Res> {
   factory _$$RealtimeCollectionSyncUnknownImplCopyWith(
-          _$RealtimeCollectionSyncUnknownImpl value,
-          $Res Function(_$RealtimeCollectionSyncUnknownImpl) then) =
-      __$$RealtimeCollectionSyncUnknownImplCopyWithImpl<$Res>;
+    _$RealtimeCollectionSyncUnknownImpl value,
+    $Res Function(_$RealtimeCollectionSyncUnknownImpl) then,
+  ) = __$$RealtimeCollectionSyncUnknownImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$RealtimeCollectionSyncUnknownImplCopyWithImpl<$Res>
-    extends _$RealtimeCollectionSyncStateCopyWithImpl<$Res,
-        _$RealtimeCollectionSyncUnknownImpl>
+    extends
+        _$RealtimeCollectionSyncStateCopyWithImpl<
+          $Res,
+          _$RealtimeCollectionSyncUnknownImpl
+        >
     implements _$$RealtimeCollectionSyncUnknownImplCopyWith<$Res> {
   __$$RealtimeCollectionSyncUnknownImplCopyWithImpl(
-      _$RealtimeCollectionSyncUnknownImpl _value,
-      $Res Function(_$RealtimeCollectionSyncUnknownImpl) _then)
-      : super(_value, _then);
+    _$RealtimeCollectionSyncUnknownImpl _value,
+    $Res Function(_$RealtimeCollectionSyncUnknownImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of RealtimeCollectionSyncState
   /// with the given fields replaced by the non-null parameter values.
@@ -179,10 +182,10 @@ class _$RealtimeCollectionSyncUnknownImpl
   TResult map<TResult extends Object?>({
     required TResult Function(RealtimeCollectionSyncUnknown value) initial,
     required TResult Function(RealtimeCollectionSyncConnecting value)
-        connecting,
+    connecting,
     required TResult Function(RealtimeCollectionSyncConnected value) connected,
     required TResult Function(RealtimeCollectionSyncDisconnected value)
-        disconnected,
+    disconnected,
   }) {
     return initial(this);
   }
@@ -223,20 +226,23 @@ abstract class RealtimeCollectionSyncUnknown
 /// @nodoc
 abstract class _$$RealtimeCollectionSyncConnectingImplCopyWith<$Res> {
   factory _$$RealtimeCollectionSyncConnectingImplCopyWith(
-          _$RealtimeCollectionSyncConnectingImpl value,
-          $Res Function(_$RealtimeCollectionSyncConnectingImpl) then) =
-      __$$RealtimeCollectionSyncConnectingImplCopyWithImpl<$Res>;
+    _$RealtimeCollectionSyncConnectingImpl value,
+    $Res Function(_$RealtimeCollectionSyncConnectingImpl) then,
+  ) = __$$RealtimeCollectionSyncConnectingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$RealtimeCollectionSyncConnectingImplCopyWithImpl<$Res>
-    extends _$RealtimeCollectionSyncStateCopyWithImpl<$Res,
-        _$RealtimeCollectionSyncConnectingImpl>
+    extends
+        _$RealtimeCollectionSyncStateCopyWithImpl<
+          $Res,
+          _$RealtimeCollectionSyncConnectingImpl
+        >
     implements _$$RealtimeCollectionSyncConnectingImplCopyWith<$Res> {
   __$$RealtimeCollectionSyncConnectingImplCopyWithImpl(
-      _$RealtimeCollectionSyncConnectingImpl _value,
-      $Res Function(_$RealtimeCollectionSyncConnectingImpl) _then)
-      : super(_value, _then);
+    _$RealtimeCollectionSyncConnectingImpl _value,
+    $Res Function(_$RealtimeCollectionSyncConnectingImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of RealtimeCollectionSyncState
   /// with the given fields replaced by the non-null parameter values.
@@ -305,10 +311,10 @@ class _$RealtimeCollectionSyncConnectingImpl
   TResult map<TResult extends Object?>({
     required TResult Function(RealtimeCollectionSyncUnknown value) initial,
     required TResult Function(RealtimeCollectionSyncConnecting value)
-        connecting,
+    connecting,
     required TResult Function(RealtimeCollectionSyncConnected value) connected,
     required TResult Function(RealtimeCollectionSyncDisconnected value)
-        disconnected,
+    disconnected,
   }) {
     return connecting(this);
   }
@@ -349,20 +355,23 @@ abstract class RealtimeCollectionSyncConnecting
 /// @nodoc
 abstract class _$$RealtimeCollectionSyncConnectedImplCopyWith<$Res> {
   factory _$$RealtimeCollectionSyncConnectedImplCopyWith(
-          _$RealtimeCollectionSyncConnectedImpl value,
-          $Res Function(_$RealtimeCollectionSyncConnectedImpl) then) =
-      __$$RealtimeCollectionSyncConnectedImplCopyWithImpl<$Res>;
+    _$RealtimeCollectionSyncConnectedImpl value,
+    $Res Function(_$RealtimeCollectionSyncConnectedImpl) then,
+  ) = __$$RealtimeCollectionSyncConnectedImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$RealtimeCollectionSyncConnectedImplCopyWithImpl<$Res>
-    extends _$RealtimeCollectionSyncStateCopyWithImpl<$Res,
-        _$RealtimeCollectionSyncConnectedImpl>
+    extends
+        _$RealtimeCollectionSyncStateCopyWithImpl<
+          $Res,
+          _$RealtimeCollectionSyncConnectedImpl
+        >
     implements _$$RealtimeCollectionSyncConnectedImplCopyWith<$Res> {
   __$$RealtimeCollectionSyncConnectedImplCopyWithImpl(
-      _$RealtimeCollectionSyncConnectedImpl _value,
-      $Res Function(_$RealtimeCollectionSyncConnectedImpl) _then)
-      : super(_value, _then);
+    _$RealtimeCollectionSyncConnectedImpl _value,
+    $Res Function(_$RealtimeCollectionSyncConnectedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of RealtimeCollectionSyncState
   /// with the given fields replaced by the non-null parameter values.
@@ -431,10 +440,10 @@ class _$RealtimeCollectionSyncConnectedImpl
   TResult map<TResult extends Object?>({
     required TResult Function(RealtimeCollectionSyncUnknown value) initial,
     required TResult Function(RealtimeCollectionSyncConnecting value)
-        connecting,
+    connecting,
     required TResult Function(RealtimeCollectionSyncConnected value) connected,
     required TResult Function(RealtimeCollectionSyncDisconnected value)
-        disconnected,
+    disconnected,
   }) {
     return connected(this);
   }
@@ -475,20 +484,23 @@ abstract class RealtimeCollectionSyncConnected
 /// @nodoc
 abstract class _$$RealtimeCollectionSyncDisconnectedImplCopyWith<$Res> {
   factory _$$RealtimeCollectionSyncDisconnectedImplCopyWith(
-          _$RealtimeCollectionSyncDisconnectedImpl value,
-          $Res Function(_$RealtimeCollectionSyncDisconnectedImpl) then) =
-      __$$RealtimeCollectionSyncDisconnectedImplCopyWithImpl<$Res>;
+    _$RealtimeCollectionSyncDisconnectedImpl value,
+    $Res Function(_$RealtimeCollectionSyncDisconnectedImpl) then,
+  ) = __$$RealtimeCollectionSyncDisconnectedImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$RealtimeCollectionSyncDisconnectedImplCopyWithImpl<$Res>
-    extends _$RealtimeCollectionSyncStateCopyWithImpl<$Res,
-        _$RealtimeCollectionSyncDisconnectedImpl>
+    extends
+        _$RealtimeCollectionSyncStateCopyWithImpl<
+          $Res,
+          _$RealtimeCollectionSyncDisconnectedImpl
+        >
     implements _$$RealtimeCollectionSyncDisconnectedImplCopyWith<$Res> {
   __$$RealtimeCollectionSyncDisconnectedImplCopyWithImpl(
-      _$RealtimeCollectionSyncDisconnectedImpl _value,
-      $Res Function(_$RealtimeCollectionSyncDisconnectedImpl) _then)
-      : super(_value, _then);
+    _$RealtimeCollectionSyncDisconnectedImpl _value,
+    $Res Function(_$RealtimeCollectionSyncDisconnectedImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of RealtimeCollectionSyncState
   /// with the given fields replaced by the non-null parameter values.
@@ -557,10 +569,10 @@ class _$RealtimeCollectionSyncDisconnectedImpl
   TResult map<TResult extends Object?>({
     required TResult Function(RealtimeCollectionSyncUnknown value) initial,
     required TResult Function(RealtimeCollectionSyncConnecting value)
-        connecting,
+    connecting,
     required TResult Function(RealtimeCollectionSyncConnected value) connected,
     required TResult Function(RealtimeCollectionSyncDisconnected value)
-        disconnected,
+    disconnected,
   }) {
     return disconnected(this);
   }
