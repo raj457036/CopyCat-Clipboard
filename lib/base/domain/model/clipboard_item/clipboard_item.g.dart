@@ -21,6 +21,8 @@ _$ClipboardItemImpl _$$ClipboardItemImplFromJson(Map<String, dynamic> json) =>
         const DateTimeConverter().fromJson,
       ),
       encrypted: json['encrypted'] as bool? ?? false,
+      iv: json['iv'] as String?,
+      encMode: json['enc_mode'] as String?,
       text: json['text'] as String?,
       url: json['url'] as String?,
       textCategory: $enumDecodeNullable(
@@ -58,6 +60,8 @@ Map<String, dynamic> _$$ClipboardItemImplToJson(_$ClipboardItemImpl instance) =>
         const DateTimeConverter().toJson,
       ),
       'encrypted': instance.encrypted,
+      'iv': instance.iv,
+      'enc_mode': instance.encMode,
       'text': instance.text,
       'url': instance.url,
       'textCategory': _$TextCategoryEnumMap[instance.textCategory],

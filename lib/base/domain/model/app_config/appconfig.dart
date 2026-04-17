@@ -67,6 +67,7 @@ class AppConfig with _$AppConfig, Identifiable {
     // Security
     String? enc2,
     @Default(false) bool autoEncrypt,
+    @Default(false) bool useEncryptionNonce,
     @JsonKey(includeFromJson: false, includeToJson: false)
     ExclusionRules? exclusionRules,
 

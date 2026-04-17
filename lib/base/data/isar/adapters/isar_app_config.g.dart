@@ -138,19 +138,24 @@ const IsarAppConfigSchema = CollectionSchema(
       name: r'toggleHotkey',
       type: IsarType.string,
     ),
-    r'view': PropertySchema(
+    r'useEncryptionNonce': PropertySchema(
       id: 25,
+      name: r'useEncryptionNonce',
+      type: IsarType.bool,
+    ),
+    r'view': PropertySchema(
+      id: 26,
       name: r'view',
       type: IsarType.string,
       enumMap: _IsarAppConfigviewEnumValueMap,
     ),
     r'windowHeight': PropertySchema(
-      id: 26,
+      id: 27,
       name: r'windowHeight',
       type: IsarType.double,
     ),
     r'windowWidth': PropertySchema(
-      id: 27,
+      id: 28,
       name: r'windowWidth',
       type: IsarType.double,
     ),
@@ -251,9 +256,10 @@ void _isarAppConfigSerialize(
   writer.writeString(offsets[22], object.themeMode.name);
   writer.writeString(offsets[23], object.themeVariant.name);
   writer.writeString(offsets[24], object.toggleHotkey);
-  writer.writeString(offsets[25], object.view.name);
-  writer.writeDouble(offsets[26], object.windowHeight);
-  writer.writeDouble(offsets[27], object.windowWidth);
+  writer.writeBool(offsets[25], object.useEncryptionNonce);
+  writer.writeString(offsets[26], object.view.name);
+  writer.writeDouble(offsets[27], object.windowHeight);
+  writer.writeDouble(offsets[28], object.windowWidth);
 }
 
 IsarAppConfig _isarAppConfigDeserialize(
@@ -313,11 +319,12 @@ IsarAppConfig _isarAppConfigDeserialize(
       )] ??
       DynamicSchemeVariant.tonalSpot;
   object.toggleHotkey = reader.readStringOrNull(offsets[24]);
+  object.useEncryptionNonce = reader.readBool(offsets[25]);
   object.view =
-      _IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offsets[25])] ??
+      _IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offsets[26])] ??
       AppView.topDocked;
-  object.windowHeight = reader.readDouble(offsets[26]);
-  object.windowWidth = reader.readDouble(offsets[27]);
+  object.windowHeight = reader.readDouble(offsets[27]);
+  object.windowWidth = reader.readDouble(offsets[28]);
   return object;
 }
 
@@ -408,12 +415,14 @@ P _isarAppConfigDeserializeProp<P>(
     case 24:
       return (reader.readStringOrNull(offset)) as P;
     case 25:
+      return (reader.readBool(offset)) as P;
+    case 26:
       return (_IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offset)] ??
               AppView.topDocked)
           as P;
-    case 26:
-      return (reader.readDouble(offset)) as P;
     case 27:
+      return (reader.readDouble(offset)) as P;
+    case 28:
       return (reader.readDouble(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2316,6 +2325,15 @@ extension IsarAppConfigQueryFilter
     });
   }
 
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  useEncryptionNonceEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'useEncryptionNonce', value: value),
+      );
+    });
+  }
+
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition> viewEqualTo(
     AppView value, {
     bool caseSensitive = true,
@@ -2944,6 +2962,20 @@ extension IsarAppConfigQuerySortBy
     });
   }
 
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByUseEncryptionNonce() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'useEncryptionNonce', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByUseEncryptionNonceDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'useEncryptionNonce', Sort.desc);
+    });
+  }
+
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> sortByView() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'view', Sort.asc);
@@ -3316,6 +3348,20 @@ extension IsarAppConfigQuerySortThenBy
     });
   }
 
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByUseEncryptionNonce() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'useEncryptionNonce', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByUseEncryptionNonceDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'useEncryptionNonce', Sort.desc);
+    });
+  }
+
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> thenByView() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'view', Sort.asc);
@@ -3530,6 +3576,13 @@ extension IsarAppConfigQueryWhereDistinct
     });
   }
 
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct>
+  distinctByUseEncryptionNonce() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'useEncryptionNonce');
+    });
+  }
+
   QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct> distinctByView({
     bool caseSensitive = true,
   }) {
@@ -3719,6 +3772,13 @@ extension IsarAppConfigQueryProperty
   toggleHotkeyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'toggleHotkey');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, bool, QQueryOperations>
+  useEncryptionNonceProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'useEncryptionNonce');
     });
   }
 

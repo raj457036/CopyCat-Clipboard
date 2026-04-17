@@ -4,7 +4,9 @@
     "settings__header__sorting",
     "settings__header__interactions",
     "settings__dropdown__default_sort__title",
-    "settings__dropdown__default_sort_order__title"
+    "settings__dropdown__default_sort_order__title",
+    "settings__switch__e2e_nonce__title",
+    "settings__switch__e2e_nonce__subtitle"
   ],
 
   "es": [
@@ -12,7 +14,9 @@
     "settings__header__sorting",
     "settings__header__interactions",
     "settings__dropdown__default_sort__title",
-    "settings__dropdown__default_sort_order__title"
+    "settings__dropdown__default_sort_order__title",
+    "settings__switch__e2e_nonce__title",
+    "settings__switch__e2e_nonce__subtitle"
   ],
 
   "fr": [
@@ -20,7 +24,9 @@
     "settings__header__sorting",
     "settings__header__interactions",
     "settings__dropdown__default_sort__title",
-    "settings__dropdown__default_sort_order__title"
+    "settings__dropdown__default_sort_order__title",
+    "settings__switch__e2e_nonce__title",
+    "settings__switch__e2e_nonce__subtitle"
   ],
 
   "pt": [
@@ -28,7 +34,9 @@
     "settings__header__sorting",
     "settings__header__interactions",
     "settings__dropdown__default_sort__title",
-    "settings__dropdown__default_sort_order__title"
+    "settings__dropdown__default_sort_order__title",
+    "settings__switch__e2e_nonce__title",
+    "settings__switch__e2e_nonce__subtitle"
   ],
 
   "zh": [
@@ -36,6 +44,8 @@
     "settings__header__sorting",
     "settings__header__interactions",
     "settings__dropdown__default_sort__title",
-    "settings__dropdown__default_sort_order__title"
+    "settings__dropdown__default_sort_order__title",
+    "settings__switch__e2e_nonce__title",
+    "settings__switch__e2e_nonce__subtitle"
   ]
 }

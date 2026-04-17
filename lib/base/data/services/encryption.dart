@@ -87,8 +87,14 @@ class EncryptionManager {
   }
 }
 
-Encrypter? _aesEncrypter;
+Encrypter? _aesCFB;
+Encrypter? _aesGCM;
 EncryptionSecret? _encSecret;
+
+class EncryptionMode {
+  static const String gcm = "GCM";
+  static const String cfb = "CFB";
+}
 
 enum EncDecType { encrypt, decrypt, ping }
 
@@ -97,31 +103,32 @@ typedef EncryptionPayload = (
   String content,
   String secret,
   String? customIV,
+  String? mode,
   EncDecType action,
 );
 
 void _encryptorEntryPoint(EncryptionPayload payload, Sender send) {
-  final (id, content, secret, customIV, action) = payload;
+  final (id, content, secret, customIV, mode, action) = payload;
   if (id == "") return;
 
   IV? iv;
   if (id != "PING") {
     _encSecret ??= EncryptionSecret.deserilize(secret);
     iv = customIV != null ? IV.fromBase64(customIV) : _encSecret?.iv;
-    // logger.d("KEY: ${_encSecret!.key.bytes}");
 
-    // if (customIV != null) {
-    //   logger.d("Custom IV: ${iv?.bytes}");
-    // } else {
-    //   logger.d("IV: ${iv?.bytes}");
-    // }
-    _aesEncrypter ??= Encrypter(AES(_encSecret!.key, mode: AESMode.cfb64));
+    if (mode == EncryptionMode.gcm) {
+      _aesGCM ??= Encrypter(AES(_encSecret!.key, mode: AESMode.gcm));
+    } else {
+      _aesCFB ??= Encrypter(AES(_encSecret!.key, mode: AESMode.cfb64));
+    }
   }
+
+  final encrypter = mode == EncryptionMode.gcm ? _aesGCM : _aesCFB;
 
   switch (action) {
     case EncDecType.encrypt:
       try {
-        final encrypted = _aesEncrypter!.encrypt(content, iv: iv);
+        final encrypted = encrypter!.encrypt(content, iv: iv);
         send((id, encrypted.base64));
       } catch (e) {
         send((id, EncryptionException(e.toString())));
@@ -129,7 +136,7 @@ void _encryptorEntryPoint(EncryptionPayload payload, Sender send) {
 
     case EncDecType.decrypt:
       try {
-        final decrypted = _aesEncrypter!.decrypt64(content, iv: iv);
+        final decrypted = encrypter!.decrypt64(content, iv: iv);
         send((id, decrypted));
       } catch (e) {
         send((id, DecryptionException(e.toString())));
@@ -160,6 +167,7 @@ class EncryptionWorker {
   bool _isStarting = false;
   bool _encryption = false;
   bool _decryption = true;
+  bool _useNonce = false;
 
   String? secret;
   final Map<String, Completer> _tasks = <String, Completer>{};
@@ -177,6 +185,9 @@ class EncryptionWorker {
   bool get isStarting => _isStarting;
   bool get isEncryptionActive => _encryption;
   bool get isDecryptionActive => _decryption;
+  bool get useNonce => _useNonce;
+
+  String generateIV([int length = 16]) => IV.fromLength(length).base64;
 
   void dispose() {
     if (!_isRunning) return;
@@ -193,6 +204,10 @@ class EncryptionWorker {
 
   void setDecryption(bool value) {
     _decryption = value;
+  }
+
+  void setUseNonce(bool value) {
+    _useNonce = value;
   }
 
   Future<void> start(String secret) async {
@@ -220,7 +235,9 @@ class EncryptionWorker {
           taskCompleter?.complete(content);
         }
       });
-      await _encryptor?.send(("PING", "PING", "PING", null, EncDecType.ping));
+      await _encryptor?.send(
+        ("PING", "PING", "PING", null, null, EncDecType.ping),
+      );
       _isRunning = true;
     } finally {
       _isStarting = false;
@@ -232,7 +249,11 @@ class EncryptionWorker {
     await _completer?.future;
   }
 
-  Future<String> encrypt(String content, [String? customIV]) async {
+  Future<String> encrypt(
+    String content, {
+    String? customIV,
+    String? mode,
+  }) async {
     if (secret == null) {
       throw EncryptionException("Secret is not set", code: "invalid-secret");
     }
@@ -250,6 +271,7 @@ class EncryptionWorker {
       content,
       secret!,
       customIV,
+      mode,
       EncDecType.encrypt,
     ));
 
@@ -261,7 +283,11 @@ class EncryptionWorker {
     }
   }
 
-  Future<String> decrypt(String content, [String? customIV]) async {
+  Future<String> decrypt(
+    String content, {
+    String? customIV,
+    String? mode,
+  }) async {
     if (secret == null) {
       throw DecryptionException("Secret is not set", code: "invalid-secret");
     }
@@ -279,6 +305,7 @@ class EncryptionWorker {
       content,
       secret!,
       customIV,
+      mode,
       EncDecType.decrypt,
     ));
 

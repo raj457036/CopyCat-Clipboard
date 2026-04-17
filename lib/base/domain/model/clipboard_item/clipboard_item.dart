@@ -35,6 +35,8 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     String? description,
     @DateTimeConverter() DateTime? deletedAt,
     @Default(false) bool encrypted,
+    String? iv,
+    @JsonKey(name: "enc_mode") String? encMode,
     // Text related
     String? text,
     String? url,
@@ -231,13 +233,20 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     }
 
     if (type == ClipItemType.text && text != null && text!.trim().isNotEmpty) {
-      final encText = await encrypter.encrypt(text!);
-      return copyWith(encrypted: true, text: encText);
+      final String mode =
+          encrypter.useNonce ? EncryptionMode.gcm : EncryptionMode.cfb;
+      final String? itemIV = encrypter.useNonce ? encrypter.generateIV(12) : null;
+      final encText =
+          await encrypter.encrypt(text!, customIV: itemIV, mode: mode);
+      return copyWith(encrypted: true, text: encText, iv: itemIV, encMode: mode);
     }
 
     if (type == ClipItemType.url && url != null && url!.trim().isNotEmpty) {
-      final encUrl = await encrypter.encrypt(url!);
-      return copyWith(encrypted: true, url: encUrl);
+      final String mode =
+          encrypter.useNonce ? EncryptionMode.gcm : EncryptionMode.cfb;
+      final String? itemIV = encrypter.useNonce ? encrypter.generateIV(12) : null;
+      final encUrl = await encrypter.encrypt(url!, customIV: itemIV, mode: mode);
+      return copyWith(encrypted: true, url: encUrl, iv: itemIV, encMode: mode);
     }
     return this;
   }
@@ -256,12 +265,12 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     }
 
     if (type == ClipItemType.text && text != null) {
-      final decText = await encrypter.decrypt(text!);
+      final decText = await encrypter.decrypt(text!, customIV: iv, mode: encMode);
       return copyWith(encrypted: false, text: decText);
     }
 
     if (type == ClipItemType.url && url != null) {
-      final decUrl = await encrypter.decrypt(url!);
+      final decUrl = await encrypter.decrypt(url!, customIV: iv, mode: encMode);
       return copyWith(encrypted: false, url: decUrl);
     }
     return this;

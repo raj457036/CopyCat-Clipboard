@@ -12,21 +12,29 @@ class E2EESettings extends StatelessWidget {
     context.read<AppConfigCubit>().toggleAutoEncrypt(value);
   }
 
+  void toggleUseEncryptionNonce(BuildContext context, bool value) {
+    context.read<AppConfigCubit>().toggleUseEncryptionNonce(value);
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
     final colors = context.colors;
-    return BlocSelector<AppConfigCubit, AppConfigState, (bool, bool)>(
+    return BlocSelector<AppConfigCubit, AppConfigState, (bool, bool, bool)>(
       selector: (state) {
         switch (state) {
           case AppConfigLoaded(:final config):
-            return (config.enc2 != null, config.autoEncrypt);
+            return (
+              config.enc2 != null,
+              config.autoEncrypt,
+              config.useEncryptionNonce,
+            );
           default:
-            return (false, false);
+            return (false, false, false);
         }
       },
       builder: (context, state) {
-        final (setup, autoEncrypt) = state;
+        final (setup, autoEncrypt, useNonce) = state;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -50,6 +58,17 @@ class E2EESettings extends StatelessWidget {
               title: Text(context.locale.settings__switch__e2e__title),
               subtitle: Text(
                 context.locale.settings__switch__e2e__subtitle,
+                style: textTheme.bodyMedium?.copyWith(color: colors.outline),
+              ),
+            ),
+            SwitchListTile(
+              value: useNonce,
+              onChanged: setup
+                  ? (value) => toggleUseEncryptionNonce(context, value)
+                  : null,
+              title: Text(context.locale.settings__switch__e2e_nonce__title),
+              subtitle: Text(
+                context.locale.settings__switch__e2e_nonce__subtitle,
                 style: textTheme.bodyMedium?.copyWith(color: colors.outline),
               ),
             ),

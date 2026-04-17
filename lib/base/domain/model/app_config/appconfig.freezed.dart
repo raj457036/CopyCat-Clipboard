@@ -58,6 +58,7 @@ mixin _$AppConfig {
   String get locale => throw _privateConstructorUsedError; // Security
   String? get enc2 => throw _privateConstructorUsedError;
   bool get autoEncrypt => throw _privateConstructorUsedError;
+  bool get useEncryptionNonce => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
   ExclusionRules? get exclusionRules => throw _privateConstructorUsedError; // Customization
   int get themeColor => throw _privateConstructorUsedError;
@@ -114,6 +115,7 @@ abstract class $AppConfigCopyWith<$Res> {
     String locale,
     String? enc2,
     bool autoEncrypt,
+    bool useEncryptionNonce,
     @JsonKey(includeFromJson: false, includeToJson: false)
     ExclusionRules? exclusionRules,
     int themeColor,
@@ -167,6 +169,7 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? locale = null,
     Object? enc2 = freezed,
     Object? autoEncrypt = null,
+    Object? useEncryptionNonce = null,
     Object? exclusionRules = freezed,
     Object? themeColor = null,
     Object? themeVariant = null,
@@ -264,6 +267,10 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
                 ? _value.autoEncrypt
                 : autoEncrypt // ignore: cast_nullable_to_non_nullable
                       as bool,
+            useEncryptionNonce: null == useEncryptionNonce
+                ? _value.useEncryptionNonce
+                : useEncryptionNonce // ignore: cast_nullable_to_non_nullable
+                      as bool,
             exclusionRules: freezed == exclusionRules
                 ? _value.exclusionRules
                 : exclusionRules // ignore: cast_nullable_to_non_nullable
@@ -355,6 +362,7 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     String locale,
     String? enc2,
     bool autoEncrypt,
+    bool useEncryptionNonce,
     @JsonKey(includeFromJson: false, includeToJson: false)
     ExclusionRules? exclusionRules,
     int themeColor,
@@ -408,6 +416,7 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? locale = null,
     Object? enc2 = freezed,
     Object? autoEncrypt = null,
+    Object? useEncryptionNonce = null,
     Object? exclusionRules = freezed,
     Object? themeColor = null,
     Object? themeVariant = null,
@@ -505,6 +514,10 @@ class __$$AppConfigImplCopyWithImpl<$Res>
             ? _value.autoEncrypt
             : autoEncrypt // ignore: cast_nullable_to_non_nullable
                   as bool,
+        useEncryptionNonce: null == useEncryptionNonce
+            ? _value.useEncryptionNonce
+            : useEncryptionNonce // ignore: cast_nullable_to_non_nullable
+                  as bool,
         exclusionRules: freezed == exclusionRules
             ? _value.exclusionRules
             : exclusionRules // ignore: cast_nullable_to_non_nullable
@@ -575,6 +588,7 @@ class _$AppConfigImpl extends _AppConfig {
     this.locale = "en",
     this.enc2,
     this.autoEncrypt = false,
+    this.useEncryptionNonce = false,
     @JsonKey(includeFromJson: false, includeToJson: false) this.exclusionRules,
     this.themeColor = defaultThemeColor,
     this.themeVariant = DynamicSchemeVariant.tonalSpot,
@@ -669,6 +683,9 @@ class _$AppConfigImpl extends _AppConfig {
   @JsonKey()
   final bool autoEncrypt;
   @override
+  @JsonKey()
+  final bool useEncryptionNonce;
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   final ExclusionRules? exclusionRules;
   // Customization
@@ -707,7 +724,7 @@ class _$AppConfigImpl extends _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, smartPaste: $smartPaste, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, onBoardComplete: $onBoardComplete, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
+    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, smartPaste: $smartPaste, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, onBoardComplete: $onBoardComplete, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
   }
 
   @override
@@ -750,6 +767,8 @@ class _$AppConfigImpl extends _AppConfig {
             (identical(other.enc2, enc2) || other.enc2 == enc2) &&
             (identical(other.autoEncrypt, autoEncrypt) ||
                 other.autoEncrypt == autoEncrypt) &&
+            (identical(other.useEncryptionNonce, useEncryptionNonce) ||
+                other.useEncryptionNonce == useEncryptionNonce) &&
             (identical(other.exclusionRules, exclusionRules) ||
                 other.exclusionRules == exclusionRules) &&
             (identical(other.themeColor, themeColor) ||
@@ -797,6 +816,7 @@ class _$AppConfigImpl extends _AppConfig {
     locale,
     enc2,
     autoEncrypt,
+    useEncryptionNonce,
     exclusionRules,
     themeColor,
     themeVariant,
@@ -846,6 +866,7 @@ abstract class _AppConfig extends AppConfig {
     final String locale,
     final String? enc2,
     final bool autoEncrypt,
+    final bool useEncryptionNonce,
     @JsonKey(includeFromJson: false, includeToJson: false)
     final ExclusionRules? exclusionRules,
     final int themeColor,
@@ -920,6 +941,8 @@ abstract class _AppConfig extends AppConfig {
   String? get enc2;
   @override
   bool get autoEncrypt;
+  @override
+  bool get useEncryptionNonce;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   ExclusionRules? get exclusionRules; // Customization

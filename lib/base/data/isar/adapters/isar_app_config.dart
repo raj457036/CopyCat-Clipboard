@@ -39,6 +39,7 @@ class IsarAppConfig {
   String locale = "en";
   String? enc2;
   bool autoEncrypt = false;
+  bool useEncryptionNonce = false;
   IsarExclusionRules? exclusionRules;
   int themeColor = 0xFF322C57;
   @Enumerated(EnumType.name)
@@ -71,6 +72,7 @@ class IsarAppConfig {
     locale: locale,
     enc2: enc2,
     autoEncrypt: autoEncrypt,
+    useEncryptionNonce: useEncryptionNonce,
     exclusionRules: exclusionRules?.toDomain(),
     themeColor: themeColor,
     themeVariant: themeVariant,
@@ -103,6 +105,7 @@ class IsarAppConfig {
     ..locale = config.locale
     ..enc2 = config.enc2
     ..autoEncrypt = config.autoEncrypt
+    ..useEncryptionNonce = config.useEncryptionNonce
     ..exclusionRules = config.exclusionRules != null
         ? IsarExclusionRules.fromDomain(config.exclusionRules!)
         : null

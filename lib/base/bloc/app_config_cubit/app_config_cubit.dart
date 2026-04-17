@@ -337,6 +337,12 @@ class AppConfigCubit extends Cubit<AppConfigState> {
     await repo.update(newConfig);
   }
 
+  Future<void> toggleUseEncryptionNonce(bool value) async {
+    final newConfig = state.config.copyWith(useEncryptionNonce: value);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+  }
+
   Future<void> changeOnBoardStatus(bool value) async {
     final newConfig = state.config.copyWith(onBoardComplete: value);
     emit(state.copyWith(config: newConfig));

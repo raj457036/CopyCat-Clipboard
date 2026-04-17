@@ -1308,7 +1308,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings__switch__e2e__subtitle =>
-      'Toggle to activate or deactivate end-to-end encryption for your clips.';
+      'When enabled, your clips will be encrypted locally before being synced to the cloud.';
+
+  @override
+  String get settings__switch__e2e_nonce__title =>
+      'High-Security Mode (Recommended)';
+
+  @override
+  String get settings__switch__e2e_nonce__subtitle =>
+      'Upgrades encryption to AES-GCM for superior data protection and tamper detection. (Older app versions cannot decrypt these new clips)';
 
   @override
   String get settings__dialog__conn_gdrive__title => 'Re-Connect Google Drive?';

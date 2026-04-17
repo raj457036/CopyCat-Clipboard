@@ -1248,6 +1248,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__switch__e2e__subtitle => '切换以激活或停用您的剪贴板的端到端加密。';
 
   @override
+  String get settings__switch__e2e_nonce__title =>
+      'High-Security Mode (Recommended)';
+
+  @override
+  String get settings__switch__e2e_nonce__subtitle =>
+      'Upgrades encryption to AES-GCM for superior data protection and tamper detection. (Older app versions cannot decrypt these new clips)';
+
+  @override
   String get settings__dialog__conn_gdrive__title => '重新连接 Google Drive?';
 
   @override

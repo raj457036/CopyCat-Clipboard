@@ -42,7 +42,10 @@ mixin _$ClipboardItem {
   String? get description => throw _privateConstructorUsedError;
   @DateTimeConverter()
   DateTime? get deletedAt => throw _privateConstructorUsedError;
-  bool get encrypted => throw _privateConstructorUsedError; // Text related
+  bool get encrypted => throw _privateConstructorUsedError;
+  String? get iv => throw _privateConstructorUsedError;
+  @JsonKey(name: "enc_mode")
+  String? get encMode => throw _privateConstructorUsedError; // Text related
   String? get text => throw _privateConstructorUsedError;
   String? get url => throw _privateConstructorUsedError;
   TextCategory? get textCategory =>
@@ -113,6 +116,8 @@ abstract class $ClipboardItemCopyWith<$Res> {
     String? description,
     @DateTimeConverter() DateTime? deletedAt,
     bool encrypted,
+    String? iv,
+    @JsonKey(name: "enc_mode") String? encMode,
     String? text,
     String? url,
     TextCategory? textCategory,
@@ -169,6 +174,8 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
     Object? description = freezed,
     Object? deletedAt = freezed,
     Object? encrypted = null,
+    Object? iv = freezed,
+    Object? encMode = freezed,
     Object? text = freezed,
     Object? url = freezed,
     Object? textCategory = freezed,
@@ -247,6 +254,14 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
                 ? _value.encrypted
                 : encrypted // ignore: cast_nullable_to_non_nullable
                       as bool,
+            iv: freezed == iv
+                ? _value.iv
+                : iv // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            encMode: freezed == encMode
+                ? _value.encMode
+                : encMode // ignore: cast_nullable_to_non_nullable
+                      as String?,
             text: freezed == text
                 ? _value.text
                 : text // ignore: cast_nullable_to_non_nullable
@@ -368,6 +383,8 @@ abstract class _$$ClipboardItemImplCopyWith<$Res>
     String? description,
     @DateTimeConverter() DateTime? deletedAt,
     bool encrypted,
+    String? iv,
+    @JsonKey(name: "enc_mode") String? encMode,
     String? text,
     String? url,
     TextCategory? textCategory,
@@ -423,6 +440,8 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
     Object? description = freezed,
     Object? deletedAt = freezed,
     Object? encrypted = null,
+    Object? iv = freezed,
+    Object? encMode = freezed,
     Object? text = freezed,
     Object? url = freezed,
     Object? textCategory = freezed,
@@ -501,6 +520,14 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
             ? _value.encrypted
             : encrypted // ignore: cast_nullable_to_non_nullable
                   as bool,
+        iv: freezed == iv
+            ? _value.iv
+            : iv // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        encMode: freezed == encMode
+            ? _value.encMode
+            : encMode // ignore: cast_nullable_to_non_nullable
+                  as String?,
         text: freezed == text
             ? _value.text
             : text // ignore: cast_nullable_to_non_nullable
@@ -615,6 +642,8 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     this.description,
     @DateTimeConverter() this.deletedAt,
     this.encrypted = false,
+    this.iv,
+    @JsonKey(name: "enc_mode") this.encMode,
     this.text,
     this.url,
     this.textCategory,
@@ -685,6 +714,11 @@ class _$ClipboardItemImpl extends _ClipboardItem {
   @override
   @JsonKey()
   final bool encrypted;
+  @override
+  final String? iv;
+  @override
+  @JsonKey(name: "enc_mode")
+  final String? encMode;
   // Text related
   @override
   final String? text;
@@ -756,7 +790,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
 
   @override
   String toString() {
-    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, encrypted: $encrypted, text: $text, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent)';
+    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, encrypted: $encrypted, iv: $iv, encMode: $encMode, text: $text, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent)';
   }
 
   @override
@@ -785,6 +819,8 @@ class _$ClipboardItemImpl extends _ClipboardItem {
                 other.deletedAt == deletedAt) &&
             (identical(other.encrypted, encrypted) ||
                 other.encrypted == encrypted) &&
+            (identical(other.iv, iv) || other.iv == iv) &&
+            (identical(other.encMode, encMode) || other.encMode == encMode) &&
             (identical(other.text, text) || other.text == text) &&
             (identical(other.url, url) || other.url == url) &&
             (identical(other.textCategory, textCategory) ||
@@ -846,6 +882,8 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     description,
     deletedAt,
     encrypted,
+    iv,
+    encMode,
     text,
     url,
     textCategory,
@@ -906,6 +944,8 @@ abstract class _ClipboardItem extends ClipboardItem {
     final String? description,
     @DateTimeConverter() final DateTime? deletedAt,
     final bool encrypted,
+    final String? iv,
+    @JsonKey(name: "enc_mode") final String? encMode,
     final String? text,
     final String? url,
     final TextCategory? textCategory,
@@ -975,7 +1015,12 @@ abstract class _ClipboardItem extends ClipboardItem {
   @DateTimeConverter()
   DateTime? get deletedAt;
   @override
-  bool get encrypted; // Text related
+  bool get encrypted;
+  @override
+  String? get iv;
+  @override
+  @JsonKey(name: "enc_mode")
+  String? get encMode; // Text related
   @override
   String? get text;
   @override

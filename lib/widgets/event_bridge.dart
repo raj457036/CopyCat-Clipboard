@@ -232,6 +232,8 @@ class EventBridge extends StatelessWidget {
           listenWhen: (previous, current) =>
               (previous.config.enc2 != current.config.enc2) ||
               (previous.config.autoEncrypt != current.config.autoEncrypt) ||
+              (previous.config.useEncryptionNonce !=
+                  current.config.useEncryptionNonce) ||
               (previous.config.clockUnSynced != current.config.clockUnSynced),
           listener: (context, state) async {
             switch (state) {
@@ -242,6 +244,7 @@ class EventBridge extends StatelessWidget {
                   }
 
                   EncryptionWorker.instance.setEncryption(config.autoEncrypt);
+                  EncryptionWorker.instance.setUseNonce(config.useEncryptionNonce);
                   setupEncryption(context);
                 }
               case _:

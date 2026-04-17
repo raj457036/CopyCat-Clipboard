@@ -1311,6 +1311,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'Activa o desactiva la encriptación de extremo a extremo para tus clips.';
 
   @override
+  String get settings__switch__e2e_nonce__title =>
+      'High-Security Mode (Recommended)';
+
+  @override
+  String get settings__switch__e2e_nonce__subtitle =>
+      'Upgrades encryption to AES-GCM for superior data protection and tamper detection. (Older app versions cannot decrypt these new clips)';
+
+  @override
   String get settings__dialog__conn_gdrive__title =>
       '¿Reconectar Google Drive?';
 

@@ -2362,8 +2362,20 @@ abstract class AppLocalizations {
   /// No description provided for @settings__switch__e2e__subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Toggle to activate or deactivate end-to-end encryption for your clips.'**
+  /// **'When enabled, your clips will be encrypted locally before being synced to the cloud.'**
   String get settings__switch__e2e__subtitle;
+
+  /// No description provided for @settings__switch__e2e_nonce__title.
+  ///
+  /// In en, this message translates to:
+  /// **'High-Security Mode (Recommended)'**
+  String get settings__switch__e2e_nonce__title;
+
+  /// No description provided for @settings__switch__e2e_nonce__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrades encryption to AES-GCM for superior data protection and tamper detection. (Older app versions cannot decrypt these new clips)'**
+  String get settings__switch__e2e_nonce__subtitle;
 
   /// No description provided for @settings__dialog__conn_gdrive__title.
   ///

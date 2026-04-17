@@ -1314,6 +1314,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Basculer pour activer ou désactiver le chiffrement de bout en bout pour vos clips.';
 
   @override
+  String get settings__switch__e2e_nonce__title =>
+      'High-Security Mode (Recommended)';
+
+  @override
+  String get settings__switch__e2e_nonce__subtitle =>
+      'Upgrades encryption to AES-GCM for superior data protection and tamper detection. (Older app versions cannot decrypt these new clips)';
+
+  @override
   String get settings__dialog__conn_gdrive__title =>
       'Reconnecter Google Drive?';
 
