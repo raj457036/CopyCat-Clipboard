@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class TimerBuilder extends StatefulWidget {
   final int maxTicks;
   final Widget Function(BuildContext context, int remaining, String seconds)
-      builder;
+  builder;
   const TimerBuilder({
     super.key,
     required this.maxTicks,
@@ -45,6 +45,9 @@ class _TimerBuilderState extends State<TimerBuilder> {
   Widget build(BuildContext context) {
     final remaining = widget.maxTicks - tick;
     return widget.builder(
-        context, remaining, remaining > 0 ? '• $remaining s' : '');
+      context,
+      remaining,
+      remaining > 0 ? '• $remaining s' : '',
+    );
   }
 }

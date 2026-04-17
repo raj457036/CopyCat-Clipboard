@@ -14,10 +14,7 @@ import 'package:universal_io/io.dart';
 
 class ClipDetailForm extends StatefulWidget {
   final ClipboardItem item;
-  const ClipDetailForm({
-    super.key,
-    required this.item,
-  });
+  const ClipDetailForm({super.key, required this.item});
 
   @override
   State<ClipDetailForm> createState() => _ClipDetailFormState();
@@ -36,9 +33,7 @@ class _ClipDetailFormState extends State<ClipDetailForm> {
     cubit = context.read<OfflinePersistenceCubit>();
     formKey = GlobalKey<FormState>();
     collectionId = (widget.item.collectionId, widget.item.serverCollectionId);
-    titleController = TextEditingController(
-      text: widget.item.title,
-    );
+    titleController = TextEditingController(text: widget.item.title);
     descriptionController = TextEditingController(
       text: widget.item.description,
     );
@@ -121,8 +116,9 @@ class _ClipDetailFormState extends State<ClipDetailForm> {
                 labelText: context.locale.preview__form__input__title,
               ),
               controller: titleController,
-              validator:
-                  ValidationBuilder(optional: true).maxLength(100).build(),
+              validator: ValidationBuilder(
+                optional: true,
+              ).maxLength(100).build(),
             ),
             height12,
             TextFormField(
@@ -132,8 +128,9 @@ class _ClipDetailFormState extends State<ClipDetailForm> {
               minLines: 2,
               maxLines: 6,
               controller: descriptionController,
-              validator:
-                  ValidationBuilder(optional: true).maxLength(255).build(),
+              validator: ValidationBuilder(
+                optional: true,
+              ).maxLength(255).build(),
             ),
             height12,
             ClipCollectionSelectorTile(
@@ -143,9 +140,10 @@ class _ClipDetailFormState extends State<ClipDetailForm> {
             height12,
             OverflowBar(
               alignment: MainAxisAlignment.end,
-              children:
-                  Platform.isWindows ? options.reversed.toList() : options,
-            )
+              children: Platform.isWindows
+                  ? options.reversed.toList()
+                  : options,
+            ),
           ],
         ),
       ),

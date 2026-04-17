@@ -54,9 +54,7 @@ class PauseTillSwitch extends StatelessWidget {
                     time: state,
                   )
                 : context.locale.settings__switch__paused__subtitle,
-            style: textTheme.bodyMedium?.copyWith(
-              color: colors.outline,
-            ),
+            style: textTheme.bodyMedium?.copyWith(color: colors.outline),
           ),
           value: isActive,
           onChanged: (value) => onPressed(context, !value),

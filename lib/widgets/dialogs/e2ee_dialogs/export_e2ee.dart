@@ -28,9 +28,7 @@ class ExportE2eeDialog extends StatelessWidget {
           width12,
           Text(
             context.locale.dialog__e2e__title,
-            style: textTheme.titleMedium?.copyWith(
-              fontVariations: fontVarW700,
-            ),
+            style: textTheme.titleMedium?.copyWith(fontVariations: fontVarW700),
           ),
           width12,
           const Spacer(),
@@ -38,9 +36,7 @@ class ExportE2eeDialog extends StatelessWidget {
         ],
       ),
       content: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxWidth: 420,
-        ),
+        constraints: const BoxConstraints(maxWidth: 420),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,10 +64,7 @@ class ExportE2eeDialog extends StatelessWidget {
               label: Text(context.locale.app__export),
               onPressed: loading ? null : exportEnc2Key,
             ),
-            if (bottom != null) ...[
-              const Divider(height: 30),
-              bottom!,
-            ]
+            if (bottom != null) ...[const Divider(height: 30), bottom!],
           ],
         ),
       ),

@@ -39,55 +39,57 @@ class SettingsPage extends StatelessWidget {
           ],
         ),
         body: ScaffoldBody(
-          margin: const EdgeInsets.only(
-            right: padding12,
-          ),
-          child: LayoutBuilder(builder: (context, constraints) {
-            if (constraints.maxWidth < 300) return const SizedBox.shrink();
-            return Column(
-              children: [
-                TabBar(
-                  isScrollable: true,
-                  tabAlignment: TabAlignment.start,
-                  onTap: print,
-                  tabs: [
-                    Tab(text: context.locale.settings__tab__1),
-                    Tab(text: context.locale.settings__tab__2),
-                    Tab(text: context.locale.settings__tab__3),
-                    Tab(text: context.locale.settings__tab__4),
-                    Tab(text: context.locale.settings__tab__5),
-                  ],
-                ),
-                const Expanded(
-                  child: Material(
-                    //? prevents color bleading from list tile on scoll
-                    child: TabBarView(children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: GeneralSettings(),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: CustomizationSettings(),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: SyncingSettings(),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: SecuritySettings(),
-                      ),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: ExperimentalSettings(),
-                      ),
-                    ]),
+          margin: const EdgeInsets.only(right: padding12),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              if (constraints.maxWidth < 300) return const SizedBox.shrink();
+              return Column(
+                children: [
+                  TabBar(
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.start,
+                    onTap: print,
+                    tabs: [
+                      Tab(text: context.locale.settings__tab__1),
+                      Tab(text: context.locale.settings__tab__2),
+                      Tab(text: context.locale.settings__tab__3),
+                      Tab(text: context.locale.settings__tab__4),
+                      Tab(text: context.locale.settings__tab__5),
+                    ],
                   ),
-                ),
-              ],
-            );
-          }),
+                  const Expanded(
+                    child: Material(
+                      //? prevents color bleading from list tile on scoll
+                      child: TabBarView(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: GeneralSettings(),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: CustomizationSettings(),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: SyncingSettings(),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: SecuritySettings(),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: ExperimentalSettings(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

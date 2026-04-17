@@ -150,7 +150,7 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               )
             else

@@ -62,9 +62,7 @@ class _UrlTextExclusionTabState extends State<UrlTextExclusionTab> {
       children: [
         ListTile(
           // dense: true,
-          title: Text(
-            context.locale.custom_er__tile__url,
-          ),
+          title: Text(context.locale.custom_er__tile__url),
           subtitle: TextField(
             focusNode: focusNode,
             controller: controller,

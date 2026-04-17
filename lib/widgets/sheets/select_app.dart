@@ -12,9 +12,7 @@ class SelectInstalledAppSheet extends StatelessWidget {
     final mqSize = context.mq.size;
     return showModalBottomSheet<app_info.AppInfo>(
       context: context,
-      constraints: BoxConstraints(
-        maxWidth: mqSize.width * 0.9,
-      ),
+      constraints: BoxConstraints(maxWidth: mqSize.width * 0.9),
       isScrollControlled: true,
       showDragHandle: true,
       builder: (context) {
@@ -30,43 +28,45 @@ class SelectInstalledAppSheet extends StatelessWidget {
       true,
     );
     return DraggableScrollableSheet(
-        expand: false,
-        builder: (context, controller) {
-          return FutureBuilder<List<app_info.AppInfo>>(
-            future: apps,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              if (snapshot.hasError) {
-                return Center(
-                  child: Text(
-                    snapshot.error.toString(),
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              }
-              final apps = (snapshot.data ?? [])
-                  .where((a) => !selectedApps.contains(a.packageName));
-              return ListView.builder(
-                controller: controller,
-                itemCount: apps.length,
-                itemBuilder: (context, index) {
-                  final app = apps.elementAt(index);
-                  return ListTile(
-                    leading: app.icon != null
-                        ? Image.memory(app.icon!, width: 28)
-                        : const Icon(Icons.android_rounded),
-                    title: Text(app.name),
-                    subtitle: Text(app.packageName),
-                    onTap: () {
-                      Navigator.of(context).pop(app);
-                    },
-                  );
-                },
+      expand: false,
+      builder: (context, controller) {
+        return FutureBuilder<List<app_info.AppInfo>>(
+          future: apps,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  snapshot.error.toString(),
+                  textAlign: TextAlign.center,
+                ),
               );
-            },
-          );
-        });
+            }
+            final apps = (snapshot.data ?? []).where(
+              (a) => !selectedApps.contains(a.packageName),
+            );
+            return ListView.builder(
+              controller: controller,
+              itemCount: apps.length,
+              itemBuilder: (context, index) {
+                final app = apps.elementAt(index);
+                return ListTile(
+                  leading: app.icon != null
+                      ? Image.memory(app.icon!, width: 28)
+                      : const Icon(Icons.android_rounded),
+                  title: Text(app.name),
+                  subtitle: Text(app.packageName),
+                  onTap: () {
+                    Navigator.of(context).pop(app);
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
+    );
   }
 }

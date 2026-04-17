@@ -44,7 +44,7 @@ class _TitleTextExclusionTabState extends State<TitleTextExclusionTab> {
     final rules = cubit.exclusionRules;
     final excluded = [
       ...rules.titles.take(index),
-      ...rules.titles.skip(index + 1)
+      ...rules.titles.skip(index + 1),
     ];
     update(cubit, excluded);
   }
@@ -68,9 +68,7 @@ class _TitleTextExclusionTabState extends State<TitleTextExclusionTab> {
           subtitle: TextField(
             focusNode: focusNode,
             controller: controller,
-            decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-            ),
+            decoration: const InputDecoration(border: UnderlineInputBorder()),
             onSubmitted: (value) => addEntry(context, value),
           ),
         ),

@@ -8,10 +8,7 @@ import 'package:flutter/material.dart';
 
 class URLClipPreviewCard extends StatelessWidget {
   final ClipboardItem item;
-  const URLClipPreviewCard({
-    super.key,
-    required this.item,
-  });
+  const URLClipPreviewCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +34,7 @@ class URLClipPreviewCard extends StatelessWidget {
             ),
             SelectableText(
               item.url ?? context.locale.preview__card__missing_text,
-            )
+            ),
           ],
         ),
       ),

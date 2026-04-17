@@ -25,17 +25,16 @@ class DynamicPage<T> extends CustomTransitionPage<T> {
     super.name,
     super.arguments,
     super.restorationId,
-  })  : assert(!isBottomSheet || !fullScreenDialog,
-            'Cannot have both bottom sheet and full screen dialog'),
-        super(
-          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-              ScaleTransition(
-            scale: animation,
-            child: child,
-          ),
-          barrierColor: Colors.black54,
-          barrierDismissible: true,
-        );
+  }) : assert(
+         !isBottomSheet || !fullScreenDialog,
+         'Cannot have both bottom sheet and full screen dialog',
+       ),
+       super(
+         transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+             ScaleTransition(scale: animation, child: child),
+         barrierColor: Colors.black54,
+         barrierDismissible: true,
+       );
 
   @override
   Route<T> createRoute(BuildContext context) {
@@ -48,9 +47,7 @@ class DynamicPage<T> extends CustomTransitionPage<T> {
           settings: this,
           isScrollControlled: false,
           showDragHandle: true,
-          constraints: BoxConstraints(
-            maxWidth: width * 0.9,
-          ),
+          constraints: BoxConstraints(maxWidth: width * 0.9),
           backgroundColor: Colors.transparent,
           builder: (context) {
             final bottom = MediaQuery.of(context).viewInsets.bottom;
@@ -77,10 +74,7 @@ class DynamicPage<T> extends CustomTransitionPage<T> {
       builder: (context) => Dialog(
         child: ConstrainedBox(
           constraints: BoxConstraints.loose(const Size(924, 580)),
-          child: ClipRRect(
-            borderRadius: radius12,
-            child: child,
-          ),
+          child: ClipRRect(borderRadius: radius12, child: child),
         ),
       ),
       anchorPoint: anchorPoint,

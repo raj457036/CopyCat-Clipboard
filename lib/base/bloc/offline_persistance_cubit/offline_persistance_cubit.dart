@@ -199,10 +199,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
 
     if (copied) {
       persist(
-        [
-          item.copyWith(copiedCount: item.copiedCount + 1, lastCopied: now())
-            ,
-        ],
+        [item.copyWith(copiedCount: item.copiedCount + 1, lastCopied: now())],
         updatedFields: ["copiedCount"],
       );
     }

@@ -25,10 +25,7 @@ class _TimerProgressBarState extends State<TimerProgressBar>
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(
-      vsync: this,
-      duration: widget.duration,
-    );
+    controller = AnimationController(vsync: this, duration: widget.duration);
     Future.delayed(widget.duration, closeSnackbar);
     animation = Tween<double>(begin: 1, end: 0).animate(controller);
     controller.forward();

@@ -32,8 +32,11 @@ class ScaffoldBody extends StatelessWidget {
       );
     }
 
-    return BlocSelector<WindowActionCubit, WindowActionState,
-        (BorderRadius, EdgeInsetsGeometry)>(
+    return BlocSelector<
+      WindowActionCubit,
+      WindowActionState,
+      (BorderRadius, EdgeInsetsGeometry)
+    >(
       selector: (state) {
         BorderRadius borderRadius_;
         EdgeInsets margin_;
@@ -48,9 +51,7 @@ class ScaffoldBody extends StatelessWidget {
             borderRadius_ = const BorderRadius.vertical(
               top: Radius.circular(18),
             );
-            margin_ = const EdgeInsets.only(
-              right: padding12,
-            );
+            margin_ = const EdgeInsets.only(right: padding12);
         }
 
         return (borderRadius ?? borderRadius_, margin ?? margin_);
@@ -61,9 +62,7 @@ class ScaffoldBody extends StatelessWidget {
           margin: margin_,
           color: background,
           elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: radius_,
-          ),
+          shape: RoundedRectangleBorder(borderRadius: radius_),
           child: child,
         );
       },

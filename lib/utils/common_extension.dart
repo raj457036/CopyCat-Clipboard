@@ -163,16 +163,16 @@ extension WindowManagerExtenstion on WindowManager {
 }
 
 extension ColorExtensions on Color {
-  String toHex(
-          {bool includeHashSign = false,
-          bool enableAlpha = true,
-          bool toUpperCase = true}) =>
-      colorToHex(
-        this,
-        includeHashSign: includeHashSign,
-        enableAlpha: enableAlpha,
-        toUpperCase: toUpperCase,
-      );
+  String toHex({
+    bool includeHashSign = false,
+    bool enableAlpha = true,
+    bool toUpperCase = true,
+  }) => colorToHex(
+    this,
+    includeHashSign: includeHashSign,
+    enableAlpha: enableAlpha,
+    toUpperCase: toUpperCase,
+  );
 }
 
 extension GoRouterExtension on GoRouter {

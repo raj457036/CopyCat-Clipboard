@@ -27,8 +27,8 @@ class SmartPasteSwitch extends StatelessWidget {
         return SwitchListTile(
           value: state,
           onChanged: (value) async {
-            final hasPermission =
-                await cubit.focusWindow.requestAccessibilityPermission();
+            final hasPermission = await cubit.focusWindow
+                .requestAccessibilityPermission();
             if (hasPermission) {
               cubit.toggleSmartPaste(value);
             } else {
@@ -38,9 +38,7 @@ class SmartPasteSwitch extends StatelessWidget {
           title: Text(context.locale.settings__switch__smart_paste__title),
           subtitle: Text(
             context.locale.settings__switch__smart_paste__subtitle,
-            style: textTheme.bodyMedium?.copyWith(
-              color: colors.outline,
-            ),
+            style: textTheme.bodyMedium?.copyWith(color: colors.outline),
           ),
         );
       },

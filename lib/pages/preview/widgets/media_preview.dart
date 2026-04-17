@@ -13,18 +13,12 @@ import 'package:universal_io/io.dart';
 
 class MediaClipPreviewCard extends StatelessWidget {
   final ClipboardItem item;
-  const MediaClipPreviewCard({
-    super.key,
-    required this.item,
-  });
+  const MediaClipPreviewCard({super.key, required this.item});
 
   ImageProvider? getPreview() {
     if (item.localPath != null) {
       if (item.fileMimeType!.contains("svg")) {
-        return Svg(
-          item.localPath!,
-          source: SvgSource.file,
-        );
+        return Svg(item.localPath!, source: SvgSource.file);
       }
       return FileImage(File(item.localPath!));
     }
@@ -47,10 +41,7 @@ class MediaClipPreviewCard extends StatelessWidget {
       if (item.fileMimeType!.startsWith("image")) {
         return const Align(
           alignment: Alignment(-.98, -.98),
-          child: Icon(
-            Icons.image_rounded,
-            color: Colors.white,
-          ),
+          child: Icon(Icons.image_rounded, color: Colors.white),
         );
       }
       if (item.fileMimeType!.startsWith("video")) {
@@ -65,19 +56,13 @@ class MediaClipPreviewCard extends StatelessWidget {
         }
         return const Align(
           alignment: Alignment(-.98, -.98),
-          child: Icon(
-            Icons.video_file,
-            color: Colors.white,
-          ),
+          child: Icon(Icons.video_file, color: Colors.white),
         );
       }
       if (item.fileMimeType!.startsWith("audio")) {
         return const Align(
           alignment: Alignment(-.98, -.98),
-          child: Icon(
-            Icons.audiotrack,
-            color: Colors.white,
-          ),
+          child: Icon(Icons.audiotrack, color: Colors.white),
         );
       }
     }
@@ -95,10 +80,7 @@ class MediaClipPreviewCard extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           image: preview != null
-              ? DecorationImage(
-                  image: preview,
-                  fit: BoxFit.contain,
-                )
+              ? DecorationImage(image: preview, fit: BoxFit.contain)
               : null,
           borderRadius: const BorderRadius.horizontal(
             left: Radius.circular(12),

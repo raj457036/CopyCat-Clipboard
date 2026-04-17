@@ -17,7 +17,7 @@ class AppExclusionTab extends StatelessWidget {
     final rules = cubit.exclusionRules;
     final excludedApps = [
       ...rules.apps.take(index),
-      ...rules.apps.skip(index + 1)
+      ...rules.apps.skip(index + 1),
     ];
     final updatedRules = cubit.exclusionRules.copyWith(apps: excludedApps);
     cubit.updateExclusionRule(updatedRules);
@@ -42,17 +42,16 @@ class AppExclusionTab extends StatelessWidget {
 
   Future<Iterable<AppInfo>> selectAndroidApp(BuildContext context) async {
     final cubit = context.read<AppConfigCubit>();
-    final rules =
-        cubit.exclusionRules.apps.map((a) => a.identifier ?? '').toSet();
-    final app =
-        await SelectInstalledAppSheet(selectedApps: rules).show(context);
+    final rules = cubit.exclusionRules.apps
+        .map((a) => a.identifier ?? '')
+        .toSet();
+    final app = await SelectInstalledAppSheet(
+      selectedApps: rules,
+    ).show(context);
 
     if (app == null) return [];
 
-    final info = AppInfo(
-      name: app.name,
-      identifier: app.packageName,
-    );
+    final info = AppInfo(name: app.name, identifier: app.packageName);
     return [info];
   }
 
@@ -78,10 +77,7 @@ class AppExclusionTab extends StatelessWidget {
     if (result == null || result.count == 0) return [];
 
     final files = result.files.map(
-      (e) => AppInfo(
-        name: e.name,
-        path: e.path ?? '',
-      ),
+      (e) => AppInfo(name: e.name, path: e.path ?? ''),
     );
     return files;
   }
@@ -95,9 +91,7 @@ class AppExclusionTab extends StatelessWidget {
           title: Text(context.locale.custom_er__tile__add_app),
           dense: true,
           shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(16),
-            ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
           ),
           onTap: () => addApp(context),
         ),

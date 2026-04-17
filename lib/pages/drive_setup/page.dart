@@ -13,10 +13,7 @@ class DriveSetupPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        actions: const [
-          CloseButton(),
-          width8,
-        ],
+        actions: const [CloseButton(), width8],
       ),
       body: BlocConsumer<DriveSetupCubit, DriveSetupState>(
         listener: (context, state) {
@@ -29,9 +26,7 @@ class DriveSetupPage extends StatelessWidget {
         builder: (context, state) {
           switch (state) {
             case DriveSetupError(:final failure):
-              return Center(
-                child: Text(failure.message),
-              );
+              return Center(child: Text(failure.message));
             case DriveSetupVerifyingCode():
               return Center(
                 child: Column(

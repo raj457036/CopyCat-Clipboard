@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
@@ -28,7 +27,7 @@ abstract class CrossSyncListener<T> {
   /// Reconnect to the service
   Future<void> reconnect();
   Stream<CrossSyncStatusEvent> get onStatusChange;
-  Queue<CrossSyncEvent<T>> get changesQueue;
+  Stream<CrossSyncEvent<T>> get onChangeEvent;
 
   bool get isInitiated;
 }

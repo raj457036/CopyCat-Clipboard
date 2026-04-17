@@ -8,15 +8,7 @@ const avif = SimpleFileFormat(
 
 const svg = SimpleFileFormat(
   uniformTypeIdentifiers: ['public.svg-image'],
-  mimeTypes: [
-    'public.svg-image',
-    "image/svg+xml",
-    "image/svg",
-  ],
+  mimeTypes: ['public.svg-image', "image/svg+xml", "image/svg"],
 );
 
-const allSupportedClipFormats = [
-  ...Formats.standardFormats,
-  avif,
-  svg,
-];
+const allSupportedClipFormats = [...Formats.standardFormats, avif, svg];

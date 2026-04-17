@@ -78,9 +78,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
           importedKey == null) {
         importedKey = null;
         showFailureSnackbar(
-          Failure.fromMessage(
-            locale.onboarding__snackbar__invalid_key,
-          ),
+          Failure.fromMessage(locale.onboarding__snackbar__invalid_key),
         );
         return;
       }
@@ -176,10 +174,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  Icons.lock,
-                  size: 28,
-                ),
+                const Icon(Icons.lock, size: 28),
                 height10,
                 Text(
                   context.locale.onboarding__text__import_key_headline,

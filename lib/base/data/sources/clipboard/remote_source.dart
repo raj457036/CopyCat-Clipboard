@@ -85,8 +85,10 @@ class RemoteClipboardSource implements ClipboardSource {
   @override
   Future<ClipboardItem?> get({int? id, int? serverId}) async {
     if (serverId == null && id == null) return null;
-    final item =
-        await db.from(clipItemTable).select().eq("id", (serverId ?? id)!);
+    final item = await db
+        .from(clipItemTable)
+        .select()
+        .eq("id", (serverId ?? id)!);
     if (item.isEmpty) return null;
     final clipItem = ClipboardItem.fromJson(item.first);
     return clipItem;
@@ -106,22 +108,13 @@ class RemoteClipboardSource implements ClipboardSource {
   Future<List<ClipboardItem>> deleteMany(List<ClipboardItem> items) async {
     final items_ = items
         .where((item) => item.serverId != null && item.userId != kLocalUserId)
-        .map(
-      (item) {
-        final json = item
-            .copyWith(
-              deletedAt: now(),
-              modified: now(),
-              text: "",
-              url: "",
-            )
-            .toJson();
-        return {
-          ...json,
-          "id": item.serverId,
-        };
-      },
-    ).toList();
+        .map((item) {
+          final json = item
+              .copyWith(deletedAt: now(), modified: now(), text: "", url: "")
+              .toJson();
+          return {...json, "id": item.serverId};
+        })
+        .toList();
     await db.from(clipItemTable).upsert(items_);
     return items;
   }
@@ -156,10 +149,9 @@ class RemoteClipboardSource implements ClipboardSource {
   @override
   Future<List<ClipboardItem>> updateAll(List<ClipboardItem> items) async {
     //? only support updating collection id in bulk.
-    final updates = items.map((item) => {
-          "id": item.serverId,
-          "collectionId": item.serverCollectionId,
-        });
+    final updates = items.map(
+      (item) => {"id": item.serverId, "collectionId": item.serverCollectionId},
+    );
     await db.from(clipItemTable).upsert(updates);
     return items;
   }

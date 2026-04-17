@@ -8,10 +8,7 @@ class LoadingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return Card.filled(
-      margin: EdgeInsets.zero,
-      color: colors.surface,
-    );
+    return Card.filled(margin: EdgeInsets.zero, color: colors.surface);
   }
 }
 

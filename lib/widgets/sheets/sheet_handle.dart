@@ -12,10 +12,7 @@ class SheetHandle extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: padding12),
       child: SizedBox.fromSize(
         size: const Size(32, 4),
-        child: Material(
-          color: colors.onSurfaceVariant,
-          borderRadius: radius12,
-        ),
+        child: Material(color: colors.onSurfaceVariant, borderRadius: radius12),
       ),
     );
   }

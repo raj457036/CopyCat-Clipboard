@@ -5,22 +5,19 @@ import 'package:clipboard/widgets/clipcard_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-typedef ClipProviderBuilder = Widget Function(
-  BuildContext context,
-  List<ClipboardItem> clips,
-  bool hasMore,
-  bool loading,
-  VoidCallback loadMore,
-);
+typedef ClipProviderBuilder =
+    Widget Function(
+      BuildContext context,
+      List<ClipboardItem> clips,
+      bool hasMore,
+      bool loading,
+      VoidCallback loadMore,
+    );
 
 class ClipsProvider extends InheritedWidget {
   final List<ClipboardItem> clips;
 
-  const ClipsProvider({
-    super.key,
-    required super.child,
-    required this.clips,
-  });
+  const ClipsProvider({super.key, required super.child, required this.clips});
 
   static ClipsProvider? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<ClipsProvider>();
@@ -51,8 +48,11 @@ class ClipsProviderWithBuilder extends StatelessWidget {
   }
 
   Widget buildRoot(BuildContext context) {
-    return BlocSelector<ClipboardCubit, ClipboardState,
-        (List<ClipboardItem>, bool, bool)>(
+    return BlocSelector<
+      ClipboardCubit,
+      ClipboardState,
+      (List<ClipboardItem>, bool, bool)
+    >(
       selector: (state) {
         return (state.items, state.hasMore, state.loading);
       },
@@ -79,9 +79,7 @@ class ClipsProviderWithBuilder extends StatelessWidget {
           case InitialCollectionClipsState() || SearchingCollectionClipsState():
             return const ClipcardLoading();
           case CollectionClipsErrorState(:final failure):
-            return Center(
-              child: Text(failure.message),
-            );
+            return Center(child: Text(failure.message));
           case CollectionClipsResultsState(:final results, :final hasMore):
             return ClipsProvider(
               clips: results,

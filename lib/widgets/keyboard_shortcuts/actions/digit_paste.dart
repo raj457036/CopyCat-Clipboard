@@ -4,7 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 final Set<LogicalKeyboardKey> _metaSynonyms = LogicalKeyboardKey.expandSynonyms(
-    <LogicalKeyboardKey>{LogicalKeyboardKey.meta, LogicalKeyboardKey.control});
+  <LogicalKeyboardKey>{LogicalKeyboardKey.meta, LogicalKeyboardKey.control},
+);
 
 class PasteByClipIndexShortcutActivator implements ShortcutActivator {
   void Function(int index)? onAccept;
@@ -15,7 +16,8 @@ class PasteByClipIndexShortcutActivator implements ShortcutActivator {
 
   @override
   bool accepts(KeyEvent event, HardwareKeyboard state) {
-    final accepted = (event is KeyDownEvent || (event is! KeyRepeatEvent)) &&
+    final accepted =
+        (event is KeyDownEvent || (event is! KeyRepeatEvent)) &&
         triggers.contains(event.logicalKey) &&
         _shouldAcceptMetaModifiers(state.logicalKeysPressed);
 
@@ -33,16 +35,16 @@ class PasteByClipIndexShortcutActivator implements ShortcutActivator {
 
   @override
   List<LogicalKeyboardKey> get triggers => [
-        LogicalKeyboardKey.digit1,
-        LogicalKeyboardKey.digit2,
-        LogicalKeyboardKey.digit3,
-        LogicalKeyboardKey.digit4,
-        LogicalKeyboardKey.digit5,
-        LogicalKeyboardKey.digit6,
-        LogicalKeyboardKey.digit7,
-        LogicalKeyboardKey.digit8,
-        LogicalKeyboardKey.digit9,
-      ];
+    LogicalKeyboardKey.digit1,
+    LogicalKeyboardKey.digit2,
+    LogicalKeyboardKey.digit3,
+    LogicalKeyboardKey.digit4,
+    LogicalKeyboardKey.digit5,
+    LogicalKeyboardKey.digit6,
+    LogicalKeyboardKey.digit7,
+    LogicalKeyboardKey.digit8,
+    LogicalKeyboardKey.digit9,
+  ];
 }
 
 // ignore: must_be_immutable

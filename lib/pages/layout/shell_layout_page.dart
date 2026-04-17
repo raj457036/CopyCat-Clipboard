@@ -7,10 +7,7 @@ import 'package:flutter/material.dart';
 class ShellPage extends StatelessWidget {
   final Widget child;
 
-  const ShellPage({
-    super.key,
-    required this.child,
-  });
+  const ShellPage({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +18,7 @@ class ShellPage extends StatelessWidget {
       onPopInvokedWithResult: (didPop, result) {
         logger.i("DID POP: $didPop");
       },
-      child: FocusScope(
-        autofocus: true,
-        child: child_,
-      ),
+      child: FocusScope(autofocus: true, child: child_),
     );
   }
 }

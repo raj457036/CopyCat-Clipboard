@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LocalSigninButton extends StatelessWidget {
-  const LocalSigninButton({
-    super.key,
-  });
+  const LocalSigninButton({super.key});
 
   @override
   Widget build(BuildContext context) {

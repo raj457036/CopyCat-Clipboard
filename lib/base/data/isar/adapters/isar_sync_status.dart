@@ -14,13 +14,13 @@ class IsarSyncStatus {
   bool restorationPending = true;
 
   SyncStatus toDomain() => SyncStatus(
-        id: isarId == Isar.autoIncrement ? null : isarId,
-        lastSyncPoint: lastSyncPoint,
-        lastSyncStartPoint: lastSyncStartPoint,
-        lastKnownSyncCount: lastKnownSyncCount,
-        lastKnownTotalCount: lastKnownTotalCount,
-        restorationPending: restorationPending,
-      );
+    id: isarId == Isar.autoIncrement ? null : isarId,
+    lastSyncPoint: lastSyncPoint,
+    lastSyncStartPoint: lastSyncStartPoint,
+    lastKnownSyncCount: lastKnownSyncCount,
+    lastKnownTotalCount: lastKnownTotalCount,
+    restorationPending: restorationPending,
+  );
 
   static IsarSyncStatus fromDomain(SyncStatus status) => IsarSyncStatus()
     ..isarId = status.id ?? Isar.autoIncrement

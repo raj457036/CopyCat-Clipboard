@@ -12,11 +12,7 @@ import 'package:flutter/material.dart';
 class ClipPreview extends StatelessWidget {
   final ClipboardItem item;
   final AppLayout layout;
-  const ClipPreview({
-    super.key,
-    required this.item,
-    required this.layout,
-  });
+  const ClipPreview({super.key, required this.item, required this.layout});
 
   @override
   Widget build(BuildContext context) {

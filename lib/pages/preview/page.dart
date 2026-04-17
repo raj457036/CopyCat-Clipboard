@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 
 class ClipboardItemPreviewPage extends StatefulWidget {
   final ClipboardItem item;
-  const ClipboardItemPreviewPage({
-    super.key,
-    required this.item,
-  });
+  const ClipboardItemPreviewPage({super.key, required this.item});
 
   @override
   State<ClipboardItemPreviewPage> createState() => ClipboardItemPreviewState();

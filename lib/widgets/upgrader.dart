@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:upgrader/upgrader.dart';
 
 final upgrader = Upgrader(
-  debugLogging: kDebugMode,
+  debugLogging: false,
   languageCode: rootNavKey.currentContext?.locale.localeName,
   storeController: UpgraderStoreController(
     onMacOS: () => UpgraderAppcastStore(
@@ -22,26 +22,27 @@ final upgrader = Upgrader(
       appcastURL: kDebugMode ? devLinuxAppcastUrl : linuxAppcastUrl,
     ),
   ),
-  willDisplayUpgrade: ({
-    required bool display,
-    String? installedVersion,
-    UpgraderVersionInfo? versionInfo,
-  }) {
-    final context = rootNavKey.currentContext;
-    if (display && context != null && context.mounted && isDesktopPlatform) {
-      context.read<WindowActionCubit>()
-        ..setWindowdView()
-        ..show();
-    }
-  },
+  willDisplayUpgrade:
+      ({
+        required bool display,
+        String? installedVersion,
+        UpgraderVersionInfo? versionInfo,
+      }) {
+        final context = rootNavKey.currentContext;
+        if (display &&
+            context != null &&
+            context.mounted &&
+            isDesktopPlatform) {
+          context.read<WindowActionCubit>()
+            ..setWindowdView()
+            ..show();
+        }
+      },
 );
 
 class UpgraderBuilder extends StatelessWidget {
   final Widget? child;
-  const UpgraderBuilder({
-    super.key,
-    this.child,
-  });
+  const UpgraderBuilder({super.key, this.child});
 
   @override
   Widget build(BuildContext context) {

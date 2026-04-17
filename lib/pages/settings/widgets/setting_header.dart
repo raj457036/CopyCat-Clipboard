@@ -6,12 +6,7 @@ class SettingHeader extends StatelessWidget {
   final IconData? icon;
   final String name;
   final String? tooltip;
-  const SettingHeader({
-    super.key,
-    required this.name,
-    this.icon,
-    this.tooltip,
-  });
+  const SettingHeader({super.key, required this.name, this.icon, this.tooltip});
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +14,7 @@ class SettingHeader extends StatelessWidget {
     final colors = context.colors;
     Widget label = Text(
       name,
-      style: textTheme.titleSmall?.copyWith(
-        color: colors.outline,
-      ),
+      style: textTheme.titleSmall?.copyWith(color: colors.outline),
     );
 
     if (icon != null) {
@@ -35,17 +28,12 @@ class SettingHeader extends StatelessWidget {
     }
 
     Widget child = Padding(
-      padding: const EdgeInsets.only(
-        left: padding16,
-      ),
+      padding: const EdgeInsets.only(left: padding16),
       child: label,
     );
 
     if (tooltip != null) {
-      child = Tooltip(
-        message: tooltip,
-        child: child,
-      );
+      child = Tooltip(message: tooltip, child: child);
     }
 
     return child;

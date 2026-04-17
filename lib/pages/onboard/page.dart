@@ -1,5 +1,5 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
+import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
@@ -20,10 +20,7 @@ import 'package:go_router/go_router.dart';
 class OnBoardPage extends StatefulWidget {
   final int startingStep;
 
-  const OnBoardPage({
-    super.key,
-    required this.startingStep,
-  });
+  const OnBoardPage({super.key, required this.startingStep});
 
   @override
   State<OnBoardPage> createState() => _OnBoardPageState();
@@ -48,9 +45,7 @@ class _OnBoardPageState extends State<OnBoardPage> {
     context.read<DriveSetupCubit>().fetch();
     context.read<OfflinePersistenceCubit>().startListeners();
     // starts
-    context
-        .read<CollectionSyncManagerCubit>()
-        .syncChanges(null, manual: false, restoration: false);
+    context.read<SyncStatusCubit>().start();
     context.read<AppConfigCubit>().changeOnBoardStatus(true);
     context.goNamed(RouteConstants.home);
   }
@@ -65,35 +60,27 @@ class _OnBoardPageState extends State<OnBoardPage> {
           child: Padding(
             padding: const EdgeInsets.all(padding16),
             child: switch (currentStep) {
-              0 => WelcomeStep(
-                  onContinue: () => goToPage(1),
-                ),
+              0 => WelcomeStep(onContinue: () => goToPage(1)),
               1 => EncryptionStep(
-                  onContinue: () {
-                    if (isDesktopPlatform) {
-                      goToPage(2);
-                    } else {
-                      goToPage(4);
-                    }
-                  },
-                ),
-              2 => SmartPasteStep(
-                  onContinue: () => goToPage(3),
-                ),
-              3 => KeyboardShortcutStep(
-                  onContinue: () => goToPage(4),
-                ),
+                onContinue: () {
+                  if (isDesktopPlatform) {
+                    goToPage(2);
+                  } else {
+                    goToPage(4);
+                  }
+                },
+              ),
+              2 => SmartPasteStep(onContinue: () => goToPage(3)),
+              3 => KeyboardShortcutStep(onContinue: () => goToPage(4)),
               4 => RestoreCollectionStep(
-                  onContinue: () => goToPage(5),
-                  collectionRepository: sl(),
-                ),
+                onContinue: () => goToPage(5),
+                collectionRepository: sl(),
+              ),
               5 => RestoreClipsStep(
-                  onContinue: goHome,
-                  clipboardRepository: sl(
-                    instanceName: "remote",
-                  ),
-                  restorationStatusRepository: sl(),
-                ),
+                onContinue: goHome,
+                clipboardRepository: sl(instanceName: "remote"),
+                restorationStatusRepository: sl(),
+              ),
               _ => const SizedBox.shrink(),
             },
           ),

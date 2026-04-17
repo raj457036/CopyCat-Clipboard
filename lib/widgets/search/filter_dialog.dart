@@ -18,10 +18,7 @@ const _allClipCatergories = {
 
 class FilterDialog extends StatefulWidget {
   final SearchFilterState state;
-  const FilterDialog({
-    super.key,
-    required this.state,
-  });
+  const FilterDialog({super.key, required this.state});
 
   Future<SearchFilterState?> open(BuildContext context) {
     return showDialog<SearchFilterState?>(
@@ -122,11 +119,13 @@ class _FilterDialogState extends State<FilterDialog> {
 
     if (mounted) {
       setState(() {
-        to = to_?.add(Duration(
-          hours: lastDate.hour,
-          minutes: lastDate.minute,
-          seconds: lastDate.second,
-        ));
+        to = to_?.add(
+          Duration(
+            hours: lastDate.hour,
+            minutes: lastDate.minute,
+            seconds: lastDate.second,
+          ),
+        );
       });
     }
   }
@@ -135,9 +134,7 @@ class _FilterDialogState extends State<FilterDialog> {
   Widget build(BuildContext context) {
     final size = context.mq.size;
     if (size.width < 300) {
-      return const AlertDialog(
-        content: Center(child: Text("∅")),
-      );
+      return const AlertDialog(content: Center(child: Text("∅")));
     }
     final locale = context.locale;
     final localeName = locale.localeName;
@@ -146,8 +143,10 @@ class _FilterDialogState extends State<FilterDialog> {
     final colors = context.colors;
     return AlertDialog(
       contentPadding: const EdgeInsets.only(bottom: padding10),
-      insetPadding:
-          const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
+      insetPadding: const EdgeInsets.symmetric(
+        horizontal: 20.0,
+        vertical: 24.0,
+      ),
       title: Row(
         children: [
           Text(locale.search_filter__text__title),
@@ -181,7 +180,7 @@ class _FilterDialogState extends State<FilterDialog> {
                           ? dateFormatter.format(from!)
                           : locale.search_filter__text__select,
                     ),
-                  )
+                  ),
                 ],
               ),
               height8,
@@ -196,7 +195,7 @@ class _FilterDialogState extends State<FilterDialog> {
                           ? dateFormatter.format(to!)
                           : locale.search_filter__text__now,
                     ),
-                  )
+                  ),
                 ],
               ),
               height8,
@@ -235,7 +234,7 @@ class _FilterDialogState extends State<FilterDialog> {
                         selected: typeIncludes.contains(ClipItemType.file),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
               height12,
@@ -244,7 +243,8 @@ class _FilterDialogState extends State<FilterDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text.rich(TextSpan(
+                    Text.rich(
+                      TextSpan(
                         text: locale.search_filter__text__textCategories,
                         children: [
                           TextSpan(
@@ -253,7 +253,9 @@ class _FilterDialogState extends State<FilterDialog> {
                               color: colors.outline,
                             ),
                           ),
-                        ])),
+                        ],
+                      ),
+                    ),
                     height8,
                     Wrap(
                       spacing: 8,
@@ -278,7 +280,7 @@ class _FilterDialogState extends State<FilterDialog> {
                           selected: textCategory.contains(TextCategory.color),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               height8,
@@ -322,7 +324,7 @@ class _FilterDialogState extends State<FilterDialog> {
                     ],
                     onSelected: selectSortBy,
                     initialSelection: sortBy,
-                  )
+                  ),
                 ],
               ),
               height8,
@@ -345,7 +347,7 @@ class _FilterDialogState extends State<FilterDialog> {
                     ],
                     onSelectionChanged: setSortOrder,
                     selected: {sortOrder},
-                  )
+                  ),
                 ],
               ),
             ],
@@ -372,8 +374,8 @@ class _FilterDialogState extends State<FilterDialog> {
       sortOrder: sortOrder,
       textCategories:
           textCategory.isEmpty || !typeIncludes.contains(ClipItemType.text)
-              ? null
-              : textCategory,
+          ? null
+          : textCategory,
       typeIncludes: typeIncludes.isEmpty || typeIncludes.length == 4
           ? null
           : typeIncludes,

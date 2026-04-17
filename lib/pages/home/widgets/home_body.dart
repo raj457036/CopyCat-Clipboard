@@ -1,4 +1,4 @@
-import 'package:clipboard/base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
+import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/pages/home/widgets/paste_stack_body.dart';
@@ -16,8 +16,8 @@ class HomePageBody extends StatelessWidget {
   const HomePageBody({super.key});
 
   Future<void> refresh(BuildContext context) async {
-    final cubit = context.read<CollectionSyncManagerCubit>();
-    await cubit.syncCollections(manual: true);
+    final cubit = context.read<SyncStatusCubit>();
+    await cubit.syncAll(force: true);
   }
 
   @override

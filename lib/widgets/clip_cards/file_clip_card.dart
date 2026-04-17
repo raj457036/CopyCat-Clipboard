@@ -11,11 +11,7 @@ class FileClipCard extends StatelessWidget {
   final AppLayout layout;
   final ClipboardItem item;
 
-  const FileClipCard({
-    super.key,
-    required this.item,
-    required this.layout,
-  });
+  const FileClipCard({super.key, required this.item, required this.layout});
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +50,7 @@ class FileClipCard extends StatelessWidget {
                 height: 1.8,
               ),
             ),
-            Align(
-              alignment: const Alignment(0.0, 0.95),
-              child: metaChip,
-            ),
+            Align(alignment: const Alignment(0.0, 0.95), child: metaChip),
           ],
         ),
       ),

@@ -51,9 +51,7 @@ class ClipCollectionSelectorStateTile
   Future<void> selectCollection() async {
     final selected = await context.pushNamed<ClipCollection>(
       RouteConstants.clipCollectionSelection,
-      queryParameters: {
-        "id": collection?.id.toString() ?? "",
-      },
+      queryParameters: {"id": collection?.id.toString() ?? ""},
     );
 
     if (selected == null) return;
@@ -89,9 +87,7 @@ class ClipCollectionSelectorStateTile
             ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16),
       tileColor: colors.secondaryContainer,
-      shape: const RoundedRectangleBorder(
-        borderRadius: radius8,
-      ),
+      shape: const RoundedRectangleBorder(borderRadius: radius8),
       onTap: isLoading ? null : selectCollection,
     );
   }

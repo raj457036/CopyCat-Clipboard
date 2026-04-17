@@ -9,11 +9,7 @@ import 'package:flutter/material.dart';
 class ClipMenuProvider extends StatelessWidget {
   final Widget child;
   final ClipboardItem item;
-  const ClipMenuProvider({
-    super.key,
-    required this.item,
-    required this.child,
-  });
+  const ClipMenuProvider({super.key, required this.item, required this.child});
 
   @override
   Widget build(BuildContext context) {

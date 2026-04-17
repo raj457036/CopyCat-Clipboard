@@ -21,10 +21,7 @@ class SmartPasteStep extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.switch_access_shortcut_add_rounded,
-                size: 32,
-              ),
+              const Icon(Icons.switch_access_shortcut_add_rounded, size: 32),
               height10,
               Text(
                 "Smart Paste",
@@ -42,9 +39,7 @@ class SmartPasteStep extends StatelessWidget {
               height10,
               FilledButton(
                 onPressed: onContinue,
-                child: Text(
-                  context.mlocale.continueButtonLabel.title,
-                ),
+                child: Text(context.mlocale.continueButtonLabel.title),
               ),
             ],
           ),

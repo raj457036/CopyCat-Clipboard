@@ -7,9 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppViewButton extends StatelessWidget {
-  const AppViewButton({
-    super.key,
-  });
+  const AppViewButton({super.key});
 
   void changeView(BuildContext context, AppView view) {
     final appConfigCubit = context.read<AppConfigCubit>();
@@ -24,34 +22,28 @@ class AppViewButton extends StatelessWidget {
 
         return MenuAnchor(
           consumeOutsideTap: true,
-          builder: (
-            BuildContext context,
-            MenuController controller,
-            Widget? child,
-          ) {
-            return IconButton(
-              onPressed: () {
-                if (controller.isOpen) {
-                  controller.close();
-                } else {
-                  controller.open();
-                }
+          builder:
+              (BuildContext context, MenuController controller, Widget? child) {
+                return IconButton(
+                  onPressed: () {
+                    if (controller.isOpen) {
+                      controller.close();
+                    } else {
+                      controller.open();
+                    }
+                  },
+                  padding: EdgeInsets.zero,
+                  style: IconButton.styleFrom(
+                    shape: const RoundedRectangleBorder(),
+                  ),
+                  iconSize: 20,
+                  icon: const Icon(Icons.dashboard_rounded),
+                  tooltip: context.locale.view_button__change_view,
+                );
               },
-              padding: EdgeInsets.zero,
-              style: IconButton.styleFrom(
-                shape: const RoundedRectangleBorder(),
-              ),
-              iconSize: 20,
-              icon: const Icon(Icons.dashboard_rounded),
-              tooltip: context.locale.view_button__change_view,
-            );
-          },
           menuChildren: [
             MenuItemButton(
-              leadingIcon: const Icon(
-                Icons.crop_landscape,
-                size: 26,
-              ),
+              leadingIcon: const Icon(Icons.crop_landscape, size: 26),
               child: Text(context.locale.view_button__view_window),
               onPressed: () => changeView(context, AppView.windowed),
             ),

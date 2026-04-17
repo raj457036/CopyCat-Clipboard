@@ -27,7 +27,7 @@ class PreviewOptions extends StatelessWidget {
   Widget build(BuildContext context) {
     final canOpen =
         (item.type == ClipItemType.file || item.type == ClipItemType.media) &&
-            item.inCache;
+        item.inCache;
     return Card(
       shape: const StadiumBorder(),
       child: Padding(

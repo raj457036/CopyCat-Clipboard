@@ -27,17 +27,13 @@ class DontAutoUploadOverDropdown extends StatelessWidget {
       builder: (context, state) {
         return ListTile(
           title: Text(
-              context.locale.settings__dropdown__no_upload_over_limit__title),
+            context.locale.settings__dropdown__no_upload_over_limit__title,
+          ),
           subtitle: Text(
             context.locale.settings__dropdown__no_upload_over_limit__subtitle(
-              fileSize: formatBytes(
-                state,
-                precise: false,
-              ),
+              fileSize: formatBytes(state, precise: false),
             ),
-            style: textTheme.bodyMedium?.copyWith(
-              color: colors.outline,
-            ),
+            style: textTheme.bodyMedium?.copyWith(color: colors.outline),
           ),
           trailing: DropdownButtonHideUnderline(
             child: ConstrainedBox(

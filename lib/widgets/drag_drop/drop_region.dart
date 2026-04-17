@@ -34,27 +34,31 @@ class ClipDropRegionProvider extends StatelessWidget {
     if (Platform.isAndroid) return child;
 
     return BlocSelector<AppConfigCubit, AppConfigState, bool>(
-        selector: (state) {
-      switch (state) {
-        case AppConfigLoaded(:final config):
-          return config.enableDragNDrop;
-        default:
-          return false;
-      }
-    }, builder: (context, enabled) {
-      if (!enabled) return child;
-      return SubscriptionBuilder(builder: (context, subscription) {
-        if (subscription == null) return child;
-        if (subscription.isActive && subscription.dragNdrop) {
-          return ClipDropRegion(
-            onDragStart: onDragStart,
-            onDragStop: onDragStop,
-            child: child,
-          );
+      selector: (state) {
+        switch (state) {
+          case AppConfigLoaded(:final config):
+            return config.enableDragNDrop;
+          default:
+            return false;
         }
-        return child;
-      });
-    });
+      },
+      builder: (context, enabled) {
+        if (!enabled) return child;
+        return SubscriptionBuilder(
+          builder: (context, subscription) {
+            if (subscription == null) return child;
+            if (subscription.isActive && subscription.dragNdrop) {
+              return ClipDropRegion(
+                onDragStart: onDragStart,
+                onDragStop: onDragStop,
+                child: child,
+              );
+            }
+            return child;
+          },
+        );
+      },
+    );
   }
 }
 
@@ -164,9 +168,7 @@ class _ClipDropRegionState extends State<ClipDropRegion> {
         DataFormat? selectedFormat;
         final itemFormats = reader.getFormats(allSupportedClipFormats);
 
-        selectedFormat = cubit.clipboard.filterOutByPriority(
-          itemFormats,
-        );
+        selectedFormat = cubit.clipboard.filterOutByPriority(itemFormats);
         if (selectedFormat == null) continue;
         res.add((reader, selectedFormat));
         pastedCount++;
@@ -208,9 +210,7 @@ class _ClipDropRegionState extends State<ClipDropRegion> {
         children: [
           widget.child,
           if (dropZoneActive)
-            Positioned.fill(
-              child: DropArea(processing: processing),
-            ),
+            Positioned.fill(child: DropArea(processing: processing)),
         ],
       ),
     );

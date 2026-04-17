@@ -15,8 +15,10 @@ class CloudPersistanceState with _$CloudPersistanceState {
       CloudPersistanceUploadingFile;
   const factory CloudPersistanceState.downloadingFile(ClipboardItem item) =
       CloudPersistanceDownloadingFile;
-  const factory CloudPersistanceState.saved(ClipboardItem item,
-      {@Default(false) bool created}) = CloudPersistanceSaved;
+  const factory CloudPersistanceState.saved(
+    ClipboardItem item, {
+    @Default(false) bool created,
+  }) = CloudPersistanceSaved;
   const factory CloudPersistanceState.error(
     Failure failure, [
     ClipboardItem? item,

@@ -41,10 +41,7 @@ class EncryptionSecret {
   late final Key key;
   late final IV iv;
 
-  EncryptionSecret(
-    this.secret,
-    this.init,
-  ) {
+  EncryptionSecret(this.secret, this.init) {
     key = Key.fromUtf8(secret);
     iv = IV.fromBase64(init);
   }
@@ -66,10 +63,7 @@ class EncryptionSecret {
       throw Exception("Invalid serialized secret");
     }
 
-    return EncryptionSecret(
-      split[0],
-      split[1],
-    );
+    return EncryptionSecret(split[0], split[1]);
   }
 }
 
@@ -96,24 +90,17 @@ class EncryptionManager {
 Encrypter? _aesEncrypter;
 EncryptionSecret? _encSecret;
 
-enum EncDecType {
-  encrypt,
-  decrypt,
-  ping,
-}
+enum EncDecType { encrypt, decrypt, ping }
 
 typedef EncryptionPayload = (
   String id,
   String content,
   String secret,
   String? customIV,
-  EncDecType action
+  EncDecType action,
 );
 
-void _encryptorEntryPoint(
-  EncryptionPayload payload,
-  Sender send,
-) {
+void _encryptorEntryPoint(EncryptionPayload payload, Sender send) {
   final (id, content, secret, customIV, action) = payload;
   if (id == "") return;
 
@@ -128,12 +115,7 @@ void _encryptorEntryPoint(
     // } else {
     //   logger.d("IV: ${iv?.bytes}");
     // }
-    _aesEncrypter ??= Encrypter(
-      AES(
-        _encSecret!.key,
-        mode: AESMode.cfb64,
-      ),
-    );
+    _aesEncrypter ??= Encrypter(AES(_encSecret!.key, mode: AESMode.cfb64));
   }
 
   switch (action) {
@@ -263,9 +245,13 @@ class EncryptionWorker {
     final id = const Uuid().v4();
     final completer = Completer();
     _tasks[id] = completer;
-    await _encryptor?.send(
-      (id, content, secret!, customIV, EncDecType.encrypt),
-    );
+    await _encryptor?.send((
+      id,
+      content,
+      secret!,
+      customIV,
+      EncDecType.encrypt,
+    ));
 
     final result = await completer.future;
     if (result is String) {
@@ -288,9 +274,13 @@ class EncryptionWorker {
     final id = const Uuid().v4();
     final completer = Completer();
     _tasks[id] = completer;
-    await _encryptor?.send(
-      (id, content, secret!, customIV, EncDecType.decrypt),
-    );
+    await _encryptor?.send((
+      id,
+      content,
+      secret!,
+      customIV,
+      EncDecType.decrypt,
+    ));
 
     final result = await completer.future;
     if (result is String) {

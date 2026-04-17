@@ -1,6 +1,8 @@
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
+import 'package:clipboard/base/domain/repositories/sync_outbox.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
+import 'package:clipboard/base/domain/model/sync/sync_outbox_entry.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/sort.dart';
 import 'package:clipboard/common/failure.dart';
@@ -14,9 +16,7 @@ import 'package:injectable/injectable.dart';
 class ClipboardRepositoryCloudImpl implements ClipboardRepository {
   final ClipboardSource remote;
 
-  ClipboardRepositoryCloudImpl(
-    @Named("remote") this.remote,
-  );
+  ClipboardRepositoryCloudImpl(@Named("remote") this.remote);
 
   @override
   FailureOr<ClipboardItem> create(ClipboardItem item) async {
@@ -62,16 +62,11 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
         to: to,
       );
       final decryptedItems = await Future.wait(
-        result.results.map(
-          (e) => e.decrypt(),
-        ),
+        result.results.map((e) => e.decrypt()),
       );
 
       return Right(
-        PaginatedResult(
-          results: decryptedItems,
-          hasMore: result.hasMore,
-        ),
+        PaginatedResult(results: decryptedItems, hasMore: result.hasMore),
       );
     } catch (e) {
       return Left(Failure.fromException(e));
@@ -84,9 +79,7 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
       item = item.copyWith(modified: now());
       final encrypted = await item.encrypt();
       await remote.update(encrypted);
-      final clip = item.copyWith(
-        lastSynced: now(),
-      );
+      final clip = item.copyWith(lastSynced: now());
       return Right(clip);
     } catch (e) {
       return Left(Failure.fromException(e));
@@ -180,15 +173,24 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
 @LazySingleton(as: ClipboardRepository)
 class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
   final ClipboardSource local;
+  final SyncOutboxRepository outbox;
 
-  ClipboardRepositoryOfflineImpl(
-    @Named("local") this.local,
-  );
+  ClipboardRepositoryOfflineImpl(@Named("local") this.local, this.outbox);
 
   @override
   FailureOr<ClipboardItem> create(ClipboardItem item) async {
     try {
       final result = await local.create(item);
+      if (result.id != null) {
+        await outbox.enqueue(
+          SyncOutboxEntry(
+            entityType: 'clip',
+            localId: result.id!,
+            action: SyncOutboxAction.create,
+            createdAt: DateTime.now(),
+          ),
+        );
+      }
       return Right(result);
     } catch (e) {
       return Left(Failure.fromException(e));
@@ -234,6 +236,16 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
   FailureOr<ClipboardItem> update(ClipboardItem item) async {
     try {
       final result = await local.update(item);
+      if (result.id != null) {
+        await outbox.enqueue(
+          SyncOutboxEntry(
+            entityType: 'clip',
+            localId: result.id!,
+            action: SyncOutboxAction.update,
+            createdAt: DateTime.now(),
+          ),
+        );
+      }
       return Right(result);
     } catch (e) {
       return Left(Failure.fromException(e));
@@ -244,6 +256,16 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
   FailureOr<bool> delete(ClipboardItem item) async {
     try {
       await local.delete(item);
+      if (item.id != null) {
+        await outbox.enqueue(
+          SyncOutboxEntry(
+            entityType: 'clip',
+            localId: item.id!,
+            action: SyncOutboxAction.delete,
+            createdAt: DateTime.now(),
+          ),
+        );
+      }
       return const Right(true);
     } catch (e) {
       return Left(Failure.fromException(e));

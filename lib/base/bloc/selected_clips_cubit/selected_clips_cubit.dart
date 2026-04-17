@@ -37,14 +37,20 @@ class SelectedClipsCubit extends Cubit<SelectedClipsState> {
               final end = lastIndex > currentIndex ? lastIndex : currentIndex;
               final rangeSelected = selectableItems.sublist(start, end + 1);
               final newSelectedClipIds = {...selectedClipIds, ...rangeSelected};
-              emit(SelectedClipsState.clipSelected(
-                  selectedClipIds: newSelectedClipIds));
+              emit(
+                SelectedClipsState.clipSelected(
+                  selectedClipIds: newSelectedClipIds,
+                ),
+              );
               return;
             }
           }
           final newSelectedClipIds = {...selectedClipIds, clip};
-          emit(SelectedClipsState.clipSelected(
-              selectedClipIds: newSelectedClipIds));
+          emit(
+            SelectedClipsState.clipSelected(
+              selectedClipIds: newSelectedClipIds,
+            ),
+          );
         }
     }
   }
@@ -58,8 +64,11 @@ class SelectedClipsCubit extends Cubit<SelectedClipsState> {
             emit(const SelectedClipsState.noClipSelected());
             return;
           }
-          emit(SelectedClipsState.clipSelected(
-              selectedClipIds: newSelectedClipIds));
+          emit(
+            SelectedClipsState.clipSelected(
+              selectedClipIds: newSelectedClipIds,
+            ),
+          );
         }
       case _:
     }
@@ -72,7 +81,7 @@ class SelectedClipsCubit extends Cubit<SelectedClipsState> {
   bool isSelected(ClipboardItem clip) {
     return switch (state) {
       NoClipSelected() => false,
-      ClipSelected(:final selectedClipIds) => selectedClipIds.contains(clip)
+      ClipSelected(:final selectedClipIds) => selectedClipIds.contains(clip),
     };
   }
 }

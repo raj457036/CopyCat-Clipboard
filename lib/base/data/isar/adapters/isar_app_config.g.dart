@@ -98,47 +98,59 @@ const IsarAppConfigSchema = CollectionSchema(
       name: r'smartPaste',
       type: IsarType.bool,
     ),
-    r'syncSpeed': PropertySchema(
+    r'sortBy': PropertySchema(
       id: 18,
+      name: r'sortBy',
+      type: IsarType.string,
+      enumMap: _IsarAppConfigsortByEnumValueMap,
+    ),
+    r'sortOrder': PropertySchema(
+      id: 19,
+      name: r'sortOrder',
+      type: IsarType.string,
+      enumMap: _IsarAppConfigsortOrderEnumValueMap,
+    ),
+    r'syncSpeed': PropertySchema(
+      id: 20,
       name: r'syncSpeed',
       type: IsarType.string,
       enumMap: _IsarAppConfigsyncSpeedEnumValueMap,
     ),
     r'themeColor': PropertySchema(
-      id: 19,
+      id: 21,
       name: r'themeColor',
       type: IsarType.long,
     ),
     r'themeMode': PropertySchema(
-      id: 20,
+      id: 22,
       name: r'themeMode',
       type: IsarType.string,
       enumMap: _IsarAppConfigthemeModeEnumValueMap,
     ),
     r'themeVariant': PropertySchema(
-      id: 21,
+      id: 23,
       name: r'themeVariant',
       type: IsarType.string,
       enumMap: _IsarAppConfigthemeVariantEnumValueMap,
     ),
     r'toggleHotkey': PropertySchema(
-      id: 22,
+      id: 24,
       name: r'toggleHotkey',
       type: IsarType.string,
     ),
     r'view': PropertySchema(
-      id: 23,
+      id: 25,
       name: r'view',
       type: IsarType.string,
       enumMap: _IsarAppConfigviewEnumValueMap,
     ),
     r'windowHeight': PropertySchema(
-      id: 24,
+      id: 26,
       name: r'windowHeight',
       type: IsarType.double,
     ),
     r'windowWidth': PropertySchema(
-      id: 25,
+      id: 27,
       name: r'windowWidth',
       type: IsarType.double,
     ),
@@ -188,6 +200,8 @@ int _isarAppConfigEstimateSize(
   }
   bytesCount += 3 + object.layout.name.length * 3;
   bytesCount += 3 + object.locale.length * 3;
+  bytesCount += 3 + object.sortBy.name.length * 3;
+  bytesCount += 3 + object.sortOrder.name.length * 3;
   bytesCount += 3 + object.syncSpeed.name.length * 3;
   bytesCount += 3 + object.themeMode.name.length * 3;
   bytesCount += 3 + object.themeVariant.name.length * 3;
@@ -230,14 +244,16 @@ void _isarAppConfigSerialize(
   writer.writeDateTime(offsets[15], object.pausedTill);
   writer.writeBool(offsets[16], object.pinned);
   writer.writeBool(offsets[17], object.smartPaste);
-  writer.writeString(offsets[18], object.syncSpeed.name);
-  writer.writeLong(offsets[19], object.themeColor);
-  writer.writeString(offsets[20], object.themeMode.name);
-  writer.writeString(offsets[21], object.themeVariant.name);
-  writer.writeString(offsets[22], object.toggleHotkey);
-  writer.writeString(offsets[23], object.view.name);
-  writer.writeDouble(offsets[24], object.windowHeight);
-  writer.writeDouble(offsets[25], object.windowWidth);
+  writer.writeString(offsets[18], object.sortBy.name);
+  writer.writeString(offsets[19], object.sortOrder.name);
+  writer.writeString(offsets[20], object.syncSpeed.name);
+  writer.writeLong(offsets[21], object.themeColor);
+  writer.writeString(offsets[22], object.themeMode.name);
+  writer.writeString(offsets[23], object.themeVariant.name);
+  writer.writeString(offsets[24], object.toggleHotkey);
+  writer.writeString(offsets[25], object.view.name);
+  writer.writeDouble(offsets[26], object.windowHeight);
+  writer.writeDouble(offsets[27], object.windowWidth);
 }
 
 IsarAppConfig _isarAppConfigDeserialize(
@@ -272,28 +288,36 @@ IsarAppConfig _isarAppConfigDeserialize(
   object.pausedTill = reader.readDateTimeOrNull(offsets[15]);
   object.pinned = reader.readBool(offsets[16]);
   object.smartPaste = reader.readBool(offsets[17]);
+  object.sortBy =
+      _IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(offsets[18])] ??
+      ClipboardSortKey.created;
+  object.sortOrder =
+      _IsarAppConfigsortOrderValueEnumMap[reader.readStringOrNull(
+        offsets[19],
+      )] ??
+      SortOrder.asc;
   object.syncSpeed =
       _IsarAppConfigsyncSpeedValueEnumMap[reader.readStringOrNull(
-        offsets[18],
+        offsets[20],
       )] ??
       SyncSpeed.realtime;
-  object.themeColor = reader.readLong(offsets[19]);
+  object.themeColor = reader.readLong(offsets[21]);
   object.themeMode =
       _IsarAppConfigthemeModeValueEnumMap[reader.readStringOrNull(
-        offsets[20],
+        offsets[22],
       )] ??
       ThemeMode.system;
   object.themeVariant =
       _IsarAppConfigthemeVariantValueEnumMap[reader.readStringOrNull(
-        offsets[21],
+        offsets[23],
       )] ??
       DynamicSchemeVariant.tonalSpot;
-  object.toggleHotkey = reader.readStringOrNull(offsets[22]);
+  object.toggleHotkey = reader.readStringOrNull(offsets[24]);
   object.view =
-      _IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offsets[23])] ??
+      _IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offsets[25])] ??
       AppView.topDocked;
-  object.windowHeight = reader.readDouble(offsets[24]);
-  object.windowWidth = reader.readDouble(offsets[25]);
+  object.windowHeight = reader.readDouble(offsets[26]);
+  object.windowWidth = reader.readDouble(offsets[27]);
   return object;
 }
 
@@ -350,34 +374,46 @@ P _isarAppConfigDeserializeProp<P>(
     case 17:
       return (reader.readBool(offset)) as P;
     case 18:
+      return (_IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(
+                offset,
+              )] ??
+              ClipboardSortKey.created)
+          as P;
+    case 19:
+      return (_IsarAppConfigsortOrderValueEnumMap[reader.readStringOrNull(
+                offset,
+              )] ??
+              SortOrder.asc)
+          as P;
+    case 20:
       return (_IsarAppConfigsyncSpeedValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               SyncSpeed.realtime)
           as P;
-    case 19:
+    case 21:
       return (reader.readLong(offset)) as P;
-    case 20:
+    case 22:
       return (_IsarAppConfigthemeModeValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               ThemeMode.system)
           as P;
-    case 21:
+    case 23:
       return (_IsarAppConfigthemeVariantValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               DynamicSchemeVariant.tonalSpot)
           as P;
-    case 22:
+    case 24:
       return (reader.readStringOrNull(offset)) as P;
-    case 23:
+    case 25:
       return (_IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offset)] ??
               AppView.topDocked)
           as P;
-    case 24:
+    case 26:
       return (reader.readDouble(offset)) as P;
-    case 25:
+    case 27:
       return (reader.readDouble(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -388,6 +424,23 @@ const _IsarAppConfiglayoutEnumValueMap = {r'grid': r'grid', r'list': r'list'};
 const _IsarAppConfiglayoutValueEnumMap = {
   r'grid': AppLayout.grid,
   r'list': AppLayout.list,
+};
+const _IsarAppConfigsortByEnumValueMap = {
+  r'created': r'created',
+  r'modified': r'modified',
+  r'lastCopied': r'lastCopied',
+  r'copyCount': r'copyCount',
+};
+const _IsarAppConfigsortByValueEnumMap = {
+  r'created': ClipboardSortKey.created,
+  r'modified': ClipboardSortKey.modified,
+  r'lastCopied': ClipboardSortKey.lastCopied,
+  r'copyCount': ClipboardSortKey.copyCount,
+};
+const _IsarAppConfigsortOrderEnumValueMap = {r'asc': r'asc', r'desc': r'desc'};
+const _IsarAppConfigsortOrderValueEnumMap = {
+  r'asc': SortOrder.asc,
+  r'desc': SortOrder.desc,
 };
 const _IsarAppConfigsyncSpeedEnumValueMap = {
   r'realtime': r'realtime',
@@ -1340,6 +1393,288 @@ extension IsarAppConfigQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'smartPaste', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortByEqualTo(ClipboardSortKey value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'sortBy',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortByGreaterThan(
+    ClipboardSortKey value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'sortBy',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortByLessThan(
+    ClipboardSortKey value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'sortBy',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortByBetween(
+    ClipboardSortKey lower,
+    ClipboardSortKey upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'sortBy',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortByStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'sortBy',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortByEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'sortBy',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortByContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'sortBy',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortByMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'sortBy',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortByIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'sortBy', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortByIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'sortBy', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortOrderEqualTo(SortOrder value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'sortOrder',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortOrderGreaterThan(
+    SortOrder value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'sortOrder',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortOrderLessThan(
+    SortOrder value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'sortOrder',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortOrderBetween(
+    SortOrder lower,
+    SortOrder upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'sortOrder',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortOrderStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'sortOrder',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortOrderEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'sortOrder',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortOrderContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'sortOrder',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortOrderMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'sortOrder',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortOrderIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'sortOrder', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  sortOrderIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'sortOrder', value: ''),
       );
     });
   }
@@ -2517,6 +2852,31 @@ extension IsarAppConfigQuerySortBy
     });
   }
 
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> sortBySortBy() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sortBy', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> sortBySortByDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sortBy', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> sortBySortOrder() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sortOrder', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortBySortOrderDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sortOrder', Sort.desc);
+    });
+  }
+
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> sortBySyncSpeed() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'syncSpeed', Sort.asc);
@@ -2864,6 +3224,31 @@ extension IsarAppConfigQuerySortThenBy
     });
   }
 
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> thenBySortBy() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sortBy', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> thenBySortByDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sortBy', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> thenBySortOrder() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sortOrder', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenBySortOrderDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'sortOrder', Sort.desc);
+    });
+  }
+
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> thenBySyncSpeed() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'syncSpeed', Sort.asc);
@@ -3091,6 +3476,22 @@ extension IsarAppConfigQueryWhereDistinct
     });
   }
 
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct> distinctBySortBy({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'sortBy', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct> distinctBySortOrder({
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'sortOrder', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct> distinctBySyncSpeed({
     bool caseSensitive = true,
   }) {
@@ -3273,6 +3674,19 @@ extension IsarAppConfigQueryProperty
   QueryBuilder<IsarAppConfig, bool, QQueryOperations> smartPasteProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'smartPaste');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, ClipboardSortKey, QQueryOperations>
+  sortByProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'sortBy');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, SortOrder, QQueryOperations> sortOrderProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'sortOrder');
     });
   }
 

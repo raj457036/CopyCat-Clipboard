@@ -28,9 +28,7 @@ class EnableSyncSwitch extends StatelessWidget {
           title: Text(context.locale.settings__switch__enable_sync__title),
           subtitle: Text(
             context.locale.settings__switch__enable_sync__subtitle,
-            style: textTheme.bodyMedium?.copyWith(
-              color: colors.outline,
-            ),
+            style: textTheme.bodyMedium?.copyWith(color: colors.outline),
           ),
         );
       },

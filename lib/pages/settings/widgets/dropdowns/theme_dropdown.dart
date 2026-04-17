@@ -12,10 +12,7 @@ class ThemeDropdownTile extends StatelessWidget {
     final cubit = context.read<AppConfigCubit>();
     return ListTile(
       title: Text(context.locale.settings__dropdown__theme__title),
-      contentPadding: const EdgeInsets.only(
-        left: padding16,
-        right: padding4,
-      ),
+      contentPadding: const EdgeInsets.only(left: padding16, right: padding4),
       trailing: BlocSelector<AppConfigCubit, AppConfigState, ThemeMode>(
         selector: (state) {
           switch (state) {

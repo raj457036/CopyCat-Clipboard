@@ -2,15 +2,13 @@ import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipbo
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
-import 'package:clipboard/base/bloc/clip_sync_manager_cubit/clip_sync_manager_cubit.dart';
-import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
-import 'package:clipboard/base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
-import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
+import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
-import 'package:clipboard/base/bloc/realtime_clip_sync_cubit/realtime_clip_sync_cubit.dart';
-import 'package:clipboard/base/bloc/realtime_collection_sync_cubit/realtime_collection_sync_cubit.dart';
+import 'package:clipboard/base/domain/services/sync_event_bus.dart';
+import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
@@ -36,11 +34,7 @@ class EventBridge extends StatelessWidget {
   final EventBusCubit eventBus;
   final Widget child;
 
-  const EventBridge({
-    super.key,
-    required this.eventBus,
-    required this.child,
-  });
+  const EventBridge({super.key, required this.eventBus, required this.child});
 
   bool shouldSync(List<String>? updatedFields, ClipboardItem item) {
     if (updatedFields == null) return true;
@@ -53,7 +47,7 @@ class EventBridge extends StatelessWidget {
   }
 
   void broadcastEvent(CrossSyncEventType eventType, ClipboardItem item) {
-    eventBus.clipSync((eventType, item));
+    sl<SyncEventBus>().emit<ClipboardItem>((eventType, item));
   }
 
   void broadcastBatchEvent(
@@ -66,7 +60,7 @@ class EventBridge extends StatelessWidget {
       return;
     }
     final payload = items.map((item) => (eventType, item)).toList();
-    eventBus.batchClipSync(payload);
+    sl<SyncEventBus>().emitBatch<ClipboardItem>(payload);
   }
 
   Future<void> setupEncryption(BuildContext context) async {
@@ -90,13 +84,8 @@ class EventBridge extends StatelessWidget {
     final IsarDatabaseService dbService = sl();
     context.read<OfflinePersistenceCubit>().stopListeners();
     context.read<DriveSetupCubit>().reset();
-    context.read<ClipSyncManagerCubit>().stopPolling();
-    context.read<CollectionSyncManagerCubit>().stopPolling();
-    context.read<RealtimeClipSyncCubit>().unsubscribe();
-    context.read<RealtimeCollectionSyncCubit>().unsubscribe();
-    context.read<RealtimeCollectionSyncCubit>().unsubscribe();
-    context.read<ClipSyncManagerCubit>().reset();
-    context.read<CollectionSyncManagerCubit>().reset();
+    context.read<DriveSetupCubit>().reset();
+    sl<SyncOrchestrator>().stop();
     if (Platform.isAndroid) context.read<AndroidBgClipboardCubit?>()?.reset();
     context.read<MonetizationCubit>().logout();
     context.read<ClipCollectionCubit>().reset();
@@ -141,9 +130,9 @@ class EventBridge extends StatelessWidget {
                 previous.config.exclusionRules != current.config.exclusionRules,
             listener: (context, state) {
               final rules = state.config.exclusionRules;
-              context
-                  .read<AndroidBgClipboardCubit>()
-                  .updateExclusionRule(rules);
+              context.read<AndroidBgClipboardCubit>().updateExclusionRule(
+                rules,
+              );
             },
           ),
         BlocListener<AppConfigCubit, AppConfigState>(
@@ -169,89 +158,18 @@ class EventBridge extends StatelessWidget {
               }
             }
 
-            final clipSync = context.read<ClipSyncManagerCubit>();
-            final realtimeClip = context.read<RealtimeClipSyncCubit>();
-            final collectionSync = context.read<CollectionSyncManagerCubit>();
-            final realtimeCollection =
-                context.read<RealtimeCollectionSyncCubit>();
-
             if (config.enableSync) {
-              clipSync.changeConfig(disabled: false);
-              collectionSync.changeConfig(disabled: false);
-              await collectionSync.syncCollections();
+              sl<SyncOrchestrator>().start();
+              sl<SyncOrchestrator>().syncAll();
+
+              switch (config.syncSpeed) {
+                case SyncSpeed.realtime:
+                  sl<SyncOrchestrator>().startRealtime();
+                case SyncSpeed.balanced:
+                // polling only handled by start()
+              }
             } else {
-              clipSync.changeConfig(disabled: true);
-              collectionSync.changeConfig(disabled: true);
-              realtimeClip.unsubscribe();
-              realtimeCollection.unsubscribe();
-              clipSync.stopPolling();
-              collectionSync.stopPolling();
-            }
-          },
-        ),
-        BlocListener<RealtimeCollectionSyncCubit, RealtimeCollectionSyncState>(
-          listener: (context, state) {
-            final cubit = context.read<RealtimeCollectionSyncCubit>();
-            if (!cubit.isSubscribed) return;
-            final collectionSync = context.read<CollectionSyncManagerCubit>();
-            switch (state) {
-              case RealtimeCollectionSyncConnected():
-                collectionSync.stopPolling();
-                collectionSync.syncCollections();
-              case RealtimeCollectionSyncDisconnected():
-                collectionSync.startPolling();
-            }
-          },
-        ),
-        BlocListener<CollectionSyncManagerCubit, CollectionSyncManagerState>(
-          listener: (context, state) async {
-            final config = context.read<AppConfigCubit>().state.config;
-            final clipSync = context.read<ClipSyncManagerCubit>();
-            final collectionSync = context.read<CollectionSyncManagerCubit>();
-            final realtimeCollection =
-                context.read<RealtimeCollectionSyncCubit>();
-            switch (state) {
-              case CollectionSyncComplete(:final manual, restoration: false):
-                {
-                  if (!config.enableSync) return;
-                  await clipSync.syncClips(manual: manual);
-                  switch (config.syncSpeed) {
-                    case SyncSpeed.realtime:
-                      collectionSync.stopPolling();
-                      realtimeCollection.subscribe();
-                    case SyncSpeed.balanced:
-                      collectionSync.startPolling();
-                      realtimeCollection.unsubscribe();
-                  }
-                }
-              case CollectionSyncFailed(:final failure):
-                showFailureSnackbar(failure);
-            }
-          },
-        ),
-        BlocListener<ClipSyncManagerCubit, ClipSyncManagerState>(
-          listener: (context, state) {
-            final config = context.read<AppConfigCubit>().state.config;
-            final realtimeClip = context.read<RealtimeClipSyncCubit>();
-            // final clipSync = context.read<ClipSyncManagerCubit>();
-
-            switch (state) {
-              case ClipSyncComplete():
-                {
-                  if (!config.enableSync) return;
-                  switch (config.syncSpeed) {
-                    case SyncSpeed.realtime:
-                      realtimeClip.subscribe();
-                    // clipSync.stopPolling();
-
-                    case SyncSpeed.balanced:
-                      realtimeClip.unsubscribe();
-                    // clipSync.startPolling();
-                  }
-                }
-              case ClipSyncFailed(:final failure):
-                showFailureSnackbar(failure);
-              case _:
+              sl<SyncOrchestrator>().stop();
             }
           },
         ),
@@ -272,14 +190,13 @@ class EventBridge extends StatelessWidget {
                     if (config.onBoardComplete) {
                       context.read<DriveSetupCubit>().fetch();
                       context.read<OfflinePersistenceCubit>().startListeners();
-                      // starts
-                      context
-                          .read<CollectionSyncManagerCubit>()
-                          .syncChanges(null, manual: false, restoration: false);
+                      sl<SyncOrchestrator>().start();
+                      sl<SyncOrchestrator>().syncAll();
                       rootNavKey.currentContext?.goNamed(RouteConstants.home);
                     } else {
-                      rootNavKey.currentContext
-                          ?.goNamed(RouteConstants.onboard);
+                      rootNavKey.currentContext?.goNamed(
+                        RouteConstants.onboard,
+                      );
                     }
                   }
                 }
@@ -294,7 +211,8 @@ class EventBridge extends StatelessWidget {
                 rootNavKey.currentContext?.goNamed(RouteConstants.login);
               case UnknownAuthState() || AuthenticatingAuthState():
                 logger.i(
-                    "Auth State Unknown or Authenticating or Unauthenticated");
+                  "Auth State Unknown or Authenticating or Unauthenticated",
+                );
                 rootNavKey.currentContext?.goNamed(RouteConstants.login);
                 closeSnackbar();
                 await context.windowAction?.show();
@@ -338,11 +256,11 @@ class EventBridge extends StatelessWidget {
                 showDebugSnackbar("Offline Saved ( Synced ) ${items.length}");
                 broadcastBatchEvent(CrossSyncEventType.update, items);
               case OfflinePersistanceSaved(
-                  :final items,
-                  :final updatedFields,
-                  :final created,
-                  synced: false,
-                ):
+                :final items,
+                :final updatedFields,
+                :final created,
+                synced: false,
+              ):
                 {
                   final eventType = created
                       ? CrossSyncEventType.create
@@ -351,8 +269,9 @@ class EventBridge extends StatelessWidget {
 
                   // showDebugSnackbar(
                   //     "Offline Saved ( Not Synced ) ${items.length}");
-                  final forSync =
-                      items.where((item) => shouldSync(updatedFields, item));
+                  final forSync = items.where(
+                    (item) => shouldSync(updatedFields, item),
+                  );
                   final cubit = context.read<CloudPersistanceCubit>();
                   for (var item in forSync) {
                     cubit.persist(item);
@@ -396,13 +315,14 @@ class EventBridge extends StatelessWidget {
                   broadcastEvent(CrossSyncEventType.update, item);
                 }
               case CloudPersistanceCreating(:final item) ||
-                    CloudPersistanceUpdating(:final item):
+                  CloudPersistanceUpdating(:final item):
                 showDebugSnackbar("Creating/Updating ${item.serverId}");
                 broadcastEvent(CrossSyncEventType.update, item);
               case CloudPersistanceUploadingFile(:final item) ||
-                    CloudPersistanceDownloadingFile(:final item):
+                  CloudPersistanceDownloadingFile(:final item):
                 showDebugSnackbar(
-                    "Downloading ${item.downloadProgress} | Uploading ${item.uploadProgress}");
+                  "Downloading ${item.downloadProgress} | Uploading ${item.uploadProgress}",
+                );
                 broadcastEvent(CrossSyncEventType.update, item);
               case _:
             }

@@ -31,9 +31,7 @@ class ImportE2eeDialog extends StatelessWidget {
           width12,
           Text(
             context.locale.dialog__e2e__title,
-            style: textTheme.titleMedium?.copyWith(
-              fontVariations: fontVarW700,
-            ),
+            style: textTheme.titleMedium?.copyWith(fontVariations: fontVarW700),
           ),
           width12,
           const Spacer(),
@@ -41,9 +39,7 @@ class ImportE2eeDialog extends StatelessWidget {
         ],
       ),
       content: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxWidth: 420,
-        ),
+        constraints: const BoxConstraints(maxWidth: 420),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -74,10 +70,7 @@ class ImportE2eeDialog extends StatelessWidget {
                   ? Text(context.locale.dialog__button__e2e_importing_key)
                   : Text(context.locale.dialog__button__e2e_import_key),
             ),
-            if (bottom != null) ...[
-              const Divider(height: 30),
-              bottom!,
-            ]
+            if (bottom != null) ...[const Divider(height: 30), bottom!],
           ],
         ),
       ),

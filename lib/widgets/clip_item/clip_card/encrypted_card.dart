@@ -8,13 +8,11 @@ class EncryptedClipItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-        child: Column(
-      spacing: 4,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.lock),
-        Text("Encrypted"),
-      ],
-    ));
+      child: Column(
+        spacing: 4,
+        mainAxisSize: MainAxisSize.min,
+        children: [Icon(Icons.lock), Text("Encrypted")],
+      ),
+    );
   }
 }

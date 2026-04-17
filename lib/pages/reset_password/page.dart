@@ -13,9 +13,7 @@ class ResetPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(context.locale.reset_password__appbar__title),
-      ),
+      appBar: AppBar(title: Text(context.locale.reset_password__appbar__title)),
       body: Center(
         child: BlocSelector<AuthCubit, AuthState, String?>(
           selector: (state) {
@@ -26,9 +24,7 @@ class ResetPasswordPage extends StatelessWidget {
           },
           builder: (context, accessToken) {
             if (accessToken == null) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
             return SizedBox(
               width: 300,

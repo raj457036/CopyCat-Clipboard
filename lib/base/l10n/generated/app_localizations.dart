@@ -1881,6 +1881,24 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings__appbar__title;
 
+  /// No description provided for @settings__header__appearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get settings__header__appearance;
+
+  /// No description provided for @settings__header__sorting.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Sorting'**
+  String get settings__header__sorting;
+
+  /// No description provided for @settings__header__interactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Interactions'**
+  String get settings__header__interactions;
+
   /// No description provided for @settings__tab__1.
   ///
   /// In en, this message translates to:
@@ -2076,6 +2094,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Theme Mode'**
   String get settings__dropdown__theme__title;
+
+  /// No description provided for @settings__dropdown__default_sort__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort By'**
+  String get settings__dropdown__default_sort__title;
+
+  /// No description provided for @settings__dropdown__default_sort_order__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort Order'**
+  String get settings__dropdown__default_sort_order__title;
 
   /// No description provided for @settings__theme__system.
   ///

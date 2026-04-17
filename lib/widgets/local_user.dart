@@ -5,11 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class DisableForLocalUser extends StatelessWidget {
   final Widget child;
   final Widget? ifLocal;
-  const DisableForLocalUser({
-    super.key,
-    required this.child,
-    this.ifLocal,
-  });
+  const DisableForLocalUser({super.key, required this.child, this.ifLocal});
 
   @override
   Widget build(BuildContext context) {

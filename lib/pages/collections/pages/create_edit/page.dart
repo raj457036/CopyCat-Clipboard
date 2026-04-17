@@ -6,10 +6,7 @@ import 'package:flutter/material.dart';
 class ClipCollectionCreateEditPage extends StatelessWidget {
   final ClipCollection? collection;
 
-  const ClipCollectionCreateEditPage({
-    super.key,
-    this.collection,
-  });
+  const ClipCollectionCreateEditPage({super.key, this.collection});
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +16,10 @@ class ClipCollectionCreateEditPage extends StatelessWidget {
     return ConstrainedBox(
       constraints: BoxConstraints.loose(const Size(320, 430)),
       child: Scaffold(
-        appBar: AppBar(
-          title: FittedBox(child: Text(title)),
-        ),
+        appBar: AppBar(title: FittedBox(child: Text(title))),
         body: SingleChildScrollView(
-            child: ClipCollectionCreateEditForm(collection: collection)),
+          child: ClipCollectionCreateEditForm(collection: collection),
+        ),
       ),
     );
   }

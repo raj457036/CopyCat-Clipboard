@@ -1,20 +1,20 @@
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:clipboard/base/constants/strings.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 mixin SBCrossSyncListenerStatusChangeMixin<T> {
   CrossSyncListenerStatus _lastStatus = CrossSyncListenerStatus.unknown;
 
-  final _statusEvents = StreamController<CrossSyncStatusEvent>();
-  final _changesQueue = Queue<CrossSyncEvent<T>>();
+  final _statusEvents = StreamController<CrossSyncStatusEvent>.broadcast();
+  final _changesStream = StreamController<CrossSyncEvent<T>>.broadcast();
 
-  T castToType(Object? obj);
+  Future<T?> castToType(Object? obj);
 
   void _onStatusChange(RealtimeSubscribeStatus status, Object? obj) {
     switch (status) {
@@ -30,30 +30,29 @@ mixin SBCrossSyncListenerStatusChangeMixin<T> {
     }
   }
 
-  void _onChange(PostgresChangePayload payload) {
-    switch (payload.eventType) {
-      case PostgresChangeEvent.insert:
-        _changesQueue.add(
-          (
-            CrossSyncEventType.create,
-            castToType(payload.newRecord),
-          ),
-        );
-      case PostgresChangeEvent.update:
-        _changesQueue.add(
-          (
-            CrossSyncEventType.update,
-            castToType(payload.newRecord),
-          ),
-        );
-      case PostgresChangeEvent.delete:
-        _changesQueue.add(
-          (
-            CrossSyncEventType.delete,
-            castToType(payload.newRecord),
-          ),
-        );
-      default:
+  Future<void> _onChange(PostgresChangePayload payload) async {
+    try {
+      switch (payload.eventType) {
+        case PostgresChangeEvent.insert:
+          final item = await castToType(payload.newRecord);
+          if (item != null) {
+            _changesStream.add((CrossSyncEventType.create, item));
+          }
+        case PostgresChangeEvent.update:
+          final item = await castToType(payload.newRecord);
+          if (item != null) {
+            _changesStream.add((CrossSyncEventType.update, item));
+          }
+        case PostgresChangeEvent.delete:
+          // For delete, oldRecord should contain the deleted item's ID at minimum.
+          final item = await castToType(payload.oldRecord);
+          if (item != null) {
+            _changesStream.add((CrossSyncEventType.delete, item));
+          }
+        default:
+      }
+    } catch (e, stack) {
+      logger.e("Error processing realtime change: $e", stackTrace: stack);
     }
   }
 }
@@ -124,11 +123,18 @@ class SBClipCrossSyncListener
   bool get isInitiated => _channel != null;
 
   @override
-  get changesQueue => _changesQueue;
+  get onChangeEvent => _changesStream.stream;
 
   @override
-  castToType(Object? obj) {
-    return ClipboardItem.fromJson(obj as Map<String, dynamic>);
+  Future<ClipboardItem?> castToType(Object? obj) async {
+    try {
+      if (obj == null) return null;
+      final item = ClipboardItem.fromJson(obj as Map<String, dynamic>);
+      return await item.decrypt();
+    } catch (e) {
+      logger.e("Error casting/decrypting ClipboardItem: $e");
+      return null;
+    }
   }
 }
 
@@ -144,7 +150,9 @@ class SBCollectionCrossSyncListener
   final String deviceId;
 
   SBCollectionCrossSyncListener(
-      this.client, @Named("device_id") this.deviceId) {
+    this.client,
+    @Named("device_id") this.deviceId,
+  ) {
     _statusEvents.add((CrossSyncListenerStatus.unknown, null));
   }
 
@@ -173,11 +181,17 @@ class SBCollectionCrossSyncListener
   }
 
   @override
-  get changesQueue => _changesQueue;
+  get onChangeEvent => _changesStream.stream;
 
   @override
-  castToType(Object? obj) {
-    return ClipCollection.fromJson(obj as Map<String, dynamic>);
+  Future<ClipCollection?> castToType(Object? obj) async {
+    try {
+      if (obj == null) return null;
+      return ClipCollection.fromJson(obj as Map<String, dynamic>);
+    } catch (e) {
+      logger.e("Error casting ClipCollection: $e");
+      return null;
+    }
   }
 
   @override

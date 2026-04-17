@@ -26,11 +26,7 @@ class GizmoOverlay extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Overlay(
-        initialEntries: [
-          OverlayEntry(
-            builder: (context) => entry,
-          ),
-        ],
+        initialEntries: [OverlayEntry(builder: (context) => entry)],
       ),
     );
   }

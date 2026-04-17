@@ -12,10 +12,7 @@ class TextBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tooltip(
       message: context.locale.badges__tooltip__experimental,
-      child: Chip(
-        label: Text(message),
-        shape: const StadiumBorder(),
-      ),
+      child: Chip(label: Text(message), shape: const StadiumBorder()),
     );
   }
 }
@@ -28,10 +25,7 @@ class InfoBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tooltip(
       message: message,
-      child: const Icon(
-        Icons.info_outline_rounded,
-        size: 16,
-      ),
+      child: const Icon(Icons.info_outline_rounded, size: 16),
     );
   }
 }

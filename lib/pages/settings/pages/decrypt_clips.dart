@@ -15,10 +15,7 @@ import 'package:go_router/go_router.dart';
 
 class DecryptClipsPage extends StatefulWidget {
   final ClipboardRepository clipboardRepository;
-  const DecryptClipsPage({
-    super.key,
-    required this.clipboardRepository,
-  });
+  const DecryptClipsPage({super.key, required this.clipboardRepository});
 
   @override
   State<DecryptClipsPage> createState() => _DecryptClipsPageState();
@@ -42,8 +39,8 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
       loading = true;
     });
     try {
-      final countResult =
-          await widget.clipboardRepository.fetchEncryptedCount();
+      final countResult = await widget.clipboardRepository
+          .fetchEncryptedCount();
       countResult.fold((l) => showFailureSnackbar(l), (r) {
         totalEncrypted = r;
         startDecryption();
@@ -114,9 +111,7 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
     final textTheme = context.textTheme;
     final cancelButton = TextButton.icon(
       onPressed: cancel,
-      label: Text(
-        context.mlocale.cancelButtonLabel,
-      ),
+      label: Text(context.mlocale.cancelButtonLabel),
     );
     return Scaffold(
       body: ScaffoldBody(
@@ -128,21 +123,15 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
-                  Icons.lock_open_rounded,
-                  size: 28,
-                ),
+                const Icon(Icons.lock_open_rounded, size: 28),
                 height10,
-                Text(
-                  "Clipboard Decryption",
-                  style: textTheme.headlineMedium,
-                ),
+                Text("Clipboard Decryption", style: textTheme.headlineMedium),
                 height16,
                 Column(
                   children: [
                     if (loading) ...[
                       const CircularProgressIndicator(),
-                      cancelButton
+                      cancelButton,
                     ] else if (decryptedCount == totalEncrypted)
                       Column(
                         children: [
@@ -157,7 +146,7 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
                             child: Text(
                               context.mlocale.continueButtonLabel.title,
                             ),
-                          )
+                          ),
                         ],
                       )
                     else if (totalEncrypted < 0)
@@ -206,9 +195,9 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
                             style: textTheme.bodySmall?.copyWith(
                               color: Colors.deepOrange,
                             ),
-                          )
+                          ),
                         ],
-                      )
+                      ),
                   ],
                 ),
               ],

@@ -8,10 +8,7 @@ import 'package:flutter/material.dart';
 
 class ClipItemPreviewHorizontalView extends StatelessWidget {
   final ClipboardItem item;
-  const ClipItemPreviewHorizontalView({
-    super.key,
-    required this.item,
-  });
+  const ClipItemPreviewHorizontalView({super.key, required this.item});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,9 +47,7 @@ class ClipItemPreviewHorizontalView extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-            child: ClipDetailForm(item: item),
-          ),
+          Expanded(child: ClipDetailForm(item: item)),
         ],
       ),
     );

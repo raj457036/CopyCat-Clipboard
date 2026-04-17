@@ -39,12 +39,14 @@ class LocalClipCollectionSource implements ClipCollectionSource {
     List<IsarClipCollection> isarResults;
 
     if (search == null) {
-      isarResults = await db.txn(() async => await _collection
-          .where()
-          .sortByCreatedDesc()
-          .offset(offset)
-          .limit(limit)
-          .findAll());
+      isarResults = await db.txn(
+        () async => await _collection
+            .where()
+            .sortByCreatedDesc()
+            .offset(offset)
+            .limit(limit)
+            .findAll(),
+      );
     } else {
       isarResults = await db.txn(() async {
         var filter = _collection.filter();
@@ -75,19 +77,14 @@ class LocalClipCollectionSource implements ClipCollectionSource {
     }
 
     final results = isarResults.map((e) => e.toDomain()).toList();
-    return PaginatedResult(
-      results: results,
-      hasMore: results.length == limit,
-    );
+    return PaginatedResult(results: results, hasMore: results.length == limit);
   }
 
   @override
   Future<ClipCollection> update(ClipCollection collection) async {
     final updated = collection.copyWith(modified: now());
     final isarItem = IsarClipCollection.fromDomain(updated);
-    await db.writeTxn(
-      () => _collection.put(isarItem),
-    );
+    await db.writeTxn(() => _collection.put(isarItem));
     return updated;
   }
 
@@ -95,13 +92,11 @@ class LocalClipCollectionSource implements ClipCollectionSource {
   Future<List<ClipCollection>> updateMany(
     List<ClipCollection> collections,
   ) async {
-    final updates =
-        collections.map((c) => c.copyWith(modified: now())).toList();
-    final isarItems =
-        updates.map(IsarClipCollection.fromDomain).toList();
-    final ids = await db.writeTxn(
-      () => _collection.putAll(isarItems),
-    );
+    final updates = collections
+        .map((c) => c.copyWith(modified: now()))
+        .toList();
+    final isarItems = updates.map(IsarClipCollection.fromDomain).toList();
+    final ids = await db.writeTxn(() => _collection.putAll(isarItems));
 
     return [
       for (var i = 0; i < ids.length; i++) updates[i].copyWith(id: ids[i]),
@@ -116,16 +111,12 @@ class LocalClipCollectionSource implements ClipCollectionSource {
           .filter()
           .collectionIdEqualTo(collection.id)
           .findAll();
-      final updatedItems = items
-          .map(
-            (e) {
-              final domain = e.toDomain();
-              return IsarClipboardItem.fromDomain(
-                domain.copyWith(collectionId: null, modified: now()),
-              );
-            },
-          )
-          .toList();
+      final updatedItems = items.map((e) {
+        final domain = e.toDomain();
+        return IsarClipboardItem.fromDomain(
+          domain.copyWith(collectionId: null, modified: now()),
+        );
+      }).toList();
       await _clipboardItems.putAll(updatedItems);
       await _collection.delete(collection.id!);
     });
@@ -140,8 +131,9 @@ class LocalClipCollectionSource implements ClipCollectionSource {
   @override
   Future<ClipCollection?> get({int? id, int? serverId}) async {
     if (serverId != null) {
-      final result = await db.txn(() =>
-          _collection.filter().serverIdEqualTo(serverId).findFirst());
+      final result = await db.txn(
+        () => _collection.filter().serverIdEqualTo(serverId).findFirst(),
+      );
       return result?.toDomain();
     }
     if (id != null) {
@@ -193,10 +185,11 @@ class LocalClipCollectionSource implements ClipCollectionSource {
       final q = _collection
           .filter()
           .anyOf(
-              items,
-              (q, item) => item.id != null
-                  ? q.isarIdEqualTo(item.id!)
-                  : q.isarIdEqualTo(-1))
+            items,
+            (q, item) => item.id != null
+                ? q.isarIdEqualTo(item.id!)
+                : q.isarIdEqualTo(-1),
+          )
           .or()
           .anyOf(items, (q, item) => q.serverIdEqualTo(item.serverId));
 

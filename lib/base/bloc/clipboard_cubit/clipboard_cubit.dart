@@ -1,15 +1,18 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
+import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/model/search_filter_state.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
+import 'package:clipboard/base/domain/sources/clipboard.dart'
+    show ClipboardSortKey;
 import 'package:clipboard/base/enums/sort.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:injectable/injectable.dart';
 
 part 'clipboard_cubit.freezed.dart';
@@ -17,21 +20,30 @@ part 'clipboard_state.dart';
 
 @injectable
 class ClipboardCubit extends Cubit<ClipboardState> {
-  final EventBusCubit eventBus;
+  final SyncEventBus syncEventBus;
   final ClipboardRepository repo;
+  final AppConfigCubit _appConfigCubit;
   String? currentQuery;
   late StreamSubscription eventBusSubscription;
 
   ClipboardCubit(
-    this.eventBus,
+    this.syncEventBus,
     @Named("local") this.repo,
-  ) : super(const ClipboardState.loaded(items: [])) {
-    eventBusSubscription = eventBus.stream.listen((state) {
-      switch (state) {
-        case EventBusClipCrossSyncEvent(:final event):
-          onSyncEvent(event);
-        case EventBusBatchClipCrossSyncEvent(:final events):
-          onBatchSyncEvent(events);
+    this._appConfigCubit,
+  ) : super(
+          ClipboardState.loaded(
+            items: [],
+            filterState: SearchFilterState(
+              sortBy: _appConfigCubit.state.config.sortBy,
+              sortOrder: _appConfigCubit.state.config.sortOrder,
+            ),
+          ),
+        ) {
+    eventBusSubscription = syncEventBus.where<ClipboardItem>().listen((event) {
+      if (event is TypedSyncEvent<ClipboardItem>) {
+        onSyncEvent(event.event);
+      } else if (event is TypedSyncBatchEvent<ClipboardItem>) {
+        onBatchSyncEvent(event.events);
       }
     });
   }
@@ -39,32 +51,33 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   void refresh() {
     if (state.loading) return;
     emit(state.copyWith(loading: true, offset: 0));
-    fetch(
-      fromTop: true,
-      filterState: state.filterState,
-      query: currentQuery,
-    );
+    fetch(fromTop: true, filterState: state.filterState, query: currentQuery);
   }
 
   void onBatchSyncEvent(List<ClipCrossSyncEvent> events) {
     if (events.isEmpty) return;
-    // Deleted
+    // Deleted (Treat both true DELETE events and UPDATEs with deletedAt as deletions)
     final deleted = events
         .where((event) {
-          final (type, _) = event;
-          return type == CrossSyncEventType.delete;
+          final (type, item) = event;
+          return type == CrossSyncEventType.delete || item.deletedAt != null;
         })
         .map((event) => event.$2)
         .toList();
-    deleteItem(deleted);
 
-    fetch(limit: deleted.length);
+    if (deleted.isNotEmpty) {
+      deleteItem(deleted);
+      fetch(limit: deleted.length);
+    }
 
     if (currentQuery != null && currentQuery!.isNotEmpty) return;
     final filter = state.filterState;
 
+    // Filter out items that are marked as deleted from the rest of the processing
+    final activeEvents = events.where((e) => e.$2.deletedAt == null).toList();
+
     // Created
-    final created = events
+    final created = activeEvents
         .where((event) {
           final (type, item) = event;
           return type == CrossSyncEventType.create &&
@@ -77,7 +90,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     }
 
     // Updates
-    final updated = events
+    final updated = activeEvents
         .where((event) {
           final (type, item) = event;
           return type == CrossSyncEventType.update &&
@@ -102,7 +115,8 @@ class ClipboardCubit extends Cubit<ClipboardState> {
         replaced.add(item);
       }
     }
-    replaced.sort((a, b) => b.created.compareTo(a.created));
+
+    _applySort(replaced);
     emit(state.copyWith(items: replaced));
   }
 
@@ -131,13 +145,36 @@ class ClipboardCubit extends Cubit<ClipboardState> {
 
   void put(ClipboardItem item, {bool isNew = false}) {
     if (isNew) {
-      emit(state.copyWith(items: [item, ...state.items]));
+      final items = [item, ...state.items];
+      _applySort(items);
+      emit(state.copyWith(items: items));
     } else {
       final items = state.items.replaceWhere((it) => it.id == item.id, item);
-      emit(
-        state.copyWith(items: items),
-      );
+      _applySort(items);
+      emit(state.copyWith(items: items));
     }
+  }
+
+  void _applySort(List<ClipboardItem> items) {
+    final sortBy = state.filterState.sortBy ?? ClipboardSortKey.created;
+    final order = state.filterState.sortOrder ?? SortOrder.desc;
+
+    items.sort((a, b) {
+      int comparison;
+      switch (sortBy) {
+        case ClipboardSortKey.created:
+          comparison = a.created.compareTo(b.created);
+        case ClipboardSortKey.modified:
+          comparison = a.modified.compareTo(b.modified);
+        case ClipboardSortKey.lastCopied:
+          comparison = (a.lastCopied ?? a.created).compareTo(
+            b.lastCopied ?? b.created,
+          );
+        case ClipboardSortKey.copyCount:
+          comparison = a.copiedCount.compareTo(b.copiedCount);
+      }
+      return order == SortOrder.desc ? -comparison : comparison;
+    });
   }
 
   bool fetchIfInitBatch() {
@@ -146,6 +183,18 @@ class ClipboardCubit extends Cubit<ClipboardState> {
       return true;
     }
     return false;
+  }
+
+  void resetFilters() {
+    emit(
+      state.copyWith(
+        filterState: SearchFilterState(
+          sortBy: _appConfigCubit.state.config.sortBy,
+          sortOrder: _appConfigCubit.state.config.sortOrder,
+        ),
+      ),
+    );
+    refresh();
   }
 
   Future<void> fetch({
@@ -160,7 +209,11 @@ class ClipboardCubit extends Cubit<ClipboardState> {
         loading: true,
         offset: fromTop ? 0 : state.offset,
         filterState: fromTop
-            ? filterState ?? const SearchFilterState()
+            ? filterState ??
+                SearchFilterState(
+                  sortBy: _appConfigCubit.state.config.sortBy,
+                  sortOrder: _appConfigCubit.state.config.sortOrder,
+                )
             : state.filterState,
         limit: limit ?? 50,
       ),
@@ -180,10 +233,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
 
     emit(
       items.fold(
-        (l) => state.copyWith(
-          failure: l,
-          loading: false,
-        ),
+        (l) => state.copyWith(failure: l, loading: false),
         (r) => state.copyWith(
           loading: false,
           items: fromTop ? r.results : [...state.items, ...r.results],
@@ -196,17 +246,30 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   }
 
   Future<void> deleteItem(List<ClipboardItem> items) async {
-    state.mapOrNull(loaded: (result) {
-      final ids = items.map((item) => item.id).toSet();
-      final items_ = result.items.where((it) => !ids.contains(it.id)).toList();
-      final isDeleted = items_.length < result.items.length;
-      emit(
-        result.copyWith(
-          items: items_,
-          offset: isDeleted ? result.offset - 1 : result.offset,
-        ),
-      );
-    });
+    state.mapOrNull(
+      loaded: (result) {
+        final ids = items.map((item) => item.id).whereType<int>().toSet();
+        final serverIds = items
+            .map((item) => item.serverId)
+            .whereType<int>()
+            .toSet();
+
+        final items_ = result.items.where((it) {
+          final isLocallyDeleted = it.id != null && ids.contains(it.id);
+          final isRemotelyDeleted =
+              it.serverId != null && serverIds.contains(it.serverId);
+          return !isLocallyDeleted && !isRemotelyDeleted;
+        }).toList();
+
+        final isDeleted = items_.length < result.items.length;
+        emit(
+          result.copyWith(
+            items: items_,
+            offset: isDeleted ? result.offset - 1 : result.offset,
+          ),
+        );
+      },
+    );
   }
 
   @override

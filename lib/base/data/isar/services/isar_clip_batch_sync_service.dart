@@ -33,20 +33,24 @@ void _syncingClips(
           .findFirstSync();
       final collectionId = collectionMap[item.serverCollectionId];
       if (found == null) {
-        item = item.copyWith(
-          collectionId: collectionId,
-          lastSynced: now(),
-        );
+        item = item.copyWith(collectionId: collectionId, lastSynced: now());
         items[index] = item;
         events.add((CrossSyncEventType.create, item));
         continue;
       }
-      item = item.copyWith(
-        id: found.isarId == Isar.autoIncrement ? null : found.isarId,
-        lastSynced: now(),
-        localPath: found.localPath,
-        collectionId: collectionId,
-      );
+
+      // Conflict Resolution: Last-Modified-Wins
+      if (item.modified.isAfter(found.modified)) {
+        item = item.copyWith(
+          id: found.isarId == Isar.autoIncrement ? null : found.isarId,
+          lastSynced: now(),
+          localPath: found.localPath,
+          collectionId: collectionId,
+        );
+      } else {
+        item = found.toDomain().copyWith(lastSynced: now());
+      }
+
       items[index] = item;
       events.add((CrossSyncEventType.update, item));
     }
@@ -67,33 +71,35 @@ void _syncingClips(
 /// batch sync operations without blocking the UI thread.
 @LazySingleton(as: ClipBatchSyncService)
 class IsarClipBatchSyncService implements ClipBatchSyncService {
-  final _worker = EasyCompute<List<ClipCrossSyncEvent>,
-      (List<ClipboardItem>, Map<int, int>)>(
-    ComputeEntrypoint(
-      _syncingClips,
-      initData: {
-        "token": ServicesBinding.rootIsolateToken,
-      },
-      onInit: (payload) async {
-        if (payload is Map) {
-          final token = payload["token"];
-          if (token != null) {
-            BackgroundIsolateBinaryMessenger.ensureInitialized(token);
-          }
-          String? dbPath = Platform.environment[dbPathEnvKey];
-          dbPath = dbPath ?? (await getApplicationDocumentsDirectory()).path;
-          Isar.openSync(
-            [IsarClipboardItemSchema],
-            directory: dbPath,
-            relaxedDurability: true,
-            inspector: kDebugMode,
-            name: dbName,
-          );
-        }
-      },
-    ),
-    workerName: "ClipSyncWorker",
-  );
+  final _worker =
+      EasyCompute<
+        List<ClipCrossSyncEvent>,
+        (List<ClipboardItem>, Map<int, int>)
+      >(
+        ComputeEntrypoint(
+          _syncingClips,
+          initData: {"token": ServicesBinding.rootIsolateToken},
+          onInit: (payload) async {
+            if (payload is Map) {
+              final token = payload["token"];
+              if (token != null) {
+                BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+              }
+              String? dbPath = Platform.environment[dbPathEnvKey];
+              dbPath =
+                  dbPath ?? (await getApplicationDocumentsDirectory()).path;
+              Isar.openSync(
+                [IsarClipboardItemSchema],
+                directory: dbPath,
+                relaxedDurability: true,
+                inspector: kDebugMode,
+                name: dbName,
+              );
+            }
+          },
+        ),
+        workerName: "ClipSyncWorker",
+      );
 
   @override
   Future<void> waitUntilReady() => _worker.waitUntilReady();

@@ -33,8 +33,9 @@ mixin MonetizationService {
 
     PurchasesConfiguration? configuration;
     if (Platform.isAndroid) {
-      const androidPubKey =
-          String.fromEnvironment("REVENUECAT_ANDROID_PUB_KEY");
+      const androidPubKey = String.fromEnvironment(
+        "REVENUECAT_ANDROID_PUB_KEY",
+      );
       configuration = PurchasesConfiguration(androidPubKey)..appUserID = userId;
     } else if (Platform.isIOS || Platform.isMacOS) {
       const applePubKey = String.fromEnvironment("REVENUECAT_APPLE_PUB_KEY");

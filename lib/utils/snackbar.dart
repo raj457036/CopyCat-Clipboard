@@ -15,7 +15,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showSnackbar(
 }) {
   ScaffoldMessengerState? state = context != null
       ? (ScaffoldMessenger.maybeOf(context) ??
-          scaffoldMessengerKey.currentState)
+            scaffoldMessengerKey.currentState)
       : scaffoldMessengerKey.currentState;
 
   if (closePrevious) {
@@ -42,21 +42,16 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showFailureSnackbar(
     SnackBar(
       content: Row(
         children: [
-          Icon(
-            Icons.warning_amber_rounded,
-            color: colors.onError,
-          ),
+          Icon(Icons.warning_amber_rounded, color: colors.onError),
           width8,
           Expanded(
             child: Text(
               failure.message,
               maxLines: 10,
               overflow: TextOverflow.clip,
-              style: TextStyle(
-                color: colors.onError,
-              ),
+              style: TextStyle(color: colors.onError),
             ),
-          )
+          ),
         ],
       ),
       shape: isMobile ? null : const StadiumBorder(),
@@ -71,7 +66,8 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showFailureSnackbar(
 }
 
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showDebugSnackbar(
-    String text) {
+  String text,
+) {
   if (!kDebugMode) return null;
   final message = "DEBUG :: $text";
   logger.d(message);
@@ -113,7 +109,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showTextSnackbar(
           child: CircularProgressIndicator(strokeWidth: 2),
         ),
         width8,
-        Text(text)
+        Text(text),
       ],
     );
   } else if (isProgress) {
@@ -122,9 +118,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showTextSnackbar(
       children: [
         Text(text),
         height6,
-        TimerProgressBar(
-          duration: Duration(seconds: duration ?? 4),
-        ),
+        TimerProgressBar(duration: Duration(seconds: duration ?? 4)),
       ],
     );
   } else {
@@ -141,8 +135,8 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showTextSnackbar(
       duration: duration != null
           ? Duration(seconds: duration)
           : isLoading
-              ? const Duration(seconds: 30)
-              : const Duration(seconds: 4),
+          ? const Duration(seconds: 30)
+          : const Duration(seconds: 4),
       action: action,
       shape: isMobile ? null : const StadiumBorder(),
     ),

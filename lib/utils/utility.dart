@@ -123,10 +123,7 @@ Future<void> clearPersistedRootDirPath([String? root]) async {
       await dir.delete(recursive: true);
     }
   } catch (e) {
-    logger.e(
-      "Couldn't delete directory from cache storage.",
-      error: e,
-    );
+    logger.e("Couldn't delete directory from cache storage.", error: e);
   }
 }
 
@@ -141,10 +138,7 @@ Future<void> deleteTempFile(File file) async {
   try {
     await file.delete();
   } catch (e) {
-    logger.e(
-      "Couldn't delete file from temp storage.",
-      error: e,
-    );
+    logger.e("Couldn't delete file from temp storage.", error: e);
   }
 }
 

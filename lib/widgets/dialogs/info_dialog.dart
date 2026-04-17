@@ -4,20 +4,13 @@ class InfoDialog extends StatelessWidget {
   final String title;
   final String message;
 
-  const InfoDialog({
-    super.key,
-    required this.title,
-    required this.message,
-  });
+  const InfoDialog({super.key, required this.title, required this.message});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(title),
-      content: SizedBox(
-        width: 250,
-        child: Text(message),
-      ),
+      content: SizedBox(width: 250, child: Text(message)),
     );
   }
 

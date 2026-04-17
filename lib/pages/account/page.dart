@@ -35,9 +35,7 @@ class AccountPage extends StatelessWidget {
       },
       builder: (context, state) {
         if (state == null) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
         return Column(
           children: [
@@ -81,9 +79,7 @@ class AccountPage extends StatelessWidget {
       },
     );
     return Scaffold(
-      appBar: AppBar(
-        title: Text(context.locale.account__appbar__title),
-      ),
+      appBar: AppBar(title: Text(context.locale.account__appbar__title)),
       body: Align(
         alignment: isPhone ? Alignment.topCenter : Alignment.center,
         child: ConstrainedBox(

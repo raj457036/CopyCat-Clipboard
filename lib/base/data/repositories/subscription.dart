@@ -9,9 +9,7 @@ import 'package:injectable/injectable.dart';
 class SubscriptionRepositoryImpl extends SubscriptionRepository {
   final SubscriptionSource remote;
 
-  SubscriptionRepositoryImpl({
-    @Named("remote") required this.remote,
-  });
+  SubscriptionRepositoryImpl({@Named("remote") required this.remote});
 
   @override
   FailureOr<Subscription?> get({required String userId}) async {

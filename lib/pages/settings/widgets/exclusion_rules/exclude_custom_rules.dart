@@ -8,10 +8,7 @@ import 'package:go_router/go_router.dart';
 
 class ExcludeCustomRules extends StatelessWidget {
   final bool enabled;
-  const ExcludeCustomRules({
-    super.key,
-    this.enabled = true,
-  });
+  const ExcludeCustomRules({super.key, this.enabled = true});
 
   Future<void> navigateTo(BuildContext context) async {
     context.goNamed(RouteConstants.customExclusionRules);
@@ -19,31 +16,29 @@ class ExcludeCustomRules extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SubscriptionBuilder(builder: (context, subscription) {
-      final hasAccess =
-          (subscription != null && subscription.customExclusionRules);
-      return ListTile(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(context.locale.settings__tile__cer_title),
-            width8,
-            const ProBadge(),
-          ],
-        ),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16),
+    return SubscriptionBuilder(
+      builder: (context, subscription) {
+        final hasAccess =
+            (subscription != null && subscription.customExclusionRules);
+        return ListTile(
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(context.locale.settings__tile__cer_title),
+              width8,
+              const ProBadge(),
+            ],
           ),
-        ),
-        subtitle: Text(
-          context.locale.settings__tile__cer_subtitle,
-        ),
-        enabled: enabled && hasAccess,
-        trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-        onTap: hasAccess && enabled ? () => navigateTo(context) : null,
-      );
-    });
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(16)),
+          ),
+          subtitle: Text(context.locale.settings__tile__cer_subtitle),
+          enabled: enabled && hasAccess,
+          trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+          onTap: hasAccess && enabled ? () => navigateTo(context) : null,
+        );
+      },
+    );
   }
 }

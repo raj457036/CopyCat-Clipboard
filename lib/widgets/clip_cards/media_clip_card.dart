@@ -15,10 +15,7 @@ final mediaMimeRegex = RegExp("video|image|audio");
 
 class MediaPreview extends StatelessWidget {
   final ClipboardItem item;
-  const MediaPreview({
-    super.key,
-    required this.item,
-  });
+  const MediaPreview({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +26,7 @@ class MediaPreview extends StatelessWidget {
 
     if (item.localPath != null) {
       if (item.fileMimeType!.contains("svg")) {
-        return SvgPicture.file(
-          File(item.localPath!),
-          width: 480,
-        );
+        return SvgPicture.file(File(item.localPath!), width: 480);
       }
       return Image(
         image: ResizeImage(
@@ -53,9 +47,7 @@ class MediaPreview extends StatelessWidget {
         future: getImageFromBlurHash(item.imgBlurHash!),
         builder: (context, ss) {
           if (ss.hasError) {
-            return const Center(
-              child: Text("Something went wrong"),
-            );
+            return const Center(child: Text("Something went wrong"));
           }
           if (!ss.hasData) return loadingCard;
 
@@ -76,11 +68,7 @@ class MediaClipCard extends StatelessWidget {
   final AppLayout layout;
   final ClipboardItem item;
 
-  const MediaClipCard({
-    super.key,
-    required this.item,
-    required this.layout,
-  });
+  const MediaClipCard({super.key, required this.item, required this.layout});
 
   Widget getIcon(BuildContext context) {
     final textTheme = context.textTheme;
@@ -100,10 +88,7 @@ class MediaClipCard extends StatelessWidget {
         );
       }
     }
-    return const Icon(
-      Icons.image,
-      color: Colors.white,
-    );
+    return const Icon(Icons.image, color: Colors.white);
   }
 
   @override

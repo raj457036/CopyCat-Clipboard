@@ -1,7 +1,7 @@
 import 'dart:math' show max;
 
 import 'package:animate_do/animate_do.dart';
-import 'package:clipboard/base/bloc/clip_sync_manager_cubit/clip_sync_manager_cubit.dart';
+import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/sync_status/syncstatus.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
@@ -32,13 +32,13 @@ class RestoreClipsStep extends StatefulWidget {
 class _RestoreClipsStepState extends State<RestoreClipsStep> {
   int totalCount = -1;
   bool fetchingCount = false;
-  late final ClipSyncManagerCubit syncCubit;
+  late final SyncStatusCubit syncCubit;
   late SyncStatus? syncStatus;
 
   @override
   void initState() {
     super.initState();
-    syncCubit = context.read<ClipSyncManagerCubit>();
+    syncCubit = context.read<SyncStatusCubit>();
     startSyncing();
   }
 
@@ -51,17 +51,15 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
         syncClips();
         return;
       }
-      final lastSync = syncCubit.getLastSyncedTime();
+      final lastSync =
+          syncStatus?.lastSyncPoint ?? DateTime.fromMillisecondsSinceEpoch(0);
       final result = await widget.clipboardRepository.getClipCounts(lastSync);
-      result.fold(
-        (l) => showFailureSnackbar(l),
-        (r) {
-          totalCount = r;
-          syncClips();
-        },
-      );
-      final syncStatusResult =
-          await widget.restorationStatusRepository.getStatus();
+      result.fold((l) => showFailureSnackbar(l), (r) {
+        totalCount = r;
+        syncClips();
+      });
+      final syncStatusResult = await widget.restorationStatusRepository
+          .getStatus();
       syncStatusResult.fold((l) => showFailureSnackbar(l), (r) {
         syncStatus = r;
       });
@@ -76,12 +74,8 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
     await wait(1000);
 
     switch (syncCubit.state) {
-      case ClipSyncUnknown() || ClipSyncingUnknown() || ClipSyncFailed():
-        syncCubit.syncClips(
-          syncStartTs: syncStatus?.lastSyncStartPoint,
-          lastSyncedCount: syncStatus?.lastKnownSyncCount ?? 0,
-          restoration: true,
-        );
+      case SyncStatusUnknown() || SyncStatusFailed():
+        syncCubit.syncAll(force: true);
       case _:
     }
   }
@@ -119,10 +113,7 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.restore_rounded,
-              size: 32,
-            ),
+            const Icon(Icons.restore_rounded, size: 32),
             height10,
             Text(
               context.locale.restore_clips__text__title,
@@ -138,9 +129,7 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                   height10,
                   ElevatedButton(
                     onPressed: startSyncing,
-                    child: Text(
-                      context.locale.app__try_again,
-                    ),
+                    child: Text(context.locale.app__try_again),
                   ),
                 ],
               )
@@ -156,41 +145,13 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                   height12,
                   const SizedBox(width: 100, height: 20, child: Divider()),
                   height8,
-                  BlocConsumer<ClipSyncManagerCubit, ClipSyncManagerState>(
-                    listener: (context, state) {
-                      switch (state) {
-                        case ClipSyncComplete(
-                            :final syncCount,
-                            :final fromTs,
-                            :final toTs,
-                          ):
-                          updateSyncStatus(
-                            max(syncCount, totalCount),
-                            fromTs,
-                            toTs,
-                          );
-                          updateTotalCount(syncCount);
-                        case ClipSyncing(
-                            :final synced,
-                            :final fromTs,
-                            :final toTs,
-                          ):
-                          updateSyncStatus(synced, fromTs, toTs);
-                        case _:
-                      }
-                    },
+                  BlocConsumer<SyncStatusCubit, SyncStatusState>(
+                    listener: (context, state) {},
                     builder: (context, state) {
                       switch (state) {
-                        case ClipSyncDisabled():
-                          return Text(
-                            context.locale.restore_clips__sync_disable,
-                            textAlign: TextAlign.center,
-                          );
-                        case ClipSyncUnknown() || ClipSyncingUnknown():
-                          return Text(
-                            context.locale.restore_clips__preparing,
-                          );
-                        case ClipSyncComplete(:final syncCount):
+                        case SyncStatusUnknown():
+                          return Text(context.locale.restore_clips__preparing);
+                        case SyncStatusComplete():
                           return Column(
                             children: [
                               const SizedBox(
@@ -203,7 +164,7 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                               height10,
                               Text(
                                 context.locale.restore_clips__restored(
-                                  syncCount: max(syncCount, totalCount),
+                                  syncCount: max(totalCount, 0),
                                 ),
                                 textAlign: TextAlign.center,
                               ),
@@ -211,12 +172,13 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                               FilledButton.tonalIcon(
                                 onPressed: widget.onContinue,
                                 label: Text(
-                                    context.locale.onboarding__text__go_home),
+                                  context.locale.onboarding__text__go_home,
+                                ),
                                 icon: const Icon(Icons.check_rounded),
                               ),
                             ],
                           );
-                        case ClipSyncFailed(:final failure):
+                        case SyncStatusFailed(:final failure):
                           return Column(
                             children: [
                               Text(
@@ -231,23 +193,19 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                               ),
                             ],
                           );
-                        case ClipSyncing(:final synced):
+                        case SyncingStatus():
                           return Column(
                             children: [
-                              if (totalCount > 0 || synced > 0)
-                                SizedBox(
-                                  width: 250,
-                                  child: LinearProgressIndicator(
-                                    borderRadius: radius12,
-                                    value: synced / max(totalCount, synced),
-                                  ),
+                              const SizedBox(
+                                width: 250,
+                                child: LinearProgressIndicator(
+                                  borderRadius: radius12,
+                                  value: null,
                                 ),
+                              ),
                               height10,
-                              Text(
-                                context.locale.restore_clips__restoring(
-                                  synced: synced,
-                                  totalCount: max(totalCount, synced),
-                                ),
+                              const Text(
+                                "Restoring data...",
                                 textAlign: TextAlign.center,
                               ),
                               height12,
@@ -258,14 +216,16 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
                                   color: Colors.deepOrange,
                                   fontStyle: FontStyle.italic,
                                 ),
-                              )
+                              ),
                             ],
                           );
+                        case _:
+                          return const SizedBox.shrink();
                       }
                     },
                   ),
                 ],
-              )
+              ),
           ],
         ),
       ),

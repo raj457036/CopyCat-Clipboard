@@ -35,6 +35,7 @@ class _SearchBarInputState extends State<SearchInputBar> {
   @override
   void initState() {
     super.initState();
+    filterState = context.read<ClipboardCubit>().state.filterState;
     queryController = TextEditingController();
     searchResetButtonFocus = FocusNode(
       debugLabel: "search-reset-button",
@@ -83,10 +84,10 @@ class _SearchBarInputState extends State<SearchInputBar> {
 
   Future<void> search(String text) async {
     await context.read<ClipboardCubit>().fetch(
-          query: text,
-          filterState: filterState,
-          fromTop: true,
-        );
+      query: text,
+      filterState: filterState,
+      fromTop: true,
+    );
     setState(() {});
   }
 
@@ -134,9 +135,7 @@ class _SearchBarInputState extends State<SearchInputBar> {
                 onTapOutside: (event) => focusNode.nextFocus(),
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(50),
-                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(50)),
                     borderSide: BorderSide.none,
                   ),
                   fillColor: colors.surfaceContainerHigh,

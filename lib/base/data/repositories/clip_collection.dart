@@ -4,6 +4,8 @@ import 'package:clipboard/base/domain/sources/clip_collection.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/paginated_results.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/base/domain/model/sync/sync_outbox_entry.dart';
+import 'package:clipboard/base/domain/repositories/sync_outbox.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
@@ -11,18 +13,33 @@ import 'package:injectable/injectable.dart';
 class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
   final ClipCollectionSource remote;
   final ClipCollectionSource local;
+  final SyncOutboxRepository outbox;
 
   ClipCollectionRepositoryImpl(
     @Named("remote") this.remote,
     @Named("local") this.local,
+    this.outbox,
   );
 
   @override
   FailureOr<ClipCollection> create(ClipCollection collection) async {
     try {
       collection = collection.copyWith(modified: now());
-      ClipCollection result = await remote.create(collection);
-      result = await local.create(result);
+      ClipCollection result = await local.create(collection);
+      if (result.id != null) {
+        await outbox.enqueue(
+          SyncOutboxEntry(
+            entityType: 'collection',
+            localId: result.id!,
+            action: SyncOutboxAction.create,
+            createdAt: DateTime.now(),
+          ),
+        );
+      }
+      try {
+        result = await remote.create(result);
+        await local.update(result);
+      } catch (_) {}
       return Right(result);
     } catch (e) {
       return Left(Failure.fromException(e));
@@ -32,8 +49,20 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
   @override
   FailureOr<bool> delete(ClipCollection collection) async {
     try {
-      await remote.delete(collection);
       await local.delete(collection);
+      if (collection.id != null) {
+        await outbox.enqueue(
+          SyncOutboxEntry(
+            entityType: 'collection',
+            localId: collection.id!,
+            action: SyncOutboxAction.delete,
+            createdAt: DateTime.now(),
+          ),
+        );
+      }
+      try {
+        await remote.delete(collection);
+      } catch (_) {}
       return const Right(true);
     } catch (e) {
       return Left(Failure.fromException(e));
@@ -82,8 +111,21 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
   FailureOr<ClipCollection> update(ClipCollection collection) async {
     try {
       collection = collection.copyWith(modified: now());
-      ClipCollection result = await remote.update(collection);
-      result = await local.update(result);
+      ClipCollection result = await local.update(collection);
+      if (result.id != null) {
+        await outbox.enqueue(
+          SyncOutboxEntry(
+            entityType: 'collection',
+            localId: result.id!,
+            action: SyncOutboxAction.update,
+            createdAt: DateTime.now(),
+          ),
+        );
+      }
+      try {
+        result = await remote.update(result);
+        await local.update(result);
+      } catch (_) {}
       return Right(result);
     } catch (e) {
       return Left(Failure.fromException(e));
@@ -133,7 +175,8 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
 
   @override
   FailureOr<List<ClipCollection>> updateMany(
-      List<ClipCollection> collections) async {
+    List<ClipCollection> collections,
+  ) async {
     try {
       final result = await local.updateMany(collections);
       return Right(result);

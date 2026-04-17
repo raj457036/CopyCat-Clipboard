@@ -5,7 +5,8 @@ class BorderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color.fromARGB(83, 98, 255, 0) // Red border
+      ..color =
+          const Color.fromARGB(83, 98, 255, 0) // Red border
       ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.butt
       ..strokeWidth = 2;
@@ -69,11 +70,7 @@ class _FocusNodeRectGizmoState extends State<FocusNodeRectGizmo> {
         top: offset.dy,
         width: size.width,
         height: size.height,
-        child: IgnorePointer(
-          child: CustomPaint(
-            painter: BorderPainter(),
-          ),
-        ),
+        child: IgnorePointer(child: CustomPaint(painter: BorderPainter())),
       ),
     );
   }

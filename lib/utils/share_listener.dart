@@ -26,25 +26,28 @@ class ShareListener {
     if (!isMobilePlatform) return;
     dispose();
     initPlatformState();
-    subscription = handler.sharedMediaStream.listen((SharedMedia media) async {
-      logger.i("Received shared media: $media");
+    subscription = handler.sharedMediaStream.listen(
+      (SharedMedia media) async {
+        logger.i("Received shared media: $media");
 
-      try {
-        await putMediaToClipboard(media);
-        closeSnackbar();
-      } catch (e) {
-        if (context.mounted) {
-          showTextSnackbar(
-            context.locale.app__unknown_error,
-            closePrevious: true,
-          );
+        try {
+          await putMediaToClipboard(media);
+          closeSnackbar();
+        } catch (e) {
+          if (context.mounted) {
+            showTextSnackbar(
+              context.locale.app__unknown_error,
+              closePrevious: true,
+            );
+          }
         }
-      }
-    }, onError: (error) {
-      if (context.mounted) {
-        showFailureSnackbar(Failure.fromException(error));
-      }
-    });
+      },
+      onError: (error) {
+        if (context.mounted) {
+          showFailureSnackbar(Failure.fromException(error));
+        }
+      },
+    );
   }
 
   void dispose() {
@@ -105,9 +108,7 @@ class ShareListener {
       final isSupported = supportedUriSchemas.contains(schema);
 
       if (isSupported && uri != null) {
-        final clip = ClipItem.uri(
-          uri: uri,
-        );
+        final clip = ClipItem.uri(uri: uri);
         clips.add(clip);
       } else {
         final (category, text) = getTextCategory(media.content!);
@@ -124,23 +125,29 @@ class ShareListener {
 
     if (context.mounted) {
       showSnackbar(context, isFile: media.attachments != null);
-      await context
-          .read<OfflinePersistenceCubit>()
-          .onClips(clips, manualPaste: true);
+      await context.read<OfflinePersistenceCubit>().onClips(
+        clips,
+        manualPaste: true,
+      );
     }
   }
 
   Future<void> processAttachment(
-      SharedAttachment? attachment, List<ClipItem> clips) async {
+    SharedAttachment? attachment,
+    List<ClipItem> clips,
+  ) async {
     if (attachment == null) return;
-    final category =
-        attachment.type == SharedAttachmentType.file ? "files" : "medias";
+    final category = attachment.type == SharedAttachmentType.file
+        ? "files"
+        : "medias";
     final clip = await getFileClipItem(attachment.path, category);
     if (clip != null) clips.add(clip);
   }
 
   Future<void> processImageFilePath(
-      String? imageFilePath, List<ClipItem> clips) async {
+    String? imageFilePath,
+    List<ClipItem> clips,
+  ) async {
     if (imageFilePath == null) return;
     final clip = await getFileClipItem(imageFilePath, "medias");
     if (clip != null) clips.add(clip);

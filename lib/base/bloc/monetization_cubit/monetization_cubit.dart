@@ -15,9 +15,8 @@ class MonetizationCubit extends Cubit<MonetizationState>
     with MonetizationService {
   final SubscriptionRepository repo;
 
-  MonetizationCubit({
-    required this.repo,
-  }) : super(const MonetizationState.unknown()) {
+  MonetizationCubit({required this.repo})
+    : super(const MonetizationState.unknown()) {
     onSubscriptionAvailable = onSubscriptionChange;
     setupListeners();
   }

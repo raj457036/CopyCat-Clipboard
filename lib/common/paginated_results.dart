@@ -4,7 +4,5 @@ class PaginatedResult<T> {
 
   PaginatedResult({required this.results, required this.hasMore});
 
-  PaginatedResult.empty()
-      : hasMore = false,
-        results = [];
+  PaginatedResult.empty() : hasMore = false, results = [];
 }

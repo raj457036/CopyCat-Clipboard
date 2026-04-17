@@ -18,11 +18,7 @@ class FeatureTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final freePlanIncludes = [
-      (
-        null,
-        context.locale.sub_dialog__text__included,
-        null,
-      ),
+      (null, context.locale.sub_dialog__text__included, null),
       (
         const Icon(Icons.paste_rounded),
         context.locale.sub_dialog__f1__title,
@@ -72,7 +68,7 @@ class FeatureTabs extends StatelessWidget {
         const Icon(Icons.sync_alt_rounded),
         context.locale.sub_dialog__f10__title,
         context.locale.sub_dialog__f10__subtitle,
-      )
+      ),
     ];
 
     final proPlanIncludes = [
@@ -128,10 +124,12 @@ class FeatureTabs extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const TabBar(tabs: [
-            Tab(text: "Free"),
-            Tab(text: "PRO ✨"),
-          ]),
+          const TabBar(
+            tabs: [
+              Tab(text: "Free"),
+              Tab(text: "PRO ✨"),
+            ],
+          ),
           Expanded(
             child: TabBarView(
               children: [
@@ -168,16 +166,10 @@ class FeatureTabs extends StatelessWidget {
 
 class SubscriptionInfoDialog extends StatelessWidget {
   final bool entitlementGrantMode;
-  const SubscriptionInfoDialog({
-    super.key,
-    this.entitlementGrantMode = false,
-  });
+  const SubscriptionInfoDialog({super.key, this.entitlementGrantMode = false});
 
   Future<void> open(BuildContext context) async {
-    return await showDialog(
-      context: context,
-      builder: (context) => this,
-    );
+    return await showDialog(context: context, builder: (context) => this);
   }
 
   Future<void> upgradeByPromoCode(BuildContext context) async {
@@ -224,10 +216,7 @@ class SubscriptionInfoDialog extends StatelessWidget {
                 content: const Center(
                   child: SizedBox(
                     width: 250,
-                    child: Text(
-                      "...",
-                      textAlign: TextAlign.center,
-                    ),
+                    child: Text("...", textAlign: TextAlign.center),
                   ),
                 ),
               );
@@ -248,7 +237,9 @@ class SubscriptionInfoDialog extends StatelessWidget {
                 insetPadding: isMobile
                     ? const EdgeInsets.all(padding8)
                     : const EdgeInsets.symmetric(
-                        horizontal: 40.0, vertical: 24.0),
+                        horizontal: 40.0,
+                        vertical: 24.0,
+                      ),
                 contentPadding: isMobile ? EdgeInsets.zero : null,
                 content: SizedBox(
                   width: 600,
@@ -259,18 +250,17 @@ class SubscriptionInfoDialog extends StatelessWidget {
                         title: Text(
                           expired
                               ? context
-                                  .locale.paywall_dialog__text__expired_plan
+                                    .locale
+                                    .paywall_dialog__text__expired_plan
                               : context
-                                  .locale.paywall_dialog__text__current_plan,
+                                    .locale
+                                    .paywall_dialog__text__current_plan,
                         ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              state.planName,
-                              style: textTheme.titleLarge,
-                            ),
+                            Text(state.planName, style: textTheme.titleLarge),
                             height2,
                             if (isTrial && state.trialEnd != null)
                               Text(
@@ -284,15 +274,16 @@ class SubscriptionInfoDialog extends StatelessWidget {
                             ? ElevatedButton.icon(
                                 onPressed: () => upgrade(context),
                                 onLongPress: () => upgradeByPromoCode(context),
-                                icon:
-                                    const Icon(Icons.workspace_premium_rounded),
+                                icon: const Icon(
+                                  Icons.workspace_premium_rounded,
+                                ),
                                 label: Text(
                                   context.locale.paywall_dialog__text__upgrade,
                                 ),
                               )
                             : const ManageSubscriptionButton(),
                       ),
-                      const Expanded(child: FeatureTabs())
+                      const Expanded(child: FeatureTabs()),
                     ],
                   ),
                 ),

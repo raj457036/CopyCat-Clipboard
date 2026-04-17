@@ -33,8 +33,10 @@ abstract class RegisterModule {
 
   @preResolve
   @singleton
-  Future<SupabaseClient> client(@Named("supabase_url") String url,
-      @Named("supabase_key") String key) async {
+  Future<SupabaseClient> client(
+    @Named("supabase_url") String url,
+    @Named("supabase_key") String key,
+  ) async {
     final packageInfo = await PackageInfo.fromPlatform();
     final userAgent =
         "CopyCat/${packageInfo.version}+${packageInfo.buildNumber} (${Platform.operatingSystem}; ${Platform.operatingSystemVersion}; ${Platform.localeName}; Installer: ${packageInfo.installerStore ?? 'Unknown Store'})";
@@ -42,9 +44,7 @@ abstract class RegisterModule {
       url: url,
       anonKey: key,
       debug: kDebugMode,
-      headers: {
-        "user-agent": userAgent,
-      },
+      headers: {"user-agent": userAgent},
     );
     return Supabase.instance.client;
   }

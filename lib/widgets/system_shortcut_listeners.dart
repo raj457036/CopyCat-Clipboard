@@ -8,10 +8,7 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 class SystemShortcutListener extends StatelessWidget {
   final Widget child;
 
-  const SystemShortcutListener({
-    super.key,
-    required this.child,
-  });
+  const SystemShortcutListener({super.key, required this.child});
 
   Future<void> toggleWindow(BuildContext context) async {
     final focusManager = WindowFocusManager.of(context);

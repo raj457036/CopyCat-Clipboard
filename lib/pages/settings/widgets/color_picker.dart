@@ -11,10 +11,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class ColorPickerDialog extends StatefulWidget {
   final Color selectedColor;
-  const ColorPickerDialog({
-    super.key,
-    required this.selectedColor,
-  });
+  const ColorPickerDialog({super.key, required this.selectedColor});
 
   @override
   State<ColorPickerDialog> createState() => _ColorPickerDialogState();
@@ -40,9 +37,7 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      actionsPadding: const EdgeInsets.only(
-        bottom: padding12,
-      ),
+      actionsPadding: const EdgeInsets.only(bottom: padding12),
       // titlePadding: EdgeInsets.zero,
       content: SingleChildScrollView(
         child: ColorPicker(
@@ -85,9 +80,7 @@ class ColorPickerTile extends StatelessWidget {
 
   Future<void> chooseColor(BuildContext context, Color color) async {
     final cubit = context.read<AppConfigCubit>();
-    final result = await ColorPickerDialog(
-      selectedColor: color,
-    ).open(context);
+    final result = await ColorPickerDialog(selectedColor: color).open(context);
 
     if (result != null) {
       cubit.setThemeColor(result);
@@ -98,48 +91,50 @@ class ColorPickerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
     final colors = context.colors;
-    return SubscriptionBuilder(builder: (context, subscription) {
-      final hasAccess =
-          subscription != null && subscription.isActive && subscription.theming;
-      return ListTile(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(context.locale.settings__tile__theme_color__title),
-            width8,
-            const ProBadge(),
-          ],
-        ),
-        contentPadding: const EdgeInsets.only(
-          left: padding16,
-          right: padding4,
-        ),
-        subtitle: Text(
-          context.locale.settings__tile__theme_color__subtitle,
-          style: textTheme.bodyMedium?.copyWith(
-            color: colors.outline,
+    return SubscriptionBuilder(
+      builder: (context, subscription) {
+        final hasAccess =
+            subscription != null &&
+            subscription.isActive &&
+            subscription.theming;
+        return ListTile(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(context.locale.settings__tile__theme_color__title),
+              width8,
+              const ProBadge(),
+            ],
           ),
-        ),
-        trailing: BlocSelector<AppConfigCubit, AppConfigState, int>(
-          selector: (state) {
-            return state.config.themeColor;
-          },
-          builder: (context, themeColor) {
-            final color = Color(
-              themeColor.isNegative ? defaultThemeColor : themeColor,
-            );
-            return FilledButton.icon(
-              onPressed: hasAccess ? () => chooseColor(context, color) : null,
-              label: Text(context.locale.app__change),
-              icon: const Icon(Icons.color_lens_rounded),
-              style: ElevatedButton.styleFrom(
-                fixedSize: const Size(150, 46),
-                textStyle: textTheme.titleMedium,
-              ),
-            );
-          },
-        ),
-      );
-    });
+          contentPadding: const EdgeInsets.only(
+            left: padding16,
+            right: padding4,
+          ),
+          subtitle: Text(
+            context.locale.settings__tile__theme_color__subtitle,
+            style: textTheme.bodyMedium?.copyWith(color: colors.outline),
+          ),
+          trailing: BlocSelector<AppConfigCubit, AppConfigState, int>(
+            selector: (state) {
+              return state.config.themeColor;
+            },
+            builder: (context, themeColor) {
+              final color = Color(
+                themeColor.isNegative ? defaultThemeColor : themeColor,
+              );
+              return FilledButton.icon(
+                onPressed: hasAccess ? () => chooseColor(context, color) : null,
+                label: Text(context.locale.app__change),
+                icon: const Icon(Icons.color_lens_rounded),
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(150, 46),
+                  textStyle: textTheme.titleMedium,
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
   }
 }

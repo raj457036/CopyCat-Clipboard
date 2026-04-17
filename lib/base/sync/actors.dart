@@ -27,8 +27,8 @@ abstract base class AbstractActor {
   void dispose();
 }
 
-typedef ActorHandleMessage = void Function(
-    ActorMessage, void Function(Object?));
+typedef ActorHandleMessage =
+    void Function(ActorMessage, void Function(Object?));
 
 abstract base class IsolateActor extends AbstractActor {
   final String name;
@@ -45,17 +45,19 @@ abstract base class IsolateActor extends AbstractActor {
 
     _handleMessage ??= entrypoint;
     _worker = EasyCompute<ActorResponse, ActorMessage>(
-      ComputeEntrypoint(entrypoint, initData: {
-        "token": ServicesBinding.rootIsolateToken,
-      }, onInit: (payload) async {
-        if (payload is Map) {
-          final token = payload["token"];
-          if (token != null) {
-            BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+      ComputeEntrypoint(
+        entrypoint,
+        initData: {"token": ServicesBinding.rootIsolateToken},
+        onInit: (payload) async {
+          if (payload is Map) {
+            final token = payload["token"];
+            if (token != null) {
+              BackgroundIsolateBinaryMessenger.ensureInitialized(token);
+            }
+            onInit?.call();
           }
-          onInit?.call();
-        }
-      }),
+        },
+      ),
       workerName: name,
     );
   }
@@ -79,9 +81,10 @@ abstract base class IsolateActor extends AbstractActor {
   @override
   void send(ActorMessage payload) {
     assert(
-        _handleMessage != null,
-        'Actor handleMessage is not set. Please set it'
-        ' before sending messages.');
+      _handleMessage != null,
+      'Actor handleMessage is not set. Please set it'
+      ' before sending messages.',
+    );
     super.send(payload);
   }
 

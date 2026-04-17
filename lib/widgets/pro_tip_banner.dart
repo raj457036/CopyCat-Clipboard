@@ -9,13 +9,7 @@ class TipTile extends StatelessWidget {
   final String tip;
   final Color? bg;
   final Widget? icon;
-  const TipTile({
-    super.key,
-    this.title,
-    required this.tip,
-    this.bg,
-    this.icon,
-  });
+  const TipTile({super.key, this.title, required this.tip, this.bg, this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -24,23 +18,14 @@ class TipTile extends StatelessWidget {
     if (width < 300) return const SizedBox.shrink();
     final isMobile = Breakpoints.isMobile(width);
     final tile = ListTile(
-      shape: const RoundedRectangleBorder(
-        borderRadius: radius12,
-      ),
-      leading: icon ??
-          const Icon(
-            Icons.lightbulb,
-            color: Colors.amber,
-          ),
+      shape: const RoundedRectangleBorder(borderRadius: radius12),
+      leading: icon ?? const Icon(Icons.lightbulb, color: Colors.amber),
       title: Text(title ?? context.locale.app__pro_tip),
       subtitle: Text(tip),
       tileColor: bg ?? colors.secondaryContainer,
     );
     if (isMobile) {
-      return Padding(
-        padding: const EdgeInsets.all(padding8),
-        child: tile,
-      );
+      return Padding(padding: const EdgeInsets.all(padding8), child: tile);
     }
     return Padding(
       padding: const EdgeInsets.only(

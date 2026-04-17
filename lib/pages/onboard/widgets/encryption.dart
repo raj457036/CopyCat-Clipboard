@@ -18,9 +18,7 @@ class EncryptionStep extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<AuthCubit, AuthState, AuthUser?>(
       selector: (state) {
-        return state.mapOrNull(
-          authenticated: (value) => value.user,
-        );
+        return state.mapOrNull(authenticated: (value) => value.user);
       },
       builder: (context, user) {
         bool imported = false;
@@ -35,17 +33,13 @@ class EncryptionStep extends StatelessWidget {
             final enc1 = user.enc1;
 
             if (keyId == null || enc1 == null) {
-              return GenerateEncryptionKeyStep(
-                onContinue: onContinue,
-              );
+              return GenerateEncryptionKeyStep(onContinue: onContinue);
             }
 
             if (secret == null) {
               return ImportEncryptionKeyStep(
                 importableKeyId: keyId,
-                clipboardRepository: sl(
-                  instanceName: "remote",
-                ),
+                clipboardRepository: sl(instanceName: "remote"),
                 onImportSuccess: () => imported = true,
                 onContinue: onContinue,
               );

@@ -9,8 +9,9 @@ import 'package:universal_io/io.dart';
 // patterns
 final _creditCardPattern = RegExp(r'\b\d{4} \d{4} \d{4} \d{4}\b');
 // Regex to match a combination of letters, digits, and special characters
-final passwordPattern =
-    RegExp(r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+=-]).{8,}$');
+final passwordPattern = RegExp(
+  r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+=-]).{8,}$',
+);
 // Exclude patterns that are likely not passwords (e.g., hex colors, common words)
 final commonWordPattern = RegExp(r'^[a-zA-Z]+$'); // Only alphabets, like a word
 final hexPattern = RegExp(r'^#?[A-Fa-f0-9]{6}$'); // Hex color pattern
@@ -35,18 +36,16 @@ class ExclusionChecker {
   final bool _email;
   final bool _sensitiveUrls;
 
-  ExclusionChecker(
-    ExclusionRules rules,
-  )   :
-        // _titles = [...rules.titles],
-        //       _urls = [...rules.urls],
-        _patterns = rules.patterns.map((e) => RegExp(e)).toList(),
-        _apps = [...rules.apps],
-        _creditCard = rules.creditCard,
-        _phone = rules.phone,
-        _passwordManager = rules.passwordManager,
-        _email = rules.email,
-        _sensitiveUrls = rules.sensitiveUrls {
+  ExclusionChecker(ExclusionRules rules)
+    : // _titles = [...rules.titles],
+      //       _urls = [...rules.urls],
+      _patterns = rules.patterns.map((e) => RegExp(e)).toList(),
+      _apps = [...rules.apps],
+      _creditCard = rules.creditCard,
+      _phone = rules.phone,
+      _passwordManager = rules.passwordManager,
+      _email = rules.email,
+      _sensitiveUrls = rules.sensitiveUrls {
     if (_sensitiveUrls) {
       if (Platform.isMacOS) {
         _rUrls.add(
@@ -68,19 +67,15 @@ class ExclusionChecker {
     }
 
     if (rules.titles.isNotEmpty) {
-      _rTitle.add(RegExp(
-        rules.titles.join("|"),
-        caseSensitive: false,
-        multiLine: true,
-      ));
+      _rTitle.add(
+        RegExp(rules.titles.join("|"), caseSensitive: false, multiLine: true),
+      );
     }
 
     if (rules.urls.isNotEmpty && Platform.isMacOS) {
-      _rUrls.add(RegExp(
-        rules.urls.join("|"),
-        caseSensitive: false,
-        multiLine: true,
-      ));
+      _rUrls.add(
+        RegExp(rules.urls.join("|"), caseSensitive: false, multiLine: true),
+      );
     }
 
     if (_passwordManager) {

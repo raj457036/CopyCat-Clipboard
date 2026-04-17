@@ -18,11 +18,7 @@ class DraggableItem extends StatelessWidget {
   final ClipboardItem item;
   final Widget child;
 
-  const DraggableItem({
-    super.key,
-    required this.item,
-    required this.child,
-  });
+  const DraggableItem({super.key, required this.item, required this.child});
 
   Widget previewBuilder(BuildContext context, Widget child) {
     final colors = context.colors;
@@ -36,9 +32,7 @@ class DraggableItem extends StatelessWidget {
             padding: const EdgeInsets.all(padding12),
             child: Text(
               item.text ?? item.url!,
-              style: textTheme.bodyMedium?.copyWith(
-                color: colors.onSurface,
-              ),
+              style: textTheme.bodyMedium?.copyWith(color: colors.onSurface),
             ),
           ),
         );
@@ -68,35 +62,37 @@ class DraggableItem extends StatelessWidget {
     if (Platform.isAndroid) return child;
 
     return BlocSelector<AppConfigCubit, AppConfigState, bool>(
-        selector: (state) {
-      switch (state) {
-        case AppConfigLoaded(:final config):
-          return config.enableDragNDrop;
-        default:
-          return false;
-      }
-    }, builder: (context, enabled) {
-      if (!enabled) return child;
-      return SubscriptionBuilder(
-        builder: (context, subscription) {
-          if (subscription == null) return child;
-          if (subscription.isActive && subscription.dragNdrop) {
-            return DragItemWidget(
-              canAddItemToExistingSession: true,
-              dragItemProvider: dragItemProvider,
-              allowedOperations: () => const [
-                DropOperation.copy,
-                // DropOperation.userCancelled,
-              ],
-              liftBuilder: previewBuilder,
-              dragBuilder: previewBuilder,
-              child: DraggableWidget(child: child),
-            );
-          }
-          return child;
-        },
-      );
-    });
+      selector: (state) {
+        switch (state) {
+          case AppConfigLoaded(:final config):
+            return config.enableDragNDrop;
+          default:
+            return false;
+        }
+      },
+      builder: (context, enabled) {
+        if (!enabled) return child;
+        return SubscriptionBuilder(
+          builder: (context, subscription) {
+            if (subscription == null) return child;
+            if (subscription.isActive && subscription.dragNdrop) {
+              return DragItemWidget(
+                canAddItemToExistingSession: true,
+                dragItemProvider: dragItemProvider,
+                allowedOperations: () => const [
+                  DropOperation.copy,
+                  // DropOperation.userCancelled,
+                ],
+                liftBuilder: previewBuilder,
+                dragBuilder: previewBuilder,
+                child: DraggableWidget(child: child),
+              );
+            }
+            return child;
+          },
+        );
+      },
+    );
   }
 
   FutureOr<DragItem?> dragItemProvider(DragItemRequest request) async {
@@ -108,18 +104,13 @@ class DraggableItem extends StatelessWidget {
 
       case ClipItemType.url:
         dragItem.add(
-          Formats.uri(
-            NamedUri(Uri.parse(item.url!), name: item.title),
-          ),
+          Formats.uri(NamedUri(Uri.parse(item.url!), name: item.title)),
         );
 
       case ClipItemType.media:
       case ClipItemType.file:
         final fileUri = Formats.fileUri(
-          Uri.file(
-            item.localPath!,
-            windows: Platform.isWindows,
-          ),
+          Uri.file(item.localPath!, windows: Platform.isWindows),
         );
         dragItem.add(fileUri);
     }

@@ -20,10 +20,8 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
 
   Timer? timer;
 
-  DriveSetupCubit(
-    this.repo,
-    @Named("google_drive") this._drive,
-  ) : super(const DriveSetupState.unknown());
+  DriveSetupCubit(this.repo, @Named("google_drive") this._drive)
+    : super(const DriveSetupState.unknown());
 
   void _readyNow() {
     if (readyState != null) {
@@ -46,8 +44,8 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
       case DriveSetupDone():
         return;
       case DriveSetupUnknown(waiting: true) ||
-            DriveSetupFetching() ||
-            DriveSetupRefreshingToken():
+          DriveSetupFetching() ||
+          DriveSetupRefreshingToken():
         readyState = Completer();
         return readyState!.future;
     }
@@ -58,10 +56,7 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
       const Duration(seconds: 10),
       () => emit(
         const DriveSetupState.setupError(
-          failure: Failure(
-            message: "timeout",
-            code: "gd-timeout",
-          ),
+          failure: Failure(message: "timeout", code: "gd-timeout"),
         ),
       ),
     );
@@ -93,21 +88,15 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
     try {
       emit(const DriveSetupState.fetching());
       final response = await repo.getDriveCredentials();
-      final result = await response.fold(
-        (l) async => l,
-        (r) async {
-          if (r.isExpired) {
-            final refreshed = await repo.refreshAccessToken();
+      final result = await response.fold((l) async => l, (r) async {
+        if (r.isExpired) {
+          final refreshed = await repo.refreshAccessToken();
 
-            return refreshed.fold(
-              (l) => l,
-              (r) => r,
-            );
-          }
+          return refreshed.fold((l) => l, (r) => r);
+        }
 
-          return r;
-        },
-      );
+        return r;
+      });
 
       if (result is Failure) {
         emit(DriveSetupState.setupError(failure: result));
@@ -134,13 +123,12 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
     final foundAlready = force ? false : await fetch();
     if (foundAlready) return;
     final result = await repo.launchConsentPage();
-    emit(result.fold(
-      (l) => DriveSetupState.setupError(failure: l),
-      (r) {
+    emit(
+      result.fold((l) => DriveSetupState.setupError(failure: l), (r) {
         startResetTimer();
         return const DriveSetupState.unknown(waiting: true);
-      },
-    ));
+      }),
+    );
   }
 
   Future<void> verifyAuthCodeAndSetup(String code, List<String> scopes) async {

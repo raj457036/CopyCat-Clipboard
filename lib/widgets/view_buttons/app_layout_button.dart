@@ -8,10 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppLayoutToggleButton extends StatelessWidget {
   final bool rounded;
-  const AppLayoutToggleButton({
-    super.key,
-    this.rounded = false,
-  });
+  const AppLayoutToggleButton({super.key, this.rounded = false});
 
   void changeLayout(BuildContext context, AppLayout layout) {
     context.read<AppConfigCubit>().changeAppLayout(layout);
@@ -20,30 +17,32 @@ class AppLayoutToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return AppLayoutBuilder(builder: (context, layout, supported) {
-      if (!supported) return const SizedBox.shrink();
-      return IconButton(
-        onPressed: () {
-          switch (layout) {
-            case AppLayout.grid:
-              changeLayout(context, AppLayout.list);
-            case AppLayout.list:
-              changeLayout(context, AppLayout.grid);
-          }
-        },
-        padding: EdgeInsets.zero,
-        style: IconButton.styleFrom(
-          shape: rounded ? null : const RoundedRectangleBorder(),
-          backgroundColor: rounded ? colors.surfaceContainerHighest : null,
-        ),
-        iconSize: 20,
-        icon: layout == AppLayout.grid
-            ? const Icon(Icons.window)
-            : const Icon(Icons.view_agenda),
-        tooltip: layout == AppLayout.grid
-            ? context.locale.view_button__switch_to_grid
-            : context.locale.view_button__switch_to_list,
-      );
-    });
+    return AppLayoutBuilder(
+      builder: (context, layout, supported) {
+        if (!supported) return const SizedBox.shrink();
+        return IconButton(
+          onPressed: () {
+            switch (layout) {
+              case AppLayout.grid:
+                changeLayout(context, AppLayout.list);
+              case AppLayout.list:
+                changeLayout(context, AppLayout.grid);
+            }
+          },
+          padding: EdgeInsets.zero,
+          style: IconButton.styleFrom(
+            shape: rounded ? null : const RoundedRectangleBorder(),
+            backgroundColor: rounded ? colors.surfaceContainerHighest : null,
+          ),
+          iconSize: 20,
+          icon: layout == AppLayout.grid
+              ? const Icon(Icons.window)
+              : const Icon(Icons.view_agenda),
+          tooltip: layout == AppLayout.grid
+              ? context.locale.view_button__switch_to_grid
+              : context.locale.view_button__switch_to_list,
+        );
+      },
+    );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
-import 'package:clipboard/base/bloc/clip_sync_manager_cubit/clip_sync_manager_cubit.dart';
-import 'package:clipboard/base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
+import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -15,7 +14,7 @@ class SyncStatusFAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final collectionSyncCubit = context.read<CollectionSyncManagerCubit>();
+    final syncStatusCubit = context.read<SyncStatusCubit>();
     return BlocSelector<AuthCubit, AuthState, bool>(
       selector: (state) {
         return state is LocalAuthenticatedAuthState;
@@ -27,68 +26,33 @@ class SyncStatusFAB extends StatelessWidget {
         IconData icon = Icons.sync_rounded;
         bool isSyncing = false;
         String message = context.locale.fab__sync;
-        return MultiBlocListener(
-          listeners: [
-            BlocListener<ClipSyncManagerCubit, ClipSyncManagerState>(
-              listener: (context, state) {
-                setState?.call(() {
-                  switch (state) {
-                    case ClipSyncUnknown() || ClipSyncDisabled():
-                      disabled = true;
-                      isSyncing = false;
-                      icon = Icons.sync_lock_rounded;
-                      message = context.locale.fab__sync_unavailable;
-                    case ClipSyncingUnknown() || ClipSyncing():
-                      disabled = true;
-                      isSyncing = true;
-                    case ClipSyncComplete():
-                      disabled = false;
-                      isSyncing = false;
-                      icon = Icons.sync_rounded;
-                      message = context.locale.fab__sync_up_to_date;
-                    case ClipSyncFailed(:final failure):
-                      disabled = false;
-                      isSyncing = false;
-                      icon = Icons.sync_problem_rounded;
-                      message = context.locale.fab__sync_failed(
-                        message: failure.message,
-                      );
-                  }
-                });
-              },
-            ),
-            BlocListener<
-              CollectionSyncManagerCubit,
-              CollectionSyncManagerState
-            >(
-              listener: (context, state) {
-                setState?.call(() {
-                  switch (state) {
-                    case CollectionSyncUnknown() || CollectionSyncDisabled():
-                      disabled = true;
-                      isSyncing = false;
-                      icon = Icons.sync_lock_rounded;
-                      message = context.locale.fab__sync_unavailable;
-                    case CollectionSyncingUnknown() || CollectionSyncing():
-                      disabled = true;
-                      isSyncing = true;
-                    case CollectionSyncComplete():
-                      disabled = false;
-                      isSyncing = false;
-                      icon = Icons.sync_rounded;
-                      message = context.locale.fab__sync_up_to_date;
-                    case CollectionSyncFailed(:final failure):
-                      disabled = false;
-                      isSyncing = false;
-                      icon = Icons.sync_problem_rounded;
-                      message = context.locale.fab__sync_failed(
-                        message: failure.message,
-                      );
-                  }
-                });
-              },
-            ),
-          ],
+        return BlocListener<SyncStatusCubit, SyncStatusState>(
+          listener: (context, state) {
+            setState?.call(() {
+              switch (state) {
+                case SyncStatusUnknown():
+                  disabled = true;
+                  isSyncing = false;
+                  icon = Icons.sync_lock_rounded;
+                  message = context.locale.fab__sync_unavailable;
+                case SyncingStatus():
+                  disabled = true;
+                  isSyncing = true;
+                case SyncStatusComplete():
+                  disabled = false;
+                  isSyncing = false;
+                  icon = Icons.sync_rounded;
+                  message = context.locale.fab__sync_up_to_date;
+                case SyncStatusFailed(:final failure):
+                  disabled = false;
+                  isSyncing = false;
+                  icon = Icons.sync_problem_rounded;
+                  message = context.locale.fab__sync_failed(
+                    message: failure.message,
+                  );
+              }
+            });
+          },
           child: StatefulBuilder(
             builder: (context, updateState) {
               setState = updateState;
@@ -96,7 +60,7 @@ class SyncStatusFAB extends StatelessWidget {
                 child: FloatingActionButton.small(
                   onPressed: disabled
                       ? null
-                      : () => collectionSyncCubit.syncCollections(manual: true),
+                      : () => syncStatusCubit.syncAll(force: true),
                   tooltip: isDesktopPlatform
                       ? '$message • ${keyboardShortcut(key: 'R')}'
                       : message,

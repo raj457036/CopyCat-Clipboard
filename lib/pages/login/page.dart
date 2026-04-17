@@ -13,7 +13,8 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mq = context.mq;
-    final isMobile = Breakpoints.isMobile(mq.size.width) ||
+    final isMobile =
+        Breakpoints.isMobile(mq.size.width) ||
         mq.orientation == Orientation.portrait;
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) async {
@@ -34,12 +35,11 @@ class LoginPage extends StatelessWidget {
               shaderCallback: (rect) {
                 return LinearGradient(
                   begin: isMobile ? Alignment.topCenter : Alignment.center,
-                  end:
-                      isMobile ? Alignment.bottomCenter : Alignment.centerRight,
+                  end: isMobile
+                      ? Alignment.bottomCenter
+                      : Alignment.centerRight,
                   colors: const [Colors.black, Colors.transparent],
-                ).createShader(
-                  Rect.fromLTRB(0, 0, rect.width, rect.height),
-                );
+                ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
               },
               blendMode: BlendMode.dstIn,
               child: Image(
@@ -52,10 +52,7 @@ class LoginPage extends StatelessWidget {
             if (!isMobile) {
               final child = Row(
                 children: [
-                  Expanded(
-                    flex: isMobile ? 2 : 1,
-                    child: bg,
-                  ),
+                  Expanded(flex: isMobile ? 2 : 1, child: bg),
                   Expanded(flex: isMobile ? 4 : 1, child: const LoginForm()),
                 ],
               );
@@ -65,10 +62,7 @@ class LoginPage extends StatelessWidget {
 
             return Stack(
               children: [
-                Positioned(
-                  height: 350,
-                  child: bg,
-                ),
+                Positioned(height: 350, child: bg),
                 const LoginForm(),
               ],
             );

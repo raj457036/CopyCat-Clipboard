@@ -23,9 +23,10 @@ class AuthRepositoryImpl implements AuthRepository {
 
       switch (exchange.redirectType) {
         case "passwordRecovery":
-          return Right(
-            ("passwordRecovery", exchange.session.user.toAuthUser()),
-          );
+          return Right((
+            "passwordRecovery",
+            exchange.session.user.toAuthUser(),
+          ));
         case _:
           logger.w("Exchange not supported. ${exchange.redirectType}");
       }

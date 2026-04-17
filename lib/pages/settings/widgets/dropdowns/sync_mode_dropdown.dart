@@ -23,10 +23,7 @@ class SyncModeDropdown extends StatelessWidget {
           selector: (state) {
             switch (state) {
               case AppConfigLoaded(:final config):
-                return (
-                  config.syncSpeed,
-                  config.enableSync,
-                );
+                return (config.syncSpeed, config.enableSync);
               default:
                 return (SyncSpeed.balanced, false);
             }
@@ -38,9 +35,7 @@ class SyncModeDropdown extends StatelessWidget {
               title: Text(context.locale.settings__dropdown__sync_mode__title),
               subtitle: Text(
                 context.locale.settings__dropdown__sync_mode__subtitle,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colors.outline,
-                ),
+                style: textTheme.bodyMedium?.copyWith(color: colors.outline),
               ),
               trailing: DropdownButtonHideUnderline(
                 child: ConstrainedBox(

@@ -3,19 +3,17 @@ import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-typedef ClipGridViewBuilder = Widget Function(
-  BuildContext context,
-  SliverGridDelegate delegate,
-  Axis scrollDirection,
-);
+typedef ClipGridViewBuilder =
+    Widget Function(
+      BuildContext context,
+      SliverGridDelegate delegate,
+      Axis scrollDirection,
+    );
 
 class ClipGridDelegateProvider extends StatelessWidget {
   final ClipGridViewBuilder builder;
 
-  const ClipGridDelegateProvider({
-    super.key,
-    required this.builder,
-  });
+  const ClipGridDelegateProvider({super.key, required this.builder});
 
   @override
   Widget build(BuildContext context) {

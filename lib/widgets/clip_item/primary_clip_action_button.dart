@@ -67,9 +67,7 @@ class PrimaryClipActionButton extends StatelessWidget {
             backgroundColor: colors.primary.withAlpha(40),
             child: const Icon(Icons.more_horiz_rounded),
           ),
-          style: IconButton.styleFrom(
-            padding: EdgeInsets.zero,
-          ),
+          style: IconButton.styleFrom(padding: EdgeInsets.zero),
           padding: EdgeInsets.zero,
         ),
       );

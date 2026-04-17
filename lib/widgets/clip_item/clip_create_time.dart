@@ -8,11 +8,7 @@ import 'package:flutter/material.dart';
 class ClipCreateTime extends StatelessWidget {
   final DateTime created;
   final EdgeInsetsGeometry? padding;
-  const ClipCreateTime({
-    super.key,
-    this.padding,
-    required this.created,
-  });
+  const ClipCreateTime({super.key, this.padding, required this.created});
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +17,9 @@ class ClipCreateTime extends StatelessWidget {
 
     final createdFormatted = created.isToday()
         ? created.ago(context.locale.localeName)
-        : getLocaleDateFormatter(context.locale.localeName)
-            .format(created.toLocal());
+        : getLocaleDateFormatter(
+            context.locale.localeName,
+          ).format(created.toLocal());
     return Padding(
       padding: padding ?? const EdgeInsets.only(left: padding12),
       child: Text(

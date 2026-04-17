@@ -32,14 +32,9 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
           ),
           subtitle: Text(
             context.locale.settings__dropdown__no_copy_over_limit__subtitle(
-              fileSize: formatBytes(
-                state,
-                precise: false,
-              ),
+              fileSize: formatBytes(state, precise: false),
             ),
-            style: textTheme.bodyMedium?.copyWith(
-              color: colors.outline,
-            ),
+            style: textTheme.bodyMedium?.copyWith(color: colors.outline),
           ),
           trailing: DropdownButtonHideUnderline(
             child: ConstrainedBox(
@@ -57,10 +52,7 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
                       children: [
                         const SizedBox.square(
                           dimension: 24,
-                          child: Icon(
-                            Icons.circle,
-                            size: 5,
-                          ),
+                          child: Icon(Icons.circle, size: 5),
                         ),
                         width12,
                         Text(context.locale.settings__text__5MB),
@@ -74,10 +66,7 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
                       children: [
                         const SizedBox.square(
                           dimension: 24,
-                          child: Icon(
-                            Icons.circle,
-                            size: 10,
-                          ),
+                          child: Icon(Icons.circle, size: 10),
                         ),
                         width12,
                         Text(context.locale.settings__text__10MB),
@@ -91,10 +80,7 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
                       children: [
                         const SizedBox.square(
                           dimension: 24,
-                          child: Icon(
-                            Icons.circle,
-                            size: 15,
-                          ),
+                          child: Icon(Icons.circle, size: 15),
                         ),
                         width12,
                         Text(context.locale.settings__text__20MB),
@@ -108,10 +94,7 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
                       children: [
                         const SizedBox.square(
                           dimension: 24,
-                          child: Icon(
-                            Icons.circle,
-                            size: 20,
-                          ),
+                          child: Icon(Icons.circle, size: 20),
                         ),
                         width12,
                         Text(context.locale.settings__text__50MB),

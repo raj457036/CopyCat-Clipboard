@@ -11,8 +11,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class GoogleDriveSetup extends StatelessWidget {
   const GoogleDriveSetup({super.key});
 
-  Future<void> connectGDrive(BuildContext context,
-      {bool alreadyConnected = false}) async {
+  Future<void> connectGDrive(
+    BuildContext context, {
+    bool alreadyConnected = false,
+  }) async {
     final cubit = context.read<DriveSetupCubit>();
     if (alreadyConnected) {
       final confirm = await ConfirmDialog(
@@ -73,8 +75,9 @@ class GoogleDriveSetup extends StatelessWidget {
                 ),
                 child: Text(
                   context.locale.settings__text__cloud__title,
-                  style: textTheme.titleMedium
-                      ?.copyWith(fontVariations: fontVarW700),
+                  style: textTheme.titleMedium?.copyWith(
+                    fontVariations: fontVarW700,
+                  ),
                 ),
               ),
               Padding(
@@ -83,15 +86,17 @@ class GoogleDriveSetup extends StatelessWidget {
                   vertical: padding8,
                 ),
                 child: Text(
-                    "${hasError ? "${context.locale.settings__text__gdrive__error}\n\n" : ''}${context.locale.settings__text__gdrive__info}"),
+                  "${hasError ? "${context.locale.settings__text__gdrive__error}\n\n" : ''}${context.locale.settings__text__gdrive__info}",
+                ),
               ),
               ListTile(
                 tileColor: colors.secondaryContainer,
                 minLeadingWidth: 20,
                 title: Text(
                   context.locale.settings__text__cloud__name,
-                  style: textTheme.titleMedium
-                      ?.copyWith(fontVariations: fontVarW700),
+                  style: textTheme.titleMedium?.copyWith(
+                    fontVariations: fontVarW700,
+                  ),
                 ),
                 // subtitle: const Text(
                 //   "🔗 linked email...",
@@ -106,9 +111,9 @@ class GoogleDriveSetup extends StatelessWidget {
                   onPressed: buttonDisabled
                       ? null
                       : () => connectGDrive(
-                            context,
-                            alreadyConnected: alreadyConnected,
-                          ),
+                          context,
+                          alreadyConnected: alreadyConnected,
+                        ),
                   label: Text(text),
                   icon: const Image(
                     image: AssetImage(AssetConstants.googleDriveLogo),

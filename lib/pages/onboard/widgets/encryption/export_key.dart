@@ -49,10 +49,11 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
       final content = jsonEncode(json);
 
       final path = await FilePicker.platform.saveFile(
-          fileName: "copycat-e2ee-vault-key.enc2",
-          type: FileType.custom,
-          allowedExtensions: ['enc2'],
-          bytes: utf8.encode(content));
+        fileName: "copycat-e2ee-vault-key.enc2",
+        type: FileType.custom,
+        allowedExtensions: ['enc2'],
+        bytes: utf8.encode(content),
+      );
       await windowAction?.show();
       if (path != null) {
         exported = true;
@@ -103,10 +104,7 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.lock,
-              size: 28,
-            ),
+            const Icon(Icons.lock, size: 28),
             height10,
             Text(
               context.locale.onboarding__text__export_key_headline,

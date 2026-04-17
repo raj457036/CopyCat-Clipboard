@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppLayoutBuilder extends StatelessWidget {
   final Widget Function(BuildContext context, AppLayout layout, bool supported)
-      builder;
+  builder;
 
   const AppLayoutBuilder({super.key, required this.builder});
 

@@ -21,6 +21,12 @@ _$AppConfigImpl _$$AppConfigImplFromJson(
   windowWidth: (json['windowWidth'] as num?)?.toDouble() ?? initialWindowWidth,
   windowHeight:
       (json['windowHeight'] as num?)?.toDouble() ?? initialWindowHeight,
+  sortBy:
+      $enumDecodeNullable(_$ClipboardSortKeyEnumMap, json['sortBy']) ??
+      ClipboardSortKey.created,
+  sortOrder:
+      $enumDecodeNullable(_$SortOrderEnumMap, json['sortOrder']) ??
+      SortOrder.desc,
   dontUploadOver: (json['dontUploadOver'] as num?)?.toInt() ?? $10MB,
   dontCopyOver: (json['dontCopyOver'] as num?)?.toInt() ?? $10MB,
   pausedTill: json['pausedTill'] == null
@@ -59,6 +65,8 @@ Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
       'pinned': instance.pinned,
       'windowWidth': instance.windowWidth,
       'windowHeight': instance.windowHeight,
+      'sortBy': _$ClipboardSortKeyEnumMap[instance.sortBy]!,
+      'sortOrder': _$SortOrderEnumMap[instance.sortOrder]!,
       'dontUploadOver': instance.dontUploadOver,
       'dontCopyOver': instance.dontCopyOver,
       'pausedTill': instance.pausedTill?.toIso8601String(),
@@ -93,6 +101,15 @@ const _$AppViewEnumMap = {
   AppView.rightDocked: 'rightDocked',
   AppView.windowed: 'windowed',
 };
+
+const _$ClipboardSortKeyEnumMap = {
+  ClipboardSortKey.created: 'created',
+  ClipboardSortKey.modified: 'modified',
+  ClipboardSortKey.lastCopied: 'lastCopied',
+  ClipboardSortKey.copyCount: 'copyCount',
+};
+
+const _$SortOrderEnumMap = {SortOrder.asc: 'asc', SortOrder.desc: 'desc'};
 
 const _$SyncSpeedEnumMap = {
   SyncSpeed.realtime: 'realtime',

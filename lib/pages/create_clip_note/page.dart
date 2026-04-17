@@ -64,7 +64,7 @@ class _CreateClipNotePageState extends State<CreateClipNotePage> {
                 ? Text(context.locale.create_clip__appbar__title__new)
                 : Text(context.locale.create_clip__appbar__title__edit),
             width10,
-            const Icon(Icons.science_rounded)
+            const Icon(Icons.science_rounded),
           ],
         ),
         centerTitle: false,

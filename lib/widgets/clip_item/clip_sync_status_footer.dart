@@ -51,46 +51,45 @@ class ClipSyncStatusFooter extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(padding8),
-          child: LayoutBuilder(builder: (context, constraints) {
-            final width = constraints.maxWidth;
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.sync_problem_rounded,
-                  size: 18,
-                ),
-                width6,
-                if (width > 200)
-                  Text(
-                    context.locale.app__local,
-                    style: context.textTheme.labelMedium,
-                  ),
-                const Spacer(),
-                Focus(
-                  canRequestFocus: false,
-                  skipTraversal: true,
-                  descendantsAreFocusable: false,
-                  descendantsAreTraversable: false,
-                  child: ElevatedButton(
-                    onPressed: item.isSyncing
-                        ? null
-                        : () {
-                            context.read<CloudPersistanceCubit>().persist(
-                                  item.copyWith(userIntent: true),
-                                );
-                          },
-                    child: Text(
-                      buttonText,
-                      style: context.textTheme.labelSmall?.copyWith(
-                        fontVariations: fontVarW700,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final width = constraints.maxWidth;
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Icon(Icons.sync_problem_rounded, size: 18),
+                  width6,
+                  if (width > 200)
+                    Text(
+                      context.locale.app__local,
+                      style: context.textTheme.labelMedium,
+                    ),
+                  const Spacer(),
+                  Focus(
+                    canRequestFocus: false,
+                    skipTraversal: true,
+                    descendantsAreFocusable: false,
+                    descendantsAreTraversable: false,
+                    child: ElevatedButton(
+                      onPressed: item.isSyncing
+                          ? null
+                          : () {
+                              context.read<CloudPersistanceCubit>().persist(
+                                item.copyWith(userIntent: true),
+                              );
+                            },
+                      child: Text(
+                        buttonText,
+                        style: context.textTheme.labelSmall?.copyWith(
+                          fontVariations: fontVarW700,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            );
-          }),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

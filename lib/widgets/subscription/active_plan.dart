@@ -10,8 +10,9 @@ class ActivePlanAction extends StatelessWidget {
     BuildContext context, {
     bool entitlementGrantMode = false,
   }) async {
-    SubscriptionInfoDialog(entitlementGrantMode: entitlementGrantMode)
-        .open(context);
+    SubscriptionInfoDialog(
+      entitlementGrantMode: entitlementGrantMode,
+    ).open(context);
   }
 
   @override

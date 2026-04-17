@@ -31,9 +31,7 @@ class DriveCredentialRepositoryImpl implements DriveCredentialRepository {
       'response_type': 'code',
       'client_id': clientId,
       'redirect_uri': redirectUrl,
-      'scope': [
-        DriveApi.driveAppdataScope,
-      ].join(" "),
+      'scope': [DriveApi.driveAppdataScope].join(" "),
       "access_type": "offline",
       "prompt": "consent",
       "state":
@@ -59,12 +57,9 @@ class DriveCredentialRepositoryImpl implements DriveCredentialRepository {
 
       final query = db
           .from(table)
-          .select([
-            "access_token",
-            "issued_at",
-            "expires_in",
-            "scopes",
-          ].join(","))
+          .select(
+            ["access_token", "issued_at", "expires_in", "scopes"].join(","),
+          )
           .eq("userId", userId);
       final doc = await query.limit(1).maybeSingle();
       if (doc == null) {
@@ -105,10 +100,7 @@ class DriveCredentialRepositoryImpl implements DriveCredentialRepository {
     try {
       final result = await retry(
         () => client.functions
-            .invoke(
-              "get_gaccess_token",
-              method: HttpMethod.get,
-            )
+            .invoke("get_gaccess_token", method: HttpMethod.get)
             .timeout(const Duration(seconds: 30)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );

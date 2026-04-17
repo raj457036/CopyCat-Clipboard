@@ -20,12 +20,11 @@ class ManageSubscriptionButton extends StatelessWidget {
     }
     if (subscription.source == "PROMO") {
       // ignore: use_build_context_synchronously
-      final till = dateTimeFormatter(context.locale.localeName)
-          .format(subscription.activeTill!);
+      final till = dateTimeFormatter(
+        context.locale.localeName,
+      ).format(subscription.activeTill!);
       // ignore: use_build_context_synchronously
-      showTextSnackbar(
-        context.locale.manage_sub__ack__promo_sub(till: till),
-      );
+      showTextSnackbar(context.locale.manage_sub__ack__promo_sub(till: till));
     }
   }
 
@@ -34,13 +33,14 @@ class ManageSubscriptionButton extends StatelessWidget {
     return BlocBuilder<MonetizationCubit, MonetizationState>(
       builder: (context, state) {
         return state.when(
-            unknown: () => const SizedBox.shrink(),
-            active: (sub) {
-              return ElevatedButton(
-                onPressed: () => manageSubscription(context, sub),
-                child: Text(context.locale.manage_sub__button__text),
-              );
-            });
+          unknown: () => const SizedBox.shrink(),
+          active: (sub) {
+            return ElevatedButton(
+              onPressed: () => manageSubscription(context, sub),
+              child: Text(context.locale.manage_sub__button__text),
+            );
+          },
+        );
       },
     );
   }

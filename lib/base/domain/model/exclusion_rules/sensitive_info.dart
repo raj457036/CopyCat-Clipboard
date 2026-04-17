@@ -86,7 +86,7 @@ const sensitiveTitlesKeywords = [
   "encrypted",
   "apply",
   "submit",
-  "billing"
+  "billing",
 ];
 const sensitiveUrlKeywords = [
   "login",

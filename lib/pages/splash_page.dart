@@ -5,9 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({
-    super.key,
-  });
+  const SplashPage({super.key});
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -21,8 +19,9 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> checkAuth() async {
-    final authenticated =
-        await context.read<AuthCubit>().checkForAuthentication();
+    final authenticated = await context
+        .read<AuthCubit>()
+        .checkForAuthentication();
     if (!mounted) return;
     if (authenticated) {
       context.goNamed(RouteConstants.home);

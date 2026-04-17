@@ -28,9 +28,7 @@ class InconsistentTiming extends StatefulWidget {
       showAdaptiveDialog(
         context: rootNavKey.currentContext!,
         barrierDismissible: false,
-        routeSettings: const RouteSettings(
-          name: "Inconsistent-Time",
-        ),
+        routeSettings: const RouteSettings(name: "Inconsistent-Time"),
         builder: (context) {
           return this;
         },
@@ -52,14 +50,10 @@ class _InconsistentTimingState extends State<InconsistentTiming> {
       autoFixing = true;
     });
 
-    await Process.run(
-      'powershell',
-      [
-        '-Command',
-        'Start-Process powershell -Verb runAs -WindowStyle Hidden -ArgumentList \'-Command "w32tm /resync;"\''
-      ],
-      runInShell: true,
-    );
+    await Process.run('powershell', [
+      '-Command',
+      'Start-Process powershell -Verb runAs -WindowStyle Hidden -ArgumentList \'-Command "w32tm /resync;"\'',
+    ], runInShell: true);
     await wait(5000);
     setState(() {
       autoFixing = false;
@@ -102,14 +96,14 @@ class _InconsistentTimingState extends State<InconsistentTiming> {
   Widget build(BuildContext context) {
     const loading = SizedBox.square(
       dimension: 22,
-      child: CircularProgressIndicator(
-        strokeWidth: 2,
-      ),
+      child: CircularProgressIndicator(strokeWidth: 2),
     );
     final actionDisabled = autoFixing || checking;
     return AlertDialog.adaptive(
-      title: Text(context.locale.dialog__text__inconsistent_time__title,
-          textAlign: TextAlign.center),
+      title: Text(
+        context.locale.dialog__text__inconsistent_time__title,
+        textAlign: TextAlign.center,
+      ),
       content: SizedBox(
         width: 250,
         child: Padding(

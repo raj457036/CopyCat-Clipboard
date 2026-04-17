@@ -61,8 +61,9 @@ class ApplinkListener {
     } else if (uri.host == "reset-password") {
       final code = payload["code"];
       if (code != null) {
-        final (path, failure) =
-            await context.read<AuthCubit>().validateAuthCode(code);
+        final (path, failure) = await context
+            .read<AuthCubit>()
+            .validateAuthCode(code);
         if (path != null) {
           router.pushNamed(path);
         }

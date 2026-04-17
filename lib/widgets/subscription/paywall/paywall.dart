@@ -140,7 +140,7 @@ class CustomPaywallStateDialog extends State<CustomPaywallDialog> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(widget.localization.subscription),
-            const CloseButton()
+            const CloseButton(),
           ],
         ),
         content: SizedBox(
@@ -150,9 +150,7 @@ class CustomPaywallStateDialog extends State<CustomPaywallDialog> {
       );
     }
 
-    const loader = Center(
-      child: CircularProgressIndicator(),
-    );
+    const loader = Center(child: CircularProgressIndicator());
 
     if (loading) {
       return const AlertDialog(content: loader);
@@ -164,17 +162,13 @@ class CustomPaywallStateDialog extends State<CustomPaywallDialog> {
         ListTile(
           shape: RoundedRectangleBorder(
             borderRadius: radius12,
-            side: BorderSide(
-              color: colors.outline,
-            ),
+            side: BorderSide(color: colors.outline),
           ),
           selected: package == selectedPackage,
           selectedTileColor: colors.primaryContainer,
           title: Text(
             package.packageType.name.title,
-            style: textTheme.titleSmall?.copyWith(
-              color: colors.onSurface,
-            ),
+            style: textTheme.titleSmall?.copyWith(color: colors.onSurface),
           ),
           enabled: !purchasing,
           subtitle: Text(getPackagePricing(package)),
@@ -188,8 +182,8 @@ class CustomPaywallStateDialog extends State<CustomPaywallDialog> {
             bottom: padding8,
           ),
         ),
-        height8
-      ]
+        height8,
+      ],
     ];
 
     return AlertDialog(
@@ -219,9 +213,7 @@ class CustomPaywallStateDialog extends State<CustomPaywallDialog> {
                 dense: true,
                 title: Text(
                   errorMessage!,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colors.error,
-                  ),
+                  style: textTheme.bodyMedium?.copyWith(color: colors.error),
                   textAlign: TextAlign.center,
                 ),
                 subtitle: Text(

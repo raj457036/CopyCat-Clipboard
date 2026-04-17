@@ -21,31 +21,25 @@ class AuthCubit extends Cubit<AuthState> {
   final TinyStorage localCache;
   final AnalyticsRepository analyticsRepo;
 
-  AuthCubit(
-    this.repo,
-    this.localCache,
-    this.analyticsRepo,
-  ) : super(const AuthState.unknown());
+  AuthCubit(this.repo, this.localCache, this.analyticsRepo)
+    : super(const AuthState.unknown());
 
   /// validate the code and return a suitable page path
   Future<(String?, Failure?)> validateAuthCode(String code) async {
     final result = await repo.validateAuthCode(code);
 
-    return result.fold(
-      (failure) => (null, failure),
-      (right) {
-        final (type, user) = right;
-        if (user == null) return (null, null);
-        switch (type) {
-          case "passwordRecovery":
-            authenticated(user, repo.accessToken!);
-            return (RouteConstants.resetPassword, null);
-          case _:
-            logger.w("Exchange not supported. $type");
-        }
-        return (null, null);
-      },
-    );
+    return result.fold((failure) => (null, failure), (right) {
+      final (type, user) = right;
+      if (user == null) return (null, null);
+      switch (type) {
+        case "passwordRecovery":
+          authenticated(user, repo.accessToken!);
+          return (RouteConstants.resetPassword, null);
+        case _:
+          logger.w("Exchange not supported. $type");
+      }
+      return (null, null);
+    });
   }
 
   bool get isLocalAuth => state is LocalAuthenticatedAuthState;
@@ -63,28 +57,32 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> removeEncryptionSetup() async {
-    await state.mapOrNull(authenticated: (authState) async {
-      final result = await repo.updateUserInfo({
-        "enc1": null,
-        "enc2KeyId": null,
-      });
-      result.fold((l) {}, (user) {
-        emit(authState.copyWith(user: user));
-      });
-    });
+    await state.mapOrNull(
+      authenticated: (authState) async {
+        final result = await repo.updateUserInfo({
+          "enc1": null,
+          "enc2KeyId": null,
+        });
+        result.fold((l) {}, (user) {
+          emit(authState.copyWith(user: user));
+        });
+      },
+    );
   }
 
   /// enc1 is always encrypted with enc2 key.
   Future<void> setupEncryption(String enc2KeyId, String enc1) async {
-    await state.mapOrNull(authenticated: (authState) async {
-      final result = await repo.updateUserInfo({
-        "enc1": enc1,
-        "enc2KeyId": enc2KeyId,
-      });
-      result.fold((l) {}, (user) {
-        emit(authState.copyWith(user: user));
-      });
-    });
+    await state.mapOrNull(
+      authenticated: (authState) async {
+        final result = await repo.updateUserInfo({
+          "enc1": enc1,
+          "enc2KeyId": enc2KeyId,
+        });
+        result.fold((l) {}, (user) {
+          emit(authState.copyWith(user: user));
+        });
+      },
+    );
   }
 
   bool checkLocalSignin() {
@@ -105,10 +103,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> authenticated(AuthUser user, String accessToken) async {
     analyticsRepo.setAnalyticUser(user);
 
-    emit(AuthState.authenticated(
-      user: user,
-      accessToken: accessToken,
-    ));
+    emit(AuthState.authenticated(user: user, accessToken: accessToken));
   }
 
   void unauthenticated(Failure failure) {

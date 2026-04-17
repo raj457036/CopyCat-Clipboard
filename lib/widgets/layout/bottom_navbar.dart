@@ -6,10 +6,7 @@ import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int navbarActiveIndex;
-  const BottomNavBar({
-    super.key,
-    required this.navbarActiveIndex,
-  });
+  const BottomNavBar({super.key, required this.navbarActiveIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +44,10 @@ class BottomNavBar extends StatelessWidget {
               NavigationDestination(
                 icon: const Icon(Icons.settings_outlined),
                 selectedIcon: const Icon(Icons.settings_rounded),
-                label: context.locale.layout__navbar__settings
-                    .sub(start: 0, end: 8),
+                label: context.locale.layout__navbar__settings.sub(
+                  start: 0,
+                  end: 8,
+                ),
                 tooltip: context.locale.layout__navbar__settings,
               ),
             ],

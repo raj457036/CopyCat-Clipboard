@@ -22,17 +22,13 @@ class LoginForm extends StatelessWidget {
 
   Future<void> launchPrivacyPolicyPage() async {
     await launchUrl(
-      Uri.parse(
-        const String.fromEnvironment("PRIVACY_POLICY_URL"),
-      ),
+      Uri.parse(const String.fromEnvironment("PRIVACY_POLICY_URL")),
     );
   }
 
   Future<void> launchTermsOfServicePage() async {
     await launchUrl(
-      Uri.parse(
-        const String.fromEnvironment("TERMS_CONDITIONS_URL"),
-      ),
+      Uri.parse(const String.fromEnvironment("TERMS_CONDITIONS_URL")),
     );
   }
 
@@ -69,8 +65,9 @@ class LoginForm extends StatelessWidget {
                 children: [
                   Text(
                     context.locale.app__name,
-                    style: textTheme.headlineLarge
-                        ?.copyWith(fontVariations: fontVarW600),
+                    style: textTheme.headlineLarge?.copyWith(
+                      fontVariations: fontVarW600,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   height12,
@@ -133,7 +130,8 @@ class LoginForm extends StatelessWidget {
                         enterPassword:
                             context.locale.login__form__input__password,
                         passwordLengthError: context
-                            .locale.login__form__input__error_password_length,
+                            .locale
+                            .login__form__input__error_password_length,
                         signIn: context.locale.login__form__button__signin,
                         signUp: context.locale.login__form__button__signup,
                         forgotPassword:
@@ -167,9 +165,7 @@ class LoginForm extends StatelessWidget {
                           recognizer: TapGestureRecognizer()
                             ..onTap = launchPrivacyPolicyPage,
                         ),
-                        TextSpan(
-                          text: context.locale.login__form__text_tnc_p3,
-                        ),
+                        TextSpan(text: context.locale.login__form__text_tnc_p3),
                         TextSpan(
                           text: context.locale.login__form__text_tnc_p4,
                           style: textTheme.bodyMedium?.copyWith(

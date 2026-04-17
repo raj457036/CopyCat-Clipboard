@@ -1,10 +1,11 @@
 import 'dart:convert' show jsonDecode;
-
 import 'package:clipboard/base/constants/numbers/file_sizes.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/encryption.dart';
 import 'package:clipboard/base/domain/model/base.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_rules.dart';
+import 'package:clipboard/base/domain/sources/clipboard.dart';
+import 'package:clipboard/base/enums/sort.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
@@ -18,13 +19,7 @@ enum AppLayout { grid, list }
 
 enum SyncSpeed { realtime, balanced }
 
-enum AppView {
-  topDocked,
-  bottomDocked,
-  leftDocked,
-  rightDocked,
-  windowed,
-}
+enum AppView { topDocked, bottomDocked, leftDocked, rightDocked, windowed }
 
 @freezed
 class AppConfig with _$AppConfig, Identifiable {
@@ -40,6 +35,10 @@ class AppConfig with _$AppConfig, Identifiable {
     @Default(false) bool pinned,
     @Default(initialWindowWidth) double windowWidth,
     @Default(initialWindowHeight) double windowHeight,
+
+    // Sorting settings
+    @Default(ClipboardSortKey.created) ClipboardSortKey sortBy,
+    @Default(SortOrder.desc) SortOrder sortOrder,
 
     /// will prevent auto upload for files over 10 MB
     @Default($10MB) int dontUploadOver,
@@ -84,7 +83,6 @@ class AppConfig with _$AppConfig, Identifiable {
     // on boarding
     @Default(true)
     bool onBoardComplete, // On logout/unauth this will be set to true
-
     //? Local App States
     /// last focus window id
     @JsonKey(includeFromJson: false, includeToJson: false)

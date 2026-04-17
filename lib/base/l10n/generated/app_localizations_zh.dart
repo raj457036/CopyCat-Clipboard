@@ -990,6 +990,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__appbar__title => '设置';
 
   @override
+  String get settings__header__appearance => 'Appearance';
+
+  @override
+  String get settings__header__sorting => 'Default Sorting';
+
+  @override
+  String get settings__header__interactions => 'Interactions';
+
+  @override
   String get settings__tab__1 => '常规';
 
   @override
@@ -1093,6 +1102,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings__dropdown__theme__title => '主题模式';
+
+  @override
+  String get settings__dropdown__default_sort__title => 'Sort By';
+
+  @override
+  String get settings__dropdown__default_sort_order__title => 'Sort Order';
 
   @override
   String get settings__theme__system => '系统';

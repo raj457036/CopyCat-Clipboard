@@ -3,9 +3,7 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 
 Future<void> presentPaywall() async {
-  await RevenueCatUI.presentPaywall(
-    displayCloseButton: true,
-  );
+  await RevenueCatUI.presentPaywall(displayCloseButton: true);
 }
 
 Subscription generateFreePlan(String userId) {

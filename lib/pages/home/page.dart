@@ -15,9 +15,7 @@ class HomePage extends StatelessWidget {
     Widget scaffold = const CustomScaffold(
       activeIndex: 0,
       appBar: HomeAppbar(),
-      body: ScaffoldBody(
-        child: HomePageBody(),
-      ),
+      body: ScaffoldBody(child: HomePageBody()),
     );
 
     // NOTE: drag and drop doesn't work in android for now

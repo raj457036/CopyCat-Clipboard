@@ -28,9 +28,7 @@ class BulletPoint extends StatelessWidget {
           Expanded(
             child: RichText(
               text: TextSpan(
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colors.onSurface,
-                ),
+                style: textTheme.bodyMedium?.copyWith(color: colors.onSurface),
                 children: [
                   TextSpan(text: prefix),
                   TextSpan(

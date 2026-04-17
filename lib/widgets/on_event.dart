@@ -8,11 +8,7 @@ class OnEvent<T> extends StatelessWidget {
   final Widget child;
   final OnEventTrigger<T> trigger;
 
-  const OnEvent({
-    super.key,
-    required this.child,
-    required this.trigger,
-  });
+  const OnEvent({super.key, required this.child, required this.trigger});
 
   @override
   Widget build(BuildContext context) {

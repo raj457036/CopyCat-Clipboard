@@ -44,14 +44,13 @@ class E2EESettings extends StatelessWidget {
             ),
             SwitchListTile(
               value: autoEncrypt,
-              onChanged:
-                  setup ? (value) => toggleAutoEncrypt(context, value) : null,
+              onChanged: setup
+                  ? (value) => toggleAutoEncrypt(context, value)
+                  : null,
               title: Text(context.locale.settings__switch__e2e__title),
               subtitle: Text(
                 context.locale.settings__switch__e2e__subtitle,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colors.outline,
-                ),
+                style: textTheme.bodyMedium?.copyWith(color: colors.outline),
               ),
             ),
           ],

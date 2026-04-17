@@ -45,7 +45,8 @@ class _EmojiSelectorSheetState extends State<EmojiSelectorSheet> {
               backgroundColor: colors.surface,
 
               // Issue: https://github.com/flutter/flutter/issues/28894
-              emojiSizeMax: 28 *
+              emojiSizeMax:
+                  28 *
                   (foundation.defaultTargetPlatform == TargetPlatform.iOS
                       ? 1.20
                       : 1.0),

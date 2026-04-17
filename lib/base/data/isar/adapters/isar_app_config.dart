@@ -1,5 +1,7 @@
 import 'package:clipboard/base/data/isar/adapters/isar_exclusion_rules.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
+import 'package:clipboard/base/domain/sources/clipboard.dart';
+import 'package:clipboard/base/enums/sort.dart';
 import 'package:flutter/material.dart';
 import 'package:isar_community/isar.dart';
 
@@ -21,6 +23,11 @@ class IsarAppConfig {
   bool pinned = false;
   double windowWidth = 400;
   double windowHeight = 550;
+
+  @Enumerated(EnumType.name)
+  ClipboardSortKey sortBy = ClipboardSortKey.created;
+  @Enumerated(EnumType.name)
+  SortOrder sortOrder = SortOrder.desc;
   int dontUploadOver = 10485760;
   int dontCopyOver = 10485760;
   DateTime? pausedTill;
@@ -43,34 +50,36 @@ class IsarAppConfig {
   bool onBoardComplete = true;
 
   AppConfig toDomain() => AppConfig(
-        id: isarId == Isar.autoIncrement ? null : isarId,
-        themeMode: themeMode,
-        enableSync: enableSync,
-        enableFileSync: enableFileSync,
-        layout: layout,
-        view: view,
-        pinned: pinned,
-        windowWidth: windowWidth,
-        windowHeight: windowHeight,
-        dontUploadOver: dontUploadOver,
-        dontCopyOver: dontCopyOver,
-        pausedTill: pausedTill,
-        syncSpeed: syncSpeed,
-        toggleHotkey: toggleHotkey,
-        smartPaste: smartPaste,
-        launchAtStartup: launchAtStartup,
-        locale: locale,
-        enc2: enc2,
-        autoEncrypt: autoEncrypt,
-        exclusionRules: exclusionRules?.toDomain(),
-        themeColor: themeColor,
-        themeVariant: themeVariant,
-        enableDragNDrop: enableDragNDrop,
-        enablePasteStack: enablePasteStack,
-        androidBgListener: androidBgListener,
-        duplicatePrevention: duplicatePrevention,
-        onBoardComplete: onBoardComplete,
-      );
+    id: isarId == Isar.autoIncrement ? null : isarId,
+    themeMode: themeMode,
+    enableSync: enableSync,
+    enableFileSync: enableFileSync,
+    layout: layout,
+    view: view,
+    pinned: pinned,
+    windowWidth: windowWidth,
+    windowHeight: windowHeight,
+    dontUploadOver: dontUploadOver,
+    dontCopyOver: dontCopyOver,
+    pausedTill: pausedTill,
+    sortBy: sortBy,
+    sortOrder: sortOrder,
+    syncSpeed: syncSpeed,
+    toggleHotkey: toggleHotkey,
+    smartPaste: smartPaste,
+    launchAtStartup: launchAtStartup,
+    locale: locale,
+    enc2: enc2,
+    autoEncrypt: autoEncrypt,
+    exclusionRules: exclusionRules?.toDomain(),
+    themeColor: themeColor,
+    themeVariant: themeVariant,
+    enableDragNDrop: enableDragNDrop,
+    enablePasteStack: enablePasteStack,
+    androidBgListener: androidBgListener,
+    duplicatePrevention: duplicatePrevention,
+    onBoardComplete: onBoardComplete,
+  );
 
   static IsarAppConfig fromDomain(AppConfig config) => IsarAppConfig()
     ..isarId = config.id ?? Isar.autoIncrement
@@ -85,6 +94,8 @@ class IsarAppConfig {
     ..dontUploadOver = config.dontUploadOver
     ..dontCopyOver = config.dontCopyOver
     ..pausedTill = config.pausedTill
+    ..sortBy = config.sortBy
+    ..sortOrder = config.sortOrder
     ..syncSpeed = config.syncSpeed
     ..toggleHotkey = config.toggleHotkey
     ..smartPaste = config.smartPaste

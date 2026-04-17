@@ -16,105 +16,115 @@ class ThemeVariantDropdown extends StatelessWidget {
     final colors = context.colors;
     final cubit = context.read<AppConfigCubit>();
 
-    return SubscriptionBuilder(builder: (context, subscription) {
-      final hasAccess =
-          subscription != null && subscription.isActive && subscription.theming;
-      return ListTile(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(context.locale.settings__dropdown__color_mode__title),
-            width8,
-            const ProBadge(),
-          ],
-        ),
-        subtitle: Text(
-          context.locale.settings__dropdown__color_mode__subtitle,
-          style: textTheme.bodyMedium?.copyWith(
-            color: colors.outline,
+    return SubscriptionBuilder(
+      builder: (context, subscription) {
+        final hasAccess =
+            subscription != null &&
+            subscription.isActive &&
+            subscription.theming;
+        return ListTile(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(context.locale.settings__dropdown__color_mode__title),
+              width8,
+              const ProBadge(),
+            ],
           ),
-        ),
-        trailing:
-            BlocSelector<AppConfigCubit, AppConfigState, DynamicSchemeVariant>(
-          selector: (state) {
-            return state.config.themeVariant;
-          },
-          builder: (context, variant) {
-            return DropdownButtonHideUnderline(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 160),
-                child: DropdownButton<DynamicSchemeVariant>(
-                  value: variant,
-                  isExpanded: true,
-                  padding: const EdgeInsets.symmetric(horizontal: padding16),
-                  borderRadius: radius26,
-                  items: [
-                    DropdownMenuItem(
-                      value: DynamicSchemeVariant.tonalSpot,
-                      child: Text(
-                        context.locale.settings__color_mode__tonalSpot,
+          subtitle: Text(
+            context.locale.settings__dropdown__color_mode__subtitle,
+            style: textTheme.bodyMedium?.copyWith(color: colors.outline),
+          ),
+          trailing:
+              BlocSelector<
+                AppConfigCubit,
+                AppConfigState,
+                DynamicSchemeVariant
+              >(
+                selector: (state) {
+                  return state.config.themeVariant;
+                },
+                builder: (context, variant) {
+                  return DropdownButtonHideUnderline(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 160),
+                      child: DropdownButton<DynamicSchemeVariant>(
+                        value: variant,
+                        isExpanded: true,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: padding16,
+                        ),
+                        borderRadius: radius26,
+                        items: [
+                          DropdownMenuItem(
+                            value: DynamicSchemeVariant.tonalSpot,
+                            child: Text(
+                              context.locale.settings__color_mode__tonalSpot,
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: DynamicSchemeVariant.content,
+                            child: Text(
+                              context.locale.settings__color_mode__content,
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: DynamicSchemeVariant.expressive,
+                            child: Text(
+                              context.locale.settings__color_mode__expressive,
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: DynamicSchemeVariant.fidelity,
+                            child: Text(
+                              context.locale.settings__color_mode__fidelity,
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: DynamicSchemeVariant.fruitSalad,
+                            child: Text(
+                              context.locale.settings__color_mode__fruit_salad,
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: DynamicSchemeVariant.monochrome,
+                            child: Text(
+                              context.locale.settings__color_mode__monochrome,
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: DynamicSchemeVariant.neutral,
+                            child: Text(
+                              context.locale.settings__color_mode__neutral,
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: DynamicSchemeVariant.rainbow,
+                            child: Text(
+                              context.locale.settings__color_mode__rainbow,
+                            ),
+                          ),
+                          DropdownMenuItem(
+                            value: DynamicSchemeVariant.vibrant,
+                            child: Text(
+                              context.locale.settings__color_mode__vibrant,
+                            ),
+                          ),
+                        ],
+                        onChanged: hasAccess
+                            ? cubit.setThemeColorVariant
+                            : null,
                       ),
                     ),
-                    DropdownMenuItem(
-                      value: DynamicSchemeVariant.content,
-                      child: Text(
-                        context.locale.settings__color_mode__content,
-                      ),
-                    ),
-                    DropdownMenuItem(
-                      value: DynamicSchemeVariant.expressive,
-                      child: Text(
-                        context.locale.settings__color_mode__expressive,
-                      ),
-                    ),
-                    DropdownMenuItem(
-                      value: DynamicSchemeVariant.fidelity,
-                      child: Text(
-                        context.locale.settings__color_mode__fidelity,
-                      ),
-                    ),
-                    DropdownMenuItem(
-                      value: DynamicSchemeVariant.fruitSalad,
-                      child: Text(
-                        context.locale.settings__color_mode__fruit_salad,
-                      ),
-                    ),
-                    DropdownMenuItem(
-                      value: DynamicSchemeVariant.monochrome,
-                      child: Text(
-                        context.locale.settings__color_mode__monochrome,
-                      ),
-                    ),
-                    DropdownMenuItem(
-                      value: DynamicSchemeVariant.neutral,
-                      child: Text(
-                        context.locale.settings__color_mode__neutral,
-                      ),
-                    ),
-                    DropdownMenuItem(
-                      value: DynamicSchemeVariant.rainbow,
-                      child: Text(
-                        context.locale.settings__color_mode__rainbow,
-                      ),
-                    ),
-                    DropdownMenuItem(
-                      value: DynamicSchemeVariant.vibrant,
-                      child: Text(
-                        context.locale.settings__color_mode__vibrant,
-                      ),
-                    ),
-                  ],
-                  onChanged: hasAccess ? cubit.setThemeColorVariant : null,
-                ),
+                  );
+                },
               ),
-            );
-          },
-        ),
-        contentPadding: const EdgeInsets.only(
-          left: padding16,
-          right: padding4,
-        ),
-      );
-    });
+          contentPadding: const EdgeInsets.only(
+            left: padding16,
+            right: padding4,
+          ),
+        );
+      },
+    );
   }
 }

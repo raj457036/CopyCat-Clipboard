@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
+import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
@@ -16,7 +16,7 @@ part 'collection_clips_state.dart';
 
 @injectable
 class CollectionClipsCubit extends Cubit<CollectionClipsState> {
-  final EventBusCubit eventBus;
+  final SyncEventBus syncEventBus;
   final ClipboardRepository repo;
   final ClipCollection collection;
   late StreamSubscription eventBusSubscription;
@@ -24,16 +24,15 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
   String? currentQuery;
 
   CollectionClipsCubit(
-    this.eventBus,
+    this.syncEventBus,
     @Named("local") this.repo, {
     @factoryParam required this.collection,
   }) : super(const CollectionClipsState.initial()) {
-    eventBusSubscription = eventBus.stream.listen((state) {
-      switch (state) {
-        case EventBusClipCrossSyncEvent(:final event):
-          onSyncEvent(event);
-        case EventBusBatchClipCrossSyncEvent(:final events):
-          onBatchSyncEvent(events);
+    eventBusSubscription = syncEventBus.where<ClipboardItem>().listen((event) {
+      if (event is TypedSyncEvent<ClipboardItem>) {
+        onSyncEvent(event.event);
+      } else if (event is TypedSyncBatchEvent<ClipboardItem>) {
+        onBatchSyncEvent(event.events);
       }
     });
   }
@@ -43,9 +42,7 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
     switch (state) {
       case InitialCollectionClipsState() || CollectionClipsErrorState():
         {
-          emit(
-            CollectionClipsState.searching(query: searchQuery),
-          );
+          emit(CollectionClipsState.searching(query: searchQuery));
 
           final items = await repo.getList(
             limit: 50,
@@ -55,9 +52,7 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
 
           emit(
             items.fold(
-              (l) => CollectionClipsState.error(
-                failure: l,
-              ),
+              (l) => CollectionClipsState.error(failure: l),
               (r) => CollectionClipsState.results(
                 query: searchQuery,
                 isLoading: false,
@@ -70,17 +65,15 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
         }
 
       case CollectionClipsResultsState(
-          :final query,
-          :final results,
-          :final offset,
-          :final hasMore
-        ):
+        :final query,
+        :final results,
+        :final offset,
+        :final hasMore,
+      ):
         {
           final newQuery = searchQuery != null && query != searchQuery;
           if (!hasMore && !newQuery) return;
-          emit(
-            CollectionClipsState.searching(query: searchQuery ?? query),
-          );
+          emit(CollectionClipsState.searching(query: searchQuery ?? query));
           final items = await repo.getList(
             limit: limit ?? 50,
             offset: newQuery ? 0 : offset,
@@ -89,9 +82,7 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
           );
 
           final nextState = items.fold(
-            (l) => CollectionClipsState.error(
-              failure: l,
-            ),
+            (l) => CollectionClipsState.error(failure: l),
             (r) => CollectionClipsState.results(
               query: searchQuery ?? query,
               results: newQuery ? r.results : [...results, ...r.results],
@@ -106,19 +97,22 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
   }
 
   Future<void> deleteItem(List<ClipboardItem> items) async {
-    state.mapOrNull(results: (result) {
-      final ids = items.map((item) => item.id).toSet();
-      final items_ =
-          result.results.where((it) => !ids.contains(it.id)).toList();
-      final isDeleted = items_.length < result.results.length;
-      emit(
-        result.copyWith(
-          results: items_,
-          offset: isDeleted ? result.offset - 1 : result.offset,
-        ),
-      );
-      search(currentQuery, items.length);
-    });
+    state.mapOrNull(
+      results: (result) {
+        final ids = items.map((item) => item.id).toSet();
+        final items_ = result.results
+            .where((it) => !ids.contains(it.id))
+            .toList();
+        final isDeleted = items_.length < result.results.length;
+        emit(
+          result.copyWith(
+            results: items_,
+            offset: isDeleted ? result.offset - 1 : result.offset,
+          ),
+        );
+        search(currentQuery, items.length);
+      },
+    );
   }
 
   void put(ClipboardItem item) {
@@ -127,12 +121,15 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
       return;
     }
 
-    state.mapOrNull(results: (result) {
-      final items = result.results.replaceWhere((it) => it.id == item.id, item);
-      emit(
-        result.copyWith(results: items),
-      );
-    });
+    state.mapOrNull(
+      results: (result) {
+        final items = result.results.replaceWhere(
+          (it) => it.id == item.id,
+          item,
+        );
+        emit(result.copyWith(results: items));
+      },
+    );
   }
 
   void onBatchSyncEvent(List<ClipCrossSyncEvent> events) {
@@ -159,8 +156,9 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
         .map((event) => event.$2)
         .toList();
     if (created.isNotEmpty) {
-      emit(currentState
-          .copyWith(results: [...created, ...currentState.results]));
+      emit(
+        currentState.copyWith(results: [...created, ...currentState.results]),
+      );
     }
 
     // Updates

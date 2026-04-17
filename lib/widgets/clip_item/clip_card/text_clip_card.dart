@@ -11,18 +11,11 @@ class TextPreviewBody extends StatelessWidget {
   final Color? bg;
   final Widget child;
 
-  const TextPreviewBody({
-    super.key,
-    required this.child,
-    this.bg,
-  });
+  const TextPreviewBody({super.key, required this.child, this.bg});
 
   @override
   Widget build(BuildContext context) {
-    final body = Padding(
-      padding: const EdgeInsets.all(padding8),
-      child: child,
-    );
+    final body = Padding(padding: const EdgeInsets.all(padding8), child: child);
     if (bg != null) {
       return Material(
         type: MaterialType.card,
@@ -39,11 +32,7 @@ class TextClipCard extends StatelessWidget {
   final AppLayout layout;
   final ClipboardItem item;
 
-  const TextClipCard({
-    super.key,
-    required this.layout,
-    required this.item,
-  });
+  const TextClipCard({super.key, required this.layout, required this.item});
 
   @override
   Widget build(BuildContext context) {

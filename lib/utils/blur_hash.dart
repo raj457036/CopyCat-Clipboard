@@ -10,8 +10,10 @@ import 'package:universal_io/io.dart';
 String? calculateBlurHash(String path) {
   try {
     final bin = File(path).readAsBytesSync();
-    final mimeType =
-        mime.lookupMimeType(path, headerBytes: bin.sublist(0, 100));
+    final mimeType = mime.lookupMimeType(
+      path,
+      headerBytes: bin.sublist(0, 100),
+    );
 
     img.Image? image;
 
@@ -40,10 +42,7 @@ String? calculateBlurHash(String path) {
     final result = BlurHash.encode(image, numCompX: 4, numCompY: 3).hash;
     return result;
   } catch (e) {
-    logger.e(
-      "Couldn't get blur hash from the image!",
-      error: e,
-    );
+    logger.e("Couldn't get blur hash from the image!", error: e);
     return null;
   }
 }

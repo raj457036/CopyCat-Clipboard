@@ -47,9 +47,9 @@
   "app__create_collection": "Create Collection",
   "app__pro_tip": "Pro Tip",
   "app__try_again": "Try Again",
-  "app__realtime_connected": "Realtime Connected", 
-  "app__realtime_disconnected": "Realtime Disconnected", 
-  "app__realtime_connecting": "Realtime Connecting...", 
+  "app__realtime_connected": "Realtime Connected",
+  "app__realtime_disconnected": "Realtime Disconnected",
+  "app__realtime_connecting": "Realtime Connecting...",
   "app__ack__exported": "Exported",
   "app__ack__copied": "Copied",
   "app__ack__pasted": "Pasted",
@@ -85,15 +85,12 @@
   "dialog__text__e2e_key_import__note": "Import your encryption key below to access your encrypted data on this device.",
   "dialog__button__e2e_importing_key": "Importing",
   "dialog__button__e2e_import_key": "Import",
-
   "dialog__text__inconsistent_time__title": "Time Sync Warning",
   "dialog__text__inconsistent_time__content": "Inconsistent Device Time Detected\n\nTo ensure accurate clipboard syncing, please check and correct your device's time settings.\n\nInconsistent time settings may cause synchronization issues.",
   "dialog__button__try_again": "Check Again",
   "dialog__button__try_fix": "Try Auto-Fix",
-
   "dialog__record_keys__title": "Record Keyboard Shortcut",
   "dialog__record_keys__subtitle": "Type your shortcut using your keyboard and click ",
-
   "dialog__delete_collection__title": "Delete {collectionName}",
   "@dialog__delete_collection__title": {
     "placeholders": {
@@ -103,7 +100,6 @@
     }
   },
   "dialog__delete_collection__subtitle": "Are you sure to delete this collection?",
-
   "@@APPLY_DIALOG": "Apply Coupon Dialog",
   "dialog__ack__sub_updated": "Subscription Updated",
   "dialog__grant_entitlement__title": "Granted Entitlement",
@@ -111,7 +107,6 @@
   "dialog__grant_entitlement__subtitle_p2": "Clicking Here.",
   "dialog__grant_entitlement__enter_code": "Enter the code and press Submit",
   "dialog__grant_entitlement__apply_code": "Apply",
-
   "@@VIEW_BUTTONS": "Layout View Buttons",
   "view_button__switch_to_grid": "Switch to Grid Layout",
   "view_button__switch_to_list": "Switch to List Layout",
@@ -123,7 +118,6 @@
   "view_button__view_dock_top": "Dock Top",
   "view_button__pin": "Pin to top",
   "view_button__unpin": "Unpin",
-
   "@@SUBSCRIPTION_DIALOG": "Subscription detail dialog",
   "sub_dialog__text__included": "Included",
   "sub_dialog__f1__title": "Unlimited Clipboard Items",
@@ -146,7 +140,6 @@
   "sub_dialog__f9__subtitle": "Enjoy automatic syncing of clipboard items every 45 seconds, keeping your devices up-to-date without manual intervention.",
   "sub_dialog__f10__title": "Support End-to-End Encryption",
   "sub_dialog__f10__subtitle": "E2EE will make everything encrypted for superior privacy.",
-
   "sub_dialog__text__pro_title": "With PRO ✨",
   "sub_dialog__text__pro_subtitle": "Everything included in Free +",
   "sub_dialog__f11__title": "Up to 50 Collections",
@@ -176,15 +169,14 @@
   "paywall_dialog__text__expired_plan": "Current Plan • Expired",
   "paywall_dialog__text__trial_till": "Trial till {till}",
   "@paywall_dialog__text__trial_till": {
-      "placeholders": {
-          "till": {
-              "type": "DateTime",
-              "format": "yMMMd"
-          }
+    "placeholders": {
+      "till": {
+        "type": "DateTime",
+        "format": "yMMMd"
       }
+    }
   },
   "paywall_dialog__text__upgrade": "Upgrade",
-
   "@@FAB": "Floating Action Button",
   "fab__create_collection": "Create Collection ( {remaining} Remaining )",
   "@fab__create_collection": {
@@ -194,59 +186,50 @@
       }
     }
   },
-
   "fab__sync": "Sync",
   "fab__sync_unavailable": "Sync Unavailable",
   "fab__sync_up_to_date": "Already up to date.",
   "fab__sync_failed": "Sync failed : {message}",
   "@fab__sync_failed": {
-      "placeholders": {
-          "message": {
-              "type": "String"
-          }
+    "placeholders": {
+      "message": {
+        "type": "String"
       }
+    }
   },
-
   "@@LAYOUT": "Layout Widgets",
   "layout__navbar__clipboard": "Clipboard",
   "layout__navbar__collections": "Collections",
   "layout__navbar__settings": "Settings",
-
   "@@WIDGETS": "Custom Widgets",
   "search__tooltip__filter": "Search filters",
   "manage_sub__ack__promo_sub": "You are using a promo subscription till {till}",
   "@manage_sub__ack__promo_sub": {
-      "placeholders": {
-          "till": {
-              "type": "String"
-          }
+    "placeholders": {
+      "till": {
+        "type": "String"
       }
+    }
   },
   "manage_sub__button__text": "Manage Subscriptions",
-
   "my_account__button__tooltip": "My Account",
   "badges__tooltip__experimental": "This feature is experimental and might not work as expected.",
   "badges__tooltip__pro_only": "This feature is available for Pro users only.",
-
   "collection_selector__tile__no_collection": "No Collection",
   "collection_selector__button__remove_collection": "Remove Collection",
-
   "dialog__logout__title": "Logout",
   "dialog__logout__subtitle": "⚠️ WARNING ⚠️\n\nLogging out will delete unsynced changes in the local database. Are you sure you want to proceed?",
   "dialog__logging_out__ack": "Logging you out! Please wait...",
-
   "reset_pass__text__label": "Reset your password",
-
   "dnd__text__drop_here": "Drop Here",
   "dnd__ack__error_max_drop_count": "Maximum {count} drop items are allowed at once.",
   "@dnd__ack__error_max_drop_count": {
-      "placeholders": {
-          "count": {
-              "type": "int"
-          }
+    "placeholders": {
+      "count": {
+        "type": "int"
       }
+    }
   },
-
   "@@SEARCH_FILTER_DIALOG": "Search filter dialog",
   "search_filter__text__title": "Filters",
   "search_filter__button__apply": "Apply",
@@ -272,7 +255,6 @@
   "search_filter__text__sort_order": "Sort Order",
   "search_filter__sort_ord__asc": "Asc",
   "search_filter__sort_ord__desc": "Desc",
-
   "@@LOGIN": "Login Screen",
   "login__local_signin__tooltip": "No syncing. All data stays on your device.",
   "login__local_signin__btn__label": "Use Locally",
@@ -312,7 +294,6 @@
   "@@ON_BOARDING": "On Boarding Screen",
   "onboarding__text__welcome": "Welcome to",
   "onboarding__text__lets_continue": "Let's Continue",
-
   "onboarding__button__to_login": "Sign in",
   "onboarding__snackbar__export_success": "Encryption key successfully exported.",
   "onboarding__dialog__skip_export__title": "✋ Backup Your Encryption Key",
@@ -363,7 +344,6 @@
     }
   },
   "onboarding__restoration_warning": "⚠️ Please keep this screen open during syncing to avoid data corruption or inconsistencies.",
-
   "@@RESTORE_CLIPS": "Restore Clips",
   "restore_clips__text__title": "Restore My Clipboard",
   "restore_clips__error__no_backup": "No clipboard backup found",
@@ -396,7 +376,6 @@
       }
     }
   },
-
   "@@RESTORE_COLLECTION": "Restore Collections",
   "restore_collections__text__title": "Restore My Collections",
   "restore_collections__error__no_backup": "No collection backup found",
@@ -429,9 +408,6 @@
       }
     }
   },
-
-
-
   "@@DRIVE_SETUP": "Drive Setup Screen",
   "drive__snackbar__success": "Drive Setup is Now Complete.",
   "drive__text__setting_up": "Setting up and syncing...",
@@ -461,6 +437,9 @@
   "account__appbar__title": "My Account",
   "@@SETTINGS": "Settings Screen",
   "settings__appbar__title": "Settings",
+  "settings__header__appearance": "Appearance",
+  "settings__header__sorting": "Default Sorting",
+  "settings__header__interactions": "Interactions",
   "settings__tab__1": "General",
   "settings__tab__2": "Customization",
   "settings__tab__3": "Syncing",
@@ -507,6 +486,8 @@
   "settings__sync_mode__realtime": "Realtime",
   "settings__sync_mode__balanced": "Balanced",
   "settings__dropdown__theme__title": "Theme Mode",
+  "settings__dropdown__default_sort__title": "Sort By",
+  "settings__dropdown__default_sort_order__title": "Sort Order",
   "settings__theme__system": "System",
   "settings__theme__light": "Light",
   "settings__theme__dark": "Dark",
@@ -590,7 +571,6 @@
   "custom_er__tile__title": "Prevent copy from app or website when window title matches.",
   "custom_er__text__no_title": "No custom title(s) excluded",
   "custom_er__button__remove_title": "Remove this title",
-
   "@@ABOUT": "About App Dialog",
   "about__tile__discord": "Discord • Connect",
   "about__tile__youtube": "YouTube • Tutorial",
@@ -598,36 +578,25 @@
   "about__tile__github": "Github • Open Source",
   "about__tile__website": "EntilityStudio • Website",
   "about__tile__support": "Support",
-
   "@@ANDROID_BACKGROUND_CLIPBOARD": "Android Background Clipboard",
   "abc_title": "Background Clipboard",
   "abc__tile__subtitle": "Listen to the clipboard in the background",
-
   "abc__tip__why_title": "Why are these permissions needed?",
   "abc__tip__why_subtitle": "These permissions ensure CopyCat works correctly in the background, allowing it to detect copied content and provide you with a seamless experience without interruptions.",
-  
   "abc__tip__support_title": "Limited Support",
   "abc__tip__support_subtitle": "1. Currently, only text clips are supported.\n2. Some operating systems, like HyperOS 1, are not supported yet.",
-  
   "abc__heading__req_perm": "Required Permissions",
-  
   "abc__tile__notification_title": "Notification Access",
   "abc__tile__notification_subtitle": "Displays a persistent notification to inform you that CopyCat is running in the background, ensuring transparency and privacy.",
-
   "abc__tile__battery_opt_title": "Battery Optimization",
   "abc__tile__battery_opt_subtitle": "Prevents the system from shutting down CopyCat while running in the background, ensuring a seamless experience.",
-
   "abc__tile__overlay_title": "Overlay Permission",
   "abc__tile__overlay_subtitle": "Allows CopyCat to read the clipboard by briefly opening a transparent window over the screen and closing it immediately after.",
-
   "abc__tile__acc_title": "Accessibility Service",
   "abc__tile__acc_subtitle": "Start the CopyCat background listener to detect when you copy something and ensure the service restarts automatically after a reboot.",
-
   "abc__ack__ready": "Setup ready to be configured.",
   "abc__ack__preparing": "Preparing setup, please wait...",
-
   "abc__perm_alert_open_setting__button": "Open Setting",
-
   "abc__overlay_perm_alert__title": "Overlay Permission",
   "abc__overlay_perm_alert__subtitle": "CopyCat Clipboard needs the 'Draw Over Other Apps' permission to read clipboard content in the background.",
   "abc__overlay_perm_alert__p1_prefix": "This permission is ",
@@ -643,7 +612,6 @@
   "abc__overlay_perm_alert__p4_bold": "'CopyCat pasted from your clipboard'",
   "abc__overlay_perm_alert__p4_suffix": " when CopyCat reads your clipboard content.",
   "abc__overlay_perm_alert__agree": "By granting this permission, you agree to the above usage.",
-
   "abc__accessibility_perm_alert__title": "Accessibility Permission",
   "abc__accessibility_perm_alert__subtitle": "CopyCat Clipboard requires the Accessibility Service to run in the background for real-time clipboard detection and syncing.",
   "abc__accessibility_perm_alert__p1_prefix": "This service is ",
@@ -662,7 +630,6 @@
   "abc__accessibility_perm_alert__p5_bold": "is end-to-end encrypted",
   "abc__accessibility_perm_alert__p5_suffix": " (if enabled) in transit and at rest, ensuring privacy across devices.",
   "abc__accessibility_perm_alert__agree": "By enabling the Accessibility Service, you acknowledge and agree to the above terms.",
-
   "abc__other_setting__title": "Other Settings",
   "abc__enhanced_clip_detection__title": "Enhanced Clipboard Detection",
   "abc__enhanced_clip_detection__subtitle": "Enable this option for more accurate clipboard detection. Note that it might not work on every device."

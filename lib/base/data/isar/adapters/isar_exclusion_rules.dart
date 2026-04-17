@@ -10,11 +10,7 @@ class IsarAppInfo {
   String? path;
   String? identifier;
 
-  AppInfo toDomain() => AppInfo(
-        name: name,
-        path: path,
-        identifier: identifier,
-      );
+  AppInfo toDomain() => AppInfo(name: name, path: path, identifier: identifier);
 
   static IsarAppInfo fromDomain(AppInfo info) => IsarAppInfo()
     ..name = info.name
@@ -37,17 +33,17 @@ class IsarExclusionRules {
   List<IsarAppInfo> apps = [];
 
   ExclusionRules toDomain() => ExclusionRules(
-        enable: enable,
-        creditCard: creditCard,
-        phone: phone,
-        passwordManager: passwordManager,
-        email: email,
-        sensitiveUrls: sensitiveUrls,
-        patterns: patterns,
-        titles: titles,
-        urls: urls,
-        apps: apps.map((a) => a.toDomain()).toList(),
-      );
+    enable: enable,
+    creditCard: creditCard,
+    phone: phone,
+    passwordManager: passwordManager,
+    email: email,
+    sensitiveUrls: sensitiveUrls,
+    patterns: patterns,
+    titles: titles,
+    urls: urls,
+    apps: apps.map((a) => a.toDomain()).toList(),
+  );
 
   static IsarExclusionRules fromDomain(ExclusionRules rules) =>
       IsarExclusionRules()

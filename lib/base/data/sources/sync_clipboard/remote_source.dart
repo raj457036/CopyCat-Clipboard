@@ -28,8 +28,10 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
     DateTime? lastSynced,
     bool havingCollection = false,
   }) async {
-    var query =
-        db.from(clipboardItemsTable).select().isFilter("deletedAt", null);
+    var query = db
+        .from(clipboardItemsTable)
+        .select()
+        .isFilter("deletedAt", null);
 
     if (havingCollection) {
       query = query.not("collectionId", "is", "null");
@@ -49,18 +51,16 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
 
     final docs = await query.order("modified").range(offset, offset + limit);
     final clips = await Future.wait(
-        (docs.map((e) => ClipboardItem.fromJson(e)).map((e) async {
-      try {
-        return await e.decrypt();
-      } catch (e_) {
-        logger.e(e_);
-        return e;
-      }
-    })).toList());
-    return PaginatedResult(
-      results: clips,
-      hasMore: clips.length >= limit,
+      (docs.map((e) => ClipboardItem.fromJson(e)).map((e) async {
+        try {
+          return await e.decrypt();
+        } catch (e_) {
+          logger.e(e_);
+          return e;
+        }
+      })).toList(),
     );
+    return PaginatedResult(results: clips, hasMore: clips.length >= limit);
   }
 
   @override
@@ -70,18 +70,17 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
     String? excludeDeviceId,
     DateTime? lastSynced,
   }) async {
-    var query =
-        db.from(clipCollectionsTable).select().isFilter("deletedAt", null);
+    var query = db
+        .from(clipCollectionsTable)
+        .select()
+        .isFilter("deletedAt", null);
 
     if (lastSynced != null) {
       final isoDate = lastSynced
           .subtract(const Duration(seconds: 5))
           .toUtc()
           .toIso8601String();
-      query = query.gt(
-        "modified",
-        isoDate,
-      );
+      query = query.gt("modified", isoDate);
     }
     if (excludeDeviceId != null && excludeDeviceId != "") {
       query = query.neq("deviceId", excludeDeviceId);
@@ -135,15 +134,18 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
         .subtract(const Duration(seconds: 5))
         .toUtc()
         .toIso8601String();
-    var query =
-        db.from(clipCollectionsTable).select().gte("deletedAt", isoDate);
+    var query = db
+        .from(clipCollectionsTable)
+        .select()
+        .gte("deletedAt", isoDate);
 
     if (excludeDeviceId != null && excludeDeviceId != "") {
       query = query.neq("deviceId", excludeDeviceId);
     }
     final docs = await query.order("modified").range(offset, offset + limit);
-    final deletedCollections =
-        docs.map((e) => ClipCollection.fromJson(e)).toList();
+    final deletedCollections = docs
+        .map((e) => ClipCollection.fromJson(e))
+        .toList();
     return PaginatedResult(
       results: deletedCollections,
       hasMore: deletedCollections.length >= limit,

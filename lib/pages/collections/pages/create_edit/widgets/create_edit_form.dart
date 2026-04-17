@@ -13,10 +13,7 @@ import 'package:universal_io/io.dart';
 
 class ClipCollectionCreateEditForm extends StatefulWidget {
   final ClipCollection? collection;
-  const ClipCollectionCreateEditForm({
-    super.key,
-    this.collection,
-  });
+  const ClipCollectionCreateEditForm({super.key, this.collection});
 
   @override
   State<ClipCollectionCreateEditForm> createState() =>
@@ -39,9 +36,7 @@ class _ClipCollectionCreateEditFormState
     emojiController = TextEditingController(
       text: widget.collection?.emoji ?? "🏆",
     );
-    nameController = TextEditingController(
-      text: widget.collection?.title,
-    );
+    nameController = TextEditingController(text: widget.collection?.title);
     descriptionController = TextEditingController(
       text: widget.collection?.description,
     );
@@ -135,8 +130,9 @@ class _ClipCollectionCreateEditFormState
               decoration: InputDecoration(
                 labelText: context.locale.collections__input__description,
               ),
-              validator:
-                  ValidationBuilder(optional: true).maxLength(255).build(),
+              validator: ValidationBuilder(
+                optional: true,
+              ).maxLength(255).build(),
               controller: descriptionController,
               minLines: 2,
               maxLines: 6,
@@ -146,9 +142,10 @@ class _ClipCollectionCreateEditFormState
             OverflowBar(
               spacing: 10,
               alignment: MainAxisAlignment.end,
-              children:
-                  Platform.isWindows ? options.reversed.toList() : options,
-            )
+              children: Platform.isWindows
+                  ? options.reversed.toList()
+                  : options,
+            ),
           ],
         ),
       ),

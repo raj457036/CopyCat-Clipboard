@@ -9,10 +9,7 @@ class AccessibilityServiceNotice extends StatelessWidget {
   const AccessibilityServiceNotice({super.key});
 
   Future<bool> show(BuildContext context) async {
-    return await showDialog<bool>(
-          context: context,
-          builder: (_) => this,
-        ) ??
+    return await showDialog<bool>(context: context, builder: (_) => this) ??
         false;
   }
 
@@ -82,9 +79,7 @@ class AccessibilityServiceNotice extends StatelessWidget {
           ),
           Text(
             context.locale.abc__accessibility_perm_alert__agree,
-            style: textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
         ],
       ),

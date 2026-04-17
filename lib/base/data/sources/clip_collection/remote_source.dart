@@ -20,13 +20,12 @@ class RemoteClipCollectionSource implements ClipCollectionSource {
   @override
   Future<ClipCollection> create(ClipCollection collection) async {
     if (auth.currentUser == null) return collection;
-    final result =
-        await db.from(clipCollectionTable).insert(collection.toJson()).select();
+    final result = await db
+        .from(clipCollectionTable)
+        .insert(collection.toJson())
+        .select();
 
-    return collection.copyWith(
-      serverId: result.first["id"],
-      lastSynced: now(),
-    );
+    return collection.copyWith(serverId: result.first["id"], lastSynced: now());
   }
 
   @override
@@ -77,17 +76,17 @@ class RemoteClipCollectionSource implements ClipCollectionSource {
         .from(clipCollectionTable)
         .update(payload)
         .eq("id", collection.serverId!);
-    final updatedCollection = collection.copyWith(
-      lastSynced: now(),
-    );
+    final updatedCollection = collection.copyWith(lastSynced: now());
     return updatedCollection;
   }
 
   @override
   Future<ClipCollection?> get({int? id, int? serverId}) async {
     if (serverId == null) return null;
-    final result =
-        await db.from(clipCollectionTable).select().eq("id", serverId);
+    final result = await db
+        .from(clipCollectionTable)
+        .select()
+        .eq("id", serverId);
     if (result.isEmpty) return null;
     return ClipCollection.fromJson(result[0]);
   }

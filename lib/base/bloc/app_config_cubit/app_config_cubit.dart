@@ -11,6 +11,8 @@ import 'package:clipboard/base/domain/repositories/app_config.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/base/domain/sources/clipboard.dart';
+import 'package:clipboard/base/enums/sort.dart';
 import 'package:flutter/material.dart';
 import 'package:focus_window/focus_window.dart';
 import 'package:focus_window/platform/activity_info.dart';
@@ -90,16 +92,12 @@ class AppConfigCubit extends Cubit<AppConfigState> {
 
       if (notInSameMoment) {
         emit(
-          state.copyWith(
-            config: state.config.copyWith(clockUnSynced: true),
-          ),
+          state.copyWith(config: state.config.copyWith(clockUnSynced: true)),
         );
         return false;
       } else {
         emit(
-          state.copyWith(
-            config: state.config.copyWith(clockUnSynced: false),
-          ),
+          state.copyWith(config: state.config.copyWith(clockUnSynced: false)),
         );
       }
       return true;
@@ -191,12 +189,14 @@ class AppConfigCubit extends Cubit<AppConfigState> {
   ExclusionRules get exclusionRules => state.config.copyExclusionRules;
 
   Future<void> changePausedTill(DateTime? pausedTill) async {
-    final newConfig = state.config.copyWith(pausedTill: pausedTill);    emit(AppConfigState.loaded(config: newConfig));
+    final newConfig = state.config.copyWith(pausedTill: pausedTill);
+    emit(AppConfigState.loaded(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> changeAppLayout(AppLayout layout) async {
-    final newConfig = state.config.copyWith(layout: layout);    emit(AppConfigState.loaded(config: newConfig));
+    final newConfig = state.config.copyWith(layout: layout);
+    emit(AppConfigState.loaded(config: newConfig));
     await repo.update(newConfig);
   }
 
@@ -207,12 +207,14 @@ class AppConfigCubit extends Cubit<AppConfigState> {
   }
 
   Future<void> setPinned(bool pinned) async {
-    final newConfig = state.config.copyWith(pinned: pinned);    emit(AppConfigState.loaded(config: newConfig));
+    final newConfig = state.config.copyWith(pinned: pinned);
+    emit(AppConfigState.loaded(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> togglePinned() async {
-    final newConfig = state.config.copyWith(pinned: !state.config.pinned);    emit(AppConfigState.loaded(config: newConfig));
+    final newConfig = state.config.copyWith(pinned: !state.config.pinned);
+    emit(AppConfigState.loaded(config: newConfig));
     await repo.update(newConfig);
   }
 
@@ -246,78 +248,104 @@ class AppConfigCubit extends Cubit<AppConfigState> {
     await repo.update(newConfig);
   }
 
+  Future<void> setSortConfig({
+    ClipboardSortKey? sortBy,
+    SortOrder? sortOrder,
+  }) async {
+    final newConfig = state.config.copyWith(
+      sortBy: sortBy ?? state.config.sortBy,
+      sortOrder: sortOrder ?? state.config.sortOrder,
+    );
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+  }
+
   Future<void> setThemeColorVariant(DynamicSchemeVariant? variant) async {
     if (variant == null) return;
-    final newConfig = state.config.copyWith(themeVariant: variant);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(themeVariant: variant);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> changeSyncMode(SyncSpeed? speed) async {
     if (speed == null) return;
-    final newConfig = state.config.copyWith(syncSpeed: speed);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(syncSpeed: speed);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> changeDontCopyOver(int? size) async {
     if (size == null) return;
-    final newConfig = state.config.copyWith(dontCopyOver: size);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(dontCopyOver: size);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> changeDontUploadOver(int? size) async {
     if (size == null) return;
-    final newConfig = state.config.copyWith(dontUploadOver: size);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(dontUploadOver: size);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> changeLocale(String locale) async {
-    final newConfig = state.config.copyWith(locale: locale);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(locale: locale);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> changeThemeMode(ThemeMode? mode) async {
     if (mode == null) return;
-    final newConfig = state.config.copyWith(themeMode: mode);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(themeMode: mode);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> changeSync(bool value) async {
-    final newConfig = state.config.copyWith(enableSync: value);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(enableSync: value);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> togglePreventDuplication(bool value) async {
-    final newConfig = state.config.copyWith(duplicatePrevention: value);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(duplicatePrevention: value);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> toggleSmartPaste(bool value) async {
-    final newConfig = state.config.copyWith(smartPaste: value);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(smartPaste: value);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> toggleDragNDrop(bool value) async {
-    final newConfig = state.config.copyWith(enableDragNDrop: value);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(enableDragNDrop: value);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> toggleAndroidBgListener(bool value) async {
-    final newConfig = state.config.copyWith(androidBgListener: value);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(androidBgListener: value);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> toggleAutoEncrypt(bool value) async {
-    final newConfig = state.config.copyWith(autoEncrypt: value);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(autoEncrypt: value);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> changeOnBoardStatus(bool value) async {
-    final newConfig = state.config.copyWith(onBoardComplete: value);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(onBoardComplete: value);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   Future<void> changeFileSync(bool value) async {
-    final newConfig = state.config.copyWith(enableFileSync: value);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(enableFileSync: value);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
@@ -334,17 +362,20 @@ class AppConfigCubit extends Cubit<AppConfigState> {
     } catch (e) {
       logger.e(e);
     }
-    final newConfig = state.config.copyWith(launchAtStartup: launchAtStartup_);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(launchAtStartup: launchAtStartup_);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
 
   // ? Non persistent states
   void setLastFocusedWindowId(int? value) {
-    final newConfig = state.config.copyWith(lastFocusedWindowId: value);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(lastFocusedWindowId: value);
+    emit(state.copyWith(config: newConfig));
   }
 
   Future<void> updateExclusionRule(ExclusionRules exclusionRule) async {
-    final newConfig = state.config.copyWith(exclusionRules: exclusionRule);    emit(state.copyWith(config: newConfig));
+    final newConfig = state.config.copyWith(exclusionRules: exclusionRule);
+    emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
     initializeExclusionChecker();
   }

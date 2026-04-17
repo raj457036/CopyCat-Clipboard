@@ -27,10 +27,7 @@ class RemoteSubscriptionSource implements SubscriptionSource {
       final response = await retry(
         // Make a GET request
         () => function
-            .invoke(
-              "get_rc_customer",
-              method: HttpMethod.get,
-            )
+            .invoke("get_rc_customer", method: HttpMethod.get)
             .timeout(const Duration(seconds: 30)),
         retryIf: (e) => e is SocketException || e is TimeoutException,
       );

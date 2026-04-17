@@ -67,17 +67,19 @@ class GoogleDriveService implements DriveService {
     completer.future.then((value) => client.close());
 
     if (onProgress != null) {
-      subscription = client
-          .setProgressListener()
-          .listen((value) => onProgress(value.$1, value.$2));
+      subscription = client.setProgressListener().listen(
+        (value) => onProgress(value.$1, value.$2),
+      );
     }
 
     try {
       final drive = getDrive(client);
-      final Media media = await drive.files.get(
-        item.driveFileId!,
-        downloadOptions: DownloadOptions.fullMedia,
-      ) as Media;
+      final Media media =
+          await drive.files.get(
+                item.driveFileId!,
+                downloadOptions: DownloadOptions.fullMedia,
+              )
+              as Media;
 
       final rootDir = await getPersistedRootDirPath(item.rootDir!);
       final ext =
@@ -142,9 +144,7 @@ class GoogleDriveService implements DriveService {
         ),
       );
 
-      item = item.copyWith(
-        driveFileId: result.id,
-      );
+      item = item.copyWith(driveFileId: result.id);
       logger.i("File uploaded successfully!");
       return Right(item);
     } catch (e) {
@@ -188,9 +188,11 @@ class GoogleDriveService implements DriveService {
   Future<void> deleteMany(List<ClipboardItem> items) async {
     try {
       final drive = getDrive();
-      await Future.wait(items
-          .where((item) => item.driveFileId != null)
-          .map((item) => drive.files.delete(item.driveFileId!)));
+      await Future.wait(
+        items
+            .where((item) => item.driveFileId != null)
+            .map((item) => drive.files.delete(item.driveFileId!)),
+      );
     } catch (e) {
       logger.e(e, error: e);
     }

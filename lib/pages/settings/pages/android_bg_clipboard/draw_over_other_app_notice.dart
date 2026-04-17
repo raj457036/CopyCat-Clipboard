@@ -9,10 +9,7 @@ class DrawOverOtherAppNotice extends StatelessWidget {
   const DrawOverOtherAppNotice({super.key});
 
   Future<bool> show(BuildContext context) async {
-    return await showDialog<bool>(
-          context: context,
-          builder: (_) => this,
-        ) ??
+    return await showDialog<bool>(context: context, builder: (_) => this) ??
         false;
   }
 
@@ -62,9 +59,7 @@ class DrawOverOtherAppNotice extends StatelessWidget {
           ),
           Text(
             context.locale.abc__overlay_perm_alert__agree,
-            style: textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
         ],
       ),

@@ -30,7 +30,10 @@ mixin _$AppConfig {
   AppView get view => throw _privateConstructorUsedError;
   bool get pinned => throw _privateConstructorUsedError;
   double get windowWidth => throw _privateConstructorUsedError;
-  double get windowHeight => throw _privateConstructorUsedError;
+  double get windowHeight =>
+      throw _privateConstructorUsedError; // Sorting settings
+  ClipboardSortKey get sortBy => throw _privateConstructorUsedError;
+  SortOrder get sortOrder => throw _privateConstructorUsedError;
 
   /// will prevent auto upload for files over 10 MB
   int get dontUploadOver => throw _privateConstructorUsedError;
@@ -99,6 +102,8 @@ abstract class $AppConfigCopyWith<$Res> {
     bool pinned,
     double windowWidth,
     double windowHeight,
+    ClipboardSortKey sortBy,
+    SortOrder sortOrder,
     int dontUploadOver,
     int dontCopyOver,
     DateTime? pausedTill,
@@ -150,6 +155,8 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? pinned = null,
     Object? windowWidth = null,
     Object? windowHeight = null,
+    Object? sortBy = null,
+    Object? sortOrder = null,
     Object? dontUploadOver = null,
     Object? dontCopyOver = null,
     Object? pausedTill = freezed,
@@ -209,6 +216,14 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
                 ? _value.windowHeight
                 : windowHeight // ignore: cast_nullable_to_non_nullable
                       as double,
+            sortBy: null == sortBy
+                ? _value.sortBy
+                : sortBy // ignore: cast_nullable_to_non_nullable
+                      as ClipboardSortKey,
+            sortOrder: null == sortOrder
+                ? _value.sortOrder
+                : sortOrder // ignore: cast_nullable_to_non_nullable
+                      as SortOrder,
             dontUploadOver: null == dontUploadOver
                 ? _value.dontUploadOver
                 : dontUploadOver // ignore: cast_nullable_to_non_nullable
@@ -328,6 +343,8 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     bool pinned,
     double windowWidth,
     double windowHeight,
+    ClipboardSortKey sortBy,
+    SortOrder sortOrder,
     int dontUploadOver,
     int dontCopyOver,
     DateTime? pausedTill,
@@ -379,6 +396,8 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? pinned = null,
     Object? windowWidth = null,
     Object? windowHeight = null,
+    Object? sortBy = null,
+    Object? sortOrder = null,
     Object? dontUploadOver = null,
     Object? dontCopyOver = null,
     Object? pausedTill = freezed,
@@ -438,6 +457,14 @@ class __$$AppConfigImplCopyWithImpl<$Res>
             ? _value.windowHeight
             : windowHeight // ignore: cast_nullable_to_non_nullable
                   as double,
+        sortBy: null == sortBy
+            ? _value.sortBy
+            : sortBy // ignore: cast_nullable_to_non_nullable
+                  as ClipboardSortKey,
+        sortOrder: null == sortOrder
+            ? _value.sortOrder
+            : sortOrder // ignore: cast_nullable_to_non_nullable
+                  as SortOrder,
         dontUploadOver: null == dontUploadOver
             ? _value.dontUploadOver
             : dontUploadOver // ignore: cast_nullable_to_non_nullable
@@ -536,6 +563,8 @@ class _$AppConfigImpl extends _AppConfig {
     this.pinned = false,
     this.windowWidth = initialWindowWidth,
     this.windowHeight = initialWindowHeight,
+    this.sortBy = ClipboardSortKey.created,
+    this.sortOrder = SortOrder.desc,
     this.dontUploadOver = $10MB,
     this.dontCopyOver = $10MB,
     this.pausedTill,
@@ -590,6 +619,13 @@ class _$AppConfigImpl extends _AppConfig {
   @override
   @JsonKey()
   final double windowHeight;
+  // Sorting settings
+  @override
+  @JsonKey()
+  final ClipboardSortKey sortBy;
+  @override
+  @JsonKey()
+  final SortOrder sortOrder;
 
   /// will prevent auto upload for files over 10 MB
   @override
@@ -671,7 +707,7 @@ class _$AppConfigImpl extends _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, smartPaste: $smartPaste, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, onBoardComplete: $onBoardComplete, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
+    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, smartPaste: $smartPaste, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, onBoardComplete: $onBoardComplete, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
   }
 
   @override
@@ -693,6 +729,9 @@ class _$AppConfigImpl extends _AppConfig {
                 other.windowWidth == windowWidth) &&
             (identical(other.windowHeight, windowHeight) ||
                 other.windowHeight == windowHeight) &&
+            (identical(other.sortBy, sortBy) || other.sortBy == sortBy) &&
+            (identical(other.sortOrder, sortOrder) ||
+                other.sortOrder == sortOrder) &&
             (identical(other.dontUploadOver, dontUploadOver) ||
                 other.dontUploadOver == dontUploadOver) &&
             (identical(other.dontCopyOver, dontCopyOver) ||
@@ -746,6 +785,8 @@ class _$AppConfigImpl extends _AppConfig {
     pinned,
     windowWidth,
     windowHeight,
+    sortBy,
+    sortOrder,
     dontUploadOver,
     dontCopyOver,
     pausedTill,
@@ -793,6 +834,8 @@ abstract class _AppConfig extends AppConfig {
     final bool pinned,
     final double windowWidth,
     final double windowHeight,
+    final ClipboardSortKey sortBy,
+    final SortOrder sortOrder,
     final int dontUploadOver,
     final int dontCopyOver,
     final DateTime? pausedTill,
@@ -840,7 +883,11 @@ abstract class _AppConfig extends AppConfig {
   @override
   double get windowWidth;
   @override
-  double get windowHeight;
+  double get windowHeight; // Sorting settings
+  @override
+  ClipboardSortKey get sortBy;
+  @override
+  SortOrder get sortOrder;
 
   /// will prevent auto upload for files over 10 MB
   @override

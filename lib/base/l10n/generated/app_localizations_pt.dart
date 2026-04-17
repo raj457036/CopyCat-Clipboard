@@ -1046,6 +1046,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settings__appbar__title => 'Configurações';
 
   @override
+  String get settings__header__appearance => 'Appearance';
+
+  @override
+  String get settings__header__sorting => 'Default Sorting';
+
+  @override
+  String get settings__header__interactions => 'Interactions';
+
+  @override
   String get settings__tab__1 => 'Geral';
 
   @override
@@ -1155,6 +1164,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settings__dropdown__theme__title => 'Modo de Tema';
+
+  @override
+  String get settings__dropdown__default_sort__title => 'Sort By';
+
+  @override
+  String get settings__dropdown__default_sort_order__title => 'Sort Order';
 
   @override
   String get settings__theme__system => 'Sistema';

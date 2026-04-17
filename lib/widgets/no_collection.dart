@@ -20,9 +20,7 @@ class NoCollectionAvailable extends StatelessWidget {
             onPressed: () {
               context.pushNamed(
                 RouteConstants.createEditCollection,
-                pathParameters: {
-                  "id": "new",
-                },
+                pathParameters: {"id": "new"},
               );
             },
             icon: const Icon(Icons.library_add),

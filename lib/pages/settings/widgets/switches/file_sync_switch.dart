@@ -34,9 +34,7 @@ class EnableFileSyncSwitch extends StatelessWidget {
               title: Text(context.locale.settings__switch__sync_file__title),
               subtitle: Text(
                 context.locale.settings__switch__sync_file__subtitle,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colors.outline,
-                ),
+                style: textTheme.bodyMedium?.copyWith(color: colors.outline),
               ),
             ),
             if (enableFileSync && enableSync) const GoogleDriveSetup(),

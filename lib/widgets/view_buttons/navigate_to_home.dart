@@ -27,9 +27,7 @@ class _NavigationButtonsState extends State<NavigationButtons> {
         setState(() {});
       },
       padding: EdgeInsets.zero,
-      style: IconButton.styleFrom(
-        shape: const RoundedRectangleBorder(),
-      ),
+      style: IconButton.styleFrom(shape: const RoundedRectangleBorder()),
       iconSize: 20,
       icon: isHome
           ? const Icon(Icons.collections_bookmark)

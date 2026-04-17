@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 
 class EmptyNote extends StatelessWidget {
   final String note;
-  const EmptyNote({
-    super.key,
-    required this.note,
-  });
+  const EmptyNote({super.key, required this.note});
 
   @override
   Widget build(BuildContext context) {
@@ -19,17 +16,11 @@ class EmptyNote extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.emoji_nature_rounded,
-            size: 40,
-            color: colors.outline,
-          ),
+          Icon(Icons.emoji_nature_rounded, size: 40, color: colors.outline),
           height8,
           Text(
             note,
-            style: textTheme.bodyLarge?.copyWith(
-              color: colors.outline,
-            ),
+            style: textTheme.bodyLarge?.copyWith(color: colors.outline),
             textAlign: TextAlign.center,
           ),
         ],

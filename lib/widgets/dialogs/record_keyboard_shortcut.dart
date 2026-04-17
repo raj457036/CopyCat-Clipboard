@@ -53,7 +53,7 @@ class _RecordKeyboardShortcutDialogState
                 onHotKeyRecorded: (hotKey) {
                   final isEnter =
                       hotKey.logicalKey == LogicalKeyboardKey.enter ||
-                          hotKey.logicalKey == LogicalKeyboardKey.numpadEnter;
+                      hotKey.logicalKey == LogicalKeyboardKey.numpadEnter;
 
                   if (isEnter) return;
                   setState(() {
@@ -71,18 +71,14 @@ class _RecordKeyboardShortcutDialogState
             children: [
               TextSpan(
                 text: context.locale.app__confirm,
-                style: const TextStyle(
-                  fontVariations: fontVarW700,
-                ),
-              )
+                style: const TextStyle(fontVariations: fontVarW700),
+              ),
             ],
           ),
           textAlign: TextAlign.center,
         ),
         height12,
-        OverflowBar(
-          children: revert ? options.reversed.toList() : options,
-        )
+        OverflowBar(children: revert ? options.reversed.toList() : options),
       ],
     );
   }

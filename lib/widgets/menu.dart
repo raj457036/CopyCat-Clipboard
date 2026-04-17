@@ -9,21 +9,13 @@ class MenuItem {
   final IconData? icon;
   final VoidCallback? onPressed;
 
-  const MenuItem({
-    this.text,
-    this.icon,
-    this.onPressed,
-  });
+  const MenuItem({this.text, this.icon, this.onPressed});
 }
 
 class Menu extends InheritedWidget {
   final List<MenuItem> items;
 
-  const Menu({
-    super.key,
-    required this.items,
-    required super.child,
-  });
+  const Menu({super.key, required this.items, required super.child});
 
   Future<void> openOptionBottomSheet(BuildContext context) async {
     final mq = context.mq;
@@ -33,9 +25,7 @@ class Menu extends InheritedWidget {
     await showModalBottomSheet(
       context: context,
       scrollControlDisabledMaxHeightRatio: 0.8,
-      constraints: BoxConstraints(
-        maxWidth: mqSize.width * 0.9,
-      ),
+      constraints: BoxConstraints(maxWidth: mqSize.width * 0.9),
       useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (context) {

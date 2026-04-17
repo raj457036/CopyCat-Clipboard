@@ -12,10 +12,7 @@ import 'package:universal_io/io.dart';
 
 class TrayManager extends StatefulWidget {
   final Widget child;
-  const TrayManager({
-    super.key,
-    required this.child,
-  });
+  const TrayManager({super.key, required this.child});
 
   @override
   State<TrayManager> createState() => TrayManagerState();
@@ -72,8 +69,9 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
     });
     if (paused) {
       final config = (configCubit.state as AppConfigLoaded).config;
-      final pausedTill =
-          DateFormat("h:mm a").format(config.pausedTill!.toLocal());
+      final pausedTill = DateFormat(
+        "h:mm a",
+      ).format(config.pausedTill!.toLocal());
       trayManager.setToolTip('CopyCat Clipboard - Paused till $pausedTill');
     } else {
       trayManager.setToolTip('CopyCat Clipboard');
@@ -91,10 +89,7 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
           label: paused ? '▶️ Resume CopyCat' : '⏸️ Pause CopyCat',
         ),
         MenuItem.separator(),
-        MenuItem(
-          key: 'quit_app',
-          label: 'Quit',
-        ),
+        MenuItem(key: 'quit_app', label: 'Quit'),
       ],
     );
     await trayManager.setContextMenu(menu);

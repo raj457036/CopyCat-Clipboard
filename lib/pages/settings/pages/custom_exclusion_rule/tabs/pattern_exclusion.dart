@@ -44,7 +44,7 @@ class _PatternExclusionTabState extends State<PatternExclusionTab> {
     final rules = cubit.exclusionRules;
     final excluded = [
       ...rules.patterns.take(index),
-      ...rules.patterns.skip(index + 1)
+      ...rules.patterns.skip(index + 1),
     ];
     update(cubit, excluded);
   }
@@ -63,15 +63,11 @@ class _PatternExclusionTabState extends State<PatternExclusionTab> {
     return Column(
       children: [
         ListTile(
-          title: Text(
-            context.locale.custom_er__tile__pattern,
-          ),
+          title: Text(context.locale.custom_er__tile__pattern),
           subtitle: TextField(
             focusNode: focusNode,
             controller: controller,
-            decoration: const InputDecoration(
-              border: UnderlineInputBorder(),
-            ),
+            decoration: const InputDecoration(border: UnderlineInputBorder()),
             onSubmitted: (value) => addEntry(context, value),
           ),
         ),

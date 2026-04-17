@@ -1,13 +1,14 @@
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/model/base.dart';
 import 'package:clipboard/base/domain/model/json_converters/datetime_converters.dart';
+import 'package:clipboard/base/domain/model/syncable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'clipcollection.freezed.dart';
 part 'clipcollection.g.dart';
 
 @freezed
-class ClipCollection with _$ClipCollection, Identifiable {
+class ClipCollection with _$ClipCollection, Identifiable, Syncable {
   ClipCollection._();
 
   factory ClipCollection({
@@ -26,4 +27,12 @@ class ClipCollection with _$ClipCollection, Identifiable {
 
   factory ClipCollection.fromJson(Map<String, dynamic> json) =>
       _$ClipCollectionFromJson(json);
+
+  @override
+  Syncable copyWithSyncMetadata({int? id, DateTime? lastSynced}) {
+    return copyWith(
+      id: id ?? this.id,
+      lastSynced: lastSynced ?? this.lastSynced,
+    );
+  }
 }

@@ -39,9 +39,7 @@ class SearchFilterState {
       from != null ||
       to != null ||
       typeIncludes != null ||
-      textCategories != null ||
-      sortBy != null && sortBy != ClipboardSortKey.modified ||
-      sortOrder != null && sortOrder != SortOrder.desc;
+      textCategories != null;
 
   @override
   bool operator ==(Object other) {

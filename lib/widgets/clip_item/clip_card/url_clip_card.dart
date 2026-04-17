@@ -9,11 +9,7 @@ class UrlClipCard extends StatelessWidget {
   final AppLayout layout;
   final ClipboardItem item;
 
-  const UrlClipCard({
-    super.key,
-    required this.item,
-    required this.layout,
-  });
+  const UrlClipCard({super.key, required this.item, required this.layout});
 
   @override
   Widget build(BuildContext context) {
@@ -24,26 +20,28 @@ class UrlClipCard extends StatelessWidget {
       overflow: TextOverflow.ellipsis,
       style: textTheme.bodyMedium,
     );
-    final child = LayoutBuilder(builder: (context, constriants) {
-      final hide = constriants.maxWidth < 150;
-      if (hide) return text;
-      final hideDesc = constriants.maxWidth < 100;
-      return Column(
-        spacing: 10,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (item.url != null)
-            LinkPreview(
-              url: item.url!,
-              expanded: true,
-              hideDesc: hideDesc,
-              maxTitleLines: 1,
-              maxDescLines: 1,
-            ),
-          text,
-        ],
-      );
-    });
+    final child = LayoutBuilder(
+      builder: (context, constriants) {
+        final hide = constriants.maxWidth < 150;
+        if (hide) return text;
+        final hideDesc = constriants.maxWidth < 100;
+        return Column(
+          spacing: 10,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (item.url != null)
+              LinkPreview(
+                url: item.url!,
+                expanded: true,
+                hideDesc: hideDesc,
+                maxTitleLines: 1,
+                maxDescLines: 1,
+              ),
+            text,
+          ],
+        );
+      },
+    );
 
     final padded = Padding(
       padding: const EdgeInsets.only(

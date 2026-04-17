@@ -24,7 +24,7 @@ class DynamicFloatingActions extends StatelessWidget {
         if (showCopyCatLogo) const CopyCatLogo(),
         const PasteFAB(),
         height8,
-        const SyncStatusFAB()
+        const SyncStatusFAB(),
       ];
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -35,13 +35,11 @@ class DynamicFloatingActions extends StatelessWidget {
       final actions = [
         if (showCopyCatLogo) const CopyCatLogo(),
         const DisableForLocalUser(
-          ifLocal: CreateCollectionButton(
-            localMode: true,
-          ),
+          ifLocal: CreateCollectionButton(localMode: true),
           child: CreateCollectionButton(),
         ),
         height8,
-        const SyncStatusFAB()
+        const SyncStatusFAB(),
       ];
       return Column(
         mainAxisSize: MainAxisSize.min,

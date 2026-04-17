@@ -1,7 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
-import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -20,22 +18,7 @@ class EventBusCubit extends Cubit<EventBusState> {
     }
   }
 
-  void clipSync(ClipCrossSyncEvent event) =>
-      emit(EventBusState.clipSync(event));
-
-  void batchClipSync(List<ClipCrossSyncEvent> events) =>
-      emit(EventBusState.batchClipSync(events));
-
-  void collectionSync(CollectionCrossSyncEvent event) =>
-      emit(EventBusState.collectionSync(event));
-
-  void batchCollectionSync(List<CollectionCrossSyncEvent> events) =>
-      emit(EventBusState.batchCollectionSync(events));
-
-  void keyboard(String event) => emit(
-        EventBusState.keyboard(
-          KeyboardShortcutEvent(name: event),
-        ),
-      );
+  void keyboard(String event) =>
+      emit(EventBusState.keyboard(KeyboardShortcutEvent(name: event)));
   void indexPaste(int index) => emit(EventBusState.indexPaste(index));
 }

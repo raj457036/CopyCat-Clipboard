@@ -1,1 +1,41 @@
-{}
+{
+  "de": [
+    "settings__header__appearance",
+    "settings__header__sorting",
+    "settings__header__interactions",
+    "settings__dropdown__default_sort__title",
+    "settings__dropdown__default_sort_order__title"
+  ],
+
+  "es": [
+    "settings__header__appearance",
+    "settings__header__sorting",
+    "settings__header__interactions",
+    "settings__dropdown__default_sort__title",
+    "settings__dropdown__default_sort_order__title"
+  ],
+
+  "fr": [
+    "settings__header__appearance",
+    "settings__header__sorting",
+    "settings__header__interactions",
+    "settings__dropdown__default_sort__title",
+    "settings__dropdown__default_sort_order__title"
+  ],
+
+  "pt": [
+    "settings__header__appearance",
+    "settings__header__sorting",
+    "settings__header__interactions",
+    "settings__dropdown__default_sort__title",
+    "settings__dropdown__default_sort_order__title"
+  ],
+
+  "zh": [
+    "settings__header__appearance",
+    "settings__header__sorting",
+    "settings__header__interactions",
+    "settings__dropdown__default_sort__title",
+    "settings__dropdown__default_sort_order__title"
+  ]
+}

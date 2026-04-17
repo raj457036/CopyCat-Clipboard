@@ -22,13 +22,16 @@ class SecuritySettings extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SettingHeader(
-                    icon: Icons.key,
-                    name: context.locale.settings__text__encryption),
+                  icon: Icons.key,
+                  name: context.locale.settings__text__encryption,
+                ),
                 const E2EESettings(),
               ],
             ),
           ),
-          const DisableForLocalUser(child: Divider(indent: padding12, endIndent: padding12)),
+          const DisableForLocalUser(
+            child: Divider(indent: padding12, endIndent: padding12),
+          ),
           const ExclusionRulesSwitchTile(),
         ],
       ),

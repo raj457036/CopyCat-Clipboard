@@ -30,17 +30,13 @@ class ClipboardHotKeySwitch extends StatelessWidget {
               height4,
               Text(
                 context.locale.settings__switch__hotkey__subtitle,
-                style: textTheme.bodyMedium?.copyWith(
-                  color: colors.outline,
-                ),
+                style: textTheme.bodyMedium?.copyWith(color: colors.outline),
               ),
               height6,
               if (state == null)
                 Text(
                   context.locale.settings__hotkey__unassigned,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: colors.outline,
-                  ),
+                  style: textTheme.bodySmall?.copyWith(color: colors.outline),
                 )
               else
                 RichText(
@@ -52,11 +48,10 @@ class ClipboardHotKeySwitch extends StatelessWidget {
                         alignment: PlaceholderAlignment.middle,
                       ),
                       TextSpan(
-                          text: context.locale.settings__hotkey__preview_end)
+                        text: context.locale.settings__hotkey__preview_end,
+                      ),
                     ],
-                    style: textTheme.bodySmall?.copyWith(
-                      color: colors.outline,
-                    ),
+                    style: textTheme.bodySmall?.copyWith(color: colors.outline),
                   ),
                   maxLines: 2,
                 ),
@@ -71,8 +66,9 @@ class ClipboardHotKeySwitch extends StatelessWidget {
               return;
             }
 
-            final hotKey =
-                await const RecordKeyboardShortcutDialog().open(context);
+            final hotKey = await const RecordKeyboardShortcutDialog().open(
+              context,
+            );
             if (hotKey != null) {
               await cubit.setClipboardToggleHotkey(hotKey);
             }

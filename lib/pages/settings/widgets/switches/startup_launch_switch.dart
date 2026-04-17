@@ -30,9 +30,7 @@ class StartUpLaunchSwitch extends StatelessWidget {
           title: Text(context.locale.settings__switch__startup__title),
           subtitle: Text(
             context.locale.settings__switch__startup__subtitle,
-            style: textTheme.bodyMedium?.copyWith(
-              color: colors.outline,
-            ),
+            style: textTheme.bodyMedium?.copyWith(color: colors.outline),
           ),
         );
       },

@@ -1,4 +1,4 @@
-import 'package:clipboard/base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
+import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +18,7 @@ class SyncIntent extends Intent {
 class SyncAction extends ContextAction<SyncIntent> {
   @override
   void invoke(SyncIntent intent, [BuildContext? context]) {
-    final cubit = context?.read<CollectionSyncManagerCubit>();
-    cubit?.syncCollections(manual: true);
+    final cubit = context?.read<SyncStatusCubit>();
+    cubit?.syncAll(force: true);
   }
 }

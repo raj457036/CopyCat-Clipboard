@@ -42,10 +42,7 @@ class ExclusionRulesPage extends StatelessWidget {
               Switch(
                 value: state.enable,
                 onChanged: (value) {
-                  updateExclusionRules(
-                    context,
-                    state.copyWith(enable: value),
-                  );
+                  updateExclusionRules(context, state.copyWith(enable: value));
                 },
               ),
               width16,

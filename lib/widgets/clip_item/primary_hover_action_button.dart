@@ -20,9 +20,10 @@ class PrimaryHoverAction extends StatelessWidget {
   });
 
   Future<void> editClip(BuildContext context) async {
-    context.pushNamed(RouteConstants.preview, pathParameters: {
-      "id": item.id.toString(),
-    });
+    context.pushNamed(
+      RouteConstants.preview,
+      pathParameters: {"id": item.id.toString()},
+    );
   }
 
   @override

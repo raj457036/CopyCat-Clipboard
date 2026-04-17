@@ -10,11 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class LogoutButton extends StatelessWidget {
   final bool enabled;
   final bool iconMode;
-  const LogoutButton({
-    super.key,
-    this.iconMode = true,
-    this.enabled = true,
-  });
+  const LogoutButton({super.key, this.iconMode = true, this.enabled = true});
 
   Future<void> logout(BuildContext context) async {
     final confirm = await ConfirmDialog(

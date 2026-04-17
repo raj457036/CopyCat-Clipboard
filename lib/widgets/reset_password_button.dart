@@ -5,10 +5,7 @@ import 'package:go_router/go_router.dart';
 
 class ResetPasswordButton extends StatelessWidget {
   final bool iconButton;
-  const ResetPasswordButton({
-    super.key,
-    this.iconButton = true,
-  });
+  const ResetPasswordButton({super.key, this.iconButton = true});
 
   Future<void> resetPassword(BuildContext context) async {
     context.pushNamed(RouteConstants.resetPassword);

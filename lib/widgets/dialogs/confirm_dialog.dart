@@ -38,10 +38,12 @@ class ConfirmDialog extends StatelessWidget {
           maxTicks: confirmationDelay,
           builder: (context, remaining, seconds) => TextButton(
             autofocus: remaining > 0 ? false : focusFor == true,
-            onPressed:
-                remaining > 0 ? null : () => Navigator.pop(context, true),
+            onPressed: remaining > 0
+                ? null
+                : () => Navigator.pop(context, true),
             child: Text(
-                "${yes ?? context.mlocale.okButtonLabel} $seconds".trimRight()),
+              "${yes ?? context.mlocale.okButtonLabel} $seconds".trimRight(),
+            ),
           ),
         )
       else
@@ -53,10 +55,7 @@ class ConfirmDialog extends StatelessWidget {
     ];
     return AlertDialog(
       title: Text(title),
-      content: SizedBox(
-        width: 250,
-        child: Text(message),
-      ),
+      content: SizedBox(width: 250, child: Text(message)),
       actions: revert ? options.reversed.toList() : options,
     );
   }

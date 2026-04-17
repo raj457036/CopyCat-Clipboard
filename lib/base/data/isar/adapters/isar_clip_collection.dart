@@ -27,18 +27,18 @@ class IsarClipCollection {
   List<String> get descriptionWords => Isar.splitWords(description ?? '');
 
   ClipCollection toDomain() => ClipCollection(
-        id: isarId == Isar.autoIncrement ? null : isarId,
-        serverId: serverId,
-        lastSynced: lastSynced,
-        created: created,
-        modified: modified,
-        userId: userId,
-        deletedAt: deletedAt,
-        deviceId: deviceId,
-        title: title,
-        description: description,
-        emoji: emoji,
-      );
+    id: isarId == Isar.autoIncrement ? null : isarId,
+    serverId: serverId,
+    lastSynced: lastSynced,
+    created: created,
+    modified: modified,
+    userId: userId,
+    deletedAt: deletedAt,
+    deviceId: deviceId,
+    title: title,
+    description: description,
+    emoji: emoji,
+  );
 
   static IsarClipCollection fromDomain(ClipCollection collection) =>
       IsarClipCollection()

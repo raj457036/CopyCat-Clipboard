@@ -1,7 +1,7 @@
 import 'dart:math' show max;
 
 import 'package:animate_do/animate_do.dart';
-import 'package:clipboard/base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
+import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/repositories/clip_collection.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
@@ -27,12 +27,12 @@ class RestoreCollectionStep extends StatefulWidget {
 class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
   int totalCount = -1;
   bool fetchingCount = false;
-  late final CollectionSyncManagerCubit syncCubit;
+  late final SyncStatusCubit syncCubit;
 
   @override
   void initState() {
     super.initState();
-    syncCubit = context.read<CollectionSyncManagerCubit>();
+    syncCubit = context.read<SyncStatusCubit>();
     startSyncing();
   }
 
@@ -46,13 +46,10 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
         return;
       }
       final result = await widget.collectionRepository.getCount(local: false);
-      result.fold(
-        (l) => showFailureSnackbar(l),
-        (r) {
-          totalCount = r;
-          syncCollection();
-        },
-      );
+      result.fold((l) => showFailureSnackbar(l), (r) {
+        totalCount = r;
+        syncCollection();
+      });
     } finally {
       setState(() {
         fetchingCount = false;
@@ -69,10 +66,9 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
     }
 
     switch (syncCubit.state) {
-      case CollectionSyncUnknown() ||
-            CollectionSyncingUnknown() ||
-            CollectionSyncFailed():
-        syncCubit.syncCollections(restoration: true);
+      case SyncStatusUnknown() || SyncStatusFailed():
+        syncCubit.syncAll(force: true);
+      case _:
     }
   }
 
@@ -85,10 +81,7 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.collections_bookmark_rounded,
-              size: 32,
-            ),
+            const Icon(Icons.collections_bookmark_rounded, size: 32),
             height10,
             Text(
               context.locale.restore_collections__text__title,
@@ -129,22 +122,15 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                     height12,
                     const SizedBox(width: 100, height: 20, child: Divider()),
                     height8,
-                    BlocConsumer<CollectionSyncManagerCubit,
-                        CollectionSyncManagerState>(
+                    BlocConsumer<SyncStatusCubit, SyncStatusState>(
                       listener: (context, state) {},
                       builder: (context, state) {
                         switch (state) {
-                          case CollectionSyncDisabled():
-                            return Text(
-                              context.locale.restore_collections__sync_disable,
-                              textAlign: TextAlign.center,
-                            );
-                          case CollectionSyncUnknown() ||
-                                CollectionSyncingUnknown():
+                          case SyncStatusUnknown():
                             return Text(
                               context.locale.restore_collections__preparing,
                             );
-                          case CollectionSyncComplete(:final syncCount):
+                          case SyncStatusComplete():
                             return Column(
                               children: [
                                 const SizedBox(
@@ -157,7 +143,7 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                                 height10,
                                 Text(
                                   context.locale.restore_collections__restored(
-                                    syncCount: max(syncCount, totalCount),
+                                    syncCount: max(0, totalCount),
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -170,14 +156,14 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                                 ),
                               ],
                             );
-                          case CollectionSyncFailed(:final failure):
+                          case SyncStatusFailed(:final failure):
                             return Column(
                               children: [
                                 Text(
                                   context.locale
                                       .onboarding__restoration__failed(
-                                    message: failure.toString(),
-                                  ),
+                                        message: failure.toString(),
+                                      ),
                                 ),
                                 height10,
                                 ElevatedButton(
@@ -186,34 +172,29 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                                 ),
                               ],
                             );
-                          case CollectionSyncing(:final synced):
+                          case SyncingStatus():
                             return Column(
                               children: [
-                                if (totalCount > 0 || synced > 0)
-                                  SizedBox(
-                                    width: 250,
-                                    child: LinearProgressIndicator(
-                                      borderRadius: radius12,
-                                      value: synced / max(totalCount, synced),
-                                    ),
-                                  ),
-                                height10,
-                                Text(
-                                  context.locale.restore_collections__restoring(
-                                    synced: synced,
-                                    totalCount: max(totalCount, synced),
+                                const SizedBox(
+                                  width: 250,
+                                  child: LinearProgressIndicator(
+                                    borderRadius: radius12,
+                                    value: null,
                                   ),
                                 ),
+                                height10,
+                                const Text("Restoring data..."),
                                 height12,
                                 Text(
                                   context
-                                      .locale.onboarding__restoration_warning,
+                                      .locale
+                                      .onboarding__restoration_warning,
                                   textAlign: TextAlign.center,
                                   style: textTheme.bodySmall?.copyWith(
                                     color: Colors.deepOrange,
                                     fontStyle: FontStyle.italic,
                                   ),
-                                )
+                                ),
                               ],
                             );
                           case _:
@@ -224,7 +205,7 @@ class _RestoreCollectionStepState extends State<RestoreCollectionStep> {
                     ),
                   ],
                 ),
-              )
+              ),
           ],
         ),
       ),

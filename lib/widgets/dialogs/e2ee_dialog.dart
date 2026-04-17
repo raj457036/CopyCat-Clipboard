@@ -93,17 +93,15 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
     String enc2Key,
   ) async {
     final windowAction = context.windowAction;
-    final json = {
-      "enc2Id": keyId,
-      "enc2": enc2Key,
-    };
+    final json = {"enc2Id": keyId, "enc2": enc2Key};
     final content = jsonEncode(json);
 
     final path = await FilePicker.platform.saveFile(
-        fileName: "copycat-e2ee-vault-key.enc2",
-        type: FileType.custom,
-        allowedExtensions: ['enc2'],
-        bytes: utf8.encode(content));
+      fileName: "copycat-e2ee-vault-key.enc2",
+      type: FileType.custom,
+      allowedExtensions: ['enc2'],
+      bytes: utf8.encode(content),
+    );
     await windowAction?.show();
     if (path != null) {
       if (isDesktopPlatform) {

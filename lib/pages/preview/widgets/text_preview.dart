@@ -7,10 +7,7 @@ import 'package:flutter/material.dart';
 
 class TextClipPreviewCard extends StatelessWidget {
   final ClipboardItem item;
-  const TextClipPreviewCard({
-    super.key,
-    required this.item,
-  });
+  const TextClipPreviewCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {

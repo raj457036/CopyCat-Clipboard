@@ -7,10 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SeqSelectionListener extends StatefulWidget {
   final Widget child;
 
-  const SeqSelectionListener({
-    super.key,
-    required this.child,
-  });
+  const SeqSelectionListener({super.key, required this.child});
 
   @override
   State<SeqSelectionListener> createState() => _SeqSelectionListenerState();
@@ -30,7 +27,8 @@ class _SeqSelectionListenerState extends State<SeqSelectionListener> {
 
   void buildHandler() {
     handler = (KeyEvent event) {
-      final isShiftKey = event.logicalKey == LogicalKeyboardKey.shift ||
+      final isShiftKey =
+          event.logicalKey == LogicalKeyboardKey.shift ||
           event.logicalKey == LogicalKeyboardKey.shiftLeft ||
           event.logicalKey == LogicalKeyboardKey.shiftRight;
 

@@ -40,9 +40,7 @@ class CollectionsPage extends StatelessWidget {
         children: [
           if (width > 200)
             DisableForLocalUser(
-              child: TipTile(
-                tip: context.locale.collections__text__tip,
-              ),
+              child: TipTile(tip: context.locale.collections__text__tip),
             ),
           Expanded(
             child: ScaffoldBody(
@@ -52,23 +50,17 @@ class CollectionsPage extends StatelessWidget {
                   builder: (context, state) {
                     switch (state) {
                       case ClipCollectionLoaded(loading: true):
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
+                        return const Center(child: CircularProgressIndicator());
                       case ClipCollectionLoaded(
-                          :final failure,
-                          :final collections
-                        ):
+                        :final failure,
+                        :final collections,
+                      ):
                         {
                           if (failure != null) {
-                            return Center(
-                              child: Text(failure.message),
-                            );
+                            return Center(child: Text(failure.message));
                           }
                           if (collections.isEmpty) {
-                            return const Center(
-                              child: NoCollectionAvailable(),
-                            );
+                            return const Center(child: NoCollectionAvailable());
                           }
                           const aspectRatio = 16 / 7;
                           final builder = GridView.builder(
@@ -78,12 +70,12 @@ class CollectionsPage extends StatelessWidget {
                             itemCount: collections.length,
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: crossAxisCount,
-                              childAspectRatio: aspectRatio,
-                              mainAxisExtent: 100,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                            ),
+                                  crossAxisCount: crossAxisCount,
+                                  childAspectRatio: aspectRatio,
+                                  mainAxisExtent: 100,
+                                  mainAxisSpacing: 10,
+                                  crossAxisSpacing: 10,
+                                ),
                             itemBuilder: (BuildContext context, int index) {
                               final collection = collections[index];
                               return ClipCollectionGridItem(

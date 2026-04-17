@@ -2,6 +2,7 @@ import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/data/services/encryption.dart';
 import 'package:clipboard/base/domain/model/base.dart';
 import 'package:clipboard/base/domain/model/json_converters/datetime_converters.dart';
+import 'package:clipboard/base/domain/model/syncable.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/failure.dart';
@@ -17,7 +18,7 @@ part 'clipboard_item.g.dart';
 final specialSymbols = RegExp(r"[-_|]");
 
 @freezed
-class ClipboardItem with _$ClipboardItem, Identifiable {
+class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
   ClipboardItem._();
 
   factory ClipboardItem({
@@ -286,4 +287,12 @@ class ClipboardItem with _$ClipboardItem, Identifiable {
 
   bool get hasCollection =>
       (serverCollectionId != null || collectionId != null) && !encrypted;
+
+  @override
+  Syncable copyWithSyncMetadata({int? id, DateTime? lastSynced}) {
+    return copyWith(
+      id: id ?? this.id,
+      lastSynced: lastSynced ?? this.lastSynced,
+    );
+  }
 }

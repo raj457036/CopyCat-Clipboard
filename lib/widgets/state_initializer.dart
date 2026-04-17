@@ -19,10 +19,7 @@ import 'package:universal_io/io.dart';
 
 class StateInitializer extends StatefulWidget {
   final Widget child;
-  const StateInitializer({
-    super.key,
-    required this.child,
-  });
+  const StateInitializer({super.key, required this.child});
 
   @override
   State<StateInitializer> createState() => _StateInitializerState();
@@ -119,9 +116,6 @@ class _StateInitializerState extends State<StateInitializer>
 
     if (isPowerSaverActive) return const SizedBox.shrink();
 
-    return FadeIn(
-      duration: Durations.medium3,
-      child: widget.child,
-    );
+    return FadeIn(duration: Durations.medium3, child: widget.child);
   }
 }

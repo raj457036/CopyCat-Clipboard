@@ -31,38 +31,40 @@ class DragAndDropSwitchTile extends StatelessWidget {
       builder: (context, enabled) {
         return SubscriptionBuilder(
           builder: (context, subscription) {
-            final supported = subscription != null &&
+            final supported =
+                subscription != null &&
                 subscription.isActive &&
                 subscription.dragNdrop &&
                 isDNDSupported;
 
             return SwitchListTile(
-                value: enabled,
-                onChanged: supported
-                    ? context.read<AppConfigCubit>().toggleDragNDrop
-                    : null,
-                title: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(context.locale.settings__switch__drag_n_drop__title),
-                    width8,
-                    const ProBadge(),
-                  ],
-                ),
-                subtitle: isDNDSupported
-                    ? Text(
-                        context.locale.settings__switch__drag_n_drop__subtitle,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: colors.outline,
-                        ),
-                      )
-                    : Text(
-                        context.locale.app__feature_unavailable,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: colors.outline,
-                        ),
-                      ));
+              value: enabled,
+              onChanged: supported
+                  ? context.read<AppConfigCubit>().toggleDragNDrop
+                  : null,
+              title: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(context.locale.settings__switch__drag_n_drop__title),
+                  width8,
+                  const ProBadge(),
+                ],
+              ),
+              subtitle: isDNDSupported
+                  ? Text(
+                      context.locale.settings__switch__drag_n_drop__subtitle,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colors.outline,
+                      ),
+                    )
+                  : Text(
+                      context.locale.app__feature_unavailable,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colors.outline,
+                      ),
+                    ),
+            );
           },
         );
       },

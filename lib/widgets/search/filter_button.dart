@@ -40,8 +40,9 @@ class FilterButton extends StatelessWidget {
         tooltip: context.locale.search__tooltip__filter,
         color: active ? colors.secondaryContainer : null,
         style: IconButton.styleFrom(
-          backgroundColor:
-              active ? colors.primary : colors.surfaceContainerHighest,
+          backgroundColor: active
+              ? colors.primary
+              : colors.surfaceContainerHighest,
         ),
         onPressed: () => changeFilter(context, initialState),
       ),

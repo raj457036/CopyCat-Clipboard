@@ -8,10 +8,7 @@ import 'package:flutter/material.dart';
 
 class ClipItemPreviewVerticalView extends StatelessWidget {
   final ClipboardItem item;
-  const ClipItemPreviewVerticalView({
-    super.key,
-    required this.item,
-  });
+  const ClipItemPreviewVerticalView({super.key, required this.item});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

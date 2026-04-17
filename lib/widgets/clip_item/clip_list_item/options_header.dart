@@ -52,10 +52,7 @@ class ClipListItemOptionHeader extends StatelessWidget {
               layout: AppLayout.list,
             ),
           if (!selectionActive)
-            PrimaryHoverAction(
-              item: item,
-              hovered: hovered,
-            ),
+            PrimaryHoverAction(item: item, hovered: hovered),
         ],
       ),
     );

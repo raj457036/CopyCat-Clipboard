@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 
 class DropArea extends StatelessWidget {
   final bool processing;
-  const DropArea({
-    super.key,
-    this.processing = false,
-  });
+  const DropArea({super.key, this.processing = false});
 
   @override
   Widget build(BuildContext context) {

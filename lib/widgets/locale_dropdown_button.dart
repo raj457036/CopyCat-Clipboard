@@ -64,8 +64,8 @@ class LocaleDropdownButton extends StatelessWidget {
                 onChanged: (locale) {
                   if (locale != null) {
                     context.read<AppConfigCubit>().changeLocale(
-                          locale.languageCode,
-                        );
+                      locale.languageCode,
+                    );
                   }
                 },
               ),
