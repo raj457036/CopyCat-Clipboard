@@ -3,12 +3,13 @@ import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:universal_io/io.dart';
 
 class DeleteItemIntent extends Intent {
   const DeleteItemIntent();
 
-  static const activator = SingleActivator(
-    LogicalKeyboardKey.backspace,
+  static final activator = SingleActivator(
+    Platform.isMacOS ? LogicalKeyboardKey.backspace : LogicalKeyboardKey.delete,
     shift: true,
     includeRepeats: false,
   );
