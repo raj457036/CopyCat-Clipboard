@@ -1413,6 +1413,198 @@ abstract class AppLocalizations {
   /// **'Description'**
   String get preview__form__input__description;
 
+  /// No description provided for @preview__inspector__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Clip Details'**
+  String get preview__inspector__title;
+
+  /// No description provided for @preview__inspector__untitled.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled Clip'**
+  String get preview__inspector__untitled;
+
+  /// No description provided for @preview__inspector__saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Details updated'**
+  String get preview__inspector__saved;
+
+  /// No description provided for @preview__inspector__save_changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get preview__inspector__save_changes;
+
+  /// No description provided for @preview__inspector__decrypt.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrypt'**
+  String get preview__inspector__decrypt;
+
+  /// No description provided for @preview__inspector__open_source.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Source'**
+  String get preview__inspector__open_source;
+
+  /// No description provided for @preview__inspector__section__actions.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get preview__inspector__section__actions;
+
+  /// No description provided for @preview__inspector__section__details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get preview__inspector__section__details;
+
+  /// No description provided for @preview__inspector__section__content.
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get preview__inspector__section__content;
+
+  /// No description provided for @preview__inspector__section__organize.
+  ///
+  /// In en, this message translates to:
+  /// **'Organize'**
+  String get preview__inspector__section__organize;
+
+  /// No description provided for @preview__inspector__label__created.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get preview__inspector__label__created;
+
+  /// No description provided for @preview__inspector__label__modified.
+  ///
+  /// In en, this message translates to:
+  /// **'Modified'**
+  String get preview__inspector__label__modified;
+
+  /// No description provided for @preview__inspector__label__last_copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Copied'**
+  String get preview__inspector__label__last_copied;
+
+  /// No description provided for @preview__inspector__label__copied_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied Count'**
+  String get preview__inspector__label__copied_count;
+
+  /// No description provided for @preview__inspector__label__source_app.
+  ///
+  /// In en, this message translates to:
+  /// **'Source App'**
+  String get preview__inspector__label__source_app;
+
+  /// No description provided for @preview__inspector__label__source_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Source URL'**
+  String get preview__inspector__label__source_url;
+
+  /// No description provided for @preview__inspector__label__file_size.
+  ///
+  /// In en, this message translates to:
+  /// **'File Size'**
+  String get preview__inspector__label__file_size;
+
+  /// No description provided for @preview__inspector__label__mime_type.
+  ///
+  /// In en, this message translates to:
+  /// **'MIME Type'**
+  String get preview__inspector__label__mime_type;
+
+  /// No description provided for @preview__inspector__label__extension.
+  ///
+  /// In en, this message translates to:
+  /// **'Extension'**
+  String get preview__inspector__label__extension;
+
+  /// No description provided for @preview__inspector__label__characters.
+  ///
+  /// In en, this message translates to:
+  /// **'Characters'**
+  String get preview__inspector__label__characters;
+
+  /// No description provided for @preview__inspector__label__lines.
+  ///
+  /// In en, this message translates to:
+  /// **'Lines'**
+  String get preview__inspector__label__lines;
+
+  /// No description provided for @preview__inspector__label__link.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get preview__inspector__label__link;
+
+  /// No description provided for @preview__inspector__status__encrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted'**
+  String get preview__inspector__status__encrypted;
+
+  /// No description provided for @preview__inspector__status__local_only.
+  ///
+  /// In en, this message translates to:
+  /// **'Local Only'**
+  String get preview__inspector__status__local_only;
+
+  /// No description provided for @preview__inspector__status__synced.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced'**
+  String get preview__inspector__status__synced;
+
+  /// No description provided for @preview__inspector__status__not_synced.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Synced'**
+  String get preview__inspector__status__not_synced;
+
+  /// No description provided for @preview__inspector__status__download_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Download Required'**
+  String get preview__inspector__status__download_required;
+
+  /// No description provided for @preview__inspector__status__available.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Offline'**
+  String get preview__inspector__status__available;
+
+  /// No description provided for @preview__inspector__type__text.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get preview__inspector__type__text;
+
+  /// No description provided for @preview__inspector__type__media.
+  ///
+  /// In en, this message translates to:
+  /// **'Media'**
+  String get preview__inspector__type__media;
+
+  /// No description provided for @preview__inspector__type__file.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get preview__inspector__type__file;
+
+  /// No description provided for @preview__inspector__type__link.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get preview__inspector__type__link;
+
   /// No description provided for @reset_password__appbar__title.
   ///
   /// In en, this message translates to:

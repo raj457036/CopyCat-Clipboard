@@ -17,6 +17,7 @@ import 'package:clipboard/widgets/clip_item/clip_preview.dart';
 import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:clipboard/widgets/drag_drop/drag_item.dart';
+import 'package:clipboard/widgets/keyboard_shortcuts/space_enter_listener.dart';
 import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/widgets/menu.dart';
 import 'package:flutter/material.dart';
@@ -28,17 +29,19 @@ class ClipCardBodyContent extends StatelessWidget {
   final bool hovered;
   final bool selected;
   final bool selectionActive;
+  final bool canPaste;
+
   const ClipCardBodyContent({
     super.key,
     required this.item,
     required this.selectionActive,
     this.hovered = false,
     this.selected = false,
+    this.canPaste = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final canPaste = CanPasteScope.of(context);
     final textTheme = context.textTheme;
     final child = Column(
       mainAxisSize: MainAxisSize.min,
@@ -117,6 +120,8 @@ class _ClipCardBodyState extends State<ClipCardBody> {
     super.dispose();
   }
 
+  bool get canPaste => CanPasteScope.of(context);
+
   Future<void> decryptItem(BuildContext context) async {
     final persitCubit = context.read<OfflinePersistenceCubit>();
     final appConfig = context.read<AppConfigCubit>();
@@ -135,19 +140,6 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       persitCubit.persist([item_]);
     } catch (e) {
       showFailureSnackbar(Failure.fromException(e));
-    }
-  }
-
-  Future<void> performPrimaryAction(BuildContext context) async {
-    final canPaste = CanPasteScope.of(context);
-    if (widget.item.encrypted) {
-      decryptItem(context);
-    } else if (widget.item.needDownload) {
-      downloadFile(context, widget.item);
-    } else if (canPaste) {
-      pasteOnLastWindow(context, widget.item);
-    } else {
-      copyToClipboard(context, widget.item);
     }
   }
 
@@ -205,35 +197,46 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       hovered: hovered,
       selected: widget.selected,
       selectionActive: widget.selectionActive,
+      canPaste: canPaste,
     );
 
-    return Card.outlined(
-      margin: EdgeInsets.zero,
-      elevation: focused ? 2 : 0,
-      shape: selectedShape,
-      child: InkWell(
-        mouseCursor: SystemMouseCursors.click,
-        onHover: onHover,
-        focusColor: colors.surface,
-        onTap: !widget.selectionActive
-            ? () => performPrimaryAction(context)
-            : () => toggleSelect(context),
-        // onLongPress: () => menu.openOptionDialog(context),
-        onSecondaryTapDown: !widget.selectionActive
-            ? (detail) async {
-                final menu = Menu.of(context);
-                if (isMobilePlatform) {
-                  menu.openOptionBottomSheet(context);
-                  return;
+    return SpaceEnterListener(
+      onSpace: (context) => widget.selectionActive
+          ? toggleSelect(context)
+          : preview(context, widget.item),
+      onEnter: (context) => widget.selectionActive
+          ? toggleSelect(context)
+          : performPrimaryActionOnClip(context, widget.item, canPaste),
+      onShiftSpace: (context) => toggleSelect(context),
+      child: Card.outlined(
+        margin: EdgeInsets.zero,
+        elevation: focused ? 2 : 0,
+        shape: selectedShape,
+        child: InkWell(
+          mouseCursor: SystemMouseCursors.click,
+          onHover: onHover,
+          focusColor: colors.surface,
+
+          onTap: !widget.selectionActive
+              ? () => performPrimaryActionOnClip(context, widget.item, canPaste)
+              : () => toggleSelect(context),
+          // onLongPress: () => menu.openOptionDialog(context),
+          onSecondaryTapDown: !widget.selectionActive
+              ? (detail) async {
+                  final menu = Menu.of(context);
+                  if (isMobilePlatform) {
+                    menu.openOptionBottomSheet(context);
+                    return;
+                  }
+                  final position = detail.globalPosition;
+                  menu.openPopupMenu(context, position);
                 }
-                final position = detail.globalPosition;
-                menu.openPopupMenu(context, position);
-              }
-            : null,
-        onFocusChange: onFocusChange,
-        autofocus: widget.focused,
-        borderRadius: radius12,
-        child: cardContent,
+              : null,
+          onFocusChange: onFocusChange,
+          autofocus: widget.focused,
+          borderRadius: radius12,
+          child: cardContent,
+        ),
       ),
     );
   }

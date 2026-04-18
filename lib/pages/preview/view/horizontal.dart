@@ -1,9 +1,9 @@
 import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
-import 'package:clipboard/pages/preview/widgets/clip_detail_form.dart';
+import 'package:clipboard/pages/preview/widgets/clip_inspector.dart';
 import 'package:clipboard/pages/preview/widgets/preview.dart';
-import 'package:clipboard/pages/preview/widgets/preview_options.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
 class ClipItemPreviewHorizontalView extends StatelessWidget {
@@ -14,40 +14,33 @@ class ClipItemPreviewHorizontalView extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       body: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            child: SizedBox.expand(
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: ClipPreviewConfig(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: circleRadius12,
-                          bottomLeft: circleRadius12,
-                        ),
-                      ),
-                      child: ClipPreview(item: item),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 10,
-                    left: 10,
-                    right: 10,
-                    child: Center(
-                      child: PreviewOptions(
-                        item: item,
-                        direction: Axis.horizontal,
-                      ),
-                    ),
-                  ),
-                ],
+            flex: 11,
+            child: Padding(
+              padding: const EdgeInsets.all(padding16),
+              child: ClipPreviewConfig(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(circleRadius12),
+                ),
+                child: ClipPreview(item: item),
               ),
             ),
           ),
-          Expanded(child: ClipDetailForm(item: item)),
+          Expanded(
+            flex: 9,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(color: context.colors.outlineVariant),
+                ),
+              ),
+              child: SingleChildScrollView(
+                child: ClipInspector(item: item, showHeader: false),
+              ),
+            ),
+          ),
         ],
       ),
     );

@@ -28,5 +28,8 @@
   },
   "arb-editor.suppressedWarnings": [
     "missing_metadata_for_key",
-  ]
+  ],
+  "chat.tools.terminal.autoApprove": {
+    "flutter": true
+  }
 }

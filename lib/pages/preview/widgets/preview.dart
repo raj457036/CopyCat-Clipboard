@@ -5,6 +5,7 @@ import 'package:clipboard/pages/preview/widgets/url_preview.dart';
 import 'package:clipboard/utils/utility.dart' show isMediaType;
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
+import 'package:clipboard/widgets/clip_item/clip_card/encrypted_card.dart';
 import 'package:flutter/material.dart';
 
 class ClipPreview extends StatelessWidget {
@@ -14,6 +15,8 @@ class ClipPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (item.encrypted) return EncryptedClipItem(item: item);
+
     if (item.type == ClipItemType.text) {
       return TextClipPreviewCard(item: item);
     }

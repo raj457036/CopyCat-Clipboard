@@ -736,6 +736,103 @@ class AppLocalizationsDe extends AppLocalizations {
   String get preview__form__input__description => 'Beschreibung';
 
   @override
+  String get preview__inspector__title => 'Clip Details';
+
+  @override
+  String get preview__inspector__untitled => 'Untitled Clip';
+
+  @override
+  String get preview__inspector__saved => 'Details updated';
+
+  @override
+  String get preview__inspector__save_changes => 'Save changes';
+
+  @override
+  String get preview__inspector__decrypt => 'Decrypt';
+
+  @override
+  String get preview__inspector__open_source => 'Open Source';
+
+  @override
+  String get preview__inspector__section__actions => 'Actions';
+
+  @override
+  String get preview__inspector__section__details => 'Details';
+
+  @override
+  String get preview__inspector__section__content => 'Content';
+
+  @override
+  String get preview__inspector__section__organize => 'Organize';
+
+  @override
+  String get preview__inspector__label__created => 'Created';
+
+  @override
+  String get preview__inspector__label__modified => 'Modified';
+
+  @override
+  String get preview__inspector__label__last_copied => 'Last Copied';
+
+  @override
+  String get preview__inspector__label__copied_count => 'Copied Count';
+
+  @override
+  String get preview__inspector__label__source_app => 'Source App';
+
+  @override
+  String get preview__inspector__label__source_url => 'Source URL';
+
+  @override
+  String get preview__inspector__label__file_size => 'File Size';
+
+  @override
+  String get preview__inspector__label__mime_type => 'MIME Type';
+
+  @override
+  String get preview__inspector__label__extension => 'Extension';
+
+  @override
+  String get preview__inspector__label__characters => 'Characters';
+
+  @override
+  String get preview__inspector__label__lines => 'Lines';
+
+  @override
+  String get preview__inspector__label__link => 'Link';
+
+  @override
+  String get preview__inspector__status__encrypted => 'Encrypted';
+
+  @override
+  String get preview__inspector__status__local_only => 'Local Only';
+
+  @override
+  String get preview__inspector__status__synced => 'Synced';
+
+  @override
+  String get preview__inspector__status__not_synced => 'Not Synced';
+
+  @override
+  String get preview__inspector__status__download_required =>
+      'Download Required';
+
+  @override
+  String get preview__inspector__status__available => 'Available Offline';
+
+  @override
+  String get preview__inspector__type__text => 'Text';
+
+  @override
+  String get preview__inspector__type__media => 'Media';
+
+  @override
+  String get preview__inspector__type__file => 'File';
+
+  @override
+  String get preview__inspector__type__link => 'Link';
+
+  @override
   String get reset_password__appbar__title => 'Setzen Sie Ihr Passwort zurück';
 
   @override

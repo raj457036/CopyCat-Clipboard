@@ -12,6 +12,7 @@ import 'package:clipboard/widgets/clip_item/clip_preview.dart';
 import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:clipboard/widgets/drag_drop/drag_item.dart';
+import 'package:clipboard/widgets/keyboard_shortcuts/space_enter_listener.dart';
 import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/widgets/menu.dart';
 import 'package:flutter/material.dart';
@@ -93,70 +94,80 @@ class _ClipListItemState extends State<ClipListItem> {
       borderRadius: radius12,
     );
 
-    final child = Card.outlined(
-      shape: selectedShape,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 60, maxHeight: 220),
-        child: InkWell(
-          mouseCursor: SystemMouseCursors.click,
-          borderRadius: radius12,
-          autofocus: widget.autofocus,
-          onTap: !widget.selectionActive
-              ? () => performPrimaryActionOnClip(context, widget.item, canPaste)
-              : () => toggleSelect(context),
-          onSecondaryTapDown: !widget.selectionActive
-              ? (detail) async {
-                  final menu = Menu.of(context);
-                  if (isMobilePlatform) {
-                    menu.openOptionBottomSheet(context);
-                    return;
+    final child = SpaceEnterListener(
+      onSpace: (context) => widget.selectionActive
+          ? toggleSelect(context)
+          : preview(context, widget.item),
+      onEnter: (context) => widget.selectionActive
+          ? toggleSelect(context)
+          : performPrimaryActionOnClip(context, widget.item, canPaste),
+      onShiftSpace: (context) => toggleSelect(context),
+      child: Card.outlined(
+        shape: selectedShape,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 60, maxHeight: 220),
+          child: InkWell(
+            mouseCursor: SystemMouseCursors.click,
+            borderRadius: radius12,
+            autofocus: widget.autofocus,
+            onTap: !widget.selectionActive
+                ? () =>
+                      performPrimaryActionOnClip(context, widget.item, canPaste)
+                : () => toggleSelect(context),
+            onSecondaryTapDown: !widget.selectionActive
+                ? (detail) async {
+                    final menu = Menu.of(context);
+                    if (isMobilePlatform) {
+                      menu.openOptionBottomSheet(context);
+                      return;
+                    }
+                    final position = detail.globalPosition;
+                    menu.openPopupMenu(context, position);
                   }
-                  final position = detail.globalPosition;
-                  menu.openPopupMenu(context, position);
-                }
-              : null,
-          onFocusChange: onFocusChange,
-          onHover: onHover,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (!widget.noView)
-                ClipListItemOptionHeader(
-                  item: widget.item,
-                  hasFocusForPaste: canPaste,
-                  hovered: hovered,
-                  selected: widget.selected,
-                  selectionActive: widget.selectionActive,
-                ),
-              if (widget.item.displayTitle != null && !widget.item.encrypted)
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: padding10,
-                    right: padding10,
-                    bottom: padding8,
-                  ),
-                  child: Text(
-                    widget.item.displayTitle!,
-                    style: textTheme.titleSmall?.copyWith(
-                      fontVariations: fontVarW700,
-                    ),
-                    maxLines: 2,
-                  ),
-                ),
-              Flexible(
-                child: ClipPreview(item: widget.item, layout: AppLayout.list),
-              ),
-              if (!widget.selected && !widget.noView)
-                DisableForLocalUser(
-                  child: ClipSyncStatusFooter(
+                : null,
+            onFocusChange: onFocusChange,
+            onHover: onHover,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (!widget.noView)
+                  ClipListItemOptionHeader(
                     item: widget.item,
-                    radius: const BorderRadius.vertical(
-                      bottom: Radius.circular(8),
+                    hasFocusForPaste: canPaste,
+                    hovered: hovered,
+                    selected: widget.selected,
+                    selectionActive: widget.selectionActive,
+                  ),
+                if (widget.item.displayTitle != null && !widget.item.encrypted)
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: padding10,
+                      right: padding10,
+                      bottom: padding8,
+                    ),
+                    child: Text(
+                      widget.item.displayTitle!,
+                      style: textTheme.titleSmall?.copyWith(
+                        fontVariations: fontVarW700,
+                      ),
+                      maxLines: 2,
                     ),
                   ),
+                Flexible(
+                  child: ClipPreview(item: widget.item, layout: AppLayout.list),
                 ),
-            ],
+                if (!widget.selected && !widget.noView)
+                  DisableForLocalUser(
+                    child: ClipSyncStatusFooter(
+                      item: widget.item,
+                      radius: const BorderRadius.vertical(
+                        bottom: Radius.circular(8),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
