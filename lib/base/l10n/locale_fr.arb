@@ -273,7 +273,7 @@
 
   "@@LOGIN": "Écran de connexion",
   "login__local_signin__tooltip": "Pas de synchronisation. Toutes les données restent sur votre appareil.",
-  "login__local_signin__btn__label": "Utiliser localement",
+  "login__local_signin__btn__label": "Mode Hors-ligne",
   "login__form__input__name": "Entrez votre bon nom",
   "login__form__input__email": "Entrez votre e-mail",
   "login__form__input__error_email": "Veuillez entrer une adresse e-mail valide",

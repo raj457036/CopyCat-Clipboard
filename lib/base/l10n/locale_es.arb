@@ -273,7 +273,7 @@
 
   "@@LOGIN": "Pantalla de Inicio de Sesión",
   "login__local_signin__tooltip": "Sin sincronización. Todos los datos permanecen en tu dispositivo.",
-  "login__local_signin__btn__label": "Usar Localmente",
+  "login__local_signin__btn__label": "Modo Offline",
   "login__form__input__name": "Introduce tu buen nombre",
   "login__form__input__email": "Introduce tu correo electrónico",
   "login__form__input__error_email": "Por favor introduce una dirección de correo electrónico válida",

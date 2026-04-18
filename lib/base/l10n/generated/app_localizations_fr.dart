@@ -647,7 +647,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Pas de synchronisation. Toutes les données restent sur votre appareil.';
 
   @override
-  String get login__local_signin__btn__label => 'Utiliser localement';
+  String get login__local_signin__btn__label => 'Mode Hors-ligne';
 
   @override
   String get login__form__input__name => 'Entrez votre bon nom';

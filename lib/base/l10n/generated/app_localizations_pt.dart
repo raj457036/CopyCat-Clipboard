@@ -642,7 +642,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Sem sincronização. Todos os dados permanecem no seu dispositivo.';
 
   @override
-  String get login__local_signin__btn__label => 'Usar Localmente';
+  String get login__local_signin__btn__label => 'Modo Offline';
 
   @override
   String get login__form__input__name => 'Digite seu bom nome';

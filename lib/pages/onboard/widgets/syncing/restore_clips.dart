@@ -33,7 +33,7 @@ class _RestoreClipsStepState extends State<RestoreClipsStep> {
   int totalCount = -1;
   bool fetchingCount = false;
   late final SyncStatusCubit syncCubit;
-  late SyncStatus? syncStatus;
+  SyncStatus? syncStatus;
 
   @override
   void initState() {

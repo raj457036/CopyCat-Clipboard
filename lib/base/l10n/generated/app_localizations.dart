@@ -1242,7 +1242,7 @@ abstract class AppLocalizations {
   /// No description provided for @login__local_signin__btn__label.
   ///
   /// In en, this message translates to:
-  /// **'Use Locally'**
+  /// **'Offline Mode'**
   String get login__local_signin__btn__label;
 
   /// No description provided for @login__form__input__name.

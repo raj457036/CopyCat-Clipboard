@@ -613,7 +613,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get login__local_signin__tooltip => '无同步。所有数据都保存在您的设备上。';
 
   @override
-  String get login__local_signin__btn__label => '在本地使用';
+  String get login__local_signin__btn__label => '离线模式';
 
   @override
   String get login__form__input__name => '输入您的大名';

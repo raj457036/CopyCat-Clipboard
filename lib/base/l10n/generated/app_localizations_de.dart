@@ -643,7 +643,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Keine Synchronisation. Alle Daten bleiben auf Ihrem Gerät.';
 
   @override
-  String get login__local_signin__btn__label => 'Lokal verwenden';
+  String get login__local_signin__btn__label => 'Offline-Modus';
 
   @override
   String get login__form__input__name => 'Geben Sie Ihren Namen ein';

@@ -257,7 +257,7 @@
   "search_filter__sort_ord__desc": "降序",
   "@@LOGIN": "登录界面",
   "login__local_signin__tooltip": "无同步。所有数据都保存在您的设备上。",
-  "login__local_signin__btn__label": "在本地使用",
+  "login__local_signin__btn__label": "离线模式",
   "login__form__input__name": "输入您的大名",
   "login__form__input__email": "输入您的邮箱",
   "login__form__input__error_email": "请输入有效的邮件地址",

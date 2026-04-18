@@ -257,7 +257,7 @@
   "search_filter__sort_ord__desc": "Desc",
   "@@LOGIN": "Login Screen",
   "login__local_signin__tooltip": "No syncing. All data stays on your device.",
-  "login__local_signin__btn__label": "Use Locally",
+  "login__local_signin__btn__label": "Offline Mode",
   "login__form__input__name": "Enter your good name",
   "login__form__input__email": "Enter your email",
   "login__form__input__error_email": "Please enter a valid email address",

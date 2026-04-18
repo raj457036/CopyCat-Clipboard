@@ -274,7 +274,7 @@
   
     "@@LOGIN": "Tela de Login",
     "login__local_signin__tooltip": "Sem sincronização. Todos os dados permanecem no seu dispositivo.",
-    "login__local_signin__btn__label": "Usar Localmente",
+    "login__local_signin__btn__label": "Modo Offline",
     "login__form__input__name": "Digite seu bom nome",
     "login__form__input__email": "Digite seu e-mail",
     "login__form__input__error_email": "Por favor, insira um endereço de e-mail válido",

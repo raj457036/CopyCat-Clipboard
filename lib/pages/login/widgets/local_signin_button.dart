@@ -12,7 +12,7 @@ class LocalSigninButton extends StatelessWidget {
     final colors = context.colors;
     return Tooltip(
       message: context.locale.login__local_signin__tooltip,
-      child: FilledButton.icon(
+      child: ElevatedButton.icon(
         onPressed: () {
           final cubit = context.read<AuthCubit>();
           cubit.localAuthenticated();

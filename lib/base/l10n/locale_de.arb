@@ -274,7 +274,7 @@
 
   "@@LOGIN": "Anmeldebildschirm",
   "login__local_signin__tooltip": "Keine Synchronisation. Alle Daten bleiben auf Ihrem Gerät.",
-  "login__local_signin__btn__label": "Lokal verwenden",
+  "login__local_signin__btn__label": "Offline-Modus",
   "login__form__input__name": "Geben Sie Ihren Namen ein",
   "login__form__input__email": "Geben Sie Ihre E-Mail ein",
   "login__form__input__error_email": "Bitte geben Sie eine gültige E-Mail-Adresse ein",

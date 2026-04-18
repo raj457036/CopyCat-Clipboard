@@ -635,7 +635,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'No syncing. All data stays on your device.';
 
   @override
-  String get login__local_signin__btn__label => 'Use Locally';
+  String get login__local_signin__btn__label => 'Offline Mode';
 
   @override
   String get login__form__input__name => 'Enter your good name';
