@@ -296,7 +296,7 @@ IsarAppConfig _isarAppConfigDeserialize(
   object.smartPaste = reader.readBool(offsets[17]);
   object.sortBy =
       _IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(offsets[18])] ??
-      ClipboardSortKey.created;
+      ClipboardSortKey.modified;
   object.sortOrder =
       _IsarAppConfigsortOrderValueEnumMap[reader.readStringOrNull(
         offsets[19],
@@ -384,7 +384,7 @@ P _isarAppConfigDeserializeProp<P>(
       return (_IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
-              ClipboardSortKey.created)
+              ClipboardSortKey.modified)
           as P;
     case 19:
       return (_IsarAppConfigsortOrderValueEnumMap[reader.readStringOrNull(

@@ -37,7 +37,7 @@ class AppConfig with _$AppConfig, Identifiable {
     @Default(initialWindowHeight) double windowHeight,
 
     // Sorting settings
-    @Default(ClipboardSortKey.created) ClipboardSortKey sortBy,
+    @Default(ClipboardSortKey.modified) ClipboardSortKey sortBy,
     @Default(SortOrder.desc) SortOrder sortOrder,
 
     /// will prevent auto upload for files over 10 MB

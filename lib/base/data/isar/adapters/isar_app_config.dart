@@ -25,7 +25,7 @@ class IsarAppConfig {
   double windowHeight = 550;
 
   @Enumerated(EnumType.name)
-  ClipboardSortKey sortBy = ClipboardSortKey.created;
+  ClipboardSortKey sortBy = ClipboardSortKey.modified;
   @Enumerated(EnumType.name)
   SortOrder sortOrder = SortOrder.desc;
   int dontUploadOver = 10485760;

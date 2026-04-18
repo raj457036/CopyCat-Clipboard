@@ -23,7 +23,7 @@ _$AppConfigImpl _$$AppConfigImplFromJson(
       (json['windowHeight'] as num?)?.toDouble() ?? initialWindowHeight,
   sortBy:
       $enumDecodeNullable(_$ClipboardSortKeyEnumMap, json['sortBy']) ??
-      ClipboardSortKey.created,
+      ClipboardSortKey.modified,
   sortOrder:
       $enumDecodeNullable(_$SortOrderEnumMap, json['sortOrder']) ??
       SortOrder.desc,

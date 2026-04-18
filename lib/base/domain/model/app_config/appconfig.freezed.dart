@@ -576,7 +576,7 @@ class _$AppConfigImpl extends _AppConfig {
     this.pinned = false,
     this.windowWidth = initialWindowWidth,
     this.windowHeight = initialWindowHeight,
-    this.sortBy = ClipboardSortKey.created,
+    this.sortBy = ClipboardSortKey.modified,
     this.sortOrder = SortOrder.desc,
     this.dontUploadOver = $10MB,
     this.dontCopyOver = $10MB,
