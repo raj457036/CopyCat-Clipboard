@@ -2,6 +2,12 @@ import 'package:clipboard/base/domain/model/sync/sync_outbox_entry.dart';
 
 /// Repository interface for managing the sync outbox.
 abstract class SyncOutboxRepository {
+  /// Stream that emits whenever a new entry is enqueued.
+  ///
+  /// Used by [SyncOrchestrator] to trigger immediate outbox processing
+  /// in realtime sync mode.
+  Stream<void> get onNewEntry;
+
   /// Enqueue a new operation.
   Future<void> enqueue(SyncOutboxEntry entry);
 

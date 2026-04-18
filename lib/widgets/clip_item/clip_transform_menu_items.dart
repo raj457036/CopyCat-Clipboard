@@ -228,6 +228,7 @@ Future<void> _copyOrPasteResult(
 
   final transformed = ClipboardItem.fromText(
     text,
+    userId: tx.item.userId,
     sourceApp: tx.item.sourceApp,
     sourceUrl: tx.item.sourceUrl,
     category: categoryOverride ?? tx.item.textCategory,

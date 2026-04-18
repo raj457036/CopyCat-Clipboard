@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/syncable.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
@@ -12,6 +13,7 @@ import 'package:clipboard/base/domain/model/sync/sync_config.dart';
 import 'package:clipboard/base/sync/sync_engine.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:injectable/injectable.dart';
+import 'package:synchronized/extension.dart';
 
 /// Manages all registered [SyncEngine]s and coordinates the sync lifecycle.
 ///
@@ -19,24 +21,27 @@ import 'package:injectable/injectable.dart';
 /// - Enforcing dependency order (e.g. syncing collections before clips)
 /// - Starting/stopping all engines together
 /// - Periodically triggering the global outbox processor pipeline
+/// - Adapting outbox processing speed based on sync mode (realtime vs balanced)
 @singleton
 class SyncOrchestrator {
   final Map<String, SyncEngine> _engines = {};
+  final SyncOutboxRepository _outboxRepo;
   Timer? _outboxTimer;
+  StreamSubscription? _outboxStreamSub;
 
   SyncOrchestrator(
     SyncAdapter<ClipboardItem> clipAdapter,
     SyncAdapter<ClipCollection> collectionAdapter,
     SyncCursorRepository cursorRepo,
-    SyncOutboxRepository outboxRepo,
+    this._outboxRepo,
     SyncEventBus eventBus,
     @Named('device_id') String deviceId,
   ) {
-    _bootstrapEngine(clipAdapter, cursorRepo, outboxRepo, eventBus, deviceId);
+    _bootstrapEngine(clipAdapter, cursorRepo, _outboxRepo, eventBus, deviceId);
     _bootstrapEngine(
       collectionAdapter,
       cursorRepo,
-      outboxRepo,
+      _outboxRepo,
       eventBus,
       deviceId,
     );
@@ -128,16 +133,39 @@ class SyncOrchestrator {
     }
   }
 
-  /// Start scheduled tasks (polling, outbox).
-  void start() {
-    _startOutboxProcessor();
+  /// Process the outbox with [synchronized] to ensure only one push
+  /// operation runs at a time, preventing race conditions.
+  Future<void> _processOutboxSynchronized() async {
+    logger.i('[SyncOrch] _processOutboxSynchronized triggered');
+    await synchronized(() async {
+      logger.i('[SyncOrch] synchronized lock acquired, calling processOutboxes()');
+      await processOutboxes();
+      logger.i('[SyncOrch] processOutboxes() completed');
+    });
+  }
+
+  /// Start scheduled tasks (polling, outbox) with the given [syncSpeed].
+  ///
+  /// - [SyncSpeed.realtime]: Subscribes to the outbox notification stream
+  ///   for instant push on every new entry.
+  /// - [SyncSpeed.balanced]: Polls the outbox every 10 seconds.
+  void start({SyncSpeed syncSpeed = SyncSpeed.balanced}) {
+    logger.i('[SyncOrch] start() called with syncSpeed=$syncSpeed');
+    _startOutboxProcessor(syncSpeed);
     _startPolling();
+  }
+
+  /// Update the outbox processing mode without restarting polling/realtime pull.
+  void updateSyncMode(SyncSpeed syncSpeed) {
+    _startOutboxProcessor(syncSpeed);
   }
 
   /// Stop all scheduled tasks and realtime subscriptions.
   void stop() {
     _outboxTimer?.cancel();
     _outboxTimer = null;
+    _outboxStreamSub?.cancel();
+    _outboxStreamSub = null;
 
     for (final engine in _engines.values) {
       engine.stopPolling();
@@ -157,12 +185,34 @@ class SyncOrchestrator {
     }
   }
 
-  void _startOutboxProcessor() {
+  void _startOutboxProcessor(SyncSpeed syncSpeed) {
+    logger.i('[SyncOrch] _startOutboxProcessor: mode=$syncSpeed');
+    // Cancel existing processors
     _outboxTimer?.cancel();
-    // Process outbox globally every 30 seconds
-    _outboxTimer = Timer.periodic(
-      const Duration(seconds: 30),
-      (_) => processOutboxes(),
-    );
+    _outboxTimer = null;
+    _outboxStreamSub?.cancel();
+    _outboxStreamSub = null;
+
+    switch (syncSpeed) {
+      case SyncSpeed.realtime:
+        // Push instantly on every new outbox entry
+        logger.i('[SyncOrch] Subscribing to outbox stream for realtime push');
+        _outboxStreamSub = _outboxRepo.onNewEntry.listen(
+          (_) {
+            logger.i('[SyncOrch] Stream notification received! Triggering push...');
+            _processOutboxSynchronized();
+          },
+        );
+      case SyncSpeed.balanced:
+        // Poll every 10 seconds
+        logger.i('[SyncOrch] Starting 10s balanced timer');
+        _outboxTimer = Timer.periodic(
+          const Duration(seconds: 10),
+          (_) {
+            logger.i('[SyncOrch] 10s timer fired, triggering push...');
+            _processOutboxSynchronized();
+          },
+        );
+    }
   }
 }

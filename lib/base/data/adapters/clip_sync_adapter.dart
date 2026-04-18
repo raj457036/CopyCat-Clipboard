@@ -1,6 +1,9 @@
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
+import 'package:clipboard/base/domain/services/file_upload_service.dart';
+import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:dartz/dartz.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
@@ -20,6 +23,11 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   final ClipBatchSyncService _batchSyncService;
   final ClipCollectionCubit _collectionCubit;
   final ClipCrossSyncListener _realtimeListener;
+  final FileUploadService _fileUploadService;
+
+  /// Direct local source access for write-back operations that must NOT
+  /// trigger outbox re-enqueue (e.g., saving serverId after remote creation).
+  final ClipboardSource _localSource;
 
   ClipSyncAdapter(
     this._syncRepo,
@@ -28,6 +36,8 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     this._batchSyncService,
     this._collectionCubit,
     this._realtimeListener,
+    this._fileUploadService,
+    @Named("local") this._localSource,
   );
 
   @override
@@ -109,21 +119,59 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
 
   @override
   FailureOr<ClipboardItem> pushToRemote(ClipboardItem item) async {
+    logger.i('[ClipSync] pushToRemote: id=${item.id} userId=${item.userId} serverId=${item.serverId} type=${item.type}');
     if (item.userId == kLocalUserId) {
       // Local-only entries should never be pushed to Supabase.
+      logger.w('[ClipSync] SKIPPED: userId is kLocalUserId ($kLocalUserId)');
       return Right(item);
     }
 
-    // NOTE: File/media sync requires using drive upload, which currently lives in
-    // CloudPersistanceCubit. For text/links, or metadata updates, direct remoteRepo hits work well.
+    // Re-read from DB to get latest state (serverId may have been set
+    // by another sync path, preventing double-creation).
+    if (item.id != null) {
+      final fresh = await getLocalById(item.id!);
+      if (fresh != null) {
+        logger.i('[ClipSync] Re-read: serverId=${fresh.serverId} userId=${fresh.userId}');
+        item = fresh;
+      }
+    }
+
+    // Handle file/media upload via the pluggable FileUploadService
+    if (item.needsFileUpload) {
+      logger.i('[ClipSync] File upload needed. Calling FileUploadService...');
+      final uploadResult = await _fileUploadService.upload(item);
+      return uploadResult.fold(
+        (failure) {
+          logger.e('[ClipSync] File upload FAILED: ${failure.message}');
+          return Left(failure);
+        },
+        (uploadedItem) async {
+          logger.i('[ClipSync] File upload SUCCESS. driveFileId=${uploadedItem.driveFileId}');
+          item = uploadedItem;
+          return await _createOrUpdateRemote(item);
+        },
+      );
+    }
+
+    return await _createOrUpdateRemote(item);
+  }
+
+  FailureOr<ClipboardItem> _createOrUpdateRemote(ClipboardItem item) async {
     if (item.serverId == null) {
+      logger.i('[ClipSync] Creating on server (no serverId yet)...');
       final result = await _remoteRepo.create(item);
-      // Once created remotely, save the new serverId down to Isar
-      return result.fold((l) => Left(l), (r) async {
-        await _clipRepo.update(r);
+      // Once created remotely, save the new serverId to local DB directly
+      // via _localSource (NOT _clipRepo) to avoid re-enqueuing outbox entries.
+      return result.fold((l) {
+        logger.e('[ClipSync] Server create FAILED: ${l.message}');
+        return Left(l);
+      }, (r) async {
+        logger.i('[ClipSync] Server create SUCCESS. serverId=${r.serverId}. Saving to local...');
+        await _localSource.update(r);
         return Right(r);
       });
     } else {
+      logger.i('[ClipSync] Updating on server (serverId=${item.serverId})...');
       return await _remoteRepo.update(item);
     }
   }
@@ -137,3 +185,4 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     return await _remoteRepo.delete(item);
   }
 }
+

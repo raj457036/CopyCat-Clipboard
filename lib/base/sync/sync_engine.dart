@@ -211,12 +211,15 @@ class SyncEngine<T extends Syncable> {
   /// Processes local changes waiting in the outbox.
   Future<void> processOutbox() async {
     final entries = await outboxRepo.getPending();
-    final relevant = entries.where((e) => e.entityType == adapter.entityType);
+    logger.i('[SyncEngine:${adapter.entityType}] processOutbox: ${entries.length} pending entries total');
+    final relevant = entries.where((e) => e.entityType == adapter.entityType).toList();
+    logger.i('[SyncEngine:${adapter.entityType}] Relevant entries: ${relevant.length}');
     if (relevant.isEmpty) return;
 
     eventBus.emitEngineStatus(adapter.entityType, true);
     try {
       for (final entry in relevant) {
+        logger.i('[SyncEngine:${adapter.entityType}] Processing entry id=${entry.id} localId=${entry.localId} action=${entry.action}');
         await _processOutboxEntry(entry);
       }
     } finally {
@@ -226,8 +229,10 @@ class SyncEngine<T extends Syncable> {
 
   Future<void> _processOutboxEntry(SyncOutboxEntry entry) async {
     final item = await adapter.getLocalById(entry.localId);
+    logger.i('[SyncEngine:${adapter.entityType}] getLocalById(${entry.localId}) => ${item != null ? "found (serverId=${(item as dynamic).serverId}, userId=${(item as dynamic).userId})" : "NULL"}');
     if (item == null && entry.action != SyncOutboxAction.delete) {
       // Local item missing, nothing to sync.
+      logger.w('[SyncEngine:${adapter.entityType}] Item missing locally, marking completed');
       await outboxRepo.markCompleted(entry.id!);
       return;
     }
@@ -243,6 +248,7 @@ class SyncEngine<T extends Syncable> {
           );
           break;
         }
+        logger.i('[SyncEngine:${adapter.entityType}] Calling pushToRemote...');
         resultEither = await adapter.pushToRemote(item);
       case SyncOutboxAction.delete:
         if (item == null) {
@@ -253,8 +259,19 @@ class SyncEngine<T extends Syncable> {
     }
 
     await resultEither.fold(
-      (failure) async => await _handleOutboxFailure(entry, failure),
-      (_) async => await outboxRepo.markCompleted(entry.id!),
+      (failure) async {
+        logger.e('[SyncEngine:${adapter.entityType}] Push FAILED: ${failure.message} (${failure.code})');
+        await _handleOutboxFailure(entry, failure);
+      },
+      (result) async {
+        logger.i('[SyncEngine:${adapter.entityType}] Push SUCCESS for entry id=${entry.id}. Marking completed.');
+        await outboxRepo.markCompleted(entry.id!);
+        // Broadcast update to UI so serverId/lastSynced are reflected
+        if (result is T) {
+          logger.i('[SyncEngine:${adapter.entityType}] Emitting update event to UI');
+          eventBus.emit<T>((CrossSyncEventType.update, result));
+        }
+      },
     );
   }
 

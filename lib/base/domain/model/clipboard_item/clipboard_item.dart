@@ -207,6 +207,15 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
 
   bool get isSynced => lastSynced != null;
 
+  /// Whether this item needs a file upload before it can be synced to the server.
+  ///
+  /// True when the item is a file/media type that has local content but
+  /// hasn't been uploaded to a drive yet.
+  bool get needsFileUpload =>
+      (type == ClipItemType.media || type == ClipItemType.file) &&
+      driveFileId == null &&
+      localPath != null;
+
   bool get isTextType => type == ClipItemType.text || type == ClipItemType.url;
 
   bool get inCache =>

@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:clipboard/base/data/isar/adapters/isar_sync_outbox_entry.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/base/domain/model/sync/sync_outbox_entry.dart';
 import 'package:clipboard/base/domain/repositories/sync_outbox.dart';
 import 'package:injectable/injectable.dart';
@@ -11,11 +14,19 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
   IsarCollection<IsarSyncOutboxEntry> get _collection =>
       _db.collection<IsarSyncOutboxEntry>();
 
+  final _newEntryController = StreamController<void>.broadcast();
+
+  @override
+  Stream<void> get onNewEntry => _newEntryController.stream;
+
   @override
   Future<void> enqueue(SyncOutboxEntry entry) async {
+    logger.i('[Outbox] Enqueuing: ${entry.entityType} localId=${entry.localId} action=${entry.action}');
     await _db.writeTxn(() async {
       await _collection.put(IsarSyncOutboxEntry.fromDomain(entry));
     });
+    logger.i('[Outbox] Enqueued. Notifying stream listeners...');
+    _newEntryController.add(null);
   }
 
   @override
@@ -45,6 +56,7 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
       final entry = await _collection.get(id);
       if (entry != null) {
         entry.lastError = error;
+        // TODO(Raj): implement retry logic
         // Setting nextRetryAt far into future or null depends on exact logic
         // We'll set it null but perhaps use a different field, or just leave it for manual retry.
         // For now, let's bump nextRetryAt to way in the future or keep as failed.
