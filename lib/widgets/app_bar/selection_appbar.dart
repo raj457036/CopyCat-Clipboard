@@ -70,7 +70,8 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
                           clearSelection(context);
                         }
                       },
-                      tooltip: 'Paste Multiple',
+                      tooltip:
+                          'Paste Multiple • ${keyboardShortcut(meta: false, shift: true, key: "Enter")}',
                       icon: const Icon(Icons.content_paste_go_outlined),
                     );
                   },

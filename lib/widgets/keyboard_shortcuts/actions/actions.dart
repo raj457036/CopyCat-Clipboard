@@ -8,3 +8,4 @@ export 'pop_route.dart';
 export 'search.dart';
 export 'settings_page.dart';
 export 'sync.dart';
+export 'delete_items.dart';

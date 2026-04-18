@@ -23,10 +23,12 @@ class PasteStackCoordinator extends StatefulWidget {
 class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
   late final HotKey pasteHotKey;
   bool isRegistered = false;
+  late final PasteStackCubit pasteStack;
 
   @override
   void initState() {
     super.initState();
+    pasteStack = context.read<PasteStackCubit>();
     pasteHotKey = HotKey(
       key: PhysicalKeyboardKey.keyV,
       modifiers: Platform.isMacOS
@@ -56,7 +58,6 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
     final context = rootNavKey.currentContext;
     if (context == null || !mounted) return;
 
-    final pasteStack = context.read<PasteStackCubit>();
     final offlinePersistence = context.read<OfflinePersistenceCubit>();
     final windowAction = context.read<WindowActionCubit>();
     final focusManager = WindowFocusManager.of(context);
@@ -100,7 +101,7 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
           previous.active != current.active || previous.count < current.count,
       listener: (context, state) async {
         if (state.active) {
-          rootNavKey.currentContext?.goNamed(RouteConstants.pasteStack);
+          rootNavKey.currentContext?.pushNamed(RouteConstants.pasteStack);
 
           if (state.count > 0) {
             await registerPasteHotKey();

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/di/di.dart';
@@ -18,18 +19,24 @@ import 'package:synchronized/extension.dart';
 class WindowFocusManager extends StatefulWidget {
   final Widget child;
   final FocusWindow focusWindow;
+  final ClipboardService clipboardService;
 
   const WindowFocusManager({
     super.key,
     required this.focusWindow,
     required this.child,
+    required this.clipboardService,
   });
 
   static Widget forPlatform({required Widget child}) {
     if (isMobilePlatform) {
       return child;
     }
-    return WindowFocusManager(focusWindow: sl(), child: child);
+    return WindowFocusManager(
+      focusWindow: sl(),
+      clipboardService: sl(),
+      child: child,
+    );
   }
 
   static WindowFocusManagerState? of(BuildContext context) {
@@ -59,12 +66,16 @@ class WindowFocusManagerState extends State<WindowFocusManager>
     }
   }
 
-  Future<void> pasteMultiple(List<ClipboardItem> items) async {
+  Future<void> pasteMultiple(
+    List<ClipboardItem> items, {
+    bool restoreFocusAfterPaste = false,
+  }) async {
     if (items.isEmpty) return;
 
     final pasteable = items
         .where((item) => item.inCache && !item.encrypted)
         .toList(growable: false);
+
     if (pasteable.isEmpty) return;
 
     final unfocused = await toggleWindow();
@@ -79,6 +90,9 @@ class WindowFocusManagerState extends State<WindowFocusManager>
         await pasteOnFocusedWindow();
         await Future.delayed(Durations.short2);
       });
+    }
+    if (restoreFocusAfterPaste) {
+      await toggleWindow();
     }
   }
 

@@ -28,7 +28,7 @@ class SelectedClipsCubit extends Cubit<SelectedClipsState> {
 
   List<ClipboardItem> _appendMissing(
     List<ClipboardItem> base,
-    List<ClipboardItem> candidates,
+    Iterable<ClipboardItem> candidates,
   ) {
     final result = List<ClipboardItem>.from(base);
     for (final clip in candidates) {
@@ -63,9 +63,12 @@ class SelectedClipsCubit extends Cubit<SelectedClipsState> {
               final start = lastIndex < currentIndex ? lastIndex : currentIndex;
               final end = lastIndex > currentIndex ? lastIndex : currentIndex;
               final rangeSelected = selectableItems.sublist(start, end + 1);
+
               final newSelectedClipIds = _appendMissing(
                 selectedClipIds,
-                rangeSelected,
+                lastIndex < currentIndex
+                    ? rangeSelected
+                    : rangeSelected.reversed,
               );
               emit(
                 SelectedClipsState.clipSelected(

@@ -31,14 +31,14 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     @Named("local") this.repo,
     this._appConfigCubit,
   ) : super(
-          ClipboardState.loaded(
-            items: [],
-            filterState: SearchFilterState(
-              sortBy: _appConfigCubit.state.config.sortBy,
-              sortOrder: _appConfigCubit.state.config.sortOrder,
-            ),
+        ClipboardState.loaded(
+          items: [],
+          filterState: SearchFilterState(
+            sortBy: _appConfigCubit.state.config.sortBy,
+            sortOrder: _appConfigCubit.state.config.sortOrder,
           ),
-        ) {
+        ),
+      ) {
     eventBusSubscription = syncEventBus.where<ClipboardItem>().listen((event) {
       if (event is TypedSyncEvent<ClipboardItem>) {
         onSyncEvent(event.event);
@@ -116,8 +116,8 @@ class ClipboardCubit extends Cubit<ClipboardState> {
       }
     }
 
-    _applySort(replaced);
-    emit(state.copyWith(items: replaced));
+    final sortedItems = _applySort(replaced);
+    emit(state.copyWith(items: sortedItems));
   }
 
   void onSyncEvent(ClipCrossSyncEvent event) {
@@ -146,20 +146,21 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   void put(ClipboardItem item, {bool isNew = false}) {
     if (isNew) {
       final items = [item, ...state.items];
-      _applySort(items);
-      emit(state.copyWith(items: items));
+      final sortedItems = _applySort(items);
+      emit(state.copyWith(items: sortedItems));
     } else {
       final items = state.items.replaceWhere((it) => it.id == item.id, item);
-      _applySort(items);
-      emit(state.copyWith(items: items));
+      final sortedItems = _applySort(items);
+      emit(state.copyWith(items: sortedItems));
     }
   }
 
-  void _applySort(List<ClipboardItem> items) {
+  List<ClipboardItem> _applySort(List<ClipboardItem> items) {
+    final sorted = List<ClipboardItem>.from(items);
     final sortBy = state.filterState.sortBy ?? ClipboardSortKey.created;
     final order = state.filterState.sortOrder ?? SortOrder.desc;
 
-    items.sort((a, b) {
+    sorted.sort((a, b) {
       int comparison;
       switch (sortBy) {
         case ClipboardSortKey.created:
@@ -175,6 +176,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
       }
       return order == SortOrder.desc ? -comparison : comparison;
     });
+    return sorted;
   }
 
   bool fetchIfInitBatch() {
@@ -210,10 +212,10 @@ class ClipboardCubit extends Cubit<ClipboardState> {
         offset: fromTop ? 0 : state.offset,
         filterState: fromTop
             ? filterState ??
-                SearchFilterState(
-                  sortBy: _appConfigCubit.state.config.sortBy,
-                  sortOrder: _appConfigCubit.state.config.sortOrder,
-                )
+                  SearchFilterState(
+                    sortBy: _appConfigCubit.state.config.sortBy,
+                    sortOrder: _appConfigCubit.state.config.sortOrder,
+                  )
             : state.filterState,
         limit: limit ?? 50,
       ),

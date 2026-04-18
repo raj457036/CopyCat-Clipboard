@@ -264,6 +264,7 @@ class AppContent extends StatelessWidget {
                           const CreateNewClipNoteIntent(),
                       SyncIntent.activator: const SyncIntent(),
                       PasteIntent.activator: const PasteIntent(),
+                      DeleteItemIntent.activator: const DeleteItemIntent(),
                       if (isDesktopPlatform)
                         TogglePasteStackIntent.activator:
                             const TogglePasteStackIntent(),
@@ -285,6 +286,7 @@ class AppContent extends StatelessWidget {
                       SyncIntent: SyncAction(),
                       CreateNewClipNoteIntent: CreateNewClipNoteAction(),
                       PasteIntent: PasteAction(),
+                      DeleteItemIntent: DeleteSelectedItemsAction(),
                       if (isDesktopPlatform)
                         TogglePasteStackIntent: TogglePasteStackAction(),
                       if (isDesktopPlatform) PopRouteIntent: HideWindowAction(),

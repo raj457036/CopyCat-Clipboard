@@ -68,11 +68,26 @@ Future<void> screenshotAsFile(
   }
 }
 
-String keyboardShortcut({bool meta = true, required String key}) {
+String keyboardShortcut({
+  bool meta = true,
+  bool shift = false,
+  bool ctrl = false,
+  bool prefixDot = false,
+  required String key,
+}) {
+  final parts = <String>[];
   if (Platform.isMacOS || Platform.isIOS) {
-    return "⌘ + $key";
+    if (meta) parts.add("⌘");
+    if (shift) parts.add("⇧");
+    if (ctrl) parts.add("⌃");
+    parts.add(key);
+    return parts.join(" + ");
   }
-  return "Ctrl + $key";
+  if (ctrl) parts.add("Ctrl");
+  if (shift) parts.add("Shift");
+  if (meta) parts.add("Alt");
+  parts.add(key);
+  return parts.join(" + ");
 }
 
 final _mediaMimeTypeRegex = RegExp(

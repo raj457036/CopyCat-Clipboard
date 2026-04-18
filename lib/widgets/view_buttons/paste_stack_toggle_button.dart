@@ -13,7 +13,7 @@ class PasteStackToggleButton extends StatelessWidget {
   Future<void> toggle(BuildContext context, bool active) async {
     await context.read<PasteStackCubit>().toggle();
     if (context.mounted && !active) {
-      context.goNamed(RouteConstants.pasteStack);
+      context.pushNamed(RouteConstants.pasteStack);
     }
   }
 

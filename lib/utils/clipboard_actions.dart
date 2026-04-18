@@ -164,12 +164,16 @@ List<ClipboardItem> selectedClips(BuildContext context) {
 
 Future<void> pasteMultipleOnLastWindow(
   BuildContext context,
-  List<ClipboardItem> items,
-) async {
+  List<ClipboardItem> items, {
+  bool restoreFocusAfterPaste = false,
+}) async {
   final focusManager = WindowFocusManager.of(context);
   if (focusManager == null) return;
 
-  await focusManager.pasteMultiple(items);
+  await focusManager.pasteMultiple(
+    items,
+    restoreFocusAfterPaste: restoreFocusAfterPaste,
+  );
 }
 
 Future<void> pasteSelectedOnLastWindow(
