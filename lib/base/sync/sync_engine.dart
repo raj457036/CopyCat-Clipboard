@@ -55,6 +55,7 @@ class SyncEngine<T extends Syncable> {
   Future<SyncResult> pull({bool force = false}) async {
     if (_busy && !force) return SyncResult.skipped;
     _busy = true;
+    eventBus.emitEngineStatus(adapter.entityType, true);
 
     try {
       final cursor = await cursorRepo.get(adapter.entityType);
@@ -87,6 +88,7 @@ class SyncEngine<T extends Syncable> {
       return SyncResult.failed;
     } finally {
       _busy = false;
+      eventBus.emitEngineStatus(adapter.entityType, false);
     }
   }
 
@@ -155,7 +157,15 @@ class SyncEngine<T extends Syncable> {
           hasMore = paginated.hasMore;
           offset += paginated.results.length;
 
-          if (paginated.results.isEmpty) return true;
+          if (paginated.results.isEmpty) {
+            eventBus.emitProgress(
+              SyncProgressParams(
+                entityType: adapter.entityType,
+                syncedCount: offset,
+              ),
+            );
+            return true;
+          }
 
           final events = await adapter.applyBatch(
             paginated.results,
@@ -165,6 +175,13 @@ class SyncEngine<T extends Syncable> {
           if (events.isNotEmpty) {
             eventBus.emitBatch(events);
           }
+
+          eventBus.emitProgress(
+            SyncProgressParams(
+              entityType: adapter.entityType,
+              syncedCount: offset,
+            ),
+          );
 
           // If we stopped mid-batch, we'd persist the cursor here with the offset
           // But currently we process sequentially.
@@ -185,9 +202,15 @@ class SyncEngine<T extends Syncable> {
   Future<void> processOutbox() async {
     final entries = await outboxRepo.getPending();
     final relevant = entries.where((e) => e.entityType == adapter.entityType);
+    if (relevant.isEmpty) return;
 
-    for (final entry in relevant) {
-      await _processOutboxEntry(entry);
+    eventBus.emitEngineStatus(adapter.entityType, true);
+    try {
+      for (final entry in relevant) {
+        await _processOutboxEntry(entry);
+      }
+    } finally {
+      eventBus.emitEngineStatus(adapter.entityType, false);
     }
   }
 

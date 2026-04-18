@@ -885,6 +885,90 @@ class AppLocalizationsDe extends AppLocalizations {
       '⚠️ Bitte lassen Sie diesen Bildschirm während der Synchronisierung geöffnet, um Datenbeschädigung oder Inkonsistenzen zu vermeiden.';
 
   @override
+  String get sync_restore__title => 'Arbeitsbereich wird wiederhergestellt';
+
+  @override
+  String get sync_restore__subtitle =>
+      'CopyCat lädt Ihre synchronisierten Sammlungen und den Zwischenablageverlauf auf dieses Gerät.';
+
+  @override
+  String get sync_restore__checking_backup => 'Remote-Backup wird geprüft...';
+
+  @override
+  String get sync_restore__workspace_restored =>
+      'Arbeitsbereich wiederhergestellt';
+
+  @override
+  String get sync_restore__data_ready =>
+      'Ihre synchronisierten Daten sind auf diesem Gerät bereit.';
+
+  @override
+  String get sync_restore__restoring_collections =>
+      'Sammlungen werden wiederhergestellt, damit Zwischenablageelemente organisiert bleiben.';
+
+  @override
+  String get sync_restore__restoring_clips =>
+      'Sammlungen sind wiederhergestellt. Als Nächstes folgt der Zwischenablageverlauf.';
+
+  @override
+  String get sync_restore__finishing_checks =>
+      'Wiederherstellungsprüfungen werden abgeschlossen.';
+
+  @override
+  String get sync_restore__no_synced_items =>
+      'Keine synchronisierten Elemente gefunden';
+
+  @override
+  String sync_restore__restored_count({required int count}) {
+    return '$count wiederhergestellt';
+  }
+
+  @override
+  String sync_restore__restored_of_total({
+    required int synced,
+    required int total,
+  }) {
+    return '$synced von $total wiederhergestellt';
+  }
+
+  @override
+  String get sync_restore__progress_estimating => 'Wird geschätzt';
+
+  @override
+  String get sync_restore__progress_complete => 'Abgeschlossen';
+
+  @override
+  String get sync_restore__status_ready => 'Bereit';
+
+  @override
+  String get sync_restore__status_restoring => 'Wiederherstellung';
+
+  @override
+  String get sync_restore__collections_title => 'Sammlungen';
+
+  @override
+  String get sync_restore__collections_description =>
+      'Gespeicherte Gruppen und Organisation';
+
+  @override
+  String get sync_restore__clipboard_items_title => 'Zwischenablageelemente';
+
+  @override
+  String get sync_restore__clipboard_items_description =>
+      'Verlauf, Text, Links, Dateien und Medien';
+
+  @override
+  String sync_restore__count_of_total({required int total}) {
+    return 'von $total';
+  }
+
+  @override
+  String get sync_restore__continue_to_copycat => 'Weiter zu CopyCat';
+
+  @override
+  String get sync_restore__failed_title => 'Wiederherstellung fehlgeschlagen';
+
+  @override
   String get restore_clips__text__title =>
       'Mein Zwischenablage wiederherstellen';
 

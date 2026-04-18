@@ -344,6 +344,52 @@
     }
   },
   "onboarding__restoration_warning": "⚠️ Please keep this screen open during syncing to avoid data corruption or inconsistencies.",
+  "sync_restore__title": "Restoring your workspace",
+  "sync_restore__subtitle": "CopyCat is bringing your synced collections and clipboard history onto this device.",
+  "sync_restore__checking_backup": "Checking remote backup...",
+  "sync_restore__workspace_restored": "Workspace restored",
+  "sync_restore__data_ready": "Your synced data is ready on this device.",
+  "sync_restore__restoring_collections": "Restoring collections so clipboard items keep their organization.",
+  "sync_restore__restoring_clips": "Collections are restored. Clipboard history is next.",
+  "sync_restore__finishing_checks": "Finishing restore checks.",
+  "sync_restore__no_synced_items": "No synced items found",
+  "sync_restore__restored_count": "{count} restored",
+  "@sync_restore__restored_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sync_restore__restored_of_total": "{synced} of {total} restored",
+  "@sync_restore__restored_of_total": {
+    "placeholders": {
+      "synced": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "sync_restore__progress_estimating": "Estimating",
+  "sync_restore__progress_complete": "Complete",
+  "sync_restore__status_ready": "Ready",
+  "sync_restore__status_restoring": "Restoring",
+  "sync_restore__collections_title": "Collections",
+  "sync_restore__collections_description": "Saved groups and organization",
+  "sync_restore__clipboard_items_title": "Clipboard items",
+  "sync_restore__clipboard_items_description": "History, text, links, files, and media",
+  "sync_restore__count_of_total": "of {total}",
+  "@sync_restore__count_of_total": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "sync_restore__continue_to_copycat": "Continue to CopyCat",
+  "sync_restore__failed_title": "Restoration failed",
   "@@RESTORE_CLIPS": "Restore Clips",
   "restore_clips__text__title": "Restore My Clipboard",
   "restore_clips__error__no_backup": "No clipboard backup found",

@@ -890,6 +890,91 @@ class AppLocalizationsFr extends AppLocalizations {
       '⚠️ Veuillez garder cet écran ouvert pendant la synchronisation pour éviter la corruption des données ou des incohérences.';
 
   @override
+  String get sync_restore__title => 'Restauration de votre espace de travail';
+
+  @override
+  String get sync_restore__subtitle =>
+      'CopyCat rapatrie vos collections synchronisées et l’historique du presse-papiers sur cet appareil.';
+
+  @override
+  String get sync_restore__checking_backup =>
+      'Vérification de la sauvegarde distante...';
+
+  @override
+  String get sync_restore__workspace_restored => 'Espace de travail restauré';
+
+  @override
+  String get sync_restore__data_ready =>
+      'Vos données synchronisées sont prêtes sur cet appareil.';
+
+  @override
+  String get sync_restore__restoring_collections =>
+      'Restauration des collections pour conserver l’organisation des éléments du presse-papiers.';
+
+  @override
+  String get sync_restore__restoring_clips =>
+      'Les collections sont restaurées. L’historique du presse-papiers suit.';
+
+  @override
+  String get sync_restore__finishing_checks =>
+      'Finalisation des vérifications de restauration.';
+
+  @override
+  String get sync_restore__no_synced_items =>
+      'Aucun élément synchronisé trouvé';
+
+  @override
+  String sync_restore__restored_count({required int count}) {
+    return '$count restaurés';
+  }
+
+  @override
+  String sync_restore__restored_of_total({
+    required int synced,
+    required int total,
+  }) {
+    return '$synced sur $total restaurés';
+  }
+
+  @override
+  String get sync_restore__progress_estimating => 'Estimation';
+
+  @override
+  String get sync_restore__progress_complete => 'Terminé';
+
+  @override
+  String get sync_restore__status_ready => 'Prêt';
+
+  @override
+  String get sync_restore__status_restoring => 'Restauration';
+
+  @override
+  String get sync_restore__collections_title => 'Collections';
+
+  @override
+  String get sync_restore__collections_description =>
+      'Groupes enregistrés et organisation';
+
+  @override
+  String get sync_restore__clipboard_items_title =>
+      'Éléments du presse-papiers';
+
+  @override
+  String get sync_restore__clipboard_items_description =>
+      'Historique, texte, liens, fichiers et médias';
+
+  @override
+  String sync_restore__count_of_total({required int total}) {
+    return 'sur $total';
+  }
+
+  @override
+  String get sync_restore__continue_to_copycat => 'Continuer vers CopyCat';
+
+  @override
+  String get sync_restore__failed_title => 'Échec de la restauration';
+
+  @override
   String get restore_clips__text__title => 'Restaurer mon presse-papiers';
 
   @override

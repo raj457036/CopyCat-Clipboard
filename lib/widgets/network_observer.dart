@@ -64,7 +64,7 @@ class _NetworkObserverState extends State<NetworkObserver> {
       driveSetupCubit.fetch(),
       appConfigCubit.syncClocks(),
     ]);
-    syncStatusCubit.syncAll();
+    syncStatusCubit.syncAll(const SyncAllParams());
   }
 
   void onConnectionChanged(bool isConnected) {

@@ -103,7 +103,7 @@ class SyncOrchestrator {
   }
 
   /// Triggers a full push and pull sync across all engines, respecting dependencies.
-  Future<void> syncAll({bool force = false}) async {
+  Future<bool> syncAll({bool force = false}) async {
     final sortedEngines = _getSortedEngines();
 
     for (final engine in sortedEngines) {
@@ -113,9 +113,11 @@ class SyncOrchestrator {
         logger.w(
           "Sync failed for ${engine.adapter.entityType}. Stopping cascade.",
         );
-        break;
+        return false;
       }
     }
+
+    return true;
   }
 
   /// Triggers a push sync (outbox processing) across all engines.

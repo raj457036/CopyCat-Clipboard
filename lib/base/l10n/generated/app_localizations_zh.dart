@@ -832,6 +832,81 @@ class AppLocalizationsZh extends AppLocalizations {
       '⚠️ 请在同步过程中保持此页面打开，以避免数据损坏或不一致。';
 
   @override
+  String get sync_restore__title => '正在恢复你的工作区';
+
+  @override
+  String get sync_restore__subtitle => 'CopyCat 正在将已同步的收藏和剪贴板历史恢复到此设备。';
+
+  @override
+  String get sync_restore__checking_backup => '正在检查远程备份...';
+
+  @override
+  String get sync_restore__workspace_restored => '工作区已恢复';
+
+  @override
+  String get sync_restore__data_ready => '你的同步数据已可在此设备上使用。';
+
+  @override
+  String get sync_restore__restoring_collections => '正在恢复收藏，以保持剪贴板项目的组织结构。';
+
+  @override
+  String get sync_restore__restoring_clips => '收藏已恢复。接下来恢复剪贴板历史。';
+
+  @override
+  String get sync_restore__finishing_checks => '正在完成恢复检查。';
+
+  @override
+  String get sync_restore__no_synced_items => '未找到已同步项目';
+
+  @override
+  String sync_restore__restored_count({required int count}) {
+    return '已恢复 $count 项';
+  }
+
+  @override
+  String sync_restore__restored_of_total({
+    required int synced,
+    required int total,
+  }) {
+    return '已恢复 $synced / $total 项';
+  }
+
+  @override
+  String get sync_restore__progress_estimating => '正在估算';
+
+  @override
+  String get sync_restore__progress_complete => '已完成';
+
+  @override
+  String get sync_restore__status_ready => '就绪';
+
+  @override
+  String get sync_restore__status_restoring => '恢复中';
+
+  @override
+  String get sync_restore__collections_title => '收藏';
+
+  @override
+  String get sync_restore__collections_description => '已保存的分组和组织结构';
+
+  @override
+  String get sync_restore__clipboard_items_title => '剪贴板项目';
+
+  @override
+  String get sync_restore__clipboard_items_description => '历史、文本、链接、文件和媒体';
+
+  @override
+  String sync_restore__count_of_total({required int total}) {
+    return '共 $total 项';
+  }
+
+  @override
+  String get sync_restore__continue_to_copycat => '继续使用 CopyCat';
+
+  @override
+  String get sync_restore__failed_title => '恢复失败';
+
+  @override
   String get restore_clips__text__title => '恢复我的剪贴板';
 
   @override

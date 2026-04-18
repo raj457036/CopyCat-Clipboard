@@ -8,8 +8,7 @@ import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/onboard/widgets/encryption.dart';
 import 'package:clipboard/pages/onboard/widgets/keyboard_shortcut.dart';
 import 'package:clipboard/pages/onboard/widgets/smart_paste.dart';
-import 'package:clipboard/pages/onboard/widgets/syncing/restore_clips.dart';
-import 'package:clipboard/pages/onboard/widgets/syncing/restore_collections.dart';
+import 'package:clipboard/pages/onboard/widgets/syncing/sync_restore_step.dart';
 import 'package:clipboard/pages/onboard/widgets/welcome.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/titlebar.dart';
@@ -72,13 +71,10 @@ class _OnBoardPageState extends State<OnBoardPage> {
               ),
               2 => SmartPasteStep(onContinue: () => goToPage(3)),
               3 => KeyboardShortcutStep(onContinue: () => goToPage(4)),
-              4 => RestoreCollectionStep(
-                onContinue: () => goToPage(5),
-                collectionRepository: sl(),
-              ),
-              5 => RestoreClipsStep(
+              4 => SyncRestoreStep(
                 onContinue: goHome,
                 clipboardRepository: sl(instanceName: "remote"),
+                collectionRepository: sl(),
                 restorationStatusRepository: sl(),
               ),
               _ => const SizedBox.shrink(),

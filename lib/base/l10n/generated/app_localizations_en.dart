@@ -871,6 +871,87 @@ class AppLocalizationsEn extends AppLocalizations {
       '⚠️ Please keep this screen open during syncing to avoid data corruption or inconsistencies.';
 
   @override
+  String get sync_restore__title => 'Restoring your workspace';
+
+  @override
+  String get sync_restore__subtitle =>
+      'CopyCat is bringing your synced collections and clipboard history onto this device.';
+
+  @override
+  String get sync_restore__checking_backup => 'Checking remote backup...';
+
+  @override
+  String get sync_restore__workspace_restored => 'Workspace restored';
+
+  @override
+  String get sync_restore__data_ready =>
+      'Your synced data is ready on this device.';
+
+  @override
+  String get sync_restore__restoring_collections =>
+      'Restoring collections so clipboard items keep their organization.';
+
+  @override
+  String get sync_restore__restoring_clips =>
+      'Collections are restored. Clipboard history is next.';
+
+  @override
+  String get sync_restore__finishing_checks => 'Finishing restore checks.';
+
+  @override
+  String get sync_restore__no_synced_items => 'No synced items found';
+
+  @override
+  String sync_restore__restored_count({required int count}) {
+    return '$count restored';
+  }
+
+  @override
+  String sync_restore__restored_of_total({
+    required int synced,
+    required int total,
+  }) {
+    return '$synced of $total restored';
+  }
+
+  @override
+  String get sync_restore__progress_estimating => 'Estimating';
+
+  @override
+  String get sync_restore__progress_complete => 'Complete';
+
+  @override
+  String get sync_restore__status_ready => 'Ready';
+
+  @override
+  String get sync_restore__status_restoring => 'Restoring';
+
+  @override
+  String get sync_restore__collections_title => 'Collections';
+
+  @override
+  String get sync_restore__collections_description =>
+      'Saved groups and organization';
+
+  @override
+  String get sync_restore__clipboard_items_title => 'Clipboard items';
+
+  @override
+  String get sync_restore__clipboard_items_description =>
+      'History, text, links, files, and media';
+
+  @override
+  String sync_restore__count_of_total({required int total}) {
+    return 'of $total';
+  }
+
+  @override
+  String get sync_restore__continue_to_copycat => 'Continue to CopyCat';
+
+  @override
+  String get sync_restore__failed_title => 'Restoration failed';
+
+  @override
   String get restore_clips__text__title => 'Restore My Clipboard';
 
   @override

@@ -20,21 +20,21 @@ mixin _$SyncStatusState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function() syncing,
+    required TResult Function(Map<String, SyncProgress> progress) syncing,
     required TResult Function() complete,
     required TResult Function(Failure failure) failed,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function()? syncing,
+    TResult? Function(Map<String, SyncProgress> progress)? syncing,
     TResult? Function()? complete,
     TResult? Function(Failure failure)? failed,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function()? syncing,
+    TResult Function(Map<String, SyncProgress> progress)? syncing,
     TResult Function()? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
@@ -129,7 +129,7 @@ class _$SyncStatusUnknownImpl implements SyncStatusUnknown {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function() syncing,
+    required TResult Function(Map<String, SyncProgress> progress) syncing,
     required TResult Function() complete,
     required TResult Function(Failure failure) failed,
   }) {
@@ -140,7 +140,7 @@ class _$SyncStatusUnknownImpl implements SyncStatusUnknown {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function()? syncing,
+    TResult? Function(Map<String, SyncProgress> progress)? syncing,
     TResult? Function()? complete,
     TResult? Function(Failure failure)? failed,
   }) {
@@ -151,7 +151,7 @@ class _$SyncStatusUnknownImpl implements SyncStatusUnknown {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function()? syncing,
+    TResult Function(Map<String, SyncProgress> progress)? syncing,
     TResult Function()? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
@@ -210,6 +210,8 @@ abstract class _$$SyncingStatusImplCopyWith<$Res> {
     _$SyncingStatusImpl value,
     $Res Function(_$SyncingStatusImpl) then,
   ) = __$$SyncingStatusImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Map<String, SyncProgress> progress});
 }
 
 /// @nodoc
@@ -223,60 +225,94 @@ class __$$SyncingStatusImplCopyWithImpl<$Res>
 
   /// Create a copy of SyncStatusState
   /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? progress = null}) {
+    return _then(
+      _$SyncingStatusImpl(
+        progress: null == progress
+            ? _value._progress
+            : progress // ignore: cast_nullable_to_non_nullable
+                  as Map<String, SyncProgress>,
+      ),
+    );
+  }
 }
 
 /// @nodoc
 
 class _$SyncingStatusImpl implements SyncingStatus {
-  const _$SyncingStatusImpl();
+  const _$SyncingStatusImpl({
+    final Map<String, SyncProgress> progress = const <String, SyncProgress>{},
+  }) : _progress = progress;
+
+  final Map<String, SyncProgress> _progress;
+  @override
+  @JsonKey()
+  Map<String, SyncProgress> get progress {
+    if (_progress is EqualUnmodifiableMapView) return _progress;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_progress);
+  }
 
   @override
   String toString() {
-    return 'SyncStatusState.syncing()';
+    return 'SyncStatusState.syncing(progress: $progress)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$SyncingStatusImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$SyncingStatusImpl &&
+            const DeepCollectionEquality().equals(other._progress, _progress));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_progress));
+
+  /// Create a copy of SyncStatusState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SyncingStatusImplCopyWith<_$SyncingStatusImpl> get copyWith =>
+      __$$SyncingStatusImplCopyWithImpl<_$SyncingStatusImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function() syncing,
+    required TResult Function(Map<String, SyncProgress> progress) syncing,
     required TResult Function() complete,
     required TResult Function(Failure failure) failed,
   }) {
-    return syncing();
+    return syncing(progress);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function()? syncing,
+    TResult? Function(Map<String, SyncProgress> progress)? syncing,
     TResult? Function()? complete,
     TResult? Function(Failure failure)? failed,
   }) {
-    return syncing?.call();
+    return syncing?.call(progress);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function()? syncing,
+    TResult Function(Map<String, SyncProgress> progress)? syncing,
     TResult Function()? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
   }) {
     if (syncing != null) {
-      return syncing();
+      return syncing(progress);
     }
     return orElse();
   }
@@ -320,7 +356,16 @@ class _$SyncingStatusImpl implements SyncingStatus {
 }
 
 abstract class SyncingStatus implements SyncStatusState {
-  const factory SyncingStatus() = _$SyncingStatusImpl;
+  const factory SyncingStatus({final Map<String, SyncProgress> progress}) =
+      _$SyncingStatusImpl;
+
+  Map<String, SyncProgress> get progress;
+
+  /// Create a copy of SyncStatusState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SyncingStatusImplCopyWith<_$SyncingStatusImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -367,7 +412,7 @@ class _$SyncStatusCompleteImpl implements SyncStatusComplete {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function() syncing,
+    required TResult Function(Map<String, SyncProgress> progress) syncing,
     required TResult Function() complete,
     required TResult Function(Failure failure) failed,
   }) {
@@ -378,7 +423,7 @@ class _$SyncStatusCompleteImpl implements SyncStatusComplete {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function()? syncing,
+    TResult? Function(Map<String, SyncProgress> progress)? syncing,
     TResult? Function()? complete,
     TResult? Function(Failure failure)? failed,
   }) {
@@ -389,7 +434,7 @@ class _$SyncStatusCompleteImpl implements SyncStatusComplete {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function()? syncing,
+    TResult Function(Map<String, SyncProgress> progress)? syncing,
     TResult Function()? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
@@ -516,7 +561,7 @@ class _$SyncStatusFailedImpl implements SyncStatusFailed {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function() syncing,
+    required TResult Function(Map<String, SyncProgress> progress) syncing,
     required TResult Function() complete,
     required TResult Function(Failure failure) failed,
   }) {
@@ -527,7 +572,7 @@ class _$SyncStatusFailedImpl implements SyncStatusFailed {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function()? syncing,
+    TResult? Function(Map<String, SyncProgress> progress)? syncing,
     TResult? Function()? complete,
     TResult? Function(Failure failure)? failed,
   }) {
@@ -538,7 +583,7 @@ class _$SyncStatusFailedImpl implements SyncStatusFailed {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function()? syncing,
+    TResult Function(Map<String, SyncProgress> progress)? syncing,
     TResult Function()? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),

@@ -15,7 +15,8 @@ class HomePageBody extends StatelessWidget {
 
   Future<void> refresh(BuildContext context) async {
     final cubit = context.read<SyncStatusCubit>();
-    await cubit.syncAll(force: true);
+
+    await cubit.syncAll(const SyncAllParams(force: true));
   }
 
   @override

@@ -1653,6 +1653,141 @@ abstract class AppLocalizations {
   /// **'⚠️ Please keep this screen open during syncing to avoid data corruption or inconsistencies.'**
   String get onboarding__restoration_warning;
 
+  /// No description provided for @sync_restore__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring your workspace'**
+  String get sync_restore__title;
+
+  /// No description provided for @sync_restore__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'CopyCat is bringing your synced collections and clipboard history onto this device.'**
+  String get sync_restore__subtitle;
+
+  /// No description provided for @sync_restore__checking_backup.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking remote backup...'**
+  String get sync_restore__checking_backup;
+
+  /// No description provided for @sync_restore__workspace_restored.
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace restored'**
+  String get sync_restore__workspace_restored;
+
+  /// No description provided for @sync_restore__data_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Your synced data is ready on this device.'**
+  String get sync_restore__data_ready;
+
+  /// No description provided for @sync_restore__restoring_collections.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring collections so clipboard items keep their organization.'**
+  String get sync_restore__restoring_collections;
+
+  /// No description provided for @sync_restore__restoring_clips.
+  ///
+  /// In en, this message translates to:
+  /// **'Collections are restored. Clipboard history is next.'**
+  String get sync_restore__restoring_clips;
+
+  /// No description provided for @sync_restore__finishing_checks.
+  ///
+  /// In en, this message translates to:
+  /// **'Finishing restore checks.'**
+  String get sync_restore__finishing_checks;
+
+  /// No description provided for @sync_restore__no_synced_items.
+  ///
+  /// In en, this message translates to:
+  /// **'No synced items found'**
+  String get sync_restore__no_synced_items;
+
+  /// No description provided for @sync_restore__restored_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} restored'**
+  String sync_restore__restored_count({required int count});
+
+  /// No description provided for @sync_restore__restored_of_total.
+  ///
+  /// In en, this message translates to:
+  /// **'{synced} of {total} restored'**
+  String sync_restore__restored_of_total({
+    required int synced,
+    required int total,
+  });
+
+  /// No description provided for @sync_restore__progress_estimating.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimating'**
+  String get sync_restore__progress_estimating;
+
+  /// No description provided for @sync_restore__progress_complete.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete'**
+  String get sync_restore__progress_complete;
+
+  /// No description provided for @sync_restore__status_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get sync_restore__status_ready;
+
+  /// No description provided for @sync_restore__status_restoring.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring'**
+  String get sync_restore__status_restoring;
+
+  /// No description provided for @sync_restore__collections_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Collections'**
+  String get sync_restore__collections_title;
+
+  /// No description provided for @sync_restore__collections_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved groups and organization'**
+  String get sync_restore__collections_description;
+
+  /// No description provided for @sync_restore__clipboard_items_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard items'**
+  String get sync_restore__clipboard_items_title;
+
+  /// No description provided for @sync_restore__clipboard_items_description.
+  ///
+  /// In en, this message translates to:
+  /// **'History, text, links, files, and media'**
+  String get sync_restore__clipboard_items_description;
+
+  /// No description provided for @sync_restore__count_of_total.
+  ///
+  /// In en, this message translates to:
+  /// **'of {total}'**
+  String sync_restore__count_of_total({required int total});
+
+  /// No description provided for @sync_restore__continue_to_copycat.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue to CopyCat'**
+  String get sync_restore__continue_to_copycat;
+
+  /// No description provided for @sync_restore__failed_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoration failed'**
+  String get sync_restore__failed_title;
+
   /// No description provided for @restore_clips__text__title.
   ///
   /// In en, this message translates to:

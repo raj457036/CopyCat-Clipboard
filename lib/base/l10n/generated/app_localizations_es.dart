@@ -887,6 +887,92 @@ class AppLocalizationsEs extends AppLocalizations {
       '⚠️ Mantén esta pantalla abierta durante la sincronización para evitar corrupción de datos o inconsistencias.';
 
   @override
+  String get sync_restore__title => 'Restaurando tu espacio de trabajo';
+
+  @override
+  String get sync_restore__subtitle =>
+      'CopyCat está trayendo tus colecciones sincronizadas y el historial del portapapeles a este dispositivo.';
+
+  @override
+  String get sync_restore__checking_backup =>
+      'Comprobando la copia de seguridad remota...';
+
+  @override
+  String get sync_restore__workspace_restored =>
+      'Espacio de trabajo restaurado';
+
+  @override
+  String get sync_restore__data_ready =>
+      'Tus datos sincronizados están listos en este dispositivo.';
+
+  @override
+  String get sync_restore__restoring_collections =>
+      'Restaurando colecciones para mantener organizados los elementos del portapapeles.';
+
+  @override
+  String get sync_restore__restoring_clips =>
+      'Las colecciones se restauraron. Ahora sigue el historial del portapapeles.';
+
+  @override
+  String get sync_restore__finishing_checks =>
+      'Finalizando comprobaciones de restauración.';
+
+  @override
+  String get sync_restore__no_synced_items =>
+      'No se encontraron elementos sincronizados';
+
+  @override
+  String sync_restore__restored_count({required int count}) {
+    return '$count restaurados';
+  }
+
+  @override
+  String sync_restore__restored_of_total({
+    required int synced,
+    required int total,
+  }) {
+    return '$synced de $total restaurados';
+  }
+
+  @override
+  String get sync_restore__progress_estimating => 'Estimando';
+
+  @override
+  String get sync_restore__progress_complete => 'Completado';
+
+  @override
+  String get sync_restore__status_ready => 'Listo';
+
+  @override
+  String get sync_restore__status_restoring => 'Restaurando';
+
+  @override
+  String get sync_restore__collections_title => 'Colecciones';
+
+  @override
+  String get sync_restore__collections_description =>
+      'Grupos guardados y organización';
+
+  @override
+  String get sync_restore__clipboard_items_title =>
+      'Elementos del portapapeles';
+
+  @override
+  String get sync_restore__clipboard_items_description =>
+      'Historial, texto, enlaces, archivos y medios';
+
+  @override
+  String sync_restore__count_of_total({required int total}) {
+    return 'de $total';
+  }
+
+  @override
+  String get sync_restore__continue_to_copycat => 'Continuar a CopyCat';
+
+  @override
+  String get sync_restore__failed_title => 'La restauración falló';
+
+  @override
   String get restore_clips__text__title => 'Restaurar mi portapapeles';
 
   @override

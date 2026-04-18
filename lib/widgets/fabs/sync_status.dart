@@ -15,73 +15,65 @@ class SyncStatusFAB extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final syncStatusCubit = context.read<SyncStatusCubit>();
+
     return BlocSelector<AuthCubit, AuthState, bool>(
-      selector: (state) {
-        return state is LocalAuthenticatedAuthState;
-      },
+      selector: (state) => state is LocalAuthenticatedAuthState,
       builder: (context, isLocal) {
         if (isLocal) return const SizedBox.shrink();
-        Function(void Function())? setState;
-        bool disabled = false;
-        IconData icon = Icons.sync_rounded;
-        bool isSyncing = false;
-        String message = context.locale.fab__sync;
-        return BlocListener<SyncStatusCubit, SyncStatusState>(
-          listener: (context, state) {
-            setState?.call(() {
-              switch (state) {
-                case SyncStatusUnknown():
-                  disabled = true;
-                  isSyncing = false;
-                  icon = Icons.sync_lock_rounded;
-                  message = context.locale.fab__sync_unavailable;
-                case SyncingStatus():
-                  disabled = true;
-                  isSyncing = true;
-                case SyncStatusComplete():
-                  disabled = false;
-                  isSyncing = false;
-                  icon = Icons.sync_rounded;
-                  message = context.locale.fab__sync_up_to_date;
-                case SyncStatusFailed(:final failure):
-                  disabled = false;
-                  isSyncing = false;
-                  icon = Icons.sync_problem_rounded;
-                  message = context.locale.fab__sync_failed(
-                    message: failure.message,
-                  );
-              }
-            });
-          },
-          child: StatefulBuilder(
-            builder: (context, updateState) {
-              setState = updateState;
-              return RealTimeConnectionStatus(
-                child: FloatingActionButton.small(
-                  onPressed: disabled
-                      ? null
-                      : () => syncStatusCubit.syncAll(force: true),
-                  tooltip: isDesktopPlatform
-                      ? '$message • ${keyboardShortcut(key: 'R')}'
-                      : message,
-                  mouseCursor: SystemMouseCursors.click,
-                  heroTag: "sync-fab",
-                  backgroundColor: colors.secondary,
-                  foregroundColor: colors.onSecondary,
-                  child: Spin(
-                    infinite: true,
-                    delay: Durations.short4,
-                    spins: -1,
-                    curve: Curves.ease,
-                    animate: isSyncing,
-                    child: isSyncing
-                        ? const Icon(Icons.sync_rounded)
-                        : Icon(icon),
-                  ),
+
+        return BlocBuilder<SyncStatusCubit, SyncStatusState>(
+          builder: (context, state) {
+            bool disabled = false;
+            IconData icon = Icons.sync_rounded;
+            bool isSyncing = false;
+            String message = context.locale.fab__sync;
+
+            switch (state) {
+              case SyncStatusUnknown():
+                disabled = true;
+                isSyncing = false;
+                icon = Icons.sync_lock_rounded;
+                message = context.locale.fab__sync_unavailable;
+              case SyncingStatus():
+                disabled = true;
+                isSyncing = true;
+              case SyncStatusComplete():
+                disabled = false;
+                isSyncing = false;
+                icon = Icons.sync_rounded;
+                message = context.locale.fab__sync_up_to_date;
+              case SyncStatusFailed(:final failure):
+                disabled = false;
+                isSyncing = false;
+                icon = Icons.sync_problem_rounded;
+                message = context.locale.fab__sync_failed(
+                  message: failure.message,
+                );
+            }
+
+            return RealTimeConnectionStatus(
+              child: FloatingActionButton.small(
+                onPressed: disabled
+                    ? null
+                    : () => syncStatusCubit.syncAll(const SyncAllParams(force: true)),
+                tooltip: isDesktopPlatform
+                    ? '$message • ${keyboardShortcut(key: 'R')}'
+                    : message,
+                mouseCursor: SystemMouseCursors.click,
+                heroTag: "sync-fab",
+                backgroundColor: colors.secondary,
+                foregroundColor: colors.onSecondary,
+                child: Spin(
+                  infinite: true,
+                  delay: Durations.short4,
+                  spins: -1,
+                  curve: Curves.ease,
+                  animate: isSyncing,
+                  child: isSyncing ? const Icon(Icons.sync_rounded) : Icon(icon),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         );
       },
     );

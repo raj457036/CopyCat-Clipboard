@@ -15,6 +15,29 @@ class TypedSyncBatchEvent<T extends Syncable> implements SyncEvent {
   TypedSyncBatchEvent(this.events);
 }
 
+class SyncProgressParams {
+  final String entityType;
+  final int syncedCount;
+  final int? totalCount;
+
+  const SyncProgressParams({
+    required this.entityType,
+    required this.syncedCount,
+    this.totalCount,
+  });
+}
+
+class SyncProgressEvent implements SyncEvent {
+  final SyncProgressParams params;
+  SyncProgressEvent(this.params);
+}
+
+class SyncEngineStatusUpdateEvent implements SyncEvent {
+  final String entityType;
+  final bool isBusy;
+  SyncEngineStatusUpdateEvent(this.entityType, this.isBusy);
+}
+
 /// A lossless stream-based event bus for sync events.
 ///
 /// This replaces the sync-related parts of EventBusCubit which could drop
@@ -38,6 +61,14 @@ class SyncEventBus {
 
   void emitBatch<T extends Syncable>(List<CrossSyncEvent<T>> events) {
     _controller.add(TypedSyncBatchEvent<T>(events));
+  }
+
+  void emitProgress(SyncProgressParams params) {
+    _controller.add(SyncProgressEvent(params));
+  }
+
+  void emitEngineStatus(String entityType, bool isBusy) {
+    _controller.add(SyncEngineStatusUpdateEvent(entityType, isBusy));
   }
 
   void dispose() {

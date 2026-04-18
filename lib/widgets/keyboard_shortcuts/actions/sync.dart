@@ -19,6 +19,6 @@ class SyncAction extends ContextAction<SyncIntent> {
   @override
   void invoke(SyncIntent intent, [BuildContext? context]) {
     final cubit = context?.read<SyncStatusCubit>();
-    cubit?.syncAll(force: true);
+    cubit?.syncAll(const SyncAllParams(force: true));
   }
 }

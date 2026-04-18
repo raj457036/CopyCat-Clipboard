@@ -882,6 +882,90 @@ class AppLocalizationsPt extends AppLocalizations {
       '⚠️ Por favor, mantenha esta tela aberta durante a sincronização para evitar corrupção ou inconsistências de dados.';
 
   @override
+  String get sync_restore__title => 'Restaurando seu espaço de trabalho';
+
+  @override
+  String get sync_restore__subtitle =>
+      'O CopyCat está trazendo suas coleções sincronizadas e o histórico do clipboard para este dispositivo.';
+
+  @override
+  String get sync_restore__checking_backup => 'Verificando backup remoto...';
+
+  @override
+  String get sync_restore__workspace_restored =>
+      'Espaço de trabalho restaurado';
+
+  @override
+  String get sync_restore__data_ready =>
+      'Seus dados sincronizados estão prontos neste dispositivo.';
+
+  @override
+  String get sync_restore__restoring_collections =>
+      'Restaurando coleções para manter os itens do clipboard organizados.';
+
+  @override
+  String get sync_restore__restoring_clips =>
+      'As coleções foram restauradas. O histórico do clipboard é o próximo.';
+
+  @override
+  String get sync_restore__finishing_checks =>
+      'Finalizando verificações de restauração.';
+
+  @override
+  String get sync_restore__no_synced_items =>
+      'Nenhum item sincronizado encontrado';
+
+  @override
+  String sync_restore__restored_count({required int count}) {
+    return '$count restaurados';
+  }
+
+  @override
+  String sync_restore__restored_of_total({
+    required int synced,
+    required int total,
+  }) {
+    return '$synced de $total restaurados';
+  }
+
+  @override
+  String get sync_restore__progress_estimating => 'Estimando';
+
+  @override
+  String get sync_restore__progress_complete => 'Concluído';
+
+  @override
+  String get sync_restore__status_ready => 'Pronto';
+
+  @override
+  String get sync_restore__status_restoring => 'Restaurando';
+
+  @override
+  String get sync_restore__collections_title => 'Coleções';
+
+  @override
+  String get sync_restore__collections_description =>
+      'Grupos salvos e organização';
+
+  @override
+  String get sync_restore__clipboard_items_title => 'Itens do clipboard';
+
+  @override
+  String get sync_restore__clipboard_items_description =>
+      'Histórico, texto, links, arquivos e mídia';
+
+  @override
+  String sync_restore__count_of_total({required int total}) {
+    return 'de $total';
+  }
+
+  @override
+  String get sync_restore__continue_to_copycat => 'Continuar para o CopyCat';
+
+  @override
+  String get sync_restore__failed_title => 'Falha na restauração';
+
+  @override
   String get restore_clips__text__title => 'Restaurar Meu Clipboard';
 
   @override

@@ -380,7 +380,10 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.factory<_i891.SyncStatusCubit>(
-      () => _i891.SyncStatusCubit(gh<_i443.SyncOrchestrator>()),
+      () => _i891.SyncStatusCubit(
+        gh<_i443.SyncOrchestrator>(),
+        gh<_i292.SyncEventBus>(),
+      ),
     );
     return this;
   }
