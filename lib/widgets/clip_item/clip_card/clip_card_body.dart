@@ -177,6 +177,14 @@ class _ClipCardBodyState extends State<ClipCardBody> {
     cubit.select(widget.item, selectableItems: clips);
   }
 
+  Future<void> onShiftEnter(BuildContext context) async {
+    if (widget.selectionActive && isDesktopPlatform && canPaste) {
+      await pasteSelectedOnLastWindow(context, clearSelection: true);
+      return;
+    }
+    toggleSelect(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -185,8 +193,10 @@ class _ClipCardBodyState extends State<ClipCardBody> {
         ? RoundedRectangleBorder(
             side: BorderSide(
               color: colors.primary,
-              width: 2.5,
-              strokeAlign: BorderSide.strokeAlignOutside,
+              width: focused ? focusedItemBorderWidth : selectedItemBorderWidth,
+              strokeAlign: focused
+                  ? BorderSide.strokeAlignOutside
+                  : BorderSide.strokeAlignInside,
             ),
             borderRadius: radius12,
           )
@@ -208,6 +218,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
           ? toggleSelect(context)
           : performPrimaryActionOnClip(context, widget.item, canPaste),
       onShiftSpace: (context) => toggleSelect(context),
+      onShiftSpaceEnter: (context) => onShiftEnter(context),
       child: Card.outlined(
         margin: EdgeInsets.zero,
         elevation: focused ? 2 : 0,

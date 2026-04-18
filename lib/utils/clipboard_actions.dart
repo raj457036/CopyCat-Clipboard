@@ -10,6 +10,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:flutter/material.dart';
@@ -152,6 +153,55 @@ Future<void> launchEmail(ClipboardItem item) async {
 Future<void> pasteOnLastWindow(BuildContext context, ClipboardItem item) async {
   final focusManager = WindowFocusManager.of(context);
   focusManager?.toggleAndPaste(item);
+}
+
+List<ClipboardItem> orderedSelectedClips(
+  BuildContext context,
+  Set<ClipboardItem> items,
+) {
+  final clips = ClipsProvider.of(context)?.clips;
+  if (clips == null || clips.isEmpty) {
+    return items.toList(growable: false);
+  }
+  return clips.where(items.contains).toList(growable: false);
+}
+
+Set<ClipboardItem> selectedClips(BuildContext context) {
+  final state = context.read<SelectedClipsCubit>().state;
+  return state.maybeMap(
+    clipSelected: (s) => s.selectedClipIds,
+    orElse: () => <ClipboardItem>{},
+  );
+}
+
+Future<void> pasteMultipleOnLastWindow(
+  BuildContext context,
+  List<ClipboardItem> items, {
+  bool clearSelection = false,
+}) async {
+  final focusManager = WindowFocusManager.of(context);
+  if (focusManager == null) return;
+
+  await focusManager.pasteMultiple(items);
+
+  if (clearSelection && context.mounted) {
+    context.read<SelectedClipsCubit>().clear();
+  }
+}
+
+Future<void> pasteSelectedOnLastWindow(
+  BuildContext context, {
+  bool clearSelection = false,
+}) async {
+  final selected = selectedClips(context);
+  if (selected.isEmpty) return;
+
+  final orderedItems = orderedSelectedClips(context, selected);
+  await pasteMultipleOnLastWindow(
+    context,
+    orderedItems,
+    clearSelection: clearSelection,
+  );
 }
 
 Future<bool> deleteClipboardItem(

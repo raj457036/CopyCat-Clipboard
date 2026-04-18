@@ -77,22 +77,32 @@ class _ClipListItemState extends State<ClipListItem> {
     cubit.select(widget.item, selectableItems: clips);
   }
 
+  Future<void> onShiftEnter(BuildContext context, bool canPaste) async {
+    if (widget.selectionActive && canPaste) {
+      await pasteSelectedOnLastWindow(context, clearSelection: true);
+      return;
+    }
+    toggleSelect(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final canPaste = CanPasteScope.of(context);
     final colors = context.colors;
     final textTheme = context.textTheme;
 
-    final selectedShape = RoundedRectangleBorder(
-      side: BorderSide(
-        color: focused || widget.selected
-            ? colors.primary
-            : colors.outlineVariant,
-        width: focused || widget.selected ? 2.5 : 1,
-        strokeAlign: BorderSide.strokeAlignOutside,
-      ),
-      borderRadius: radius12,
-    );
+    final selectedShape = focused || widget.selected
+        ? RoundedRectangleBorder(
+            side: BorderSide(
+              color: colors.primary,
+              width: focused ? focusedItemBorderWidth : selectedItemBorderWidth,
+              strokeAlign: focused
+                  ? BorderSide.strokeAlignOutside
+                  : BorderSide.strokeAlignInside,
+            ),
+            borderRadius: radius12,
+          )
+        : null;
 
     final child = SpaceEnterListener(
       onSpace: (context) => widget.selectionActive
@@ -102,6 +112,7 @@ class _ClipListItemState extends State<ClipListItem> {
           ? toggleSelect(context)
           : performPrimaryActionOnClip(context, widget.item, canPaste),
       onShiftSpace: (context) => toggleSelect(context),
+      onShiftSpaceEnter: (context) => onShiftEnter(context, canPaste),
       child: Card.outlined(
         shape: selectedShape,
         child: ConstrainedBox(

@@ -70,3 +70,6 @@ const dockedTBMinHeight = 230.0;
 
 const initialWindowSize = Size(initialWindowWidth, initialWindowHeight);
 const minimumWindowSize = Size(dockedLRMinWidth, dockedTBMinHeight);
+
+const focusedItemBorderWidth = 2.8;
+const selectedItemBorderWidth = 1.8;

@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focus_window/focus_window.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:synchronized/extension.dart';
 
 class WindowFocusManager extends StatefulWidget {
   final Widget child;
@@ -55,6 +56,29 @@ class WindowFocusManagerState extends State<WindowFocusManager>
     await Future.delayed(Durations.short1);
     if (unfocused == true) {
       await pasteOnFocusedWindow();
+    }
+  }
+
+  Future<void> pasteMultiple(List<ClipboardItem> items) async {
+    if (items.isEmpty) return;
+
+    final pasteable = items
+        .where((item) => item.inCache && !item.encrypted)
+        .toList(growable: false);
+    if (pasteable.isEmpty) return;
+
+    final unfocused = await toggleWindow();
+    await Future.delayed(Durations.short1);
+    if (unfocused != true) return;
+
+    for (final item in pasteable) {
+      if (!mounted) break;
+      await synchronized(() async {
+        await copyToClipboard(context, item, noAck: true);
+        await Future.delayed(Durations.short1);
+        await pasteOnFocusedWindow();
+        await Future.delayed(Durations.short2);
+      });
     }
   }
 

@@ -1,13 +1,12 @@
-import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
-import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:clipboard/widgets/select_clip_builder.dart'
     show SelectedClipBuilder;
 import 'package:flutter/material.dart';
@@ -22,18 +21,6 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   void clearSelection(BuildContext context) {
     context.read<SelectedClipsCubit>().clear();
-  }
-
-  List<ClipboardItem> orderedSelection(
-    BuildContext context,
-    Set<ClipboardItem> items,
-  ) {
-    final clips = ClipsProvider.of(context)?.clips;
-    if (clips == null || clips.isEmpty) {
-      return items.toList();
-    }
-
-    return clips.where(items.contains).toList(growable: false);
   }
 
   @override
@@ -58,22 +45,46 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
               if (isDesktopPlatform)
                 IconButton(
                   onPressed: () async {
-                    final orderedItems = orderedSelection(context, items);
-
+                    final ordered = orderedSelectedClips(context, items);
                     clearSelection(context);
-
                     await context.read<PasteStackCubit>().replaceFromSelection(
-                      orderedItems,
+                      ordered,
                     );
                   },
                   tooltip: 'Start Paste Stack',
                   icon: const Icon(Icons.vertical_align_top),
                 ),
+              width6,
+              if (isDesktopPlatform && items.length > 1)
+                BlocSelector<AppConfigCubit, AppConfigState, bool>(
+                  selector: (state) {
+                    final config = state.config;
+                    return config.smartPaste &&
+                        config.lastFocusedWindowId != null;
+                  },
+                  builder: (context, canPaste) {
+                    if (!canPaste) return const SizedBox.shrink();
+                    return IconButton(
+                      onPressed: () async {
+                        final ordered = orderedSelectedClips(context, items);
+                        await pasteMultipleOnLastWindow(
+                          context,
+                          ordered,
+                          clearSelection: true,
+                        );
+                      },
+                      tooltip: 'Paste Multiple',
+                      icon: const Icon(Icons.content_paste_go_outlined),
+                    );
+                  },
+                ),
+              width6,
               IconButton(
                 onPressed: () => shareClipboardItems(context, items.toList()),
                 tooltip: context.locale.app__share,
                 icon: const Icon(Icons.ios_share),
               ),
+              width6,
               IconButton(
                 onPressed: () async {
                   await changeCollection(context, items.toList());
@@ -84,6 +95,7 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
                 tooltip: context.locale.app__change_collection,
                 icon: const Icon(Icons.collections_bookmark),
               ),
+              width6,
               IconButton(
                 onPressed: () async {
                   final done = await deleteClipboardItem(
