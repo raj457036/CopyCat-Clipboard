@@ -227,8 +227,6 @@ class SyncEngine<T extends Syncable> {
     switch (entry.action) {
       case SyncOutboxAction.create:
       case SyncOutboxAction.update:
-        // Update item deviceId to track creator
-        // Assume pushToRemote handles the assignment and creation/update determination
         if (item == null) {
           resultEither = const Left(
             Failure(message: 'Item not found locally', code: 'not-found'),
@@ -237,11 +235,6 @@ class SyncEngine<T extends Syncable> {
         }
         resultEither = await adapter.pushToRemote(item);
       case SyncOutboxAction.delete:
-        // If item doesn't exist, maybe it was deleted physically.
-        // We still need a dummy item with serverId to send the delete request?
-        // Actually, if it's logically deleted (deletedAt != null), getLocalById might return it.
-        // If physically deleted, we must ensure deleteOnRemote is handled elsewhere or uses serverId.
-        // For now, assume getLocalById returns it (soft delete).
         if (item == null) {
           await outboxRepo.markCompleted(entry.id!);
           return;
@@ -323,15 +316,17 @@ class SyncEngine<T extends Syncable> {
           }
         }
       } else {
-        final results = await adapter.applyBatch(
-          [item],
-          conflictResolver: conflictResolver,
-        );
+        final results = await adapter.applyBatch([
+          item,
+        ], conflictResolver: conflictResolver);
         eventBus.emitBatch<T>(results);
       }
     } catch (e, stack) {
-      logger.e("Fast-path ingestion failed for ${adapter.entityType}",
-          error: e, stackTrace: stack);
+      logger.e(
+        "Fast-path ingestion failed for ${adapter.entityType}",
+        error: e,
+        stackTrace: stack,
+      );
     }
 
     _triggerThrottledPull();
