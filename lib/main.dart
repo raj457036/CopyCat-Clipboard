@@ -4,21 +4,21 @@ import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipbo
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
+import 'package:clipboard/base/bloc/clip_sync_manager_cubit/clip_sync_manager_cubit.dart';
 import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/collection_sync_manager_cubit/collection_sync_manager_cubit.dart';
 import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
-import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
-import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
-import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart'
-    show SelectedClipsCubit;
+import 'package:clipboard/base/bloc/realtime_clip_sync_cubit/realtime_clip_sync_cubit.dart';
+import 'package:clipboard/base/bloc/realtime_collection_sync_cubit/realtime_collection_sync_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
-import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
+import 'package:clipboard/base/db/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/generated/app_localizations.dart';
-import 'package:clipboard/base/theme/app_theme.dart';
+import 'package:clipboard/base/text_theme.dart';
 import 'package:clipboard/common/bloc_config.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/routes/routes.dart';
@@ -81,7 +81,11 @@ Future<void> main() async {
 Future<void> initializeServices() async {
   if (kDebugMode) {
     Bloc.observer = CustomBlocObserver();
-    await Upgrader.clearSavedSettings();
+    try {
+      await Upgrader.clearSavedSettings();
+    } on Exception catch (e) {
+      debugPrint("Failed to clear upgrader settings: $e");
+    }
   }
   if (isDesktopPlatform) {
     await initializeDesktopServices();
@@ -113,7 +117,7 @@ Future<void> initializeDesktopServices() async {
     // make sure to change it in main.cpp ( windows ) &
     // ? my_application.cc ( linux ) and other places too if changing the title.
     title: "CopyCat Clipboard",
-    skipTaskbar: true,
+    skipTaskbar: kReleaseMode,
     windowButtonVisibility: true,
     backgroundColor: Colors.transparent,
     titleBarStyle: TitleBarStyle.hidden,
@@ -121,7 +125,9 @@ Future<void> initializeDesktopServices() async {
   unawaited(
     windowManager
         .waitUntilReadyToShow(windowOptions)
-        .then((_) async => windowManager.hide()),
+        .then(
+          (_) async => kDebugMode ? windowManager.show() : windowManager.hide(),
+        ),
   );
 }
 
@@ -168,8 +174,19 @@ class AppContent extends StatelessWidget {
         switch (state) {
           case MonetizationActive(:final subscription):
             {
+              final clipSyncCubit = context.read<ClipSyncManagerCubit>();
+              final collectionSyncCubit = context
+                  .read<CollectionSyncManagerCubit>();
               final appConfigCubit = context.read<AppConfigCubit>();
               appConfigCubit.load(subscription);
+              clipSyncCubit.changeConfig(
+                syncHours: subscription.syncHours,
+                manualDelay: subscription.syncInterval,
+              );
+              collectionSyncCubit.changeConfig(
+                syncHours: subscription.syncHours,
+                manualDelay: subscription.syncInterval,
+              );
             }
         }
       },
@@ -200,14 +217,25 @@ class AppContent extends StatelessWidget {
                 final surfaceColor = theme == ThemeMode.light
                     ? lightColorScheme.surface
                     : darkColorScheme.surface;
-                final lightTheme = buildAppTheme(
+
+                final lightTheme = ThemeData(
+                  useMaterial3: true,
                   colorScheme: lightColorScheme,
                   brightness: Brightness.light,
+                  inputDecorationTheme: const InputDecorationTheme(
+                    border: OutlineInputBorder(),
+                    isDense: true,
+                  ),
                 );
 
-                final darkTheme = buildAppTheme(
+                final darkTheme = ThemeData(
+                  useMaterial3: true,
                   colorScheme: darkColorScheme,
                   brightness: Brightness.dark,
+                  inputDecorationTheme: const InputDecorationTheme(
+                    border: OutlineInputBorder(),
+                    isDense: true,
+                  ),
                 );
 
                 updateValidatorLanguage(langCode);
@@ -230,10 +258,6 @@ class AppContent extends StatelessWidget {
                           const CreateNewClipNoteIntent(),
                       SyncIntent.activator: const SyncIntent(),
                       PasteIntent.activator: const PasteIntent(),
-                      DeleteItemIntent.activator: const DeleteItemIntent(),
-                      if (isDesktopPlatform)
-                        TogglePasteStackIntent.activator:
-                            const TogglePasteStackIntent(),
                       if (view == AppView.windowed)
                         NavigateToSettingPageIntent.activator:
                             const NavigateToSettingPageIntent(),
@@ -252,9 +276,6 @@ class AppContent extends StatelessWidget {
                       SyncIntent: SyncAction(),
                       CreateNewClipNoteIntent: CreateNewClipNoteAction(),
                       PasteIntent: PasteAction(),
-                      DeleteItemIntent: DeleteSelectedItemsAction(),
-                      if (isDesktopPlatform)
-                        TogglePasteStackIntent: TogglePasteStackAction(),
                       if (isDesktopPlatform) PopRouteIntent: HideWindowAction(),
                       if (view == AppView.windowed)
                         NavigateToSettingPageIntent:
@@ -262,8 +283,12 @@ class AppContent extends StatelessWidget {
                       PasteByClipIndexIntent: PasteByClipIndexAction(),
                       SelectAllIntent: SelectAllAction(),
                     },
-                    theme: lightTheme,
-                    darkTheme: darkTheme,
+                    theme: lightTheme.copyWith(
+                      textTheme: robotoFlexTextTheme(lightTheme.textTheme),
+                    ),
+                    darkTheme: darkTheme.copyWith(
+                      textTheme: robotoFlexTextTheme(darkTheme.textTheme),
+                    ),
                     debugShowCheckedModeBanner: false,
                     locale: Locale(
                       langCode.isEmpty ? Platform.localeName : langCode,
@@ -301,20 +326,16 @@ class MainApp extends StatelessWidget {
         BlocProvider<AuthCubit>(create: (context) => sl()),
         BlocProvider<AppConfigCubit>(create: (context) => sl()..load()),
         BlocProvider<MonetizationCubit>(create: (context) => sl()),
-        BlocProvider<SyncStatusCubit>(create: (context) => sl()),
+        BlocProvider<ClipSyncManagerCubit>(create: (context) => sl()),
+        BlocProvider<CollectionSyncManagerCubit>(create: (context) => sl()),
         BlocProvider<OfflinePersistenceCubit>(create: (context) => sl()),
         BlocProvider<CloudPersistanceCubit>(create: (context) => sl()),
         BlocProvider<ClipCollectionCubit>(create: (context) => sl()),
         BlocProvider<DriveSetupCubit>(create: (context) => sl()),
         BlocProvider<WindowActionCubit>(create: (context) => sl()),
-        BlocProvider<PasteStackCubit>(
-          create: (context) => PasteStackCubit(
-            context.read<AppConfigCubit>(),
-            context.read<WindowActionCubit>(),
-          ),
-        ),
+        BlocProvider<RealtimeClipSyncCubit>(create: (context) => sl()),
+        BlocProvider<RealtimeCollectionSyncCubit>(create: (context) => sl()),
         BlocProvider<EventBusCubit>(create: (context) => sl()),
-        BlocProvider<SelectedClipsCubit>(create: (context) => sl()),
         if (Platform.isAndroid)
           BlocProvider<AndroidBgClipboardCubit>(
             lazy: false,

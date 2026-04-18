@@ -20,7 +20,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   super_native_extensions
   tray_manager
   url_launcher_windows
-  volume_controller
   window_manager
 )
 
