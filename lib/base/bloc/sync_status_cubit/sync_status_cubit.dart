@@ -58,6 +58,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
         );
 
         emit(SyncStatusState.syncing(progress: currentProgress));
+        _checkCompletion();
       } else if (event is SyncEngineStatusUpdateEvent) {
         if (event.isBusy) {
           _busyEngines.add(event.entityType);

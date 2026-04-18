@@ -7,6 +7,7 @@ import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cu
 import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
@@ -160,7 +161,7 @@ class EventBridge extends StatelessWidget {
 
             if (config.enableSync) {
               sl<SyncOrchestrator>().start();
-              sl<SyncOrchestrator>().syncAll();
+              context.read<SyncStatusCubit>().syncAll(const SyncAllParams());
 
               switch (config.syncSpeed) {
                 case SyncSpeed.realtime:
@@ -191,7 +192,9 @@ class EventBridge extends StatelessWidget {
                       context.read<DriveSetupCubit>().fetch();
                       context.read<OfflinePersistenceCubit>().startListeners();
                       sl<SyncOrchestrator>().start();
-                      sl<SyncOrchestrator>().syncAll();
+                      context.read<SyncStatusCubit>().syncAll(
+                        const SyncAllParams(),
+                      );
                       rootNavKey.currentContext?.goNamed(RouteConstants.home);
                     } else {
                       rootNavKey.currentContext?.goNamed(
@@ -244,7 +247,9 @@ class EventBridge extends StatelessWidget {
                   }
 
                   EncryptionWorker.instance.setEncryption(config.autoEncrypt);
-                  EncryptionWorker.instance.setUseNonce(config.useEncryptionNonce);
+                  EncryptionWorker.instance.setUseNonce(
+                    config.useEncryptionNonce,
+                  );
                   setupEncryption(context);
                 }
               case _:
