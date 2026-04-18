@@ -22,7 +22,6 @@ class ClipListBuilder extends StatelessWidget {
   final bool hasMore;
   final bool loading;
   final VoidCallback loadMore;
-  final bool pasteStackMode;
 
   const ClipListBuilder({
     super.key,
@@ -30,7 +29,6 @@ class ClipListBuilder extends StatelessWidget {
     required this.hasMore,
     required this.loading,
     required this.loadMore,
-    this.pasteStackMode = false,
   });
 
   void onIndexPaste(BuildContext context, EventBusIndexPasteEvent state) {
@@ -68,7 +66,8 @@ class ClipListBuilder extends StatelessWidget {
                 );
               }
               final item = items[index];
-              final isSelected = selectedClips.contains(item);
+              final selectedItemIndex = selectedClips.indexOf(item);
+              final isSelected = selectedItemIndex != -1;
               Widget listItem = ClipMenuProvider(
                 item: item,
                 child: ClipListItem(
@@ -76,7 +75,7 @@ class ClipListBuilder extends StatelessWidget {
                   item: item,
                   autofocus: !isSelected && index == 0 && isDesktopPlatform,
                   selected: isSelected,
-                  noView: pasteStackMode,
+                  selectionIndex: selectedItemIndex,
                   selectionActive: selectedClips.isNotEmpty,
                 ),
               );

@@ -22,8 +22,11 @@ class CanPasteScope extends InheritedWidget {
   }
 }
 
+typedef CanPasteBuilderWidget =
+    Widget Function(BuildContext context, bool canPaste);
+
 class CanPasteBuilder extends StatelessWidget {
-  final WidgetBuilder builder;
+  final CanPasteBuilderWidget builder;
   const CanPasteBuilder({super.key, required this.builder});
 
   @override
@@ -36,7 +39,7 @@ class CanPasteBuilder extends StatelessWidget {
       builder: (context, canPaste) {
         return CanPasteScope(
           canPaste: canPaste,
-          child: Builder(builder: builder),
+          child: Builder(builder: (context) => builder(context, canPaste)),
         );
       },
     );

@@ -22,6 +22,7 @@ import 'package:universal_io/io.dart';
 class ClipListItem extends StatefulWidget {
   final bool autofocus;
   final bool selected;
+  final int selectionIndex;
   final bool noView;
   final bool selectionActive;
   final ClipboardItem item;
@@ -33,6 +34,7 @@ class ClipListItem extends StatefulWidget {
     this.selected = false,
     this.noView = false,
     this.selectionActive = false,
+    required this.selectionIndex,
   });
 
   @override
@@ -149,6 +151,7 @@ class _ClipListItemState extends State<ClipListItem> {
                     hovered: hovered,
                     selected: widget.selected,
                     selectionActive: widget.selectionActive,
+                    selectionIndex: widget.selectionIndex,
                   ),
                 if (widget.item.displayTitle != null && !widget.item.encrypted)
                   Padding(

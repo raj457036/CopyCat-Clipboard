@@ -13,7 +13,7 @@ class ClipGrid extends StatelessWidget {
     return ClipGridDelegateProvider(
       builder: (context, delegate, scrollDirection) {
         return CanPasteBuilder(
-          builder: (context) => builder(delegate, scrollDirection),
+          builder: (context, canPaste) => builder(delegate, scrollDirection),
         );
       },
     );

@@ -14,6 +14,7 @@ class ClipCardOptionsHeader extends StatelessWidget {
   final ClipboardItem item;
   final bool hovered;
   final bool selected;
+  final int selectionIndex;
   final bool selectionActive;
 
   const ClipCardOptionsHeader({
@@ -21,6 +22,7 @@ class ClipCardOptionsHeader extends StatelessWidget {
     this.hasFocusForPaste = false,
     this.hovered = false,
     this.selected = false,
+    required this.selectionIndex,
     required this.selectionActive,
     required this.item,
   });
@@ -76,6 +78,7 @@ class ClipCardOptionsHeader extends StatelessWidget {
                 created: item.created,
                 hovered: hovered || selectionActive,
                 selected: selected,
+                selectionIndex: selectionIndex,
               ),
             ),
           ),

@@ -57,7 +57,7 @@ class CollectionDetailPage extends StatelessWidget {
                     },
                   ),
                   AppLayout.list => CanPasteBuilder(
-                    builder: (context) {
+                    builder: (context, canPaste) {
                       return ClipsProviderWithBuilder(
                         isCollectionClips: true,
                         builder: (context, clips, hasMore, loading, loadMore) {

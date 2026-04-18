@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 class ClipCard extends StatelessWidget {
   final bool autoFocus;
   final bool selected;
+  final int selectionIndex;
   final bool selectionActive;
   final ClipboardItem item;
 
@@ -15,6 +16,7 @@ class ClipCard extends StatelessWidget {
     this.autoFocus = true,
     this.selected = false,
     this.selectionActive = false,
+    required this.selectionIndex,
   });
 
   @override
@@ -26,6 +28,7 @@ class ClipCard extends StatelessWidget {
         focused: autoFocus,
         selected: selected,
         selectionActive: selectionActive,
+        selectionIndex: selectionIndex,
       ),
     );
   }

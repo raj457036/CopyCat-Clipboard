@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocBuilder;
 
 typedef OnSelectedClip =
-    Widget Function(BuildContext context, Set<ClipboardItem> selectedItems);
+    Widget Function(BuildContext context, List<ClipboardItem> selectedItems);
 
 class SelectedClipBuilder extends StatelessWidget {
   final OnSelectedClip builder;
@@ -18,7 +18,7 @@ class SelectedClipBuilder extends StatelessWidget {
         if (state is ClipSelected) {
           return builder(context, state.selectedClipIds);
         }
-        return builder(context, {});
+        return builder(context, const []);
       },
     );
   }

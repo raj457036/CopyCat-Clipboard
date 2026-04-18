@@ -46,6 +46,14 @@ class PasteStackCubit extends Cubit<PasteStackState> {
   void reverseStack() =>
       emit(state.copyWith(items: state.items.reversed.toList()));
 
+  void reorderItem(int oldIndex, int newIndex) {
+    final items = List<ClipboardItem>.from(state.items);
+    if (newIndex > oldIndex) newIndex--;
+    final item = items.removeAt(oldIndex);
+    items.insert(newIndex, item);
+    emit(state.copyWith(items: items));
+  }
+
   List<ClipboardItem> normalizeItems(List<ClipboardItem> items) {
     return items
         .where((item) => item.inCache && !item.encrypted)
@@ -97,6 +105,23 @@ class PasteStackCubit extends Cubit<PasteStackState> {
 
     if (view != null) {
       await windowAction.focus();
+    }
+
+    await appConfig.setPinned(pinned);
+  }
+
+  /// Deactivates the paste stack without restoring focus to the clipboard app.
+  /// Use this after a paste-all operation where the user intends to stay in
+  /// the target application.
+  Future<void> deactivateSilent() async {
+    final view = _previousView;
+    final size = _previousWindowSize;
+    final pinned = _previousPinnedState;
+
+    _clearSnapshot();
+
+    if (view == AppView.windowed) {
+      await windowAction.changeView(view!, size);
     }
 
     await appConfig.setPinned(pinned);

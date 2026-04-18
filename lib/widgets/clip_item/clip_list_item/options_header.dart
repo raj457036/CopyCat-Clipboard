@@ -12,6 +12,7 @@ class ClipListItemOptionHeader extends StatelessWidget {
   final bool hasFocusForPaste;
   final bool hovered;
   final bool selected;
+  final int selectionIndex;
   final bool selectionActive;
 
   const ClipListItemOptionHeader({
@@ -20,6 +21,7 @@ class ClipListItemOptionHeader extends StatelessWidget {
     required this.hasFocusForPaste,
     required this.hovered,
     required this.selectionActive,
+    required this.selectionIndex,
     this.selected = false,
   });
 
@@ -38,6 +40,8 @@ class ClipListItemOptionHeader extends StatelessWidget {
                   vertical: padding4,
                   horizontal: padding10,
                 ),
+                selectionIndex: selectionIndex,
+
                 created: item.created,
                 hovered: hovered || selectionActive,
                 selected: selected,

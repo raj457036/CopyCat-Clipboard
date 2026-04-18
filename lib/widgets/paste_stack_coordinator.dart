@@ -100,14 +100,13 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
           previous.active != current.active || previous.count < current.count,
       listener: (context, state) async {
         if (state.active) {
-          rootNavKey.currentContext?.pushNamed(RouteConstants.pasteStack);
+          rootNavKey.currentContext?.goNamed(RouteConstants.pasteStack);
 
           if (state.count > 0) {
             await registerPasteHotKey();
             return;
           }
-        } else if (rootNavKey.currentContext != null &&
-            rootNavKey.currentContext!.canPop()) {
+        } else {
           rootNavKey.currentContext?.pop();
         }
         await unregisterPasteHotKey();

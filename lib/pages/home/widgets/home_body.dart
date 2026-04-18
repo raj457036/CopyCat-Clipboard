@@ -45,7 +45,7 @@ class HomePageBody extends StatelessWidget {
                 },
               ),
               AppLayout.list => CanPasteBuilder(
-                builder: (context) {
+                builder: (context, canPaste) {
                   return ClipsProviderWithBuilder(
                     builder: (context, clips, hasMore, loading, loadMore) {
                       return ClipListBuilder(

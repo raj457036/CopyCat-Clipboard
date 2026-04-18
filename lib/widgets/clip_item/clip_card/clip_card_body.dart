@@ -28,6 +28,7 @@ class ClipCardBodyContent extends StatelessWidget {
   final ClipboardItem item;
   final bool hovered;
   final bool selected;
+  final int selectionIndex;
   final bool selectionActive;
   final bool canPaste;
 
@@ -35,6 +36,7 @@ class ClipCardBodyContent extends StatelessWidget {
     super.key,
     required this.item,
     required this.selectionActive,
+    required this.selectionIndex,
     this.hovered = false,
     this.selected = false,
     this.canPaste = false,
@@ -52,6 +54,7 @@ class ClipCardBodyContent extends StatelessWidget {
           hovered: hovered,
           selected: selected,
           selectionActive: selectionActive,
+          selectionIndex: selectionIndex,
         ),
         Expanded(
           child: Column(
@@ -98,13 +101,16 @@ class ClipCardBody extends StatefulWidget {
   final ClipboardItem item;
   final bool focused;
   final bool selected;
+  final int selectionIndex;
   final bool selectionActive;
+
   const ClipCardBody({
     super.key,
     required this.item,
     required this.focused,
     required this.selected,
     required this.selectionActive,
+    required this.selectionIndex,
   });
 
   @override
@@ -206,6 +212,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       item: widget.item,
       hovered: hovered,
       selected: widget.selected,
+      selectionIndex: widget.selectionIndex,
       selectionActive: widget.selectionActive,
       canPaste: canPaste,
     );

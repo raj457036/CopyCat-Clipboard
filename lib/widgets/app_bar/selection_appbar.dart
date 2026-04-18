@@ -45,10 +45,9 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
               if (isDesktopPlatform)
                 IconButton(
                   onPressed: () async {
-                    final ordered = orderedSelectedClips(context, items);
                     clearSelection(context);
                     await context.read<PasteStackCubit>().replaceFromSelection(
-                      ordered,
+                      items,
                     );
                   },
                   tooltip: 'Start Paste Stack',
@@ -66,12 +65,10 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
                     if (!canPaste) return const SizedBox.shrink();
                     return IconButton(
                       onPressed: () async {
-                        final ordered = orderedSelectedClips(context, items);
-                        await pasteMultipleOnLastWindow(
-                          context,
-                          ordered,
-                          clearSelection: true,
-                        );
+                        await pasteMultipleOnLastWindow(context, items);
+                        if (context.mounted) {
+                          clearSelection(context);
+                        }
                       },
                       tooltip: 'Paste Multiple',
                       icon: const Icon(Icons.content_paste_go_outlined),

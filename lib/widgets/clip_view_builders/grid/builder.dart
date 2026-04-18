@@ -72,12 +72,14 @@ class ClipGridBuilder extends StatelessWidget {
               }
 
               final item = items[index];
-              final isSelected = selectedClips.contains(item);
+              final selectedItemIndex = selectedClips.indexOf(item);
+              final isSelected = selectedItemIndex != -1;
               Widget card = ClipCard(
                 key: ValueKey("clipboard-item-${item.id}"),
                 autoFocus: !isSelected && index == 0 && isDesktopPlatform,
                 item: item,
                 selected: isSelected,
+                selectionIndex: selectedItemIndex,
                 selectionActive: selectedClips.isNotEmpty,
               );
 

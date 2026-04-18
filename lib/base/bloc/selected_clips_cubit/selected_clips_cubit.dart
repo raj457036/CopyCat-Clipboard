@@ -16,14 +16,41 @@ class SelectedClipsCubit extends Cubit<SelectedClipsState> {
       state is ClipSelected &&
       (state as ClipSelected).selectedClipIds.isNotEmpty;
 
+  List<ClipboardItem> _dedupeKeepOrder(List<ClipboardItem> items) {
+    final deduped = <ClipboardItem>[];
+    for (final item in items) {
+      if (!deduped.contains(item)) {
+        deduped.add(item);
+      }
+    }
+    return deduped;
+  }
+
+  List<ClipboardItem> _appendMissing(
+    List<ClipboardItem> base,
+    List<ClipboardItem> candidates,
+  ) {
+    final result = List<ClipboardItem>.from(base);
+    for (final clip in candidates) {
+      if (!result.contains(clip)) {
+        result.add(clip);
+      }
+    }
+    return result;
+  }
+
   void selectAll(List<ClipboardItem> allClips) {
-    emit(SelectedClipsState.clipSelected(selectedClipIds: {...allClips}));
+    emit(
+      SelectedClipsState.clipSelected(
+        selectedClipIds: _dedupeKeepOrder(allClips),
+      ),
+    );
   }
 
   void select(ClipboardItem clip, {List<ClipboardItem>? selectableItems}) {
     switch (state) {
       case NoClipSelected():
-        emit(SelectedClipsState.clipSelected(selectedClipIds: {clip}));
+        emit(SelectedClipsState.clipSelected(selectedClipIds: [clip]));
       case ClipSelected(:final selectedClipIds):
         {
           if (multiSelectMode &&
@@ -36,7 +63,10 @@ class SelectedClipsCubit extends Cubit<SelectedClipsState> {
               final start = lastIndex < currentIndex ? lastIndex : currentIndex;
               final end = lastIndex > currentIndex ? lastIndex : currentIndex;
               final rangeSelected = selectableItems.sublist(start, end + 1);
-              final newSelectedClipIds = {...selectedClipIds, ...rangeSelected};
+              final newSelectedClipIds = _appendMissing(
+                selectedClipIds,
+                rangeSelected,
+              );
               emit(
                 SelectedClipsState.clipSelected(
                   selectedClipIds: newSelectedClipIds,
@@ -45,7 +75,7 @@ class SelectedClipsCubit extends Cubit<SelectedClipsState> {
               return;
             }
           }
-          final newSelectedClipIds = {...selectedClipIds, clip};
+          final newSelectedClipIds = _appendMissing(selectedClipIds, [clip]);
           emit(
             SelectedClipsState.clipSelected(
               selectedClipIds: newSelectedClipIds,
@@ -59,7 +89,8 @@ class SelectedClipsCubit extends Cubit<SelectedClipsState> {
     switch (state) {
       case ClipSelected(:final selectedClipIds):
         if (selectedClipIds.contains(clip)) {
-          final newSelectedClipIds = {...selectedClipIds}..remove(clip);
+          final newSelectedClipIds = List<ClipboardItem>.from(selectedClipIds)
+            ..removeWhere((item) => item == clip);
           if (newSelectedClipIds.isEmpty) {
             emit(const SelectedClipsState.noClipSelected());
             return;
