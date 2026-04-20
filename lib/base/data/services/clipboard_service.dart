@@ -671,6 +671,7 @@ class ClipboardFormatProcessor {
 class ClipboardService with ClipboardListener {
   bool _writing = false;
   bool _started = false;
+  int _captureSuppressionDepth = 0;
   var _clipTypePriority = <DataFormat>[
     Formats.fileUri,
     Formats.uri,
@@ -703,6 +704,20 @@ class ClipboardService with ClipboardListener {
     _clipTypePriority = updatedList;
   }
 
+  bool get isCaptureSuppressed => _captureSuppressionDepth > 0;
+
+  Future<T> runWithCaptureSuppressed<T>(Future<T> Function() action) async {
+    _captureSuppressionDepth++;
+    try {
+      return await action();
+    } finally {
+      _captureSuppressionDepth--;
+      if (_captureSuppressionDepth < 0) {
+        _captureSuppressionDepth = 0;
+      }
+    }
+  }
+
   Future<void> write(Iterable<DataWriterItem> items) async {
     setWriting(true);
     await SystemClipboard.instance?.write(items);
@@ -731,7 +746,7 @@ class ClipboardService with ClipboardListener {
 
   @override
   void onClipboardChanged() {
-    if (_writing) return;
+    if (_writing || isCaptureSuppressed) return;
 
     if (onRead != null) {
       onRead!();
@@ -851,7 +866,9 @@ class CopyToClipboard {
 
   Future<bool> writeToClipboard(DataWriterItem item) async {
     try {
-      await service.write([item]);
+      await service.runWithCaptureSuppressed(() async {
+        await service.write([item]);
+      });
       return true;
     } catch (e) {
       logger.e(e);
