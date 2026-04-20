@@ -25,6 +25,12 @@ class PasteStackBody extends StatelessWidget {
               child: ReorderableListView.builder(
                 padding: isMobile ? const EdgeInsets.all(padding8) : inset12,
                 itemCount: items.length,
+                proxyDecorator: (child, index, animation) {
+                  return Material(
+                    type: MaterialType.transparency,
+                    child: child,
+                  );
+                },
                 onReorder: (oldIndex, newIndex) {
                   context.read<PasteStackCubit>().reorderItem(
                     oldIndex,

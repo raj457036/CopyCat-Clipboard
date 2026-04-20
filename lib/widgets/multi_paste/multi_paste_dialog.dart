@@ -31,7 +31,7 @@ class MultiPasteDialog extends StatefulWidget {
 }
 
 class _MultiPasteDialogState extends State<MultiPasteDialog> {
-  static const _defaultWaitMs = 200;
+  static const _defaultWaitMs = 50;
 
   bool mergeConsecutiveText = true;
   _SeparatorPreset separatorPreset = _SeparatorPreset.newLine;
@@ -114,205 +114,215 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
     final textClipCount = widget.items.where((item) => item.isTextType).length;
     final mediaClipCount = widget.items.length - textClipCount;
 
-    return AlertDialog(
-      clipBehavior: Clip.antiAlias,
-      titlePadding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
-      contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
-      actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      title: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(
-              Icons.content_paste_go_outlined,
-              color: theme.colorScheme.onSecondaryContainer,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text('Multi Paste Setup', style: theme.textTheme.headlineSmall),
-                const SizedBox(height: 2),
-                Text(
-                  'Control how selected clips are merged and paced.',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      content: SizedBox(
-        width: 500,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: AlertDialog(
+        title: Row(
+          children: [
+            SizedBox(
+              width: 40,
+              height: 40,
+              child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(20),
+                  color: theme.colorScheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(14),
                 ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _StatTile(
-                        label: 'Selected',
-                        value: '${widget.items.length}',
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _StatTile(label: 'Text', value: '$textClipCount'),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _StatTile(
-                        label: 'Non-text',
-                        value: '$mediaClipCount',
-                      ),
-                    ),
-                  ],
+                child: Icon(
+                  Icons.content_paste_go_outlined,
+                  color: theme.colorScheme.onSecondaryContainer,
                 ),
               ),
-              const SizedBox(height: 16),
-              Card.outlined(
-                margin: EdgeInsets.zero,
-                child: Padding(
+            ),
+            width12,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Multi Paste Setup',
+                    style: theme.textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Control how selected clips are merged and paced.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        content: SizedBox(
+          width: 500,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
                   padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Merge consecutive text clips',
-                                  style: theme.textTheme.titleMedium,
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Text clips merge until a non-text clip interrupts the sequence.',
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant,
+                      Expanded(
+                        child: _StatTile(
+                          label: 'Selected',
+                          value: '${widget.items.length}',
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _StatTile(
+                          label: 'Text',
+                          value: '$textClipCount',
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _StatTile(
+                          label: 'Non-text',
+                          value: '$mediaClipCount',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Card.outlined(
+                  margin: EdgeInsets.zero,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Merge consecutive text clips',
+                                    style: theme.textTheme.titleMedium,
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Text clips merge until a non-text clip interrupts the sequence.',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme.colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Switch.adaptive(
-                            value: mergeConsecutiveText,
-                            onChanged: (value) {
+                            const SizedBox(width: 12),
+                            Switch.adaptive(
+                              value: mergeConsecutiveText,
+                              onChanged: (value) {
+                                setState(() {
+                                  mergeConsecutiveText = value;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        if (mergeConsecutiveText) ...[
+                          const SizedBox(height: 16),
+                          Text('Separator', style: theme.textTheme.labelLarge),
+                          const SizedBox(height: 10),
+                          SegmentedButton<_SeparatorPreset>(
+                            showSelectedIcon: false,
+                            segments: [
+                              for (final preset in [
+                                _SeparatorPreset.newLine,
+                                _SeparatorPreset.space,
+                                _SeparatorPreset.custom,
+                              ])
+                                ButtonSegment<_SeparatorPreset>(
+                                  value: preset,
+                                  label: Text(_separatorLabel(preset)),
+                                ),
+                            ],
+                            selected: {separatorPreset},
+                            onSelectionChanged: (selection) {
                               setState(() {
-                                mergeConsecutiveText = value;
+                                separatorPreset = selection.first;
                               });
                             },
                           ),
-                        ],
-                      ),
-                      if (mergeConsecutiveText) ...[
-                        const SizedBox(height: 16),
-                        Text('Separator', style: theme.textTheme.labelLarge),
-                        const SizedBox(height: 10),
-                        SegmentedButton<_SeparatorPreset>(
-                          showSelectedIcon: false,
-                          segments: [
-                            for (final preset in [
-                              _SeparatorPreset.newLine,
-                              _SeparatorPreset.space,
-                              _SeparatorPreset.custom,
-                            ])
-                              ButtonSegment<_SeparatorPreset>(
-                                value: preset,
-                                label: Text(_separatorLabel(preset)),
+                          if (separatorPreset == _SeparatorPreset.custom) ...[
+                            const SizedBox(height: 12),
+                            TextField(
+                              controller: customSeparatorController,
+                              decoration: const InputDecoration(
+                                labelText: 'Custom separator',
+                                hintText:
+                                    'Supports escape sequences like \\n and \\t',
+                                border: OutlineInputBorder(),
                               ),
-                          ],
-                          selected: {separatorPreset},
-                          onSelectionChanged: (selection) {
-                            setState(() {
-                              separatorPreset = selection.first;
-                            });
-                          },
-                        ),
-                        if (separatorPreset == _SeparatorPreset.custom) ...[
-                          const SizedBox(height: 12),
-                          TextField(
-                            controller: customSeparatorController,
-                            decoration: const InputDecoration(
-                              labelText: 'Custom separator',
-                              hintText:
-                                  'Supports escape sequences like \\n and \\t',
-                              border: OutlineInputBorder(),
                             ),
-                          ),
+                          ],
                         ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Card.outlined(
-                margin: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Paste pacing', style: theme.textTheme.titleMedium),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Increase the delay if the target app misses paste events.',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
+                const SizedBox(height: 16),
+                Card.outlined(
+                  margin: EdgeInsets.zero,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Paste pacing',
+                          style: theme.textTheme.titleMedium,
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      TextField(
-                        controller: waitMsController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: 'Wait time between pastes',
-                          suffixText: 'ms',
-                          border: OutlineInputBorder(),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Increase the delay if the target app misses paste events.',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: waitMsController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            labelText: 'Wait time between pastes',
+                            suffixText: 'ms',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              height10,
-            ],
+                height10,
+              ],
+            ),
           ),
         ),
+        actions: [
+          OutlinedButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton.icon(
+            onPressed: _submit,
+            icon: const Icon(Icons.play_arrow_rounded),
+            label: const Text('Paste'),
+          ),
+        ],
       ),
-      actions: [
-        OutlinedButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Cancel'),
-        ),
-        FilledButton.icon(
-          onPressed: _submit,
-          icon: const Icon(Icons.play_arrow_rounded),
-          label: const Text('Paste'),
-        ),
-      ],
     );
   }
 }

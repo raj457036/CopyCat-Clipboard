@@ -8,6 +8,7 @@ import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/multi_paste/multi_paste_button.dart';
+import 'package:clipboard/widgets/multi_paste/multi_paste_dialog.dart';
 import 'package:clipboard/widgets/responsive_action_bar.dart';
 import 'package:clipboard/widgets/select_clip_builder.dart'
     show SelectedClipBuilder;
@@ -66,7 +67,22 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
             items: items.toList(),
             onPasteComplete: () => clearSelection(context),
           ),
-          action: () {},
+          action: () async {
+            final options = await MultiPasteDialog(
+              items: items.toList(),
+            ).show(context);
+            if (options == null || !context.mounted) return;
+
+            await pasteMultipleOnLastWindow(
+              context,
+              items.toList(),
+              textMergeSeparator: options.textMergeSeparator,
+              waitBetweenPastes: options.waitBetweenPastes,
+            );
+            if (context.mounted) {
+              clearSelection(context);
+            }
+          },
         ),
       ActionItem(
         key: 'share',
