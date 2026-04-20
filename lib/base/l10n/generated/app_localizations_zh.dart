@@ -1372,6 +1372,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__switch__smart_paste__subtitle => '直接在目标应用上粘贴内容。';
 
   @override
+  String get settings__switch__type_search__title => 'Type to Search';
+
+  @override
+  String get settings__switch__type_search__subtitle =>
+      'Search clips while you type in the search bar.';
+
+  @override
   String get settings__switch__startup__title => '启动时运行';
 
   @override

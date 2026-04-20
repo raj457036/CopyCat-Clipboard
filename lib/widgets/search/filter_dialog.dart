@@ -1,4 +1,3 @@
-import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/search_filter_state.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
@@ -9,7 +8,7 @@ import 'package:clipboard/utils/datetime_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 
-const _allClipCatergories = {
+const _allClipCategories = {
   ClipItemType.text,
   ClipItemType.url,
   ClipItemType.media,
@@ -36,26 +35,22 @@ class _FilterDialogState extends State<FilterDialog> {
   late Set<ClipItemType> typeIncludes;
   late Set<TextCategory> textCategory;
   late ClipboardSortKey sortBy;
-  SortOrder sortOrder = SortOrder.desc;
+  late SortOrder sortOrder;
 
   @override
   void initState() {
     super.initState();
-    if (widget.state.typeIncludes == null) {
-      typeIncludes = {..._allClipCatergories};
-    } else {
-      typeIncludes = {...?widget.state.typeIncludes};
-    }
-
+    typeIncludes = widget.state.typeIncludes != null
+        ? {...widget.state.typeIncludes!}
+        : {..._allClipCategories};
     textCategory = {...?widget.state.textCategories};
-
     sortBy = widget.state.sortBy ?? ClipboardSortKey.modified;
     sortOrder = widget.state.sortOrder ?? SortOrder.desc;
     from = widget.state.from;
     to = widget.state.to;
   }
 
-  void setTextCategory(bool include, TextCategory type) {
+  void _setTextCategory(bool include, TextCategory type) {
     setState(() {
       if (include) {
         textCategory.add(type);
@@ -65,69 +60,171 @@ class _FilterDialogState extends State<FilterDialog> {
     });
   }
 
-  void setTypeInclusion(bool include, ClipItemType type) {
+  void _setTypeInclusion(bool include, ClipItemType type) {
     setState(() {
       if (include) {
         typeIncludes.add(type);
       } else {
         typeIncludes.remove(type);
       }
-      if (typeIncludes.isEmpty) {
-        typeIncludes = {..._allClipCatergories};
-      }
+      if (typeIncludes.isEmpty) typeIncludes = {..._allClipCategories};
     });
   }
 
-  Future<DateTime?> selectDate({
+  Future<DateTime?> _pickDate({
     required DateTime firstDate,
     required DateTime lastDate,
     DateTime? initial,
-  }) async {
-    final selectedDate = await showDatePicker(
+  }) {
+    return showDatePicker(
       context: context,
       firstDate: firstDate,
       lastDate: lastDate,
       initialDate: initial,
     );
-    return selectedDate;
   }
 
-  Future<void> selectFrom() async {
-    final firstDate = DateTime(2023);
-    final lastDate = to?.subtract(const Duration(days: 1)) ?? now();
-    final from_ = await selectDate(
-      firstDate: firstDate,
-      lastDate: lastDate,
+  Future<void> _selectFrom() async {
+    final picked = await _pickDate(
+      firstDate: DateTime(2023),
+      lastDate: to?.subtract(const Duration(days: 1)) ?? now(),
       initial: from,
     );
-
-    if (mounted) {
-      setState(() {
-        from = from_;
-      });
-    }
+    if (mounted) setState(() => from = picked);
   }
 
-  Future<void> selectTo() async {
-    final firstDate = from?.add(const Duration(days: 1)) ?? DateTime(2023);
+  Future<void> _selectTo() async {
     final lastDate = now();
-    final to_ = await selectDate(
-      firstDate: firstDate,
+    final picked = await _pickDate(
+      firstDate: from?.add(const Duration(days: 1)) ?? DateTime(2023),
       lastDate: lastDate,
       initial: to,
     );
-
     if (mounted) {
       setState(() {
-        to = to_?.add(
-          Duration(
-            hours: lastDate.hour,
-            minutes: lastDate.minute,
-            seconds: lastDate.second,
-          ),
-        );
+        to = picked?.add(Duration(
+          hours: lastDate.hour,
+          minutes: lastDate.minute,
+          seconds: lastDate.second,
+        ));
       });
     }
+  }
+
+  void _applyFilter() {
+    final searchState = SearchFilterState(
+      from: from,
+      to: to,
+      sortBy: sortBy,
+      sortOrder: sortOrder,
+      textCategories:
+          textCategory.isEmpty || !typeIncludes.contains(ClipItemType.text)
+          ? null
+          : textCategory,
+      typeIncludes:
+          typeIncludes.isEmpty || typeIncludes.length == _allClipCategories.length
+          ? null
+          : typeIncludes,
+    );
+    Navigator.pop(context, searchState);
+  }
+
+  void _resetFilter() {
+    Navigator.pop(context, const SearchFilterState());
+  }
+
+  void _setSortOrder(Set<SortOrder> order) {
+    setState(() => sortOrder = order.first);
+  }
+
+  void _selectSortBy(ClipboardSortKey? key) {
+    if (key == null) return;
+    setState(() => sortBy = key);
+  }
+
+  Widget _sectionLabel(BuildContext context, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Text(
+        text.toUpperCase(),
+        style: context.textTheme.labelSmall?.copyWith(
+          color: context.colors.primary,
+          letterSpacing: 0.8,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateSelector({
+    required BuildContext context,
+    required String title,
+    required String value,
+    required bool isSet,
+    required IconData leading,
+    required VoidCallback onTap,
+    VoidCallback? onClear,
+  }) {
+    final colors = context.colors;
+    final textTheme = context.textTheme;
+    return InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: onTap,
+      child: Ink(
+        decoration: BoxDecoration(
+          color: isSet ? colors.secondaryContainer : colors.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: colors.outlineVariant),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Row(
+            children: [
+              Icon(
+                leading,
+                size: 18,
+                color: isSet ? colors.onSecondaryContainer : colors.primary,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      style: textTheme.labelSmall?.copyWith(
+                        color: colors.outline,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      value,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: isSet
+                            ? colors.onSecondaryContainer
+                            : colors.onSurface,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (onClear != null)
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  onPressed: onClear,
+                  icon: const Icon(Icons.close_rounded, size: 16),
+                  tooltip: 'Clear',
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -139,256 +236,251 @@ class _FilterDialogState extends State<FilterDialog> {
     final locale = context.locale;
     final localeName = locale.localeName;
     final dateFormatter = getLocaleDateFormatter(localeName);
-    final textTheme = context.textTheme;
     final colors = context.colors;
+    final textTheme = context.textTheme;
+
     return AlertDialog(
-      contentPadding: const EdgeInsets.only(bottom: padding10),
-      insetPadding: const EdgeInsets.symmetric(
-        horizontal: 20.0,
-        vertical: 24.0,
-      ),
+      titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+      contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+      actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       title: Row(
         children: [
+          Icon(Icons.filter_list_rounded, color: colors.primary, size: 20),
+          const SizedBox(width: 8),
           Text(locale.search_filter__text__title),
-          const Spacer(),
-          if (size.height < 300)
-            ElevatedButton(
-              onPressed: applyFilter,
-              child: Text(locale.search_filter__button__apply),
-            ),
         ],
       ),
-      content: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: padding16,
-          vertical: padding16,
-        ),
-        child: SizedBox(
-          width: 400,
+      content: SizedBox(
+        width: 400,
+        child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+              // ── Date range ───────────────────────────────────────────────
+              _sectionLabel(context, locale.search_filter__text__from),
               Row(
+                spacing: 8,
                 children: [
-                  Text(locale.search_filter__text__from),
-                  const Spacer(),
-                  ElevatedButton(
-                    onPressed: selectFrom,
-                    child: Text(
-                      from != null
+                  Expanded(
+                    child: _buildDateSelector(
+                      context: context,
+                      title: locale.search_filter__text__from,
+                      value: from != null
                           ? dateFormatter.format(from!)
                           : locale.search_filter__text__select,
+                      leading: Icons.calendar_today_rounded,
+                      isSet: from != null,
+                      onTap: _selectFrom,
+                      onClear: from != null
+                          ? () => setState(() => from = null)
+                          : null,
                     ),
                   ),
-                ],
-              ),
-              height8,
-              Row(
-                children: [
-                  Text(locale.search_filter__text__to),
-                  const Spacer(),
-                  ElevatedButton(
-                    onPressed: selectTo,
-                    child: Text(
-                      to != null
+                  Text(
+                    '→',
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: colors.outline,
+                    ),
+                  ),
+                  Expanded(
+                    child: _buildDateSelector(
+                      context: context,
+                      title: locale.search_filter__text__to,
+                      value: to != null
                           ? dateFormatter.format(to!)
                           : locale.search_filter__text__now,
+                      leading: Icons.event_rounded,
+                      isSet: to != null,
+                      onTap: _selectTo,
+                      onClear: to != null
+                          ? () => setState(() => to = null)
+                          : null,
                     ),
                   ),
                 ],
               ),
-              height8,
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+
+              const SizedBox(height: 20),
+
+              // ── Content type ─────────────────────────────────────────────
+              _sectionLabel(context, locale.search_filter__text__including),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
                 children: [
-                  Text(locale.search_filter__text__including),
-                  height8,
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      FilterChip(
-                        label: Text(locale.search_filter__chip__text),
-                        onSelected: (value) =>
-                            setTypeInclusion(value, ClipItemType.text),
-                        selected: typeIncludes.contains(ClipItemType.text),
-                      ),
-                      FilterChip(
-                        label: Text(locale.search_filter__chip__url),
-                        onSelected: (value) =>
-                            setTypeInclusion(value, ClipItemType.url),
-                        selected: typeIncludes.contains(ClipItemType.url),
-                      ),
-                      FilterChip(
-                        label: Text(locale.search_filter__chip__media),
-                        onSelected: (value) =>
-                            setTypeInclusion(value, ClipItemType.media),
-                        selected: typeIncludes.contains(ClipItemType.media),
-                      ),
-                      FilterChip(
-                        label: Text(locale.search_filter__chip__docs),
-                        onSelected: (value) =>
-                            setTypeInclusion(value, ClipItemType.file),
-                        selected: typeIncludes.contains(ClipItemType.file),
-                      ),
-                    ],
+                  FilterChip(
+                    avatar: const Icon(Icons.text_fields_rounded, size: 16),
+                    label: Text(locale.search_filter__chip__text),
+                    onSelected: (v) => _setTypeInclusion(v, ClipItemType.text),
+                    selected: typeIncludes.contains(ClipItemType.text),
+                  ),
+                  FilterChip(
+                    avatar: const Icon(Icons.link_rounded, size: 16),
+                    label: Text(locale.search_filter__chip__url),
+                    onSelected: (v) => _setTypeInclusion(v, ClipItemType.url),
+                    selected: typeIncludes.contains(ClipItemType.url),
+                  ),
+                  FilterChip(
+                    avatar: const Icon(Icons.image_rounded, size: 16),
+                    label: Text(locale.search_filter__chip__media),
+                    onSelected: (v) =>
+                        _setTypeInclusion(v, ClipItemType.media),
+                    selected: typeIncludes.contains(ClipItemType.media),
+                  ),
+                  FilterChip(
+                    avatar: const Icon(Icons.description_rounded, size: 16),
+                    label: Text(locale.search_filter__chip__docs),
+                    onSelected: (v) => _setTypeInclusion(v, ClipItemType.file),
+                    selected: typeIncludes.contains(ClipItemType.file),
                   ),
                 ],
               ),
-              height12,
-              if (typeIncludes.contains(ClipItemType.text))
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text.rich(
-                      TextSpan(
-                        text: locale.search_filter__text__textCategories,
+
+              // ── Text categories (conditional) ─────────────────────────
+              AnimatedSize(
+                duration: Durations.short4,
+                curve: Curves.easeInOut,
+                alignment: Alignment.topCenter,
+                child: typeIncludes.contains(ClipItemType.text)
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextSpan(
-                            text: " ${locale.search_filter__text__exclusive}",
-                            style: textTheme.bodySmall?.copyWith(
-                              color: colors.outline,
-                            ),
+                          const SizedBox(height: 20),
+                          _sectionLabel(
+                            context,
+                            locale.search_filter__text__textCategories,
+                          ),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: [
+                              FilterChip(
+                                avatar: const Icon(Icons.email_rounded,
+                                    size: 16),
+                                label: Text(
+                                    locale.search_filter__text_cat__email),
+                                onSelected: (v) =>
+                                    _setTextCategory(v, TextCategory.email),
+                                selected:
+                                    textCategory.contains(TextCategory.email),
+                              ),
+                              FilterChip(
+                                avatar: const Icon(Icons.phone_rounded,
+                                    size: 16),
+                                label: Text(
+                                    locale.search_filter__text_cat__phone),
+                                onSelected: (v) =>
+                                    _setTextCategory(v, TextCategory.phone),
+                                selected:
+                                    textCategory.contains(TextCategory.phone),
+                              ),
+                              FilterChip(
+                                avatar: const Icon(Icons.palette_rounded,
+                                    size: 16),
+                                label: Text(
+                                    locale.search_filter__text_cat__color),
+                                onSelected: (v) =>
+                                    _setTextCategory(v, TextCategory.color),
+                                selected:
+                                    textCategory.contains(TextCategory.color),
+                              ),
+                            ],
                           ),
                         ],
-                      ),
-                    ),
-                    height8,
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        FilterChip(
-                          label: Text(locale.search_filter__text_cat__email),
-                          onSelected: (value) =>
-                              setTextCategory(value, TextCategory.email),
-                          selected: textCategory.contains(TextCategory.email),
-                        ),
-                        FilterChip(
-                          label: Text(locale.search_filter__text_cat__phone),
-                          onSelected: (value) =>
-                              setTextCategory(value, TextCategory.phone),
-                          selected: textCategory.contains(TextCategory.phone),
-                        ),
-                        FilterChip(
-                          label: Text(locale.search_filter__text_cat__color),
-                          onSelected: (value) =>
-                              setTextCategory(value, TextCategory.color),
-                          selected: textCategory.contains(TextCategory.color),
-                        ),
-                      ],
-                    ),
-                  ],
+                      )
+                    : const SizedBox.shrink(),
+              ),
+
+              const SizedBox(height: 20),
+              Divider(color: colors.outlineVariant),
+              const SizedBox(height: 12),
+
+              // ── Sort ─────────────────────────────────────────────────────
+              _sectionLabel(context, locale.search_filter__text__sort_by),
+              DropdownMenu<ClipboardSortKey>(
+                width: 360,
+                menuStyle: const MenuStyle(
+                  visualDensity: VisualDensity.compact,
                 ),
-              height8,
-              const Divider(),
-              height8,
-              OverflowBar(
-                spacing: 10,
-                overflowSpacing: 10,
-                alignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(locale.search_filter__text__sort_by),
-                  DropdownMenu<ClipboardSortKey>(
-                    hintText: locale.search_filter__text__select,
-                    inputDecorationTheme: const InputDecorationTheme(
-                      border: OutlineInputBorder(
-                        borderRadius: radius12,
-                        borderSide: BorderSide.none,
-                      ),
-                      fillColor: Colors.black12,
-                      filled: true,
-                      isDense: true,
-                    ),
-                    textStyle: textTheme.bodyMedium,
-                    dropdownMenuEntries: [
-                      DropdownMenuEntry(
-                        value: ClipboardSortKey.modified,
-                        label: locale.search_filter__sort_by__last_mod,
-                      ),
-                      DropdownMenuEntry(
-                        value: ClipboardSortKey.created,
-                        label: locale.search_filter__sort_by__created,
-                      ),
-                      DropdownMenuEntry(
-                        value: ClipboardSortKey.copyCount,
-                        label: locale.search_filter__sort_by__copy_count,
-                      ),
-                      DropdownMenuEntry(
-                        value: ClipboardSortKey.lastCopied,
-                        label: locale.search_filter__sort_by__last_copied,
-                      ),
-                    ],
-                    onSelected: selectSortBy,
-                    initialSelection: sortBy,
+                textStyle: textTheme.bodyMedium,
+                inputDecorationTheme: InputDecorationTheme(
+                  filled: true,
+                  fillColor: colors.surfaceContainerLow,
+                  border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
+                ),
+                initialSelection: sortBy,
+                onSelected: _selectSortBy,
+                dropdownMenuEntries: [
+                  DropdownMenuEntry(
+                    value: ClipboardSortKey.modified,
+                    label: locale.search_filter__sort_by__last_mod,
+                  ),
+                  DropdownMenuEntry(
+                    value: ClipboardSortKey.created,
+                    label: locale.search_filter__sort_by__created,
+                  ),
+                  DropdownMenuEntry(
+                    value: ClipboardSortKey.copyCount,
+                    label: locale.search_filter__sort_by__copy_count,
+                  ),
+                  DropdownMenuEntry(
+                    value: ClipboardSortKey.lastCopied,
+                    label: locale.search_filter__sort_by__last_copied,
                   ),
                 ],
               ),
-              height8,
-              OverflowBar(
-                spacing: 10,
-                overflowSpacing: 10,
-                alignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(locale.search_filter__text__sort_order),
-                  SegmentedButton<SortOrder>(
-                    segments: [
-                      ButtonSegment(
-                        value: SortOrder.asc,
-                        label: Text(locale.search_filter__sort_ord__asc),
-                      ),
-                      ButtonSegment(
-                        value: SortOrder.desc,
-                        label: Text(locale.search_filter__sort_ord__desc),
-                      ),
-                    ],
-                    onSelectionChanged: setSortOrder,
-                    selected: {sortOrder},
+
+              const SizedBox(height: 12),
+
+              _sectionLabel(context, locale.search_filter__text__sort_order),
+              SegmentedButton<SortOrder>(
+                showSelectedIcon: false,
+                segments: [
+                  ButtonSegment(
+                    value: SortOrder.desc,
+                    icon: const Icon(Icons.arrow_downward_rounded, size: 16),
+                    label: Text(locale.search_filter__sort_ord__desc),
+                  ),
+                  ButtonSegment(
+                    value: SortOrder.asc,
+                    icon: const Icon(Icons.arrow_upward_rounded, size: 16),
+                    label: Text(locale.search_filter__sort_ord__asc),
                   ),
                 ],
+                onSelectionChanged: _setSortOrder,
+                selected: {sortOrder},
+                style: const ButtonStyle(
+                  visualDensity: VisualDensity.compact,
+                ),
               ),
+              const SizedBox(height: 4),
             ],
           ),
         ),
       ),
-      actionsAlignment: MainAxisAlignment.center,
-      actions: size.height > 300
-          ? [
-              ElevatedButton(
-                onPressed: applyFilter,
-                child: Text(locale.search_filter__button__apply),
-              ),
-            ]
-          : null,
+      actions: [
+        TextButton(
+          onPressed: _resetFilter,
+          child: Text(
+            'Reset',
+            style: TextStyle(color: colors.error),
+          ),
+        ),
+        FilledButton.icon(
+          onPressed: _applyFilter,
+          icon: const Icon(Icons.check_rounded, size: 18),
+          label: Text(locale.search_filter__button__apply),
+        ),
+      ],
     );
-  }
-
-  void applyFilter() {
-    final searchState = SearchFilterState(
-      from: from,
-      to: to,
-      sortBy: sortBy,
-      sortOrder: sortOrder,
-      textCategories:
-          textCategory.isEmpty || !typeIncludes.contains(ClipItemType.text)
-          ? null
-          : textCategory,
-      typeIncludes: typeIncludes.isEmpty || typeIncludes.length == 4
-          ? null
-          : typeIncludes,
-    );
-    Navigator.pop(context, searchState);
-  }
-
-  void setSortOrder(Set<SortOrder> order) {
-    setState(() => sortOrder = order.first);
-  }
-
-  void selectSortBy(ClipboardSortKey? sortKey) {
-    if (sortKey == null) return;
-    setState(() => sortBy = sortKey);
   }
 }
+

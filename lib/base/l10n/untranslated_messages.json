@@ -37,6 +37,8 @@
     "settings__header__interactions",
     "settings__dropdown__default_sort__title",
     "settings__dropdown__default_sort_order__title",
+    "settings__switch__type_search__title",
+    "settings__switch__type_search__subtitle",
     "settings__switch__e2e_nonce__title",
     "settings__switch__e2e_nonce__subtitle"
   ],
@@ -79,6 +81,8 @@
     "settings__header__interactions",
     "settings__dropdown__default_sort__title",
     "settings__dropdown__default_sort_order__title",
+    "settings__switch__type_search__title",
+    "settings__switch__type_search__subtitle",
     "settings__switch__e2e_nonce__title",
     "settings__switch__e2e_nonce__subtitle"
   ],
@@ -121,6 +125,8 @@
     "settings__header__interactions",
     "settings__dropdown__default_sort__title",
     "settings__dropdown__default_sort_order__title",
+    "settings__switch__type_search__title",
+    "settings__switch__type_search__subtitle",
     "settings__switch__e2e_nonce__title",
     "settings__switch__e2e_nonce__subtitle"
   ],
@@ -163,6 +169,8 @@
     "settings__header__interactions",
     "settings__dropdown__default_sort__title",
     "settings__dropdown__default_sort_order__title",
+    "settings__switch__type_search__title",
+    "settings__switch__type_search__subtitle",
     "settings__switch__e2e_nonce__title",
     "settings__switch__e2e_nonce__subtitle"
   ],
@@ -205,6 +213,8 @@
     "settings__header__interactions",
     "settings__dropdown__default_sort__title",
     "settings__dropdown__default_sort_order__title",
+    "settings__switch__type_search__title",
+    "settings__switch__type_search__subtitle",
     "settings__switch__e2e_nonce__title",
     "settings__switch__e2e_nonce__subtitle"
   ]

@@ -1438,6 +1438,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Collez du contenu directement sur l\'application ciblée.';
 
   @override
+  String get settings__switch__type_search__title => 'Type to Search';
+
+  @override
+  String get settings__switch__type_search__subtitle =>
+      'Search clips while you type in the search bar.';
+
+  @override
   String get settings__switch__startup__title => 'Lancer au démarrage';
 
   @override

@@ -41,6 +41,15 @@ class SearchFilterState {
       typeIncludes != null ||
       textCategories != null;
 
+  /// Number of active (non-sort) filter dimensions applied.
+  int get activeFilterCount {
+    int count = 0;
+    if (from != null || to != null) count++;
+    if (typeIncludes != null) count++;
+    if (textCategories != null) count++;
+    return count;
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;

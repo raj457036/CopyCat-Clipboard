@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$ClipboardState {
   List<ClipboardItem> get items => throw _privateConstructorUsedError;
+  String get query => throw _privateConstructorUsedError;
   dynamic get hasMore => throw _privateConstructorUsedError;
   int get limit => throw _privateConstructorUsedError;
   int get offset => throw _privateConstructorUsedError;
@@ -29,6 +30,7 @@ mixin _$ClipboardState {
   TResult when<TResult extends Object?>({
     required TResult Function(
       List<ClipboardItem> items,
+      String query,
       dynamic hasMore,
       int limit,
       int offset,
@@ -43,6 +45,7 @@ mixin _$ClipboardState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
       List<ClipboardItem> items,
+      String query,
       dynamic hasMore,
       int limit,
       int offset,
@@ -57,6 +60,7 @@ mixin _$ClipboardState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
       List<ClipboardItem> items,
+      String query,
       dynamic hasMore,
       int limit,
       int offset,
@@ -98,6 +102,7 @@ abstract class $ClipboardStateCopyWith<$Res> {
   @useResult
   $Res call({
     List<ClipboardItem> items,
+    String query,
     dynamic hasMore,
     int limit,
     int offset,
@@ -124,6 +129,7 @@ class _$ClipboardStateCopyWithImpl<$Res, $Val extends ClipboardState>
   @override
   $Res call({
     Object? items = null,
+    Object? query = null,
     Object? hasMore = freezed,
     Object? limit = null,
     Object? offset = null,
@@ -138,6 +144,10 @@ class _$ClipboardStateCopyWithImpl<$Res, $Val extends ClipboardState>
                 ? _value.items
                 : items // ignore: cast_nullable_to_non_nullable
                       as List<ClipboardItem>,
+            query: null == query
+                ? _value.query
+                : query // ignore: cast_nullable_to_non_nullable
+                      as String,
             hasMore: freezed == hasMore
                 ? _value.hasMore
                 : hasMore // ignore: cast_nullable_to_non_nullable
@@ -183,6 +193,7 @@ abstract class _$$ClipboardLoadedStateImplCopyWith<$Res>
   @useResult
   $Res call({
     List<ClipboardItem> items,
+    String query,
     dynamic hasMore,
     int limit,
     int offset,
@@ -208,6 +219,7 @@ class __$$ClipboardLoadedStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? items = null,
+    Object? query = null,
     Object? hasMore = freezed,
     Object? limit = null,
     Object? offset = null,
@@ -222,6 +234,10 @@ class __$$ClipboardLoadedStateImplCopyWithImpl<$Res>
             ? _value._items
             : items // ignore: cast_nullable_to_non_nullable
                   as List<ClipboardItem>,
+        query: null == query
+            ? _value.query
+            : query // ignore: cast_nullable_to_non_nullable
+                  as String,
         hasMore: freezed == hasMore ? _value.hasMore! : hasMore,
         limit: null == limit
             ? _value.limit
@@ -257,6 +273,7 @@ class __$$ClipboardLoadedStateImplCopyWithImpl<$Res>
 class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
   const _$ClipboardLoadedStateImpl({
     required final List<ClipboardItem> items,
+    this.query = '',
     this.hasMore = true,
     this.limit = 50,
     this.offset = 0,
@@ -274,6 +291,9 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
     return EqualUnmodifiableListView(_items);
   }
 
+  @override
+  @JsonKey()
+  final String query;
   @override
   @JsonKey()
   final dynamic hasMore;
@@ -297,7 +317,7 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
 
   @override
   String toString() {
-    return 'ClipboardState.loaded(items: $items, hasMore: $hasMore, limit: $limit, offset: $offset, loading: $loading, syncing: $syncing, filterState: $filterState, failure: $failure)';
+    return 'ClipboardState.loaded(items: $items, query: $query, hasMore: $hasMore, limit: $limit, offset: $offset, loading: $loading, syncing: $syncing, filterState: $filterState, failure: $failure)';
   }
 
   @override
@@ -306,6 +326,7 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
         (other.runtimeType == runtimeType &&
             other is _$ClipboardLoadedStateImpl &&
             const DeepCollectionEquality().equals(other._items, _items) &&
+            (identical(other.query, query) || other.query == query) &&
             const DeepCollectionEquality().equals(other.hasMore, hasMore) &&
             (identical(other.limit, limit) || other.limit == limit) &&
             (identical(other.offset, offset) || other.offset == offset) &&
@@ -320,6 +341,7 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
   int get hashCode => Object.hash(
     runtimeType,
     const DeepCollectionEquality().hash(_items),
+    query,
     const DeepCollectionEquality().hash(hasMore),
     limit,
     offset,
@@ -346,6 +368,7 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
   TResult when<TResult extends Object?>({
     required TResult Function(
       List<ClipboardItem> items,
+      String query,
       dynamic hasMore,
       int limit,
       int offset,
@@ -358,6 +381,7 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
   }) {
     return loaded(
       items,
+      query,
       hasMore,
       limit,
       offset,
@@ -373,6 +397,7 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
       List<ClipboardItem> items,
+      String query,
       dynamic hasMore,
       int limit,
       int offset,
@@ -385,6 +410,7 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
   }) {
     return loaded?.call(
       items,
+      query,
       hasMore,
       limit,
       offset,
@@ -400,6 +426,7 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
       List<ClipboardItem> items,
+      String query,
       dynamic hasMore,
       int limit,
       int offset,
@@ -414,6 +441,7 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
     if (loaded != null) {
       return loaded(
         items,
+        query,
         hasMore,
         limit,
         offset,
@@ -458,6 +486,7 @@ class _$ClipboardLoadedStateImpl implements ClipboardLoadedState {
 abstract class ClipboardLoadedState implements ClipboardState {
   const factory ClipboardLoadedState({
     required final List<ClipboardItem> items,
+    final String query,
     final dynamic hasMore,
     final int limit,
     final int offset,
@@ -469,6 +498,8 @@ abstract class ClipboardLoadedState implements ClipboardState {
 
   @override
   List<ClipboardItem> get items;
+  @override
+  String get query;
   @override
   dynamic get hasMore;
   @override

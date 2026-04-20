@@ -125,6 +125,7 @@ class AppConfigCubit extends Cubit<AppConfigState> {
       config = config.copyWith(
         syncSpeed: SyncSpeed.balanced,
         enableDragNDrop: false,
+        enableTypeToSearch: false,
       );
       return (config, true);
     }
@@ -315,6 +316,12 @@ class AppConfigCubit extends Cubit<AppConfigState> {
 
   Future<void> toggleSmartPaste(bool value) async {
     final newConfig = state.config.copyWith(smartPaste: value);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+  }
+
+  Future<void> toggleTypeToSearch(bool value) async {
+    final newConfig = state.config.copyWith(enableTypeToSearch: value);
     emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }

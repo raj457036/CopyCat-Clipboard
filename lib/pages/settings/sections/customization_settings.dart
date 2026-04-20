@@ -6,6 +6,7 @@ import 'package:clipboard/pages/settings/widgets/dropdowns/theme_variant_dropdow
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
 import 'package:clipboard/pages/settings/widgets/switches/clipboard_hotkey_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/smart_paste_switch.dart';
+import 'package:clipboard/pages/settings/widgets/switches/type_to_search_switch.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class CustomizationSettings extends StatelessWidget {
           height24,
           SettingHeader(name: locale.settings__header__interactions),
           const SmartPasteSwitch(),
+          const TypeToSearchSwitch(),
           const ClipboardHotKeySwitch(),
         ],
       ),

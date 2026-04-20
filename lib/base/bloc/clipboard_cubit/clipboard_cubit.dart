@@ -23,7 +23,6 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   final SyncEventBus syncEventBus;
   final ClipboardRepository repo;
   final AppConfigCubit _appConfigCubit;
-  String? currentQuery;
   late StreamSubscription eventBusSubscription;
 
   ClipboardCubit(
@@ -51,8 +50,25 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   void refresh() {
     if (state.loading) return;
     emit(state.copyWith(loading: true, offset: 0));
-    fetch(fromTop: true, filterState: state.filterState, query: currentQuery);
+    fetch(fromTop: true);
   }
+
+  /// Update the active search query and refresh results from the top.
+  Future<void> search(String query) => fetch(query: query, fromTop: true);
+
+  /// Apply a new filter state and refresh results from the top.
+  Future<void> applyFilters(SearchFilterState filters) =>
+      fetch(filterState: filters, fromTop: true);
+
+  /// Clear both the query and all active filters.
+  Future<void> clearSearch() => fetch(
+    query: '',
+    filterState: SearchFilterState(
+      sortBy: _appConfigCubit.state.config.sortBy,
+      sortOrder: _appConfigCubit.state.config.sortOrder,
+    ),
+    fromTop: true,
+  );
 
   void onBatchSyncEvent(List<ClipCrossSyncEvent> events) {
     if (events.isEmpty) return;
@@ -70,7 +86,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
       fetch(limit: deleted.length);
     }
 
-    if (currentQuery != null && currentQuery!.isNotEmpty) return;
+    if (state.query.isNotEmpty) return;
     final filter = state.filterState;
 
     // Filter out items that are marked as deleted from the rest of the processing
@@ -133,7 +149,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
       return;
     }
 
-    if (currentQuery != null && currentQuery!.isNotEmpty) return;
+    if (state.query.isNotEmpty) return;
     final filter = state.filterState;
     if (filter.matchedByFilter(item)) {
       // put(item, isNew: type == CrossSyncEventType.create);
@@ -187,17 +203,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     return false;
   }
 
-  void resetFilters() {
-    emit(
-      state.copyWith(
-        filterState: SearchFilterState(
-          sortBy: _appConfigCubit.state.config.sortBy,
-          sortOrder: _appConfigCubit.state.config.sortOrder,
-        ),
-      ),
-    );
-    refresh();
-  }
+  void resetFilters() => clearSearch();
 
   Future<void> fetch({
     bool fromTop = false,
@@ -205,18 +211,21 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     SearchFilterState? filterState,
     int? limit,
   }) async {
-    currentQuery = query;
+    final resolvedQuery = query ?? state.query;
+    final resolvedFilter = fromTop
+        ? filterState ??
+              SearchFilterState(
+                sortBy: _appConfigCubit.state.config.sortBy,
+                sortOrder: _appConfigCubit.state.config.sortOrder,
+              )
+        : state.filterState;
+
     emit(
       state.copyWith(
         loading: true,
+        query: resolvedQuery,
         offset: fromTop ? 0 : state.offset,
-        filterState: fromTop
-            ? filterState ??
-                  SearchFilterState(
-                    sortBy: _appConfigCubit.state.config.sortBy,
-                    sortOrder: _appConfigCubit.state.config.sortOrder,
-                  )
-            : state.filterState,
+        filterState: resolvedFilter,
         limit: limit ?? 50,
       ),
     );
@@ -224,7 +233,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     final items = await repo.getList(
       limit: state.limit,
       offset: fromTop ? 0 : state.offset,
-      search: query,
+      search: resolvedQuery.isEmpty ? null : resolvedQuery,
       types: state.filterState.typeIncludes,
       category: state.filterState.textCategories,
       from: state.filterState.from,

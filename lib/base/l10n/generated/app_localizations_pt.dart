@@ -1452,6 +1452,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Cole o conteúdo diretamente no aplicativo com foco.';
 
   @override
+  String get settings__switch__type_search__title => 'Type to Search';
+
+  @override
+  String get settings__switch__type_search__subtitle =>
+      'Search clips while you type in the search bar.';
+
+  @override
   String get settings__switch__startup__title => 'Lançar na Inicialização';
 
   @override

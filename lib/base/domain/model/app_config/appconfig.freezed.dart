@@ -53,6 +53,9 @@ mixin _$AppConfig {
   /// to the last focused cursor in the last window, and the clipboard will minimize.
   bool get smartPaste => throw _privateConstructorUsedError;
 
+  /// If enabled, search runs while the user types in the search box.
+  bool get enableTypeToSearch => throw _privateConstructorUsedError;
+
   /// If enabled, the application will automatically start at startup.
   bool get launchAtStartup => throw _privateConstructorUsedError;
   String get locale => throw _privateConstructorUsedError; // Security
@@ -111,6 +114,7 @@ abstract class $AppConfigCopyWith<$Res> {
     SyncSpeed syncSpeed,
     String? toggleHotkey,
     bool smartPaste,
+    bool enableTypeToSearch,
     bool launchAtStartup,
     String locale,
     String? enc2,
@@ -165,6 +169,7 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? syncSpeed = null,
     Object? toggleHotkey = freezed,
     Object? smartPaste = null,
+    Object? enableTypeToSearch = null,
     Object? launchAtStartup = null,
     Object? locale = null,
     Object? enc2 = freezed,
@@ -250,6 +255,10 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
             smartPaste: null == smartPaste
                 ? _value.smartPaste
                 : smartPaste // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            enableTypeToSearch: null == enableTypeToSearch
+                ? _value.enableTypeToSearch
+                : enableTypeToSearch // ignore: cast_nullable_to_non_nullable
                       as bool,
             launchAtStartup: null == launchAtStartup
                 ? _value.launchAtStartup
@@ -358,6 +367,7 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     SyncSpeed syncSpeed,
     String? toggleHotkey,
     bool smartPaste,
+    bool enableTypeToSearch,
     bool launchAtStartup,
     String locale,
     String? enc2,
@@ -412,6 +422,7 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? syncSpeed = null,
     Object? toggleHotkey = freezed,
     Object? smartPaste = null,
+    Object? enableTypeToSearch = null,
     Object? launchAtStartup = null,
     Object? locale = null,
     Object? enc2 = freezed,
@@ -497,6 +508,10 @@ class __$$AppConfigImplCopyWithImpl<$Res>
         smartPaste: null == smartPaste
             ? _value.smartPaste
             : smartPaste // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        enableTypeToSearch: null == enableTypeToSearch
+            ? _value.enableTypeToSearch
+            : enableTypeToSearch // ignore: cast_nullable_to_non_nullable
                   as bool,
         launchAtStartup: null == launchAtStartup
             ? _value.launchAtStartup
@@ -584,6 +599,7 @@ class _$AppConfigImpl extends _AppConfig {
     this.syncSpeed = SyncSpeed.balanced,
     this.toggleHotkey,
     this.smartPaste = false,
+    this.enableTypeToSearch = false,
     this.launchAtStartup = false,
     this.locale = "en",
     this.enc2,
@@ -669,6 +685,11 @@ class _$AppConfigImpl extends _AppConfig {
   @JsonKey()
   final bool smartPaste;
 
+  /// If enabled, search runs while the user types in the search box.
+  @override
+  @JsonKey()
+  final bool enableTypeToSearch;
+
   /// If enabled, the application will automatically start at startup.
   @override
   @JsonKey()
@@ -724,7 +745,7 @@ class _$AppConfigImpl extends _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, smartPaste: $smartPaste, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, onBoardComplete: $onBoardComplete, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
+    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, smartPaste: $smartPaste, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, onBoardComplete: $onBoardComplete, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
   }
 
   @override
@@ -761,6 +782,8 @@ class _$AppConfigImpl extends _AppConfig {
                 other.toggleHotkey == toggleHotkey) &&
             (identical(other.smartPaste, smartPaste) ||
                 other.smartPaste == smartPaste) &&
+            (identical(other.enableTypeToSearch, enableTypeToSearch) ||
+                other.enableTypeToSearch == enableTypeToSearch) &&
             (identical(other.launchAtStartup, launchAtStartup) ||
                 other.launchAtStartup == launchAtStartup) &&
             (identical(other.locale, locale) || other.locale == locale) &&
@@ -812,6 +835,7 @@ class _$AppConfigImpl extends _AppConfig {
     syncSpeed,
     toggleHotkey,
     smartPaste,
+    enableTypeToSearch,
     launchAtStartup,
     locale,
     enc2,
@@ -862,6 +886,7 @@ abstract class _AppConfig extends AppConfig {
     final SyncSpeed syncSpeed,
     final String? toggleHotkey,
     final bool smartPaste,
+    final bool enableTypeToSearch,
     final bool launchAtStartup,
     final String locale,
     final String? enc2,
@@ -931,6 +956,10 @@ abstract class _AppConfig extends AppConfig {
   /// to the last focused cursor in the last window, and the clipboard will minimize.
   @override
   bool get smartPaste;
+
+  /// If enabled, search runs while the user types in the search box.
+  @override
+  bool get enableTypeToSearch;
 
   /// If enabled, the application will automatically start at startup.
   @override

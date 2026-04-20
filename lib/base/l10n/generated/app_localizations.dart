@@ -2596,6 +2596,18 @@ abstract class AppLocalizations {
   /// **'Paste content directly on the focused app.'**
   String get settings__switch__smart_paste__subtitle;
 
+  /// No description provided for @settings__switch__type_search__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Type to Search'**
+  String get settings__switch__type_search__title;
+
+  /// No description provided for @settings__switch__type_search__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search clips while you type in the search bar.'**
+  String get settings__switch__type_search__subtitle;
+
   /// No description provided for @settings__switch__startup__title.
   ///
   /// In en, this message translates to:

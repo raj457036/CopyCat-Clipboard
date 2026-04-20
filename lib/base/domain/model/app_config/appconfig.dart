@@ -60,6 +60,9 @@ class AppConfig with _$AppConfig, Identifiable {
     /// to the last focused cursor in the last window, and the clipboard will minimize.
     @Default(false) bool smartPaste,
 
+    /// If enabled, search runs while the user types in the search box.
+    @Default(false) bool enableTypeToSearch,
+
     /// If enabled, the application will automatically start at startup.
     @Default(false) bool launchAtStartup,
     @Default("en") String locale,

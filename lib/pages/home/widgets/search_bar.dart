@@ -1,3 +1,4 @@
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/constants/numbers/breakpoints.dart';
@@ -5,6 +6,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/search_filter_state.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/debounce.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/on_event.dart';
 import 'package:clipboard/widgets/search/filter_button.dart';
@@ -21,9 +23,9 @@ class SearchInputBar extends StatefulWidget {
 }
 
 class _SearchBarInputState extends State<SearchInputBar> {
-  SearchFilterState? filterState;
   late final TextEditingController queryController;
   late final FocusNode focusNode, searchResetButtonFocus;
+  final Debouncer _debouncer = Debouncer(milliseconds: 350);
   bool isFocused = false;
 
   void onFocus() {
@@ -35,8 +37,8 @@ class _SearchBarInputState extends State<SearchInputBar> {
   @override
   void initState() {
     super.initState();
-    filterState = context.read<ClipboardCubit>().state.filterState;
-    queryController = TextEditingController();
+    final cubit = context.read<ClipboardCubit>();
+    queryController = TextEditingController(text: cubit.state.query);
     searchResetButtonFocus = FocusNode(
       debugLabel: "search-reset-button",
       skipTraversal: true,
@@ -61,16 +63,13 @@ class _SearchBarInputState extends State<SearchInputBar> {
 
   @override
   void dispose() {
+    _debouncer.cancel();
     focusNode.removeListener(onFocus);
     queryController.dispose();
     focusNode.dispose();
     searchResetButtonFocus.dispose();
     super.dispose();
   }
-
-  bool get isActive =>
-      queryController.text != "" ||
-      (filterState != null && filterState!.isActive);
 
   void focus() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -82,33 +81,33 @@ class _SearchBarInputState extends State<SearchInputBar> {
     if (event.event.name == "search") focus();
   }
 
-  Future<void> search(String text) async {
-    await context.read<ClipboardCubit>().fetch(
-      query: text,
-      filterState: filterState,
-      fromTop: true,
-    );
-    setState(() {});
+  void _onQueryChanged(String text, bool typeToSearchEnabled) {
+    if (!typeToSearchEnabled) {
+      _debouncer.cancel();
+      setState(() {}); // update clear-button visibility as user types
+      return;
+    }
+
+    _debouncer(() {
+      if (mounted) context.read<ClipboardCubit>().search(text);
+    });
+    setState(() {}); // update clear-button visibility
   }
 
-  void onFilterChange(SearchFilterState? filterState) {
-    setState(() {
-      this.filterState = filterState;
-    });
-    final searchCubit = context.read<ClipboardCubit>();
-    searchCubit.fetch(
-      query: queryController.text,
-      filterState: filterState,
-      fromTop: true,
-    );
+  void _onQuerySubmitted(String text) {
+    _debouncer.cancel();
+    context.read<ClipboardCubit>().search(text);
+  }
+
+  void onFilterChange(SearchFilterState filters) {
+    context.read<ClipboardCubit>().applyFilters(filters);
   }
 
   void clear() {
-    setState(() {
-      queryController.clear();
-      filterState = const SearchFilterState();
-    });
-    onFilterChange(null);
+    _debouncer.cancel();
+    queryController.clear();
+    context.read<ClipboardCubit>().clearSearch();
+    setState(() {});
   }
 
   @override
@@ -116,6 +115,14 @@ class _SearchBarInputState extends State<SearchInputBar> {
     final textTheme = context.textTheme;
     final colors = context.colors;
     final size = context.mq.size;
+    // Watch filter state changes to re-render clear button and filter badge.
+    final filterState = context.select(
+      (ClipboardCubit c) => c.state.filterState,
+    );
+    final typeToSearchEnabled = context.select(
+      (AppConfigCubit c) => c.state.config.enableTypeToSearch,
+    );
+    final isActive = queryController.text.isNotEmpty || filterState.isActive;
     return OnEvent<EventBusKeyboardEvent>(
       trigger: onSearchFocusEvent,
       child: AnimatedContainer(
@@ -160,7 +167,8 @@ class _SearchBarInputState extends State<SearchInputBar> {
                   contentPadding: const EdgeInsets.only(left: padding12),
                 ),
                 textInputAction: TextInputAction.search,
-                onSubmitted: search,
+                onChanged: (text) => _onQueryChanged(text, typeToSearchEnabled),
+                onSubmitted: _onQuerySubmitted,
               ),
             ),
             if (isActive)
@@ -176,10 +184,7 @@ class _SearchBarInputState extends State<SearchInputBar> {
                 tooltip: context.locale.home__search__reset,
               ),
             if (size.width > 300)
-              FilterButton(
-                onChange: onFilterChange,
-                initialState: filterState ?? const SearchFilterState(),
-              ),
+              FilterButton(onChange: onFilterChange, filterState: filterState),
             if (isMobilePlatform &&
                 Breakpoints.isMobile(size.width) &&
                 !isFocused)

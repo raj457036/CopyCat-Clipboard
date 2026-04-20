@@ -8,43 +8,45 @@ typedef OnFilterChangeCallback = void Function(SearchFilterState filterState);
 
 class FilterButton extends StatelessWidget {
   final OnFilterChangeCallback onChange;
-  final SearchFilterState initialState;
+  final SearchFilterState filterState;
 
   const FilterButton({
     super.key,
-    required this.initialState,
+    required this.filterState,
     required this.onChange,
   });
 
-  Future<void> changeFilter(
-    BuildContext context,
-    SearchFilterState state,
-  ) async {
-    final newState = await FilterDialog(state: state).open(context);
+  Future<void> _openDialog(BuildContext context) async {
+    final newState = await FilterDialog(state: filterState).open(context);
     if (newState == null) return;
-    if (context.mounted) {
-      onChange(newState);
-    }
+    if (context.mounted) onChange(newState);
   }
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final active = initialState.isActive;
+    final active = filterState.isActive;
+    final count = filterState.activeFilterCount;
     return Focus(
       skipTraversal: true,
       descendantsAreFocusable: false,
-      child: IconButton(
-        icon: const Icon(Icons.filter_alt_rounded),
-        iconSize: 20,
-        tooltip: context.locale.search__tooltip__filter,
-        color: active ? colors.secondaryContainer : null,
-        style: IconButton.styleFrom(
-          backgroundColor: active
-              ? colors.primary
-              : colors.surfaceContainerHighest,
+      child: Badge(
+        isLabelVisible: count > 0,
+        label: Text('$count'),
+        backgroundColor: colors.error,
+        textColor: colors.onError,
+        child: IconButton(
+          icon: const Icon(Icons.filter_list_rounded),
+          iconSize: 20,
+          tooltip: context.locale.search__tooltip__filter,
+          color: active ? colors.onPrimary : null,
+          style: IconButton.styleFrom(
+            backgroundColor: active
+                ? colors.primary
+                : colors.surfaceContainerHighest,
+          ),
+          onPressed: () => _openDialog(context),
         ),
-        onPressed: () => changeFilter(context, initialState),
       ),
     );
   }

@@ -1432,6 +1432,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fügen Sie Inhalte direkt in die fokussierte App ein.';
 
   @override
+  String get settings__switch__type_search__title => 'Type to Search';
+
+  @override
+  String get settings__switch__type_search__subtitle =>
+      'Search clips while you type in the search bar.';
+
+  @override
   String get settings__switch__startup__title => 'Beim Start starten';
 
   @override
