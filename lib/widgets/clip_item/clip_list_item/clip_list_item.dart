@@ -87,6 +87,17 @@ class _ClipListItemState extends State<ClipListItem> {
     toggleSelect(context);
   }
 
+  Future<void> onShiftC(
+    BuildContext context,
+    ClipboardItem item,
+    bool canPaste,
+  ) async {
+    if (widget.selectionActive && isDesktopPlatform && canPaste) {
+      await copySelectedItems(context, clearSelection: true);
+      return;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final canPaste = CanPasteScope.of(context);
@@ -115,6 +126,7 @@ class _ClipListItemState extends State<ClipListItem> {
           : performPrimaryActionOnClip(context, widget.item, canPaste),
       onShiftSpace: (context) => toggleSelect(context),
       onShiftSpaceEnter: (context) => onShiftEnter(context, canPaste),
+      onShiftC: (context) => onShiftC(context, widget.item, canPaste),
       child: Card.outlined(
         shape: selectedShape,
         child: ConstrainedBox(

@@ -18,6 +18,32 @@ import 'package:go_router/go_router.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+/// Write multiple clips to clipboard.
+Future<void> multiCopyToClipboard(
+  BuildContext context,
+  List<ClipboardItem> items,
+) async {
+  final ctx = context.mounted ? context : rootNavKey.currentContext!;
+  try {
+    final cubit = ctx.read<OfflinePersistenceCubit>();
+    final result = await cubit.copyToClipboard(items);
+    if (!ctx.mounted) return;
+    if (result) {
+      showTextSnackbar(
+        ctx.locale.app__ack__copied,
+        closePrevious: true,
+        context: ctx,
+      );
+    }
+  } catch (e) {
+    showTextSnackbar(
+      ctx.locale.app__unknown_error,
+      closePrevious: true,
+      context: context,
+    );
+  }
+}
+
 Future<void> copyToClipboard(
   BuildContext context,
   ClipboardItem item, {
@@ -27,7 +53,7 @@ Future<void> copyToClipboard(
   final ctx = context.mounted ? context : rootNavKey.currentContext!;
   try {
     final cubit = ctx.read<OfflinePersistenceCubit>();
-    final result = await cubit.copyToClipboard(item, saveFile: saveFile);
+    final result = await cubit.copyToClipboard([item], saveFile: saveFile);
     if (!ctx.mounted) return;
     if (noAck) return;
     if (result) {
@@ -166,6 +192,8 @@ Future<void> pasteMultipleOnLastWindow(
   BuildContext context,
   List<ClipboardItem> items, {
   bool restoreFocusAfterPaste = false,
+  String? textMergeSeparator,
+  Duration? waitBetweenPastes,
 }) async {
   final focusManager = WindowFocusManager.of(context);
   if (focusManager == null) return;
@@ -173,6 +201,8 @@ Future<void> pasteMultipleOnLastWindow(
   await focusManager.pasteMultiple(
     items,
     restoreFocusAfterPaste: restoreFocusAfterPaste,
+    textMergeSeparator: textMergeSeparator,
+    waitBetweenPastes: waitBetweenPastes,
   );
 }
 
@@ -184,6 +214,19 @@ Future<void> pasteSelectedOnLastWindow(
   if (selected.isEmpty) return;
 
   await pasteMultipleOnLastWindow(context, selected);
+  if (clearSelection && context.mounted) {
+    context.read<SelectedClipsCubit>().clear();
+  }
+}
+
+Future<void> copySelectedItems(
+  BuildContext context, {
+  bool clearSelection = false,
+}) async {
+  final selected = selectedClips(context);
+  if (selected.isEmpty) return;
+
+  await multiCopyToClipboard(context, selected);
   if (clearSelection && context.mounted) {
     context.read<SelectedClipsCubit>().clear();
   }

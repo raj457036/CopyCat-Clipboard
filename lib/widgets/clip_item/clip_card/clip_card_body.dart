@@ -191,6 +191,13 @@ class _ClipCardBodyState extends State<ClipCardBody> {
     toggleSelect(context);
   }
 
+  Future<void> onShiftC(BuildContext context, ClipboardItem item) async {
+    if (widget.selectionActive && isDesktopPlatform && canPaste) {
+      await copySelectedItems(context, clearSelection: true);
+      return;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
@@ -226,6 +233,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
           : performPrimaryActionOnClip(context, widget.item, canPaste),
       onShiftSpace: (context) => toggleSelect(context),
       onShiftSpaceEnter: (context) => onShiftEnter(context),
+      onShiftC: (context) => onShiftC(context, widget.item),
       child: Card.outlined(
         margin: EdgeInsets.zero,
         elevation: focused ? 2 : 0,

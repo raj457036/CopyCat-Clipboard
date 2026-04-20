@@ -11,6 +11,7 @@ import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/debounce.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/in_background_state.dart';
+import 'package:clipboard/widgets/multi_paste/multi_paste_transformer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focus_window/focus_window.dart';
@@ -70,6 +71,8 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   Future<void> pasteMultiple(
     List<ClipboardItem> items, {
     bool restoreFocusAfterPaste = false,
+    String? textMergeSeparator,
+    Duration? waitBetweenPastes,
   }) async {
     if (items.isEmpty) return;
 
@@ -79,19 +82,33 @@ class WindowFocusManagerState extends State<WindowFocusManager>
 
     if (pasteable.isEmpty) return;
 
+    final transformed = MultiPasteTransformer.mergeConsecutiveTextClips(
+      pasteable,
+      separator: textMergeSeparator,
+    );
+    if (transformed.isEmpty) return;
+
+    final waitDuration = waitBetweenPastes ?? Durations.short1;
+
     final unfocused = await toggleWindow();
     await Future.delayed(Durations.short1);
     if (unfocused != true) return;
 
-    for (final item in pasteable) {
-      if (!mounted) break;
-      await synchronized(() async {
-        await copyToClipboard(context, item, noAck: true);
-        await Future.delayed(Durations.short1);
-        await pasteOnFocusedWindow();
-        await Future.delayed(Durations.short2);
-      });
-    }
+    await widget.clipboardService.runWithCaptureSuppressed(() async {
+      for (int i = 0; i < transformed.length; i++) {
+        final item = transformed[i];
+        if (!mounted) break;
+        await synchronized(() async {
+          await copyToClipboard(context, item, noAck: true);
+          await Future.delayed(Durations.short1);
+          await pasteOnFocusedWindow();
+          if (i < transformed.length - 1 && waitDuration > Duration.zero) {
+            await Future.delayed(waitDuration);
+          }
+        });
+      }
+    });
+
     if (restoreFocusAfterPaste) {
       await toggleWindow();
     }

@@ -27,7 +27,6 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   final AuthCubit auth;
   final ClipboardRepository repo;
   final ClipboardService clipboard;
-  final CopyToClipboard copy;
   final AppConfigCubit appConfig;
   final String deviceId;
   final AnalyticsRepository analyticsRepo;
@@ -43,8 +42,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     this.appConfig,
     this.analyticsRepo,
     @Named("device_id") this.deviceId,
-  ) : copy = CopyToClipboard(clipboard),
-      super(const OfflinePersistanceState.initial());
+  ) : super(const OfflinePersistanceState.initial());
 
   Future<ClipboardItem?> getItem({required int id}) async {
     final result = await repo.get(id: id);
@@ -175,31 +173,44 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   }
 
   Future<bool> copyToClipboard(
-    ClipboardItem item, {
+    List<ClipboardItem> items, {
     bool saveFile = false,
   }) async {
-    bool copied = false;
-    switch (item.type) {
-      case ClipItemType.text:
-        copied = await copy.text(item.text ?? "");
-      case ClipItemType.url:
-        copied = await copy.url(Uri.tryParse(item.url ?? ""));
-      case ClipItemType.media:
-      case ClipItemType.file:
-        if (item.localPath == null) return false;
-        if (saveFile) {
-          copied = await copy.saveFile(File(item.localPath!));
-        } else {
-          copied = await copy.fileContent(
-            File(item.localPath!),
-            mimeType: item.fileMimeType,
-          );
-        }
+    final copy = CopyToClipboard();
+
+    for (final item in items) {
+      switch (item.type) {
+        case ClipItemType.text:
+          copy.writeText(item.text ?? "");
+        case ClipItemType.url:
+          copy.writeUrl(Uri.tryParse(item.url ?? ""));
+        case ClipItemType.media:
+        case ClipItemType.file:
+          if (item.localPath == null) return false;
+          if (saveFile) {
+            await copy.saveFile(File(item.localPath!));
+          } else {
+            await copy.writeFileContent(
+              File(item.localPath!),
+              mimeType: item.fileMimeType,
+            );
+          }
+      }
     }
+
+    final copied = await copy.commit(clipboard);
 
     if (copied) {
       persist(
-        [item.copyWith(copiedCount: item.copiedCount + 1, lastCopied: now())],
+        items
+            .skipWhile((item) => item.id == null)
+            .map(
+              (item) => item.copyWith(
+                copiedCount: item.copiedCount + 1,
+                lastCopied: now(),
+              ),
+            )
+            .toList(),
         updatedFields: ["copiedCount"],
       );
     }

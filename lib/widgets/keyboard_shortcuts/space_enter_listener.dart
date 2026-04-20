@@ -9,6 +9,8 @@ class _ShiftSpaceActionIntent extends Intent {}
 
 class _ShiftSpaceEnterIntent extends Intent {}
 
+class _ShiftC extends Intent {}
+
 typedef BuildContextCallback = void Function(BuildContext context);
 
 /// A widget that listens for space and enter key presses and
@@ -21,6 +23,7 @@ class SpaceEnterListener extends StatelessWidget {
   final BuildContextCallback onEnter;
   final BuildContextCallback? onShiftSpace;
   final BuildContextCallback? onShiftSpaceEnter;
+  final BuildContextCallback? onShiftC;
 
   const SpaceEnterListener({
     super.key,
@@ -30,6 +33,7 @@ class SpaceEnterListener extends StatelessWidget {
     this.enabled = true,
     this.onShiftSpace,
     this.onShiftSpaceEnter,
+    this.onShiftC,
   });
 
   @override
@@ -48,6 +52,9 @@ class SpaceEnterListener extends StatelessWidget {
         if (onShiftSpaceEnter != null)
           const SingleActivator(LogicalKeyboardKey.enter, shift: true):
               _ShiftSpaceEnterIntent(),
+        if (onShiftC != null)
+          const SingleActivator(LogicalKeyboardKey.keyC, shift: true):
+              _ShiftC(),
       },
       child: Actions(
         actions: <Type, Action<Intent>>{
@@ -65,6 +72,11 @@ class SpaceEnterListener extends StatelessWidget {
           if (onShiftSpaceEnter != null)
             _ShiftSpaceEnterIntent: CallbackAction<_ShiftSpaceEnterIntent>(
               onInvoke: (intent) => onShiftSpaceEnter!(context),
+            ),
+
+          if (onShiftC != null)
+            _ShiftC: CallbackAction<_ShiftC>(
+              onInvoke: (intent) => onShiftC!(context),
             ),
         },
         child: child,

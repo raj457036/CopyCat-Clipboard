@@ -1,4 +1,5 @@
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
+import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:dartz/dartz.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
@@ -108,18 +109,20 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
 
   @override
   FailureOr<ClipboardItem> pushToRemote(ClipboardItem item) async {
-    // NOTE: File/media sync requires using drive upload, which currently lives in 
+    if (item.userId == kLocalUserId) {
+      // Local-only entries should never be pushed to Supabase.
+      return Right(item);
+    }
+
+    // NOTE: File/media sync requires using drive upload, which currently lives in
     // CloudPersistanceCubit. For text/links, or metadata updates, direct remoteRepo hits work well.
     if (item.serverId == null) {
       final result = await _remoteRepo.create(item);
       // Once created remotely, save the new serverId down to Isar
-      return result.fold(
-        (l) => Left(l),
-        (r) async {
-          await _clipRepo.update(r);
-          return Right(r);
-        },
-      );
+      return result.fold((l) => Left(l), (r) async {
+        await _clipRepo.update(r);
+        return Right(r);
+      });
     } else {
       return await _remoteRepo.update(item);
     }
@@ -127,6 +130,10 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
 
   @override
   FailureOr<bool> deleteFromRemote(ClipboardItem item) async {
+    if (item.userId == kLocalUserId) {
+      return const Right(true);
+    }
+
     return await _remoteRepo.delete(item);
   }
 }

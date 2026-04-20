@@ -773,20 +773,24 @@ class ClipboardService with ClipboardListener {
       return null;
     }
 
-    final res = <DataFormat>{};
+    final readerSet = <(DataReader, DataFormat<Object>)>[];
 
     for (final item in reader.items) {
       DataFormat? selectedFormat;
       final itemFormats = item.getFormats(allSupportedClipFormats);
       selectedFormat = filterOutByPriority(itemFormats);
       if (selectedFormat != null) {
-        res.add(selectedFormat);
+        readerSet.add((item, selectedFormat));
       }
     }
 
-    final clips = await processSingleReaderDataFormat(
-      reader,
-      res,
+    if (readerSet.isEmpty) {
+      logger.w("No supported clipboard item format found");
+      return null;
+    }
+
+    final clips = await processMultipleReaderDataFormat(
+      readerSet,
       manual: manual,
       preventDuplicate: preventDuplicate,
     );
@@ -818,11 +822,16 @@ class ClipboardService with ClipboardListener {
   Future<List<ClipItem?>?> processMultipleReaderDataFormat(
     Iterable<(DataReader, DataFormat<Object>)> readerSet, {
     bool manual = false,
+    bool preventDuplicate = false,
   }) async {
     final clips = await Future.wait(
       readerSet.map((record) {
         final (reader, format) = record;
-        return processor.process(reader, format);
+        return processor.process(
+          reader,
+          format,
+          preventDuplicate: preventDuplicate && !manual,
+        );
       }),
     );
 
@@ -860,14 +869,14 @@ class ClipboardService with ClipboardListener {
 }
 
 class CopyToClipboard {
-  final ClipboardService service;
+  final List<DataWriterItem> _items;
 
-  CopyToClipboard(this.service);
+  CopyToClipboard() : _items = <DataWriterItem>[];
 
-  Future<bool> writeToClipboard(DataWriterItem item) async {
+  Future<bool> commit(ClipboardService service) async {
     try {
       await service.runWithCaptureSuppressed(() async {
-        await service.write([item]);
+        await service.write(_items);
       });
       return true;
     } catch (e) {
@@ -876,20 +885,22 @@ class CopyToClipboard {
     }
   }
 
-  Future<bool> text(String text) {
-    final item = DataWriterItem();
+  bool writeText(String text) {
+    final item = DataWriterItem(suggestedName: "Text");
     item.add(Formats.plainText(text));
-    return writeToClipboard(item);
+    _items.add(item);
+    return true;
   }
 
-  Future<bool> url(Uri? uri) {
-    if (uri == null) return Future.value(false);
-    final item = DataWriterItem();
+  bool writeUrl(Uri? uri) {
+    if (uri == null) return false;
+    final item = DataWriterItem(suggestedName: "Uri");
     item.add(Formats.uri(NamedUri(uri)));
-    return writeToClipboard(item);
+    _items.add(item);
+    return true;
   }
 
-  Future<bool> fileContent(File file, {String? mimeType}) async {
+  Future<bool> writeFileContent(File file, {String? mimeType}) async {
     FutureOr<EncodedData>? format;
 
     for (final f in allSupportedClipFormats) {
@@ -908,11 +919,13 @@ class CopyToClipboard {
         "Couldn't determine mime type for file ${file.path} with mime type $mimeType",
       );
 
-      return await saveFile(file);
+      return false;
     }
 
-    final item = DataWriterItem()..add(format);
-    return writeToClipboard(item);
+    final item = DataWriterItem(suggestedName: p.basename(file.path));
+    item.add(format);
+    _items.add(item);
+    return true;
   }
 
   Future<bool> saveFile(File file) async {

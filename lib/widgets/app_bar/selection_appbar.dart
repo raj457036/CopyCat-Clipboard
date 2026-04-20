@@ -1,5 +1,4 @@
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
-import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
@@ -8,7 +7,6 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
-import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/multi_paste/multi_paste_button.dart';
 import 'package:clipboard/widgets/select_clip_builder.dart'
     show SelectedClipBuilder;
@@ -55,10 +53,22 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
                       extra: RoutePayload(data: items.toList()),
                     );
                   },
-                  tooltip: 'Start Paste Stack',
-                  icon: const Icon(Icons.vertical_align_top),
+                  tooltip:
+                      'Move to Paste Stack • ${keyboardShortcut(meta: true, shift: true, key: "C")}',
+                  icon: const Icon(Icons.line_weight_rounded),
                 ),
               width6,
+              if (items.length > 1)
+                IconButton(
+                  onPressed: () async {
+                    clearSelection(context);
+                    await multiCopyToClipboard(context, items.toList());
+                  },
+                  tooltip:
+                      "${context.mlocale.copyButtonLabel} • ${keyboardShortcut(meta: false, shift: true, key: "C")}",
+                  icon: const Icon(Icons.copy_all_outlined),
+                ),
+              if (items.length > 1) width6,
               if (isDesktopPlatform && items.length > 1)
                 MultiPasteButton(
                   items: items.toList(),

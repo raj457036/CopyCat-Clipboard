@@ -80,7 +80,7 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
     if (item == null) return;
     if (focusManager == null) return;
 
-    final copied = await offlinePersistence.copyToClipboard(item);
+    final copied = await offlinePersistence.copyToClipboard([item]);
     if (!copied) return;
 
     final isAppFocused = windowAction.isFocused;

@@ -132,7 +132,7 @@ class PasteStackCubit extends Cubit<PasteStackState> {
     final normalized = normalizeItems(items);
     if (normalized.isEmpty) return;
 
-    emit(state.copyWith(items: [...normalized.reversed, ...state.items]));
+    emit(state.copyWith(items: [...normalized, ...state.items]));
   }
 
   void completeCurrentPaste() {
