@@ -1,16 +1,20 @@
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
+import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/domain/model/route_payload.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/can_paste_builder.dart';
+import 'package:clipboard/widgets/multi_paste/multi_paste_button.dart';
 import 'package:clipboard/widgets/select_clip_builder.dart'
     show SelectedClipBuilder;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
   final Widget defaultChild;
@@ -44,10 +48,11 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
             actions: [
               if (isDesktopPlatform)
                 IconButton(
-                  onPressed: () async {
+                  onPressed: () {
                     clearSelection(context);
-                    await context.read<PasteStackCubit>().replaceFromSelection(
-                      items,
+                    context.pushNamed(
+                      RouteConstants.pasteStack,
+                      extra: RoutePayload(data: items.toList()),
                     );
                   },
                   tooltip: 'Start Paste Stack',
@@ -55,26 +60,9 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               width6,
               if (isDesktopPlatform && items.length > 1)
-                BlocSelector<AppConfigCubit, AppConfigState, bool>(
-                  selector: (state) {
-                    final config = state.config;
-                    return config.smartPaste &&
-                        config.lastFocusedWindowId != null;
-                  },
-                  builder: (context, canPaste) {
-                    if (!canPaste) return const SizedBox.shrink();
-                    return IconButton(
-                      onPressed: () async {
-                        await pasteMultipleOnLastWindow(context, items);
-                        if (context.mounted) {
-                          clearSelection(context);
-                        }
-                      },
-                      tooltip:
-                          'Paste Multiple • ${keyboardShortcut(meta: false, shift: true, key: "Enter")}',
-                      icon: const Icon(Icons.content_paste_go_outlined),
-                    );
-                  },
+                MultiPasteButton(
+                  items: items.toList(),
+                  onPasteComplete: () => clearSelection(context),
                 ),
               width6,
               IconButton(

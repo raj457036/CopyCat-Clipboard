@@ -2,7 +2,7 @@ import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistanc
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/constants/key.dart';
-import 'package:clipboard/base/constants/strings/route_constants.dart';
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,9 +12,14 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:universal_io/io.dart';
 
 class PasteStackCoordinator extends StatefulWidget {
-  final Widget child;
+  final BlocWidgetBuilder<PasteStackState> builder;
+  final List<ClipboardItem>? initialItems;
 
-  const PasteStackCoordinator({super.key, required this.child});
+  const PasteStackCoordinator({
+    super.key,
+    required this.builder,
+    required this.initialItems,
+  });
 
   @override
   State<PasteStackCoordinator> createState() => _PasteStackCoordinatorState();
@@ -29,6 +34,8 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
   void initState() {
     super.initState();
     pasteStack = context.read<PasteStackCubit>();
+    pasteStack.activate();
+    pasteStack.pushItems(widget.initialItems ?? const []);
     pasteHotKey = HotKey(
       key: PhysicalKeyboardKey.keyV,
       modifiers: Platform.isMacOS
@@ -36,6 +43,10 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
           : [HotKeyModifier.control],
       scope: HotKeyScope.system,
     );
+
+    if (pasteStack.state.active && pasteStack.state.count > 0) {
+      registerPasteHotKey();
+    }
   }
 
   Future<void> registerPasteHotKey() async {
@@ -65,11 +76,8 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
     await unregisterPasteHotKey();
 
     final item = pasteStack.state.currentItem;
-    if (item == null) {
-      await pasteStack.deactivate();
-      return;
-    }
 
+    if (item == null) return;
     if (focusManager == null) return;
 
     final copied = await offlinePersistence.copyToClipboard(item);
@@ -91,18 +99,17 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
   @override
   void dispose() {
     unregisterPasteHotKey();
+    pasteStack.deactivate();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PasteStackCubit, PasteStackState>(
+    return BlocConsumer<PasteStackCubit, PasteStackState>(
       listenWhen: (previous, current) =>
           previous.active != current.active || previous.count < current.count,
       listener: (context, state) async {
         if (state.active) {
-          rootNavKey.currentContext?.pushNamed(RouteConstants.pasteStack);
-
           if (state.count > 0) {
             await registerPasteHotKey();
             return;
@@ -112,7 +119,8 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
         }
         await unregisterPasteHotKey();
       },
-      child: widget.child,
+      buildWhen: (previous, current) => previous.count != current.count,
+      builder: widget.builder,
     );
   }
 }

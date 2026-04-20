@@ -37,7 +37,6 @@ class PasteStackCubit extends Cubit<PasteStackState> {
   AppView? _previousView;
   Size? _previousWindowSize;
   bool _previousPinnedState = false;
-  Future<void> _toggleSequence = Future.value();
 
   PasteStackCubit(this.appConfig, this.windowAction)
     : super(const PasteStackState.inactive());
@@ -61,11 +60,9 @@ class PasteStackCubit extends Cubit<PasteStackState> {
         .toList(growable: false);
   }
 
-  Future<void> activate([List<ClipboardItem> items = const []]) async {
-    final normalized = normalizeItems(items);
-
+  Future<void> activate() async {
     _snapshotCurrentState();
-    emit(PasteStackState(active: true, items: normalized));
+    emit(const PasteStackState(active: true, items: []));
 
     if (_previousView == AppView.windowed) {
       await windowAction.changeView(AppView.windowed, stackWindowSize);
@@ -82,13 +79,8 @@ class PasteStackCubit extends Cubit<PasteStackState> {
     _previousPinnedState = config.pinned;
   }
 
-  Future<void> replaceFromSelection(List<ClipboardItem> items) async {
+  void replaceFromSelection(List<ClipboardItem> items) {
     final normalized = normalizeItems(items);
-
-    if (!state.active) {
-      await activate(normalized);
-      return;
-    }
 
     emit(state.copyWith(items: normalized));
   }
@@ -134,19 +126,7 @@ class PasteStackCubit extends Cubit<PasteStackState> {
     emit(const PasteStackState.inactive());
   }
 
-  Future<void> toggle() async {
-    _toggleSequence = _toggleSequence.then((_) async {
-      if (state.active) {
-        await deactivate();
-      } else {
-        await activate();
-      }
-    });
-
-    await _toggleSequence;
-  }
-
-  void ingestCapturedItems(List<ClipboardItem> items) {
+  void pushItems(List<ClipboardItem> items) {
     if (!state.active || items.isEmpty) return;
 
     final normalized = normalizeItems(items);

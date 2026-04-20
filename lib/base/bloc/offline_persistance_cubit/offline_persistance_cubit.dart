@@ -300,9 +300,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         await persist([userItem]);
         continue;
       }
-      rootNavKey.currentContext?.read<PasteStackCubit>().ingestCapturedItems([
-        item,
-      ]);
+      rootNavKey.currentContext?.read<PasteStackCubit>().pushItems([item]);
       await persist([item]);
     }
   }

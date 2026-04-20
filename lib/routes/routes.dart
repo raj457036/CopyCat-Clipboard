@@ -1,5 +1,7 @@
 import "dart:async";
 
+import "package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart";
+import "package:clipboard/base/domain/model/route_payload.dart";
 import "package:clipboard/di/di.dart";
 import "package:clipboard/pages/account/page.dart";
 import "package:clipboard/pages/collection_selection/page.dart";
@@ -15,6 +17,7 @@ import "package:clipboard/pages/login/page.dart";
 import "package:clipboard/pages/not_found_page.dart";
 import "package:clipboard/pages/onboard/page.dart";
 import "package:clipboard/pages/paste_stack/page.dart";
+import "package:clipboard/pages/paste_stack/paste_stack_coordinator.dart";
 import "package:clipboard/pages/preview/page.dart";
 import "package:clipboard/pages/reset_password/page.dart";
 import "package:clipboard/pages/settings/page.dart";
@@ -104,9 +107,18 @@ final rootRouter = GoRouter(
           name: RouteConstants.pasteStack,
           path: "/paste-stack",
           pageBuilder: (context, state) {
+            final payload = state.extra as RoutePayload?;
+            final items = payload?.get<List<ClipboardItem>>();
+
             return NoTransitionPage(
               key: state.pageKey,
-              child: const PasteStackPage(),
+              child: PasteStackCoordinator(
+                initialItems: items,
+                builder: (context, state) {
+                  final count = state.items.length;
+                  return PasteStackPage(count: count);
+                },
+              ),
             );
           },
         ),

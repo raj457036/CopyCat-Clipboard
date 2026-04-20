@@ -27,7 +27,7 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/utils/windows/update_registry.dart';
 import 'package:clipboard/widgets/debug/gizmo_overlay.dart';
 import 'package:clipboard/widgets/event_bridge.dart';
-import 'package:clipboard/widgets/paste_stack_coordinator.dart';
+import 'package:clipboard/pages/paste_stack/paste_stack_coordinator.dart';
 import 'package:clipboard/widgets/keyboard_shortcuts/actions/select_all.dart';
 import 'package:clipboard/widgets/state_initializer.dart';
 import 'package:clipboard/widgets/system_shortcut_listeners.dart';
@@ -329,10 +329,8 @@ class MainApp extends StatelessWidget {
     Widget content = EventBridge(
       eventBus: sl(),
       child: WindowFocusManager.forPlatform(
-        child: PasteStackCoordinator(
-          child: TrayManager.forPlatform(
-            child: const SystemShortcutListener(child: AppContent()),
-          ),
+        child: TrayManager.forPlatform(
+          child: const SystemShortcutListener(child: AppContent()),
         ),
       ),
     );
