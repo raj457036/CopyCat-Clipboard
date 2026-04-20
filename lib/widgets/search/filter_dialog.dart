@@ -102,11 +102,13 @@ class _FilterDialogState extends State<FilterDialog> {
     );
     if (mounted) {
       setState(() {
-        to = picked?.add(Duration(
-          hours: lastDate.hour,
-          minutes: lastDate.minute,
-          seconds: lastDate.second,
-        ));
+        to = picked?.add(
+          Duration(
+            hours: lastDate.hour,
+            minutes: lastDate.minute,
+            seconds: lastDate.second,
+          ),
+        );
       });
     }
   }
@@ -122,7 +124,8 @@ class _FilterDialogState extends State<FilterDialog> {
           ? null
           : textCategory,
       typeIncludes:
-          typeIncludes.isEmpty || typeIncludes.length == _allClipCategories.length
+          typeIncludes.isEmpty ||
+              typeIncludes.length == _allClipCategories.length
           ? null
           : typeIncludes,
     );
@@ -325,8 +328,7 @@ class _FilterDialogState extends State<FilterDialog> {
                   FilterChip(
                     avatar: const Icon(Icons.image_rounded, size: 16),
                     label: Text(locale.search_filter__chip__media),
-                    onSelected: (v) =>
-                        _setTypeInclusion(v, ClipItemType.media),
+                    onSelected: (v) => _setTypeInclusion(v, ClipItemType.media),
                     selected: typeIncludes.contains(ClipItemType.media),
                   ),
                   FilterChip(
@@ -357,34 +359,58 @@ class _FilterDialogState extends State<FilterDialog> {
                             runSpacing: 8,
                             children: [
                               FilterChip(
-                                avatar: const Icon(Icons.email_rounded,
-                                    size: 16),
+                                avatar: const Icon(
+                                  Icons.email_rounded,
+                                  size: 16,
+                                ),
                                 label: Text(
-                                    locale.search_filter__text_cat__email),
+                                  locale.search_filter__text_cat__email,
+                                ),
                                 onSelected: (v) =>
                                     _setTextCategory(v, TextCategory.email),
-                                selected:
-                                    textCategory.contains(TextCategory.email),
+                                selected: textCategory.contains(
+                                  TextCategory.email,
+                                ),
                               ),
                               FilterChip(
-                                avatar: const Icon(Icons.phone_rounded,
-                                    size: 16),
+                                avatar: const Icon(
+                                  Icons.phone_rounded,
+                                  size: 16,
+                                ),
                                 label: Text(
-                                    locale.search_filter__text_cat__phone),
+                                  locale.search_filter__text_cat__phone,
+                                ),
                                 onSelected: (v) =>
                                     _setTextCategory(v, TextCategory.phone),
-                                selected:
-                                    textCategory.contains(TextCategory.phone),
+                                selected: textCategory.contains(
+                                  TextCategory.phone,
+                                ),
                               ),
                               FilterChip(
-                                avatar: const Icon(Icons.palette_rounded,
-                                    size: 16),
+                                avatar: const Icon(
+                                  Icons.palette_rounded,
+                                  size: 16,
+                                ),
                                 label: Text(
-                                    locale.search_filter__text_cat__color),
+                                  locale.search_filter__text_cat__color,
+                                ),
                                 onSelected: (v) =>
                                     _setTextCategory(v, TextCategory.color),
-                                selected:
-                                    textCategory.contains(TextCategory.color),
+                                selected: textCategory.contains(
+                                  TextCategory.color,
+                                ),
+                              ),
+                              FilterChip(
+                                avatar: const Icon(
+                                  Icons.code_rounded,
+                                  size: 16,
+                                ),
+                                label: const Text('Code'),
+                                onSelected: (v) =>
+                                    _setTextCategory(v, TextCategory.code),
+                                selected: textCategory.contains(
+                                  TextCategory.code,
+                                ),
                               ),
                             ],
                           ),
@@ -457,9 +483,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 ],
                 onSelectionChanged: _setSortOrder,
                 selected: {sortOrder},
-                style: const ButtonStyle(
-                  visualDensity: VisualDensity.compact,
-                ),
+                style: const ButtonStyle(visualDensity: VisualDensity.compact),
               ),
               const SizedBox(height: 4),
             ],
@@ -469,10 +493,7 @@ class _FilterDialogState extends State<FilterDialog> {
       actions: [
         TextButton(
           onPressed: _resetFilter,
-          child: Text(
-            'Reset',
-            style: TextStyle(color: colors.error),
-          ),
+          child: Text('Reset', style: TextStyle(color: colors.error)),
         ),
         FilledButton.icon(
           onPressed: _applyFilter,
@@ -483,4 +504,3 @@ class _FilterDialogState extends State<FilterDialog> {
     );
   }
 }
-

@@ -170,7 +170,10 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
         return;
       }
       if (fromDate != null && toDate != null && fromDate!.isAfter(toDate!)) {
-        showTextSnackbar('From date must be earlier than To date.', failure: true);
+        showTextSnackbar(
+          'From date must be earlier than To date.',
+          failure: true,
+        );
         return;
       }
 
@@ -188,7 +191,10 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
       );
     }
 
-    Future<void> pickDate({required bool isFrom, required StateSetter setModalState}) async {
+    Future<void> pickDate({
+      required bool isFrom,
+      required StateSetter setModalState,
+    }) async {
       final initial = isFrom
           ? (fromDate ?? DateTime.now().subtract(const Duration(days: 30)))
           : (toDate ?? DateTime.now());
@@ -247,7 +253,11 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                       selected: selectedClipTypes.contains(ClipItemType.text),
                       onSelected: (value) {
                         setModalState(() {
-                          _toggleType(selectedClipTypes, ClipItemType.text, value);
+                          _toggleType(
+                            selectedClipTypes,
+                            ClipItemType.text,
+                            value,
+                          );
                         });
                       },
                     ),
@@ -256,7 +266,11 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                       selected: selectedClipTypes.contains(ClipItemType.url),
                       onSelected: (value) {
                         setModalState(() {
-                          _toggleType(selectedClipTypes, ClipItemType.url, value);
+                          _toggleType(
+                            selectedClipTypes,
+                            ClipItemType.url,
+                            value,
+                          );
                         });
                       },
                     ),
@@ -265,7 +279,11 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                       selected: selectedClipTypes.contains(ClipItemType.file),
                       onSelected: (value) {
                         setModalState(() {
-                          _toggleType(selectedClipTypes, ClipItemType.file, value);
+                          _toggleType(
+                            selectedClipTypes,
+                            ClipItemType.file,
+                            value,
+                          );
                         });
                       },
                     ),
@@ -274,7 +292,11 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                       selected: selectedClipTypes.contains(ClipItemType.media),
                       onSelected: (value) {
                         setModalState(() {
-                          _toggleType(selectedClipTypes, ClipItemType.media, value);
+                          _toggleType(
+                            selectedClipTypes,
+                            ClipItemType.media,
+                            value,
+                          );
                         });
                       },
                     ),
@@ -321,15 +343,11 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                         ? 'No minimum date'
                         : fromDate!.toLocal().toString().split(' ').first,
                   ),
-                  onTap: () => pickDate(
-                    isFrom: true,
-                    setModalState: setModalState,
-                  ),
+                  onTap: () =>
+                      pickDate(isFrom: true, setModalState: setModalState),
                   trailing: IconButton(
-                    onPressed: () => pickDate(
-                      isFrom: true,
-                      setModalState: setModalState,
-                    ),
+                    onPressed: () =>
+                        pickDate(isFrom: true, setModalState: setModalState),
                     icon: const Icon(Icons.calendar_month_rounded),
                   ),
                 ),
@@ -341,15 +359,11 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                         ? 'No maximum date'
                         : toDate!.toLocal().toString().split(' ').first,
                   ),
-                  onTap: () => pickDate(
-                    isFrom: false,
-                    setModalState: setModalState,
-                  ),
+                  onTap: () =>
+                      pickDate(isFrom: false, setModalState: setModalState),
                   trailing: IconButton(
-                    onPressed: () => pickDate(
-                      isFrom: false,
-                      setModalState: setModalState,
-                    ),
+                    onPressed: () =>
+                        pickDate(isFrom: false, setModalState: setModalState),
                     icon: const Icon(Icons.calendar_month_rounded),
                   ),
                 ),
@@ -422,7 +436,8 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                     left: padding16,
                     right: padding16,
                     top: padding8,
-                    bottom: MediaQuery.of(context).viewInsets.bottom + padding16,
+                    bottom:
+                        MediaQuery.of(context).viewInsets.bottom + padding16,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -531,7 +546,10 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
         : [
             _StatItem('Collections', '${_backupSummary!.collectionsTotal}'),
             _StatItem('Clips', '${_backupSummary!.clipsTotal}'),
-            _StatItem('Files Included', '${_backupSummary!.cachedFilesIncluded}'),
+            _StatItem(
+              'Files Included',
+              '${_backupSummary!.cachedFilesIncluded}',
+            ),
             _StatItem('Files Missing', '${_backupSummary!.cachedFilesMissing}'),
             _StatItem(
               'Skipped by Size',
@@ -554,7 +572,10 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
               'Collections Duplicates',
               '${_restoreSummary!.collectionsDuplicate}',
             ),
-            _StatItem('Collections Failed', '${_restoreSummary!.collectionsFailed}'),
+            _StatItem(
+              'Collections Failed',
+              '${_restoreSummary!.collectionsFailed}',
+            ),
             _StatItem('Clips Restored', '${_restoreSummary!.clipsRestored}'),
             _StatItem('Clips Duplicates', '${_restoreSummary!.clipsDuplicate}'),
             _StatItem('Clips Failed', '${_restoreSummary!.clipsFailed}'),
@@ -566,7 +587,10 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
               'Attachments Missing',
               '${_restoreSummary!.attachmentsMissing}',
             ),
-            _StatItem('Attachments Failed', '${_restoreSummary!.attachmentsFailed}'),
+            _StatItem(
+              'Attachments Failed',
+              '${_restoreSummary!.attachmentsFailed}',
+            ),
             _StatItem('Corrupt Entries', '${_restoreSummary!.corruptEntries}'),
           ];
 
@@ -788,9 +812,9 @@ class _DialogSectionTitle extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: padding8),
       child: Text(
         text,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-          fontWeight: FontWeight.w600,
-        ),
+        style: Theme.of(
+          context,
+        ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
       ),
     );
   }
