@@ -11,6 +11,7 @@ final sensitiveExcludedApps = [
   AppInfo(name: "Dashlane", identifier: 'com.dashlane.Dashlane'),
   AppInfo(name: "Keeper", identifier: 'com.callpod.Keeper'),
   AppInfo(name: "System Settings", identifier: "com.apple.systempreferences"),
+  AppInfo(name: "Passwords", identifier: "com.apple.Passwords"),
 
   // Common across platforms
   AppInfo(name: "PayPal", identifier: 'com.paypal.desktop'),

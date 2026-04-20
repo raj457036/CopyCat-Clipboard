@@ -22,6 +22,7 @@ import "package:clipboard/pages/preview/page.dart";
 import "package:clipboard/pages/reset_password/page.dart";
 import "package:clipboard/pages/settings/page.dart";
 import "package:clipboard/pages/settings/pages/android_bg_clipboard/android_bg_clipboard_settings.dart";
+import "package:clipboard/pages/settings/pages/backup_restore/page.dart";
 import "package:clipboard/pages/settings/pages/custom_exclusion_rule/custom_exclusion_rule.dart";
 import "package:clipboard/pages/settings/pages/decrypt_clips.dart";
 import "package:clipboard/pages/settings/pages/exclusion_rules.dart";
@@ -212,6 +213,13 @@ final rootRouter = GoRouter(
                   key: state.pageKey,
                   clipboardRepository: sl(instanceName: "local"),
                 );
+              },
+            ),
+            GoRoute(
+              name: RouteConstants.backupRestore,
+              path: 'backup-restore',
+              builder: (context, state) {
+                return BackupRestorePage(key: state.pageKey);
               },
             ),
           ],
