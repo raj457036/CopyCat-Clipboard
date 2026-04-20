@@ -91,6 +91,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get app__load_more => 'Cargar Más';
 
   @override
+  String get app__search => 'Search';
+
+  @override
+  String get app__no_results => 'No results found';
+
+  @override
   String get app__locale_en => 'Inglés';
 
   @override
@@ -1176,6 +1182,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get collections__input__description => 'Descripción';
+
+  @override
+  String get collections__label__emoji => 'Collection Icon (Click to change)';
+
+  @override
+  String get collections__validation__duplicate =>
+      'A collection with this icon and name already exists';
 
   @override
   String get select_collection__appbar__title => 'Seleccionar Colección';

@@ -78,6 +78,15 @@ class ClipCollectionSelectorStateTile
       subtitle: Text(context.locale.app__change_collection),
       trailing: collection == null
           ? const Icon(Icons.chevron_right)
+          : isLoading
+          ? const SizedBox(
+              width: 40,
+              height: 40,
+              child: Padding(
+                padding: EdgeInsets.all(8),
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            )
           : IconButton.filled(
               onPressed: clear,
               icon: const Icon(Icons.remove),

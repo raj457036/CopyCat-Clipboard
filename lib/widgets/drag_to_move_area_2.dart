@@ -11,10 +11,14 @@ import 'package:window_manager/window_manager.dart';
 ///
 /// ```dart
 /// DragToMoveArea2(
-///   child: Container(
+///   child: SizedBox(
 ///     width: 300,
 ///     height: 32,
-///     color: Colors.red,
+///     child: DecoratedBox(
+///       decoration: BoxDecoration(
+///         color: Colors.red,
+///       ),
+///     ),
 ///   ),
 /// )
 /// ```

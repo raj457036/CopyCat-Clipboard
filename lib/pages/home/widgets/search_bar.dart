@@ -25,7 +25,7 @@ class SearchInputBar extends StatefulWidget {
 class _SearchBarInputState extends State<SearchInputBar> {
   late final TextEditingController queryController;
   late final FocusNode focusNode, searchResetButtonFocus;
-  final Debouncer _debouncer = Debouncer(milliseconds: 350);
+  final Debouncer _debouncer = Debouncer(milliseconds: 250);
   bool isFocused = false;
 
   void onFocus() {

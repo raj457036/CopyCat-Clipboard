@@ -81,64 +81,68 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
     final text = context.textTheme;
 
     return Center(
-      child: Container(
+      child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 520),
-        padding: const EdgeInsets.all(padding20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const _RestoreGlyph(),
-            height20,
-            FadeIn(
-              child: Text(
-                context.locale.sync_restore__title,
-                textAlign: TextAlign.center,
-                style: text.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
+        child: Padding(
+          padding: const EdgeInsets.all(padding20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const _RestoreGlyph(),
+              height20,
+              FadeIn(
+                child: Text(
+                  context.locale.sync_restore__title,
+                  textAlign: TextAlign.center,
+                  style: text.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
-            ),
-            height8,
-            Text(
-              context.locale.sync_restore__subtitle,
-              textAlign: TextAlign.center,
-              style: text.bodyMedium?.copyWith(color: colors.onSurfaceVariant),
-            ),
-            height24,
-            if (fetchingCounts)
-              _Preparing(colors: colors, text: text)
-            else
-              BlocConsumer<SyncStatusCubit, SyncStatusState>(
-                listener: (context, state) {
-                  if (state case SyncingStatus(:final progress)) {
-                    _lastProgress = progress;
-                  }
-                },
-                builder: (context, state) {
-                  return state.maybeWhen(
-                    syncing: (progress) => _RestorePanel(
-                      progress: progress,
-                      colors: colors,
-                      text: text,
-                    ),
-                    complete: () => _RestorePanel(
-                      progress: _lastProgress,
-                      colors: colors,
-                      text: text,
-                      complete: true,
-                      onContinue: widget.onContinue,
-                    ),
-                    failed: (failure) => _RestoreFailure(
-                      message: failure.message,
-                      onRetry: startRestoration,
-                      colors: colors,
-                      text: text,
-                    ),
-                    orElse: () => const SizedBox.shrink(),
-                  );
-                },
+              height8,
+              Text(
+                context.locale.sync_restore__subtitle,
+                textAlign: TextAlign.center,
+                style: text.bodyMedium?.copyWith(
+                  color: colors.onSurfaceVariant,
+                ),
               ),
-          ],
+              height24,
+              if (fetchingCounts)
+                _Preparing(colors: colors, text: text)
+              else
+                BlocConsumer<SyncStatusCubit, SyncStatusState>(
+                  listener: (context, state) {
+                    if (state case SyncingStatus(:final progress)) {
+                      _lastProgress = progress;
+                    }
+                  },
+                  builder: (context, state) {
+                    return state.maybeWhen(
+                      syncing: (progress) => _RestorePanel(
+                        progress: progress,
+                        colors: colors,
+                        text: text,
+                      ),
+                      complete: () => _RestorePanel(
+                        progress: _lastProgress,
+                        colors: colors,
+                        text: text,
+                        complete: true,
+                        onContinue: widget.onContinue,
+                      ),
+                      failed: (failure) => _RestoreFailure(
+                        message: failure.message,
+                        onRetry: startRestoration,
+                        colors: colors,
+                        text: text,
+                      ),
+                      orElse: () => const SizedBox.shrink(),
+                    );
+                  },
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -218,28 +222,30 @@ class _Preparing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(padding20),
+    return DecoratedBox(
       decoration: BoxDecoration(
         color: colors.surfaceContainerHigh,
         borderRadius: radius16,
         border: Border.all(color: colors.outlineVariant),
       ),
-      child: Row(
-        children: [
-          const SizedBox(
-            width: 24,
-            height: 24,
-            child: CircularProgressIndicator(strokeWidth: 3),
-          ),
-          width16,
-          Expanded(
-            child: Text(
-              context.locale.sync_restore__checking_backup,
-              style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+      child: Padding(
+        padding: const EdgeInsets.all(padding20),
+        child: Row(
+          children: [
+            const SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(strokeWidth: 3),
             ),
-          ),
-        ],
+            width16,
+            Expanded(
+              child: Text(
+                context.locale.sync_restore__checking_backup,
+                style: text.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -319,48 +325,99 @@ class _RestorePanel extends StatelessWidget {
     return FadeIn(
       child: Column(
         children: [
-          Container(
+          SizedBox(
             width: double.infinity,
-            padding: const EdgeInsets.all(padding28),
-            decoration: BoxDecoration(
-              color: colors.surfaceContainer,
-              borderRadius: radius16,
-              border: Border.all(color: colors.outlineVariant),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+            child: Padding(
+              padding: const EdgeInsets.all(padding28),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: colors.surfaceContainer,
+                  borderRadius: radius16,
+                  border: Border.all(color: colors.outlineVariant),
+                ),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            complete
-                                ? locale.sync_restore__workspace_restored
-                                : restoredLabel(locale),
-                            style: text.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w800,
-                            ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                complete
+                                    ? locale.sync_restore__workspace_restored
+                                    : restoredLabel(locale),
+                                style: text.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              height4,
+                              Text(
+                                stageLabel(
+                                  locale,
+                                  collectionProgress,
+                                  clipProgress,
+                                ),
+                                style: text.bodyMedium?.copyWith(
+                                  color: colors.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
                           ),
-                          height4,
-                          Text(
-                            stageLabel(
-                              locale,
-                              collectionProgress,
-                              clipProgress,
-                            ),
-                            style: text.bodyMedium?.copyWith(
-                              color: colors.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                        width16,
+                        _StatusPill(
+                          complete: complete,
+                          colors: colors,
+                          text: text,
+                          locale: locale,
+                        ),
+                      ],
                     ),
-                    width16,
-                    _StatusPill(
+                    height24,
+                    LinearProgressIndicator(
+                      value: complete ? 1 : totalProgress,
+                      minHeight: 6,
+                      borderRadius: radius8,
+                      backgroundColor: colors.surfaceContainerHighest,
+                    ),
+                    height10,
+                    Row(
+                      children: [
+                        Text(
+                          progressLabel(locale),
+                          style: text.labelMedium?.copyWith(
+                            color: colors.onSurfaceVariant,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          restoredLabel(locale),
+                          style: text.labelMedium?.copyWith(
+                            color: colors.onSurfaceVariant,
+                          ),
+                        ),
+                      ],
+                    ),
+                    height20,
+                    _RestoreRow(
+                      title: locale.sync_restore__collections_title,
+                      description: locale.sync_restore__collections_description,
+                      progress: collectionProgress,
+                      complete: complete,
+                      colors: colors,
+                      text: text,
+                      locale: locale,
+                    ),
+                    height16,
+                    _RestoreRow(
+                      title: locale.sync_restore__clipboard_items_title,
+                      description:
+                          locale.sync_restore__clipboard_items_description,
+                      progress: clipProgress,
                       complete: complete,
                       colors: colors,
                       text: text,
@@ -368,53 +425,7 @@ class _RestorePanel extends StatelessWidget {
                     ),
                   ],
                 ),
-                height24,
-                LinearProgressIndicator(
-                  value: complete ? 1 : totalProgress,
-                  minHeight: 6,
-                  borderRadius: radius8,
-                  backgroundColor: colors.surfaceContainerHighest,
-                ),
-                height10,
-                Row(
-                  children: [
-                    Text(
-                      progressLabel(locale),
-                      style: text.labelMedium?.copyWith(
-                        color: colors.onSurfaceVariant,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      restoredLabel(locale),
-                      style: text.labelMedium?.copyWith(
-                        color: colors.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-                height20,
-                _RestoreRow(
-                  title: locale.sync_restore__collections_title,
-                  description: locale.sync_restore__collections_description,
-                  progress: collectionProgress,
-                  complete: complete,
-                  colors: colors,
-                  text: text,
-                  locale: locale,
-                ),
-                height16,
-                _RestoreRow(
-                  title: locale.sync_restore__clipboard_items_title,
-                  description: locale.sync_restore__clipboard_items_description,
-                  progress: clipProgress,
-                  complete: complete,
-                  colors: colors,
-                  text: text,
-                  locale: locale,
-                ),
-              ],
+              ),
             ),
           ),
           if (complete) ...[
@@ -455,31 +466,33 @@ class _StatusPill extends StatelessWidget {
         ? colors.onPrimaryContainer
         : colors.onSecondaryContainer;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: padding10, vertical: 6),
+    return DecoratedBox(
       decoration: BoxDecoration(color: bg, borderRadius: radius8),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (complete)
-            Icon(Icons.done_rounded, size: 16, color: fg)
-          else
-            SizedBox(
-              width: 12,
-              height: 12,
-              child: CircularProgressIndicator(strokeWidth: 2, color: fg),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: padding10, vertical: 6),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (complete)
+              Icon(Icons.done_rounded, size: 16, color: fg)
+            else
+              SizedBox(
+                width: 12,
+                height: 12,
+                child: CircularProgressIndicator(strokeWidth: 2, color: fg),
+              ),
+            width6,
+            Text(
+              complete
+                  ? locale.sync_restore__status_ready
+                  : locale.sync_restore__status_restoring,
+              style: text.labelSmall?.copyWith(
+                color: fg,
+                fontWeight: FontWeight.w800,
+              ),
             ),
-          width6,
-          Text(
-            complete
-                ? locale.sync_restore__status_ready
-                : locale.sync_restore__status_restoring,
-            style: text.labelSmall?.copyWith(
-              color: fg,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -508,67 +521,73 @@ class _RestoreRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDone = complete || progress.isComplete;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: padding12),
+    return DecoratedBox(
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: colors.outlineVariant.withValues(alpha: 0.7)),
         ),
       ),
-      child: Row(
-        children: [
-          AnimatedContainer(
-            duration: Durations.short3,
-            width: 9,
-            height: 40,
-            decoration: BoxDecoration(
-              color: isDone ? colors.primary : colors.outlineVariant,
-              borderRadius: radius8,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: padding12),
+        child: Row(
+          children: [
+            AnimatedContainer(
+              duration: Durations.short3,
+              width: 9,
+              height: 40,
+              decoration: BoxDecoration(
+                color: isDone ? colors.primary : colors.outlineVariant,
+                borderRadius: radius8,
+              ),
             ),
-          ),
-          width14,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            width14,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: text.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  height2,
+                  Text(
+                    description,
+                    style: text.bodySmall?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            width12,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  title,
-                  style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                  "${progress.visibleSynced}",
+                  style: text.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: colors.onSurface,
+                  ),
                 ),
-                height2,
                 Text(
-                  description,
-                  style: text.bodySmall?.copyWith(
+                  progress.total > 0
+                      ? locale.sync_restore__count_of_total(
+                          total: progress.total,
+                        )
+                      : locale.sync_restore__restored_count(
+                          count: progress.visibleSynced,
+                        ),
+                  style: text.labelSmall?.copyWith(
                     color: colors.onSurfaceVariant,
                   ),
                 ),
               ],
             ),
-          ),
-          width12,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                "${progress.visibleSynced}",
-                style: text.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: colors.onSurface,
-                ),
-              ),
-              Text(
-                progress.total > 0
-                    ? locale.sync_restore__count_of_total(total: progress.total)
-                    : locale.sync_restore__restored_count(
-                        count: progress.visibleSynced,
-                      ),
-                style: text.labelSmall?.copyWith(
-                  color: colors.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -589,38 +608,42 @@ class _RestoreFailure extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      padding: const EdgeInsets.all(padding20),
-      decoration: BoxDecoration(
-        color: colors.errorContainer,
-        borderRadius: radius16,
-        border: Border.all(color: colors.error.withValues(alpha: 0.4)),
-      ),
-      child: Column(
-        children: [
-          Icon(Icons.sync_problem_rounded, color: colors.onErrorContainer),
-          height12,
-          Text(
-            context.locale.sync_restore__failed_title,
-            style: text.titleMedium?.copyWith(
-              color: colors.onErrorContainer,
-              fontWeight: FontWeight.w800,
-            ),
+      child: Padding(
+        padding: const EdgeInsets.all(padding20),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: colors.errorContainer,
+            borderRadius: radius16,
+            border: Border.all(color: colors.error.withValues(alpha: 0.4)),
           ),
-          height6,
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: text.bodySmall?.copyWith(color: colors.onErrorContainer),
+          child: Column(
+            children: [
+              Icon(Icons.sync_problem_rounded, color: colors.onErrorContainer),
+              height12,
+              Text(
+                context.locale.sync_restore__failed_title,
+                style: text.titleMedium?.copyWith(
+                  color: colors.onErrorContainer,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              height6,
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: text.bodySmall?.copyWith(color: colors.onErrorContainer),
+              ),
+              height16,
+              FilledButton.tonalIcon(
+                onPressed: onRetry,
+                icon: const Icon(Icons.refresh_rounded),
+                label: Text(context.locale.app__try_again),
+              ),
+            ],
           ),
-          height16,
-          FilledButton.tonalIcon(
-            onPressed: onRetry,
-            icon: const Icon(Icons.refresh_rounded),
-            label: Text(context.locale.app__try_again),
-          ),
-        ],
+        ),
       ),
     );
   }

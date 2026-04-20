@@ -267,6 +267,18 @@ abstract class AppLocalizations {
   /// **'Fetch More'**
   String get app__load_more;
 
+  /// No description provided for @app__search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get app__search;
+
+  /// No description provided for @app__no_results.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get app__no_results;
+
   /// No description provided for @app__locale_en.
   ///
   /// In en, this message translates to:
@@ -2147,6 +2159,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Description'**
   String get collections__input__description;
+
+  /// No description provided for @collections__label__emoji.
+  ///
+  /// In en, this message translates to:
+  /// **'Collection Icon (Click to change)'**
+  String get collections__label__emoji;
+
+  /// No description provided for @collections__validation__duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'A collection with this icon and name already exists'**
+  String get collections__validation__duplicate;
 
   /// No description provided for @select_collection__appbar__title.
   ///

@@ -162,35 +162,37 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(16),
+                DecoratedBox(
                   decoration: BoxDecoration(
                     color: theme.colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _StatTile(
-                          label: 'Selected',
-                          value: '${widget.items.length}',
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _StatTile(
+                            label: 'Selected',
+                            value: '${widget.items.length}',
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _StatTile(
-                          label: 'Text',
-                          value: '$textClipCount',
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _StatTile(
+                            label: 'Text',
+                            value: '$textClipCount',
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _StatTile(
-                          label: 'Non-text',
-                          value: '$mediaClipCount',
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _StatTile(
+                            label: 'Non-text',
+                            value: '$mediaClipCount',
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),

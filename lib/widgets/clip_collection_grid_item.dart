@@ -117,12 +117,15 @@ class ClipCollectionGridItem extends StatelessWidget {
                         ),
                         if (collection.description != null)
                           Flexible(
-                            child: Text(
-                              collection.description!,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: textTheme.bodyMedium?.apply(
-                                color: context.colors.outline,
+                            child: Tooltip(
+                              message: collection.description!,
+                              child: Text(
+                                collection.description!,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: textTheme.bodyMedium?.apply(
+                                  color: context.colors.outline,
+                                ),
                               ),
                             ),
                           ),
@@ -138,6 +141,7 @@ class ClipCollectionGridItem extends StatelessWidget {
     );
 
     if (selectionOnly) return collectionTile;
+
     return Menu(
       items: [
         MenuItem(

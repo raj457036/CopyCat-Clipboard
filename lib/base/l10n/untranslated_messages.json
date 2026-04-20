@@ -1,5 +1,7 @@
 {
   "de": [
+    "app__search",
+    "app__no_results",
     "preview__inspector__title",
     "preview__inspector__untitled",
     "preview__inspector__saved",
@@ -32,6 +34,8 @@
     "preview__inspector__type__media",
     "preview__inspector__type__file",
     "preview__inspector__type__link",
+    "collections__label__emoji",
+    "collections__validation__duplicate",
     "settings__header__appearance",
     "settings__header__sorting",
     "settings__header__interactions",
@@ -44,6 +48,8 @@
   ],
 
   "es": [
+    "app__search",
+    "app__no_results",
     "preview__inspector__title",
     "preview__inspector__untitled",
     "preview__inspector__saved",
@@ -76,6 +82,8 @@
     "preview__inspector__type__media",
     "preview__inspector__type__file",
     "preview__inspector__type__link",
+    "collections__label__emoji",
+    "collections__validation__duplicate",
     "settings__header__appearance",
     "settings__header__sorting",
     "settings__header__interactions",
@@ -88,6 +96,8 @@
   ],
 
   "fr": [
+    "app__search",
+    "app__no_results",
     "preview__inspector__title",
     "preview__inspector__untitled",
     "preview__inspector__saved",
@@ -120,6 +130,8 @@
     "preview__inspector__type__media",
     "preview__inspector__type__file",
     "preview__inspector__type__link",
+    "collections__label__emoji",
+    "collections__validation__duplicate",
     "settings__header__appearance",
     "settings__header__sorting",
     "settings__header__interactions",
@@ -132,6 +144,8 @@
   ],
 
   "pt": [
+    "app__search",
+    "app__no_results",
     "preview__inspector__title",
     "preview__inspector__untitled",
     "preview__inspector__saved",
@@ -164,6 +178,8 @@
     "preview__inspector__type__media",
     "preview__inspector__type__file",
     "preview__inspector__type__link",
+    "collections__label__emoji",
+    "collections__validation__duplicate",
     "settings__header__appearance",
     "settings__header__sorting",
     "settings__header__interactions",
@@ -176,6 +192,8 @@
   ],
 
   "zh": [
+    "app__search",
+    "app__no_results",
     "preview__inspector__title",
     "preview__inspector__untitled",
     "preview__inspector__saved",
@@ -208,6 +226,8 @@
     "preview__inspector__type__media",
     "preview__inspector__type__file",
     "preview__inspector__type__link",
+    "collections__label__emoji",
+    "collections__validation__duplicate",
     "settings__header__appearance",
     "settings__header__sorting",
     "settings__header__interactions",

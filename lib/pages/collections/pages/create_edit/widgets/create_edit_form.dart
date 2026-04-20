@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:universal_io/io.dart';
 
 class ClipCollectionCreateEditForm extends StatefulWidget {
   final ClipCollection? collection;
@@ -27,6 +26,7 @@ class _ClipCollectionCreateEditFormState
   late final TextEditingController emojiController,
       nameController,
       descriptionController;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -60,6 +60,8 @@ class _ClipCollectionCreateEditFormState
   Future<void> submit() async {
     if (!formKey.currentState!.validate()) return;
     formKey.currentState?.save();
+    setState(() => _isSaving = true);
+
     ClipCollection collection;
     final description = descriptionController.text.trim().isEmpty
         ? null
@@ -79,20 +81,43 @@ class _ClipCollectionCreateEditFormState
         description: description,
       );
     }
-    cubit.upsert(collection);
-    GoRouter.of(context).pop();
+    final error = await cubit.upsert(collection);
+    if (mounted) {
+      if (error != null) {
+        setState(() => _isSaving = false);
+        if (context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(error.message)));
+        }
+      } else {
+        if (context.mounted) {
+          GoRouter.of(context).pop();
+        }
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<ClipCollectionCubit>();
+    final allCollections =
+        cubit.state.mapOrNull(loaded: (loaded) => loaded.collections) ?? [];
+
     final options = [
       TextButton(
-        onPressed: context.pop,
+        onPressed: _isSaving ? null : context.pop,
         child: Text(context.mlocale.cancelButtonLabel.title),
       ),
       FilledButton(
-        onPressed: submit,
-        child: Text(context.mlocale.saveButtonLabel.title),
+        onPressed: _isSaving ? null : submit,
+        child: _isSaving
+            ? const SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Text(context.mlocale.saveButtonLabel.title),
       ),
     ];
 
@@ -117,13 +142,43 @@ class _ClipCollectionCreateEditFormState
               ),
             ),
             height12,
+            Text(
+              context.locale.collections__label__emoji,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            height8,
             TextFormField(
               decoration: InputDecoration(
                 labelText: context.locale.collections__input__name,
               ),
               controller: nameController,
-              validator: ValidationBuilder().required().maxLength(100).build(),
+              validator: (value) {
+                // Default validation
+                if (value == null || value.trim().isEmpty) {
+                  return 'Name is required';
+                }
+                if (value.length > 100) {
+                  return 'Name must be less than 100 characters';
+                }
+
+                // Check for duplicates (only for different collections)
+                final isDuplicate = allCollections.any((c) {
+                  final isDifferentCollection =
+                      widget.collection == null ||
+                      c.id != widget.collection?.id;
+                  return isDifferentCollection &&
+                      c.emoji == emojiController.text &&
+                      c.title.toLowerCase() == value.trim().toLowerCase();
+                });
+
+                if (isDuplicate) {
+                  return context.locale.collections__validation__duplicate;
+                }
+
+                return null;
+              },
               autofocus: true,
+              textInputAction: TextInputAction.next,
             ),
             height12,
             TextFormField(
@@ -137,14 +192,14 @@ class _ClipCollectionCreateEditFormState
               minLines: 2,
               maxLines: 6,
               maxLength: 255,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (_) => submit(),
             ),
             height12,
             OverflowBar(
               spacing: 10,
               alignment: MainAxisAlignment.end,
-              children: Platform.isWindows
-                  ? options.reversed.toList()
-                  : options,
+              children: options,
             ),
           ],
         ),
