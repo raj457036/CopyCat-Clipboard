@@ -1,0 +1,397 @@
+name: Release Build All Platforms
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Release tag to publish (example: v1.2.3)"
+        required: true
+      prerelease:
+        description: "Mark as prerelease"
+        required: false
+        default: "false"
+      deploy_android:
+        description: "Deploy Android AAB to Google Play"
+        required: false
+        default: "false"
+      deploy_apple:
+        description: "Deploy signed iOS IPA to TestFlight"
+        required: false
+        default: "false"
+      google_play_track:
+        description: "Google Play track (internal, alpha, beta, production)"
+        required: false
+        default: "internal"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  FLUTTER_CHANNEL: stable
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - name: Write prod defines
+        run: |
+          if [ -z "${{ secrets.PROD_DART_DEFINES_JSON }}" ]; then
+            echo "Missing required secret: PROD_DART_DEFINES_JSON"
+            exit 1
+          fi
+          mkdir -p local
+          printf '%s' "${{ secrets.PROD_DART_DEFINES_JSON }}" > local/prod.json
+
+      - name: Configure Android signing
+        run: |
+          if [ -z "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ] || [ -z "${{ secrets.ANDROID_KEY_ALIAS }}" ] || [ -z "${{ secrets.ANDROID_KEY_PASSWORD }}" ] || [ -z "${{ secrets.ANDROID_STORE_PASSWORD }}" ]; then
+            echo "Missing one or more Android signing secrets"
+            exit 1
+          fi
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/release-upload-keystore.jks
+          printf '%s\n' \
+            "storePassword=${{ secrets.ANDROID_STORE_PASSWORD }}" \
+            "keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}" \
+            "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" \
+            "storeFile=release-upload-keystore.jks" > android/key.properties
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build appbundle
+        run: flutter build appbundle --release --dart-define-from-file=local/prod.json --obfuscate --split-debug-info=./build_symbols
+
+      - name: Build apk
+        run: flutter build apk --release --dart-define-from-file=local/prod.json --obfuscate --split-debug-info=./build_symbols
+
+      - name: Collect Android artifacts
+        run: |
+          mkdir -p dist/android
+          cp build/app/outputs/bundle/release/*.aab dist/android/
+          cp build/app/outputs/flutter-apk/*.apk dist/android/
+          if [ -d build_symbols ]; then
+            tar -czf dist/android/android-build-symbols.tar.gz build_symbols
+          fi
+
+      - name: Upload Android artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-artifacts
+          path: dist/android/*
+
+  ios_macos:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - name: Write prod defines
+        run: |
+          if [ -z "${{ secrets.PROD_DART_DEFINES_JSON }}" ]; then
+            echo "Missing required secret: PROD_DART_DEFINES_JSON"
+            exit 1
+          fi
+          mkdir -p local
+          printf '%s' "${{ secrets.PROD_DART_DEFINES_JSON }}" > local/prod.json
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Enable macOS desktop
+        run: flutter config --enable-macos-desktop
+
+      - name: Build iOS (no code signing)
+        run: flutter build ipa --release --no-codesign --dart-define-from-file=local/prod.json --obfuscate --split-debug-info=./build_symbols
+
+      - name: Build macOS
+        run: flutter build macos --release --dart-define-from-file=local/prod.json --obfuscate --split-debug-info=./build_symbols
+
+      - name: Package Apple artifacts
+        run: |
+          mkdir -p dist/apple
+          cp build/ios/ipa/*.ipa dist/apple/ || true
+          ditto -c -k --sequesterRsrc --keepParent build/macos/Build/Products/Release/CopyCat.app dist/apple/CopyCat-macos.app.zip
+          if [ -d build_symbols ]; then
+            tar -czf dist/apple/apple-build-symbols.tar.gz build_symbols
+          fi
+
+      - name: Upload Apple artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: apple-artifacts
+          path: dist/apple/*
+
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - name: Write prod defines
+        run: |
+          if [ -z "${{ secrets.PROD_DART_DEFINES_JSON }}" ]; then
+            echo "Missing required secret: PROD_DART_DEFINES_JSON"
+            exit 1
+          fi
+          mkdir -p local
+          printf '%s' "${{ secrets.PROD_DART_DEFINES_JSON }}" > local/prod.json
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Enable Linux desktop
+        run: flutter config --enable-linux-desktop
+
+      - name: Build Linux
+        run: flutter build linux --release --dart-define-from-file=local/prod.json --obfuscate --split-debug-info=./build_symbols
+
+      - name: Package Linux artifacts
+        run: |
+          mkdir -p dist/linux
+          tar -czf dist/linux/CopyCat-linux-x64.tar.gz -C build/linux/x64/release bundle
+          if [ -d build_symbols ]; then
+            tar -czf dist/linux/linux-build-symbols.tar.gz build_symbols
+          fi
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-artifacts
+          path: dist/linux/*
+
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - name: Write prod defines
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace("${{ secrets.PROD_DART_DEFINES_JSON }}")) {
+            throw "Missing required secret: PROD_DART_DEFINES_JSON"
+          }
+          New-Item -ItemType Directory -Path local -Force | Out-Null
+          Set-Content -Path local/prod.json -Value "${{ secrets.PROD_DART_DEFINES_JSON }}" -NoNewline
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Enable Windows desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Build Windows
+        run: flutter build windows --release --dart-define-from-file=local/prod.json --obfuscate --split-debug-info=./build_symbols
+
+      - name: Package Windows artifacts
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path dist/windows -Force | Out-Null
+          Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath dist/windows/CopyCat-windows-x64.zip -Force
+          if (Test-Path build_symbols) {
+            Compress-Archive -Path build_symbols/* -DestinationPath dist/windows/windows-build-symbols.zip -Force
+          }
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-artifacts
+          path: dist/windows/*
+
+  deploy_android_play:
+    needs:
+      - android
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.deploy_android == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GOOGLE_PLAY_TRACK: ${{ github.event_name == 'workflow_dispatch' && inputs.google_play_track || 'internal' }}
+    steps:
+      - name: Download Android artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: android-artifacts
+          path: dist/android
+
+      - name: Validate Google Play secrets
+        run: |
+          if [ -z "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}" ]; then
+            echo "Missing required secret: GOOGLE_PLAY_SERVICE_ACCOUNT_JSON"
+            exit 1
+          fi
+
+      - name: Resolve AAB path
+        id: android_aab
+        run: |
+          AAB_PATH="$(find dist/android -maxdepth 1 -name '*.aab' | head -n 1)"
+          if [ -z "$AAB_PATH" ]; then
+            echo "No AAB artifact found in dist/android"
+            exit 1
+          fi
+          echo "path=$AAB_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Upload to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.entilitystudio.CopyCat
+          releaseFiles: ${{ steps.android_aab.outputs.path }}
+          track: ${{ env.GOOGLE_PLAY_TRACK }}
+          status: completed
+
+  deploy_apple_testflight:
+    needs:
+      - ios_macos
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.deploy_apple == 'true')
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - name: Validate Apple deploy secrets
+        run: |
+          if [ -z "${{ secrets.PROD_DART_DEFINES_JSON }}" ] || [ -z "${{ secrets.APPLE_CERTIFICATE_P12_BASE64 }}" ] || [ -z "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" ] || [ -z "${{ secrets.APPLE_PROVISIONING_PROFILE_BASE64 }}" ] || [ -z "${{ secrets.APPLE_KEYCHAIN_PASSWORD }}" ] || [ -z "${{ secrets.APPSTORE_CONNECT_API_KEY_BASE64 }}" ] || [ -z "${{ secrets.APPSTORE_CONNECT_API_KEY_ID }}" ] || [ -z "${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}" ] || [ -z "${{ secrets.APPLE_EXPORT_OPTIONS_PLIST_BASE64 }}" ]; then
+            echo "Missing one or more Apple deployment secrets"
+            exit 1
+          fi
+
+      - name: Write prod defines
+        run: |
+          mkdir -p local
+          printf '%s' "${{ secrets.PROD_DART_DEFINES_JSON }}" > local/prod.json
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Setup Apple signing assets
+        run: |
+          CERT_PATH="$RUNNER_TEMP/signing_certificate.p12"
+          PROFILE_PATH="$RUNNER_TEMP/profile.mobileprovision"
+          KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
+
+          echo "${{ secrets.APPLE_CERTIFICATE_P12_BASE64 }}" | base64 --decode > "$CERT_PATH"
+          echo "${{ secrets.APPLE_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > "$PROFILE_PATH"
+          echo "${{ secrets.APPLE_EXPORT_OPTIONS_PLIST_BASE64 }}" | base64 --decode > ios/ExportOptions.plist
+
+          security create-keychain -p "${{ secrets.APPLE_KEYCHAIN_PASSWORD }}" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "${{ secrets.APPLE_KEYCHAIN_PASSWORD }}" "$KEYCHAIN_PATH"
+          security import "$CERT_PATH" -P "${{ secrets.APPLE_CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | sed 's/"//g')
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "${{ secrets.APPLE_KEYCHAIN_PASSWORD }}" "$KEYCHAIN_PATH"
+
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          cp "$PROFILE_PATH" "$HOME/Library/MobileDevice/Provisioning Profiles/"
+
+      - name: Build signed IPA
+        run: |
+          flutter build ipa --release --dart-define-from-file=local/prod.json --obfuscate --split-debug-info=./build_symbols --export-options-plist=ios/ExportOptions.plist
+
+      - name: Configure App Store Connect API key
+        run: |
+          mkdir -p "$HOME/.appstoreconnect/private_keys"
+          echo "${{ secrets.APPSTORE_CONNECT_API_KEY_BASE64 }}" | base64 --decode > "$HOME/.appstoreconnect/private_keys/AuthKey_${{ secrets.APPSTORE_CONNECT_API_KEY_ID }}.p8"
+
+      - name: Upload IPA to TestFlight
+        run: |
+          IPA_PATH="$(find build/ios/ipa -maxdepth 1 -name '*.ipa' | head -n 1)"
+          if [ -z "$IPA_PATH" ]; then
+            echo "Signed IPA not found in build/ios/ipa"
+            exit 1
+          fi
+          xcrun altool --upload-app --type ios --file "$IPA_PATH" --apiKey "${{ secrets.APPSTORE_CONNECT_API_KEY_ID }}" --apiIssuer "${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}"
+
+  publish:
+    needs:
+      - android
+      - ios_macos
+      - linux
+      - windows
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+
+      - name: Flatten artifacts
+        run: |
+          mkdir -p release-flat
+          find release-assets -type f -maxdepth 3 -exec cp {} release-flat/ \;
+          cd release-flat
+          sha256sum * > SHA256SUMS.txt
+
+      - name: Resolve release tag
+        id: release_meta
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "tag=${{ inputs.release_tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release_meta.outputs.tag }}
+          prerelease: ${{ github.event_name == 'workflow_dispatch' && inputs.prerelease == 'true' }}
+          generate_release_notes: true
+          files: |
+            release-flat/*
