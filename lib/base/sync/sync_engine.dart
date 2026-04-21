@@ -144,11 +144,9 @@ class SyncEngine<T extends Syncable> {
 
   Future<SyncResult> _pullChanges(
     DateTime? lastSynced,
-    int initialOffset,
-    {
+    int initialOffset, {
     String? excludeDeviceId,
-  }
-  ) async {
+  }) async {
     bool hasMore = true;
     int offset = initialOffset;
 
