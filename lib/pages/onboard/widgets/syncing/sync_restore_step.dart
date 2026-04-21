@@ -37,6 +37,13 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
   SyncStatus? syncStatus;
   Map<String, SyncProgress> _lastProgress = const {};
 
+  bool _hasMeaningfulProgress(Map<String, SyncProgress> progress) {
+    if (progress.isEmpty) return false;
+    return progress.values.any(
+      (item) => item.total > 0 || item.synced > 0,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -69,7 +76,7 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
       );
       syncCubit.initializeProgress(SyncProgressInitParams(progress));
       await wait(800);
-      syncCubit.syncAll(const SyncAllParams(force: true));
+      syncCubit.syncAll(const SyncAllParams(force: true, freshPull: true));
     } finally {
       if (mounted) setState(() => fetchingCounts = false);
     }
@@ -114,7 +121,9 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
                 BlocConsumer<SyncStatusCubit, SyncStatusState>(
                   listener: (context, state) {
                     if (state case SyncingStatus(:final progress)) {
-                      _lastProgress = progress;
+                      if (_hasMeaningfulProgress(progress)) {
+                        _lastProgress = progress;
+                      }
                     }
                   },
                   builder: (context, state) {

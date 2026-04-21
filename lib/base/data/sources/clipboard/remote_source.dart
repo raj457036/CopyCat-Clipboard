@@ -136,13 +136,13 @@ class RemoteClipboardSource implements ClipboardSource {
           .from(clipItemTable)
           .count(CountOption.exact)
           .gt("modified", fromTs)
-          .isFilter("deletedAt", null);
+          .filter("deletedAt", "is", null);
       return count;
     }
     final count = await db
         .from(clipItemTable)
         .count(CountOption.exact)
-        .isFilter("deletedAt", null);
+      .filter("deletedAt", "is", null);
     return count;
   }
 

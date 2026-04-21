@@ -155,8 +155,8 @@ class EventBridge extends StatelessWidget {
                 context.read<WindowActionCubit>()
                   ..setWindowdView()
                   ..show();
-                return;
               }
+              return;
             }
 
             if (config.enableSync) {

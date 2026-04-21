@@ -52,24 +52,30 @@ class SyncEngine<T extends Syncable> {
   // ─── PULL (Server → Local) ────────────────────────────────────────────────
 
   /// Fetches changes and deletions from the server and applies them locally.
-  Future<SyncResult> pull({bool force = false}) async {
+  Future<SyncResult> pull({bool force = false, bool freshPull = false}) async {
     if (_busy && !force) return SyncResult.skipped;
     _busy = true;
     eventBus.emitEngineStatus(adapter.entityType, true);
 
     try {
       final cursor = await cursorRepo.get(adapter.entityType);
-      final lastSynced =
-          cursor?.lastSyncedAt ?? await adapter.getLatestSyncTimestamp();
+      final lastSynced = freshPull
+          ? DateTime.fromMillisecondsSinceEpoch(0)
+          : (cursor?.lastSyncedAt ?? await adapter.getLatestSyncTimestamp());
+      final excludeDeviceId = freshPull ? null : deviceId;
 
       // 1. Sync Deleted Items
-      final deleteResult = await _pullDeleted(lastSynced);
+      final deleteResult = await _pullDeleted(
+        lastSynced,
+        excludeDeviceId: excludeDeviceId,
+      );
       if (deleteResult == SyncResult.failed) return SyncResult.failed;
 
       // 2. Sync Created/Updated Items
       final changesResult = await _pullChanges(
         lastSynced,
-        cursor?.lastOffset ?? 0,
+        freshPull ? 0 : (cursor?.lastOffset ?? 0),
+        excludeDeviceId: excludeDeviceId,
       );
       if (changesResult == SyncResult.failed) return SyncResult.failed;
 
@@ -92,7 +98,10 @@ class SyncEngine<T extends Syncable> {
     }
   }
 
-  Future<SyncResult> _pullDeleted(DateTime? lastSynced) async {
+  Future<SyncResult> _pullDeleted(
+    DateTime? lastSynced, {
+    String? excludeDeviceId,
+  }) async {
     bool hasMore = true;
     int offset = 0;
 
@@ -100,7 +109,7 @@ class SyncEngine<T extends Syncable> {
       final result = await adapter.fetchRemoteDeleted(
         limit: config.deleteBatchSize,
         offset: offset,
-        excludeDeviceId: deviceId,
+        excludeDeviceId: excludeDeviceId,
         lastSynced: lastSynced,
       );
 
@@ -136,6 +145,9 @@ class SyncEngine<T extends Syncable> {
   Future<SyncResult> _pullChanges(
     DateTime? lastSynced,
     int initialOffset,
+    {
+    String? excludeDeviceId,
+  }
   ) async {
     bool hasMore = true;
     int offset = initialOffset;
@@ -144,7 +156,7 @@ class SyncEngine<T extends Syncable> {
       final result = await adapter.fetchRemoteChanges(
         limit: config.pullBatchSize,
         offset: offset,
-        excludeDeviceId: lastSynced != null ? deviceId : null,
+        excludeDeviceId: excludeDeviceId,
         lastSynced: lastSynced,
       );
 

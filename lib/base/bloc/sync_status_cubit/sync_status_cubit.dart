@@ -12,7 +12,8 @@ part 'sync_status_state.dart';
 
 class SyncAllParams {
   final bool force;
-  const SyncAllParams({this.force = false});
+  final bool freshPull;
+  const SyncAllParams({this.force = false, this.freshPull = false});
 }
 
 class SyncProgressInitParams {
@@ -93,7 +94,10 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
       emit(const SyncStatusState.syncing());
     }
     try {
-      final success = await orchestrator.syncAll(force: params.force);
+      final success = await orchestrator.syncAll(
+        force: params.force,
+        freshPull: params.freshPull,
+      );
       if (success) {
         emit(const SyncStatusState.complete());
       } else {

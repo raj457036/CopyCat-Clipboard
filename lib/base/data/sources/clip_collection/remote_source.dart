@@ -116,7 +116,7 @@ class RemoteClipCollectionSource implements ClipCollectionSource {
     final count = await db
         .from(clipCollectionTable)
         .count(CountOption.exact)
-        .isFilter("deletedAt", null);
+        .filter("deletedAt", "is", null);
     return count;
   }
 }
