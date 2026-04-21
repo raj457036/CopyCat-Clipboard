@@ -89,14 +89,24 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showTextSnackbar(
   final innerContext = context ?? scaffoldMessengerKey.currentContext;
   if (innerContext == null) return null;
   final mq = innerContext.mq;
+  final brightness = innerContext.theme.brightness;
 
   final isMobile = Breakpoints.isMobile(mq.size.width);
 
   Color? bg;
-  if (success) bg = Colors.green;
+  if (success) {
+    if (brightness == Brightness.dark) {
+      bg = Colors.greenAccent.shade700;
+    } else {
+      bg = Colors.greenAccent.shade400;
+    }
+  }
   if (failure) {
-    final colors = innerContext.colors;
-    bg = colors.error;
+    if (brightness == Brightness.dark) {
+      bg = Colors.redAccent.shade700;
+    } else {
+      bg = Colors.redAccent.shade400;
+    }
   }
 
   Widget child;

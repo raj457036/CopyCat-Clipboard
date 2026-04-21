@@ -10,6 +10,7 @@ import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_list_item/options_header.dart';
 import 'package:clipboard/widgets/clip_item/clip_preview.dart';
 import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
+import 'package:clipboard/widgets/clip_item/paste_chip_slide_in.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:clipboard/widgets/drag_drop/drag_item.dart';
 import 'package:clipboard/widgets/keyboard_shortcuts/space_enter_listener.dart';
@@ -129,6 +130,7 @@ class _ClipListItemState extends State<ClipListItem> {
       onShiftC: (context) => onShiftC(context, widget.item, canPaste),
       child: Card.outlined(
         shape: selectedShape,
+        clipBehavior: Clip.hardEdge,
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 60, maxHeight: 220),
           child: InkWell(
@@ -152,47 +154,54 @@ class _ClipListItemState extends State<ClipListItem> {
                 : null,
             onFocusChange: onFocusChange,
             onHover: onHover,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (!widget.noView)
-                  ClipListItemOptionHeader(
-                    item: widget.item,
-                    hasFocusForPaste: canPaste,
-                    hovered: hovered,
-                    selected: widget.selected,
-                    selectionActive: widget.selectionActive,
-                    selectionIndex: widget.selectionIndex,
-                  ),
-                if (widget.item.displayTitle != null && !widget.item.encrypted)
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: padding10,
-                      right: padding10,
-                      bottom: padding8,
-                    ),
-                    child: Text(
-                      widget.item.displayTitle!,
-                      style: textTheme.titleSmall?.copyWith(
-                        fontVariations: fontVarW700,
-                      ),
-                      maxLines: 2,
-                    ),
-                  ),
-                Flexible(
-                  child: ClipPreview(item: widget.item, layout: AppLayout.list),
-                ),
-                if (!widget.selected && !widget.noView)
-                  DisableForLocalUser(
-                    child: ClipSyncStatusFooter(
+            child: PasteChipSlideIn(
+              showPasteChip: hovered && canPaste,
+              clipChild: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (!widget.noView)
+                    ClipListItemOptionHeader(
                       item: widget.item,
-                      radius: const BorderRadius.vertical(
-                        bottom: Radius.circular(8),
+                      hasFocusForPaste: canPaste,
+                      hovered: hovered,
+                      selected: widget.selected,
+                      selectionActive: widget.selectionActive,
+                      selectionIndex: widget.selectionIndex,
+                    ),
+                  if (widget.item.displayTitle != null &&
+                      !widget.item.encrypted)
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: padding10,
+                        right: padding10,
+                        bottom: padding8,
+                      ),
+                      child: Text(
+                        widget.item.displayTitle!,
+                        style: textTheme.titleSmall?.copyWith(
+                          fontVariations: fontVarW700,
+                        ),
+                        maxLines: 2,
                       ),
                     ),
+                  Flexible(
+                    child: ClipPreview(
+                      item: widget.item,
+                      layout: AppLayout.list,
+                    ),
                   ),
-              ],
+                  if (!widget.selected && !widget.noView)
+                    DisableForLocalUser(
+                      child: ClipSyncStatusFooter(
+                        item: widget.item,
+                        radius: const BorderRadius.vertical(
+                          bottom: Radius.circular(8),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),

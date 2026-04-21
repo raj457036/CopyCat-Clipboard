@@ -11,11 +11,12 @@ class TextClipPreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = hexToColor(item);
+    final bg = textToColor(item);
 
     final config = ClipPreviewConfig.of(context);
 
     return Card.filled(
+      key: ValueKey('text_preview_${item.id}'),
       color: bg,
       margin: EdgeInsets.zero,
       shape: config?.shape,

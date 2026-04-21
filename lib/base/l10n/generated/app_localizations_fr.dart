@@ -1451,6 +1451,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Collez du contenu directement sur l\'application ciblée.';
 
   @override
+  String get settings__switch__transform_behavior__title =>
+      'Enregistrer les transformations comme nouveaux clips';
+
+  @override
+  String get settings__switch__transform_behavior__subtitle =>
+      'Si activé, les actions de transformation créent un nouveau clip au lieu de copier ou coller immédiatement.';
+
+  @override
   String get settings__switch__type_search__title => 'Type to Search';
 
   @override

@@ -552,11 +552,13 @@ const _IsarClipboardItemtextCategoryEnumValueMap = {
   r'color': r'color',
   r'email': r'email',
   r'phone': r'phone',
+  r'struct': r'struct',
 };
 const _IsarClipboardItemtextCategoryValueEnumMap = {
   r'color': TextCategory.color,
   r'email': TextCategory.email,
   r'phone': TextCategory.phone,
+  r'struct': TextCategory.struct,
 };
 const _IsarClipboardItemtypeEnumValueMap = {
   r'text': r'text',

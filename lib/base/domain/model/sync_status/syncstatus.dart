@@ -12,7 +12,7 @@ class SyncStatus with _$SyncStatus, Identifiable {
     DateTime?
     lastSyncPoint, // . . . -\>* . . |<- it stores the last sync end point in time.
     DateTime?
-    lastSyncStartPoint, // . . . ->| . . *<- it stores the last sync start point in time.
+    lastSyncStartPoint, // . . . →| . . *<- it stores the last sync start point in time.
     int? lastKnownSyncCount,
     int? lastKnownTotalCount,
     @Default(true) bool restorationPending,

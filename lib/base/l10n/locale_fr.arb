@@ -558,6 +558,8 @@
   },
   "settings__switch__smart_paste__title": "Collage intelligent",
   "settings__switch__smart_paste__subtitle": "Collez du contenu directement sur l'application ciblée.",
+  "settings__switch__transform_behavior__title": "Enregistrer les transformations comme nouveaux clips",
+  "settings__switch__transform_behavior__subtitle": "Si activé, les actions de transformation créent un nouveau clip au lieu de copier ou coller immédiatement.",
   "settings__switch__startup__title": "Lancer au démarrage",
   "settings__switch__startup__subtitle": "Lancez automatiquement CopyCat lorsque votre appareil s'allume.",
   "settings__switch__hotkey__title": "Activer avec le raccourci",

@@ -1385,6 +1385,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__switch__smart_paste__subtitle => '直接在目标应用上粘贴内容。';
 
   @override
+  String get settings__switch__transform_behavior__title => '将转换结果保存为新剪辑';
+
+  @override
+  String get settings__switch__transform_behavior__subtitle =>
+      '启用后，转换操作会创建新剪辑，而不是立即复制或粘贴。';
+
+  @override
   String get settings__switch__type_search__title => 'Type to Search';
 
   @override

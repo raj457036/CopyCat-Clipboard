@@ -98,6 +98,7 @@ const _$TextCategoryEnumMap = {
   TextCategory.color: 'color',
   TextCategory.email: 'email',
   TextCategory.phone: 'phone',
+  TextCategory.struct: 'struct',
 };
 
 const _$PlatformOSEnumMap = {

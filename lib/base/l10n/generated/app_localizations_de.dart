@@ -1445,6 +1445,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'Fügen Sie Inhalte direkt in die fokussierte App ein.';
 
   @override
+  String get settings__switch__transform_behavior__title =>
+      'Transformationen als neue Clips speichern';
+
+  @override
+  String get settings__switch__transform_behavior__subtitle =>
+      'Wenn aktiviert, erstellen Transformationsaktionen einen neuen Clip, statt sofort zu kopieren oder einzufügen.';
+
+  @override
   String get settings__switch__type_search__title => 'Type to Search';
 
   @override

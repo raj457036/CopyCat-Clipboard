@@ -41,7 +41,7 @@ class TextClipCard extends StatelessWidget {
 
     switch (item.textCategory) {
       case TextCategory.color:
-        final bg = hexToColor(item);
+        final bg = textToColor(item);
         return SizedBox(
           width: double.infinity,
           child: TextPreviewBody(
@@ -74,6 +74,17 @@ class TextClipCard extends StatelessWidget {
                 maxLines: 3,
                 overflow: TextOverflow.fade,
               ),
+            ),
+          ),
+        );
+      case TextCategory.struct:
+        return SizedBox(
+          width: double.infinity,
+          child: TextPreviewBody(
+            child: Text(
+              item.text!,
+              overflow: TextOverflow.fade,
+              style: textTheme.bodyMedium?.copyWith(fontFamily: 'monospace'),
             ),
           ),
         );

@@ -96,6 +96,7 @@ dependencies:
   cached_network_image: ^3.4.1
   synchronized: ^3.4.0
   archive: ^4.0.9
+  statsfl: ^2.2.0+1
 
 dev_dependencies:
   flutter_test:

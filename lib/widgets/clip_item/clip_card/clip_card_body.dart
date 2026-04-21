@@ -15,6 +15,7 @@ import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_card/clip_card_options_header.dart';
 import 'package:clipboard/widgets/clip_item/clip_preview.dart';
 import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
+import 'package:clipboard/widgets/clip_item/paste_chip_slide_in.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:clipboard/widgets/drag_drop/drag_item.dart';
 import 'package:clipboard/widgets/keyboard_shortcuts/space_enter_listener.dart';
@@ -215,13 +216,16 @@ class _ClipCardBodyState extends State<ClipCardBody> {
           )
         : null;
 
-    final cardContent = ClipCardBodyContent(
-      item: widget.item,
-      hovered: hovered,
-      selected: widget.selected,
-      selectionIndex: widget.selectionIndex,
-      selectionActive: widget.selectionActive,
-      canPaste: canPaste,
+    final cardContent = PasteChipSlideIn(
+      clipChild: ClipCardBodyContent(
+        item: widget.item,
+        hovered: hovered,
+        selected: widget.selected,
+        selectionIndex: widget.selectionIndex,
+        selectionActive: widget.selectionActive,
+        canPaste: canPaste,
+      ),
+      showPasteChip: hovered && canPaste,
     );
 
     return SpaceEnterListener(

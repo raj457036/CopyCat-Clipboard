@@ -53,6 +53,10 @@ mixin _$AppConfig {
   /// to the last focused cursor in the last window, and the clipboard will minimize.
   bool get smartPaste => throw _privateConstructorUsedError;
 
+  /// If enabled, transformed clips will be saved as new clips instead of
+  /// being copied/pasted immediately.
+  bool get transformAsNewClip => throw _privateConstructorUsedError;
+
   /// If enabled, search runs while the user types in the search box.
   bool get enableTypeToSearch => throw _privateConstructorUsedError;
 
@@ -114,6 +118,7 @@ abstract class $AppConfigCopyWith<$Res> {
     SyncSpeed syncSpeed,
     String? toggleHotkey,
     bool smartPaste,
+    bool transformAsNewClip,
     bool enableTypeToSearch,
     bool launchAtStartup,
     String locale,
@@ -169,6 +174,7 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? syncSpeed = null,
     Object? toggleHotkey = freezed,
     Object? smartPaste = null,
+    Object? transformAsNewClip = null,
     Object? enableTypeToSearch = null,
     Object? launchAtStartup = null,
     Object? locale = null,
@@ -255,6 +261,10 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
             smartPaste: null == smartPaste
                 ? _value.smartPaste
                 : smartPaste // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            transformAsNewClip: null == transformAsNewClip
+                ? _value.transformAsNewClip
+                : transformAsNewClip // ignore: cast_nullable_to_non_nullable
                       as bool,
             enableTypeToSearch: null == enableTypeToSearch
                 ? _value.enableTypeToSearch
@@ -367,6 +377,7 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     SyncSpeed syncSpeed,
     String? toggleHotkey,
     bool smartPaste,
+    bool transformAsNewClip,
     bool enableTypeToSearch,
     bool launchAtStartup,
     String locale,
@@ -422,6 +433,7 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? syncSpeed = null,
     Object? toggleHotkey = freezed,
     Object? smartPaste = null,
+    Object? transformAsNewClip = null,
     Object? enableTypeToSearch = null,
     Object? launchAtStartup = null,
     Object? locale = null,
@@ -508,6 +520,10 @@ class __$$AppConfigImplCopyWithImpl<$Res>
         smartPaste: null == smartPaste
             ? _value.smartPaste
             : smartPaste // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        transformAsNewClip: null == transformAsNewClip
+            ? _value.transformAsNewClip
+            : transformAsNewClip // ignore: cast_nullable_to_non_nullable
                   as bool,
         enableTypeToSearch: null == enableTypeToSearch
             ? _value.enableTypeToSearch
@@ -599,6 +615,7 @@ class _$AppConfigImpl extends _AppConfig {
     this.syncSpeed = SyncSpeed.balanced,
     this.toggleHotkey,
     this.smartPaste = false,
+    this.transformAsNewClip = false,
     this.enableTypeToSearch = false,
     this.launchAtStartup = false,
     this.locale = "en",
@@ -685,6 +702,12 @@ class _$AppConfigImpl extends _AppConfig {
   @JsonKey()
   final bool smartPaste;
 
+  /// If enabled, transformed clips will be saved as new clips instead of
+  /// being copied/pasted immediately.
+  @override
+  @JsonKey()
+  final bool transformAsNewClip;
+
   /// If enabled, search runs while the user types in the search box.
   @override
   @JsonKey()
@@ -745,7 +768,7 @@ class _$AppConfigImpl extends _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, smartPaste: $smartPaste, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, onBoardComplete: $onBoardComplete, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
+    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, onBoardComplete: $onBoardComplete, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
   }
 
   @override
@@ -782,6 +805,8 @@ class _$AppConfigImpl extends _AppConfig {
                 other.toggleHotkey == toggleHotkey) &&
             (identical(other.smartPaste, smartPaste) ||
                 other.smartPaste == smartPaste) &&
+            (identical(other.transformAsNewClip, transformAsNewClip) ||
+                other.transformAsNewClip == transformAsNewClip) &&
             (identical(other.enableTypeToSearch, enableTypeToSearch) ||
                 other.enableTypeToSearch == enableTypeToSearch) &&
             (identical(other.launchAtStartup, launchAtStartup) ||
@@ -835,6 +860,7 @@ class _$AppConfigImpl extends _AppConfig {
     syncSpeed,
     toggleHotkey,
     smartPaste,
+    transformAsNewClip,
     enableTypeToSearch,
     launchAtStartup,
     locale,
@@ -886,6 +912,7 @@ abstract class _AppConfig extends AppConfig {
     final SyncSpeed syncSpeed,
     final String? toggleHotkey,
     final bool smartPaste,
+    final bool transformAsNewClip,
     final bool enableTypeToSearch,
     final bool launchAtStartup,
     final String locale,
@@ -956,6 +983,11 @@ abstract class _AppConfig extends AppConfig {
   /// to the last focused cursor in the last window, and the clipboard will minimize.
   @override
   bool get smartPaste;
+
+  /// If enabled, transformed clips will be saved as new clips instead of
+  /// being copied/pasted immediately.
+  @override
+  bool get transformAsNewClip;
 
   /// If enabled, search runs while the user types in the search box.
   @override

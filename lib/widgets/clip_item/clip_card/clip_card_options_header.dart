@@ -51,6 +51,8 @@ class ClipCardOptionsHeader extends StatelessWidget {
             return "Email";
           case TextCategory.phone:
             return "Phone";
+          case TextCategory.struct:
+            return "Struct";
           default:
             return "Text";
         }

@@ -138,24 +138,29 @@ const IsarAppConfigSchema = CollectionSchema(
       name: r'toggleHotkey',
       type: IsarType.string,
     ),
-    r'useEncryptionNonce': PropertySchema(
+    r'transformAsNewClip': PropertySchema(
       id: 25,
+      name: r'transformAsNewClip',
+      type: IsarType.bool,
+    ),
+    r'useEncryptionNonce': PropertySchema(
+      id: 26,
       name: r'useEncryptionNonce',
       type: IsarType.bool,
     ),
     r'view': PropertySchema(
-      id: 26,
+      id: 27,
       name: r'view',
       type: IsarType.string,
       enumMap: _IsarAppConfigviewEnumValueMap,
     ),
     r'windowHeight': PropertySchema(
-      id: 27,
+      id: 28,
       name: r'windowHeight',
       type: IsarType.double,
     ),
     r'windowWidth': PropertySchema(
-      id: 28,
+      id: 29,
       name: r'windowWidth',
       type: IsarType.double,
     ),
@@ -256,10 +261,11 @@ void _isarAppConfigSerialize(
   writer.writeString(offsets[22], object.themeMode.name);
   writer.writeString(offsets[23], object.themeVariant.name);
   writer.writeString(offsets[24], object.toggleHotkey);
-  writer.writeBool(offsets[25], object.useEncryptionNonce);
-  writer.writeString(offsets[26], object.view.name);
-  writer.writeDouble(offsets[27], object.windowHeight);
-  writer.writeDouble(offsets[28], object.windowWidth);
+  writer.writeBool(offsets[25], object.transformAsNewClip);
+  writer.writeBool(offsets[26], object.useEncryptionNonce);
+  writer.writeString(offsets[27], object.view.name);
+  writer.writeDouble(offsets[28], object.windowHeight);
+  writer.writeDouble(offsets[29], object.windowWidth);
 }
 
 IsarAppConfig _isarAppConfigDeserialize(
@@ -319,12 +325,13 @@ IsarAppConfig _isarAppConfigDeserialize(
       )] ??
       DynamicSchemeVariant.tonalSpot;
   object.toggleHotkey = reader.readStringOrNull(offsets[24]);
-  object.useEncryptionNonce = reader.readBool(offsets[25]);
+  object.transformAsNewClip = reader.readBool(offsets[25]);
+  object.useEncryptionNonce = reader.readBool(offsets[26]);
   object.view =
-      _IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offsets[26])] ??
+      _IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offsets[27])] ??
       AppView.topDocked;
-  object.windowHeight = reader.readDouble(offsets[27]);
-  object.windowWidth = reader.readDouble(offsets[28]);
+  object.windowHeight = reader.readDouble(offsets[28]);
+  object.windowWidth = reader.readDouble(offsets[29]);
   return object;
 }
 
@@ -417,12 +424,14 @@ P _isarAppConfigDeserializeProp<P>(
     case 25:
       return (reader.readBool(offset)) as P;
     case 26:
+      return (reader.readBool(offset)) as P;
+    case 27:
       return (_IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offset)] ??
               AppView.topDocked)
           as P;
-    case 27:
-      return (reader.readDouble(offset)) as P;
     case 28:
+      return (reader.readDouble(offset)) as P;
+    case 29:
       return (reader.readDouble(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2326,6 +2335,15 @@ extension IsarAppConfigQueryFilter
   }
 
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  transformAsNewClipEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'transformAsNewClip', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
   useEncryptionNonceEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -2963,6 +2981,20 @@ extension IsarAppConfigQuerySortBy
   }
 
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByTransformAsNewClip() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transformAsNewClip', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByTransformAsNewClipDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transformAsNewClip', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
   sortByUseEncryptionNonce() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'useEncryptionNonce', Sort.asc);
@@ -3349,6 +3381,20 @@ extension IsarAppConfigQuerySortThenBy
   }
 
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByTransformAsNewClip() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transformAsNewClip', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByTransformAsNewClipDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'transformAsNewClip', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
   thenByUseEncryptionNonce() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'useEncryptionNonce', Sort.asc);
@@ -3577,6 +3623,13 @@ extension IsarAppConfigQueryWhereDistinct
   }
 
   QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct>
+  distinctByTransformAsNewClip() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'transformAsNewClip');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct>
   distinctByUseEncryptionNonce() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'useEncryptionNonce');
@@ -3772,6 +3825,13 @@ extension IsarAppConfigQueryProperty
   toggleHotkeyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'toggleHotkey');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, bool, QQueryOperations>
+  transformAsNewClipProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'transformAsNewClip');
     });
   }
 

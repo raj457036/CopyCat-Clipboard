@@ -1449,6 +1449,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'Pega contenido directamente en la aplicación enfocada.';
 
   @override
+  String get settings__switch__transform_behavior__title =>
+      'Guardar transformaciones como clips nuevos';
+
+  @override
+  String get settings__switch__transform_behavior__subtitle =>
+      'Si está activado, las acciones de transformación crean un nuevo clip en lugar de copiar o pegar de inmediato.';
+
+  @override
   String get settings__switch__type_search__title => 'Type to Search';
 
   @override

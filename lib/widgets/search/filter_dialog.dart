@@ -405,11 +405,11 @@ class _FilterDialogState extends State<FilterDialog> {
                                   Icons.code_rounded,
                                   size: 16,
                                 ),
-                                label: const Text('Code'),
+                                label: const Text('Struct'),
                                 onSelected: (v) =>
-                                    _setTextCategory(v, TextCategory.code),
+                                    _setTextCategory(v, TextCategory.struct),
                                 selected: textCategory.contains(
-                                  TextCategory.code,
+                                  TextCategory.struct,
                                 ),
                               ),
                             ],

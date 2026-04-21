@@ -5,6 +5,7 @@ import 'dart:convert' show utf8;
 import 'package:clipboard/base/constants/misc.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
+import 'package:clipboard/base/domain/services/analysis/text_analysis.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard_watcher/clipboard_watcher.dart';
@@ -158,50 +159,6 @@ class ClipItem {
 
 ImmediateClip? _immediateClip;
 const _duplicateTag = "<-Duplicate";
-final rgbRegex = RegExp(
-  r"^#?(?:[0-9a-fA-F]{3}){1,2}$|^#(?:[0-9a-fA-F]{4}){2}$",
-); // ABC, FFAAAA, #AAA, #FAB, #FFAABBCC
-final emailRegex = RegExp(
-  r"^([a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9\-\_]+(\.[a-zA-Z]+)*)$",
-);
-final phoneRegex = RegExp(r'^\+?\d{0,2}\s?\d{7,15}$');
-
-(bool, String) parseColor(String value) {
-  final colorHex = rgbRegex.stringMatch(value);
-  if (colorHex != null) {
-    return (true, colorHex);
-  }
-  return (false, value);
-}
-
-(bool, String) parseEmail(String value) {
-  final email = emailRegex.stringMatch(value);
-  if (email != null) {
-    return (true, email);
-  }
-  return (false, value);
-}
-
-(bool, String) parsePhone(String value) {
-  final phone = phoneRegex.stringMatch(value);
-  if (phone != null) {
-    return (true, phone);
-  }
-  return (false, value);
-}
-
-(TextCategory?, String) getTextCategory(String value) {
-  final (isColor, color) = parseColor(value);
-  if (isColor) return (TextCategory.color, color);
-
-  final (isEmail, email) = parseEmail(value);
-  if (isEmail) return (TextCategory.email, email);
-
-  final (isPhone, phone) = parsePhone(value);
-  if (isPhone) return (TextCategory.phone, phone);
-
-  return (null, value);
-}
 
 void copyFile((String, String) paths, Sender sender) {
   final (from, to) = paths;
@@ -433,7 +390,7 @@ class ClipboardFormatProcessor {
 
       if (text.trim().isEmpty) return null;
       text = text.replaceAll(RegExp('\r[\n]?'), '\n');
-      final (textCategory, parsedText) = getTextCategory(text);
+      final (textCategory, parsedText) = TextAnalysis.getTextCategory(text);
 
       // duplicate prevention
       if (isDuplicate(type: ClipItemType.text, text: parsedText, save: true)) {

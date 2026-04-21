@@ -1,6 +1,7 @@
 import 'dart:math' show Random;
 
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/services/analysis/text_analysis.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:device_preview_screenshot/device_preview_screenshot.dart';
@@ -32,17 +33,51 @@ T clamp<T extends num>(T value, [T? min, T? max]) {
   return value;
 }
 
-Color? hexToColor(ClipboardItem item) {
+Color? textToColor(ClipboardItem item) {
   if (item.textCategory != TextCategory.color) return null;
-  String hex = item.text!.replaceAll('#', '');
+  final value = item.text?.trim();
+  if (value == null || value.isEmpty) return null;
 
-  if (hex.length == 3) {
-    hex = 'FF${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}';
-  } else if (hex.length == 6) {
-    hex = 'FF$hex';
+  try {
+    final format = TextAnalysis.detectColorFormat(value);
+    switch (format) {
+      case ColorTextFormat.hex:
+        String hex = value.replaceAll('#', '');
+        if (hex.length == 3) {
+          hex = 'FF${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}';
+        } else if (hex.length == 6) {
+          hex = 'FF$hex';
+        }
+        return Color(int.parse(hex, radix: 16));
+      case ColorTextFormat.rgb:
+        final rgb = TextAnalysis.parseRgbColor(value);
+        if (rgb == null) return null;
+        return Color.fromARGB(255, rgb.r, rgb.g, rgb.b);
+      case ColorTextFormat.hsl:
+        final hsl = TextAnalysis.parseHslColor(value);
+        if (hsl == null) return null;
+        return HSLColor.fromAHSL(
+          1.0,
+          hsl.h,
+          hsl.s / 100.0,
+          hsl.l / 100.0,
+        ).toColor();
+      case ColorTextFormat.hsv:
+        final hsv = TextAnalysis.parseHsvColor(value);
+        if (hsv == null) return null;
+        return HSVColor.fromAHSV(
+          1.0,
+          hsv.h,
+          hsv.s / 100.0,
+          hsv.v / 100.0,
+        ).toColor();
+      case null:
+        return null;
+    }
+  } catch (e, st) {
+    logger.e('Unable to render color clip: $value', error: e, stackTrace: st);
+    return null;
   }
-
-  return Color(int.parse(hex, radix: 16));
 }
 
 Color? getFg(Color? bg) {

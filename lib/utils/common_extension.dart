@@ -1,10 +1,12 @@
 import 'dart:math' show min;
 
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
 import 'package:clipboard/utils/monetization.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -42,6 +44,16 @@ extension BuildContextExtension on BuildContext {
   bool get isDarkMode => theme.brightness == Brightness.dark;
   String get location {
     return GoRouter.of(this).location();
+  }
+
+  /// checks if the current platform supports smart paste and
+  /// if the last focused window is not null
+  bool get canPaste {
+    final appConfig = read<AppConfigCubit>().state;
+    return isDesktopPlatform
+        ? appConfig.config.lastFocusedWindowId != null &&
+              appConfig.config.smartPaste
+        : false;
   }
 }
 

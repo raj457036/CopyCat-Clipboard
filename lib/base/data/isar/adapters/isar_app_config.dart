@@ -35,6 +35,7 @@ class IsarAppConfig {
   SyncSpeed syncSpeed = SyncSpeed.balanced;
   String? toggleHotkey;
   bool smartPaste = false;
+  bool transformAsNewClip = false;
   bool launchAtStartup = false;
   String locale = "en";
   String? enc2;
@@ -68,6 +69,7 @@ class IsarAppConfig {
     syncSpeed: syncSpeed,
     toggleHotkey: toggleHotkey,
     smartPaste: smartPaste,
+    transformAsNewClip: transformAsNewClip,
     launchAtStartup: launchAtStartup,
     locale: locale,
     enc2: enc2,
@@ -101,6 +103,7 @@ class IsarAppConfig {
     ..syncSpeed = config.syncSpeed
     ..toggleHotkey = config.toggleHotkey
     ..smartPaste = config.smartPaste
+    ..transformAsNewClip = config.transformAsNewClip
     ..launchAtStartup = config.launchAtStartup
     ..locale = config.locale
     ..enc2 = config.enc2

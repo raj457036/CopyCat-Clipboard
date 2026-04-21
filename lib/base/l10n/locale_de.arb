@@ -559,6 +559,8 @@
   },
   "settings__switch__smart_paste__title": "Smartes Einfügen",
   "settings__switch__smart_paste__subtitle": "Fügen Sie Inhalte direkt in die fokussierte App ein.",
+  "settings__switch__transform_behavior__title": "Transformationen als neue Clips speichern",
+  "settings__switch__transform_behavior__subtitle": "Wenn aktiviert, erstellen Transformationsaktionen einen neuen Clip, statt sofort zu kopieren oder einzufügen.",
   "settings__switch__startup__title": "Beim Start starten",
   "settings__switch__startup__subtitle": "Starten Sie CopyCat automatisch, wenn Ihr Gerät eingeschaltet wird.",
   "settings__switch__hotkey__title": "Mit Tastenkombination umschalten",

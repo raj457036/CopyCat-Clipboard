@@ -3,6 +3,7 @@ import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/widgets/clip_item/clip_transform_menu_items.dart';
 import 'package:clipboard/widgets/menu.dart';
 import 'package:flutter/material.dart';
 
@@ -13,34 +14,41 @@ class ClipMenuProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final transformItems = buildSmartTransformMenuItems(context, item);
+
     return Menu(
       items: [
         MenuItem(
           icon: Icons.check_circle_outline_rounded,
           text: context.locale.app__select,
+          section: 'Clip Actions',
           onPressed: () => selectClip(context, item),
         ),
         if (!item.inCache)
           MenuItem(
             icon: Icons.download_for_offline_outlined,
             text: context.locale.app__download,
+            section: 'Clip Actions',
             onPressed: () => downloadFile(context, item),
           ),
-        if (item.inCache)
+        if (item.inCache && context.canPaste)
           MenuItem(
             icon: Icons.copy,
             text: context.mlocale.copyButtonLabel.title,
+            section: 'Clip Actions',
             onPressed: () => copyToClipboard(context, item),
           ),
         if (item.inCache)
           MenuItem(
             icon: Icons.ios_share,
             text: context.locale.app__share,
+            section: 'Clip Actions',
             onPressed: () => shareClipboardItem(context, item),
           ),
         MenuItem(
           icon: Icons.edit_note_rounded,
           text: context.locale.app__preview,
+          section: 'Clip Actions',
           onPressed: () => preview(context, item),
         ),
         if (item.type == ClipItemType.url)
@@ -55,6 +63,7 @@ class ClipMenuProvider extends StatelessWidget {
           MenuItem(
             icon: Icons.save_alt_rounded,
             text: context.locale.app__export,
+            section: 'Clip Actions',
             onPressed: () => copyToClipboard(context, item, saveFile: true),
           ),
         if ((item.type == ClipItemType.file ||
@@ -63,18 +72,22 @@ class ClipMenuProvider extends StatelessWidget {
           MenuItem(
             icon: Icons.open_in_new,
             text: context.locale.app__open_file,
+            section: 'Clip Actions',
             onPressed: () => openFile(item),
           ),
         MenuItem(
           icon: Icons.collections_bookmark_outlined,
           text: context.locale.app__change_collection,
+          section: 'Clip Actions',
           onPressed: () => changeCollection(context, [item]),
         ),
         MenuItem(
           icon: Icons.delete_outline,
           text: context.locale.app__delete,
+          section: 'Clip Actions',
           onPressed: () => deleteClipboardItem(context, [item]),
         ),
+        ...transformItems,
       ],
       child: child,
     );

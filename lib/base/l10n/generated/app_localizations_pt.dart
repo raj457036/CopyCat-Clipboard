@@ -1465,6 +1465,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Cole o conteúdo diretamente no aplicativo com foco.';
 
   @override
+  String get settings__switch__transform_behavior__title =>
+      'Salvar transformações como novos clips';
+
+  @override
+  String get settings__switch__transform_behavior__subtitle =>
+      'Quando ativado, as ações de transformação criam um novo clip em vez de copiar ou colar imediatamente.';
+
+  @override
   String get settings__switch__type_search__title => 'Type to Search';
 
   @override

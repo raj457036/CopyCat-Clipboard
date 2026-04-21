@@ -558,6 +558,8 @@
   },
   "settings__switch__smart_paste__title": "Pegado Inteligente",
   "settings__switch__smart_paste__subtitle": "Pega contenido directamente en la aplicación enfocada.",
+  "settings__switch__transform_behavior__title": "Guardar transformaciones como clips nuevos",
+  "settings__switch__transform_behavior__subtitle": "Si está activado, las acciones de transformación crean un nuevo clip en lugar de copiar o pegar de inmediato.",
   "settings__switch__startup__title": "Iniciar al Iniciar",
   "settings__switch__startup__subtitle": "Inicia automáticamente el CopyCat cuando tu dispositivo se encienda.",
   "settings__switch__hotkey__title": "Alternar con Tecla de Acceso Rápido",

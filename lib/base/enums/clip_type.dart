@@ -18,8 +18,11 @@ enum TextCategory {
   email,
   @JsonValue("phone")
   phone,
+  @JsonValue("struct")
+  struct,
 }
 
 const colorTextCategory = "color";
 const emailTextCategory = "email";
 const phoneTextCategory = "phone";
+const structTextCategory = "struct";

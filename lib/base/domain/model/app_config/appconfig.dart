@@ -60,6 +60,10 @@ class AppConfig with _$AppConfig, Identifiable {
     /// to the last focused cursor in the last window, and the clipboard will minimize.
     @Default(false) bool smartPaste,
 
+    /// If enabled, transformed clips will be saved as new clips instead of
+    /// being copied/pasted immediately.
+    @Default(false) bool transformAsNewClip,
+
     /// If enabled, search runs while the user types in the search box.
     @Default(false) bool enableTypeToSearch,
 

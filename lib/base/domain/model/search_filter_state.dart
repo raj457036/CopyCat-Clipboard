@@ -44,9 +44,10 @@ class SearchFilterState {
   /// Number of active (non-sort) filter dimensions applied.
   int get activeFilterCount {
     int count = 0;
-    if (from != null || to != null) count++;
-    if (typeIncludes != null) count++;
-    if (textCategories != null) count++;
+    if (from != null) count += 1;
+    if (to != null) count += 1;
+    if (typeIncludes != null) count += typeIncludes!.length;
+    if (textCategories != null) count += textCategories!.length;
     return count;
   }
 

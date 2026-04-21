@@ -101,6 +101,22 @@ class _ClipInspectorState extends State<ClipInspector> {
     }
   }
 
+  String? get _categoryLabel {
+    final category = item.textCategory;
+    if (item.type != ClipItemType.text || category == null) return null;
+
+    switch (category) {
+      case TextCategory.color:
+        return context.locale.search_filter__text_cat__color;
+      case TextCategory.email:
+        return context.locale.search_filter__text_cat__email;
+      case TextCategory.phone:
+        return context.locale.search_filter__text_cat__phone;
+      case TextCategory.struct:
+        return 'Struct';
+    }
+  }
+
   String get _titleText {
     final displayTitle = item.displayTitle?.trim();
     if (displayTitle != null && displayTitle.isNotEmpty) {
@@ -226,6 +242,15 @@ class _ClipInspectorState extends State<ClipInspector> {
         label: Text(_typeLabel),
       ),
     ];
+
+    if (_categoryLabel != null) {
+      chips.add(
+        Chip(
+          avatar: const Icon(Icons.label_outline, size: 18),
+          label: Text(_categoryLabel!),
+        ),
+      );
+    }
 
     if (item.encrypted) {
       chips.add(
@@ -414,6 +439,7 @@ class _ClipInspectorState extends State<ClipInspector> {
 
   List<Widget> _buildDetailRows() {
     final rows = <Widget>[
+      _InspectorInfoRow(label: 'Type', value: _typeLabel),
       _InspectorInfoRow(
         label: context.locale.preview__inspector__label__created,
         value: _formatDateTime(item.created),
@@ -439,6 +465,13 @@ class _ClipInspectorState extends State<ClipInspector> {
         value: _formatCount(item.copiedCount),
       ),
     );
+
+    if (_categoryLabel != null) {
+      rows.insert(
+        1,
+        _InspectorInfoRow(label: 'Category', value: _categoryLabel!),
+      );
+    }
 
     if (item.sourceApp?.trim().isNotEmpty == true) {
       rows.add(

@@ -320,6 +320,12 @@ class AppConfigCubit extends Cubit<AppConfigState> {
     await repo.update(newConfig);
   }
 
+  Future<void> toggleTransformAsNewClip(bool value) async {
+    final newConfig = state.config.copyWith(transformAsNewClip: value);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+  }
+
   Future<void> toggleTypeToSearch(bool value) async {
     final newConfig = state.config.copyWith(enableTypeToSearch: value);
     emit(state.copyWith(config: newConfig));

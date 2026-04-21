@@ -1820,6 +1820,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.1"
+  statsfl:
+    dependency: "direct main"
+    description:
+      name: statsfl
+      sha256: "12901533eee23cc04f01858f1e6851beec27d927a9afa694bb3d68403a5e0d13"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   storage_client:
     dependency: transitive
     description:

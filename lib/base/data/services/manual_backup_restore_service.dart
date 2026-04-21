@@ -117,7 +117,9 @@ class ManualBackupRestoreService {
       final payloadSink = payloadFile.openWrite();
 
       payloadSink.write('{"schemaVersion":1');
-      payloadSink.write(',"createdAt":${jsonEncode(DateTime.now().toUtc().toIso8601String())}');
+      payloadSink.write(
+        ',"createdAt":${jsonEncode(DateTime.now().toUtc().toIso8601String())}',
+      );
       payloadSink.write(',"collections":[');
 
       var wroteCollection = false;
@@ -138,7 +140,11 @@ class ManualBackupRestoreService {
         if (!clipTypes.contains(clip.type)) {
           continue;
         }
-        if (!_withinDateRange(clip.created, fromDate: fromDate, toDate: toDate)) {
+        if (!_withinDateRange(
+          clip.created,
+          fromDate: fromDate,
+          toDate: toDate,
+        )) {
           continue;
         }
 
@@ -161,7 +167,11 @@ class ManualBackupRestoreService {
             } else {
               final safeName = p.basename(file.path);
               attachmentArchivePath = 'files/${getId()}_$safeName';
-              await zipEncoder.addFile(file, attachmentArchivePath, ZipFileEncoder.gzip);
+              await zipEncoder.addFile(
+                file,
+                attachmentArchivePath,
+                ZipFileEncoder.gzip,
+              );
               cachedFilesIncluded++;
             }
           } else {
@@ -170,7 +180,8 @@ class ManualBackupRestoreService {
         }
 
         final backupCollectionId =
-            clip.collectionId != null && localCollectionIds.containsKey(clip.collectionId)
+            clip.collectionId != null &&
+                localCollectionIds.containsKey(clip.collectionId)
             ? clip.collectionId
             : null;
 

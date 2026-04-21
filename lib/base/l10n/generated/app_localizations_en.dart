@@ -1448,6 +1448,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Paste content directly on the focused app.';
 
   @override
+  String get settings__switch__transform_behavior__title =>
+      'Save Transforms as New Clips';
+
+  @override
+  String get settings__switch__transform_behavior__subtitle =>
+      'When enabled, transform actions create a new clip instead of copying or pasting immediately.';
+
+  @override
   String get settings__switch__type_search__title => 'Type to Search';
 
   @override

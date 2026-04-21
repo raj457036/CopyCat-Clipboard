@@ -4,6 +4,7 @@ import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistanc
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
+import 'package:clipboard/base/domain/services/analysis/text_analysis.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
@@ -111,7 +112,7 @@ class ShareListener {
         final clip = ClipItem.uri(uri: uri);
         clips.add(clip);
       } else {
-        final (category, text) = getTextCategory(media.content!);
+        final (category, text) = TextAnalysis.getTextCategory(media.content!);
         final clip = ClipItem.text(text: text, textCategory: category);
         clips.add(clip);
       }

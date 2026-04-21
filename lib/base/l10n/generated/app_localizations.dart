@@ -2620,6 +2620,18 @@ abstract class AppLocalizations {
   /// **'Paste content directly on the focused app.'**
   String get settings__switch__smart_paste__subtitle;
 
+  /// No description provided for @settings__switch__transform_behavior__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Transforms as New Clips'**
+  String get settings__switch__transform_behavior__title;
+
+  /// No description provided for @settings__switch__transform_behavior__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When enabled, transform actions create a new clip instead of copying or pasting immediately.'**
+  String get settings__switch__transform_behavior__subtitle;
+
   /// No description provided for @settings__switch__type_search__title.
   ///
   /// In en, this message translates to:
