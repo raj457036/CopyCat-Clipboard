@@ -6,7 +6,6 @@ import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
 import 'package:clipboard/utils/monetization.dart';
 import 'package:clipboard/utils/utility.dart';
-import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
