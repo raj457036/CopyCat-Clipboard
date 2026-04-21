@@ -19,8 +19,8 @@ class SpaceEnterListener extends StatelessWidget {
   final Widget child;
   final bool enabled;
 
-  final BuildContextCallback onSpace;
-  final BuildContextCallback onEnter;
+  final BuildContextCallback? onSpace;
+  final BuildContextCallback? onEnter;
   final BuildContextCallback? onShiftSpace;
   final BuildContextCallback? onShiftSpaceEnter;
   final BuildContextCallback? onShiftC;
@@ -28,8 +28,8 @@ class SpaceEnterListener extends StatelessWidget {
   const SpaceEnterListener({
     super.key,
     required this.child,
-    required this.onSpace,
-    required this.onEnter,
+    this.onSpace,
+    this.onEnter,
     this.enabled = true,
     this.onShiftSpace,
     this.onShiftSpaceEnter,
@@ -44,8 +44,10 @@ class SpaceEnterListener extends StatelessWidget {
 
     return Shortcuts(
       shortcuts: <ShortcutActivator, Intent>{
-        const SingleActivator(LogicalKeyboardKey.space): _SpaceActionIntent(),
-        const SingleActivator(LogicalKeyboardKey.enter): _EnterActionIntent(),
+        if (onSpace != null)
+          const SingleActivator(LogicalKeyboardKey.space): _SpaceActionIntent(),
+        if (onEnter != null)
+          const SingleActivator(LogicalKeyboardKey.enter): _EnterActionIntent(),
         if (onShiftSpace != null)
           const SingleActivator(LogicalKeyboardKey.space, shift: true):
               _ShiftSpaceActionIntent(),
@@ -58,12 +60,14 @@ class SpaceEnterListener extends StatelessWidget {
       },
       child: Actions(
         actions: <Type, Action<Intent>>{
-          _SpaceActionIntent: CallbackAction<_SpaceActionIntent>(
-            onInvoke: (intent) => onSpace(context), // Space triggers toggle
-          ),
-          _EnterActionIntent: CallbackAction<_EnterActionIntent>(
-            onInvoke: (intent) => onEnter(context), // Enter triggers primary
-          ),
+          if (onSpace != null)
+            _SpaceActionIntent: CallbackAction<_SpaceActionIntent>(
+              onInvoke: (intent) => onSpace!(context), // Space triggers toggle
+            ),
+          if (onEnter != null)
+            _EnterActionIntent: CallbackAction<_EnterActionIntent>(
+              onInvoke: (intent) => onEnter!(context), // Enter triggers primary
+            ),
 
           if (onShiftSpace != null)
             _ShiftSpaceActionIntent: CallbackAction<_ShiftSpaceActionIntent>(

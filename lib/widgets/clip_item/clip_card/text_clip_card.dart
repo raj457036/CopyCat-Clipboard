@@ -1,4 +1,5 @@
 import 'package:clipboard/base/constants/font_variations.dart';
+import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
@@ -81,10 +82,14 @@ class TextClipCard extends StatelessWidget {
         return SizedBox(
           width: double.infinity,
           child: TextPreviewBody(
+            bg: colors.tertiaryContainer,
             child: Text(
               item.text!,
               overflow: TextOverflow.fade,
-              style: textTheme.bodyMedium?.copyWith(fontFamily: 'monospace'),
+              style: textTheme.bodyMedium?.copyWith(
+                fontFamily: jetBrainsMonoFont,
+                color: colors.onTertiaryContainer,
+              ),
             ),
           ),
         );

@@ -354,7 +354,13 @@ List<_TransformAction> _definitions(ClipboardItem item) => [
       final pretty = const JsonEncoder.withIndent(
         '  ',
       ).convert(jsonDecode(tx.text));
-      await _copyOrPasteResult(context, tx, pretty, 'Prettified JSON');
+      await _copyOrPasteResult(
+        context,
+        tx,
+        pretty,
+        'Prettified JSON',
+        categoryOverride: TextCategory.struct,
+      );
     },
   ),
   _TransformAction(
@@ -365,7 +371,13 @@ List<_TransformAction> _definitions(ClipboardItem item) => [
     when: (tx) => tx.isStruct && tx.structuredKind == StructuredKind.json,
     run: (context, tx) async {
       final min = jsonEncode(jsonDecode(tx.text));
-      await _copyOrPasteResult(context, tx, min, 'Minified JSON');
+      await _copyOrPasteResult(
+        context,
+        tx,
+        min,
+        'Minified JSON',
+        categoryOverride: TextCategory.struct,
+      );
     },
   ),
   _TransformAction(

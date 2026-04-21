@@ -56,3 +56,6 @@ const sentryDSN = String.fromEnvironment("SENTRY_DSN");
 
 // system env variable keys
 const dbPathEnvKey = "COPYCAT_DB_ROOT";
+
+/// Font family for code/monospaced text
+const jetBrainsMonoFont = "JetBrainsMono";

@@ -130,6 +130,9 @@ flutter:
     - family: RobotoFlex
       fonts:
         - asset: fonts/RobotoFlex-VariableFont.ttf
+    - family: JetBrainsMono
+      fonts:
+        - asset: fonts/JetBrainsMono-Regular.ttf
     - family: DockIcons
       fonts:
         - asset: fonts/DockIcons.ttf

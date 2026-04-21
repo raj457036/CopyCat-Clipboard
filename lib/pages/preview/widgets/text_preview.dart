@@ -1,4 +1,7 @@
+import 'package:clipboard/base/constants/strings/strings.dart';
+import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
@@ -9,9 +12,38 @@ class TextClipPreviewCard extends StatelessWidget {
   final ClipboardItem item;
   const TextClipPreviewCard({super.key, required this.item});
 
+  Color? getBG(BuildContext context) {
+    if (item.textCategory == TextCategory.color) {
+      return textToColor(item);
+    }
+    if (item.textCategory == TextCategory.struct) {
+      return context.colors.tertiaryContainer;
+    }
+    return null;
+  }
+
+  Color? getFG(BuildContext context, Color? bg) {
+    if (item.textCategory == TextCategory.color) {
+      return getFg(bg);
+    }
+    if (item.textCategory == TextCategory.struct) {
+      return context.colors.onTertiaryContainer;
+    }
+
+    return null;
+  }
+
+  String? getFontFamily() {
+    if (item.textCategory == TextCategory.struct) {
+      return jetBrainsMonoFont;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bg = textToColor(item);
+    final bg = getBG(context);
+    final fontFamily = getFontFamily();
 
     final config = ClipPreviewConfig.of(context);
 
@@ -30,7 +62,7 @@ class TextClipPreviewCard extends StatelessWidget {
           ),
           child: SelectableText(
             item.text ?? context.locale.preview__card__missing_text,
-            style: TextStyle(color: getFg(bg)),
+            style: TextStyle(color: getFG(context, bg), fontFamily: fontFamily),
           ),
         ),
       ),
