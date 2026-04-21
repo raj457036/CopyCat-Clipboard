@@ -1,6 +1,8 @@
 package com.entilitystudio.android_background_clipboard
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.Application
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -13,7 +15,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Binder
 import android.os.Build
+import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
+import android.os.PowerManager
 import android.util.Log
 import android.view.WindowManager
 import android.view.textclassifier.TextClassifier
@@ -22,6 +27,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,6 +62,27 @@ class CopyCatClipboardService : Service() {
     private val nChannelId = "copycat-notification-channel"
     private val logTag = "CopyCatClipboardService"
     private val binder = LocalBinder()
+    private var resumedActivityCount = 0
+
+    private val appLifecycleCallbacks = object : Application.ActivityLifecycleCallbacks {
+        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = Unit
+
+        override fun onActivityStarted(activity: Activity) = Unit
+
+        override fun onActivityResumed(activity: Activity) {
+            resumedActivityCount += 1
+        }
+
+        override fun onActivityPaused(activity: Activity) {
+            resumedActivityCount = (resumedActivityCount - 1).coerceAtLeast(0)
+        }
+
+        override fun onActivityStopped(activity: Activity) = Unit
+
+        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
+
+        override fun onActivityDestroyed(activity: Activity) = Unit
+    }
 
     // Disable duplicate announcement for one read cycle
     var disableDuplicateAnnouncement: Boolean = false;
@@ -71,7 +98,27 @@ class CopyCatClipboardService : Service() {
         var isRunning: Boolean = false
     }
 
+    private fun isHostAppForeground(): Boolean = resumedActivityCount > 0
+
+    private fun isScreenOn(): Boolean {
+        val pm = getSystemService(Context.POWER_SERVICE) as? PowerManager
+        return pm?.isInteractive ?: true
+    }
+
+    private fun redactForLog(value: String?): String {
+        if (value.isNullOrEmpty()) return ""
+        return if (value.length <= 2) {
+            "${value}***"
+        } else {
+            "${value.take(2)}***"
+        }
+    }
+
     fun performClipboardRead(appPackageName: String) {
+        if (!isScreenOn()) {
+            Log.d(logTag, "Clipboard capture paused: screen is off")
+            return
+        }
         Log.d(logTag, "Current Package: $appPackageName")
         Log.d(logTag, "Current Exclusions: ${copycatStorage.excludedPackages}")
         if (!copycatStorage.serviceEnabled) {
@@ -100,6 +147,8 @@ class CopyCatClipboardService : Service() {
 
     fun writeToClipboard(data: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Mark this as already handled so listener does not re-capture and re-sync it.
+            lastCopiedText = data
             getFocusOnOverlay()
             val clip = ClipData.newPlainText("CopyCat", data)
             clipboardManager.setPrimaryClip(clip)
@@ -136,7 +185,7 @@ class CopyCatClipboardService : Service() {
             if (link.getConfidenceScore(TextClassifier.TYPE_URL) == 1.0f) {
                 val url = text.substring(link.start, link.end)
                 if (url.startsWith("http://") || url.startsWith("https://")) {
-                    Log.d(logTag, "Clipboard Link: $url")
+                    Log.d(logTag, "Clipboard Link: ${redactForLog(url)}")
                     return writeTextToCopyCatClipboard(url, ClipType.Url, label)
                 }
             }
@@ -144,14 +193,14 @@ class CopyCatClipboardService : Service() {
                 if (copycatStorage.excludeEmail) return ClipAction.Excluded
 
                 val email = text.substring(link.start, link.end)
-                Log.d(logTag, "Clipboard Email: $email")
+                Log.d(logTag, "Clipboard Email: ${redactForLog(email)}")
                 return writeTextToCopyCatClipboard(email, ClipType.Email, label)
             }
             if (link.getConfidenceScore(TextClassifier.TYPE_PHONE) == 1.0f) {
                 if (copycatStorage.excludePhone) return ClipAction.Excluded
 
                 val phone = text.substring(link.start, link.end)
-                Log.d(logTag, "Clipboard Phone: $phone")
+                Log.d(logTag, "Clipboard Phone: ${redactForLog(phone)}")
                 return writeTextToCopyCatClipboard(phone, ClipType.Phone, label)
             }
         }
@@ -205,7 +254,7 @@ class CopyCatClipboardService : Service() {
                 if (actionStatus != ClipAction.Excluded) {
                     if (actionStatus != ClipAction.Success)
                         item.text?.let {
-                            Log.d(logTag, "Clipboard Text: $it")
+                            Log.d(logTag, "Clipboard Text: ${redactForLog(it.toString())}")
                             actionStatus =
                                 writeTextToCopyCatClipboard(it.toString(), ClipType.Text, clipLabel)
                         }
@@ -220,7 +269,7 @@ class CopyCatClipboardService : Service() {
 
             withContext(Dispatchers.Main) {
                 Log.d(logTag, "Clip Action: $actionStatus")
-                Log.d(logTag, "Clip Content: $lastCopiedText")
+                Log.d(logTag, "Clip Content: ${redactForLog(lastCopiedText)}")
                 when (actionStatus) {
                     ClipAction.Duplicate -> {
                         if (!disableDuplicateAnnouncement) {
@@ -335,6 +384,14 @@ class CopyCatClipboardService : Service() {
     }
 
     private val onClipChangeListener = ClipboardManager.OnPrimaryClipChangedListener {
+        if (!isScreenOn()) {
+            Log.d(logTag, "Primary Clipboard capture paused: screen is off")
+            return@OnPrimaryClipChangedListener
+        }
+        if (isHostAppForeground()) {
+            Log.d(logTag, "Primary Clipboard capture paused: app is in foreground.")
+            return@OnPrimaryClipChangedListener
+        }
         if (Utils.isActivityOnTop) {
             Log.d(logTag, "Primary Clipboard disabled! Because top activity is CopyCat itself.")
             return@OnPrimaryClipChangedListener
@@ -391,10 +448,17 @@ class CopyCatClipboardService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        (application as? Application)?.registerActivityLifecycleCallbacks(appLifecycleCallbacks)
         copycatStorage = CopyCatSharedStorage.getInstance(this)
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         copycatStorage.start()
+        copycatStorage.setRemoteClipApplier { content ->
+            Handler(mainLooper).post {
+                disableDuplicateAnnouncement = true
+                writeToClipboard(content)
+            }
+        }
         prepareAndShowNotification()
         isRunning = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -441,14 +505,10 @@ class CopyCatClipboardService : Service() {
     override fun onDestroy() {
         // Cancel all coroutines
         serviceScope.cancel()
+        (application as? Application)?.unregisterActivityLifecycleCallbacks(appLifecycleCallbacks)
         
         clipboardManager.removePrimaryClipChangedListener(onClipChangeListener)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            stopForeground(STOP_FOREGROUND_REMOVE)
-        } else {
-            @Suppress("DEPRECATION")
-            stopForeground(true)
-        }
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         Log.d(logTag, "CopyCatClipboardService Destroyed")
         showAck("CopyCat Clipboard Stopped")
         isRunning = false

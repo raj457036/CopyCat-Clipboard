@@ -29,7 +29,7 @@ android {
         namespace = "com.entilitystudio.android_background_clipboard"
     }
 
-    compileSdk = 34
+    compileSdk = 36
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

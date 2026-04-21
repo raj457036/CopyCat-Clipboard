@@ -50,11 +50,12 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
     }
   }
 
-  Future<void> writeToLocal(ClipboardItem item) async {
+  Future<bool> writeToLocal(ClipboardItem item) async {
     final result = await clipRepo.updateOrCreate(item);
-    result.fold((failure) {}, (item) async {
+    return result.fold((failure) => false, (item) async {
       item = await item.decrypt();
       syncEventBus.emit<ClipboardItem>((CrossSyncEventType.create, item));
+      return true;
     });
   }
 
@@ -73,18 +74,27 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       _ => null,
     };
     final desc = clip["label"] as String?;
-    final serverId = clip["serverId"] as int;
-    final timestamp = clip["timestamp"] != null
-        ? DateTime.fromMillisecondsSinceEpoch(clip["timestamp"])
+    final serverIdRaw = clip["serverId"];
+    final serverId = serverIdRaw is num ? serverIdRaw.toInt() : -1;
+    final timestampRaw = clip["timestamp"];
+    final timestamp = timestampRaw is num
+        ? DateTime.fromMillisecondsSinceEpoch(timestampRaw.toInt())
         : now();
+    final clipText = clip["text"] as String?;
+    final encrypted = clip["encrypted"] == true;
+    final iv = clip["iv"] as String?;
+    final encMode = clip["encMode"] as String?;
     return ClipboardItem(
       created: timestamp,
       modified: timestamp,
       type: clipType,
       os: PlatformOS.android,
+      encrypted: encrypted,
+      iv: iv,
+      encMode: encMode,
       textCategory: textCategory,
-      text: clipType == ClipItemType.text ? clip["text"] : null,
-      url: clipType == ClipItemType.url ? clip["text"] : null,
+      text: clipType == ClipItemType.text ? clipText : null,
+      url: clipType == ClipItemType.url ? clipText : null,
       title: desc,
       description: desc,
       serverId: serverId == -1 ? null : serverId,
@@ -95,6 +105,7 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
 
   Future<void> syncStates() async {
     if (isSyncing) return;
+    isSyncing = true;
     try {
       final endMark = await plugin.readShared<int>("endId") ?? -1;
       if (endMark == -1) return;
@@ -105,9 +116,13 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
 
         if (clip != null && clip.isNotEmpty) {
           final clipItem = parseClip(clip);
-          await writeToLocal(clipItem);
+          final success = await writeToLocal(clipItem);
+          if (success) {
+            deleteKeys.add(clipKey);
+          }
+        } else {
+          deleteKeys.add(clipKey);
         }
-        deleteKeys.add(clipKey);
 
         logger.w("Clip: $clip");
       }

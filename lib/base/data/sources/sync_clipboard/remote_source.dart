@@ -31,7 +31,7 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
     var query = db
         .from(clipboardItemsTable)
         .select()
-      .filter("deletedAt", "is", null);
+        .filter("deletedAt", "is", null);
 
     if (havingCollection) {
       query = query.not("collectionId", "is", "null");
@@ -73,7 +73,7 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
     var query = db
         .from(clipCollectionsTable)
         .select()
-      .filter("deletedAt", "is", null);
+        .filter("deletedAt", "is", null);
 
     if (lastSynced != null) {
       final isoDate = lastSynced

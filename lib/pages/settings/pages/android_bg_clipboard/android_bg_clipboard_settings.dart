@@ -9,6 +9,10 @@ import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/settings/pages/android_bg_clipboard/accessibility_service_notice.dart';
 import 'package:clipboard/pages/settings/pages/android_bg_clipboard/draw_over_other_app_notice.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
+import 'package:clipboard/widgets/subscription/subscription_provider.dart';
+import 'package:clipboard/base/domain/model/subscription/subscription.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
+import 'package:clipboard/widgets/badges.dart';
 import 'package:clipboard/utils/color_extension.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/snackbar.dart';
@@ -148,6 +152,35 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     });
   }
 
+  bool _syncMode = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final config = appConfigCubit.state.config;
+    setState(() {
+      _syncMode = config.androidBgListener;
+    });
+  }
+
+  Future<void> _onSyncModeChanged(
+    bool value,
+    Subscription? subscription,
+  ) async {
+    final allowSync =
+        subscription != null &&
+        subscription.syncInterval < 10 &&
+        appConfigCubit.state.config.syncSpeed == SyncSpeed.realtime;
+    final newValue = value && allowSync;
+    setState(() {
+      _syncMode = newValue;
+    });
+    await widget.bgService.writeShared(
+      "listeningMode",
+      newValue ? "sync" : "push",
+    );
+  }
+
   Future<void> setupConfiguration() async {
     showTextSnackbar(context.locale.abc__ack__preparing, isLoading: true);
     setState(() {
@@ -155,6 +188,9 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     });
     try {
       final enc1Decrypt = appConfigCubit.state.config.decryptEnc2(enc1Key);
+      final useEncryptionNonce = appConfigCubit.state.config.useEncryptionNonce;
+      final syncSpeed = appConfigCubit.state.config.syncSpeed.name;
+      final syncInterval = monetizationCubit.active?.syncInterval ?? 45;
       final tkn = monetizationCubit.active?.tkn;
       if (tkn != null) {
         await widget.bgService.writeShared(
@@ -164,9 +200,19 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
         );
       }
       await widget.bgService.writeShared("syncEnabled", true);
+      await widget.bgService.writeShared(
+        "listeningMode",
+        _syncMode ? "sync" : "push",
+      );
+      await widget.bgService.writeShared("syncSpeed", syncSpeed);
+      await widget.bgService.writeShared("syncInterval", syncInterval);
       await widget.bgService.writeShared("deviceId", widget.deviceId);
       await widget.bgService.writeShared("showAckToast", true);
       await widget.bgService.writeShared("serviceEnabled", true);
+      await widget.bgService.writeShared(
+        "useEncryptionNonce",
+        useEncryptionNonce,
+      );
       await widget.bgService.writeShared(
         "projectKey",
         sl<String>(instanceName: "supabase_project_key"),
@@ -267,6 +313,31 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                 : (_) => openAccessibilitySetting(),
           ),
           height5,
+          SubscriptionBuilder(
+            builder: (context, subscription) {
+              final realtimeSyncEnabled =
+                  appConfigCubit.state.config.syncSpeed == SyncSpeed.realtime;
+              final allowSync =
+                  subscription != null &&
+                  subscription.syncInterval < 10 &&
+                  realtimeSyncEnabled;
+              return SwitchListTile(
+                value: _syncMode && allowSync,
+                thumbIcon: _syncMode && allowSync ? checked : unchecked,
+                onChanged: writingConfig
+                    ? null
+                    : (val) => _onSyncModeChanged(val, subscription),
+                title: const Row(
+                  spacing: padding8,
+                  children: [Text("2-Way Sync"), ProBadge()],
+                ),
+                subtitle: Text(
+                  "Keeps your clipboard synced across devices instantly.\n"
+                  "${!realtimeSyncEnabled ? "⚠️ Realtime mode required." : ""}",
+                ),
+              );
+            },
+          ),
           ExpansionTile(
             tilePadding: EdgeInsets.zero,
             initiallyExpanded: true,

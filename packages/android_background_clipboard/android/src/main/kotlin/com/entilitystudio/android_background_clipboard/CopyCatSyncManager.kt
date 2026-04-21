@@ -1,28 +1,62 @@
 package com.entilitystudio.android_background_clipboard
 
 import android.content.Context
+import android.content.BroadcastReceiver
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.content.pm.ApplicationInfo
+import android.os.Build
+import android.os.PowerManager
 import android.util.Log
-import io.flutter.BuildConfig
 import okhttp3.ConnectionPool
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.Timer
+import java.util.TimerTask
 import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 
+data class RemoteClipPayload(
+    val serverId: Long,
+    val content: String,
+    val type: ClipType,
+    val label: String? = null,
+    val encrypted: Boolean = false,
+    val iv: String? = null,
+    val encMode: String? = null,
+    val userId: String? = null,
+    val modifiedAt: Long = System.currentTimeMillis(),
+)
 
-class CopyCatSyncManager(applicationContext: Context) {
+object ListeningMode {
+    const val PUSH = "push"
+    const val SYNC = "sync"
+}
+
+class CopyCatSyncManager(
+    applicationContext: Context,
+    private val onRemoteClipUpsert: (RemoteClipPayload) -> Unit,
+    private val onRemoteClipDelete: (Long) -> Unit,
+) {
+    private val appContext: Context = applicationContext.applicationContext
     private val logTag = "CopyCatSyncManager"
     private var listening = false
     private val regex = "\\d+".toRegex()
     private val contentType = "application/json"
+    private val reconnectDelayMs = 5_000L
+    private val heartbeatMs = 30_000L
     private val loggingInterceptor = HttpLoggingInterceptor()
 
     // Configure OkHttp with memory-efficient settings
@@ -34,7 +68,7 @@ class CopyCatSyncManager(applicationContext: Context) {
         .writeTimeout(10, TimeUnit.SECONDS)
         .build()
         
-    private val sp = applicationContext.getSharedPreferences(
+    private val sp = appContext.getSharedPreferences(
         "FlutterSharedPreferences",
         Context.MODE_PRIVATE
     )
@@ -42,13 +76,42 @@ class CopyCatSyncManager(applicationContext: Context) {
     var projectKey: String = ""
     var projectApiKey: String = ""
     var deviceId: String = ""
+    var syncEnabled: Boolean = false
+    var listeningMode: String = ListeningMode.PUSH
+    var syncSpeed: String = "balanced"
+    var syncIntervalSeconds: Int = 45
 
     private var token = "{}"
     private var accessToken: String? = null
     private var refreshToken: String? = null
     private var expireAt: Long? = null
     private var userId: String? = null
+    private var reconnectTimer: Timer? = null
+    private var heartbeatTimer: Timer? = null
+    private var realtimeSocket: WebSocket? = null
+    private var realtimeConnected = false
+    private var wsRef = 1
+    private var isScreenOn: Boolean = true
+    private var screenStateReceiverRegistered = false
     var isStopped = false
+
+    private val screenStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action) {
+                Intent.ACTION_SCREEN_OFF -> {
+                    isScreenOn = false
+                    Log.i(logTag, "Screen OFF detected: pausing realtime background sync")
+                    reconfigureConnections()
+                }
+
+                Intent.ACTION_SCREEN_ON -> {
+                    isScreenOn = true
+                    Log.i(logTag, "Screen ON detected: resuming realtime background sync")
+                    reconfigureConnections()
+                }
+            }
+        }
+    }
 
 
     private val listener =
@@ -78,39 +141,110 @@ class CopyCatSyncManager(applicationContext: Context) {
     private val tokenKey
         get() = "flutter.sb-$projectKey-auth-token"
 
+    private val realtimeEnabled: Boolean
+        get() =
+            syncEnabled &&
+                listeningMode == ListeningMode.SYNC &&
+                syncSpeed == "realtime" &&
+                syncIntervalSeconds < 10 &&
+                isScreenOn
+
+    private fun readScreenInteractiveState(): Boolean {
+        val pm = appContext.getSystemService(Context.POWER_SERVICE) as? PowerManager
+        return pm?.isInteractive ?: true
+    }
+
+    private fun registerScreenStateReceiver() {
+        if (screenStateReceiverRegistered) return
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_SCREEN_ON)
+            addAction(Intent.ACTION_SCREEN_OFF)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            appContext.registerReceiver(
+                screenStateReceiver,
+                filter,
+                Context.RECEIVER_NOT_EXPORTED,
+            )
+        } else {
+            appContext.registerReceiver(screenStateReceiver, filter)
+        }
+        screenStateReceiverRegistered = true
+    }
+
+    private fun unregisterScreenStateReceiver() {
+        if (!screenStateReceiverRegistered) return
+        try {
+            appContext.unregisterReceiver(screenStateReceiver)
+        } catch (_: Exception) {
+        }
+        screenStateReceiverRegistered = false
+    }
+
 
     fun start() {
         if (!listening) {
             sp.registerOnSharedPreferenceChangeListener(listener)
             listening = true
         }
+        isScreenOn = readScreenInteractiveState()
+        registerScreenStateReceiver()
 
         Log.d(logTag, "Configuring CopyCat Sync")
-        Log.d(logTag, "tokenKey = $tokenKey")
         token = sp.getString(tokenKey, "{}")!!
         load()
-        if (!BuildConfig.RELEASE) {
-            loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        loggingInterceptor.redactHeader("Authorization")
+        loggingInterceptor.redactHeader("apikey")
+        val isDebuggable = (appContext.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        if (isDebuggable) {
+            // Enable temporarily when debugging wire traffic:
+            // loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+            loggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
         } else {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
         }
+
+        Log.i(
+            logTag,
+            "start() ready=$isReady syncEnabled=$syncEnabled listeningMode=$listeningMode syncSpeed=$syncSpeed syncIntervalSeconds=$syncIntervalSeconds realtimeEnabled=$realtimeEnabled hasAccessToken=${!accessToken.isNullOrBlank()} userIdPresent=${!userId.isNullOrBlank()}"
+        )
+
+        reconfigureConnections()
     }
 
     fun stop() {
-        if (!listening) return
-        sp.unregisterOnSharedPreferenceChangeListener(listener)
-        listening = false
-        
-        // Cleanup OkHttp resources
-        try {
-            client.dispatcher.executorService.shutdown()
-            client.connectionPool.evictAll()
-            client.cache?.close()
-        } catch (e: Exception) {
-            Log.e(logTag, "Error cleaning up OkHttp client: ${e.message}")
+        if (listening) {
+            sp.unregisterOnSharedPreferenceChangeListener(listener)
+            listening = false
         }
-        
+        unregisterScreenStateReceiver()
+
+        stopRealtime()
+        reconnectTimer?.cancel()
+        reconnectTimer = null
+
         Log.d(logTag, "Stopped")
+    }
+
+    fun reconfigureConnections() {
+        Log.i(
+            logTag,
+            "reconfigureConnections() listening=$listening isStopped=$isStopped syncEnabled=$syncEnabled listeningMode=$listeningMode syncSpeed=$syncSpeed syncIntervalSeconds=$syncIntervalSeconds realtimeEnabled=$realtimeEnabled ready=$isReady"
+        )
+
+        if (!listening || isStopped || !syncEnabled) {
+            Log.i(logTag, "Realtime disabled by guard; stopping socket")
+            stopRealtime()
+            return
+        }
+
+        if (realtimeEnabled) {
+            Log.i(logTag, "Realtime eligible; starting websocket")
+            startRealtime()
+        } else {
+            Log.i(logTag, "Realtime not eligible; websocket stopped")
+            stopRealtime()
+        }
     }
 
     private fun load() {
@@ -168,11 +302,221 @@ class CopyCatSyncManager(applicationContext: Context) {
         return dateFormat.format(Date())
     }
 
+    private fun parseIsoToMillis(value: String?): Long {
+        if (value.isNullOrBlank()) return System.currentTimeMillis()
+        return try {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+            dateFormat.parse(value)?.time ?: System.currentTimeMillis()
+        } catch (_: Exception) {
+            System.currentTimeMillis()
+        }
+    }
+
+    private fun startRealtime() {
+        if (!realtimeEnabled || realtimeConnected || accessToken.isNullOrBlank() || !isReady) {
+            Log.i(
+                logTag,
+                "startRealtime() skipped realtimeEnabled=$realtimeEnabled realtimeConnected=$realtimeConnected accessTokenMissing=${accessToken.isNullOrBlank()} ready=$isReady"
+            )
+            return
+        }
+
+        val wsUrl = "wss://$projectKey.supabase.co/realtime/v1/websocket?apikey=$projectApiKey&vsn=1.0.0"
+        Log.i(logTag, "Opening realtime websocket to Supabase")
+        val request = Request.Builder().url(wsUrl).build()
+        realtimeSocket = client.newWebSocket(request, object : WebSocketListener() {
+            override fun onOpen(webSocket: WebSocket, response: Response) {
+                Log.i(logTag, "Realtime websocket opened code=${response.code}")
+                realtimeConnected = true
+                sendRealtimeJoin()
+                startHeartbeat()
+            }
+
+            override fun onMessage(webSocket: WebSocket, text: String) {
+                handleRealtimeMessage(text)
+            }
+
+            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+                Log.i(logTag, "Realtime websocket closed code=$code reason=$reason")
+                realtimeConnected = false
+                stopHeartbeat()
+                scheduleRealtimeReconnect()
+            }
+
+            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+                Log.w(logTag, "Realtime socket failed: ${t.message}")
+                realtimeConnected = false
+                stopHeartbeat()
+                scheduleRealtimeReconnect()
+            }
+        })
+    }
+
+    private fun stopRealtime() {
+        stopHeartbeat()
+        realtimeConnected = false
+        Log.i(logTag, "Closing realtime websocket")
+        realtimeSocket?.close(1000, "stopped")
+        realtimeSocket = null
+    }
+
+    private fun startHeartbeat() {
+        stopHeartbeat()
+        heartbeatTimer = Timer("copycat-bg-heartbeat", true)
+        heartbeatTimer?.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                sendRealtimeHeartbeat()
+            }
+        }, heartbeatMs, heartbeatMs)
+    }
+
+    private fun stopHeartbeat() {
+        heartbeatTimer?.cancel()
+        heartbeatTimer = null
+    }
+
+    private fun scheduleRealtimeReconnect() {
+        if (!realtimeEnabled) return
+        Log.i(logTag, "Scheduling realtime reconnect in ${reconnectDelayMs}ms")
+        reconnectTimer?.cancel()
+        reconnectTimer = Timer("copycat-bg-reconnect", true)
+        reconnectTimer?.schedule(object : TimerTask() {
+            override fun run() {
+                if (realtimeEnabled && !realtimeConnected) {
+                    if (isExpired) {
+                        doRefreshToken()
+                    }
+                    Log.i(logTag, "Attempting realtime reconnect")
+                    startRealtime()
+                }
+            }
+        }, reconnectDelayMs)
+    }
+
+    private fun nextRef(): String = (wsRef++).toString()
+
+    private fun sendRealtimeJoin() {
+        Log.i(logTag, "Sending realtime join for clipboard_items with device filter deviceId=neq.$deviceId")
+        val joinPayload = JSONObject().apply {
+            put("topic", "realtime:public:clipboard_items")
+            put("event", "phx_join")
+            put("payload", JSONObject().apply {
+                put("config", JSONObject().apply {
+                    put("postgres_changes", JSONArray().put(JSONObject().apply {
+                        put("event", "*")
+                        put("schema", "public")
+                        put("table", "clipboard_items")
+                        put("filter", "deviceId=neq.$deviceId")
+                    }))
+                })
+                put("access_token", accessToken)
+            })
+            put("ref", nextRef())
+        }
+
+        realtimeSocket?.send(joinPayload.toString())
+    }
+
+    private fun sendRealtimeHeartbeat() {
+        Log.d(logTag, "Sending realtime heartbeat")
+        val heartbeatPayload = JSONObject().apply {
+            put("topic", "phoenix")
+            put("event", "phx_heartbeat")
+            put("payload", JSONObject())
+            put("ref", nextRef())
+        }
+        realtimeSocket?.send(heartbeatPayload.toString())
+    }
+
+    private fun handleRealtimeMessage(text: String) {
+        try {
+            val msg = JSONObject(text)
+            val event = msg.optString("event")
+            if (event == "phx_reply") {
+                Log.i(logTag, "Realtime join reply received")
+            }
+            if (event != "postgres_changes") return
+
+            val payload = msg.optJSONObject("payload") ?: return
+            val data = payload.optJSONObject("data") ?: return
+            val eventType = data.optString("type")
+            Log.i(logTag, "Realtime postgres_changes event=$eventType")
+
+            when (eventType) {
+                "INSERT", "UPDATE" -> {
+                    val record = data.optJSONObject("record") ?: return
+                    processRemoteRecord(record)
+                }
+                "DELETE" -> {
+                    val oldRecord = data.optJSONObject("old_record")
+                    val serverId = oldRecord?.optLong("id", -1L) ?: -1L
+                    if (serverId > 0) {
+                        onRemoteClipDelete(serverId)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.w(logTag, "Failed to parse realtime message: ${e.message}")
+        }
+    }
+
+    private fun processRemoteRecord(record: JSONObject) {
+        fun nullableString(value: String?): String? {
+            val cleaned = value?.trim()
+            return if (cleaned.isNullOrEmpty() || cleaned.equals("null", ignoreCase = true)) {
+                null
+            } else {
+                cleaned
+            }
+        }
+
+        val serverId = record.optLong("id", -1L)
+        if (serverId <= 0) return
+
+        val typeRaw = record.optString("type", "text")
+        val textCategory = record.optString("textCategory", "")
+        val clipType = when {
+            typeRaw == "url" -> ClipType.Url
+            textCategory == "email" -> ClipType.Email
+            textCategory == "phone" -> ClipType.Phone
+            else -> ClipType.Text
+        }
+
+        val content = if (clipType == ClipType.Url) {
+            record.optString("url", "")
+        } else {
+            record.optString("text", "")
+        }
+        if (content.isBlank()) return
+
+        val payload = RemoteClipPayload(
+            serverId = serverId,
+            content = content,
+            type = clipType,
+            label = nullableString(record.optString("title", null)),
+            encrypted = record.optBoolean("encrypted", false),
+            iv = nullableString(record.optString("iv", null)),
+            encMode = nullableString(record.optString("enc_mode", null)),
+            userId = nullableString(record.optString("userId", null)),
+            modifiedAt = parseIsoToMillis(record.optString("modified")),
+        )
+
+        Log.i(
+            logTag,
+            "Remote upsert parsed serverId=$serverId type=$clipType encrypted=${payload.encrypted} encMode=${payload.encMode}"
+        )
+
+        onRemoteClipUpsert(payload)
+    }
+
     fun writeClipboardItem(
         clip: String,
         type: ClipType,
         encrypted: Boolean,
-        label: String? = null
+        label: String? = null,
+        iv: String? = null,
+        encMode: String? = null,
     ): Long {
         Log.i(logTag, "Writing to remote clipboard")
         if (userId == null || !isReady) {
@@ -192,7 +536,7 @@ class CopyCatSyncManager(applicationContext: Context) {
             Log.i(logTag, "Successfully refreshed the token")
         }
         val url = "$url/rest/v1/clipboard_items"
-        val payload = mutableMapOf(
+        val payload = mutableMapOf<String, Any?>(
             "title" to label,
             "description" to label,
             "userId" to userId!!,
@@ -201,6 +545,11 @@ class CopyCatSyncManager(applicationContext: Context) {
             "deviceId" to deviceId,
             "encrypted" to encrypted,
         )
+
+        if (encrypted) {
+            payload["iv"] = iv
+            payload["enc_mode"] = encMode
+        }
 
         when (type) {
             ClipType.Text -> {
@@ -231,7 +580,7 @@ class CopyCatSyncManager(applicationContext: Context) {
             }
         }
 
-        val jsonPayload = JSONObject(payload as Map<String, String?>).toString()
+        val jsonPayload = JSONObject(payload).toString()
         val requestBody = jsonPayload.toRequestBody(contentType.toMediaTypeOrNull())
 
         val request = Request.Builder()

@@ -39,9 +39,7 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
 
   bool _hasMeaningfulProgress(Map<String, SyncProgress> progress) {
     if (progress.isEmpty) return false;
-    return progress.values.any(
-      (item) => item.total > 0 || item.synced > 0,
-    );
+    return progress.values.any((item) => item.total > 0 || item.synced > 0);
   }
 
   @override
@@ -336,14 +334,14 @@ class _RestorePanel extends StatelessWidget {
         children: [
           SizedBox(
             width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.all(padding28),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: colors.surfaceContainer,
-                  borderRadius: radius16,
-                  border: Border.all(color: colors.outlineVariant),
-                ),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: colors.surfaceContainer,
+                borderRadius: radius16,
+                border: Border.all(color: colors.outlineVariant),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(padding28),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

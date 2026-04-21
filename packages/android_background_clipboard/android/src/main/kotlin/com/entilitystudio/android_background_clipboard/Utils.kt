@@ -12,14 +12,12 @@ import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.core.os.bundleOf
 
 
 class Utils {
@@ -45,12 +43,12 @@ class Utils {
         }
 
         fun requestAccessibilityPermission(context: Context, activity: Activity?) {
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) return
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
 
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
 
             if (activity != null) {
-                activity.startActivityForResult(intent, 100)
+                activity.startActivity(intent)
                 Toast.makeText(context, "Grant CopyCat accessibility permission", Toast.LENGTH_LONG).show()
             } else {
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
@@ -66,14 +64,14 @@ class Utils {
         }
 
         fun requestOverlayPermission(context: Context, activity: Activity?) {
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) return
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
             val intent = Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:" + context.packageName)
             )
 
             if (activity != null) {
-                activity.startActivityForResult(intent, 100)
+                activity.startActivity(intent)
             } else {
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
@@ -81,14 +79,14 @@ class Utils {
         }
 
         fun isBatteryOptimizationEnabled(context: Context): Boolean {
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) return false
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return false
             val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
             val ignoring = powerManager.isIgnoringBatteryOptimizations(context.packageName)
             return !ignoring
         }
 
         fun requestUnrestrictedBatteryAccess(context: Context, activity: Activity?) {
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) return
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
 
             val packageName = context.packageName
             val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -105,7 +103,7 @@ class Utils {
             }
 
             if (activity != null) {
-                activity.startActivityForResult(intent, 1001)
+                activity.startActivity(intent)
             } else {
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
@@ -129,7 +127,7 @@ class Utils {
             }
 
             if (activity != null) {
-                activity.startActivityForResult(intent, 1200)
+                activity.startActivity(intent)
             } else {
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)

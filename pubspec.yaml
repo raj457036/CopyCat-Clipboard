@@ -112,10 +112,10 @@ dev_dependencies:
 
 dependency_overrides:
   connectivity_plus: 7.0.0
-  irondash_engine_context:
-    git:
-      url: https://github.com/Sabbar-Engineering/irondash
-      path: "engine_context/dart"
+  # irondash_engine_context:
+  #   git:
+  #     url: https://github.com/Sabbar-Engineering/irondash
+  #     path: "engine_context/dart"
 
 flutter:
   generate: true
