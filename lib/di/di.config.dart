@@ -61,11 +61,12 @@ import 'package:clipboard/base/data/repositories/subscription.dart' as _i623;
 import 'package:clipboard/base/data/repositories/sync_clipboard.dart' as _i223;
 import 'package:clipboard/base/data/services/clipboard_service.dart' as _i63;
 import 'package:clipboard/base/data/services/cross_sync_listener.dart' as _i95;
-import 'package:clipboard/base/data/services/drive_file_upload_service.dart'
-    as _i69;
-import 'package:clipboard/base/data/services/google_drive_service.dart'
+import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_drive_file_cloud_service.dart'
+    as _i477;
+import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_drive_service.dart'
     as _i1025;
-import 'package:clipboard/base/data/services/google_services.dart' as _i679;
+import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_services.dart'
+    as _i679;
 import 'package:clipboard/base/data/sources/clip_collection/local_source.dart'
     as _i173;
 import 'package:clipboard/base/data/sources/clip_collection/remote_source.dart'
@@ -102,8 +103,8 @@ import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart'
     as _i616;
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart'
     as _i543;
-import 'package:clipboard/base/domain/services/file_upload_service.dart'
-    as _i654;
+import 'package:clipboard/base/domain/services/file_cloud_service.dart'
+    as _i112;
 import 'package:clipboard/base/domain/services/sync_adapter.dart' as _i589;
 import 'package:clipboard/base/domain/services/sync_event_bus.dart' as _i292;
 import 'package:clipboard/base/domain/sources/clip_collection.dart' as _i670;
@@ -129,23 +130,20 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
-    gh.factory<_i653.SelectedClipsCubit>(() => _i653.SelectedClipsCubit());
-    gh.factory<_i657.WindowActionCubit>(() => _i657.WindowActionCubit());
     await gh.factoryAsync<_i655.PackageInfo>(
       () => registerModule.packageInfo,
       preResolve: true,
     );
-    gh.singleton<_i588.EventBusCubit>(() => _i588.EventBusCubit());
-    gh.singleton<_i63.ClipboardService>(() => _i63.ClipboardService());
-    gh.singleton<_i292.SyncEventBus>(() => _i292.SyncEventBus());
+    gh.factory<_i653.SelectedClipsCubit>(() => _i653.SelectedClipsCubit());
+    gh.factory<_i657.WindowActionCubit>(() => _i657.WindowActionCubit());
     gh.singleton<_i291.FocusWindow>(() => registerModule.focusWindow);
     await gh.singletonAsync<_i829.TinyStorage>(
       () => registerModule.localCache(),
       preResolve: true,
     );
-    gh.lazySingleton<_i1025.GoogleOAuth2Service>(
-      () => _i1025.GoogleOAuth2Service(),
-    );
+    gh.singleton<_i63.ClipboardService>(() => _i63.ClipboardService());
+    gh.singleton<_i292.SyncEventBus>(() => _i292.SyncEventBus());
+    gh.singleton<_i588.EventBusCubit>(() => _i588.EventBusCubit());
     await gh.lazySingletonAsync<_i214.Isar>(
       () => registerModule.db,
       preResolve: true,
@@ -153,6 +151,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i565.AndroidBackgroundClipboard>(
       () => registerModule.bgService,
+    );
+    gh.lazySingleton<_i1025.GoogleOAuth2Service>(
+      () => _i1025.GoogleOAuth2Service(),
     );
     gh.lazySingleton<_i707.AnalyticsRepository>(
       () => const _i202.AnalyticsRepositoryImpl(),
@@ -272,8 +273,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i679.DriveService>(instanceName: 'google_drive'),
       ),
     );
-    gh.lazySingleton<_i654.FileUploadService>(
-      () => _i69.DriveFileUploadService(
+    gh.lazySingleton<_i112.FileCloudService>(
+      () => _i477.GoogleDriveFileCloudService(
         gh<_i521.DriveSetupCubit>(),
         gh<_i542.AppConfigCubit>(),
       ),
@@ -377,7 +378,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i616.ClipBatchSyncService>(),
         gh<_i620.ClipCollectionCubit>(),
         gh<_i543.ClipCrossSyncListener>(),
-        gh<_i654.FileUploadService>(),
+        gh<_i112.FileCloudService>(),
         gh<_i23.ClipboardSource>(instanceName: 'local'),
       ),
     );

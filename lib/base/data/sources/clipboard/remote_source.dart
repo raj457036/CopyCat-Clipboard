@@ -67,7 +67,7 @@ class RemoteClipboardSource implements ClipboardSource {
   }
 
   @override
-  Future<bool> delete(ClipboardItem item) async {
+  Future<bool> delete(ClipboardItem item, {bool soft = false}) async {
     if (item.serverId == null || item.userId == kLocalUserId) {
       return true;
     }
@@ -83,7 +83,7 @@ class RemoteClipboardSource implements ClipboardSource {
   }
 
   @override
-  Future<bool> deleteAll() {
+  Future<bool> deleteAll({bool soft = false}) {
     throw UnimplementedError();
   }
 
@@ -110,7 +110,10 @@ class RemoteClipboardSource implements ClipboardSource {
   }
 
   @override
-  Future<List<ClipboardItem>> deleteMany(List<ClipboardItem> items) async {
+  Future<List<ClipboardItem>> deleteMany(
+    List<ClipboardItem> items, {
+    bool soft = false,
+  }) async {
     final items_ = items
         .where((item) => item.serverId != null && item.userId != kLocalUserId)
         .map((item) {

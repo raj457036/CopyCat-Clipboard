@@ -145,14 +145,72 @@ class LocalClipboardSource implements ClipboardSource {
   }
 
   @override
-  Future<bool> delete(ClipboardItem item) async {
+  Future<bool> delete(ClipboardItem item, {bool soft = true}) async {
     if (item.id == null) return false;
+
+    if (soft) {
+      logger.i("[LocalClipboardSource] Soft deleting item with id ${item.id}");
+      await update(item.copyWith(deletedAt: systemTime()));
+      return true;
+    }
+
     final result = await db.writeTxn(() => _collection.delete(item.id!));
     return result;
   }
 
   @override
-  Future<void> deleteAll() async {
+  Future<List<ClipboardItem>> deleteMany(
+    List<ClipboardItem> items, {
+    bool soft = true,
+  }) async {
+    if (soft) {
+      logger.i("[LocalClipboardSource] Soft deleting ${items.length} items");
+      await Future.wait(
+        items.map((item) {
+          return update(item.copyWith(deletedAt: systemTime()));
+        }),
+      );
+      return items;
+    }
+
+    final result = await db.writeTxn(() async {
+      final q = _collection
+          .filter()
+          .anyOf(
+            items,
+            (q, item) => item.id != null
+                ? q.isarIdEqualTo(item.id!)
+                : q.isarIdEqualTo(-1),
+          )
+          .or()
+          .anyOf(
+            items,
+            (q, item) =>
+                q.serverIdEqualTo(item.serverId).and().serverIdIsNotNull(),
+          );
+
+      final clipsWithLocalCache = await q.localPathIsNotNull().findAll();
+
+      // Delete cached media
+      logger.i(
+        "[LocalClipboardSource] Deleting ${clipsWithLocalCache.length} cached media files",
+      );
+      for (var isarItem in clipsWithLocalCache) {
+        await isarItem.toDomain().cleanUp();
+      }
+
+      // Find all items to delete at once
+      final deleted = await q.findAll();
+
+      await q.deleteAll();
+
+      return deleted.map((e) => e.toDomain()).toList();
+    });
+    return result;
+  }
+
+  @override
+  Future<void> deleteAll({bool soft = true}) async {
     await db.writeTxn(() => _collection.clear());
   }
 
@@ -200,42 +258,6 @@ class LocalClipboardSource implements ClipboardSource {
       return _collection.filter().encryptedEqualTo(true).count();
     });
     return count;
-  }
-
-  @override
-  Future<List<ClipboardItem>> deleteMany(List<ClipboardItem> items) async {
-    final result = await db.writeTxn(() async {
-      final q = _collection
-          .filter()
-          .anyOf(
-            items,
-            (q, item) => item.id != null
-                ? q.isarIdEqualTo(item.id!)
-                : q.isarIdEqualTo(-1),
-          )
-          .or()
-          .anyOf(
-            items,
-            (q, item) =>
-                q.serverIdEqualTo(item.serverId).and().serverIdIsNotNull(),
-          );
-
-      final clipsWithLocalCache = await q.localPathIsNotNull().findAll();
-
-      // Delete cached media
-      logger.i("Deleting Cached Media");
-      for (var isarItem in clipsWithLocalCache) {
-        await isarItem.toDomain().cleanUp();
-      }
-
-      // Find all items to delete at once
-      final deleted = await q.findAll();
-
-      await q.deleteAll();
-
-      return deleted.map((e) => e.toDomain()).toList();
-    });
-    return result;
   }
 
   @override

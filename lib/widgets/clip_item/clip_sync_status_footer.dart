@@ -1,4 +1,5 @@
 import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
@@ -16,6 +17,12 @@ class ClipSyncStatusFooter extends StatelessWidget {
     required this.item,
     this.radius = radiusBottom12,
   });
+
+  Future<void> _sync(BuildContext context) async {
+    context.read<OfflinePersistenceCubit>().persist([
+      item.copyWith(userIntent: true),
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,13 +78,7 @@ class ClipSyncStatusFooter extends StatelessWidget {
                     descendantsAreFocusable: false,
                     descendantsAreTraversable: false,
                     child: ElevatedButton(
-                      onPressed: item.isSyncing
-                          ? null
-                          : () {
-                              context.read<CloudPersistanceCubit>().persist(
-                                item.copyWith(userIntent: true),
-                              );
-                            },
+                      onPressed: item.isSyncing ? null : () => _sync(context),
                       child: Text(
                         buttonText,
                         style: context.textTheme.labelSmall?.copyWith(

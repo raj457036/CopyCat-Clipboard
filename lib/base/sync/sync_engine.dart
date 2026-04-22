@@ -263,6 +263,7 @@ class SyncEngine<T extends Syncable> {
         logger.i('[SyncEngine:${adapter.entityType}] Calling pushToRemote...');
         resultEither = await adapter.pushToRemote(item);
       case SyncOutboxAction.delete:
+        // NOTE: We know the item is soft deleted locally at this point.
         if (item == null) {
           await outboxRepo.markCompleted(entry.id!);
           return;

@@ -385,10 +385,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
 
   Future<void> delete(List<ClipboardItem> items) async {
     emit(OfflinePersistanceState.deletingItems(items));
-    await Future.wait(items.map((item) => item.cleanUp()));
-    final items_ = items
-        .where((item) => !item.isSynced)
-        .map((item) => item.copyWith(deviceId: deviceId));
+    final items_ = items.map((item) => item.copyWith(deviceId: deviceId));
     await repo.deleteMany(items_.toList());
     emit(OfflinePersistanceState.deletedItems(items));
   }

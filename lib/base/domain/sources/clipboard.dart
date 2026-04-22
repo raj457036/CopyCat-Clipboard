@@ -28,10 +28,13 @@ abstract class ClipboardSource {
 
   Future<ClipboardItem> updateOrCreate(ClipboardItem item);
 
-  Future<bool> delete(ClipboardItem item);
-  Future<List<ClipboardItem>> deleteMany(List<ClipboardItem> items);
+  Future<bool> delete(ClipboardItem item, {bool soft = true});
+  Future<List<ClipboardItem>> deleteMany(
+    List<ClipboardItem> items, {
+    bool soft = true,
+  });
 
-  Future<void> deleteAll();
+  Future<void> deleteAll({bool soft = true});
 
   Future<ClipboardItem?> getLatestFromOthers({bool? synced});
 

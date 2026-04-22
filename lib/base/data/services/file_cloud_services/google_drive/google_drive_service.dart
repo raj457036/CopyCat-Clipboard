@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:clipboard/base/constants/numbers/file_sizes.dart';
-import 'package:clipboard/base/data/services/google_services.dart';
+import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_services.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
@@ -161,13 +161,15 @@ class GoogleDriveService implements DriveService {
   String? accessToken;
 
   @override
-  Future<void> delete(ClipboardItem item) async {
+  Future<bool> delete(ClipboardItem item) async {
     try {
       final drive = getDrive();
-      if (item.driveFileId == null) return;
+      if (item.driveFileId == null) return false;
       await drive.files.delete(item.driveFileId!);
+      return true;
     } catch (e) {
       logger.e(e, error: e);
+      return false;
     }
   }
 
@@ -185,16 +187,26 @@ class GoogleDriveService implements DriveService {
   }
 
   @override
-  Future<void> deleteMany(List<ClipboardItem> items) async {
+  Future<int> deleteMany(List<ClipboardItem> items) async {
+    int deletedCount = 0;
     try {
       final drive = getDrive();
       await Future.wait(
-        items
-            .where((item) => item.driveFileId != null)
-            .map((item) => drive.files.delete(item.driveFileId!)),
+        items.where((item) => item.driveFileId != null).map((item) async {
+          try {
+            await drive.files.delete(item.driveFileId!);
+            deletedCount++;
+          } catch (e) {
+            logger.e(
+              "Failed to delete file with ID ${item.driveFileId}: $e",
+              error: e,
+            );
+          }
+        }),
       );
     } catch (e) {
       logger.e(e, error: e);
     }
+    return deletedCount;
   }
 }

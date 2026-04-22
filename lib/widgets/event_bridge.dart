@@ -37,8 +37,6 @@ class EventBridge extends StatelessWidget {
 
   const EventBridge({super.key, required this.eventBus, required this.child});
 
-
-
   void broadcastEvent(CrossSyncEventType eventType, ClipboardItem item) {
     sl<SyncEventBus>().emit<ClipboardItem>((eventType, item));
   }
@@ -123,9 +121,8 @@ class EventBridge extends StatelessWidget {
                 previous.config.exclusionRules != current.config.exclusionRules,
             listener: (context, state) {
               final rules = state.config.exclusionRules;
-              context.read<AndroidBgClipboardCubit>().updateExclusionRule(
-                rules,
-              );
+              final androidCubit = context.read<AndroidBgClipboardCubit>();
+              androidCubit.updateExclusionRule(rules);
             },
           ),
         BlocListener<AppConfigCubit, AppConfigState>(
@@ -183,9 +180,7 @@ class EventBridge extends StatelessWidget {
                     if (config.onBoardComplete) {
                       context.read<DriveSetupCubit>().fetch();
                       context.read<OfflinePersistenceCubit>().startListeners();
-                      sl<SyncOrchestrator>().start(
-                        syncSpeed: config.syncSpeed,
-                      );
+                      sl<SyncOrchestrator>().start(syncSpeed: config.syncSpeed);
                       context.read<SyncStatusCubit>().syncAll(
                         const SyncAllParams(),
                       );

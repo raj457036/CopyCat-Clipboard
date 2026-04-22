@@ -144,12 +144,21 @@ class __$$CloudPersistanceInitialImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CloudPersistanceInitialImpl implements CloudPersistanceInitial {
+class _$CloudPersistanceInitialImpl
+    with DiagnosticableTreeMixin
+    implements CloudPersistanceInitial {
   const _$CloudPersistanceInitialImpl();
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'CloudPersistanceState.initial()';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'CloudPersistanceState.initial'));
   }
 
   @override
@@ -326,15 +335,25 @@ class __$$CloudPersistanceCreatingImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CloudPersistanceCreatingImpl implements CloudPersistanceCreating {
+class _$CloudPersistanceCreatingImpl
+    with DiagnosticableTreeMixin
+    implements CloudPersistanceCreating {
   const _$CloudPersistanceCreatingImpl(this.item);
 
   @override
   final ClipboardItem item;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'CloudPersistanceState.creatingItem(item: $item)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'CloudPersistanceState.creatingItem'))
+      ..add(DiagnosticsProperty('item', item));
   }
 
   @override
@@ -532,15 +551,25 @@ class __$$CloudPersistanceUpdatingImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CloudPersistanceUpdatingImpl implements CloudPersistanceUpdating {
+class _$CloudPersistanceUpdatingImpl
+    with DiagnosticableTreeMixin
+    implements CloudPersistanceUpdating {
   const _$CloudPersistanceUpdatingImpl(this.item);
 
   @override
   final ClipboardItem item;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'CloudPersistanceState.updatingItem(item: $item)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'CloudPersistanceState.updatingItem'))
+      ..add(DiagnosticsProperty('item', item));
   }
 
   @override
@@ -726,7 +755,9 @@ class __$$CloudPersistanceDeletingImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CloudPersistanceDeletingImpl implements CloudPersistanceDeleting {
+class _$CloudPersistanceDeletingImpl
+    with DiagnosticableTreeMixin
+    implements CloudPersistanceDeleting {
   const _$CloudPersistanceDeletingImpl(final List<ClipboardItem> items)
     : _items = items;
 
@@ -739,8 +770,16 @@ class _$CloudPersistanceDeletingImpl implements CloudPersistanceDeleting {
   }
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'CloudPersistanceState.deletingItems(items: $items)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'CloudPersistanceState.deletingItems'))
+      ..add(DiagnosticsProperty('items', items));
   }
 
   @override
@@ -924,7 +963,9 @@ class __$$CloudPersistanceDeletedImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CloudPersistanceDeletedImpl implements CloudPersistanceDeleted {
+class _$CloudPersistanceDeletedImpl
+    with DiagnosticableTreeMixin
+    implements CloudPersistanceDeleted {
   const _$CloudPersistanceDeletedImpl(final List<ClipboardItem> items)
     : _items = items;
 
@@ -937,8 +978,16 @@ class _$CloudPersistanceDeletedImpl implements CloudPersistanceDeleted {
   }
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'CloudPersistanceState.deletedItems(items: $items)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'CloudPersistanceState.deletedItems'))
+      ..add(DiagnosticsProperty('items', items));
   }
 
   @override
@@ -1138,6 +1187,7 @@ class __$$CloudPersistanceUploadingFileImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$CloudPersistanceUploadingFileImpl
+    with DiagnosticableTreeMixin
     implements CloudPersistanceUploadingFile {
   const _$CloudPersistanceUploadingFileImpl(this.item);
 
@@ -1145,8 +1195,16 @@ class _$CloudPersistanceUploadingFileImpl
   final ClipboardItem item;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'CloudPersistanceState.uploadingFile(item: $item)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'CloudPersistanceState.uploadingFile'))
+      ..add(DiagnosticsProperty('item', item));
   }
 
   @override
@@ -1349,6 +1407,7 @@ class __$$CloudPersistanceDownloadingFileImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$CloudPersistanceDownloadingFileImpl
+    with DiagnosticableTreeMixin
     implements CloudPersistanceDownloadingFile {
   const _$CloudPersistanceDownloadingFileImpl(this.item);
 
@@ -1356,8 +1415,18 @@ class _$CloudPersistanceDownloadingFileImpl
   final ClipboardItem item;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'CloudPersistanceState.downloadingFile(item: $item)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(
+        DiagnosticsProperty('type', 'CloudPersistanceState.downloadingFile'),
+      )
+      ..add(DiagnosticsProperty('item', item));
   }
 
   @override
@@ -1561,7 +1630,9 @@ class __$$CloudPersistanceSavedImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CloudPersistanceSavedImpl implements CloudPersistanceSaved {
+class _$CloudPersistanceSavedImpl
+    with DiagnosticableTreeMixin
+    implements CloudPersistanceSaved {
   const _$CloudPersistanceSavedImpl(this.item, {this.created = false});
 
   @override
@@ -1571,8 +1642,17 @@ class _$CloudPersistanceSavedImpl implements CloudPersistanceSaved {
   final bool created;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'CloudPersistanceState.saved(item: $item, created: $created)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'CloudPersistanceState.saved'))
+      ..add(DiagnosticsProperty('item', item))
+      ..add(DiagnosticsProperty('created', created));
   }
 
   @override
@@ -1780,7 +1860,9 @@ class __$$CloudPersistanceErrorImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CloudPersistanceErrorImpl implements CloudPersistanceError {
+class _$CloudPersistanceErrorImpl
+    with DiagnosticableTreeMixin
+    implements CloudPersistanceError {
   const _$CloudPersistanceErrorImpl(this.failure, [this.item]);
 
   @override
@@ -1789,8 +1871,17 @@ class _$CloudPersistanceErrorImpl implements CloudPersistanceError {
   final ClipboardItem? item;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'CloudPersistanceState.error(failure: $failure, item: $item)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'CloudPersistanceState.error'))
+      ..add(DiagnosticsProperty('failure', failure))
+      ..add(DiagnosticsProperty('item', item));
   }
 
   @override
