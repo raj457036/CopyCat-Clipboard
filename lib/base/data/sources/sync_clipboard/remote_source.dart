@@ -88,7 +88,7 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
     final docs = await query.order("modified").range(offset, offset + limit);
     final collections = docs
         .map((e) => ClipCollection.fromJson(e))
-        .map((e) => e.copyWith(lastSynced: now()))
+        .map((e) => e.copyWith(lastSynced: systemTime()))
         .toList();
     return PaginatedResult(
       results: collections,

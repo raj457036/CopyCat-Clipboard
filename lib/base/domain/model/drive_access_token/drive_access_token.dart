@@ -19,7 +19,7 @@ class DriveAccessToken with _$DriveAccessToken {
   factory DriveAccessToken.fromJson(Map<String, dynamic> json) =>
       _$DriveAccessTokenFromJson(json);
 
-  bool get isExpired => now().isAfter(
+  bool get isExpired => systemTime().isAfter(
     issuedAt.add(Duration(seconds: expiresIn + 300)),
   ); // 5 min offset
 

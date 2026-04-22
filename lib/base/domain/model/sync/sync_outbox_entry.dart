@@ -4,6 +4,14 @@ part 'sync_outbox_entry.freezed.dart';
 
 enum SyncOutboxAction { create, update, delete }
 
+/// Defines the type of entity being synced.
+class SyncEntityType {
+  SyncEntityType._();
+
+  static const clip = 'clip';
+  static const collection = 'collection';
+}
+
 /// Represents a pending sync operation in the local outbox.
 ///
 /// When a user creates/updates/deletes an item offline, an outbox entry is

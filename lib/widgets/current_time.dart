@@ -13,14 +13,14 @@ class CurentTime extends StatefulWidget {
 
 class _CurentTimeState extends State<CurentTime> {
   late final Timer timer;
-  DateTime currentTime = now();
+  DateTime currentTime = systemTime();
 
   @override
   void initState() {
     super.initState();
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
-        currentTime = now();
+        currentTime = systemTime();
       });
     });
   }

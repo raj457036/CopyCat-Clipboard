@@ -71,8 +71,8 @@ class _ClipCollectionCreateEditFormState
         emoji: emojiController.text,
         title: nameController.text.trim(),
         description: description,
-        created: now(),
-        modified: now(),
+        created: systemTime(),
+        modified: systemTime(),
       );
     } else {
       collection = widget.collection!.copyWith(

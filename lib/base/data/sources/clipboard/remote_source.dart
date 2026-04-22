@@ -23,7 +23,7 @@ class RemoteClipboardSource implements ClipboardSource {
     final docs = await db.from(clipItemTable).insert(item.toJson()).select();
     final createdItem = item.copyWith(
       serverId: docs.first["id"],
-      lastSynced: now(),
+      lastSynced: systemTime(),
     );
 
     return createdItem;
@@ -72,7 +72,12 @@ class RemoteClipboardSource implements ClipboardSource {
       return true;
     }
 
-    item = item.copyWith(deletedAt: now(), modified: now(), text: "", url: "");
+    item = item.copyWith(
+      deletedAt: systemTime(),
+      modified: systemTime(),
+      text: "",
+      url: "",
+    );
     await db.from(clipItemTable).update(item.toJson()).eq("id", item.serverId!);
     return true;
   }
@@ -110,7 +115,12 @@ class RemoteClipboardSource implements ClipboardSource {
         .where((item) => item.serverId != null && item.userId != kLocalUserId)
         .map((item) {
           final json = item
-              .copyWith(deletedAt: now(), modified: now(), text: "", url: "")
+              .copyWith(
+                deletedAt: systemTime(),
+                modified: systemTime(),
+                text: "",
+                url: "",
+              )
               .toJson();
           return {...json, "id": item.serverId};
         })

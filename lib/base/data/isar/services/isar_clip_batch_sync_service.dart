@@ -33,7 +33,10 @@ void _syncingClips(
           .findFirstSync();
       final collectionId = collectionMap[item.serverCollectionId];
       if (found == null) {
-        item = item.copyWith(collectionId: collectionId, lastSynced: now());
+        item = item.copyWith(
+          collectionId: collectionId,
+          lastSynced: systemTime(),
+        );
         items[index] = item;
         events.add((CrossSyncEventType.create, item));
         continue;
@@ -43,12 +46,12 @@ void _syncingClips(
       if (item.modified.isAfter(found.modified)) {
         item = item.copyWith(
           id: found.isarId == Isar.autoIncrement ? null : found.isarId,
-          lastSynced: now(),
+          lastSynced: systemTime(),
           localPath: found.localPath,
           collectionId: collectionId,
         );
       } else {
-        item = found.toDomain().copyWith(lastSynced: now());
+        item = found.toDomain().copyWith(lastSynced: systemTime());
       }
 
       items[index] = item;

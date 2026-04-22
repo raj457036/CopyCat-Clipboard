@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clipboard/base/constants/numbers/duration.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/syncable.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
@@ -138,7 +139,9 @@ class SyncOrchestrator {
   Future<void> _processOutboxSynchronized() async {
     logger.i('[SyncOrch] _processOutboxSynchronized triggered');
     await synchronized(() async {
-      logger.i('[SyncOrch] synchronized lock acquired, calling processOutboxes()');
+      logger.i(
+        '[SyncOrch] synchronized lock acquired, calling processOutboxes()',
+      );
       await processOutboxes();
       logger.i('[SyncOrch] processOutboxes() completed');
     });
@@ -148,7 +151,7 @@ class SyncOrchestrator {
   ///
   /// - [SyncSpeed.realtime]: Subscribes to the outbox notification stream
   ///   for instant push on every new entry.
-  /// - [SyncSpeed.balanced]: Polls the outbox every 10 seconds.
+  /// - [SyncSpeed.balanced]: Polls the outbox every [AppConfig.pollingIntervalSeconds] seconds.
   void start({SyncSpeed syncSpeed = SyncSpeed.balanced}) {
     logger.i('[SyncOrch] start() called with syncSpeed=$syncSpeed');
     _startOutboxProcessor(syncSpeed);
@@ -197,22 +200,19 @@ class SyncOrchestrator {
       case SyncSpeed.realtime:
         // Push instantly on every new outbox entry
         logger.i('[SyncOrch] Subscribing to outbox stream for realtime push');
-        _outboxStreamSub = _outboxRepo.onNewEntry.listen(
-          (_) {
-            logger.i('[SyncOrch] Stream notification received! Triggering push...');
-            _processOutboxSynchronized();
-          },
-        );
+        _outboxStreamSub = _outboxRepo.onNewEntry.listen((_) {
+          logger.i(
+            '[SyncOrch] Stream notification received! Triggering push...',
+          );
+          _processOutboxSynchronized();
+        });
       case SyncSpeed.balanced:
-        // Poll every 10 seconds
-        logger.i('[SyncOrch] Starting 10s balanced timer');
-        _outboxTimer = Timer.periodic(
-          const Duration(seconds: 10),
-          (_) {
-            logger.i('[SyncOrch] 10s timer fired, triggering push...');
-            _processOutboxSynchronized();
-          },
-        );
+        // Poll every 3 seconds
+        logger.i('[SyncOrch] Starting 3s balanced timer');
+        _outboxTimer = Timer.periodic(const Duration(seconds: $3S), (_) {
+          logger.i('[SyncOrch] 3s timer fired, triggering push...');
+          _processOutboxSynchronized();
+        });
     }
   }
 }

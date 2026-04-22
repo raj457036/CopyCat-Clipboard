@@ -87,14 +87,14 @@ class _FilterDialogState extends State<FilterDialog> {
   Future<void> _selectFrom() async {
     final picked = await _pickDate(
       firstDate: DateTime(2023),
-      lastDate: to?.subtract(const Duration(days: 1)) ?? now(),
+      lastDate: to?.subtract(const Duration(days: 1)) ?? systemTime(),
       initial: from,
     );
     if (mounted) setState(() => from = picked);
   }
 
   Future<void> _selectTo() async {
-    final lastDate = now();
+    final lastDate = systemTime();
     final picked = await _pickDate(
       firstDate: from?.add(const Duration(days: 1)) ?? DateTime(2023),
       lastDate: lastDate,

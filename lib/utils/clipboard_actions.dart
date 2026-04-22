@@ -305,7 +305,7 @@ Future<void> changeCollection(
           (item) => item.copyWith(
             collectionId: collection.id,
             serverCollectionId: collection.serverId,
-            modified: now(),
+            modified: systemTime(),
           ),
         )
         .toList();

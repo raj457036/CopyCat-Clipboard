@@ -98,8 +98,8 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     return ClipboardItem(
       text: text,
       userId: userId ?? kLocalUserId,
-      created: now(),
-      modified: now(),
+      created: systemTime(),
+      modified: systemTime(),
       type: ClipItemType.text,
       os: currentPlatformOS(),
       sourceUrl: sourceUrl,
@@ -120,8 +120,8 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     String? sourceApp,
   }) {
     return ClipboardItem(
-      created: now(),
-      modified: now(),
+      created: systemTime(),
+      modified: systemTime(),
       type: ClipItemType.media,
       localPath: filePath,
       userId: userId ?? kLocalUserId,
@@ -151,8 +151,8 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
 
     return ClipboardItem(
       text: preview,
-      created: now(),
-      modified: now(),
+      created: systemTime(),
+      modified: systemTime(),
       title: fileName ?? basename,
       type: ClipItemType.file,
       localPath: filePath,
@@ -178,8 +178,8 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     final url = Uri.decodeFull(cleanUpString(uri.toString())!);
     return ClipboardItem(
       url: url,
-      created: now(),
-      modified: now(),
+      created: systemTime(),
+      modified: systemTime(),
       title: title,
       description: description,
       type: ClipItemType.url,
@@ -242,19 +242,37 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     }
 
     if (type == ClipItemType.text && text != null && text!.trim().isNotEmpty) {
-      final String mode =
-          encrypter.useNonce ? EncryptionMode.gcm : EncryptionMode.cfb;
-      final String? itemIV = encrypter.useNonce ? encrypter.generateIV(12) : null;
-      final encText =
-          await encrypter.encrypt(text!, customIV: itemIV, mode: mode);
-      return copyWith(encrypted: true, text: encText, iv: itemIV, encMode: mode);
+      final String mode = encrypter.useNonce
+          ? EncryptionMode.gcm
+          : EncryptionMode.cfb;
+      final String? itemIV = encrypter.useNonce
+          ? encrypter.generateIV(12)
+          : null;
+      final encText = await encrypter.encrypt(
+        text!,
+        customIV: itemIV,
+        mode: mode,
+      );
+      return copyWith(
+        encrypted: true,
+        text: encText,
+        iv: itemIV,
+        encMode: mode,
+      );
     }
 
     if (type == ClipItemType.url && url != null && url!.trim().isNotEmpty) {
-      final String mode =
-          encrypter.useNonce ? EncryptionMode.gcm : EncryptionMode.cfb;
-      final String? itemIV = encrypter.useNonce ? encrypter.generateIV(12) : null;
-      final encUrl = await encrypter.encrypt(url!, customIV: itemIV, mode: mode);
+      final String mode = encrypter.useNonce
+          ? EncryptionMode.gcm
+          : EncryptionMode.cfb;
+      final String? itemIV = encrypter.useNonce
+          ? encrypter.generateIV(12)
+          : null;
+      final encUrl = await encrypter.encrypt(
+        url!,
+        customIV: itemIV,
+        mode: mode,
+      );
       return copyWith(encrypted: true, url: encUrl, iv: itemIV, encMode: mode);
     }
     return this;
@@ -274,7 +292,11 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     }
 
     if (type == ClipItemType.text && text != null) {
-      final decText = await encrypter.decrypt(text!, customIV: iv, mode: encMode);
+      final decText = await encrypter.decrypt(
+        text!,
+        customIV: iv,
+        mode: encMode,
+      );
       return copyWith(encrypted: false, text: decText);
     }
 

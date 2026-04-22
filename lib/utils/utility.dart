@@ -140,7 +140,9 @@ String getId() => _uuid4.generate();
 
 Duration? systemToInternetTimeOffset;
 
-DateTime now() {
+/// Returns the current system time adjusted by
+/// the offset to match internet time.
+DateTime systemTime() {
   final now_ = DateTime.now();
 
   if (systemToInternetTimeOffset != null) {

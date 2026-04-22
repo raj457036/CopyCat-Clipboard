@@ -169,7 +169,7 @@ class _ClipInspectorState extends State<ClipInspector> {
       ),
       collectionId: collectionId?.$1,
       serverCollectionId: collectionId?.$2,
-      modified: now(),
+      modified: systemTime(),
     );
 
     await cubit.persist([updatedItem]);

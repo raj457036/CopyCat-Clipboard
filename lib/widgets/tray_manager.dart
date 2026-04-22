@@ -38,7 +38,9 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
 
     if (configCubit.state is AppConfigLoaded) {
       final config = (configCubit.state as AppConfigLoaded).config;
-      paused = config.pausedTill != null && now().isBefore(config.pausedTill!);
+      paused =
+          config.pausedTill != null &&
+          systemTime().isBefore(config.pausedTill!);
     }
 
     trayManager.addListener(this);
@@ -133,7 +135,11 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
           await configCubit.changePausedTill(null);
         } else {
           // pause till mid night
-          final pauseTill = now().copyWith(hour: 23, minute: 59, second: 59);
+          final pauseTill = systemTime().copyWith(
+            hour: 23,
+            minute: 59,
+            second: 59,
+          );
           await configCubit.changePausedTill(pauseTill);
         }
 
@@ -155,7 +161,8 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
       listener: (context, state) {
         final config = (state as AppConfigLoaded).config;
         final isPaused =
-            config.pausedTill != null && now().isBefore(config.pausedTill!);
+            config.pausedTill != null &&
+            systemTime().isBefore(config.pausedTill!);
         setPause(isPaused);
       },
       child: widget.child,

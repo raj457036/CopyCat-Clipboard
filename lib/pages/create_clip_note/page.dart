@@ -38,7 +38,7 @@ class _CreateClipNotePageState extends State<CreateClipNotePage> {
     final cubit = context.read<OfflinePersistenceCubit>();
 
     if (note.isNotEmpty && widget.item != null) {
-      final item = widget.item!.copyWith(text: note, modified: now());
+      final item = widget.item!.copyWith(text: note, modified: systemTime());
       cubit.persist([item]);
       context.pop(item);
     } else {

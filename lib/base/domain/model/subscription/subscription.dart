@@ -49,10 +49,10 @@ class Subscription with _$Subscription, Identifiable {
   bool get isActive {
     if (planName == "Free") return true;
     if (subId == "Trial") {
-      return (trialStart != null && trialStart!.isBefore(now())) &&
-          (trialEnd != null && trialEnd!.isAfter(now()));
+      return (trialStart != null && trialStart!.isBefore(systemTime())) &&
+          (trialEnd != null && trialEnd!.isAfter(systemTime()));
     }
-    return (activeTill != null && activeTill!.isAfter(now()));
+    return (activeTill != null && activeTill!.isAfter(systemTime()));
   }
 
   bool isSameAs(Subscription other) {

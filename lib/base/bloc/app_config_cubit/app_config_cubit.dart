@@ -85,7 +85,7 @@ class AppConfigCubit extends Cubit<AppConfigState> {
         onRetry: (e) => logger.w('Retrying NTP fetch due to $e'),
       );
 
-      final currentTime = now();
+      final currentTime = systemTime();
 
       final notInSameMoment =
           currentInternetTime!.difference(currentTime).inSeconds.abs() > 5;
@@ -168,7 +168,7 @@ class AppConfigCubit extends Cubit<AppConfigState> {
 
   bool get isCopyingPaused =>
       state.config.pausedTill != null &&
-      state.config.pausedTill!.isAfter(now());
+      state.config.pausedTill!.isAfter(systemTime());
 
   bool canUploadFile(int size) => state.config.dontUploadOver >= size;
 
