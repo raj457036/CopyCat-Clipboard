@@ -17,8 +17,12 @@ abstract class DriveService {
     ClipboardItem item, {
     void Function(int, int)? onProgress,
   });
-  Future<void> delete(ClipboardItem item);
-  Future<void> deleteMany(List<ClipboardItem> items);
+
+  /// Deletes the file associated with [item] from drive and return success status.
+  Future<bool> delete(ClipboardItem item);
+
+  /// Deletes multiple items from drive. Returns the count of successfully deleted items.
+  Future<int> deleteMany(List<ClipboardItem> items);
 
   bool isDownloading(ClipboardItem item);
 

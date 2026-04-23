@@ -21,7 +21,7 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
   @override
   FailureOr<ClipboardItem> create(ClipboardItem item) async {
     try {
-      item = item.copyWith(modified: now());
+      item = item.copyWith(modified: systemTime());
       final encrypted = await item.encrypt();
       final result = await remote.create(encrypted);
       final clip = item.copyWith(
@@ -78,7 +78,7 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
     try {
       final encrypted = await item.encrypt();
       await remote.update(encrypted);
-      final clip = item.copyWith(lastSynced: now());
+      final clip = item.copyWith(lastSynced: systemTime());
       return Right(clip);
     } catch (e) {
       return Left(Failure.fromException(e));
@@ -160,9 +160,7 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
   @override
   FailureOr<List<ClipboardItem>> updateAll(List<ClipboardItem> items) async {
     try {
-      final encryptedUpdates = await Future.wait(
-        items.map((e) => e.encrypt()),
-      );
+      final encryptedUpdates = await Future.wait(items.map((e) => e.encrypt()));
 
       final result = await remote.updateAll(encryptedUpdates);
       return Right(result);
@@ -187,10 +185,10 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
       if (result.id != null) {
         await outbox.enqueue(
           SyncOutboxEntry(
-            entityType: 'clip',
+            entityType: SyncEntityType.clip,
             localId: result.id!,
             action: SyncOutboxAction.create,
-            createdAt: DateTime.now(),
+            createdAt: systemTime(),
           ),
         );
       }
@@ -242,10 +240,10 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
       if (result.id != null) {
         await outbox.enqueue(
           SyncOutboxEntry(
-            entityType: 'clip',
+            entityType: SyncEntityType.clip,
             localId: result.id!,
             action: SyncOutboxAction.update,
-            createdAt: now(),
+            createdAt: systemTime(),
           ),
         );
       }
@@ -258,14 +256,14 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
   @override
   FailureOr<bool> delete(ClipboardItem item) async {
     try {
-      await local.delete(item);
+      await local.delete(item, soft: true);
       if (item.id != null) {
         await outbox.enqueue(
           SyncOutboxEntry(
-            entityType: 'clip',
+            entityType: SyncEntityType.clip,
             localId: item.id!,
             action: SyncOutboxAction.delete,
-            createdAt: DateTime.now(),
+            createdAt: systemTime(),
           ),
         );
       }
@@ -276,9 +274,31 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
   }
 
   @override
+  FailureOr<List<ClipboardItem>> deleteMany(List<ClipboardItem> items) async {
+    try {
+      final deleted = await local.deleteMany(items, soft: true);
+      for (var item in items) {
+        if (item.id == null) continue;
+
+        await outbox.enqueue(
+          SyncOutboxEntry(
+            entityType: SyncEntityType.clip,
+            localId: item.id!,
+            action: SyncOutboxAction.delete,
+            createdAt: systemTime(),
+          ),
+        );
+      }
+      return Right(deleted);
+    } catch (e) {
+      return Left(Failure.fromException(e));
+    }
+  }
+
+  @override
   FailureOr<void> deleteAll() async {
     try {
-      await local.deleteAll();
+      await local.deleteAll(soft: false);
       return const Right(null);
     } catch (e) {
       return Left(Failure.fromException(e));
@@ -310,16 +330,6 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
     try {
       final count = await local.fetchEncryptedCount();
       return Right(count);
-    } catch (e) {
-      return Left(Failure.fromException(e));
-    }
-  }
-
-  @override
-  FailureOr<List<ClipboardItem>> deleteMany(List<ClipboardItem> items) async {
-    try {
-      final deleted = await local.deleteMany(items);
-      return Right(deleted);
     } catch (e) {
       return Left(Failure.fromException(e));
     }

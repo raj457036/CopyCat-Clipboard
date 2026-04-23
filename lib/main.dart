@@ -330,10 +330,8 @@ class MainApp extends StatelessWidget {
     Widget content = EventBridge(
       eventBus: sl(),
       child: WindowFocusManager.forPlatform(
-        child: PasteStackCoordinator(
-          child: TrayManager.forPlatform(
-            child: const SystemShortcutListener(child: AppContent()),
-          ),
+        child: TrayManager.forPlatform(
+          child: const SystemShortcutListener(child: AppContent()),
         ),
       ),
     );

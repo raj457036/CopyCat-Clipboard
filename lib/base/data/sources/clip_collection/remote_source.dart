@@ -25,7 +25,10 @@ class RemoteClipCollectionSource implements ClipCollectionSource {
         .insert(collection.toJson())
         .select();
 
-    return collection.copyWith(serverId: result.first["id"], lastSynced: now());
+    return collection.copyWith(
+      serverId: result.first["id"],
+      lastSynced: systemTime(),
+    );
   }
 
   @override
@@ -34,7 +37,10 @@ class RemoteClipCollectionSource implements ClipCollectionSource {
       return true;
     }
 
-    collection = collection.copyWith(deletedAt: now(), modified: now());
+    collection = collection.copyWith(
+      deletedAt: systemTime(),
+      modified: systemTime(),
+    );
     await db
         .from(clipCollectionTable)
         .update(collection.toJson())
@@ -76,7 +82,7 @@ class RemoteClipCollectionSource implements ClipCollectionSource {
         .from(clipCollectionTable)
         .update(payload)
         .eq("id", collection.serverId!);
-    final updatedCollection = collection.copyWith(lastSynced: now());
+    final updatedCollection = collection.copyWith(lastSynced: systemTime());
     return updatedCollection;
   }
 

@@ -79,7 +79,7 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
     final timestampRaw = clip["timestamp"];
     final timestamp = timestampRaw is num
         ? DateTime.fromMillisecondsSinceEpoch(timestampRaw.toInt())
-        : now();
+        : systemTime();
     final clipText = clip["text"] as String?;
     final encrypted = clip["encrypted"] == true;
     final iv = clip["iv"] as String?;
@@ -98,7 +98,7 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       title: desc,
       description: desc,
       serverId: serverId == -1 ? null : serverId,
-      lastSynced: now(),
+      lastSynced: systemTime(),
       deviceId: deviceId,
     );
   }

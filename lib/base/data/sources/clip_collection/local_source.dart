@@ -110,7 +110,7 @@ class LocalClipCollectionSource implements ClipCollectionSource {
       final updatedItems = items.map((e) {
         final domain = e.toDomain();
         return IsarClipboardItem.fromDomain(
-          domain.copyWith(collectionId: null, modified: now()),
+          domain.copyWith(collectionId: null, modified: systemTime()),
         );
       }).toList();
       await _clipboardItems.putAll(updatedItems);

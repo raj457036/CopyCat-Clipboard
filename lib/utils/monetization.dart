@@ -8,8 +8,8 @@ Future<void> presentPaywall() async {
 
 Subscription generateFreePlan(String userId) {
   return Subscription(
-    created: now(),
-    modified: now(),
+    created: systemTime(),
+    modified: systemTime(),
     userId: userId,
     planName: "Free",
     subId: "",
@@ -24,8 +24,8 @@ Subscription generateProPlan(
   String? managementUrl,
 ]) {
   return Subscription(
-    created: now(),
-    modified: now(),
+    created: systemTime(),
+    modified: systemTime(),
     userId: userId,
     planName: "PRO ✨",
     subId: "",

@@ -38,7 +38,7 @@ class CopycatAboutTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final year = now().year;
+    final year = systemTime().year;
     final info = sl<PackageInfo>();
     final version = info.version;
     final build = info.buildNumber;

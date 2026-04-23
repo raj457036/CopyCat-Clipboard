@@ -20,7 +20,7 @@ class PauseTillSwitch extends StatelessWidget {
     );
 
     if (time != null) {
-      final now_ = now();
+      final now_ = systemTime();
       final pauseTill = now_.copyWith(hour: time.hour, minute: time.minute);
 
       if (pauseTill.isAfter(now_)) {
@@ -45,7 +45,7 @@ class PauseTillSwitch extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        final isActive = state != null && now().isBefore(state);
+        final isActive = state != null && systemTime().isBefore(state);
         return SwitchListTile(
           title: Text(context.locale.settings__switch__paused__title),
           subtitle: Text(

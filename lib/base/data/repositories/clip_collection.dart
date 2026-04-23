@@ -24,7 +24,7 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
   @override
   FailureOr<ClipCollection> create(ClipCollection collection) async {
     try {
-      collection = collection.copyWith(modified: now());
+      collection = collection.copyWith(modified: systemTime());
       ClipCollection result = await local.create(collection);
       if (result.id != null) {
         await outbox.enqueue(
@@ -117,7 +117,7 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
             entityType: 'collection',
             localId: result.id!,
             action: SyncOutboxAction.update,
-            createdAt: now(),
+            createdAt: systemTime(),
           ),
         );
         try {

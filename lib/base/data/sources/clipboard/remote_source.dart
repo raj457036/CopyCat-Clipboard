@@ -23,7 +23,7 @@ class RemoteClipboardSource implements ClipboardSource {
     final docs = await db.from(clipItemTable).insert(item.toJson()).select();
     final createdItem = item.copyWith(
       serverId: docs.first["id"],
-      lastSynced: now(),
+      lastSynced: systemTime(),
     );
 
     return createdItem;
@@ -67,18 +67,23 @@ class RemoteClipboardSource implements ClipboardSource {
   }
 
   @override
-  Future<bool> delete(ClipboardItem item) async {
+  Future<bool> delete(ClipboardItem item, {bool soft = false}) async {
     if (item.serverId == null || item.userId == kLocalUserId) {
       return true;
     }
 
-    item = item.copyWith(deletedAt: now(), modified: now(), text: "", url: "");
+    item = item.copyWith(
+      deletedAt: systemTime(),
+      modified: systemTime(),
+      text: "",
+      url: "",
+    );
     await db.from(clipItemTable).update(item.toJson()).eq("id", item.serverId!);
     return true;
   }
 
   @override
-  Future<bool> deleteAll() {
+  Future<bool> deleteAll({bool soft = false}) {
     throw UnimplementedError();
   }
 
@@ -105,12 +110,20 @@ class RemoteClipboardSource implements ClipboardSource {
   }
 
   @override
-  Future<List<ClipboardItem>> deleteMany(List<ClipboardItem> items) async {
+  Future<List<ClipboardItem>> deleteMany(
+    List<ClipboardItem> items, {
+    bool soft = false,
+  }) async {
     final items_ = items
         .where((item) => item.serverId != null && item.userId != kLocalUserId)
         .map((item) {
           final json = item
-              .copyWith(deletedAt: now(), modified: now(), text: "", url: "")
+              .copyWith(
+                deletedAt: systemTime(),
+                modified: systemTime(),
+                text: "",
+                url: "",
+              )
               .toJson();
           return {...json, "id": item.serverId};
         })

@@ -37,16 +37,6 @@ class EventBridge extends StatelessWidget {
 
   const EventBridge({super.key, required this.eventBus, required this.child});
 
-  bool shouldSync(List<String>? updatedFields, ClipboardItem item) {
-    if (updatedFields == null) return true;
-    if (updatedFields.contains("copiedCount") && item.copiedCount % 15 == 0) {
-      // if only copied count is changed then only sync after every 10 copy operations.
-      return true;
-    }
-
-    return false;
-  }
-
   void broadcastEvent(CrossSyncEventType eventType, ClipboardItem item) {
     sl<SyncEventBus>().emit<ClipboardItem>((eventType, item));
   }
@@ -131,9 +121,8 @@ class EventBridge extends StatelessWidget {
                 previous.config.exclusionRules != current.config.exclusionRules,
             listener: (context, state) {
               final rules = state.config.exclusionRules;
-              context.read<AndroidBgClipboardCubit>().updateExclusionRule(
-                rules,
-              );
+              final androidCubit = context.read<AndroidBgClipboardCubit>();
+              androidCubit.updateExclusionRule(rules);
             },
           ),
         BlocListener<AppConfigCubit, AppConfigState>(
@@ -160,7 +149,7 @@ class EventBridge extends StatelessWidget {
             }
 
             if (config.enableSync) {
-              sl<SyncOrchestrator>().start();
+              sl<SyncOrchestrator>().start(syncSpeed: config.syncSpeed);
               context.read<SyncStatusCubit>().syncAll(const SyncAllParams());
 
               switch (config.syncSpeed) {
@@ -191,7 +180,7 @@ class EventBridge extends StatelessWidget {
                     if (config.onBoardComplete) {
                       context.read<DriveSetupCubit>().fetch();
                       context.read<OfflinePersistenceCubit>().startListeners();
-                      sl<SyncOrchestrator>().start();
+                      sl<SyncOrchestrator>().start(syncSpeed: config.syncSpeed);
                       context.read<SyncStatusCubit>().syncAll(
                         const SyncAllParams(),
                       );
@@ -265,7 +254,6 @@ class EventBridge extends StatelessWidget {
                 broadcastBatchEvent(CrossSyncEventType.update, items);
               case OfflinePersistanceSaved(
                 :final items,
-                :final updatedFields,
                 :final created,
                 synced: false,
               ):
@@ -274,16 +262,7 @@ class EventBridge extends StatelessWidget {
                       ? CrossSyncEventType.create
                       : CrossSyncEventType.update;
                   broadcastBatchEvent(eventType, items);
-
-                  // showDebugSnackbar(
-                  //     "Offline Saved ( Not Synced ) ${items.length}");
-                  final forSync = items.where(
-                    (item) => shouldSync(updatedFields, item),
-                  );
-                  final cubit = context.read<CloudPersistanceCubit>();
-                  for (var item in forSync) {
-                    cubit.persist(item);
-                  }
+                  // Push is now handled by the SyncEngine outbox.
                 }
               case OfflinePersistanceError(:final failure):
                 showFailureSnackbar(failure);
@@ -305,6 +284,8 @@ class EventBridge extends StatelessWidget {
             final offlineCubit = context.read<OfflinePersistenceCubit>();
             switch (state) {
               case CloudPersistanceSaved(:final item):
+                // Write back the serverId/lastSynced to local DB
+                // (used by manual sync button and download flows)
                 showDebugSnackbar("Cloud Saved ${item.serverId}");
                 offlineCubit.persist([item], synced: true);
               case CloudPersistanceDeleted(:final items):
@@ -325,7 +306,6 @@ class EventBridge extends StatelessWidget {
               case CloudPersistanceCreating(:final item) ||
                   CloudPersistanceUpdating(:final item):
                 showDebugSnackbar("Creating/Updating ${item.serverId}");
-                broadcastEvent(CrossSyncEventType.update, item);
               case CloudPersistanceUploadingFile(:final item) ||
                   CloudPersistanceDownloadingFile(:final item):
                 showDebugSnackbar(

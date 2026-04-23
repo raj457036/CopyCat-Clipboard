@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:clipboard/base/data/services/google_services.dart';
+import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_services.dart';
 import 'package:clipboard/base/domain/model/drive_access_token/drive_access_token.dart';
 import 'package:clipboard/base/domain/repositories/drive_credential.dart';
 import 'package:clipboard/common/failure.dart';
