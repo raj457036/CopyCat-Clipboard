@@ -47,6 +47,8 @@ mixin _$ClipboardItem {
   @JsonKey(name: "enc_mode")
   String? get encMode => throw _privateConstructorUsedError; // Text related
   String? get text => throw _privateConstructorUsedError;
+  @JsonKey(name: "p_data")
+  String? get richData => throw _privateConstructorUsedError;
   String? get url => throw _privateConstructorUsedError;
   TextCategory? get textCategory =>
       throw _privateConstructorUsedError; // Files related
@@ -119,6 +121,7 @@ abstract class $ClipboardItemCopyWith<$Res> {
     String? iv,
     @JsonKey(name: "enc_mode") String? encMode,
     String? text,
+    @JsonKey(name: "p_data") String? richData,
     String? url,
     TextCategory? textCategory,
     String? fileName,
@@ -177,6 +180,7 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
     Object? iv = freezed,
     Object? encMode = freezed,
     Object? text = freezed,
+    Object? richData = freezed,
     Object? url = freezed,
     Object? textCategory = freezed,
     Object? fileName = freezed,
@@ -265,6 +269,10 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
             text: freezed == text
                 ? _value.text
                 : text // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            richData: freezed == richData
+                ? _value.richData
+                : richData // ignore: cast_nullable_to_non_nullable
                       as String?,
             url: freezed == url
                 ? _value.url
@@ -386,6 +394,7 @@ abstract class _$$ClipboardItemImplCopyWith<$Res>
     String? iv,
     @JsonKey(name: "enc_mode") String? encMode,
     String? text,
+    @JsonKey(name: "p_data") String? richData,
     String? url,
     TextCategory? textCategory,
     String? fileName,
@@ -443,6 +452,7 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
     Object? iv = freezed,
     Object? encMode = freezed,
     Object? text = freezed,
+    Object? richData = freezed,
     Object? url = freezed,
     Object? textCategory = freezed,
     Object? fileName = freezed,
@@ -531,6 +541,10 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
         text: freezed == text
             ? _value.text
             : text // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        richData: freezed == richData
+            ? _value.richData
+            : richData // ignore: cast_nullable_to_non_nullable
                   as String?,
         url: freezed == url
             ? _value.url
@@ -645,6 +659,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     this.iv,
     @JsonKey(name: "enc_mode") this.encMode,
     this.text,
+    @JsonKey(name: "p_data") this.richData,
     this.url,
     this.textCategory,
     this.fileName,
@@ -723,6 +738,9 @@ class _$ClipboardItemImpl extends _ClipboardItem {
   @override
   final String? text;
   @override
+  @JsonKey(name: "p_data")
+  final String? richData;
+  @override
   final String? url;
   @override
   final TextCategory? textCategory;
@@ -790,7 +808,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
 
   @override
   String toString() {
-    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, encrypted: $encrypted, iv: $iv, encMode: $encMode, text: $text, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent)';
+    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, encrypted: $encrypted, iv: $iv, encMode: $encMode, text: $text, richData: $richData, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent)';
   }
 
   @override
@@ -822,6 +840,8 @@ class _$ClipboardItemImpl extends _ClipboardItem {
             (identical(other.iv, iv) || other.iv == iv) &&
             (identical(other.encMode, encMode) || other.encMode == encMode) &&
             (identical(other.text, text) || other.text == text) &&
+            (identical(other.richData, richData) ||
+                other.richData == richData) &&
             (identical(other.url, url) || other.url == url) &&
             (identical(other.textCategory, textCategory) ||
                 other.textCategory == textCategory) &&
@@ -885,6 +905,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     iv,
     encMode,
     text,
+    richData,
     url,
     textCategory,
     fileName,
@@ -947,6 +968,7 @@ abstract class _ClipboardItem extends ClipboardItem {
     final String? iv,
     @JsonKey(name: "enc_mode") final String? encMode,
     final String? text,
+    @JsonKey(name: "p_data") final String? richData,
     final String? url,
     final TextCategory? textCategory,
     final String? fileName,
@@ -1023,6 +1045,9 @@ abstract class _ClipboardItem extends ClipboardItem {
   String? get encMode; // Text related
   @override
   String? get text;
+  @override
+  @JsonKey(name: "p_data")
+  String? get richData;
   @override
   String? get url;
   @override

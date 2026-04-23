@@ -63,13 +63,13 @@ const insetAll16 = EdgeInsets.all(padding16);
 
 const initialWindowWidth = 1280.0;
 const initialWindowHeight = 720.0;
-const dockedLRMaxWidth = 330.0;
-const dockedLRMinWidth = 230.0;
-const dockedTBMaxHeight = 330.0;
-const dockedTBMinHeight = 230.0;
+const dockedLRMaxWidth = 280.0;
+const dockedLRMinWidth = 240.0;
+const dockedTBMaxHeight = 280.0;
+const dockedTBMinHeight = 240.0;
 
 const initialWindowSize = Size(initialWindowWidth, initialWindowHeight);
 const minimumWindowSize = Size(dockedLRMinWidth, dockedTBMinHeight);
 
-const focusedItemBorderWidth = 2.8;
-const selectedItemBorderWidth = 1.8;
+const focusedItemBorderWidth = 3.0;
+const selectedItemBorderWidth = 2.0;

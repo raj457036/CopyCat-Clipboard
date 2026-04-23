@@ -93,7 +93,16 @@ class _StateInitializerState extends State<StateInitializer>
 
   @override
   void didChangeMetrics() {
-    final ui.Display? display = _view?.display;
+    _view ??= View.maybeOf(context);
+
+    ui.Display? display;
+    try {
+      display = _view?.display;
+    } on AssertionError {
+      // Can happen briefly during desktop window hide/show transitions.
+      return;
+    }
+
     if (display == null) {
       return;
     }

@@ -55,6 +55,7 @@ _$AppConfigImpl _$$AppConfigImplFromJson(
   enablePasteStack: json['enablePasteStack'] as bool? ?? false,
   androidBgListener: json['androidBgListener'] as bool? ?? false,
   duplicatePrevention: json['duplicatePrevention'] as bool? ?? false,
+  richDataCapture: json['richDataCapture'] as bool? ?? false,
   onBoardComplete: json['onBoardComplete'] as bool? ?? true,
 );
 
@@ -89,6 +90,7 @@ Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
       'enablePasteStack': instance.enablePasteStack,
       'androidBgListener': instance.androidBgListener,
       'duplicatePrevention': instance.duplicatePrevention,
+      'richDataCapture': instance.richDataCapture,
       'onBoardComplete': instance.onBoardComplete,
     };
 

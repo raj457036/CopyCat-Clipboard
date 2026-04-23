@@ -51,7 +51,7 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
   Future<void> importEnc2Key(String keyId) async {
     try {
       final windowAction = context.windowAction;
-      final pickedFile = await FilePicker.platform.pickFiles(
+      final pickedFile = await FilePicker.pickFiles(
         type: isDesktopPlatform ? FileType.custom : FileType.any,
         allowedExtensions: isDesktopPlatform ? ['enc2'] : null,
         withData: true,
@@ -96,7 +96,7 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
     final json = {"enc2Id": keyId, "enc2": enc2Key};
     final content = jsonEncode(json);
 
-    final path = await FilePicker.platform.saveFile(
+    final path = await FilePicker.saveFile(
       fileName: "copycat-e2ee-vault-key.enc2",
       type: FileType.custom,
       allowedExtensions: ['enc2'],

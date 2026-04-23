@@ -87,6 +87,7 @@ class AppConfig with _$AppConfig, Identifiable {
     @Default(false) bool enablePasteStack,
     @Default(false) bool androidBgListener,
     @Default(false) bool duplicatePrevention,
+    @Default(false) bool richDataCapture,
 
     // on boarding
     @Default(true)

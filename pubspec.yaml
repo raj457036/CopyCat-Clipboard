@@ -13,54 +13,53 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  injectable: ^2.4.2
+  injectable: ^2.7.1
   flutter_bloc: ^9.0.0
-  bloc: ^9.0.0
+  bloc: ^9.2.0
   freezed_annotation: ^2.4.4
   path: ^1.9.1
   path_provider: ^2.1.5
   json_annotation: ^4.9.0
   get_it: ^8.2.0
-  go_router: ^16.3.0
+  go_router: ^17.2.2
   dartz: ^0.10.1
   form_validator: ^2.1.1
   window_manager: ^0.5.1
-  timeago: ^3.7.0
+  timeago: ^3.7.1
   isar_community: *isar_version
   isar_community_flutter_libs: *isar_version
-  uuid: ^4.4.2
+  uuid: ^4.5.3
   rxdart: ^0.28.0
-  internet_connection_checker_plus: ^2.3.0
-  url_launcher: ^6.3.0
-  googleapis: ^13.1.0
-  file_picker: ^10.3.2
-  http: ^1.2.2
+  internet_connection_checker_plus: ^2.9.1
+  url_launcher: ^6.3.2
+  googleapis: ^16.0.0
+  file_picker: ^11.0.2
+  http: ^1.6.0
   blurhash_dart: ^1.2.1
-  mime: ^1.0.5
-  image: ^4.2.0
+  mime: ^2.0.0
+  image: ^4.8.0
   intl: ^0.20.2
-  app_links: ^6.3.3
+  app_links: ^7.0.0
   device_preview: ^1.2.0
   async: ^2.11.0
-  win32_registry: ^1.1.3
-  share_handler: ^0.0.21
-  universal_io: ^2.2.2
+  win32_registry: ^2.0.0
+  share_handler: ^0.0.25
+  universal_io: ^2.3.1
   duration: ^4.0.3
-  open_filex: ^4.4.0
+  open_filex: ^4.7.0
   hotkey_manager: ^0.2.3
-  google_mobile_ads: ^6.0.0
   focus_window:
     path: packages/focus_window
-  package_info_plus: ^8.0.0
-  tray_manager: ^0.5.0
+  package_info_plus: ^8.3.1
+  tray_manager: ^0.5.2
   flutter_platform_alert: ^0.8.0
   device_preview_screenshot: ^1.0.0
   encrypt: ^5.0.3
-  upgrader: 11.4.0
+  upgrader: 13.1.0
   retry: ^3.1.2
-  launch_at_startup: ^0.3.1
+  launch_at_startup: ^0.5.1
   flutter_colorpicker: ^1.1.0
-  flutter_svg: ^2.0.10+1
+  flutter_svg: ^2.2.4
   screen_retriever: ^0.2.0
   flutter_svg_provider:
     git:
@@ -78,38 +77,38 @@ dependencies:
   emoji_picker_flutter:
     git:
       url: https://github.com/raj457036/emoji_picker_flutter.git
-  purchases_flutter: ^9.2.0
-  purchases_ui_flutter: ^9.2.0
-  supabase_flutter: ^2.9.1
+  purchases_flutter: ^10.0.1
+  purchases_ui_flutter: ^10.0.1
+  supabase_flutter: ^2.12.4
   supabase_auth_ui: ^0.5.5
   super_clipboard: ^0.9.1
   super_drag_and_drop: ^0.9.1
   easy_worker: ^1.2.3
   clipboard_watcher: ^0.3.0
-  crypto: ^3.0.6
-  logger: ^2.4.0
+  crypto: ^3.0.7
+  logger: ^2.7.0
   ntp: ^2.0.0
-  tiny_storage: ^1.1.0
-  share_plus: ^10.1.2
-  device_info_plus: ^10.0.1
-  equatable: ^2.0.7
-  any_link_preview: ^3.0.2
-  cached_network_svg_image: ^1.2.0
+  tiny_storage: ^2.0.2
+  share_plus: ^10.1.4
+  device_info_plus: ^11.5.0
+  equatable: ^2.0.8
+  any_link_preview: ^3.0.3
+  cached_network_svg_image: ^2.0.0
   cached_network_image: ^3.4.1
   synchronized: ^3.4.0
   archive: ^4.0.9
-  statsfl: ^2.2.0+1
+  statsfl: ^2.3.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  build_runner: ^2.4.13
-  injectable_generator: ^2.6.2
+  build_runner: ^2.5.4
+  injectable_generator: ^2.7.0
   isar_community_generator: *isar_version
   freezed: ^2.5.8
   json_serializable: ^6.8.0
-  flutter_launcher_icons: ^0.14.3
+  flutter_launcher_icons: ^0.14.4
   sentry_dart_plugin: ^3.1.1
 
 dependency_overrides:

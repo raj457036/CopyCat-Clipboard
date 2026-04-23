@@ -14,6 +14,7 @@ import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/data/services/encryption.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
@@ -131,10 +132,12 @@ class EventBridge extends StatelessWidget {
             final curr = current.config;
             return prev.enableSync != curr.enableSync ||
                 prev.syncSpeed != curr.syncSpeed ||
-                prev.onBoardComplete != curr.onBoardComplete;
+                prev.onBoardComplete != curr.onBoardComplete ||
+                prev.richDataCapture != curr.richDataCapture;
           },
           listener: (context, state) async {
             final config = state.config;
+            sl<ClipboardService>().setRichDataEnabled(config.richDataCapture);
 
             if (!config.onBoardComplete) {
               logger.i(

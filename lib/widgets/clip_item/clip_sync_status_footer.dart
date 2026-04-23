@@ -1,4 +1,3 @@
-import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';

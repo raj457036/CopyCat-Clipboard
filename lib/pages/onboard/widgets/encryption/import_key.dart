@@ -58,7 +58,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
     final locale = context.locale;
     await wait(100);
     try {
-      final pickedFile = await FilePicker.platform.pickFiles(
+      final pickedFile = await FilePicker.pickFiles(
         type: isDesktopPlatform ? FileType.custom : FileType.any,
         allowedExtensions: isDesktopPlatform ? ['enc2'] : null,
         withData: true,

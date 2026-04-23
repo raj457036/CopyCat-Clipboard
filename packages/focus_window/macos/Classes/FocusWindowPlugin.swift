@@ -158,7 +158,7 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
     private func getUrlForChromiumBasedBrowser(_ appId: String) -> String? {
         
         switch appId {
-        case "com.google.Chrome", "com.google.Chrome.beta", "com.google.Chrome.dev", "com.google.Chrome.canary", "com.brave.Browser", "com.brave.Browser.beta", "com.brave.Browser.nightly", "com.microsoft.edgemac", "com.microsoft.edgemac.Beta", "com.microsoft.edgemac.Dev", "com.microsoft.edgemac.Canary", "com.mighty.app", "com.ghostbrowser.gb1", "com.bookry.wavebox", "com.pushplaylabs.sidekick", "com.vivaldi.Vivaldi":
+        case "com.google.Chrome", "com.google.Chrome.beta", "com.google.Chrome.dev", "com.google.Chrome.canary", "com.brave.Browser", "com.brave.Browser.beta", "com.brave.Browser.nightly", "com.microsoft.edgemac", "com.microsoft.edgemac.Beta", "com.microsoft.edgemac.Dev", "com.microsoft.edgemac.Canary", "com.mighty.app", "com.ghostbrowser.gb1", "com.bookry.wavebox", "com.pushplaylabs.sidekick", "com.vivaldi.Vivaldi", "company.thebrowser.Browser":
             
             let chromeObject: ChromeProtocol = SBApplication.init(bundleIdentifier: appId)!
             
@@ -170,10 +170,26 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
         }
         
     }
+
+    private func getTitleForChromiumBasedBrowser(_ appId: String) -> String? {
+
+        switch appId {
+        case "com.google.Chrome", "com.google.Chrome.beta", "com.google.Chrome.dev", "com.google.Chrome.canary", "com.brave.Browser", "com.brave.Browser.beta", "com.brave.Browser.nightly", "com.microsoft.edgemac", "com.microsoft.edgemac.Beta", "com.microsoft.edgemac.Dev", "com.microsoft.edgemac.Canary", "com.mighty.app", "com.ghostbrowser.gb1", "com.bookry.wavebox", "com.pushplaylabs.sidekick", "com.vivaldi.Vivaldi", "company.thebrowser.Browser":
+
+            let chromeObject: ChromeProtocol = SBApplication.init(bundleIdentifier: appId)!
+
+            let frontWindow = chromeObject.windows?()[0]
+            let activeTab = frontWindow?.activeTab
+            return activeTab?.title
+        default:
+            return nil
+        }
+
+    }
     
     private func getActiveBrowserTabURLAppleScriptCommand(_ appId: String) -> String? {
         switch appId {
-        case "com.google.Chrome", "com.google.Chrome.beta", "com.google.Chrome.dev", "com.google.Chrome.canary", "com.brave.Browser", "com.brave.Browser.beta", "com.brave.Browser.nightly", "com.microsoft.edgemac", "com.microsoft.edgemac.Beta", "com.microsoft.edgemac.Dev", "com.microsoft.edgemac.Canary", "com.mighty.app", "com.ghostbrowser.gb1", "com.bookry.wavebox", "com.pushplaylabs.sidekick", "com.operasoftware.Opera",  "com.operasoftware.OperaNext", "com.operasoftware.OperaDeveloper", "com.vivaldi.Vivaldi":
+        case "com.google.Chrome", "com.google.Chrome.beta", "com.google.Chrome.dev", "com.google.Chrome.canary", "com.brave.Browser", "com.brave.Browser.beta", "com.brave.Browser.nightly", "com.microsoft.edgemac", "com.microsoft.edgemac.Beta", "com.microsoft.edgemac.Dev", "com.microsoft.edgemac.Canary", "com.mighty.app", "com.ghostbrowser.gb1", "com.bookry.wavebox", "com.pushplaylabs.sidekick", "com.operasoftware.Opera",  "com.operasoftware.OperaNext", "com.operasoftware.OperaDeveloper", "com.vivaldi.Vivaldi", "company.thebrowser.Browser":
             return "tell app id \"\(appId)\" to get the URL of active tab of front window"
         case "com.apple.Safari", "com.apple.SafariTechnologyPreview":
             return "tell app id \"\(appId)\" to do JavaScript \"document.URL\" in front document"
@@ -224,9 +240,11 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
         
 //        Getting the url
         var url: String?
+        var tabTitle: String?
         
         if (application.bundleIdentifier != nil) {
             url = getUrlForChromiumBasedBrowser(application.bundleIdentifier!)
+            tabTitle = getTitleForChromiumBasedBrowser(application.bundleIdentifier!)
             if (url == nil) {
                 let script =  getActiveBrowserTabURLAppleScriptCommand(application.bundleIdentifier ?? "");
                 url = runAppleScript(source: script ?? "");
@@ -244,6 +262,10 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
             
             let windowTitle = window[kCGWindowName as String] as? String ?? ""
             activity["title"] = windowTitle
+        }
+
+        if ((activity["title"] as? String ?? "").isEmpty && tabTitle != nil) {
+            activity["title"] = tabTitle
         }
         if (withIcon && application.icon != nil) {
             let icon = NSBitmapImageRep(data: application.icon!.tiffRepresentation(using: .lzw, factor: .greatestFiniteMagnitude)!)!.representation(using: .png, properties: [:]);

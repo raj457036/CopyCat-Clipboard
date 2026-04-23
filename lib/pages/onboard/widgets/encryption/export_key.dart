@@ -48,7 +48,7 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
       };
       final content = jsonEncode(json);
 
-      final path = await FilePicker.platform.saveFile(
+      final path = await FilePicker.saveFile(
         fileName: "copycat-e2ee-vault-key.enc2",
         type: FileType.custom,
         allowedExtensions: ['enc2'],

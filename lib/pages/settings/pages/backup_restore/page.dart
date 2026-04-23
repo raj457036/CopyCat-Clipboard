@@ -42,7 +42,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
     final config = await _showBackupOptionsDialog();
     if (!mounted || config == null) return;
 
-    final savePath = await FilePicker.platform.saveFile(
+    final savePath = await FilePicker.saveFile(
       dialogTitle: 'Save Backup As',
       fileName:
           'copycat_backup_${DateTime.now().millisecondsSinceEpoch}.ccbkup',
@@ -97,7 +97,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
   }
 
   Future<void> _restoreBackup() async {
-    final selected = await FilePicker.platform.pickFiles(
+    final selected = await FilePicker.pickFiles(
       dialogTitle: 'Select Backup File',
       allowMultiple: false,
       type: FileType.custom,

@@ -74,8 +74,8 @@ mixin _$AppConfig {
   bool get enableDragNDrop => throw _privateConstructorUsedError;
   bool get enablePasteStack => throw _privateConstructorUsedError;
   bool get androidBgListener => throw _privateConstructorUsedError;
-  bool get duplicatePrevention =>
-      throw _privateConstructorUsedError; // on boarding
+  bool get duplicatePrevention => throw _privateConstructorUsedError;
+  bool get richDataCapture => throw _privateConstructorUsedError; // on boarding
   bool get onBoardComplete =>
       throw _privateConstructorUsedError; // On logout/unauth this will be set to true
   //? Local App States
@@ -133,6 +133,7 @@ abstract class $AppConfigCopyWith<$Res> {
     bool enablePasteStack,
     bool androidBgListener,
     bool duplicatePrevention,
+    bool richDataCapture,
     bool onBoardComplete,
     @JsonKey(includeFromJson: false, includeToJson: false)
     int? lastFocusedWindowId,
@@ -188,6 +189,7 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? enablePasteStack = null,
     Object? androidBgListener = null,
     Object? duplicatePrevention = null,
+    Object? richDataCapture = null,
     Object? onBoardComplete = null,
     Object? lastFocusedWindowId = freezed,
     Object? clockUnSynced = null,
@@ -318,6 +320,10 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
                 ? _value.duplicatePrevention
                 : duplicatePrevention // ignore: cast_nullable_to_non_nullable
                       as bool,
+            richDataCapture: null == richDataCapture
+                ? _value.richDataCapture
+                : richDataCapture // ignore: cast_nullable_to_non_nullable
+                      as bool,
             onBoardComplete: null == onBoardComplete
                 ? _value.onBoardComplete
                 : onBoardComplete // ignore: cast_nullable_to_non_nullable
@@ -392,6 +398,7 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     bool enablePasteStack,
     bool androidBgListener,
     bool duplicatePrevention,
+    bool richDataCapture,
     bool onBoardComplete,
     @JsonKey(includeFromJson: false, includeToJson: false)
     int? lastFocusedWindowId,
@@ -447,6 +454,7 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? enablePasteStack = null,
     Object? androidBgListener = null,
     Object? duplicatePrevention = null,
+    Object? richDataCapture = null,
     Object? onBoardComplete = null,
     Object? lastFocusedWindowId = freezed,
     Object? clockUnSynced = null,
@@ -577,6 +585,10 @@ class __$$AppConfigImplCopyWithImpl<$Res>
             ? _value.duplicatePrevention
             : duplicatePrevention // ignore: cast_nullable_to_non_nullable
                   as bool,
+        richDataCapture: null == richDataCapture
+            ? _value.richDataCapture
+            : richDataCapture // ignore: cast_nullable_to_non_nullable
+                  as bool,
         onBoardComplete: null == onBoardComplete
             ? _value.onBoardComplete
             : onBoardComplete // ignore: cast_nullable_to_non_nullable
@@ -629,6 +641,7 @@ class _$AppConfigImpl extends _AppConfig {
     this.enablePasteStack = false,
     this.androidBgListener = false,
     this.duplicatePrevention = false,
+    this.richDataCapture = false,
     this.onBoardComplete = true,
     @JsonKey(includeFromJson: false, includeToJson: false)
     this.lastFocusedWindowId,
@@ -752,6 +765,9 @@ class _$AppConfigImpl extends _AppConfig {
   @override
   @JsonKey()
   final bool duplicatePrevention;
+  @override
+  @JsonKey()
+  final bool richDataCapture;
   // on boarding
   @override
   @JsonKey()
@@ -768,7 +784,7 @@ class _$AppConfigImpl extends _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, onBoardComplete: $onBoardComplete, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
+    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, richDataCapture: $richDataCapture, onBoardComplete: $onBoardComplete, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
   }
 
   @override
@@ -831,6 +847,8 @@ class _$AppConfigImpl extends _AppConfig {
                 other.androidBgListener == androidBgListener) &&
             (identical(other.duplicatePrevention, duplicatePrevention) ||
                 other.duplicatePrevention == duplicatePrevention) &&
+            (identical(other.richDataCapture, richDataCapture) ||
+                other.richDataCapture == richDataCapture) &&
             (identical(other.onBoardComplete, onBoardComplete) ||
                 other.onBoardComplete == onBoardComplete) &&
             (identical(other.lastFocusedWindowId, lastFocusedWindowId) ||
@@ -874,6 +892,7 @@ class _$AppConfigImpl extends _AppConfig {
     enablePasteStack,
     androidBgListener,
     duplicatePrevention,
+    richDataCapture,
     onBoardComplete,
     lastFocusedWindowId,
     clockUnSynced,
@@ -927,6 +946,7 @@ abstract class _AppConfig extends AppConfig {
     final bool enablePasteStack,
     final bool androidBgListener,
     final bool duplicatePrevention,
+    final bool richDataCapture,
     final bool onBoardComplete,
     @JsonKey(includeFromJson: false, includeToJson: false)
     final int? lastFocusedWindowId,
@@ -1018,7 +1038,9 @@ abstract class _AppConfig extends AppConfig {
   @override
   bool get androidBgListener;
   @override
-  bool get duplicatePrevention; // on boarding
+  bool get duplicatePrevention;
+  @override
+  bool get richDataCapture; // on boarding
   @override
   bool get onBoardComplete; // On logout/unauth this will be set to true
   //? Local App States

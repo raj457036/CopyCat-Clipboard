@@ -11,7 +11,7 @@
       "program": "lib/main.dart",
       "args": [
         "--dart-define-from-file",
-        "local/prod.json",
+        "local/dev.json",
         "--verbose"
       ]
     },
