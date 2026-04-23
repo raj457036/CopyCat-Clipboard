@@ -110,9 +110,7 @@ class _ClipListItemState extends State<ClipListItem> {
             side: BorderSide(
               color: colors.primary,
               width: focused ? focusedItemBorderWidth : selectedItemBorderWidth,
-              strokeAlign: focused
-                  ? BorderSide.strokeAlignOutside
-                  : BorderSide.strokeAlignInside,
+              strokeAlign: BorderSide.strokeAlignInside,
             ),
             borderRadius: radius12,
           )
@@ -130,6 +128,7 @@ class _ClipListItemState extends State<ClipListItem> {
       onShiftC: (context) => onShiftC(context, widget.item, canPaste),
       child: Card.outlined(
         shape: selectedShape,
+        elevation: focused ? 2 : 0,
         clipBehavior: Clip.hardEdge,
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 60, maxHeight: 220),
