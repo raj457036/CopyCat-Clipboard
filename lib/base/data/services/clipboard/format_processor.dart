@@ -229,8 +229,27 @@ class ClipboardFormatProcessor {
     return isDuplicate_;
   }
 
+  Future<ClipItem?> _getHtml(DataReader reader) async {
+    String? text;
+
+    try {
+      text = await readValue(reader, Formats.htmlText);
+    } catch (e) {
+      final data = await service.Clipboard.getData("text/html");
+      if (data != null) text = data.text;
+    }
+
+    if (text == null) {
+      logger.w("Text is null");
+      return null;
+    }
+
+    return ClipItem.text(text: text, textCategory: TextCategory.struct);
+  }
+
   Future<ClipItem?> _getPlainText(DataReader reader) async {
     String? text;
+
     try {
       text = await readValue(reader, Formats.plainText);
     } catch (e) {
@@ -421,6 +440,8 @@ class ClipboardFormatProcessor {
     try {
       this.preventDuplicate = preventDuplicate;
       switch (format) {
+        case Formats.htmlText:
+          return await _getHtml(reader);
         case Formats.plainText:
           return await _getPlainText(reader);
         case Formats.plainTextFile:
