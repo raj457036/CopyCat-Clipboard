@@ -59,7 +59,7 @@ class FileClipCard extends StatelessWidget {
         child: Stack(
           children: [
             Text(
-              item.fileName?.sub(end: 25) ?? "No Name",
+              item.fileName?.sub(end: 30) ?? "No Name",
               overflow: TextOverflow.fade,
               maxLines: 5,
               textAlign: TextAlign.center,

@@ -2,6 +2,7 @@ import 'package:clipboard/widgets/clip_item/leading_option.dart';
 import 'package:clipboard/widgets/clip_item/primary_clip_action_button.dart';
 import 'package:clipboard/widgets/clip_item/primary_hover_action_button.dart';
 import 'package:clipboard/widgets/clip_item/secondary_clip_action_button.dart';
+import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
@@ -27,37 +28,34 @@ class ClipListItemOptionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 36,
-      child: Row(
-        children: [
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: LeadingClipboardOption(
-                item: item,
-                createdPadding: const EdgeInsets.symmetric(
-                  vertical: padding4,
-                  horizontal: padding10,
+    return ClipItemScope(
+      item: item,
+      child: SizedBox(
+        height: 36,
+        child: Row(
+          children: [
+            Expanded(
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: LeadingClipboardOption(
+                  createdPadding: const EdgeInsets.symmetric(
+                    vertical: padding4,
+                    horizontal: padding10,
+                  ),
+                  created: item.created,
+                  hovered: hovered || selectionActive,
                 ),
-                selectionIndex: selectionIndex,
-
-                created: item.created,
-                hovered: hovered || selectionActive,
-                selected: selected,
               ),
             ),
-          ),
-          if (!selectionActive) SecondaryClipActionButton(item: item),
-          if (!selectionActive)
-            PrimaryClipActionButton(
-              item: item,
-              hasFocusForPaste: hasFocusForPaste,
-              layout: AppLayout.list,
-            ),
-          if (!selectionActive)
-            PrimaryHoverAction(item: item, hovered: hovered),
-        ],
+            if (!selectionActive) const SecondaryClipActionButton(),
+            if (!selectionActive)
+              PrimaryClipActionButton(
+                hasFocusForPaste: hasFocusForPaste,
+                layout: AppLayout.list,
+              ),
+            if (!selectionActive) const PrimaryHoverAction(),
+          ],
+        ),
       ),
     );
   }

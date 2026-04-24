@@ -90,12 +90,36 @@ Future<(File?, String?, int)> writeToClipboardCacheFile({
 // ClipboardFormatProcessor
 // ---------------------------------------------------------------------------
 
-/// Processes a [DataReader] + [DataFormat] pair into a [ClipItem].
-///
-/// Handles plain text, plain-text files, images, and URI/file formats.
-/// Duplicate detection is controlled via [preventDuplicate].
+/// Processes clipboard format data into a [ClipItem].
+/// Handles text, images, URIs, and generic file formats with automatic extension resolution.
 class ClipboardFormatProcessor {
   bool preventDuplicate = false;
+
+  late final Map<DataFormat, Future<ClipItem?> Function(DataReader)> _handlers =
+      <DataFormat, Future<ClipItem?> Function(DataReader)>{
+        Formats.htmlText: _getHtml,
+        Formats.plainText: _getPlainText,
+        Formats.plainTextFile: _getPlainTextFile,
+        Formats.fileUri: processUri,
+        Formats.uri: processUri,
+        for (final entry in _imageFormatExtensions.entries)
+          entry.key: (reader) => getImage(reader, entry.value, entry.key),
+      };
+
+  static final Map<DataFormat, String> _imageFormatExtensions =
+      <DataFormat, String>{
+        Formats.png: "png",
+        Formats.jpeg: "jpeg",
+        Formats.gif: "gif",
+        Formats.webp: "webp",
+        Formats.bmp: "bmp",
+        Formats.heic: "heic",
+        Formats.heif: "heif",
+        avif: "avif",
+        Formats.tiff: "tiff",
+        Formats.ico: "ico",
+        svg: "svg",
+      };
 
   String cleanText(String text) {
     try {
@@ -105,8 +129,42 @@ class ClipboardFormatProcessor {
     }
   }
 
-  /// Reads a single [ValueFormat] value from [reader]. Returns `null` when
-  /// the format is not available or reading fails.
+  String? _normalizeExtension(String? extension) {
+    if (extension == null || extension.isEmpty) return null;
+    final normalized = extension.startsWith('.')
+        ? extension.substring(1)
+        : extension;
+    if (normalized.isEmpty) return null;
+    return normalized.toLowerCase();
+  }
+
+  String? _extensionFromMimeType(String? mimeType) {
+    if (mimeType == null || mimeType.isEmpty) return null;
+    return _normalizeExtension(mime.extensionFromMime(mimeType));
+  }
+
+  String? _mimeTypeFromFormat(DataFormat format) {
+    if (format is SimpleFileFormat) {
+      final mimeTypes = format.mimeTypes;
+      if (mimeTypes != null && mimeTypes.isNotEmpty) {
+        return mimeTypes.first;
+      }
+    }
+    return null;
+  }
+
+  String _extensionForFormat(
+    DataFormat format, {
+    String? fileNameExtension,
+    String? preferredMimeType,
+  }) {
+    return _normalizeExtension(fileNameExtension) ??
+        _imageFormatExtensions[format] ??
+        _extensionFromMimeType(preferredMimeType) ??
+        _extensionFromMimeType(_mimeTypeFromFormat(format)) ??
+        "bin";
+  }
+
   Future<T?> readValue<T extends Object>(
     DataReader reader,
     ValueFormat<T> format,
@@ -130,15 +188,11 @@ class ClipboardFormatProcessor {
     return Uint8List.fromList(bytes);
   }
 
-  /// Reads a file payload from [reader] using [format].
-  /// Returns `(fileName, bytes)` — both may be null on failure.
-  Future<(String?, Uint8List?)> readFile(
-    DataReader reader,
-    FileFormat format, {
-    bool virtual = true,
-  }) async {
-    Uint8List? content;
-    String? name;
+  Future<({String? fileName, String? fileExtension, Uint8List? bytes})>
+  readFile(DataReader reader, FileFormat format, {bool virtual = true}) async {
+    Uint8List? bytes;
+    String? fileName;
+    String? fileExtension;
     final c = Completer<void>();
     final progress = reader.getFile(
       format,
@@ -152,14 +206,17 @@ class ClipboardFormatProcessor {
               )) {
             logger.w("Duplicate File Clip Found!");
             c.complete();
-            name = _duplicateTag;
+            fileName = _duplicateTag;
             return;
           }
 
-          name = p.basenameWithoutExtension(file.fileName ?? "");
+          final sourceFileName = file.fileName;
+          if (sourceFileName != null && sourceFileName.isNotEmpty) {
+            fileName = p.basenameWithoutExtension(sourceFileName);
+            fileExtension = _normalizeExtension(p.extension(sourceFileName));
+          }
           final bin = await streamToUint8List(file.getStream());
           final digest = sha1.convert(bin);
-
           if (isDuplicate(
             type: ClipItemType.file,
             digest: digest,
@@ -167,11 +224,10 @@ class ClipboardFormatProcessor {
           )) {
             logger.w("Duplicate File Digest Found!");
             c.complete();
-            name = _duplicateTag;
+            fileName = _duplicateTag;
             return;
           }
-
-          content = bin;
+          bytes = bin;
           c.complete();
         } catch (e) {
           c.completeError(e);
@@ -182,7 +238,7 @@ class ClipboardFormatProcessor {
     );
     if (progress == null) c.complete();
     await c.future;
-    return (name, content);
+    return (fileName: fileName, fileExtension: fileExtension, bytes: bytes);
   }
 
   ImmediateClip? getImmediateClip({
@@ -276,7 +332,9 @@ class ClipboardFormatProcessor {
   }
 
   Future<ClipItem?> _getPlainTextFile(DataReader reader) async {
-    final (fileName, binary) = await readFile(reader, Formats.plainTextFile);
+    final fileData = await readFile(reader, Formats.plainTextFile);
+    final fileName = fileData.fileName;
+    final binary = fileData.bytes;
 
     if (fileName == _duplicateTag) return ClipItem.duplicate();
     if (binary == null) {
@@ -311,20 +369,38 @@ class ClipboardFormatProcessor {
     String ext,
     DataFormat format,
   ) async {
+    return _getFileFormatClip(
+      reader,
+      format: format as FileFormat,
+      preferredExtension: ext,
+      preferredMimeType: _mimeTypeFromFormat(format),
+      folder: "medias",
+      type: ClipItemType.media,
+    );
+  }
+
+  Future<ClipItem?> _getFileFormatClip(
+    DataReader reader, {
+    required FileFormat format,
+    String? preferredExtension,
+    String? preferredMimeType,
+    required String folder,
+    required ClipItemType type,
+  }) async {
     try {
-      (String?, Uint8List?) result;
+      ({String? fileName, String? fileExtension, Uint8List? bytes}) result;
       final tryVirtualFirst = Platform.isWindows;
       try {
         result = await readFile(
           reader,
-          format as FileFormat,
+          format,
           virtual: tryVirtualFirst,
         ).timeout(const Duration(seconds: 3));
       } on TimeoutException catch (e) {
         logger.e(e);
         result = await readFile(
           reader,
-          format as FileFormat,
+          format,
           virtual: !tryVirtualFirst,
         ).timeout(const Duration(seconds: 10));
       } catch (e) {
@@ -332,30 +408,58 @@ class ClipboardFormatProcessor {
         return null;
       }
 
-      final (fileName, binary) = result;
+      final fileName = result.fileName;
+      final binary = result.bytes;
       if (fileName == _duplicateTag) return ClipItem.duplicate();
       if (binary == null) {
         logger.w("Couldn't read content of image file with format $format");
         return null;
       }
-
+      final resolvedExtension = _extensionForFormat(
+        format,
+        fileNameExtension: result.fileExtension ?? preferredExtension,
+        preferredMimeType: preferredMimeType,
+      );
       final (file, mimeType, size) = await writeToClipboardCacheFile(
-        folder: "medias",
-        ext: ext,
+        folder: folder,
+        ext: resolvedExtension,
         fileName: fileName,
         content: binary,
       );
       if (file == null) return null;
+      final resolvedMimeType =
+          mimeType ?? preferredMimeType ?? _mimeTypeFromFormat(format);
+      if (type == ClipItemType.media) {
+        return ClipItem.imageFile(
+          file: file,
+          mimeType: resolvedMimeType ?? "application/octet-stream",
+          fileName: fileName,
+          fileSize: size,
+        );
+      }
 
-      return ClipItem.imageFile(
+      return ClipItem.file(
         file: file,
-        mimeType: mimeType ?? "application/octet-stream",
+        mimeType: resolvedMimeType ?? "application/octet-stream",
         fileName: fileName,
         fileSize: size,
       );
     } catch (e) {
       return null;
     }
+  }
+
+  Future<ClipItem?> _getGenericFile(
+    DataReader reader,
+    FileFormat format,
+  ) async {
+    return _getFileFormatClip(
+      reader,
+      format: format,
+      preferredMimeType: _mimeTypeFromFormat(format),
+      folder: "files",
+      type: ClipItemType.file,
+    );
   }
 
   Future<ClipItem?> getFile(DataReader reader, Uri uri) async {
@@ -430,8 +534,6 @@ class ClipboardFormatProcessor {
     return await _getPlainText(reader);
   }
 
-  /// Dispatches [reader] + [format] to the appropriate handler and returns
-  /// a [ClipItem], or `null` if nothing could be extracted.
   Future<ClipItem?> process(
     DataReader reader,
     DataFormat format, {
@@ -439,35 +541,17 @@ class ClipboardFormatProcessor {
   }) async {
     try {
       this.preventDuplicate = preventDuplicate;
-      switch (format) {
-        case Formats.htmlText:
-          return await _getHtml(reader);
-        case Formats.plainText:
-          return await _getPlainText(reader);
-        case Formats.plainTextFile:
-          return await _getPlainTextFile(reader);
-        case avif:
-          return await getImage(reader, "avif", format);
-        case Formats.png:
-          return await getImage(reader, "png", format);
-        case Formats.jpeg:
-          return await getImage(reader, "jpeg", format);
-        case Formats.gif:
-          return await getImage(reader, "gif", format);
-        case Formats.tiff:
-          return await getImage(reader, "tiff", format);
-        case Formats.webp:
-          return await getImage(reader, "webp", format);
-        case Formats.heic:
-          return await getImage(reader, "heic", format);
-        case svg:
-          return await getImage(reader, "svg", format);
-        case Formats.fileUri:
-        case Formats.uri:
-          return await processUri(reader);
-        default:
-          return null;
+      final handler = _handlers[format];
+      if (handler != null) {
+        return await handler(reader);
       }
+
+      if (format is FileFormat) {
+        return await _getGenericFile(reader, format);
+      }
+
+      logger.i("Unsupported clipboard format: $format");
+      return null;
     } finally {
       this.preventDuplicate = false;
     }

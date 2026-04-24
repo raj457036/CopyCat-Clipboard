@@ -91,63 +91,55 @@ class LinkPreview extends StatelessWidget {
         }
         final colors = context.colors;
 
-        Widget body = ClipRRect(
-          borderRadius: radius8,
-          child: Column(
-            spacing: 4,
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (provider != null)
-                Expanded(child: LinkPreviewImage(provider: provider)),
-              // else if (svg != null)
-              //   Expanded(child: svg),
-              if ((meta.title != null || meta.desc != null) &&
-                  (!hideDesc || !hideTitle))
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: padding6,
-                    right: padding6,
-                    bottom: padding6,
-                  ),
-                  child: Column(
-                    spacing: 4,
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (meta.title != null &&
-                          meta.title!.isNotEmpty &&
-                          !hideTitle)
-                        Flexible(
-                          child: Text(
-                            meta.title!,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: maxTitleLines,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontVariations: fontVarW600,
-                            ),
-                          ),
-                        ),
-                      if (meta.desc != null &&
-                          meta.desc!.isNotEmpty &&
-                          !hideDesc)
-                        Flexible(
-                          child: Text(
-                            meta.desc!,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: maxDescLines,
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: colors.outline,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
+        Widget body = Column(
+          spacing: 4,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (provider != null)
+              Expanded(child: LinkPreviewImage(provider: provider)),
+            // else if (svg != null)
+            //   Expanded(child: svg),
+            if ((meta.title != null || meta.desc != null) &&
+                (!hideDesc || !hideTitle))
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: padding6,
+                  right: padding6,
+                  bottom: padding6,
                 ),
-            ],
-          ),
+                child: Column(
+                  spacing: 4,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (meta.title != null &&
+                        meta.title!.isNotEmpty &&
+                        !hideTitle)
+                      Flexible(
+                        child: Text(
+                          meta.title!,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: maxTitleLines,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontVariations: fontVarW600,
+                          ),
+                        ),
+                      ),
+                    if (meta.desc != null && meta.desc!.isNotEmpty && !hideDesc)
+                      Flexible(
+                        child: Text(
+                          meta.desc!,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: maxDescLines,
+                          style: TextStyle(fontSize: 10, color: colors.outline),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+          ],
         );
 
         if (onTap != null) {

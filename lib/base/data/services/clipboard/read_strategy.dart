@@ -1,42 +1,19 @@
 import 'package:clipboard/base/constants/misc.dart';
 import 'package:super_clipboard/super_clipboard.dart';
 
-/// Simple format selector used by clipboard capture and drag-drop.
-///
-/// Behavior:
-/// - Prefer common stable formats first.
-/// - If none match, still accept the first available supported format.
-///
-/// This keeps capture deterministic without hard-filtering unknown formats.
+/// Selects the best format from available clipboard formats.
+/// Iterates through supported formats in priority order and returns the first match.
 class SimpleClipboardReadStrategy {
   const SimpleClipboardReadStrategy();
 
-  static final List<DataFormat> _preferredOrder = <DataFormat>[
-    Formats.fileUri,
-    Formats.uri,
-    Formats.plainText,
-    Formats.plainTextFile,
-    avif,
-    Formats.png,
-    Formats.jpeg,
-    Formats.gif,
-    Formats.tiff,
-    Formats.webp,
-    Formats.heic,
-    Formats.bmp,
-    svg,
-  ];
-
   DataFormat<Object>? selectFromItemFormats(List<DataFormat> itemFormats) {
     if (itemFormats.isEmpty) return null;
-
-    for (final preferred in _preferredOrder) {
-      if (itemFormats.contains(preferred)) {
-        return preferred;
+    for (final supportedFormat in allSupportedClipFormats) {
+      if (itemFormats.contains(supportedFormat)) {
+        return supportedFormat;
       }
     }
-
-    return itemFormats.first;
+    return null;
   }
 
   List<(DataReader, DataFormat<Object>)> selectReaders({

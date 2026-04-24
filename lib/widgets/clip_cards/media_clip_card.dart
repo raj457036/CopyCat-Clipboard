@@ -110,12 +110,6 @@ class MediaClipCard extends StatelessWidget {
           : preview,
     );
 
-    if (item.isSynced) {
-      return ClipRRect(
-        borderRadius: isGrid ? radiusBottom12 : radiusBottom8,
-        child: child,
-      );
-    }
     return child;
   }
 }

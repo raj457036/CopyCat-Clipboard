@@ -1,32 +1,27 @@
 import 'package:clipboard/widgets/clip_item/clip_create_time.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
-import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LeadingClipboardOption extends StatelessWidget {
-  final ClipboardItem item;
   final DateTime created;
   final bool hovered;
   final EdgeInsets? createdPadding;
   final EdgeInsets? padding;
-  final bool selected;
-  final int selectionIndex;
 
   const LeadingClipboardOption({
     super.key,
-    required this.item,
     this.hovered = false,
     this.createdPadding,
     this.padding,
-    this.selected = false,
-    required this.selectionIndex,
     required this.created,
   });
 
-  void toggleSelect(BuildContext context) {
+  void toggleSelect(BuildContext context, bool selected) {
+    final item = ClipItemScope.of(context);
     final cubit = context.read<SelectedClipsCubit>();
     if (selected) {
       cubit.unselect(item);
@@ -35,7 +30,7 @@ class LeadingClipboardOption extends StatelessWidget {
     cubit.select(item);
   }
 
-  String selectedOrderLabel() {
+  String selectedOrderLabel(int selectionIndex) {
     final order = selectionIndex + 1;
     if (order <= 0) return "";
     if (order > 99) return "99+";
@@ -44,10 +39,19 @@ class LeadingClipboardOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final item = ClipItemScope.of(context);
+    final selectionIndex = context.select((SelectedClipsCubit cubit) {
+      final state = cubit.state;
+      return switch (state) {
+        ClipSelected(:final selectedClipIds) => selectedClipIds.indexOf(item),
+        _ => -1,
+      };
+    });
+    final selected = selectionIndex >= 0;
     const iconSize = 24.0;
     final colors = context.colors;
     final order = selectionIndex + 1;
-    final orderLabel = selectedOrderLabel();
+    final orderLabel = selectedOrderLabel(selectionIndex);
     if (hovered || selected) {
       return SizedBox.square(
         dimension: iconSize * 1.44,
@@ -61,7 +65,7 @@ class LeadingClipboardOption extends StatelessWidget {
             tooltip: selected
                 ? "${context.locale.app__select} #$order"
                 : context.locale.app__select,
-            onPressed: () => toggleSelect(context),
+            onPressed: () => toggleSelect(context, selected),
             selectedIcon: _SelectionOrderBadge(
               label: orderLabel,
               compact: order > 99,

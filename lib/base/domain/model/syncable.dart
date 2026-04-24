@@ -25,4 +25,8 @@ abstract mixin class Syncable implements Identifiable {
 
   /// Returns a copy of the entity with updated sync metadata.
   Syncable copyWithSyncMetadata({int? id, DateTime? lastSynced});
+
+  /// Returns true if this entity has unsynced local changes.
+  bool get hasUnsyncedChanges =>
+      serverId == null || lastSynced == null || modified.isAfter(lastSynced!);
 }

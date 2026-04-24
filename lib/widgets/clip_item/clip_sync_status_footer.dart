@@ -9,13 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ClipSyncStatusFooter extends StatelessWidget {
   final ClipboardItem item;
-  final BorderRadius radius;
 
-  const ClipSyncStatusFooter({
-    super.key,
-    required this.item,
-    this.radius = radiusBottom12,
-  });
+  const ClipSyncStatusFooter({super.key, required this.item});
 
   Future<void> _sync(BuildContext context) async {
     context.read<OfflinePersistenceCubit>().persist([
@@ -25,8 +20,7 @@ class ClipSyncStatusFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if ((item.lastSynced != null && item.serverId != null) ||
-        item.driveFileId != null) {
+    if (!item.hasUnsyncedChanges || item.driveFileId != null) {
       return const SizedBox.shrink();
     }
     final colors = context.colors;
@@ -50,11 +44,8 @@ class ClipSyncStatusFooter extends StatelessWidget {
 
     return SizedBox.fromSize(
       size: const Size.fromHeight(35),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.tertiaryContainer,
-          borderRadius: radius,
-        ),
+      child: ColoredBox(
+        color: colors.tertiaryContainer,
         child: Padding(
           padding: const EdgeInsets.all(padding8),
           child: LayoutBuilder(

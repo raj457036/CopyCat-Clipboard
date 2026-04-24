@@ -129,12 +129,12 @@ class _ClipListItemState extends State<ClipListItem> {
       child: Card.outlined(
         shape: selectedShape,
         elevation: focused ? 2 : 0,
-        clipBehavior: Clip.hardEdge,
+        clipBehavior: Clip.antiAlias,
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 60, maxHeight: 220),
           child: InkWell(
             mouseCursor: SystemMouseCursors.click,
-            borderRadius: radius12,
+            customBorder: selectedShape,
             autofocus: widget.autofocus,
             onTap: !widget.selectionActive
                 ? () =>
@@ -192,12 +192,7 @@ class _ClipListItemState extends State<ClipListItem> {
                   ),
                   if (!widget.selected && !widget.noView)
                     DisableForLocalUser(
-                      child: ClipSyncStatusFooter(
-                        item: widget.item,
-                        radius: const BorderRadius.vertical(
-                          bottom: Radius.circular(8),
-                        ),
-                      ),
+                      child: ClipSyncStatusFooter(item: widget.item),
                     ),
                 ],
               ),

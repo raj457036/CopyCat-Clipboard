@@ -1,15 +1,15 @@
 import 'package:clipboard/utils/clipboard_actions.dart';
-import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
 import 'package:flutter/material.dart';
 
 class SecondaryClipActionButton extends StatelessWidget {
-  final ClipboardItem item;
-  const SecondaryClipActionButton({super.key, required this.item});
+  const SecondaryClipActionButton({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final item = ClipItemScope.of(context);
     final action = switch (item.type) {
       ClipItemType.url => IconButton(
         onPressed: () => launchUrl(item),
