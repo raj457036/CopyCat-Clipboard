@@ -334,15 +334,9 @@ class SyncEngine<T extends Syncable> {
         outboxEntryId: entry.id!,
         failure: failure,
       );
-    }
-
-    if (entry.retryCount >= config.maxOutboxRetries) {
-      await outboxRepo.markFailed(entry.id!, failure.message);
-    } else {
-      // Simple exponential backoff: 30s, 60s, 120s...
-      final backoffSeconds = 30 * (1 << entry.retryCount);
-      final nextRetryAt = systemTime().add(Duration(seconds: backoffSeconds));
-      await outboxRepo.incrementRetry(entry.id!, nextRetryAt: nextRetryAt);
+      // Drop failed jobs immediately so they do not keep retrying and
+      // users can re-trigger sync manually from the item action.
+      await outboxRepo.markCompleted(entry.id!);
     }
   }
 

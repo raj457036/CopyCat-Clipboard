@@ -8,6 +8,30 @@ class SimpleClipboardReadStrategy {
 
   DataFormat<Object>? selectFromItemFormats(List<DataFormat> itemFormats) {
     if (itemFormats.isEmpty) return null;
+
+    if (itemFormats.contains(Formats.fileUri)) {
+      return Formats.fileUri;
+    }
+
+    for (final supportedFormat in allSupportedClipFormats) {
+      if (supportedFormat is FileFormat &&
+          itemFormats.contains(supportedFormat)) {
+        return supportedFormat;
+      }
+    }
+
+    if (itemFormats.contains(Formats.uri)) {
+      return Formats.uri;
+    }
+
+    if (itemFormats.contains(Formats.htmlText)) {
+      return Formats.htmlText;
+    }
+
+    if (itemFormats.contains(Formats.plainText)) {
+      return Formats.plainText;
+    }
+
     for (final supportedFormat in allSupportedClipFormats) {
       if (itemFormats.contains(supportedFormat)) {
         return supportedFormat;

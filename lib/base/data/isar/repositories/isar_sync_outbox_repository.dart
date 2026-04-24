@@ -63,12 +63,8 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
 
   @override
   Future<List<SyncOutboxEntry>> getPending({int limit = 50}) async {
-    final now = DateTime.now();
     final results = await _collection
-        .filter()
-        .nextRetryAtIsNull()
-        .or()
-        .nextRetryAtLessThan(now)
+        .where()
         .sortByCreatedAt()
         .limit(limit)
         .findAll();
@@ -79,36 +75,6 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
   Future<void> markCompleted(int id) async {
     await _db.writeTxn(() async {
       await _collection.delete(id);
-    });
-  }
-
-  @override
-  Future<void> markFailed(int id, String error) async {
-    await _db.writeTxn(() async {
-      final entry = await _collection.get(id);
-      if (entry != null) {
-        entry.lastError = error;
-        // TODO(Raj): implement retry logic
-        // Setting nextRetryAt far into future or null depends on exact logic
-        // We'll set it null but perhaps use a different field, or just leave it for manual retry.
-        // For now, let's bump nextRetryAt to way in the future or keep as failed.
-        // If max retries hit, maybe we don't fetch it again (getPending checks nextRetryAt).
-        // A better approach is to keep it to notify user, but we will not process it.
-        entry.nextRetryAt = DateTime.now().add(const Duration(days: 3650));
-        await _collection.put(entry);
-      }
-    });
-  }
-
-  @override
-  Future<void> incrementRetry(int id, {required DateTime nextRetryAt}) async {
-    await _db.writeTxn(() async {
-      final entry = await _collection.get(id);
-      if (entry != null) {
-        entry.retryCount += 1;
-        entry.nextRetryAt = nextRetryAt;
-        await _collection.put(entry);
-      }
     });
   }
 

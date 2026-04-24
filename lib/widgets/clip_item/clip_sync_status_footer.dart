@@ -14,7 +14,12 @@ class ClipSyncStatusFooter extends StatelessWidget {
 
   Future<void> _sync(BuildContext context) async {
     context.read<OfflinePersistenceCubit>().persist([
-      item.copyWith(userIntent: true),
+      item.copyWith(
+        userIntent: true,
+        uploading: true,
+        uploadProgress: null,
+        failure: null,
+      ),
     ]);
   }
 
@@ -28,7 +33,7 @@ class ClipSyncStatusFooter extends StatelessWidget {
     String buttonText;
 
     if (item.isSyncing) {
-      if (item.uploading) {
+      if (item.uploading && item.needsFileUpload) {
         if (item.uploadProgress != null && item.uploadProgress! > 0) {
           final percent = ((item.uploadProgress ?? 0) * 100) ~/ 1;
           buttonText = '↑ $percent%';

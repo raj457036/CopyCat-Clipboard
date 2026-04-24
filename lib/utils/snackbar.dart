@@ -126,7 +126,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showTextSnackbar(
       children: [
         Text(text),
         height6,
-        TimerProgressBar(duration: Duration(seconds: duration ?? 4)),
+        TimerProgressBar(duration: Duration(seconds: duration ?? 3)),
       ],
     );
   } else {

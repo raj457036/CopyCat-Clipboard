@@ -24,7 +24,7 @@ class SyncProgressInitParams {
 
 @injectable
 class SyncStatusCubit extends Cubit<SyncStatusState> {
-  static const _notificationDedupeWindow = Duration(seconds: 20);
+  static const _notificationDedupeWindow = Duration(seconds: 3);
 
   final SyncOrchestrator orchestrator;
   final SyncEventBus eventBus;
