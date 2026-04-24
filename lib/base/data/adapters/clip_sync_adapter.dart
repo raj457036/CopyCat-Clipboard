@@ -220,6 +220,19 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     return _deleteFromServerAndLocal(item, item);
   }
 
+  @override
+  Future<ClipboardItem?> markSyncInProgress(
+    ClipboardItem item, {
+    required bool inProgress,
+    Failure? failure,
+  }) async {
+    return item.copyWith(
+      uploading: inProgress,
+      uploadProgress: inProgress ? item.uploadProgress : null,
+      failure: failure,
+    );
+  }
+
   Either<Failure, bool> _handleFileDeleteFailure(Failure failure) {
     logger.e('[ClipSync] File delete FAILED: ${failure.message}');
     return Left(failure);

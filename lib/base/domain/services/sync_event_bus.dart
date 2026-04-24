@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/base/domain/model/syncable.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:injectable/injectable.dart';
@@ -38,6 +39,18 @@ class SyncEngineStatusUpdateEvent implements SyncEvent {
   SyncEngineStatusUpdateEvent(this.entityType, this.isBusy);
 }
 
+class SyncOutboxFailureEvent implements SyncEvent {
+  final String entityType;
+  final int outboxEntryId;
+  final Failure failure;
+
+  SyncOutboxFailureEvent({
+    required this.entityType,
+    required this.outboxEntryId,
+    required this.failure,
+  });
+}
+
 /// A lossless stream-based event bus for sync events.
 ///
 /// This replaces the sync-related parts of EventBusCubit which could drop
@@ -69,6 +82,20 @@ class SyncEventBus {
 
   void emitEngineStatus(String entityType, bool isBusy) {
     _controller.add(SyncEngineStatusUpdateEvent(entityType, isBusy));
+  }
+
+  void emitOutboxFailure({
+    required String entityType,
+    required int outboxEntryId,
+    required Failure failure,
+  }) {
+    _controller.add(
+      SyncOutboxFailureEvent(
+        entityType: entityType,
+        outboxEntryId: outboxEntryId,
+        failure: failure,
+      ),
+    );
   }
 
   void dispose() {

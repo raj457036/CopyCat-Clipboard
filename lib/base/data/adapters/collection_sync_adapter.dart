@@ -155,4 +155,13 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
       return Left(Failure.fromException(e));
     }
   }
+
+  @override
+  Future<ClipCollection?> markSyncInProgress(
+    ClipCollection item, {
+    required bool inProgress,
+    Failure? failure,
+  }) async {
+    return item;
+  }
 }

@@ -8,6 +8,13 @@ import 'package:clipboard/widgets/timer_progress_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+class _SnackStyle {
+  final Color? background;
+  final Color? foreground;
+
+  const _SnackStyle({this.background, this.foreground});
+}
+
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showSnackbar(
   SnackBar snackBar, {
   bool closePrevious = false,
@@ -38,28 +45,34 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showFailureSnackbar(
   final mq = context.mq;
   final colors = context.colors;
   final isMobile = Breakpoints.isMobile(mq.size.width);
+  final style = _snackStyle(context, failure: true);
   return showSnackbar(
     SnackBar(
       content: Row(
         children: [
-          Icon(Icons.warning_amber_rounded, color: colors.onError),
+          Icon(
+            Icons.warning_amber_rounded,
+            color: style.foreground ?? colors.onErrorContainer,
+          ),
           width8,
           Expanded(
             child: Text(
               failure.message,
               maxLines: 10,
               overflow: TextOverflow.clip,
-              style: TextStyle(color: colors.onError),
+              style: TextStyle(
+                color: style.foreground ?? colors.onErrorContainer,
+              ),
             ),
           ),
         ],
       ),
       shape: isMobile ? null : const StadiumBorder(),
-      closeIconColor: colors.onError,
+      closeIconColor: style.foreground ?? colors.onErrorContainer,
       behavior: isMobile ? SnackBarBehavior.fixed : SnackBarBehavior.floating,
       width: isMobile ? null : 480,
       showCloseIcon: !isMobile,
-      backgroundColor: colors.error,
+      backgroundColor: style.background ?? colors.errorContainer,
     ),
     closePrevious: true,
   );
@@ -89,25 +102,10 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showTextSnackbar(
   final innerContext = context ?? scaffoldMessengerKey.currentContext;
   if (innerContext == null) return null;
   final mq = innerContext.mq;
-  final brightness = innerContext.theme.brightness;
+  final colors = innerContext.colors;
 
   final isMobile = Breakpoints.isMobile(mq.size.width);
-
-  Color? bg;
-  if (success) {
-    if (brightness == Brightness.dark) {
-      bg = Colors.greenAccent.shade700;
-    } else {
-      bg = Colors.greenAccent.shade400;
-    }
-  }
-  if (failure) {
-    if (brightness == Brightness.dark) {
-      bg = Colors.redAccent.shade700;
-    } else {
-      bg = Colors.redAccent.shade400;
-    }
-  }
+  final style = _snackStyle(innerContext, success: success, failure: failure);
 
   Widget child;
 
@@ -137,9 +135,16 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showTextSnackbar(
 
   return showSnackbar(
     SnackBar(
-      content: child,
-      backgroundColor: bg,
+      content: IconTheme(
+        data: IconThemeData(color: style.foreground),
+        child: DefaultTextStyle.merge(
+          style: TextStyle(color: style.foreground ?? colors.onSurface),
+          child: child,
+        ),
+      ),
+      backgroundColor: style.background,
       showCloseIcon: !isMobile && !isLoading,
+      closeIconColor: style.foreground,
       behavior: isMobile ? SnackBarBehavior.fixed : SnackBarBehavior.floating,
       width: isMobile ? null : 480,
       duration: duration != null
@@ -153,4 +158,28 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showTextSnackbar(
     closePrevious: closePrevious,
     context: innerContext,
   );
+}
+
+_SnackStyle _snackStyle(
+  BuildContext context, {
+  bool success = false,
+  bool failure = false,
+}) {
+  final colors = context.colors;
+
+  if (failure) {
+    return _SnackStyle(
+      background: colors.errorContainer,
+      foreground: colors.onErrorContainer,
+    );
+  }
+
+  if (success) {
+    return _SnackStyle(
+      background: colors.tertiaryContainer,
+      foreground: colors.onTertiaryContainer,
+    );
+  }
+
+  return const _SnackStyle();
 }

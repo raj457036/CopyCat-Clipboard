@@ -63,6 +63,17 @@ abstract class SyncAdapter<T extends Syncable> {
   /// Delete a single item from the server.
   FailureOr<bool> deleteFromRemote(T item);
 
+  /// Allows adapters to expose transient per-item sync state for UI.
+  ///
+  /// Default implementation is a no-op and returns the same item.
+  Future<T?> markSyncInProgress(
+    T item, {
+    required bool inProgress,
+    Failure? failure,
+  }) async {
+    return item;
+  }
+
   // ─── Realtime ──────────────────────────────────────
 
   /// Optional realtime listener for this entity type.

@@ -249,6 +249,16 @@ class SyncEngine<T extends Syncable> {
       return;
     }
 
+    if (item != null && entry.action != SyncOutboxAction.delete) {
+      final inProgress = await adapter.markSyncInProgress(
+        item,
+        inProgress: true,
+      );
+      if (inProgress != null) {
+        eventBus.emit<T>((CrossSyncEventType.update, inProgress));
+      }
+    }
+
     Either<Failure, dynamic>? resultEither;
 
     switch (entry.action) {
@@ -273,6 +283,16 @@ class SyncEngine<T extends Syncable> {
 
     await resultEither.fold(
       (failure) async {
+        if (item != null && entry.action != SyncOutboxAction.delete) {
+          final completed = await adapter.markSyncInProgress(
+            item,
+            inProgress: false,
+            failure: failure,
+          );
+          if (completed != null) {
+            eventBus.emit<T>((CrossSyncEventType.update, completed));
+          }
+        }
         logger.e(
           '[SyncEngine:${adapter.entityType}] Push FAILED: ${failure.message} (${failure.code})',
         );
@@ -285,10 +305,16 @@ class SyncEngine<T extends Syncable> {
         await outboxRepo.markCompleted(entry.id!);
         // Broadcast update to UI so serverId/lastSynced are reflected
         if (result is T) {
+          final completed = await adapter.markSyncInProgress(
+            result,
+            inProgress: false,
+          );
           logger.i(
             '[SyncEngine:${adapter.entityType}] Emitting update event to UI',
           );
-          eventBus.emit<T>((CrossSyncEventType.update, result));
+          if (completed != null) {
+            eventBus.emit<T>((CrossSyncEventType.update, completed));
+          }
         }
       },
     );
@@ -301,6 +327,15 @@ class SyncEngine<T extends Syncable> {
     logger.w(
       "Failed to sync outbox entry ${entry.id} (${adapter.entityType}): $failure",
     );
+
+    if (entry.id != null) {
+      eventBus.emitOutboxFailure(
+        entityType: adapter.entityType,
+        outboxEntryId: entry.id!,
+        failure: failure,
+      );
+    }
+
     if (entry.retryCount >= config.maxOutboxRetries) {
       await outboxRepo.markFailed(entry.id!, failure.message);
     } else {
