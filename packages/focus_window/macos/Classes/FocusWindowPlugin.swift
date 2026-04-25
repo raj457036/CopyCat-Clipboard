@@ -26,8 +26,28 @@ extension SBApplication: ChromeProtocol {}
 
 
 public class FocusWindowPlugin: NSObject, FlutterPlugin {
+    private struct BrowserActivityCacheEntry {
+        let url: String?
+        let title: String?
+        let createdAt: Date
+    }
+
+    private static let browserBundleIds: Set<String> = [
+        "com.google.Chrome", "com.google.Chrome.beta", "com.google.Chrome.dev", "com.google.Chrome.canary",
+        "com.brave.Browser", "com.brave.Browser.beta", "com.brave.Browser.nightly",
+        "com.microsoft.edgemac", "com.microsoft.edgemac.Beta", "com.microsoft.edgemac.Dev", "com.microsoft.edgemac.Canary",
+        "com.mighty.app", "com.ghostbrowser.gb1", "com.bookry.wavebox", "com.pushplaylabs.sidekick",
+        "com.operasoftware.Opera", "com.operasoftware.OperaNext", "com.operasoftware.OperaDeveloper",
+        "com.vivaldi.Vivaldi", "company.thebrowser.Browser",
+        "com.apple.Safari", "com.apple.SafariTechnologyPreview", "com.mozilla.firefox"
+    ]
+
+    // Avoid repeated AppleEvent lookups during rapid copy bursts.
+    private static let browserActivityCacheTtl: TimeInterval = 1.2
+
     private var observer: AXObserver?
     private var eventListening = false
+    private var browserActivityCache: [String: BrowserActivityCacheEntry] = [:]
     public static var windowChangedCallback: WindowChanged = WindowChanged()
     public static var eventChannel: EventChannelHandler?
 
@@ -135,8 +155,12 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
         }
         var error: NSDictionary?
         if let result = NSAppleScript(source: source!) {
-            let output = result.executeAndReturnError(&error).stringValue
-            return output
+            let descriptor = result.executeAndReturnError(&error)
+            if let error = error {
+                print("[focus_window] AppleScript error: \(error)")
+                return nil
+            }
+            return descriptor.stringValue
         }
         if (error != nil) {
             print(error!);
@@ -190,18 +214,109 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
     private func getActiveBrowserTabURLAppleScriptCommand(_ appId: String) -> String? {
         switch appId {
         case "com.google.Chrome", "com.google.Chrome.beta", "com.google.Chrome.dev", "com.google.Chrome.canary", "com.brave.Browser", "com.brave.Browser.beta", "com.brave.Browser.nightly", "com.microsoft.edgemac", "com.microsoft.edgemac.Beta", "com.microsoft.edgemac.Dev", "com.microsoft.edgemac.Canary", "com.mighty.app", "com.ghostbrowser.gb1", "com.bookry.wavebox", "com.pushplaylabs.sidekick", "com.operasoftware.Opera",  "com.operasoftware.OperaNext", "com.operasoftware.OperaDeveloper", "com.vivaldi.Vivaldi", "company.thebrowser.Browser":
-            return "tell app id \"\(appId)\" to get the URL of active tab of front window"
+            return "tell application id \"\(appId)\" to get the URL of active tab of front window"
         case "com.apple.Safari", "com.apple.SafariTechnologyPreview":
-            return "tell app id \"\(appId)\" to do JavaScript \"document.URL\" in front document"
+            return "tell application id \"\(appId)\" to do JavaScript \"document.URL\" in front document"
         default:
             return nil
         }
     }
 
+    private func getActiveBrowserTabTitleAppleScriptCommand(_ appId: String) -> String? {
+        switch appId {
+        case "com.google.Chrome", "com.google.Chrome.beta", "com.google.Chrome.dev", "com.google.Chrome.canary", "com.brave.Browser", "com.brave.Browser.beta", "com.brave.Browser.nightly", "com.microsoft.edgemac", "com.microsoft.edgemac.Beta", "com.microsoft.edgemac.Dev", "com.microsoft.edgemac.Canary", "com.mighty.app", "com.ghostbrowser.gb1", "com.bookry.wavebox", "com.pushplaylabs.sidekick", "com.operasoftware.Opera",  "com.operasoftware.OperaNext", "com.operasoftware.OperaDeveloper", "com.vivaldi.Vivaldi", "company.thebrowser.Browser":
+            return "tell application id \"\(appId)\" to get the title of active tab of front window"
+        case "com.apple.Safari", "com.apple.SafariTechnologyPreview":
+            return "tell application id \"\(appId)\" to return name of front document"
+        default:
+            return nil
+        }
+    }
+
+    private func isBrowserApp(_ bundleId: String?) -> Bool {
+        guard let bundleId = bundleId else { return false }
+        return FocusWindowPlugin.browserBundleIds.contains(bundleId)
+    }
+
+    private func getCachedBrowserActivity(_ bundleId: String) -> BrowserActivityCacheEntry? {
+        guard let cached = browserActivityCache[bundleId] else {
+            return nil
+        }
+
+        let age = Date().timeIntervalSince(cached.createdAt)
+        if age <= FocusWindowPlugin.browserActivityCacheTtl {
+            return cached
+        }
+
+        browserActivityCache.removeValue(forKey: bundleId)
+        return nil
+    }
+
+    private func setCachedBrowserActivity(
+        _ bundleId: String,
+        url: String?,
+        title: String?
+    ) {
+        browserActivityCache[bundleId] = BrowserActivityCacheEntry(
+            url: url,
+            title: title,
+            createdAt: Date()
+        )
+    }
+
+    private func getWindowTitleUsingAccessibility(_ appPID: pid_t) -> String? {
+        let appRef = AXUIElementCreateApplication(appPID)
+        var focusedWindow: AnyObject? = nil
+        
+        // Try to get the focused window
+        if AXUIElementCopyAttributeValue(
+            appRef,
+            kAXFocusedWindowAttribute as CFString,
+            &focusedWindow
+        ) == .success, let windowRef = focusedWindow {
+            guard CFGetTypeID(windowRef) == AXUIElementGetTypeID() else {
+                return nil
+            }
+            let window = windowRef as! AXUIElement
+            var title: AnyObject? = nil
+            if AXUIElementCopyAttributeValue(
+                window,
+                kAXTitleAttribute as CFString,
+                &title
+            ) == .success {
+                return title as? String
+            }
+        }
+        
+        return nil
+    }
+    
+    private func getWindowTitleUsingCGWindow(
+        _ frontmostAppPID: pid_t,
+        _ windows: [[String: Any]]
+    ) -> String? {
+        for window in windows {
+            let windowOwnerPID = window[kCGWindowOwnerPID as String] as! pid_t
+            if windowOwnerPID != frontmostAppPID {
+                continue
+            }
+            if (window[kCGWindowAlpha as String] as! Double) == 0 {
+                continue
+            }
+            
+            if let windowTitle = window[kCGWindowName as String] as? String,
+               !windowTitle.isEmpty {
+                return windowTitle
+            }
+        }
+        
+        return nil
+    }
+
     public func getActivity(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         
-        let args:[String: Any?] = call.arguments as! [String: Any?];
-        let withIcon: Bool = (args["withIcon"] ?? false) as! Bool ;
+        let args:[String: Any?] = call.arguments as! [String: Any?]
+        let withIcon: Bool = (args["withIcon"] ?? false) as! Bool
         
         var activity: [String: Any?] = [
             "pid": -1,
@@ -219,12 +334,14 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
             let application = getFrontApp(),
             let windows = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]]
         else {
+            result(activity)
             return
         }
         
-        let frontmostAppPID = application.processIdentifier;
+        let frontmostAppPID = application.processIdentifier
+        let bundleId = application.bundleIdentifier
         
-//        Getting the opened document
+        // 1. Get document (opened file path)
         var elements = [AXUIElement]()
         var windowList: AnyObject? = nil
         let appRef = AXUIElementCreateApplication(frontmostAppPID)
@@ -238,46 +355,69 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
             activity["document"] = filePath
         }
         
-//        Getting the url
-        var url: String?
-        var tabTitle: String?
-        
-        if (application.bundleIdentifier != nil) {
-            url = getUrlForChromiumBasedBrowser(application.bundleIdentifier!)
-            tabTitle = getTitleForChromiumBasedBrowser(application.bundleIdentifier!)
-            if (url == nil) {
-                let script =  getActiveBrowserTabURLAppleScriptCommand(application.bundleIdentifier ?? "");
-                url = runAppleScript(source: script ?? "");
-            }
+        // 2. Get window title (Accessibility API first, then CGWindow fallback)
+        var windowTitle = getWindowTitleUsingAccessibility(frontmostAppPID) ?? ""
+        if windowTitle.isEmpty {
+            windowTitle = getWindowTitleUsingCGWindow(frontmostAppPID, windows) ?? ""
         }
+        activity["title"] = windowTitle
         
-        for window in windows  {
-            let windowOwnerPID = window[kCGWindowOwnerPID as String] as! pid_t
-            if windowOwnerPID != frontmostAppPID {
-                continue
-            }
-            if (window[kCGWindowAlpha as String] as! Double) == 0 {
-                continue
-            }
-            
-            let windowTitle = window[kCGWindowName as String] as? String ?? ""
-            activity["title"] = windowTitle
-        }
+        // 3. Get URL (browser-specific logic)
+        var url: String? = nil
+        var tabTitle: String? = nil
+        
+        if let bundleId = bundleId, isBrowserApp(bundleId) {
+            if let cached = getCachedBrowserActivity(bundleId) {
+                url = cached.url
+                tabTitle = cached.title
+            } else {
+                // Try ScriptingBridge first
+                url = getUrlForChromiumBasedBrowser(bundleId)
+                tabTitle = getTitleForChromiumBasedBrowser(bundleId)
+                
+                // Fallback to AppleScript if needed.
+                if url == nil {
+                    let script = getActiveBrowserTabURLAppleScriptCommand(bundleId)
+                    if let script = script {
+                        url = runAppleScript(source: script)
+                    }
+                }
 
-        if ((activity["title"] as? String ?? "").isEmpty && tabTitle != nil) {
+                if tabTitle == nil {
+                    let titleScript = getActiveBrowserTabTitleAppleScriptCommand(bundleId)
+                    if let titleScript = titleScript {
+                        tabTitle = runAppleScript(source: titleScript)
+                    }
+                }
+
+                setCachedBrowserActivity(bundleId, url: url, title: tabTitle)
+            }
+        }
+        
+        // Use browser tab title as window title if window title is empty
+        if windowTitle.isEmpty && tabTitle != nil {
             activity["title"] = tabTitle
         }
-        if (withIcon && application.icon != nil) {
-            let icon = NSBitmapImageRep(data: application.icon!.tiffRepresentation(using: .lzw, factor: .greatestFiniteMagnitude)!)!.representation(using: .png, properties: [:]);
-            activity["icon"] = icon;
+        
+        // 4. Get icon
+        if withIcon {
+            if let tiffData = application.icon?.tiffRepresentation,
+               let imageRep = NSBitmapImageRep(data: tiffData),
+               let pngData = imageRep.representation(
+                using: NSBitmapImageRep.FileType.png,
+                properties: [:]
+               ) {
+                activity["icon"] = pngData
+            }
         }
         
-        activity["pid"] = application.processIdentifier;
-        activity["app"] = application.localizedName;
-        activity["appFileName"] = application.bundleURL?.lastPathComponent;
-        activity["appFilePath"] = application.bundleURL?.path;
-        activity["identifier"] = application.bundleIdentifier;
-        activity["url"] = url;
+        // 5. Populate app info
+        activity["pid"] = application.processIdentifier
+        activity["app"] = application.localizedName
+        activity["appFileName"] = application.bundleURL?.lastPathComponent
+        activity["appFilePath"] = application.bundleURL?.path
+        activity["identifier"] = bundleId
+        activity["url"] = url
         
         result(activity)
     }

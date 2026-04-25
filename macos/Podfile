@@ -38,6 +38,13 @@ end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      deployment_target = config.build_settings['MACOSX_DEPLOYMENT_TARGET']
+      if deployment_target.nil? || Gem::Version.new(deployment_target) < Gem::Version.new('10.13')
+        config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '10.13'
+      end
+    end
+
     flutter_additional_macos_build_settings(target)
   end
 end
