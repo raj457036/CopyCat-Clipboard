@@ -24,7 +24,7 @@ class ClipcardLoading extends StatelessWidget {
       padding: compact ? const EdgeInsets.all(padding8) : inset12,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 240,
+        maxCrossAxisExtent: 260,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
       ),
