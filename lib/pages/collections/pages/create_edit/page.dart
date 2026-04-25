@@ -1,6 +1,8 @@
 import 'package:clipboard/pages/collections/pages/create_edit/widgets/create_edit_form.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 
 class ClipCollectionCreateEditPage extends StatelessWidget {
@@ -29,7 +31,10 @@ class ClipCollectionCreateEditPage extends StatelessWidget {
         Size(dialogWidth.clamp(280.0, 600.0), dialogHeight.clamp(400.0, 800.0)),
       ),
       child: Scaffold(
-        appBar: AppBar(title: FittedBox(child: Text(title))),
+        appBar: AppBar(
+          automaticallyImplyLeading: context.mq.size.width < 600,
+          title: FittedBox(child: Text(title)),
+        ),
         body: SingleChildScrollView(
           child: ClipCollectionCreateEditForm(collection: collection),
         ),

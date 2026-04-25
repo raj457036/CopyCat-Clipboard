@@ -30,7 +30,7 @@ class GeneralSettings extends StatelessWidget {
             leading: const Icon(Icons.backup_rounded),
             title: const Text('Backup & Restore'),
             subtitle: const Text('Create .ccbkup backups and restore locally'),
-            trailing: const Icon(Icons.chevron_right_rounded),
+            trailing: const Icon(Icons.arrow_forward_ios_rounded),
             onTap: () => context.goNamed(RouteConstants.backupRestore),
           ),
           height10,

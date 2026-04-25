@@ -73,7 +73,9 @@ final rootRouter = GoRouter(
         final item = context.read<OfflinePersistenceCubit>().getItem(id: id);
         return DynamicPage(
           key: state.pageKey,
-          fullScreenDialog: true,
+          fullScreenDialog: false,
+          nonMobilePresentation: NonMobilePresentation.endSheet,
+          closeOnSpace: true,
           child: FutureBuilder(
             future: item,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -236,7 +238,9 @@ final rootRouter = GoRouter(
             : context.read<OfflinePersistenceCubit>().getItem(id: id);
         return DynamicPage(
           key: state.pageKey,
-          fullScreenDialog: true,
+          fullScreenDialog: false,
+          nonMobilePresentation: NonMobilePresentation.endSheet,
+          closeOnSpace: true,
           child: item != null
               ? FutureBuilder(
                   future: item,
@@ -259,7 +263,9 @@ final rootRouter = GoRouter(
 
         return DynamicPage(
           key: state.pageKey,
-          fullScreenDialog: true,
+          fullScreenDialog: false,
+          nonMobilePresentation: NonMobilePresentation.endSheet,
+          closeOnSpace: true,
           child: ClipCollectionSelectionPage(selectedCollectionId: id),
         );
       },
@@ -274,7 +280,9 @@ final rootRouter = GoRouter(
             : context.read<ClipCollectionCubit>().get(int.parse(id));
         return DynamicPage(
           key: state.pageKey,
-          fullScreenDialog: true,
+          fullScreenDialog: false,
+          nonMobilePresentation: NonMobilePresentation.endSheet,
+          closeOnSpace: true,
           child: collection == null
               ? const ClipCollectionCreateEditPage()
               : FutureBuilder(

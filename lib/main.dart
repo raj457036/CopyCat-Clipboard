@@ -19,6 +19,7 @@ import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/generated/app_localizations.dart';
 import 'package:clipboard/base/text_theme.dart';
+import 'package:clipboard/base/theme/app_theme.dart';
 import 'package:clipboard/common/bloc_config.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/routes/routes.dart';
@@ -200,46 +201,14 @@ class AppContent extends StatelessWidget {
                     ? lightColorScheme.surface
                     : darkColorScheme.surface;
 
-                final buttonStyle = ButtonStyle(
-                  mouseCursor: WidgetStateProperty.all(
-                    SystemMouseCursors.click,
-                  ),
-                );
-                final iconButtonTheme = IconButtonThemeData(style: buttonStyle);
-                final textButtonTheme = TextButtonThemeData(style: buttonStyle);
-                final elevatedButtonTheme = ElevatedButtonThemeData(
-                  style: buttonStyle,
-                );
-                final outlinedButtonTheme = OutlinedButtonThemeData(
-                  style: buttonStyle,
-                );
-
-                final lightTheme = ThemeData(
-                  useMaterial3: true,
+                final lightTheme = buildAppTheme(
                   colorScheme: lightColorScheme,
                   brightness: Brightness.light,
-                  inputDecorationTheme: const InputDecorationTheme(
-                    border: OutlineInputBorder(),
-                    isDense: true,
-                  ),
-                  textButtonTheme: textButtonTheme,
-                  elevatedButtonTheme: elevatedButtonTheme,
-                  outlinedButtonTheme: outlinedButtonTheme,
-                  iconButtonTheme: iconButtonTheme,
                 );
 
-                final darkTheme = ThemeData(
-                  useMaterial3: true,
+                final darkTheme = buildAppTheme(
                   colorScheme: darkColorScheme,
                   brightness: Brightness.dark,
-                  inputDecorationTheme: const InputDecorationTheme(
-                    border: OutlineInputBorder(),
-                    isDense: true,
-                  ),
-                  textButtonTheme: textButtonTheme,
-                  elevatedButtonTheme: elevatedButtonTheme,
-                  outlinedButtonTheme: outlinedButtonTheme,
-                  iconButtonTheme: iconButtonTheme,
                 );
 
                 updateValidatorLanguage(langCode);

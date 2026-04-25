@@ -43,6 +43,10 @@ ThemeData buildAppTheme({
     outlinedButtonTheme: outlinedButtonTheme,
     iconButtonTheme: iconButtonTheme,
     popupMenuTheme: popupMenuThemeFor(colorScheme, brightness),
+    actionIconTheme: ActionIconThemeData(
+      backButtonIconBuilder: (BuildContext context) =>
+          const Icon(Icons.arrow_back),
+    ),
   );
 
   return theme.copyWith(textTheme: robotoFlexTextTheme(theme.textTheme));

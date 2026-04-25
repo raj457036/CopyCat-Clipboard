@@ -1,6 +1,7 @@
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_collection_grid_item.dart';
 import 'package:clipboard/widgets/fabs/create_collection.dart';
@@ -18,6 +19,7 @@ class ClipCollectionSelectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: context.mq.size.width < 600,
         title: Text(context.locale.select_collection__appbar__title),
         actions: const [
           DisableForLocalUser(

@@ -138,13 +138,13 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showTextSnackbar(
       content: IconTheme(
         data: IconThemeData(color: style.foreground),
         child: DefaultTextStyle.merge(
-          style: TextStyle(color: style.foreground ?? colors.onSurface),
+          style: TextStyle(color: style.foreground ?? colors.onInverseSurface),
           child: child,
         ),
       ),
-      backgroundColor: style.background,
+      backgroundColor: style.background ?? colors.inverseSurface,
       showCloseIcon: !isMobile && !isLoading,
-      closeIconColor: style.foreground,
+      closeIconColor: style.foreground ?? colors.onInverseSurface,
       behavior: isMobile ? SnackBarBehavior.fixed : SnackBarBehavior.floating,
       width: isMobile ? null : 480,
       duration: duration != null
@@ -152,7 +152,14 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showTextSnackbar(
           : isLoading
           ? const Duration(seconds: 30)
           : const Duration(seconds: 4),
-      action: action,
+      action: action == null
+          ? null
+          : SnackBarAction(
+              label: action.label,
+              onPressed: action.onPressed,
+              textColor: style.foreground ?? colors.inversePrimary,
+              disabledTextColor: style.foreground?.withValues(alpha: 0.6),
+            ),
       shape: isMobile ? null : const StadiumBorder(),
     ),
     closePrevious: closePrevious,

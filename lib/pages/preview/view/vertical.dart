@@ -3,6 +3,7 @@ import 'package:clipboard/pages/preview/widgets/clip_inspector.dart';
 import 'package:clipboard/pages/preview/widgets/preview.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
 class ClipItemPreviewVerticalView extends StatelessWidget {
@@ -12,6 +13,7 @@ class ClipItemPreviewVerticalView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: context.mq.size.width < 600,
         centerTitle: false,
         title: Text(
           item.displayTitle ?? context.locale.preview__inspector__title,
@@ -31,7 +33,11 @@ class ClipItemPreviewVerticalView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            ClipInspector(item: item, includePagePadding: false),
+            ClipInspector(
+              item: item,
+              includePagePadding: false,
+              showHeader: false,
+            ),
           ],
         ),
       ),

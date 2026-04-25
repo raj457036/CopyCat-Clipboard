@@ -177,6 +177,7 @@ class _ClipInspectorState extends State<ClipInspector> {
     if (!mounted) return;
 
     ClipboardItemPreviewPage.of(context).updateItem(updatedItem);
+    FocusScope.of(context).unfocus();
     showTextSnackbar(
       context.locale.preview__inspector__saved,
       closePrevious: true,

@@ -51,6 +51,7 @@ class CollectionDetailPage extends StatelessWidget {
                   tooltip: context.locale.app__edit,
                   onPressed: editCollection,
                 ),
+                width10,
               ],
             ),
           ),
