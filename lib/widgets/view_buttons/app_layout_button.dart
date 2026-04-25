@@ -36,11 +36,11 @@ class AppLayoutToggleButton extends StatelessWidget {
           ),
           iconSize: 20,
           icon: layout == AppLayout.grid
-              ? const Icon(Icons.window)
-              : const Icon(Icons.view_agenda),
+              ? const Icon(Icons.view_agenda_rounded)
+              : const Icon(Icons.grid_view_rounded),
           tooltip: layout == AppLayout.grid
-              ? context.locale.view_button__switch_to_grid
-              : context.locale.view_button__switch_to_list,
+              ? context.locale.view_button__switch_to_list
+              : context.locale.view_button__switch_to_grid,
         );
       },
     );

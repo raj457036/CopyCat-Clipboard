@@ -62,6 +62,7 @@ mixin _$ClipboardItem {
   // Source Information
   String? get sourceUrl => throw _privateConstructorUsedError;
   String? get sourceApp => throw _privateConstructorUsedError;
+  String? get sourceId => throw _privateConstructorUsedError;
   PlatformOS get os => throw _privateConstructorUsedError; // Collection
   @JsonKey(name: "collectionId")
   int? get serverCollectionId => throw _privateConstructorUsedError;
@@ -132,6 +133,7 @@ abstract class $ClipboardItemCopyWith<$Res> {
     String? imgBlurHash,
     String? sourceUrl,
     String? sourceApp,
+    String? sourceId,
     PlatformOS os,
     @JsonKey(name: "collectionId") int? serverCollectionId,
     @JsonKey(includeFromJson: false, includeToJson: false) int? collectionId,
@@ -191,6 +193,7 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
     Object? imgBlurHash = freezed,
     Object? sourceUrl = freezed,
     Object? sourceApp = freezed,
+    Object? sourceId = freezed,
     Object? os = null,
     Object? serverCollectionId = freezed,
     Object? collectionId = freezed,
@@ -314,6 +317,10 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
                 ? _value.sourceApp
                 : sourceApp // ignore: cast_nullable_to_non_nullable
                       as String?,
+            sourceId: freezed == sourceId
+                ? _value.sourceId
+                : sourceId // ignore: cast_nullable_to_non_nullable
+                      as String?,
             os: null == os
                 ? _value.os
                 : os // ignore: cast_nullable_to_non_nullable
@@ -405,6 +412,7 @@ abstract class _$$ClipboardItemImplCopyWith<$Res>
     String? imgBlurHash,
     String? sourceUrl,
     String? sourceApp,
+    String? sourceId,
     PlatformOS os,
     @JsonKey(name: "collectionId") int? serverCollectionId,
     @JsonKey(includeFromJson: false, includeToJson: false) int? collectionId,
@@ -463,6 +471,7 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
     Object? imgBlurHash = freezed,
     Object? sourceUrl = freezed,
     Object? sourceApp = freezed,
+    Object? sourceId = freezed,
     Object? os = null,
     Object? serverCollectionId = freezed,
     Object? collectionId = freezed,
@@ -586,6 +595,10 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
             ? _value.sourceApp
             : sourceApp // ignore: cast_nullable_to_non_nullable
                   as String?,
+        sourceId: freezed == sourceId
+            ? _value.sourceId
+            : sourceId // ignore: cast_nullable_to_non_nullable
+                  as String?,
         os: null == os
             ? _value.os
             : os // ignore: cast_nullable_to_non_nullable
@@ -670,6 +683,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     this.imgBlurHash,
     this.sourceUrl,
     this.sourceApp,
+    this.sourceId,
     required this.os,
     @JsonKey(name: "collectionId") this.serverCollectionId,
     @JsonKey(includeFromJson: false, includeToJson: false) this.collectionId,
@@ -765,6 +779,8 @@ class _$ClipboardItemImpl extends _ClipboardItem {
   @override
   final String? sourceApp;
   @override
+  final String? sourceId;
+  @override
   final PlatformOS os;
   // Collection
   @override
@@ -808,7 +824,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
 
   @override
   String toString() {
-    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, encrypted: $encrypted, iv: $iv, encMode: $encMode, text: $text, richData: $richData, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent)';
+    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, encrypted: $encrypted, iv: $iv, encMode: $encMode, text: $text, richData: $richData, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, sourceId: $sourceId, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent)';
   }
 
   @override
@@ -861,6 +877,8 @@ class _$ClipboardItemImpl extends _ClipboardItem {
                 other.sourceUrl == sourceUrl) &&
             (identical(other.sourceApp, sourceApp) ||
                 other.sourceApp == sourceApp) &&
+            (identical(other.sourceId, sourceId) ||
+                other.sourceId == sourceId) &&
             (identical(other.os, os) || other.os == os) &&
             (identical(other.serverCollectionId, serverCollectionId) ||
                 other.serverCollectionId == serverCollectionId) &&
@@ -916,6 +934,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     imgBlurHash,
     sourceUrl,
     sourceApp,
+    sourceId,
     os,
     serverCollectionId,
     collectionId,
@@ -979,6 +998,7 @@ abstract class _ClipboardItem extends ClipboardItem {
     final String? imgBlurHash,
     final String? sourceUrl,
     final String? sourceApp,
+    final String? sourceId,
     required final PlatformOS os,
     @JsonKey(name: "collectionId") final int? serverCollectionId,
     @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1069,6 +1089,8 @@ abstract class _ClipboardItem extends ClipboardItem {
   String? get sourceUrl;
   @override
   String? get sourceApp;
+  @override
+  String? get sourceId;
   @override
   PlatformOS get os; // Collection
   @override

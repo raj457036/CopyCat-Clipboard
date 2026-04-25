@@ -50,6 +50,8 @@ import 'package:clipboard/base/data/isar/services/isar_clip_batch_sync_service.d
     as _i639;
 import 'package:clipboard/base/data/repositories/analytics.dart' as _i202;
 import 'package:clipboard/base/data/repositories/app_config.dart' as _i655;
+import 'package:clipboard/base/data/repositories/application_meta.dart'
+    as _i756;
 import 'package:clipboard/base/data/repositories/auth.dart' as _i346;
 import 'package:clipboard/base/data/repositories/clip_collection.dart' as _i432;
 import 'package:clipboard/base/data/repositories/clipboard.dart' as _i378;
@@ -59,6 +61,8 @@ import 'package:clipboard/base/data/repositories/restoration_status.dart'
     as _i970;
 import 'package:clipboard/base/data/repositories/subscription.dart' as _i623;
 import 'package:clipboard/base/data/repositories/sync_clipboard.dart' as _i223;
+import 'package:clipboard/base/data/services/application_meta_resolver.dart'
+    as _i375;
 import 'package:clipboard/base/data/services/clipboard_service.dart' as _i63;
 import 'package:clipboard/base/data/services/cross_sync_listener.dart' as _i95;
 import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_drive_file_cloud_service.dart'
@@ -67,6 +71,8 @@ import 'package:clipboard/base/data/services/file_cloud_services/google_drive/go
     as _i563;
 import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_services.dart'
     as _i543;
+import 'package:clipboard/base/data/sources/application_meta/local_source.dart'
+    as _i651;
 import 'package:clipboard/base/data/sources/clip_collection/local_source.dart'
     as _i173;
 import 'package:clipboard/base/data/sources/clip_collection/remote_source.dart'
@@ -87,6 +93,8 @@ import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart'
     as _i1066;
 import 'package:clipboard/base/domain/repositories/analytics.dart' as _i707;
 import 'package:clipboard/base/domain/repositories/app_config.dart' as _i891;
+import 'package:clipboard/base/domain/repositories/application_meta.dart'
+    as _i110;
 import 'package:clipboard/base/domain/repositories/auth.dart' as _i579;
 import 'package:clipboard/base/domain/repositories/clip_collection.dart'
     as _i276;
@@ -99,6 +107,8 @@ import 'package:clipboard/base/domain/repositories/subscription.dart' as _i956;
 import 'package:clipboard/base/domain/repositories/sync_clipboard.dart' as _i61;
 import 'package:clipboard/base/domain/repositories/sync_cursor.dart' as _i834;
 import 'package:clipboard/base/domain/repositories/sync_outbox.dart' as _i770;
+import 'package:clipboard/base/domain/services/application_meta_resolver.dart'
+    as _i533;
 import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart'
     as _i616;
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart'
@@ -107,6 +117,7 @@ import 'package:clipboard/base/domain/services/file_cloud_service.dart'
     as _i112;
 import 'package:clipboard/base/domain/services/sync_adapter.dart' as _i589;
 import 'package:clipboard/base/domain/services/sync_event_bus.dart' as _i292;
+import 'package:clipboard/base/domain/sources/application_meta.dart' as _i284;
 import 'package:clipboard/base/domain/sources/clip_collection.dart' as _i670;
 import 'package:clipboard/base/domain/sources/clipboard.dart' as _i23;
 import 'package:clipboard/base/domain/sources/restoration_status.dart' as _i922;
@@ -130,23 +141,20 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
-    gh.factory<_i653.SelectedClipsCubit>(() => _i653.SelectedClipsCubit());
-    gh.factory<_i657.WindowActionCubit>(() => _i657.WindowActionCubit());
     await gh.factoryAsync<_i655.PackageInfo>(
       () => registerModule.packageInfo,
       preResolve: true,
     );
-    gh.singleton<_i588.EventBusCubit>(() => _i588.EventBusCubit());
-    gh.singleton<_i63.ClipboardService>(() => _i63.ClipboardService());
-    gh.singleton<_i292.SyncEventBus>(() => _i292.SyncEventBus());
+    gh.factory<_i653.SelectedClipsCubit>(() => _i653.SelectedClipsCubit());
+    gh.factory<_i657.WindowActionCubit>(() => _i657.WindowActionCubit());
     gh.singleton<_i291.FocusWindow>(() => registerModule.focusWindow);
     await gh.singletonAsync<_i829.TinyStorage>(
       () => registerModule.localCache(),
       preResolve: true,
     );
-    gh.lazySingleton<_i563.GoogleOAuth2Service>(
-      () => _i563.GoogleOAuth2Service(),
-    );
+    gh.singleton<_i63.ClipboardService>(() => _i63.ClipboardService());
+    gh.singleton<_i292.SyncEventBus>(() => _i292.SyncEventBus());
+    gh.singleton<_i588.EventBusCubit>(() => _i588.EventBusCubit());
     await gh.lazySingletonAsync<_i214.Isar>(
       () => registerModule.db,
       preResolve: true,
@@ -155,11 +163,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i565.AndroidBackgroundClipboard>(
       () => registerModule.bgService,
     );
+    gh.lazySingleton<_i563.GoogleOAuth2Service>(
+      () => _i563.GoogleOAuth2Service(),
+    );
     gh.lazySingleton<_i707.AnalyticsRepository>(
       () => const _i202.AnalyticsRepositoryImpl(),
     );
     gh.lazySingleton<_i616.ClipBatchSyncService>(
       () => _i639.IsarClipBatchSyncService(),
+    );
+    gh.lazySingleton<_i284.ApplicationMetaSource>(
+      () => _i651.LocalApplicationMetaSource(gh<_i214.Isar>()),
+      instanceName: 'local',
     );
     gh.lazySingleton<_i469.IsarDatabaseService>(
       () => registerModule.databaseService(gh<_i214.Isar>()),
@@ -191,6 +206,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i891.AppConfigRepository>(
       () => _i655.AppConfigRepositoryImpl(gh<_i214.Isar>()),
+    );
+    gh.lazySingleton<_i110.ApplicationMetaRepository>(
+      () => _i756.ApplicationMetaRepositoryImpl(
+        gh<_i284.ApplicationMetaSource>(instanceName: 'local'),
+      ),
     );
     await gh.factoryAsync<String>(
       () => registerModule.deviceId(gh<_i829.TinyStorage>()),
@@ -256,6 +276,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i411.RemoteClipboardSource(gh<_i454.SupabaseClient>()),
       instanceName: 'remote',
     );
+    gh.lazySingleton<_i533.ApplicationMetaResolver>(
+      () => _i375.ApplicationMetaResolverImpl(
+        gh<_i110.ApplicationMetaRepository>(),
+        gh<_i291.FocusWindow>(),
+      ),
+    );
     gh.lazySingleton<_i782.SyncClipboardSource>(
       () => _i425.SyncClipboardSourceImpl(gh<_i454.SupabaseClient>()),
       instanceName: 'remote',
@@ -290,16 +316,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i61.SyncRepository>(
       () => _i223.SyncRepositoryImpl(
         gh<_i782.SyncClipboardSource>(instanceName: 'remote'),
-      ),
-    );
-    gh.lazySingleton<_i706.OfflinePersistenceCubit>(
-      () => _i706.OfflinePersistenceCubit(
-        gh<_i29.AuthCubit>(),
-        gh<_i230.ClipboardRepository>(instanceName: 'local'),
-        gh<_i63.ClipboardService>(),
-        gh<_i542.AppConfigCubit>(),
-        gh<_i707.AnalyticsRepository>(),
-        gh<String>(instanceName: 'device_id'),
       ),
     );
     gh.lazySingleton<_i956.SubscriptionRepository>(
@@ -352,6 +368,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i565.AndroidBackgroundClipboard>(),
         gh<_i292.SyncEventBus>(),
         gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<String>(instanceName: 'device_id'),
+      ),
+    );
+    gh.lazySingleton<_i706.OfflinePersistenceCubit>(
+      () => _i706.OfflinePersistenceCubit(
+        gh<_i29.AuthCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i63.ClipboardService>(),
+        gh<_i542.AppConfigCubit>(),
+        gh<_i533.ApplicationMetaResolver>(),
+        gh<_i707.AnalyticsRepository>(),
         gh<String>(instanceName: 'device_id'),
       ),
     );

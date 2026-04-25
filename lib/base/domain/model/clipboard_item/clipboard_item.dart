@@ -52,6 +52,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     // Source Information
     String? sourceUrl,
     String? sourceApp,
+    String? sourceId,
     required PlatformOS os,
 
     // Collection
@@ -94,6 +95,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     String? userId,
     String? sourceUrl,
     String? sourceApp,
+    String? sourceId,
     TextCategory? category,
     String? richData,
   }) {
@@ -107,6 +109,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
       os: currentPlatformOS(),
       sourceUrl: sourceUrl,
       sourceApp: sourceApp,
+      sourceId: sourceId,
       textCategory: category,
     );
   }
@@ -121,6 +124,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     String? blurHash, // only for image
     String? sourceUrl,
     String? sourceApp,
+    String? sourceId,
   }) {
     return ClipboardItem(
       created: systemTime(),
@@ -136,6 +140,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
       os: currentPlatformOS(),
       sourceUrl: sourceUrl,
       sourceApp: sourceApp,
+      sourceId: sourceId,
     );
   }
 
@@ -149,6 +154,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     int? fileSize, // in KB
     String? sourceUrl,
     String? sourceApp,
+    String? sourceId,
   }) {
     final basename = p.basename(filePath);
 
@@ -167,6 +173,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
       os: currentPlatformOS(),
       sourceUrl: sourceUrl,
       sourceApp: sourceApp,
+      sourceId: sourceId,
     );
   }
 
@@ -177,6 +184,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     String? description,
     String? sourceUrl,
     String? sourceApp,
+    String? sourceId,
   }) {
     final url = Uri.decodeFull(cleanUpString(uri.toString())!);
     return ClipboardItem(
@@ -190,6 +198,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
       os: currentPlatformOS(),
       sourceUrl: sourceUrl,
       sourceApp: sourceApp,
+      sourceId: sourceId,
     );
   }
 

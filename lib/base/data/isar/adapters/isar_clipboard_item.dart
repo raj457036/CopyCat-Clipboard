@@ -46,6 +46,8 @@ class IsarClipboardItem {
   // Source Information
   String? sourceUrl;
   String? sourceApp;
+  @Index()
+  String? sourceId;
   @Enumerated(EnumType.name)
   late PlatformOS os;
   // Collection
@@ -87,6 +89,7 @@ class IsarClipboardItem {
     imgBlurHash: imgBlurHash,
     sourceUrl: sourceUrl,
     sourceApp: sourceApp,
+    sourceId: sourceId,
     os: os,
     serverCollectionId: serverCollectionId,
     collectionId: collectionId,
@@ -123,6 +126,7 @@ class IsarClipboardItem {
     ..imgBlurHash = item.imgBlurHash
     ..sourceUrl = item.sourceUrl
     ..sourceApp = item.sourceApp
+    ..sourceId = item.sourceId
     ..os = item.os
     ..serverCollectionId = item.serverCollectionId
     ..collectionId = item.collectionId

@@ -231,6 +231,7 @@ Future<void> _copyOrPasteResult(
     userId: tx.item.userId,
     sourceApp: tx.item.sourceApp,
     sourceUrl: tx.item.sourceUrl,
+    sourceId: tx.item.sourceId,
     category: categoryOverride ?? tx.item.textCategory,
   );
 

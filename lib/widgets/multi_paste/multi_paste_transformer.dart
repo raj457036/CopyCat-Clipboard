@@ -25,6 +25,7 @@ class MultiPasteTransformer {
             text,
             sourceApp: first.sourceApp,
             sourceUrl: first.sourceUrl,
+            sourceId: first.sourceId,
             category: first.textCategory,
           ),
         );

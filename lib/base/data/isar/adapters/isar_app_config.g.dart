@@ -309,12 +309,12 @@ IsarAppConfig _isarAppConfigDeserialize(
   object.smartPaste = reader.readBool(offsets[18]);
   object.sortBy =
       _IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(offsets[19])] ??
-      ClipboardSortKey.modified;
+      ClipboardSortKey.created;
   object.sortOrder =
       _IsarAppConfigsortOrderValueEnumMap[reader.readStringOrNull(
         offsets[20],
       )] ??
-      SortOrder.desc;
+      SortOrder.asc;
   object.syncSpeed =
       _IsarAppConfigsyncSpeedValueEnumMap[reader.readStringOrNull(
         offsets[21],
@@ -400,13 +400,13 @@ P _isarAppConfigDeserializeProp<P>(
       return (_IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
-              ClipboardSortKey.modified)
+              ClipboardSortKey.created)
           as P;
     case 20:
       return (_IsarAppConfigsortOrderValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
-              SortOrder.desc)
+              SortOrder.asc)
           as P;
     case 21:
       return (_IsarAppConfigsyncSpeedValueEnumMap[reader.readStringOrNull(

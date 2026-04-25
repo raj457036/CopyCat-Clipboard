@@ -1,4 +1,5 @@
 import 'package:clipboard/base/data/isar/adapters/isar_app_config.dart';
+import 'package:clipboard/base/data/isar/adapters/isar_application_meta.dart';
 import 'package:clipboard/base/data/isar/adapters/isar_clip_collection.dart';
 import 'package:clipboard/base/data/isar/adapters/isar_clipboard_item.dart';
 import 'package:clipboard/base/data/isar/adapters/isar_subscription.dart';
@@ -13,6 +14,7 @@ Future<Isar> openIsarDatabase(String path, String name) async {
   return Isar.open(
     [
       IsarClipboardItemSchema,
+      IsarApplicationMetaSchema,
       IsarAppConfigSchema,
       IsarSyncStatusSchema,
       IsarClipCollectionSchema,

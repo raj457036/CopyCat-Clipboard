@@ -131,7 +131,7 @@ class _ClipListItemState extends State<ClipListItem> {
         elevation: focused ? 2 : 0,
         clipBehavior: Clip.antiAlias,
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 60, maxHeight: 220),
+          constraints: const BoxConstraints(minHeight: 60, maxHeight: 160),
           child: InkWell(
             mouseCursor: SystemMouseCursors.click,
             customBorder: selectedShape,

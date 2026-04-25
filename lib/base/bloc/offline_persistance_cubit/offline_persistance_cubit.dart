@@ -6,10 +6,13 @@ import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
+import 'package:clipboard/base/domain/model/application_meta/activity_meta_payload.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/analytics.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
+import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
+import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -30,6 +33,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   final ClipboardRepository repo;
   final ClipboardService clipboard;
   final AppConfigCubit appConfig;
+  final ApplicationMetaResolver appMetaResolver;
   final String deviceId;
   final AnalyticsRepository analyticsRepo;
 
@@ -42,9 +46,20 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     @Named("local") this.repo,
     this.clipboard,
     this.appConfig,
+    this.appMetaResolver,
     this.analyticsRepo,
     @Named("device_id") this.deviceId,
   ) : super(const OfflinePersistanceState.initial());
+
+  ActivityMetaPayload? _toActivityMetaPayload(ActivityInfo? activity) {
+    if (activity == null) return null;
+    return ActivityMetaPayload(
+      identifier: activity.identifier,
+      appName: activity.app,
+      appFilePath: activity.appFilePath,
+      os: currentPlatformOS(),
+    );
+  }
 
   Future<ClipboardItem?> getItem({required int id}) async {
     final result = await repo.get(id: id);
@@ -233,6 +248,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   Future<ClipboardItem> _convertToClipboardItem(
     ClipItem clip, {
     ActivityInfo? activity,
+    String? sourceId,
   }) async {
     final userId = auth.userId;
     final sourceApp = (activity?.app ?? "").trim().isEmpty
@@ -250,6 +266,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
           category: clip.textCategory,
           sourceApp: sourceApp,
           sourceUrl: sourceUrl,
+          sourceId: sourceId,
           richData: clip.richData,
         );
       case ClipItemType.media:
@@ -265,6 +282,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
             blurHash: clip.blurHash,
             sourceApp: sourceApp,
             sourceUrl: sourceUrl,
+            sourceId: sourceId,
           );
         }
       case ClipItemType.file:
@@ -274,13 +292,14 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
           return ClipboardItem.fromFile(
             path,
             userId: userId,
-            preview: clip.text?.substring(0, 1024),
+            preview: clip.text?.substring(0, 256),
             fileName: clip.fileName,
             fileMimeType: clip.fileMimeType,
             fileExtension: clip.fileExtension,
             fileSize: clip.fileSize,
             sourceApp: sourceApp,
             sourceUrl: sourceUrl,
+            sourceId: sourceId,
           );
         }
       case ClipItemType.url:
@@ -289,6 +308,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
           userId: userId,
           sourceApp: sourceApp,
           sourceUrl: sourceUrl,
+          sourceId: sourceId,
         );
     }
   }
@@ -300,6 +320,9 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     if (clips.isEmpty) return;
 
     final activity = appConfig.lastActivity;
+    final sourceId = await appMetaResolver.syncFromActivity(
+      _toActivityMetaPayload(activity),
+    );
 
     for (final clip in clips) {
       if (clip == null) continue;
@@ -337,7 +360,11 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         return;
       }
 
-      final item = await _convertToClipboardItem(clip, activity: activity);
+      final item = await _convertToClipboardItem(
+        clip,
+        activity: activity,
+        sourceId: sourceId,
+      );
 
       if (manualPaste) {
         final userItem = item.copyWith(userIntent: manualPaste);

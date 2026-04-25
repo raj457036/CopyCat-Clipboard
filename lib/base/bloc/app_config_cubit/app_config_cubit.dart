@@ -411,8 +411,6 @@ class AppConfigCubit extends Cubit<AppConfigState> {
       final activity = await focusWindow.getActivity().timeout(
         const Duration(seconds: 5),
       );
-      // final icon = await focusWindow.getIcon(activity.appFilePath).timeout(const Duration(seconds: 5));
-      // will use it lazily when needed.
       logger.w(activity);
       lastActivity = activity;
       final allowed = exclusionChecker?.isActivityAllowed(activity) ?? true;
