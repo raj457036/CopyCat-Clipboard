@@ -13,8 +13,10 @@ import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_card/clip_card_options_header.dart';
+import 'package:clipboard/widgets/clip_item/clip_card/hover_state_builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_preview.dart';
 import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
+import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
 import 'package:clipboard/widgets/clip_item/paste_chip_slide_in.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:clipboard/widgets/drag_drop/drag_item.dart';
@@ -26,37 +28,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universal_io/io.dart';
 
 class ClipCardBodyContent extends StatelessWidget {
-  final ClipboardItem item;
   final bool hovered;
-  final bool selected;
-  final int selectionIndex;
-  final bool selectionActive;
   final bool canPaste;
 
   const ClipCardBodyContent({
     super.key,
-    required this.item,
-    required this.selectionActive,
-    required this.selectionIndex,
     this.hovered = false,
-    this.selected = false,
     this.canPaste = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final item = ClipItemScope.of(context);
     final textTheme = context.textTheme;
     final child = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ClipCardOptionsHeader(
-          item: item,
-          hasFocusForPaste: canPaste,
-          hovered: hovered,
-          selected: selected,
-          selectionActive: selectionActive,
-          selectionIndex: selectionIndex,
-        ),
+        ClipCardOptionsHeader(hasFocusForPaste: canPaste, hovered: hovered),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -85,16 +73,34 @@ class ClipCardBodyContent extends StatelessWidget {
             ],
           ),
         ),
-        if (!selected)
-          DisableForLocalUser(child: ClipSyncStatusFooter(item: item)),
+        const _SyncStatusFooter(),
       ],
     );
 
     // NOTE: drag and drop doesn't work in android for now
+    final selected = context.select(
+      (SelectedClipsCubit cubit) => cubit.isSelected(item),
+    );
     if (!Platform.isAndroid && !selected) {
       return DraggableItem(item: item, child: child);
     }
     return child;
+  }
+}
+
+class _SyncStatusFooter extends StatelessWidget {
+  const _SyncStatusFooter();
+
+  @override
+  Widget build(BuildContext context) {
+    final item = ClipItemScope.of(context);
+    final selected = context.select(
+      (SelectedClipsCubit cubit) => cubit.isSelected(item),
+    );
+    if (selected) {
+      return const SizedBox.shrink();
+    }
+    return DisableForLocalUser(child: ClipSyncStatusFooter(item: item));
   }
 }
 
@@ -120,7 +126,6 @@ class ClipCardBody extends StatefulWidget {
 
 class _ClipCardBodyState extends State<ClipCardBody> {
   bool focused = false;
-  bool hovered = false;
 
   @override
   void dispose() {
@@ -167,13 +172,6 @@ class _ClipCardBodyState extends State<ClipCardBody> {
     }
   }
 
-  void onHover(bool isHovered) {
-    if (isHovered == hovered) return;
-    setState(() {
-      hovered = isHovered;
-    });
-  }
-
   void toggleSelect(BuildContext context) {
     final cubit = context.read<SelectedClipsCubit>();
     if (widget.selected) {
@@ -203,29 +201,26 @@ class _ClipCardBodyState extends State<ClipCardBody> {
   Widget build(BuildContext context) {
     final colors = context.colors;
 
-    final selectedShape = focused || widget.selected
-        ? RoundedRectangleBorder(
-            side: BorderSide(
-              color: colors.primary,
-              width: focused ? focusedItemBorderWidth : selectedItemBorderWidth,
-              strokeAlign: focused
-                  ? BorderSide.strokeAlignOutside
-                  : BorderSide.strokeAlignInside,
-            ),
-            borderRadius: radius12,
-          )
-        : null;
-
-    final cardContent = PasteChipSlideIn(
-      clipChild: ClipCardBodyContent(
-        item: widget.item,
-        hovered: hovered,
-        selected: widget.selected,
-        selectionIndex: widget.selectionIndex,
-        selectionActive: widget.selectionActive,
-        canPaste: canPaste,
+    final selectedShape = RoundedRectangleBorder(
+      side: BorderSide(
+        color: focused || widget.selected
+            ? colors.primary
+            : colors.outlineVariant,
+        width: focused
+            ? focusedItemBorderWidth
+            : widget.selected
+            ? selectedItemBorderWidth
+            : 1.0,
+        strokeAlign: BorderSide.strokeAlignInside,
       ),
-      showPasteChip: hovered && canPaste,
+      borderRadius: radius12,
+    );
+
+    final cardContent = HoverStateBuilder(
+      builder: (context, hovered) => PasteChipSlideIn(
+        clipChild: ClipCardBodyContent(hovered: hovered, canPaste: canPaste),
+        showPasteChip: hovered && canPaste,
+      ),
     );
 
     return SpaceEnterListener(
@@ -242,11 +237,11 @@ class _ClipCardBodyState extends State<ClipCardBody> {
         margin: EdgeInsets.zero,
         elevation: focused ? 2 : 0,
         shape: selectedShape,
+        clipBehavior: Clip.hardEdge,
         child: InkWell(
           mouseCursor: SystemMouseCursors.click,
-          onHover: onHover,
           focusColor: colors.surface,
-
+          customBorder: selectedShape,
           onTap: !widget.selectionActive
               ? () => performPrimaryActionOnClip(context, widget.item, canPaste)
               : () => toggleSelect(context),
@@ -264,7 +259,6 @@ class _ClipCardBodyState extends State<ClipCardBody> {
               : null,
           onFocusChange: onFocusChange,
           autofocus: widget.focused,
-          borderRadius: radius12,
           child: cardContent,
         ),
       ),

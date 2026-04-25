@@ -66,7 +66,7 @@ class AppExclusionTab extends StatelessWidget {
     } else {
       ext = ["bin"];
     }
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ext,
       allowMultiple: true,

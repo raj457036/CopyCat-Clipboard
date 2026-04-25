@@ -13,12 +13,30 @@ class FileClipCard extends StatelessWidget {
 
   const FileClipCard({super.key, required this.item, required this.layout});
 
+  String _displayFileType() {
+    final mimeType = item.fileMimeType;
+    final extension = item.fileExtension?.replaceFirst('.', '').trim();
+
+    final fromMime = mimeType == null || mimeType.isEmpty
+        ? null
+        : extensionFromMime(mimeType)?.trim();
+
+    // Prefer real extension for generic/unknown mime types.
+    if (fromMime == null || fromMime.isEmpty || fromMime == 'bin') {
+      if (extension != null && extension.isNotEmpty) {
+        return extension.toLowerCase();
+      }
+      return 'file';
+    }
+
+    return fromMime.toLowerCase();
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
     final textTheme = context.textTheme;
-    final label =
-        "~${formatBytes(item.fileSize!)} • ${extensionFromMime(item.fileMimeType!)}";
+    final label = "${_displayFileType()} • ~${formatBytes(item.fileSize!)}";
 
     final metaChip = Chip(
       labelPadding: EdgeInsets.zero,
@@ -41,7 +59,7 @@ class FileClipCard extends StatelessWidget {
         child: Stack(
           children: [
             Text(
-              item.fileName?.sub(end: 25) ?? "No Name",
+              item.fileName?.sub(end: 30) ?? "No Name",
               overflow: TextOverflow.fade,
               maxLines: 5,
               textAlign: TextAlign.center,

@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart' as sb;
 @LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final sb.SupabaseClient client;
+  static const _sessionRefreshBuffer = Duration(minutes: 2);
 
   AuthRepositoryImpl({required this.client});
 
@@ -67,6 +68,19 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   String? get accessToken => client.auth.currentSession?.accessToken;
+
+  @override
+  bool get needsSessionRefresh {
+    final session = client.auth.currentSession;
+    if (session == null) return true;
+
+    final expiresAt = session.expiresAt;
+    if (expiresAt == null) return false;
+
+    final expiry = DateTime.fromMillisecondsSinceEpoch(expiresAt * 1000);
+    final refreshBefore = DateTime.now().add(_sessionRefreshBuffer);
+    return !expiry.isAfter(refreshBefore);
+  }
 
   @override
   FailureOr<void> refreshSession() async {

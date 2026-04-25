@@ -31,6 +31,7 @@ class IsarClipboardItem {
   String? encMode;
   // Text related
   String? text;
+  String? richData;
   String? url;
   @Enumerated(EnumType.name)
   @Index()
@@ -75,6 +76,7 @@ class IsarClipboardItem {
     iv: iv,
     encMode: encMode,
     text: text,
+    richData: richData,
     url: url,
     textCategory: textCategory,
     fileName: fileName,
@@ -110,6 +112,7 @@ class IsarClipboardItem {
     ..iv = item.iv
     ..encMode = item.encMode
     ..text = item.text
+    ..richData = item.richData
     ..url = item.url
     ..textCategory = item.textCategory
     ..fileName = item.fileName

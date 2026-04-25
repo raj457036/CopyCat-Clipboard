@@ -18,12 +18,7 @@ class TextPreviewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final body = Padding(padding: const EdgeInsets.all(padding8), child: child);
     if (bg != null) {
-      return Material(
-        type: MaterialType.card,
-        color: bg,
-        borderRadius: radiusBottom12,
-        child: body,
-      );
+      return Material(type: MaterialType.card, color: bg, child: body);
     }
     return body;
   }

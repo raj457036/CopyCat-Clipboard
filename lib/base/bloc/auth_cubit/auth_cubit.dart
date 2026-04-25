@@ -47,6 +47,16 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<bool> checkForAuthentication() async {
     if (checkLocalSignin()) return true;
+
+    final currentUser = repo.currentUser;
+    final accessToken = repo.accessToken;
+    if (currentUser != null &&
+        accessToken != null &&
+        !repo.needsSessionRefresh) {
+      await authenticated(currentUser, accessToken);
+      return true;
+    }
+
     await repo.refreshSession();
     if (repo.currentUser != null) {
       await authenticated(repo.currentUser!, repo.accessToken!);

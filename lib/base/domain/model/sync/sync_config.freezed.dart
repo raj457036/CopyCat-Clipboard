@@ -41,9 +41,6 @@ mixin _$SyncConfig {
   /// Delay before attempting to reconnect to realtime stream after a drop.
   int get reconnectDelaySeconds => throw _privateConstructorUsedError;
 
-  /// Maximum retries allowed for an outbox entry.
-  int get maxOutboxRetries => throw _privateConstructorUsedError;
-
   /// Create a copy of SyncConfig
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -67,7 +64,6 @@ abstract class $SyncConfigCopyWith<$Res> {
     int deleteBatchSize,
     int interBatchDelayMs,
     int reconnectDelaySeconds,
-    int maxOutboxRetries,
   });
 }
 
@@ -94,7 +90,6 @@ class _$SyncConfigCopyWithImpl<$Res, $Val extends SyncConfig>
     Object? deleteBatchSize = null,
     Object? interBatchDelayMs = null,
     Object? reconnectDelaySeconds = null,
-    Object? maxOutboxRetries = null,
   }) {
     return _then(
       _value.copyWith(
@@ -130,10 +125,6 @@ class _$SyncConfigCopyWithImpl<$Res, $Val extends SyncConfig>
                 ? _value.reconnectDelaySeconds
                 : reconnectDelaySeconds // ignore: cast_nullable_to_non_nullable
                       as int,
-            maxOutboxRetries: null == maxOutboxRetries
-                ? _value.maxOutboxRetries
-                : maxOutboxRetries // ignore: cast_nullable_to_non_nullable
-                      as int,
           )
           as $Val,
     );
@@ -158,7 +149,6 @@ abstract class _$$SyncConfigImplCopyWith<$Res>
     int deleteBatchSize,
     int interBatchDelayMs,
     int reconnectDelaySeconds,
-    int maxOutboxRetries,
   });
 }
 
@@ -184,7 +174,6 @@ class __$$SyncConfigImplCopyWithImpl<$Res>
     Object? deleteBatchSize = null,
     Object? interBatchDelayMs = null,
     Object? reconnectDelaySeconds = null,
-    Object? maxOutboxRetries = null,
   }) {
     return _then(
       _$SyncConfigImpl(
@@ -220,10 +209,6 @@ class __$$SyncConfigImplCopyWithImpl<$Res>
             ? _value.reconnectDelaySeconds
             : reconnectDelaySeconds // ignore: cast_nullable_to_non_nullable
                   as int,
-        maxOutboxRetries: null == maxOutboxRetries
-            ? _value.maxOutboxRetries
-            : maxOutboxRetries // ignore: cast_nullable_to_non_nullable
-                  as int,
       ),
     );
   }
@@ -241,7 +226,6 @@ class _$SyncConfigImpl implements _SyncConfig {
     this.deleteBatchSize = 1000,
     this.interBatchDelayMs = 350,
     this.reconnectDelaySeconds = 10,
-    this.maxOutboxRetries = 3,
   });
 
   /// Normal polling interval.
@@ -284,14 +268,9 @@ class _$SyncConfigImpl implements _SyncConfig {
   @JsonKey()
   final int reconnectDelaySeconds;
 
-  /// Maximum retries allowed for an outbox entry.
-  @override
-  @JsonKey()
-  final int maxOutboxRetries;
-
   @override
   String toString() {
-    return 'SyncConfig(pollingIntervalSeconds: $pollingIntervalSeconds, minManualDelaySeconds: $minManualDelaySeconds, manualDelaySeconds: $manualDelaySeconds, pullBatchSize: $pullBatchSize, collectionBatchSize: $collectionBatchSize, deleteBatchSize: $deleteBatchSize, interBatchDelayMs: $interBatchDelayMs, reconnectDelaySeconds: $reconnectDelaySeconds, maxOutboxRetries: $maxOutboxRetries)';
+    return 'SyncConfig(pollingIntervalSeconds: $pollingIntervalSeconds, minManualDelaySeconds: $minManualDelaySeconds, manualDelaySeconds: $manualDelaySeconds, pullBatchSize: $pullBatchSize, collectionBatchSize: $collectionBatchSize, deleteBatchSize: $deleteBatchSize, interBatchDelayMs: $interBatchDelayMs, reconnectDelaySeconds: $reconnectDelaySeconds)';
   }
 
   @override
@@ -314,9 +293,7 @@ class _$SyncConfigImpl implements _SyncConfig {
             (identical(other.interBatchDelayMs, interBatchDelayMs) ||
                 other.interBatchDelayMs == interBatchDelayMs) &&
             (identical(other.reconnectDelaySeconds, reconnectDelaySeconds) ||
-                other.reconnectDelaySeconds == reconnectDelaySeconds) &&
-            (identical(other.maxOutboxRetries, maxOutboxRetries) ||
-                other.maxOutboxRetries == maxOutboxRetries));
+                other.reconnectDelaySeconds == reconnectDelaySeconds));
   }
 
   @override
@@ -330,7 +307,6 @@ class _$SyncConfigImpl implements _SyncConfig {
     deleteBatchSize,
     interBatchDelayMs,
     reconnectDelaySeconds,
-    maxOutboxRetries,
   );
 
   /// Create a copy of SyncConfig
@@ -352,7 +328,6 @@ abstract class _SyncConfig implements SyncConfig {
     final int deleteBatchSize,
     final int interBatchDelayMs,
     final int reconnectDelaySeconds,
-    final int maxOutboxRetries,
   }) = _$SyncConfigImpl;
 
   /// Normal polling interval.
@@ -386,10 +361,6 @@ abstract class _SyncConfig implements SyncConfig {
   /// Delay before attempting to reconnect to realtime stream after a drop.
   @override
   int get reconnectDelaySeconds;
-
-  /// Maximum retries allowed for an outbox entry.
-  @override
-  int get maxOutboxRetries;
 
   /// Create a copy of SyncConfig
   /// with the given fields replaced by the non-null parameter values.

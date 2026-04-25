@@ -69,12 +69,12 @@ PODS:
   - package_info_plus (0.0.1):
     - FlutterMacOS
   - PromisesObjC (2.4.0)
-  - purchases_flutter (9.16.1):
+  - purchases_flutter (10.0.1):
     - FlutterMacOS
-    - PurchasesHybridCommon (= 17.55.1)
-  - PurchasesHybridCommon (17.55.1):
-    - RevenueCat (= 5.67.1)
-  - RevenueCat (5.67.1)
+    - PurchasesHybridCommon (= 18.1.0)
+  - PurchasesHybridCommon (18.1.0):
+    - RevenueCat (= 5.68.0)
+  - RevenueCat (5.68.0)
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
   - Sentry/HybridSDK (8.58.1)
@@ -99,9 +99,6 @@ PODS:
   - url_launcher_macos (0.0.1):
     - FlutterMacOS
   - wakelock_plus (0.0.1):
-    - FlutterMacOS
-  - webview_flutter_wkwebview (0.0.1):
-    - Flutter
     - FlutterMacOS
   - window_manager (0.5.0):
     - FlutterMacOS
@@ -134,7 +131,6 @@ DEPENDENCIES:
   - tray_manager (from `Flutter/ephemeral/.symlinks/plugins/tray_manager/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
   - wakelock_plus (from `Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos`)
-  - webview_flutter_wkwebview (from `Flutter/ephemeral/.symlinks/plugins/webview_flutter_wkwebview/darwin`)
   - window_manager (from `Flutter/ephemeral/.symlinks/plugins/window_manager/macos`)
 
 SPEC REPOS:
@@ -206,8 +202,6 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
   wakelock_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos
-  webview_flutter_wkwebview:
-    :path: Flutter/ephemeral/.symlinks/plugins/webview_flutter_wkwebview/darwin
   window_manager:
     :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
 
@@ -217,7 +211,7 @@ SPEC CHECKSUMS:
   AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   clipboard_watcher: e9c9d88b3aea4889fe80025037e690e73600b160
   connectivity_plus: 4adf20a405e25b42b9c9f87feff8f4b6fde18a4e
-  device_info_plus: a56e6e74dbbd2bb92f2da12c64ddd4f67a749041
+  device_info_plus: 4fb280989f669696856f8b129e4a5e3cd6c48f76
   emoji_picker_flutter: 51ca408e289d84d1e460016b2a28721ec754fcf7
   file_picker: 7584aae6fa07a041af2b36a2655122d42f578c1a
   flutter_platform_alert: 8fa7a7c21f95b26d08b4a3891936ca27e375f284
@@ -236,9 +230,9 @@ SPEC CHECKSUMS:
   media_kit_video: fa6564e3799a0a28bff39442334817088b7ca758
   package_info_plus: f0052d280d17aa382b932f399edf32507174e870
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  purchases_flutter: cfe4e98a24972974fd1567b3153a696e8110fda0
-  PurchasesHybridCommon: ecd9d7c586287625f1225b8de5e24c1021502270
-  RevenueCat: 9357239a9f0978285e68983637b8a602e65c94f0
+  purchases_flutter: 8bfb0a885599061c9a14974e45175072a5c896c6
+  PurchasesHybridCommon: 32902b8fad349cf549f096183926ee33af00e36a
+  RevenueCat: c535d3739d51163f6d9d5dbd01c7b5d93b718ff5
   screen_retriever_macos: 452e51764a9e1cdb74b3c541238795849f21557f
   Sentry: 958d9619ceccf6abb8c4736003fa336dac1a80a7
   sentry_flutter: 8c688f0657eef5c6faf4985c57ca0f48ffb2b7b5
@@ -250,7 +244,6 @@ SPEC CHECKSUMS:
   tray_manager: a104b5c81b578d83f3c3d0f40a997c8b10810166
   url_launcher_macos: f87a979182d112f911de6820aefddaf56ee9fbfd
   wakelock_plus: 917609be14d812ddd9e9528876538b2263aaa03b
-  webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
   window_manager: b729e31d38fb04905235df9ea896128991cad99e
 
 PODFILE CHECKSUM: 9ebaf0ce3d369aaa26a9ea0e159195ed94724cf3

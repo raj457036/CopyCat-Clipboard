@@ -33,12 +33,6 @@ mixin _$SyncOutboxEntry {
   /// When this entry was enqueued.
   DateTime get createdAt => throw _privateConstructorUsedError;
 
-  /// Number of times we've tried to process this entry.
-  int get retryCount => throw _privateConstructorUsedError;
-
-  /// Time until which we should back off.
-  DateTime? get nextRetryAt => throw _privateConstructorUsedError;
-
   /// The last failure message, if any.
   String? get lastError => throw _privateConstructorUsedError;
 
@@ -62,8 +56,6 @@ abstract class $SyncOutboxEntryCopyWith<$Res> {
     int localId,
     SyncOutboxAction action,
     DateTime createdAt,
-    int retryCount,
-    DateTime? nextRetryAt,
     String? lastError,
   });
 }
@@ -88,8 +80,6 @@ class _$SyncOutboxEntryCopyWithImpl<$Res, $Val extends SyncOutboxEntry>
     Object? localId = null,
     Object? action = null,
     Object? createdAt = null,
-    Object? retryCount = null,
-    Object? nextRetryAt = freezed,
     Object? lastError = freezed,
   }) {
     return _then(
@@ -114,14 +104,6 @@ class _$SyncOutboxEntryCopyWithImpl<$Res, $Val extends SyncOutboxEntry>
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
                       as DateTime,
-            retryCount: null == retryCount
-                ? _value.retryCount
-                : retryCount // ignore: cast_nullable_to_non_nullable
-                      as int,
-            nextRetryAt: freezed == nextRetryAt
-                ? _value.nextRetryAt
-                : nextRetryAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
             lastError: freezed == lastError
                 ? _value.lastError
                 : lastError // ignore: cast_nullable_to_non_nullable
@@ -147,8 +129,6 @@ abstract class _$$SyncOutboxEntryImplCopyWith<$Res>
     int localId,
     SyncOutboxAction action,
     DateTime createdAt,
-    int retryCount,
-    DateTime? nextRetryAt,
     String? lastError,
   });
 }
@@ -172,8 +152,6 @@ class __$$SyncOutboxEntryImplCopyWithImpl<$Res>
     Object? localId = null,
     Object? action = null,
     Object? createdAt = null,
-    Object? retryCount = null,
-    Object? nextRetryAt = freezed,
     Object? lastError = freezed,
   }) {
     return _then(
@@ -198,14 +176,6 @@ class __$$SyncOutboxEntryImplCopyWithImpl<$Res>
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
                   as DateTime,
-        retryCount: null == retryCount
-            ? _value.retryCount
-            : retryCount // ignore: cast_nullable_to_non_nullable
-                  as int,
-        nextRetryAt: freezed == nextRetryAt
-            ? _value.nextRetryAt
-            : nextRetryAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
         lastError: freezed == lastError
             ? _value.lastError
             : lastError // ignore: cast_nullable_to_non_nullable
@@ -224,8 +194,6 @@ class _$SyncOutboxEntryImpl implements _SyncOutboxEntry {
     required this.localId,
     required this.action,
     required this.createdAt,
-    this.retryCount = 0,
-    this.nextRetryAt,
     this.lastError,
   });
 
@@ -250,22 +218,13 @@ class _$SyncOutboxEntryImpl implements _SyncOutboxEntry {
   @override
   final DateTime createdAt;
 
-  /// Number of times we've tried to process this entry.
-  @override
-  @JsonKey()
-  final int retryCount;
-
-  /// Time until which we should back off.
-  @override
-  final DateTime? nextRetryAt;
-
   /// The last failure message, if any.
   @override
   final String? lastError;
 
   @override
   String toString() {
-    return 'SyncOutboxEntry(id: $id, entityType: $entityType, localId: $localId, action: $action, createdAt: $createdAt, retryCount: $retryCount, nextRetryAt: $nextRetryAt, lastError: $lastError)';
+    return 'SyncOutboxEntry(id: $id, entityType: $entityType, localId: $localId, action: $action, createdAt: $createdAt, lastError: $lastError)';
   }
 
   @override
@@ -280,10 +239,6 @@ class _$SyncOutboxEntryImpl implements _SyncOutboxEntry {
             (identical(other.action, action) || other.action == action) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
-            (identical(other.retryCount, retryCount) ||
-                other.retryCount == retryCount) &&
-            (identical(other.nextRetryAt, nextRetryAt) ||
-                other.nextRetryAt == nextRetryAt) &&
             (identical(other.lastError, lastError) ||
                 other.lastError == lastError));
   }
@@ -296,8 +251,6 @@ class _$SyncOutboxEntryImpl implements _SyncOutboxEntry {
     localId,
     action,
     createdAt,
-    retryCount,
-    nextRetryAt,
     lastError,
   );
 
@@ -320,8 +273,6 @@ abstract class _SyncOutboxEntry implements SyncOutboxEntry {
     required final int localId,
     required final SyncOutboxAction action,
     required final DateTime createdAt,
-    final int retryCount,
-    final DateTime? nextRetryAt,
     final String? lastError,
   }) = _$SyncOutboxEntryImpl;
 
@@ -345,14 +296,6 @@ abstract class _SyncOutboxEntry implements SyncOutboxEntry {
   /// When this entry was enqueued.
   @override
   DateTime get createdAt;
-
-  /// Number of times we've tried to process this entry.
-  @override
-  int get retryCount;
-
-  /// Time until which we should back off.
-  @override
-  DateTime? get nextRetryAt;
 
   /// The last failure message, if any.
   @override

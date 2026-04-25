@@ -168,7 +168,7 @@ class _ClipDropRegionState extends State<ClipDropRegion> {
         DataFormat? selectedFormat;
         final itemFormats = reader.getFormats(allSupportedClipFormats);
 
-        selectedFormat = cubit.clipboard.filterOutByPriority(itemFormats);
+        selectedFormat = cubit.clipboard.selectFormatForItem(itemFormats);
         if (selectedFormat == null) continue;
         res.add((reader, selectedFormat));
         pastedCount++;

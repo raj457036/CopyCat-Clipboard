@@ -1,25 +1,24 @@
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
-import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
 import 'package:clipboard/widgets/menu.dart';
 import 'package:flutter/material.dart';
 
 class PrimaryClipActionButton extends StatelessWidget {
   final bool hasFocusForPaste;
-  final ClipboardItem item;
   final AppLayout layout;
   const PrimaryClipActionButton({
     super.key,
     this.hasFocusForPaste = false,
-    required this.item,
     required this.layout,
   });
 
   @override
   Widget build(BuildContext context) {
+    final item = ClipItemScope.of(context);
     final isGrid = layout == AppLayout.grid;
     final colors = context.colors;
 

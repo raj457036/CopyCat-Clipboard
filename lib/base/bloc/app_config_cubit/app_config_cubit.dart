@@ -314,6 +314,12 @@ class AppConfigCubit extends Cubit<AppConfigState> {
     await repo.update(newConfig);
   }
 
+  Future<void> toggleRichDataCapture(bool value) async {
+    final newConfig = state.config.copyWith(richDataCapture: value);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+  }
+
   Future<void> toggleSmartPaste(bool value) async {
     final newConfig = state.config.copyWith(smartPaste: value);
     emit(state.copyWith(config: newConfig));
@@ -405,6 +411,8 @@ class AppConfigCubit extends Cubit<AppConfigState> {
       final activity = await focusWindow.getActivity().timeout(
         const Duration(seconds: 5),
       );
+      // final icon = await focusWindow.getIcon(activity.appFilePath).timeout(const Duration(seconds: 5));
+      // will use it lazily when needed.
       logger.w(activity);
       lastActivity = activity;
       final allowed = exclusionChecker?.isActivityAllowed(activity) ?? true;

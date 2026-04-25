@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:focus_window/platform/activity_info.dart';
 import 'package:share_plus/share_plus.dart';
 import "package:universal_io/io.dart";
 
@@ -79,6 +80,10 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
 
   Future<void> startListeners() async {
     if (_listening) return;
+    // Always sync capture mode from current config before listening.
+    // This guarantees rich data capture follows the toggle even when
+    // EventBridge listener has not fired yet for this app session.
+    clipboard.setRichDataEnabled(appConfig.state.config.richDataCapture);
     clipboard.start(onCaptureClipboard);
     copySub = clipboard.onCopy?.listen(onClips);
     _listening = true;
@@ -176,13 +181,19 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   Future<bool> copyToClipboard(
     List<ClipboardItem> items, {
     bool saveFile = false,
+    TextPasteFormat textPasteFormat = TextPasteFormat.auto,
   }) async {
     final copy = CopyToClipboard();
 
     for (final item in items) {
       switch (item.type) {
         case ClipItemType.text:
-          copy.writeText(item.text ?? "");
+          copy.writeRichText(
+            clipboard,
+            text: item.text ?? "",
+            richData: item.richData,
+            mode: textPasteFormat,
+          );
         case ClipItemType.url:
           copy.writeUrl(Uri.tryParse(item.url ?? ""));
         case ClipItemType.media:
@@ -219,8 +230,17 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     return copied;
   }
 
-  Future<ClipboardItem> _convertToClipboardItem(ClipItem clip) async {
+  Future<ClipboardItem> _convertToClipboardItem(
+    ClipItem clip, {
+    ActivityInfo? activity,
+  }) async {
     final userId = auth.userId;
+    final sourceApp = (activity?.app ?? "").trim().isEmpty
+        ? null
+        : activity!.app;
+    final sourceUrl = (activity?.url ?? "").trim().isEmpty
+        ? null
+        : activity!.url;
 
     switch (clip.type) {
       case ClipItemType.text:
@@ -228,6 +248,9 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
           clip.text!,
           userId: userId,
           category: clip.textCategory,
+          sourceApp: sourceApp,
+          sourceUrl: sourceUrl,
+          richData: clip.richData,
         );
       case ClipItemType.media:
         {
@@ -240,6 +263,8 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
             fileExtension: clip.fileExtension,
             fileSize: clip.fileSize,
             blurHash: clip.blurHash,
+            sourceApp: sourceApp,
+            sourceUrl: sourceUrl,
           );
         }
       case ClipItemType.file:
@@ -254,10 +279,17 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
             fileMimeType: clip.fileMimeType,
             fileExtension: clip.fileExtension,
             fileSize: clip.fileSize,
+            sourceApp: sourceApp,
+            sourceUrl: sourceUrl,
           );
         }
       case ClipItemType.url:
-        return ClipboardItem.fromURL(clip.uri!, userId: userId);
+        return ClipboardItem.fromURL(
+          clip.uri!,
+          userId: userId,
+          sourceApp: sourceApp,
+          sourceUrl: sourceUrl,
+        );
     }
   }
 
@@ -305,7 +337,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         return;
       }
 
-      final item = await _convertToClipboardItem(clip);
+      final item = await _convertToClipboardItem(clip, activity: activity);
 
       if (manualPaste) {
         final userItem = item.copyWith(userIntent: manualPaste);

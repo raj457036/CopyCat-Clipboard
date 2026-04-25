@@ -49,6 +49,7 @@ class IsarAppConfig {
   bool enablePasteStack = false;
   bool androidBgListener = false;
   bool duplicatePrevention = false;
+  bool richDataCapture = false;
   bool onBoardComplete = true;
 
   AppConfig toDomain() => AppConfig(
@@ -82,6 +83,7 @@ class IsarAppConfig {
     enablePasteStack: enablePasteStack,
     androidBgListener: androidBgListener,
     duplicatePrevention: duplicatePrevention,
+    richDataCapture: richDataCapture,
     onBoardComplete: onBoardComplete,
   );
 
@@ -118,5 +120,6 @@ class IsarAppConfig {
     ..enablePasteStack = config.enablePasteStack
     ..androidBgListener = config.androidBgListener
     ..duplicatePrevention = config.duplicatePrevention
+    ..richDataCapture = config.richDataCapture
     ..onBoardComplete = config.onBoardComplete;
 }

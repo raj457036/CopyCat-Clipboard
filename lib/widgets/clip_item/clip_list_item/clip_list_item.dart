@@ -110,9 +110,7 @@ class _ClipListItemState extends State<ClipListItem> {
             side: BorderSide(
               color: colors.primary,
               width: focused ? focusedItemBorderWidth : selectedItemBorderWidth,
-              strokeAlign: focused
-                  ? BorderSide.strokeAlignOutside
-                  : BorderSide.strokeAlignInside,
+              strokeAlign: BorderSide.strokeAlignInside,
             ),
             borderRadius: radius12,
           )
@@ -130,12 +128,13 @@ class _ClipListItemState extends State<ClipListItem> {
       onShiftC: (context) => onShiftC(context, widget.item, canPaste),
       child: Card.outlined(
         shape: selectedShape,
-        clipBehavior: Clip.hardEdge,
+        elevation: focused ? 2 : 0,
+        clipBehavior: Clip.antiAlias,
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 60, maxHeight: 220),
           child: InkWell(
             mouseCursor: SystemMouseCursors.click,
-            borderRadius: radius12,
+            customBorder: selectedShape,
             autofocus: widget.autofocus,
             onTap: !widget.selectionActive
                 ? () =>
@@ -193,12 +192,7 @@ class _ClipListItemState extends State<ClipListItem> {
                   ),
                   if (!widget.selected && !widget.noView)
                     DisableForLocalUser(
-                      child: ClipSyncStatusFooter(
-                        item: widget.item,
-                        radius: const BorderRadius.vertical(
-                          bottom: Radius.circular(8),
-                        ),
-                      ),
+                      child: ClipSyncStatusFooter(item: widget.item),
                     ),
                 ],
               ),

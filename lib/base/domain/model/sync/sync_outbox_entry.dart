@@ -35,12 +35,6 @@ class SyncOutboxEntry with _$SyncOutboxEntry {
     /// When this entry was enqueued.
     required DateTime createdAt,
 
-    /// Number of times we've tried to process this entry.
-    @Default(0) int retryCount,
-
-    /// Time until which we should back off.
-    DateTime? nextRetryAt,
-
     /// The last failure message, if any.
     String? lastError,
   }) = _SyncOutboxEntry;

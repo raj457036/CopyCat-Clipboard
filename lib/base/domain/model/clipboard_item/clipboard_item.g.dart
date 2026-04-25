@@ -24,6 +24,7 @@ _$ClipboardItemImpl _$$ClipboardItemImplFromJson(Map<String, dynamic> json) =>
       iv: json['iv'] as String?,
       encMode: json['enc_mode'] as String?,
       text: json['text'] as String?,
+      richData: json['p_data'] as String?,
       url: json['url'] as String?,
       textCategory: $enumDecodeNullable(
         _$TextCategoryEnumMap,
@@ -63,6 +64,7 @@ Map<String, dynamic> _$$ClipboardItemImplToJson(_$ClipboardItemImpl instance) =>
       'iv': instance.iv,
       'enc_mode': instance.encMode,
       'text': instance.text,
+      'p_data': instance.richData,
       'url': instance.url,
       'textCategory': _$TextCategoryEnumMap[instance.textCategory],
       'fileName': instance.fileName,

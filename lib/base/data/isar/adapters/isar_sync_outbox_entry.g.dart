@@ -40,16 +40,6 @@ const IsarSyncOutboxEntrySchema = CollectionSchema(
       type: IsarType.string,
     ),
     r'localId': PropertySchema(id: 4, name: r'localId', type: IsarType.long),
-    r'nextRetryAt': PropertySchema(
-      id: 5,
-      name: r'nextRetryAt',
-      type: IsarType.dateTime,
-    ),
-    r'retryCount': PropertySchema(
-      id: 6,
-      name: r'retryCount',
-      type: IsarType.long,
-    ),
   },
 
   estimateSize: _isarSyncOutboxEntryEstimateSize,
@@ -122,8 +112,6 @@ void _isarSyncOutboxEntrySerialize(
   writer.writeString(offsets[2], object.entityType);
   writer.writeString(offsets[3], object.lastError);
   writer.writeLong(offsets[4], object.localId);
-  writer.writeDateTime(offsets[5], object.nextRetryAt);
-  writer.writeLong(offsets[6], object.retryCount);
 }
 
 IsarSyncOutboxEntry _isarSyncOutboxEntryDeserialize(
@@ -143,8 +131,6 @@ IsarSyncOutboxEntry _isarSyncOutboxEntryDeserialize(
   object.id = id;
   object.lastError = reader.readStringOrNull(offsets[3]);
   object.localId = reader.readLong(offsets[4]);
-  object.nextRetryAt = reader.readDateTimeOrNull(offsets[5]);
-  object.retryCount = reader.readLong(offsets[6]);
   return object;
 }
 
@@ -168,10 +154,6 @@ P _isarSyncOutboxEntryDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readLong(offset)) as P;
-    case 5:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 6:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1059,134 +1041,6 @@ extension IsarSyncOutboxEntryQueryFilter
       );
     });
   }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterFilterCondition>
-  nextRetryAtIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'nextRetryAt'),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterFilterCondition>
-  nextRetryAtIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'nextRetryAt'),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterFilterCondition>
-  nextRetryAtEqualTo(DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'nextRetryAt', value: value),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterFilterCondition>
-  nextRetryAtGreaterThan(DateTime? value, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'nextRetryAt',
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterFilterCondition>
-  nextRetryAtLessThan(DateTime? value, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'nextRetryAt',
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterFilterCondition>
-  nextRetryAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'nextRetryAt',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterFilterCondition>
-  retryCountEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'retryCount', value: value),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterFilterCondition>
-  retryCountGreaterThan(int value, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'retryCount',
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterFilterCondition>
-  retryCountLessThan(int value, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'retryCount',
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterFilterCondition>
-  retryCountBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'retryCount',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
-      );
-    });
-  }
 }
 
 extension IsarSyncOutboxEntryQueryObject
@@ -1276,34 +1130,6 @@ extension IsarSyncOutboxEntryQuerySortBy
       return query.addSortBy(r'localId', Sort.desc);
     });
   }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterSortBy>
-  sortByNextRetryAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'nextRetryAt', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterSortBy>
-  sortByNextRetryAtDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'nextRetryAt', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterSortBy>
-  sortByRetryCount() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'retryCount', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterSortBy>
-  sortByRetryCountDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'retryCount', Sort.desc);
-    });
-  }
 }
 
 extension IsarSyncOutboxEntryQuerySortThenBy
@@ -1391,34 +1217,6 @@ extension IsarSyncOutboxEntryQuerySortThenBy
       return query.addSortBy(r'localId', Sort.desc);
     });
   }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterSortBy>
-  thenByNextRetryAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'nextRetryAt', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterSortBy>
-  thenByNextRetryAtDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'nextRetryAt', Sort.desc);
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterSortBy>
-  thenByRetryCount() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'retryCount', Sort.asc);
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QAfterSortBy>
-  thenByRetryCountDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'retryCount', Sort.desc);
-    });
-  }
 }
 
 extension IsarSyncOutboxEntryQueryWhereDistinct
@@ -1455,20 +1253,6 @@ extension IsarSyncOutboxEntryQueryWhereDistinct
   distinctByLocalId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'localId');
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QDistinct>
-  distinctByNextRetryAt() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'nextRetryAt');
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, IsarSyncOutboxEntry, QDistinct>
-  distinctByRetryCount() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'retryCount');
     });
   }
 }
@@ -1512,20 +1296,6 @@ extension IsarSyncOutboxEntryQueryProperty
   QueryBuilder<IsarSyncOutboxEntry, int, QQueryOperations> localIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'localId');
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, DateTime?, QQueryOperations>
-  nextRetryAtProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'nextRetryAt');
-    });
-  }
-
-  QueryBuilder<IsarSyncOutboxEntry, int, QQueryOperations>
-  retryCountProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'retryCount');
     });
   }
 }

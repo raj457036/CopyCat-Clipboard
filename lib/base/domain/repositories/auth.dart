@@ -9,4 +9,5 @@ abstract class AuthRepository {
   String? get userId;
   AuthUser? get currentUser;
   String? get accessToken;
+  bool get needsSessionRefresh;
 }

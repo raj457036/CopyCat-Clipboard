@@ -19,10 +19,6 @@ class IsarSyncOutboxEntry {
 
   late DateTime createdAt;
 
-  int retryCount = 0;
-
-  DateTime? nextRetryAt;
-
   String? lastError;
 
   SyncOutboxEntry toDomain() => SyncOutboxEntry(
@@ -31,8 +27,6 @@ class IsarSyncOutboxEntry {
     localId: localId,
     action: action,
     createdAt: createdAt,
-    retryCount: retryCount,
-    nextRetryAt: nextRetryAt,
     lastError: lastError,
   );
 
@@ -43,7 +37,5 @@ class IsarSyncOutboxEntry {
         ..localId = entry.localId
         ..action = entry.action
         ..createdAt = entry.createdAt
-        ..retryCount = entry.retryCount
-        ..nextRetryAt = entry.nextRetryAt
         ..lastError = entry.lastError;
 }

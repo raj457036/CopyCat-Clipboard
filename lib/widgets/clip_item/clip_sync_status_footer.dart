@@ -1,4 +1,3 @@
-import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
@@ -10,24 +9,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ClipSyncStatusFooter extends StatelessWidget {
   final ClipboardItem item;
-  final BorderRadius radius;
 
-  const ClipSyncStatusFooter({
-    super.key,
-    required this.item,
-    this.radius = radiusBottom12,
-  });
+  const ClipSyncStatusFooter({super.key, required this.item});
 
   Future<void> _sync(BuildContext context) async {
     context.read<OfflinePersistenceCubit>().persist([
-      item.copyWith(userIntent: true),
+      item.copyWith(
+        userIntent: true,
+        uploading: true,
+        uploadProgress: null,
+        failure: null,
+      ),
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    if ((item.lastSynced != null && item.serverId != null) ||
-        item.driveFileId != null) {
+    if (!item.hasUnsyncedChanges || item.driveFileId != null) {
       return const SizedBox.shrink();
     }
     final colors = context.colors;
@@ -35,7 +33,7 @@ class ClipSyncStatusFooter extends StatelessWidget {
     String buttonText;
 
     if (item.isSyncing) {
-      if (item.uploading) {
+      if (item.uploading && item.needsFileUpload) {
         if (item.uploadProgress != null && item.uploadProgress! > 0) {
           final percent = ((item.uploadProgress ?? 0) * 100) ~/ 1;
           buttonText = '↑ $percent%';
@@ -51,11 +49,8 @@ class ClipSyncStatusFooter extends StatelessWidget {
 
     return SizedBox.fromSize(
       size: const Size.fromHeight(35),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.tertiaryContainer,
-          borderRadius: radius,
-        ),
+      child: ColoredBox(
+        color: colors.tertiaryContainer,
         child: Padding(
           padding: const EdgeInsets.all(padding8),
           child: LayoutBuilder(

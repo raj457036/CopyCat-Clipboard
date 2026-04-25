@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/utils/snackbar.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -23,10 +24,13 @@ class SyncProgressInitParams {
 
 @injectable
 class SyncStatusCubit extends Cubit<SyncStatusState> {
+  static const _notificationDedupeWindow = Duration(seconds: 3);
+
   final SyncOrchestrator orchestrator;
   final SyncEventBus eventBus;
   StreamSubscription? _eventSub;
   final Set<String> _busyEngines = {};
+  final Map<String, DateTime> _lastNotifiedAt = {};
   bool _isManualSyncing = false;
 
   SyncStatusCubit(this.orchestrator, this.eventBus)
@@ -70,8 +74,36 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
           _busyEngines.remove(event.entityType);
           _checkCompletion();
         }
+      } else if (event is SyncOutboxFailureEvent) {
+        _notifyOutboxFailure(event);
       }
     });
+  }
+
+  void _notifyOutboxFailure(SyncOutboxFailureEvent event) {
+    final failure = _toUserFailure(event.failure);
+    final key = '${event.entityType}:${failure.code}';
+    final now = DateTime.now();
+    final previous = _lastNotifiedAt[key];
+
+    if (previous != null &&
+        now.difference(previous) < _notificationDedupeWindow) {
+      return;
+    }
+
+    _lastNotifiedAt[key] = now;
+    showFailureSnackbar(failure);
+  }
+
+  Failure _toUserFailure(Failure failure) {
+    if (failure.code == 'file-sync-not-enabled') {
+      return const Failure(
+        message:
+            'File and media sync is disabled. Enable it in settings to sync attachments.',
+        code: 'file-sync-not-enabled',
+      );
+    }
+    return failure;
   }
 
   void _checkCompletion() {

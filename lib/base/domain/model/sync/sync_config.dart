@@ -29,8 +29,5 @@ class SyncConfig with _$SyncConfig {
 
     /// Delay before attempting to reconnect to realtime stream after a drop.
     @Default(10) int reconnectDelaySeconds,
-
-    /// Maximum retries allowed for an outbox entry.
-    @Default(3) int maxOutboxRetries,
   }) = _SyncConfig;
 }

@@ -12,3 +12,10 @@ const svg = SimpleFileFormat(
 );
 
 const allSupportedClipFormats = [...Formats.standardFormats, avif, svg];
+
+/// Maximum allowed size for rich clipboard payload (in bytes).
+/// Payloads larger than this are ignored during capture.
+///
+/// Note: 256 KB is chosen as a reasonable limit to allow rich
+/// clipboard data while preventing excessive memory usage.
+const kRichClipboardDataMaxBytes = 256 * 1024;

@@ -1,5 +1,6 @@
 import 'package:clipboard/widgets/clip_item/clip_card/clip_card_body.dart';
 import 'package:clipboard/widgets/clip_item/clip_menu_provider.dart';
+import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:flutter/material.dart';
 
@@ -23,12 +24,15 @@ class ClipCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipMenuProvider(
       item: item,
-      child: ClipCardBody(
+      child: ClipItemScope(
         item: item,
-        focused: autoFocus,
-        selected: selected,
-        selectionActive: selectionActive,
-        selectionIndex: selectionIndex,
+        child: ClipCardBody(
+          item: item,
+          focused: autoFocus,
+          selected: selected,
+          selectionActive: selectionActive,
+          selectionIndex: selectionIndex,
+        ),
       ),
     );
   }

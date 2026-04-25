@@ -39,6 +39,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     @JsonKey(name: "enc_mode") String? encMode,
     // Text related
     String? text,
+    @JsonKey(name: "p_data") String? richData,
     String? url,
     TextCategory? textCategory,
     // Files related
@@ -94,9 +95,11 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     String? sourceUrl,
     String? sourceApp,
     TextCategory? category,
+    String? richData,
   }) {
     return ClipboardItem(
       text: text,
+      richData: richData,
       userId: userId ?? kLocalUserId,
       created: systemTime(),
       modified: systemTime(),
@@ -256,6 +259,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
       return copyWith(
         encrypted: true,
         text: encText,
+        richData: null,
         iv: itemIV,
         encMode: mode,
       );

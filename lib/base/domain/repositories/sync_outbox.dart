@@ -17,12 +17,6 @@ abstract class SyncOutboxRepository {
   /// Mark an entry as completed (usually deletes it).
   Future<void> markCompleted(int id);
 
-  /// Mark an entry as failed with a permanent error.
-  Future<void> markFailed(int id, String error);
-
-  /// Increment the retry count and set the next retry time.
-  Future<void> incrementRetry(int id, {required DateTime nextRetryAt});
-
   /// Remove all entries related to a specific local entity (e.g. if it was deleted locally).
   Future<void> removeByEntity(String entityType, int localId);
 

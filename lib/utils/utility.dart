@@ -89,7 +89,7 @@ Future<void> screenshotAsFile(
   BuildContext context,
   DeviceScreenshot screenshot,
 ) async {
-  final filePath = await FilePicker.platform.saveFile(
+  final filePath = await FilePicker.saveFile(
     dialogTitle: 'Save to',
     type: FileType.image,
     fileName: 'screenshot_${const Uuid().v4()}.png',
