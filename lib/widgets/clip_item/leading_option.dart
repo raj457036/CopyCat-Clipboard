@@ -1,13 +1,12 @@
-import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/widgets/clip_item/clip_create_time.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
+import 'package:clipboard/widgets/source_app_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:universal_io/io.dart';
 
 class LeadingClipboardOption extends StatelessWidget {
   final DateTime created;
@@ -93,37 +92,12 @@ class LeadingClipboardOption extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _SourceAppIcon(sourceId: item.sourceId!),
+        SourceAppIcon(
+          sourceId: item.sourceId,
+          padding: const EdgeInsets.only(left: padding10),
+        ),
         createTime,
       ],
-    );
-  }
-}
-
-class _SourceAppIcon extends StatelessWidget {
-  final String sourceId;
-
-  const _SourceAppIcon({required this.sourceId});
-
-  @override
-  Widget build(BuildContext context) {
-    final resolver = sl<ApplicationMetaResolver>();
-    return FutureBuilder<String?>(
-      future: resolver.getIconPathBySourceId(sourceId),
-      builder: (context, snapshot) {
-        final iconPath = snapshot.data;
-        if (iconPath == null || iconPath.isEmpty) {
-          return const SizedBox.shrink();
-        }
-        return Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: CircleAvatar(
-            radius: 9,
-            backgroundColor: Colors.transparent,
-            foregroundImage: FileImage(File(iconPath)),
-          ),
-        );
-      },
     );
   }
 }

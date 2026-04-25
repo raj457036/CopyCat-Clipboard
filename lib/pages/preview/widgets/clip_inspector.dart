@@ -11,6 +11,7 @@ import 'package:clipboard/utils/datetime_extension.dart';
 import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/collection_selector_tile.dart';
+import 'package:clipboard/widgets/source_app_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_validator/form_validator.dart';
@@ -475,9 +476,10 @@ class _ClipInspectorState extends State<ClipInspector> {
 
     if (item.sourceApp?.trim().isNotEmpty == true) {
       rows.add(
-        _InspectorInfoRow(
+        _InspectorSourceAppRow(
           label: context.locale.preview__inspector__label__source_app,
-          value: item.sourceApp!.trim(),
+          sourceApp: item.sourceApp!.trim(),
+          sourceId: item.sourceId,
         ),
       );
     }
@@ -733,6 +735,53 @@ class _InspectorInfoRow extends StatelessWidget {
           Expanded(
             flex: 6,
             child: SelectableText(value, style: textTheme.bodyMedium),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InspectorSourceAppRow extends StatelessWidget {
+  final String label;
+  final String sourceApp;
+  final String? sourceId;
+
+  const _InspectorSourceAppRow({
+    required this.label,
+    required this.sourceApp,
+    required this.sourceId,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = context.textTheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 4,
+            child: Text(
+              label,
+              style: textTheme.bodyMedium?.copyWith(
+                color: context.colors.onSurfaceVariant,
+              ),
+            ),
+          ),
+          width12,
+          Expanded(
+            flex: 6,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SourceAppIcon(sourceId: sourceId, trailingSpacing: 8),
+                Expanded(
+                  child: SelectableText(sourceApp, style: textTheme.bodyMedium),
+                ),
+              ],
+            ),
           ),
         ],
       ),
