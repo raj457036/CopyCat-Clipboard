@@ -36,6 +36,7 @@ _$AppConfigImpl _$$AppConfigImplFromJson(
       $enumDecodeNullable(_$SyncSpeedEnumMap, json['syncSpeed']) ??
       SyncSpeed.balanced,
   toggleHotkey: json['toggleHotkey'] as String?,
+  quickPasteHotkey: json['quickPasteHotkey'] as String?,
   smartPaste: json['smartPaste'] as bool? ?? false,
   transformAsNewClip: json['transformAsNewClip'] as bool? ?? false,
   enableTypeToSearch: json['enableTypeToSearch'] as bool? ?? false,
@@ -76,6 +77,7 @@ Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
       'pausedTill': instance.pausedTill?.toIso8601String(),
       'syncSpeed': _$SyncSpeedEnumMap[instance.syncSpeed]!,
       'toggleHotkey': instance.toggleHotkey,
+      'quickPasteHotkey': instance.quickPasteHotkey,
       'smartPaste': instance.smartPaste,
       'transformAsNewClip': instance.transformAsNewClip,
       'enableTypeToSearch': instance.enableTypeToSearch,

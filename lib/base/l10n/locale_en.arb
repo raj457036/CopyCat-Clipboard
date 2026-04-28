@@ -629,6 +629,8 @@
   "settings__switch__startup__subtitle": "Automatically start the CopyCat when your device powers on.",
   "settings__switch__hotkey__title": "Toggle with Hotkey",
   "settings__switch__hotkey__subtitle": "Use a keyboard shortcut to quickly access your CopyCat Clipboard",
+  "settings__switch__quickpaste_hotkey__title": "Quick Paste Hotkey",
+  "settings__switch__quickpaste_hotkey__subtitle": "Use a keyboard shortcut to instantly access your top 10 clipboard items",
   "settings__hotkey__unassigned": "Not Assigned",
   "settings__hotkey__preview_start": "Press ",
   "settings__hotkey__preview_end": " to show or hide the app.",

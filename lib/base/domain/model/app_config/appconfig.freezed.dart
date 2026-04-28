@@ -46,7 +46,9 @@ mixin _$AppConfig {
       throw _privateConstructorUsedError; // Auto Sync Interval
   SyncSpeed get syncSpeed =>
       throw _privateConstructorUsedError; // System show/hide toggle hotkey
-  String? get toggleHotkey => throw _privateConstructorUsedError;
+  String? get toggleHotkey =>
+      throw _privateConstructorUsedError; // Quick paste popup hotkey
+  String? get quickPasteHotkey => throw _privateConstructorUsedError;
 
   /// If enabled, the primary action on clips will be smartly selected.
   /// The primary action will be paste, which will directly paste the clip
@@ -117,6 +119,7 @@ abstract class $AppConfigCopyWith<$Res> {
     DateTime? pausedTill,
     SyncSpeed syncSpeed,
     String? toggleHotkey,
+    String? quickPasteHotkey,
     bool smartPaste,
     bool transformAsNewClip,
     bool enableTypeToSearch,
@@ -174,6 +177,7 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? pausedTill = freezed,
     Object? syncSpeed = null,
     Object? toggleHotkey = freezed,
+    Object? quickPasteHotkey = freezed,
     Object? smartPaste = null,
     Object? transformAsNewClip = null,
     Object? enableTypeToSearch = null,
@@ -259,6 +263,10 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
             toggleHotkey: freezed == toggleHotkey
                 ? _value.toggleHotkey
                 : toggleHotkey // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            quickPasteHotkey: freezed == quickPasteHotkey
+                ? _value.quickPasteHotkey
+                : quickPasteHotkey // ignore: cast_nullable_to_non_nullable
                       as String?,
             smartPaste: null == smartPaste
                 ? _value.smartPaste
@@ -382,6 +390,7 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     DateTime? pausedTill,
     SyncSpeed syncSpeed,
     String? toggleHotkey,
+    String? quickPasteHotkey,
     bool smartPaste,
     bool transformAsNewClip,
     bool enableTypeToSearch,
@@ -439,6 +448,7 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? pausedTill = freezed,
     Object? syncSpeed = null,
     Object? toggleHotkey = freezed,
+    Object? quickPasteHotkey = freezed,
     Object? smartPaste = null,
     Object? transformAsNewClip = null,
     Object? enableTypeToSearch = null,
@@ -524,6 +534,10 @@ class __$$AppConfigImplCopyWithImpl<$Res>
         toggleHotkey: freezed == toggleHotkey
             ? _value.toggleHotkey
             : toggleHotkey // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        quickPasteHotkey: freezed == quickPasteHotkey
+            ? _value.quickPasteHotkey
+            : quickPasteHotkey // ignore: cast_nullable_to_non_nullable
                   as String?,
         smartPaste: null == smartPaste
             ? _value.smartPaste
@@ -626,6 +640,7 @@ class _$AppConfigImpl extends _AppConfig {
     this.pausedTill,
     this.syncSpeed = SyncSpeed.balanced,
     this.toggleHotkey,
+    this.quickPasteHotkey,
     this.smartPaste = false,
     this.transformAsNewClip = false,
     this.enableTypeToSearch = false,
@@ -707,6 +722,9 @@ class _$AppConfigImpl extends _AppConfig {
   // System show/hide toggle hotkey
   @override
   final String? toggleHotkey;
+  // Quick paste popup hotkey
+  @override
+  final String? quickPasteHotkey;
 
   /// If enabled, the primary action on clips will be smartly selected.
   /// The primary action will be paste, which will directly paste the clip
@@ -784,7 +802,7 @@ class _$AppConfigImpl extends _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, richDataCapture: $richDataCapture, onBoardComplete: $onBoardComplete, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
+    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, richDataCapture: $richDataCapture, onBoardComplete: $onBoardComplete, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
   }
 
   @override
@@ -819,6 +837,8 @@ class _$AppConfigImpl extends _AppConfig {
                 other.syncSpeed == syncSpeed) &&
             (identical(other.toggleHotkey, toggleHotkey) ||
                 other.toggleHotkey == toggleHotkey) &&
+            (identical(other.quickPasteHotkey, quickPasteHotkey) ||
+                other.quickPasteHotkey == quickPasteHotkey) &&
             (identical(other.smartPaste, smartPaste) ||
                 other.smartPaste == smartPaste) &&
             (identical(other.transformAsNewClip, transformAsNewClip) ||
@@ -877,6 +897,7 @@ class _$AppConfigImpl extends _AppConfig {
     pausedTill,
     syncSpeed,
     toggleHotkey,
+    quickPasteHotkey,
     smartPaste,
     transformAsNewClip,
     enableTypeToSearch,
@@ -930,6 +951,7 @@ abstract class _AppConfig extends AppConfig {
     final DateTime? pausedTill,
     final SyncSpeed syncSpeed,
     final String? toggleHotkey,
+    final String? quickPasteHotkey,
     final bool smartPaste,
     final bool transformAsNewClip,
     final bool enableTypeToSearch,
@@ -996,7 +1018,9 @@ abstract class _AppConfig extends AppConfig {
   @override
   SyncSpeed get syncSpeed; // System show/hide toggle hotkey
   @override
-  String? get toggleHotkey;
+  String? get toggleHotkey; // Quick paste popup hotkey
+  @override
+  String? get quickPasteHotkey;
 
   /// If enabled, the primary action on clips will be smartly selected.
   /// The primary action will be paste, which will directly paste the clip

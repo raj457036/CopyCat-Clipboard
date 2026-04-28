@@ -34,6 +34,7 @@ class IsarAppConfig {
   @Enumerated(EnumType.name)
   SyncSpeed syncSpeed = SyncSpeed.balanced;
   String? toggleHotkey;
+  String? quickPasteHotkey;
   bool smartPaste = false;
   bool transformAsNewClip = false;
   bool launchAtStartup = false;
@@ -69,6 +70,7 @@ class IsarAppConfig {
     sortOrder: sortOrder,
     syncSpeed: syncSpeed,
     toggleHotkey: toggleHotkey,
+    quickPasteHotkey: quickPasteHotkey,
     smartPaste: smartPaste,
     transformAsNewClip: transformAsNewClip,
     launchAtStartup: launchAtStartup,
@@ -104,6 +106,7 @@ class IsarAppConfig {
     ..sortOrder = config.sortOrder
     ..syncSpeed = config.syncSpeed
     ..toggleHotkey = config.toggleHotkey
+    ..quickPasteHotkey = config.quickPasteHotkey
     ..smartPaste = config.smartPaste
     ..transformAsNewClip = config.transformAsNewClip
     ..launchAtStartup = config.launchAtStartup

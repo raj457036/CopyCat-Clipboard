@@ -1527,6 +1527,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'Usa un atajo de teclado para acceder rápidamente a tu Portapapeles CopyCat';
 
   @override
+  String get settings__switch__quickpaste_hotkey__title => 'Quick Paste Hotkey';
+
+  @override
+  String get settings__switch__quickpaste_hotkey__subtitle =>
+      'Use a keyboard shortcut to instantly access your top 10 clipboard items';
+
+  @override
   String get settings__hotkey__unassigned => 'No Asignado';
 
   @override

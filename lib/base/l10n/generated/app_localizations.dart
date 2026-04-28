@@ -2764,6 +2764,18 @@ abstract class AppLocalizations {
   /// **'Use a keyboard shortcut to quickly access your CopyCat Clipboard'**
   String get settings__switch__hotkey__subtitle;
 
+  /// No description provided for @settings__switch__quickpaste_hotkey__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Paste Hotkey'**
+  String get settings__switch__quickpaste_hotkey__title;
+
+  /// No description provided for @settings__switch__quickpaste_hotkey__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a keyboard shortcut to instantly access your top 10 clipboard items'**
+  String get settings__switch__quickpaste_hotkey__subtitle;
+
   /// No description provided for @settings__hotkey__unassigned.
   ///
   /// In en, this message translates to:

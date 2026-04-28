@@ -74,6 +74,8 @@ PODS:
     - PurchasesHybridCommon (= 18.1.0)
   - PurchasesHybridCommon (18.1.0):
     - RevenueCat (= 5.68.0)
+  - quick_paste_popup (0.0.1):
+    - FlutterMacOS
   - RevenueCat (5.68.0)
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
@@ -121,6 +123,7 @@ DEPENDENCIES:
   - media_kit_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_video/macos`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - purchases_flutter (from `Flutter/ephemeral/.symlinks/plugins/purchases_flutter/macos`)
+  - quick_paste_popup (from `Flutter/ephemeral/.symlinks/plugins/quick_paste_popup/macos`)
   - screen_retriever_macos (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos`)
   - sentry_flutter (from `Flutter/ephemeral/.symlinks/plugins/sentry_flutter/macos`)
   - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
@@ -182,6 +185,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
   purchases_flutter:
     :path: Flutter/ephemeral/.symlinks/plugins/purchases_flutter/macos
+  quick_paste_popup:
+    :path: Flutter/ephemeral/.symlinks/plugins/quick_paste_popup/macos
   screen_retriever_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos
   sentry_flutter:
@@ -232,6 +237,7 @@ SPEC CHECKSUMS:
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   purchases_flutter: 8bfb0a885599061c9a14974e45175072a5c896c6
   PurchasesHybridCommon: 32902b8fad349cf549f096183926ee33af00e36a
+  quick_paste_popup: 0ed179088e77d0add387a5acb6e641940c9230bf
   RevenueCat: c535d3739d51163f6d9d5dbd01c7b5d93b718ff5
   screen_retriever_macos: 452e51764a9e1cdb74b3c541238795849f21557f
   Sentry: 958d9619ceccf6abb8c4736003fa336dac1a80a7

@@ -1459,6 +1459,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__switch__hotkey__subtitle => '使用键盘快捷键快速访问 CopyCat 剪贴板';
 
   @override
+  String get settings__switch__quickpaste_hotkey__title => 'Quick Paste Hotkey';
+
+  @override
+  String get settings__switch__quickpaste_hotkey__subtitle =>
+      'Use a keyboard shortcut to instantly access your top 10 clipboard items';
+
+  @override
   String get settings__hotkey__unassigned => '未分配';
 
   @override

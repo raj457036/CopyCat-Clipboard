@@ -18,7 +18,7 @@ import 'package:injectable/injectable.dart';
 part 'clipboard_cubit.freezed.dart';
 part 'clipboard_state.dart';
 
-@injectable
+@lazySingleton
 class ClipboardCubit extends Cubit<ClipboardState> {
   final SyncEventBus syncEventBus;
   final ClipboardRepository repo;

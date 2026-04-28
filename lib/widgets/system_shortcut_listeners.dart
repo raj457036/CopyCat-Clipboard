@@ -1,4 +1,6 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/data/services/quick_paste_service.dart';
+import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:flutter/material.dart';
@@ -15,23 +17,44 @@ class SystemShortcutListener extends StatelessWidget {
     focusManager?.toggleWindow();
   }
 
+  Future<void> showQuickPaste(BuildContext context) async {
+    final quickPasteService = sl<QuickPasteService>();
+    await quickPasteService.showQuickPastePopup();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isMobilePlatform) return child;
 
     return BlocListener<AppConfigCubit, AppConfigState>(
       listenWhen: (previous, current) =>
-          previous.config.toggleHotkey != current.config.toggleHotkey,
+          previous.config.toggleHotkey != current.config.toggleHotkey ||
+          previous.config.quickPasteHotkey != current.config.quickPasteHotkey,
       listener: (context, state) async {
-        final hotKey = state.config.getToggleHotkey;
+        final toggleHotKey = state.config.getToggleHotkey;
+        final quickPasteHotKey = state.config.getQuickPasteHotkey;
+
         await hotKeyManager.unregisterAll();
-        if (hotKey == null) return;
-        await hotKeyManager.register(
-          hotKey,
-          keyDownHandler: (hotKey_) async {
-            if (hotKey == hotKey_) toggleWindow(context);
-          },
-        );
+
+        // Register toggle hotkey
+        if (toggleHotKey != null) {
+          await hotKeyManager.register(
+            toggleHotKey,
+            keyDownHandler: (hotKey_) async {
+              if (toggleHotKey == hotKey_) toggleWindow(context);
+            },
+          );
+        }
+
+        // Register quick paste hotkey
+        if (quickPasteHotKey != null) {
+          await hotKeyManager.register(
+            quickPasteHotKey,
+            keyDownHandler: (hotKey_) async {
+              if (quickPasteHotKey == hotKey_) showQuickPaste(context);
+            },
+          );
+        }
       },
       child: child,
     );

@@ -5,6 +5,7 @@ import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
@@ -321,6 +322,10 @@ class MainApp extends StatelessWidget {
         ),
         BlocProvider<EventBusCubit>(create: (context) => sl()),
         BlocProvider<SelectedClipsCubit>(create: (context) => sl()),
+        BlocProvider<ClipboardCubit>(
+          lazy: false,
+          create: (context) => sl<ClipboardCubit>()..fetch(),
+        ),
         if (Platform.isAndroid)
           BlocProvider<AndroidBgClipboardCubit>(
             lazy: false,

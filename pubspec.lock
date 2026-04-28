@@ -1462,6 +1462,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.0.1"
+  quick_paste_popup:
+    dependency: "direct main"
+    description:
+      path: "packages/quick_paste_popup"
+      relative: true
+    source: path
+    version: "0.0.1"
   realtime_client:
     dependency: transitive
     description:
@@ -2244,5 +2251,5 @@ packages:
     source: hosted
     version: "2.1.0"
 sdks:
-  dart: ">=3.11.0 <4.0.0"
+  dart: ">=3.11.4 <4.0.0"
   flutter: ">=3.41.0"

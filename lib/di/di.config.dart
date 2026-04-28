@@ -71,6 +71,7 @@ import 'package:clipboard/base/data/services/file_cloud_services/google_drive/go
     as _i563;
 import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_services.dart'
     as _i543;
+import 'package:clipboard/base/data/services/quick_paste_service.dart' as _i227;
 import 'package:clipboard/base/data/sources/application_meta/local_source.dart'
     as _i651;
 import 'package:clipboard/base/data/sources/clip_collection/local_source.dart'
@@ -340,7 +341,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i543.CollectionCrossSyncListener>(),
       ),
     );
-    gh.factory<_i489.ClipboardCubit>(
+    gh.lazySingleton<_i489.ClipboardCubit>(
       () => _i489.ClipboardCubit(
         gh<_i292.SyncEventBus>(),
         gh<_i230.ClipboardRepository>(instanceName: 'local'),
@@ -386,6 +387,15 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i858.GoogleDriveFileCloudService(
         gh<_i521.DriveSetupCubit>(),
         gh<_i542.AppConfigCubit>(),
+      ),
+    );
+    gh.singleton<_i227.QuickPasteService>(
+      () => _i227.QuickPasteService(
+        gh<_i542.AppConfigCubit>(),
+        gh<_i489.ClipboardCubit>(),
+        gh<_i706.OfflinePersistenceCubit>(),
+        gh<_i533.ApplicationMetaResolver>(),
+        gh<_i291.FocusWindow>(),
       ),
     );
     gh.lazySingleton<_i283.CloudPersistanceCubit>(

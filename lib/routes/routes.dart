@@ -29,7 +29,6 @@ import "package:clipboard/pages/settings/pages/exclusion_rules.dart";
 import "package:clipboard/pages/splash_page.dart";
 import "package:clipboard/widgets/page_route/dynamic_page_route.dart";
 import "package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart";
-import "package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart";
 import "package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart";
 import "package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart";
 import "package:clipboard/base/constants/key.dart";
@@ -99,10 +98,7 @@ final rootRouter = GoRouter(
           pageBuilder: (context, state) {
             return NoTransitionPage(
               key: state.pageKey,
-              child: BlocProvider<ClipboardCubit>(
-                create: (context) => sl()..fetch(),
-                child: const HomePage(),
-              ),
+              child: const HomePage(),
             );
           },
         ),

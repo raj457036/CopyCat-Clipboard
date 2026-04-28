@@ -9,11 +9,7 @@
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": [
-        "--dart-define-from-file",
-        "local/dev.json",
-        "--verbose"
-      ]
+      "args": ["--dart-define-from-file", "local/dev.json", "--verbose"]
     },
     {
       "name": "clipboard (profile mode)",
@@ -21,11 +17,7 @@
       "type": "dart",
       "program": "lib/main.dart",
       "flutterMode": "profile",
-      "args": [
-        "--dart-define-from-file",
-        "local/dev.json",
-        "--verbose"
-      ]
+      "args": ["--dart-define-from-file", "local/dev.json", "--verbose"]
     },
     {
       "name": "clipboard (release mode)",
@@ -33,10 +25,7 @@
       "type": "dart",
       "program": "lib/main.dart",
       "flutterMode": "release",
-      "args": [
-        "--dart-define-from-file",
-        "local/dev.json"
-      ]
+      "args": ["--dart-define-from-file", "local/dev.json"]
     }
   ]
 }

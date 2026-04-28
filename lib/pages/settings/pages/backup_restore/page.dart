@@ -522,7 +522,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                   onPressed: () => Navigator.of(context).pop(null),
                   child: Text(context.mlocale.cancelButtonLabel.title),
                 ),
-                FilledButton(
+                ElevatedButton(
                   onPressed: () => onContinue(context),
                   child: Text(context.mlocale.continueButtonLabel.title),
                 ),
@@ -695,12 +695,16 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                         spacing: padding12,
                         runSpacing: padding12,
                         children: [
-                          FilledButton.icon(
+                          ElevatedButton.icon(
                             onPressed: _busy ? null : _createBackup,
                             icon: const Icon(Icons.archive_rounded),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: context.colors.primary,
+                              foregroundColor: context.colors.onPrimary,
+                            ),
                             label: Text(locale.backup_restore__button__create),
                           ),
-                          FilledButton.tonalIcon(
+                          ElevatedButton.icon(
                             onPressed: _busy ? null : _restoreBackup,
                             icon: const Icon(Icons.restore_page_rounded),
                             label: Text(locale.backup_restore__button__restore),
