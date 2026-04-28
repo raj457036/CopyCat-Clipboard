@@ -2,14 +2,18 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/text_theme.dart';
 import 'package:flutter/material.dart';
 
+Color menuSurfaceColorFor(ColorScheme scheme, Brightness brightness) {
+  return brightness == Brightness.dark
+      ? scheme.surfaceContainerHigh
+      : scheme.surface;
+}
+
 PopupMenuThemeData popupMenuThemeFor(
   ColorScheme scheme,
   Brightness brightness,
 ) {
   return PopupMenuThemeData(
-    color: brightness == Brightness.dark
-        ? scheme.surfaceContainerHigh
-        : scheme.surface,
+    color: menuSurfaceColorFor(scheme, brightness),
     elevation: 12,
     shape: RoundedRectangleBorder(
       borderRadius: radius12,

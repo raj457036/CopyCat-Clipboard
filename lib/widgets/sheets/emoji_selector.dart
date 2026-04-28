@@ -1,7 +1,9 @@
 import 'dart:math' show min;
 
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
@@ -14,6 +16,24 @@ class EmojiSelectorSheet extends StatefulWidget {
 
   Future<Emoji?> open(BuildContext context) {
     final mqSize = context.mq.size;
+    if (isDesktopPlatform) {
+      return showDialog<Emoji?>(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            insetPadding: const EdgeInsets.all(24),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: min(mqSize.width * 0.45, 420),
+                maxHeight: min(mqSize.height * 0.7, 560),
+              ),
+              child: this,
+            ),
+          );
+        },
+      );
+    }
+
     return showModalBottomSheet(
       context: context,
       showDragHandle: true,
@@ -33,41 +53,44 @@ class _EmojiSelectorSheetState extends State<EmojiSelectorSheet> {
     return Padding(
       padding: EdgeInsets.only(bottom: keyboardHeight),
       child: SafeArea(
-        child: EmojiPicker(
-          onEmojiSelected: (Category? category, Emoji emoji) {
-            Navigator.of(context).pop(emoji);
-          },
-          config: Config(
-            height: min(mq.size.height * 0.5, 450),
-            locale: Locale(locale.localeName),
-            checkPlatformCompatibility: true,
-            emojiViewConfig: EmojiViewConfig(
-              backgroundColor: colors.surface,
+        child: ClipRRect(
+          borderRadius: radius12,
+          child: EmojiPicker(
+            onEmojiSelected: (Category? category, Emoji emoji) {
+              Navigator.of(context).pop(emoji);
+            },
+            config: Config(
+              height: min(mq.size.height * 0.5, 450),
+              locale: Locale(locale.localeName),
+              checkPlatformCompatibility: true,
+              emojiViewConfig: EmojiViewConfig(
+                backgroundColor: colors.surface,
 
-              // Issue: https://github.com/flutter/flutter/issues/28894
-              emojiSizeMax:
-                  28 *
-                  (foundation.defaultTargetPlatform == TargetPlatform.iOS
-                      ? 1.20
-                      : 1.0),
-            ),
-            viewOrderConfig: const ViewOrderConfig(
-              top: EmojiPickerItem.categoryBar,
-              middle: EmojiPickerItem.emojiView,
-              bottom: EmojiPickerItem.searchBar,
-            ),
-            skinToneConfig: const SkinToneConfig(),
-            categoryViewConfig: CategoryViewConfig(
-              backgroundColor: colors.surface,
-            ),
-            bottomActionBarConfig: BottomActionBarConfig(
-              backgroundColor: colors.surface,
-              buttonColor: colors.surface,
-              buttonIconColor: colors.onSurface,
-            ),
-            searchViewConfig: SearchViewConfig(
-              backgroundColor: colors.surface,
-              buttonIconColor: colors.onSurface,
+                // Issue: https://github.com/flutter/flutter/issues/28894
+                emojiSizeMax:
+                    28 *
+                    (foundation.defaultTargetPlatform == TargetPlatform.iOS
+                        ? 1.20
+                        : 1.0),
+              ),
+              viewOrderConfig: const ViewOrderConfig(
+                top: EmojiPickerItem.categoryBar,
+                middle: EmojiPickerItem.emojiView,
+                bottom: EmojiPickerItem.searchBar,
+              ),
+              skinToneConfig: const SkinToneConfig(),
+              categoryViewConfig: CategoryViewConfig(
+                backgroundColor: colors.surface,
+              ),
+              bottomActionBarConfig: BottomActionBarConfig(
+                backgroundColor: colors.surface,
+                buttonColor: colors.surface,
+                buttonIconColor: colors.onSurface,
+              ),
+              searchViewConfig: SearchViewConfig(
+                backgroundColor: colors.surface,
+                buttonIconColor: colors.onSurface,
+              ),
             ),
           ),
         ),
