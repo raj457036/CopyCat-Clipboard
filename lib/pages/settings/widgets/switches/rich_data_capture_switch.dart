@@ -1,4 +1,5 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,9 +22,11 @@ class RichDataCaptureSwitchTile extends StatelessWidget {
         return SwitchListTile(
           value: enabled,
           onChanged: cubit.toggleRichDataCapture,
-          title: const Text("Rich Data Capture"),
-          subtitle: const Text(
-            "Keep formatting when you copy and paste between apps.",
+          title: Text(
+            context.locale.settings__switch__rich_data_capture__title,
+          ),
+          subtitle: Text(
+            context.locale.settings__switch__rich_data_capture__subtitle,
           ),
         );
       },

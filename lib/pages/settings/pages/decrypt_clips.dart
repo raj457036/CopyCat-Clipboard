@@ -125,7 +125,10 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
               children: [
                 const Icon(Icons.lock_open_rounded, size: 28),
                 height10,
-                Text("Clipboard Decryption", style: textTheme.headlineMedium),
+                Text(
+                  context.locale.settings__decrypt__title,
+                  style: textTheme.headlineMedium,
+                ),
                 height16,
                 Column(
                   children: [
@@ -152,13 +155,13 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
                     else if (totalEncrypted < 0)
                       Column(
                         children: [
-                          const Text("Something went wrong!"),
+                          Text(context.locale.app__unknown_error),
                           height10,
                           OverflowBar(
                             children: [
                               ElevatedButton(
                                 onPressed: start,
-                                child: const Text('Try Again'),
+                                child: Text(context.locale.app__try_again),
                               ),
                               cancelButton,
                             ],
@@ -169,7 +172,9 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
                       Column(
                         children: [
                           Text(
-                            "Currently you have $totalEncrypted encrypted clips locally.",
+                            context.locale.settings__decrypt__count(
+                              count: totalEncrypted,
+                            ),
                             textAlign: TextAlign.center,
                             style: textTheme.titleMedium,
                           ),
@@ -183,14 +188,17 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
                           ),
                           height10,
                           Text(
-                            "Decrypted: $decryptedCount of $totalEncrypted clips.",
+                            context.locale.settings__decrypt__progress(
+                              decrypted: decryptedCount,
+                              total: totalEncrypted,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           height10,
                           cancelButton,
                           height10,
                           Text(
-                            "⚠️ Please keep this screen open during this process to avoid data corruption or inconsistencies.",
+                            context.locale.settings__decrypt__warning,
                             textAlign: TextAlign.center,
                             style: textTheme.bodySmall?.copyWith(
                               color: Colors.deepOrange,

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 
@@ -36,11 +37,17 @@ class _CurentTimeState extends State<CurentTime> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(padding16),
-                child: Text("Local: $currentTime"),
+                child: Text(
+                  context.locale.current_time__local(time: '$currentTime'),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(padding16),
-                child: Text("UTC: ${currentTime.toUtc()}"),
+                child: Text(
+                  context.locale.current_time__utc(
+                    time: '${currentTime.toUtc()}',
+                  ),
+                ),
               ),
             ],
           ),

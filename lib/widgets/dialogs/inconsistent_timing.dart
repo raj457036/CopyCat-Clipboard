@@ -42,8 +42,6 @@ class _InconsistentTimingState extends State<InconsistentTiming> {
   bool checking = false;
 
   Future<void> autoFix(BuildContext context) async {
-    // TODO(raj): add method to automatically fix the time.
-
     if (!Platform.isWindows || autoFixing) return;
 
     setState(() {

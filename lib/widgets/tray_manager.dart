@@ -1,4 +1,5 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
@@ -69,29 +70,39 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
     setState(() {
       paused = isPaused;
     });
-    if (paused) {
-      final config = (configCubit.state as AppConfigLoaded).config;
-      final pausedTill = DateFormat(
-        "h:mm a",
-      ).format(config.pausedTill!.toLocal());
-      trayManager.setToolTip('CopyCat Clipboard - Paused till $pausedTill');
-    } else {
-      trayManager.setToolTip('CopyCat Clipboard');
-    }
+    _setToolTip();
     initTray();
   }
 
+  Future<void> _setToolTip() async {
+    final locale = context.locale;
+    if (paused) {
+      final config = (configCubit.state as AppConfigLoaded).config;
+      final pausedTill = DateFormat(
+        'h:mm a',
+      ).format(config.pausedTill!.toLocal());
+      trayManager.setToolTip(
+        locale.tray__tooltip__paused_till(time: pausedTill),
+      );
+      return;
+    }
+    trayManager.setToolTip(locale.app__name);
+  }
+
   Future<void> initTray() async {
+    final locale = context.locale;
     await trayManager.setIcon(icon);
     Menu menu = Menu(
       items: [
-        MenuItem(disabled: true, label: "CopyCat Clipboard"),
+        MenuItem(disabled: true, label: locale.app__name),
         MenuItem(
           key: 'pause_copycat',
-          label: paused ? '▶️ Resume CopyCat' : '⏸️ Pause CopyCat',
+          label: paused
+              ? locale.tray__menu__resume_copycat
+              : locale.tray__menu__pause_copycat,
         ),
         MenuItem.separator(),
-        MenuItem(key: 'quit_app', label: 'Quit'),
+        MenuItem(key: 'quit_app', label: locale.app__quit),
       ],
     );
     await trayManager.setContextMenu(menu);
@@ -110,11 +121,12 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
   }
 
   Future<void> quitApp() async {
+    final locale = context.locale;
     final result = await FlutterPlatformAlert.showCustomAlert(
-      windowTitle: 'CopyCat Clipboard',
-      text: 'Are you sure you want to quit?',
-      positiveButtonTitle: "Yes",
-      negativeButtonTitle: "No",
+      windowTitle: locale.app__name,
+      text: locale.tray__dialog__quit__subtitle,
+      positiveButtonTitle: locale.app__yes,
+      negativeButtonTitle: locale.app__no,
     );
 
     if (result.name == "positiveButton") {

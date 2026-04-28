@@ -27,10 +27,12 @@
   "app__open_file": "Open file",
   "app__change_collection": "Change Collection",
   "app__share": "Share",
+  "app__loading": "Loading...",
   "app__uploading": "Uploading...",
   "app__syncing": "Syncing...",
   "app__sync": "Sync",
   "app__local": "Local",
+  "app__utc": "UTC",
   "app__send_message": "Send Message",
   "app__send_email": "Send Email",
   "app__empty_clipboard": "Your clipboard is empty.",
@@ -44,6 +46,14 @@
   "app__locale_zh": "Chinese",
   "app__locale_pt": "Portuguese",
   "app__language": "Language",
+  "app__yes": "Yes",
+  "app__no": "No",
+  "app__quit": "Quit",
+  "app__clear": "Clear",
+  "app__reset": "Reset",
+  "app__continue": "Continue",
+  "app__paste": "Paste",
+  "app__copycat_logo": "CopyCat Logo",
   "app__logout": "Logout",
   "app__no_collection": "No Collection Found",
   "app__create_collection": "Create Collection",
@@ -63,7 +73,6 @@
   "app__ack__internet_connected": "Internet Connected",
   "app__ack__internet_disconnected": "Internet Disconnected",
   "app__ack__logout_success": "You are successfully logged out.",
-  "app__ack__missing_e2e_setup": "Missing encryption setup",
   "app__ack__no_app_for_file": "No application found to open this file.",
   "app__ack__perm_fail_to_open_file": "Permission to open this file not granted.",
   "app__ack__missing_e2e_setup": "Missing encryption setup",
@@ -108,6 +117,7 @@
   "dialog__grant_entitlement__subtitle_p1": "Granted Entitlement Codes are shared with specific individuals for custom entitlements. You can check if invitations are still available by ",
   "dialog__grant_entitlement__subtitle_p2": "Clicking Here.",
   "dialog__grant_entitlement__enter_code": "Enter the code and press Submit",
+  "dialog__grant_entitlement__code_label": "Code",
   "dialog__grant_entitlement__apply_code": "Apply",
   "@@VIEW_BUTTONS": "Layout View Buttons",
   "view_button__switch_to_grid": "Switch to Grid Layout",
@@ -216,6 +226,7 @@
   "manage_sub__button__text": "Manage Subscriptions",
   "my_account__button__tooltip": "My Account",
   "badges__tooltip__experimental": "This feature is experimental and might not work as expected.",
+  "badges__label__pro": "PRO",
   "badges__tooltip__pro_only": "This feature is available for Pro users only.",
   "collection_selector__tile__no_collection": "No Collection",
   "collection_selector__button__remove_collection": "Remove Collection",
@@ -249,6 +260,7 @@
   "search_filter__text_cat__email": "Email",
   "search_filter__text_cat__phone": "Phone",
   "search_filter__text_cat__color": "Color",
+  "search_filter__text_cat__struct": "Struct",
   "search_filter__text__sort_by": "Sort By",
   "search_filter__sort_by__last_mod": "Last Modified",
   "search_filter__sort_by__created": "Created",
@@ -257,6 +269,9 @@
   "search_filter__text__sort_order": "Sort Order",
   "search_filter__sort_ord__asc": "Asc",
   "search_filter__sort_ord__desc": "Desc",
+  "search_filter__tooltip__clear": "Clear",
+  "search_filter__empty": "∅",
+  "search_filter__button__reset": "Reset",
   "@@LOGIN": "Login Screen",
   "login__local_signin__tooltip": "No syncing. All data stays on your device.",
   "login__local_signin__btn__label": "Offline Mode",
@@ -720,5 +735,201 @@
   "abc__accessibility_perm_alert__agree": "By enabling the Accessibility Service, you acknowledge and agree to the above terms.",
   "abc__other_setting__title": "Other Settings",
   "abc__enhanced_clip_detection__title": "Enhanced Clipboard Detection",
-  "abc__enhanced_clip_detection__subtitle": "Enable this option for more accurate clipboard detection. Note that it might not work on every device."
+  "abc__enhanced_clip_detection__subtitle": "Enable this option for more accurate clipboard detection. Note that it might not work on every device.",
+  "abc__tile__two_way_sync__title": "2-Way Sync",
+  "abc__tile__two_way_sync__subtitle": "Keeps your clipboard synced across devices instantly.\n{warning}",
+  "@abc__tile__two_way_sync__subtitle": {
+    "placeholders": {
+      "warning": {
+        "type": "String"
+      }
+    }
+  },
+  "abc__tile__two_way_sync__realtime_required": "⚠️ Realtime mode required.",
+  "current_time__local": "Local: {time}",
+  "@current_time__local": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "current_time__utc": "UTC: {time}",
+  "@current_time__utc": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "encrypted_stat__summary": "You currently have {count} encrypted clips that are inaccessible.",
+  "@encrypted_stat__summary": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "encrypted_stat__all_decrypted": "🥳 Congratulations! All your clips have been successfully decrypted locally, so rebuilding the database is not required.",
+  "encrypted_stat__rebuild_database": "Rebuild Database",
+  "tray__tooltip__paused_till": "CopyCat Clipboard - Paused till {time}",
+  "@tray__tooltip__paused_till": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "tray__menu__resume_copycat": "▶️ Resume CopyCat",
+  "tray__menu__pause_copycat": "⏸️ Pause CopyCat",
+  "tray__dialog__quit__subtitle": "Are you sure you want to quit?",
+  "splash__checking_authentication": "Checking for authentication...",
+  "paste_stack__title": "Paste Stack • {count}",
+  "@paste_stack__title": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "paste_stack__reverse_tooltip": "Reverse Stack",
+  "multi_paste__title": "Multi Paste Setup",
+  "multi_paste__subtitle": "Control how selected clips are merged and paced.",
+  "multi_paste__stat__selected": "Selected",
+  "multi_paste__stat__text": "Text",
+  "multi_paste__stat__non_text": "Non-text",
+  "multi_paste__merge__title": "Merge consecutive text clips",
+  "multi_paste__merge__subtitle": "Text clips merge until a non-text clip interrupts the sequence.",
+  "multi_paste__separator__title": "Separator",
+  "multi_paste__separator__new_line": "New line",
+  "multi_paste__separator__space": "Space",
+  "multi_paste__separator__custom": "Custom",
+  "multi_paste__separator__custom_label": "Custom separator",
+  "multi_paste__separator__custom_hint": "Supports escape sequences like \\n and \\t",
+  "multi_paste__pacing__title": "Paste pacing",
+  "multi_paste__pacing__subtitle": "Increase the delay if the target app misses paste events.",
+  "multi_paste__wait_between_pastes": "Wait time between pastes",
+  "multi_paste__validation__wait_positive": "Wait time must be a positive number.",
+  "multi_paste__validation__custom_separator_required": "Please enter a custom separator.",
+  "settings__tile__backup_restore__title": "Backup & Restore",
+  "settings__tile__backup_restore__subtitle": "Create .ccbkup backups and restore locally",
+  "settings__switch__prevent_duplicates__title": "Avoid Immediate Duplicates",
+  "settings__switch__prevent_duplicates__subtitle": "Avoid copying the same content twice in a row",
+  "settings__switch__rich_data_capture__title": "Rich Data Capture",
+  "settings__switch__rich_data_capture__subtitle": "Keep formatting when you copy and paste between apps.",
+  "settings__decrypt__title": "Clipboard Decryption",
+  "settings__decrypt__count": "Currently you have {count} encrypted clips locally.",
+  "@settings__decrypt__count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settings__decrypt__progress": "Decrypted: {decrypted} of {total} clips.",
+  "@settings__decrypt__progress": {
+    "placeholders": {
+      "decrypted": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "settings__decrypt__warning": "⚠️ Please keep this screen open during this process to avoid data corruption or inconsistencies.",
+  "not_found__title": "Page Not Found",
+  "not_found__subtitle": "The page you are looking for is not found.",
+  "not_found__go_home": "Go Home",
+  "backup_restore__dialog__save_as": "Save Backup As",
+  "backup_restore__busy__creating": "Creating backup...",
+  "backup_restore__error__encryption_unavailable": "Encryption is enabled but currently unavailable. Please unlock E2EE and try again.",
+  "backup_restore__snackbar__saved": "Backup saved to {outputPath}",
+  "@backup_restore__snackbar__saved": {
+    "placeholders": {
+      "outputPath": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_restore__snackbar__create_failed": "Backup failed: {message}",
+  "@backup_restore__snackbar__create_failed": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_restore__dialog__select_file": "Select Backup File",
+  "backup_restore__dialog__restore_title": "Restore Backup",
+  "backup_restore__dialog__restore_subtitle": "Enter password if this backup is password-protected.",
+  "backup_restore__dialog__restore_action": "Restore",
+  "backup_restore__busy__restoring": "Restoring backup...",
+  "backup_restore__snackbar__restore_completed": "Restore completed: {clips} clips, {collections} collections.",
+  "@backup_restore__snackbar__restore_completed": {
+    "placeholders": {
+      "clips": {
+        "type": "int"
+      },
+      "collections": {
+        "type": "int"
+      }
+    }
+  },
+  "backup_restore__snackbar__restore_failed": "Restore failed: {message}",
+  "@backup_restore__snackbar__restore_failed": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "backup_restore__error__select_clip_type": "Select at least one clip type.",
+  "backup_restore__error__from_after_to": "From date must be earlier than To date.",
+  "backup_restore__dialog__options__description": "Choose what to include in this backup archive.",
+  "backup_restore__section__clip_types": "Clip Types",
+  "backup_restore__section__cached_files": "Cached Files",
+  "backup_restore__input__max_cached_file_size": "Max cached file size (MB)",
+  "backup_restore__input__max_cached_file_size__hint": "Optional, e.g. 50",
+  "backup_restore__error__positive_number": "Enter a positive number.",
+  "backup_restore__text__select_file_media_for_cache_limit": "Select File or Media clip types to configure a max cached file size.",
+  "backup_restore__section__date_range": "Date Range",
+  "backup_restore__from_date": "From date",
+  "backup_restore__to_date": "To date",
+  "backup_restore__no_minimum_date": "No minimum date",
+  "backup_restore__no_maximum_date": "No maximum date",
+  "backup_restore__clear_date_filter": "Clear date filter",
+  "backup_restore__section__security": "Security",
+  "backup_restore__toggle__password_protect": "Protect backup with password",
+  "backup_restore__input__password": "Password",
+  "backup_restore__input__password__hint": "At least 6 characters",
+  "backup_restore__error__password_min_length": "Password must be at least 6 characters.",
+  "backup_restore__dialog__create_manual_title": "Create Manual Backup",
+  "backup_restore__appbar__title": "Backup & Restore",
+  "backup_restore__card__title": "Manual Backup & Restore",
+  "backup_restore__card__subtitle": "Create local .ccbkup archives with optional password protection and restore them locally with best-effort dedupe.",
+  "backup_restore__actions__title": "Actions",
+  "backup_restore__button__create": "Create Backup",
+  "backup_restore__button__restore": "Restore Backup",
+  "backup_restore__snapshot__backup_title": "Latest Backup Snapshot",
+  "backup_restore__snapshot__restore_title": "Latest Restore Snapshot",
+  "backup_restore__snapshot__restore_subtitle": "Best-effort dedupe and integrity report",
+  "backup_restore__empty_session": "No backup or restore has been run in this session yet.",
+  "backup_restore__label__collections": "Collections",
+  "backup_restore__label__clips": "Clips",
+  "backup_restore__label__files_included": "Files Included",
+  "backup_restore__label__files_missing": "Files Missing",
+  "backup_restore__label__files_skipped_by_size": "Skipped by Size",
+  "backup_restore__label__encrypted_clips": "Encrypted Clips",
+  "backup_restore__label__collections_restored": "Collections Restored",
+  "backup_restore__label__collections_duplicates": "Collections Duplicates",
+  "backup_restore__label__collections_failed": "Collections Failed",
+  "backup_restore__label__clips_restored": "Clips Restored",
+  "backup_restore__label__clips_duplicates": "Clips Duplicates",
+  "backup_restore__label__clips_failed": "Clips Failed",
+  "backup_restore__label__attachments_restored": "Attachments Restored",
+  "backup_restore__label__attachments_missing": "Attachments Missing",
+  "backup_restore__label__attachments_failed": "Attachments Failed",
+  "backup_restore__label__corrupt_entries": "Corrupt Entries",
+  "subscription__loading": "Loading..."
 }

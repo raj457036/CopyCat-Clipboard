@@ -4,6 +4,7 @@ import 'package:clipboard/pages/settings/widgets/dropdowns/dont_copy_over_dropdo
 import 'package:clipboard/pages/settings/widgets/switches/pause_till_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/startup_launch_switch.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/widgets/locale_dropdown.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:go_router/go_router.dart';
@@ -28,8 +29,10 @@ class GeneralSettings extends StatelessWidget {
           const StartUpLaunchSwitch(),
           ListTile(
             leading: const Icon(Icons.backup_rounded),
-            title: const Text('Backup & Restore'),
-            subtitle: const Text('Create .ccbkup backups and restore locally'),
+            title: Text(context.locale.settings__tile__backup_restore__title),
+            subtitle: Text(
+              context.locale.settings__tile__backup_restore__subtitle,
+            ),
             trailing: const Icon(Icons.arrow_forward_ios_rounded),
             onTap: () => context.goNamed(RouteConstants.backupRestore),
           ),

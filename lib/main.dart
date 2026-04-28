@@ -94,6 +94,7 @@ Future<void> initializeServices() async {
 }
 
 Future<void> initializeDesktopServices() async {
+  final englishL10n = await lookupAppLocalizations(const Locale('en'));
   await windowManager.ensureInitialized();
   await updateWindowsRegistry();
 
@@ -105,12 +106,12 @@ Future<void> initializeDesktopServices() async {
     appPath: Platform.resolvedExecutable,
   );
 
-  WindowOptions windowOptions = const WindowOptions(
+  WindowOptions windowOptions = WindowOptions(
     // size:  minimumWindowSize,
     // minimumSize: minimumWindowSize,
     // make sure to change it in main.cpp ( windows ) &
     // ? my_application.cc ( linux ) and other places too if changing the title.
-    title: "CopyCat Clipboard",
+    title: englishL10n.app__name,
     skipTaskbar: kReleaseMode,
     windowButtonVisibility: true,
     backgroundColor: Colors.transparent,

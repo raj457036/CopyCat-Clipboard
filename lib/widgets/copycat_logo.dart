@@ -1,16 +1,19 @@
 import 'package:clipboard/base/constants/strings/asset_constants.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-const _copyCatBaseImage = Image(
-  image: AssetImage(AssetConstants.catImage),
-  semanticLabel: "CopyCat Logo",
-  fit: BoxFit.cover,
-  width: 40,
-  height: 40,
-  alignment: Alignment.topCenter,
-);
+Image _copyCatBaseImage(BuildContext context) {
+  return Image(
+    image: const AssetImage(AssetConstants.catImage),
+    semanticLabel: context.locale.app__copycat_logo,
+    fit: BoxFit.cover,
+    width: 40,
+    height: 40,
+    alignment: Alignment.topCenter,
+  );
+}
 
 String _constructLogo(String primary, String secondary) {
   return """
@@ -55,8 +58,8 @@ class CopyCatLogo extends StatelessWidget {
         height: dimension,
         alignment: Alignment.topCenter,
         fit: BoxFit.fitWidth,
-        semanticsLabel: "CopyCat Logo",
-        placeholderBuilder: (_) => _copyCatBaseImage,
+        semanticsLabel: context.locale.app__copycat_logo,
+        placeholderBuilder: (_) => _copyCatBaseImage(context),
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:clipboard/base/data/services/manual_backup_restore_service.dart'
 import 'package:clipboard/base/domain/sources/clip_collection.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/snackbar.dart';
@@ -43,7 +44,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
     if (!mounted || config == null) return;
 
     final savePath = await FilePicker.saveFile(
-      dialogTitle: 'Save Backup As',
+      dialogTitle: context.locale.backup_restore__dialog__save_as,
       fileName:
           'copycat_backup_${DateTime.now().millisecondsSinceEpoch}.ccbkup',
       type: FileType.custom,
@@ -54,7 +55,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
 
     setState(() {
       _busy = true;
-      _busyLabel = 'Creating backup...';
+      _busyLabel = context.locale.backup_restore__busy__creating;
     });
 
     try {
@@ -62,7 +63,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
       if (appConfig.isEncryptionEnabled &&
           !EncryptionWorker.instance.isEncryptionActive) {
         throw Exception(
-          'Encryption is enabled but currently unavailable. Please unlock E2EE and try again.',
+          context.locale.backup_restore__error__encryption_unavailable,
         );
       }
 
@@ -83,9 +84,17 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
       setState(() {
         _backupSummary = result;
       });
-      showTextSnackbar('Backup saved to ${result.outputPath}', success: true);
+      showTextSnackbar(
+        context.locale.backup_restore__snackbar__saved(
+          outputPath: result.outputPath,
+        ),
+        success: true,
+      );
     } catch (e) {
-      showTextSnackbar('Backup failed: $e', failure: true);
+      showTextSnackbar(
+        context.locale.backup_restore__snackbar__create_failed(message: '$e'),
+        failure: true,
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -98,7 +107,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
 
   Future<void> _restoreBackup() async {
     final selected = await FilePicker.pickFiles(
-      dialogTitle: 'Select Backup File',
+      dialogTitle: context.locale.backup_restore__dialog__select_file,
       allowMultiple: false,
       type: FileType.custom,
       allowedExtensions: const ['ccbkup'],
@@ -109,16 +118,16 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
     }
 
     final password = await _showPasswordDialog(
-      title: 'Restore Backup',
-      subtitle: 'Enter password if this backup is password-protected.',
-      actionLabel: 'Restore',
+      title: context.locale.backup_restore__dialog__restore_title,
+      subtitle: context.locale.backup_restore__dialog__restore_subtitle,
+      actionLabel: context.locale.backup_restore__dialog__restore_action,
     );
 
     if (!mounted || password == null) return;
 
     setState(() {
       _busy = true;
-      _busyLabel = 'Restoring backup...';
+      _busyLabel = context.locale.backup_restore__busy__restoring;
     });
 
     try {
@@ -133,11 +142,17 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
       });
 
       showTextSnackbar(
-        'Restore completed: ${summary.clipsRestored} clips, ${summary.collectionsRestored} collections.',
+        context.locale.backup_restore__snackbar__restore_completed(
+          clips: summary.clipsRestored,
+          collections: summary.collectionsRestored,
+        ),
         success: true,
       );
     } catch (e) {
-      showTextSnackbar('Restore failed: $e', failure: true);
+      showTextSnackbar(
+        context.locale.backup_restore__snackbar__restore_failed(message: '$e'),
+        failure: true,
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -149,6 +164,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
   }
 
   Future<_BackupOptions?> _showBackupOptionsDialog() {
+    final locale = context.locale;
     final formKey = GlobalKey<FormState>();
     final scrollController = ScrollController();
     final passwordController = TextEditingController();
@@ -166,12 +182,15 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
     void onContinue(BuildContext context) {
       if (!formKey.currentState!.validate()) return;
       if (selectedClipTypes.isEmpty) {
-        showTextSnackbar('Select at least one clip type.', failure: true);
+        showTextSnackbar(
+          locale.backup_restore__error__select_clip_type,
+          failure: true,
+        );
         return;
       }
       if (fromDate != null && toDate != null && fromDate!.isAfter(toDate!)) {
         showTextSnackbar(
-          'From date must be earlier than To date.',
+          locale.backup_restore__error__from_after_to,
           failure: true,
         );
         return;
@@ -237,13 +256,13 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Choose what to include in this backup archive.',
+                  locale.backup_restore__dialog__options__description,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: context.colors.onSurfaceVariant,
                   ),
                 ),
                 height12,
-                const _DialogSectionTitle('Clip Types'),
+                _DialogSectionTitle(locale.backup_restore__section__clip_types),
                 Wrap(
                   spacing: padding8,
                   runSpacing: padding8,
@@ -303,15 +322,19 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                   ],
                 ),
                 height12,
-                const _DialogSectionTitle('Cached Files'),
+                _DialogSectionTitle(
+                  locale.backup_restore__section__cached_files,
+                ),
                 if (_hasCacheableClipTypes(selectedClipTypes))
                   TextFormField(
                     controller: maxSizeController,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                      labelText: 'Max cached file size (MB)',
-                      hintText: 'Optional, e.g. 50',
+                    decoration: InputDecoration(
+                      labelText:
+                          locale.backup_restore__input__max_cached_file_size,
+                      hintText: locale
+                          .backup_restore__input__max_cached_file_size__hint,
                     ),
                     validator: (value) {
                       if (!_hasCacheableClipTypes(selectedClipTypes)) {
@@ -321,26 +344,27 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                       if (txt.isEmpty) return null;
                       final parsed = int.tryParse(txt);
                       if (parsed == null || parsed <= 0) {
-                        return 'Enter a positive number.';
+                        return locale.backup_restore__error__positive_number;
                       }
                       return null;
                     },
                   ),
                 if (!_hasCacheableClipTypes(selectedClipTypes))
                   Text(
-                    'Select File or Media clip types to configure a max cached file size.',
+                    locale
+                        .backup_restore__text__select_file_media_for_cache_limit,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: context.colors.onSurfaceVariant,
                     ),
                   ),
                 height12,
-                const _DialogSectionTitle('Date Range'),
+                _DialogSectionTitle(locale.backup_restore__section__date_range),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('From date'),
+                  title: Text(locale.backup_restore__from_date),
                   subtitle: Text(
                     fromDate == null
-                        ? 'No minimum date'
+                        ? locale.backup_restore__no_minimum_date
                         : fromDate!.toLocal().toString().split(' ').first,
                   ),
                   onTap: () =>
@@ -353,10 +377,10 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                 ),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('To date'),
+                  title: Text(locale.backup_restore__to_date),
                   subtitle: Text(
                     toDate == null
-                        ? 'No maximum date'
+                        ? locale.backup_restore__no_maximum_date
                         : toDate!.toLocal().toString().split(' ').first,
                   ),
                   onTap: () =>
@@ -377,14 +401,14 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                           toDate = null;
                         });
                       },
-                      child: const Text('Clear date filter'),
+                      child: Text(locale.backup_restore__clear_date_filter),
                     ),
                   ),
                 height12,
-                const _DialogSectionTitle('Security'),
+                _DialogSectionTitle(locale.backup_restore__section__security),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Protect backup with password'),
+                  title: Text(locale.backup_restore__toggle__password_protect),
                   value: protectWithPassword,
                   onChanged: (value) {
                     setModalState(() {
@@ -399,14 +423,15 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                   TextFormField(
                     controller: passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      hintText: 'At least 6 characters',
+                    decoration: InputDecoration(
+                      labelText: locale.backup_restore__input__password,
+                      hintText: locale.backup_restore__input__password__hint,
                     ),
                     validator: (value) {
                       if (!protectWithPassword) return null;
                       if (value == null || value.trim().length < 6) {
-                        return 'Password must be at least 6 characters.';
+                        return locale
+                            .backup_restore__error__password_min_length;
                       }
                       return null;
                     },
@@ -443,7 +468,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Create Manual Backup',
+                        locale.backup_restore__dialog__create_manual_title,
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       height12,
@@ -454,12 +479,16 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                         children: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(null),
-                            child: const Text('Cancel'),
+                            child: Text(
+                              context.mlocale.cancelButtonLabel.title,
+                            ),
                           ),
                           width8,
                           FilledButton(
                             onPressed: () => onContinue(context),
-                            child: const Text('Continue'),
+                            child: Text(
+                              context.mlocale.continueButtonLabel.title,
+                            ),
                           ),
                         ],
                       ),
@@ -479,7 +508,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
         return StatefulBuilder(
           builder: (context, setModalState) {
             return AlertDialog(
-              title: const Text('Create Manual Backup'),
+              title: Text(locale.backup_restore__dialog__create_manual_title),
               content: ConstrainedBox(
                 constraints: const BoxConstraints(
                   minWidth: 520,
@@ -491,11 +520,11 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(null),
-                  child: const Text('Cancel'),
+                  child: Text(context.mlocale.cancelButtonLabel.title),
                 ),
                 FilledButton(
                   onPressed: () => onContinue(context),
-                  child: const Text('Continue'),
+                  child: Text(context.mlocale.continueButtonLabel.title),
                 ),
               ],
             );
@@ -524,7 +553,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(null),
-              child: const Text('Cancel'),
+              child: Text(context.mlocale.cancelButtonLabel.title),
             ),
             FilledButton(
               onPressed: () =>
@@ -540,23 +569,33 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
+    final locale = context.locale;
 
     final backupStats = _backupSummary == null
         ? const <_StatItem>[]
         : [
-            _StatItem('Collections', '${_backupSummary!.collectionsTotal}'),
-            _StatItem('Clips', '${_backupSummary!.clipsTotal}'),
             _StatItem(
-              'Files Included',
+              locale.backup_restore__label__collections,
+              '${_backupSummary!.collectionsTotal}',
+            ),
+            _StatItem(
+              locale.backup_restore__label__clips,
+              '${_backupSummary!.clipsTotal}',
+            ),
+            _StatItem(
+              locale.backup_restore__label__files_included,
               '${_backupSummary!.cachedFilesIncluded}',
             ),
-            _StatItem('Files Missing', '${_backupSummary!.cachedFilesMissing}'),
             _StatItem(
-              'Skipped by Size',
+              locale.backup_restore__label__files_missing,
+              '${_backupSummary!.cachedFilesMissing}',
+            ),
+            _StatItem(
+              locale.backup_restore__label__files_skipped_by_size,
               '${_backupSummary!.cachedFilesSkippedBySize}',
             ),
             _StatItem(
-              'Encrypted Clips',
+              locale.backup_restore__label__encrypted_clips,
               '${_backupSummary!.encryptedClipsInBackup}',
             ),
           ];
@@ -565,37 +604,49 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
         ? const <_StatItem>[]
         : [
             _StatItem(
-              'Collections Restored',
+              locale.backup_restore__label__collections_restored,
               '${_restoreSummary!.collectionsRestored}',
             ),
             _StatItem(
-              'Collections Duplicates',
+              locale.backup_restore__label__collections_duplicates,
               '${_restoreSummary!.collectionsDuplicate}',
             ),
             _StatItem(
-              'Collections Failed',
+              locale.backup_restore__label__collections_failed,
               '${_restoreSummary!.collectionsFailed}',
             ),
-            _StatItem('Clips Restored', '${_restoreSummary!.clipsRestored}'),
-            _StatItem('Clips Duplicates', '${_restoreSummary!.clipsDuplicate}'),
-            _StatItem('Clips Failed', '${_restoreSummary!.clipsFailed}'),
             _StatItem(
-              'Attachments Restored',
+              locale.backup_restore__label__clips_restored,
+              '${_restoreSummary!.clipsRestored}',
+            ),
+            _StatItem(
+              locale.backup_restore__label__clips_duplicates,
+              '${_restoreSummary!.clipsDuplicate}',
+            ),
+            _StatItem(
+              locale.backup_restore__label__clips_failed,
+              '${_restoreSummary!.clipsFailed}',
+            ),
+            _StatItem(
+              locale.backup_restore__label__attachments_restored,
               '${_restoreSummary!.attachmentsRestored}',
             ),
             _StatItem(
-              'Attachments Missing',
+              locale.backup_restore__label__attachments_missing,
               '${_restoreSummary!.attachmentsMissing}',
             ),
             _StatItem(
-              'Attachments Failed',
+              locale.backup_restore__label__attachments_failed,
               '${_restoreSummary!.attachmentsFailed}',
             ),
-            _StatItem('Corrupt Entries', '${_restoreSummary!.corruptEntries}'),
+            _StatItem(
+              locale.backup_restore__label__corrupt_entries,
+              '${_restoreSummary!.corruptEntries}',
+            ),
           ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Backup & Restore')),
+      appBar: AppBar(title: Text(locale.backup_restore__appbar__title)),
       body: Align(
         alignment: Alignment.topCenter,
         child: ConstrainedBox(
@@ -610,14 +661,14 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Manual Backup & Restore',
+                        locale.backup_restore__card__title,
                         style: textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       height8,
                       Text(
-                        'Create local .ccbkup archives with optional password protection and restore them locally with best-effort dedupe.',
+                        locale.backup_restore__card__subtitle,
                         style: textTheme.bodyMedium?.copyWith(
                           color: context.colors.onSurfaceVariant,
                         ),
@@ -634,7 +685,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Actions',
+                        locale.backup_restore__actions__title,
                         style: textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -647,12 +698,12 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                           FilledButton.icon(
                             onPressed: _busy ? null : _createBackup,
                             icon: const Icon(Icons.archive_rounded),
-                            label: const Text('Create Backup'),
+                            label: Text(locale.backup_restore__button__create),
                           ),
                           FilledButton.tonalIcon(
                             onPressed: _busy ? null : _restoreBackup,
                             icon: const Icon(Icons.restore_page_rounded),
-                            label: const Text('Restore Backup'),
+                            label: Text(locale.backup_restore__button__restore),
                           ),
                         ],
                       ),
@@ -676,7 +727,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
               if (_backupSummary != null) ...[
                 height16,
                 _StatsSection(
-                  title: 'Latest Backup Snapshot',
+                  title: locale.backup_restore__snapshot__backup_title,
                   subtitle: _backupSummary!.outputPath,
                   icon: Icons.backup_table_rounded,
                   stats: backupStats,
@@ -685,8 +736,8 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
               if (_restoreSummary != null) ...[
                 height16,
                 _StatsSection(
-                  title: 'Latest Restore Snapshot',
-                  subtitle: 'Best-effort dedupe and integrity report',
+                  title: locale.backup_restore__snapshot__restore_title,
+                  subtitle: locale.backup_restore__snapshot__restore_subtitle,
                   icon: Icons.assignment_turned_in_rounded,
                   stats: restoreStats,
                 ),
@@ -697,7 +748,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                   child: Padding(
                     padding: const EdgeInsets.all(padding16),
                     child: Text(
-                      'No backup or restore has been run in this session yet.',
+                      locale.backup_restore__empty_session,
                       style: textTheme.bodyMedium?.copyWith(
                         color: context.colors.onSurfaceVariant,
                       ),

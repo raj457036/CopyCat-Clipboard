@@ -43,7 +43,7 @@ class ProBadge extends StatelessWidget {
         borderRadius: radius12,
         side: BorderSide(color: Colors.transparent),
       ),
-      label: const Text("PRO"),
+      label: Text(context.locale.badges__label__pro),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       padding: const EdgeInsets.symmetric(horizontal: padding10),
       backgroundColor: colors.primaryContainer,

@@ -213,10 +213,13 @@ class SubscriptionInfoDialog extends StatelessWidget {
             if (state == null) {
               return AlertDialog(
                 title: Text(context.locale.paywall_dialog__text__subscription),
-                content: const Center(
+                content: Center(
                   child: SizedBox(
                     width: 250,
-                    child: Text("...", textAlign: TextAlign.center),
+                    child: Text(
+                      context.locale.app__loading,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               );

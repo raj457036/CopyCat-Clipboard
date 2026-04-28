@@ -221,7 +221,7 @@ class _FilterDialogState extends State<FilterDialog> {
                   visualDensity: VisualDensity.compact,
                   onPressed: onClear,
                   icon: const Icon(Icons.close_rounded, size: 16),
-                  tooltip: 'Clear',
+                  tooltip: context.locale.search_filter__tooltip__clear,
                 ),
             ],
           ),
@@ -234,7 +234,9 @@ class _FilterDialogState extends State<FilterDialog> {
   Widget build(BuildContext context) {
     final size = context.mq.size;
     if (size.width < 300) {
-      return const AlertDialog(content: Center(child: Text("∅")));
+      return AlertDialog(
+        content: Center(child: Text(context.locale.search_filter__empty)),
+      );
     }
     final locale = context.locale;
     final localeName = locale.localeName;
@@ -405,7 +407,9 @@ class _FilterDialogState extends State<FilterDialog> {
                                   Icons.code_rounded,
                                   size: 16,
                                 ),
-                                label: const Text('Struct'),
+                                label: Text(
+                                  locale.search_filter__text_cat__struct,
+                                ),
                                 onSelected: (v) =>
                                     _setTextCategory(v, TextCategory.struct),
                                 selected: textCategory.contains(
@@ -493,7 +497,10 @@ class _FilterDialogState extends State<FilterDialog> {
       actions: [
         TextButton(
           onPressed: _resetFilter,
-          child: Text('Reset', style: TextStyle(color: colors.error)),
+          child: Text(
+            locale.search_filter__button__reset,
+            style: TextStyle(color: colors.error),
+          ),
         ),
         FilledButton.icon(
           onPressed: _applyFilter,

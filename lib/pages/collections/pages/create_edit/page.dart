@@ -2,7 +2,6 @@ import 'package:clipboard/pages/collections/pages/create_edit/widgets/create_edi
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 
 class ClipCollectionCreateEditPage extends StatelessWidget {

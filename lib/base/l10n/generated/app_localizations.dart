@@ -219,6 +219,12 @@ abstract class AppLocalizations {
   /// **'Share'**
   String get app__share;
 
+  /// No description provided for @app__loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get app__loading;
+
   /// No description provided for @app__uploading.
   ///
   /// In en, this message translates to:
@@ -242,6 +248,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Local'**
   String get app__local;
+
+  /// No description provided for @app__utc.
+  ///
+  /// In en, this message translates to:
+  /// **'UTC'**
+  String get app__utc;
 
   /// No description provided for @app__send_message.
   ///
@@ -320,6 +332,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Language'**
   String get app__language;
+
+  /// No description provided for @app__yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get app__yes;
+
+  /// No description provided for @app__no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get app__no;
+
+  /// No description provided for @app__quit.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit'**
+  String get app__quit;
+
+  /// No description provided for @app__clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get app__clear;
+
+  /// No description provided for @app__reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get app__reset;
+
+  /// No description provided for @app__continue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get app__continue;
+
+  /// No description provided for @app__paste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get app__paste;
+
+  /// No description provided for @app__copycat_logo.
+  ///
+  /// In en, this message translates to:
+  /// **'CopyCat Logo'**
+  String get app__copycat_logo;
 
   /// No description provided for @app__logout.
   ///
@@ -435,12 +495,6 @@ abstract class AppLocalizations {
   /// **'You are successfully logged out.'**
   String get app__ack__logout_success;
 
-  /// No description provided for @app__ack__missing_e2e_setup.
-  ///
-  /// In en, this message translates to:
-  /// **'Missing encryption setup'**
-  String get app__ack__missing_e2e_setup;
-
   /// No description provided for @app__ack__no_app_for_file.
   ///
   /// In en, this message translates to:
@@ -452,6 +506,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Permission to open this file not granted.'**
   String get app__ack__perm_fail_to_open_file;
+
+  /// No description provided for @app__ack__missing_e2e_setup.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing encryption setup'**
+  String get app__ack__missing_e2e_setup;
 
   /// No description provided for @dialog__delete_clip__title.
   ///
@@ -602,6 +662,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter the code and press Submit'**
   String get dialog__grant_entitlement__enter_code;
+
+  /// No description provided for @dialog__grant_entitlement__code_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get dialog__grant_entitlement__code_label;
 
   /// No description provided for @dialog__grant_entitlement__apply_code.
   ///
@@ -1047,6 +1113,12 @@ abstract class AppLocalizations {
   /// **'This feature is experimental and might not work as expected.'**
   String get badges__tooltip__experimental;
 
+  /// No description provided for @badges__label__pro.
+  ///
+  /// In en, this message translates to:
+  /// **'PRO'**
+  String get badges__label__pro;
+
   /// No description provided for @badges__tooltip__pro_only.
   ///
   /// In en, this message translates to:
@@ -1197,6 +1269,12 @@ abstract class AppLocalizations {
   /// **'Color'**
   String get search_filter__text_cat__color;
 
+  /// No description provided for @search_filter__text_cat__struct.
+  ///
+  /// In en, this message translates to:
+  /// **'Struct'**
+  String get search_filter__text_cat__struct;
+
   /// No description provided for @search_filter__text__sort_by.
   ///
   /// In en, this message translates to:
@@ -1244,6 +1322,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Desc'**
   String get search_filter__sort_ord__desc;
+
+  /// No description provided for @search_filter__tooltip__clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get search_filter__tooltip__clear;
+
+  /// No description provided for @search_filter__empty.
+  ///
+  /// In en, this message translates to:
+  /// **'∅'**
+  String get search_filter__empty;
+
+  /// No description provided for @search_filter__button__reset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get search_filter__button__reset;
 
   /// No description provided for @login__local_signin__tooltip.
   ///
@@ -3291,6 +3387,648 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enable this option for more accurate clipboard detection. Note that it might not work on every device.'**
   String get abc__enhanced_clip_detection__subtitle;
+
+  /// No description provided for @abc__tile__two_way_sync__title.
+  ///
+  /// In en, this message translates to:
+  /// **'2-Way Sync'**
+  String get abc__tile__two_way_sync__title;
+
+  /// No description provided for @abc__tile__two_way_sync__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps your clipboard synced across devices instantly.\n{warning}'**
+  String abc__tile__two_way_sync__subtitle({required String warning});
+
+  /// No description provided for @abc__tile__two_way_sync__realtime_required.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Realtime mode required.'**
+  String get abc__tile__two_way_sync__realtime_required;
+
+  /// No description provided for @current_time__local.
+  ///
+  /// In en, this message translates to:
+  /// **'Local: {time}'**
+  String current_time__local({required String time});
+
+  /// No description provided for @current_time__utc.
+  ///
+  /// In en, this message translates to:
+  /// **'UTC: {time}'**
+  String current_time__utc({required String time});
+
+  /// No description provided for @encrypted_stat__summary.
+  ///
+  /// In en, this message translates to:
+  /// **'You currently have {count} encrypted clips that are inaccessible.'**
+  String encrypted_stat__summary({required int count});
+
+  /// No description provided for @encrypted_stat__all_decrypted.
+  ///
+  /// In en, this message translates to:
+  /// **'🥳 Congratulations! All your clips have been successfully decrypted locally, so rebuilding the database is not required.'**
+  String get encrypted_stat__all_decrypted;
+
+  /// No description provided for @encrypted_stat__rebuild_database.
+  ///
+  /// In en, this message translates to:
+  /// **'Rebuild Database'**
+  String get encrypted_stat__rebuild_database;
+
+  /// No description provided for @tray__tooltip__paused_till.
+  ///
+  /// In en, this message translates to:
+  /// **'CopyCat Clipboard - Paused till {time}'**
+  String tray__tooltip__paused_till({required String time});
+
+  /// No description provided for @tray__menu__resume_copycat.
+  ///
+  /// In en, this message translates to:
+  /// **'▶️ Resume CopyCat'**
+  String get tray__menu__resume_copycat;
+
+  /// No description provided for @tray__menu__pause_copycat.
+  ///
+  /// In en, this message translates to:
+  /// **'⏸️ Pause CopyCat'**
+  String get tray__menu__pause_copycat;
+
+  /// No description provided for @tray__dialog__quit__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to quit?'**
+  String get tray__dialog__quit__subtitle;
+
+  /// No description provided for @splash__checking_authentication.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking for authentication...'**
+  String get splash__checking_authentication;
+
+  /// No description provided for @paste_stack__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste Stack • {count}'**
+  String paste_stack__title({required int count});
+
+  /// No description provided for @paste_stack__reverse_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Reverse Stack'**
+  String get paste_stack__reverse_tooltip;
+
+  /// No description provided for @multi_paste__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Multi Paste Setup'**
+  String get multi_paste__title;
+
+  /// No description provided for @multi_paste__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Control how selected clips are merged and paced.'**
+  String get multi_paste__subtitle;
+
+  /// No description provided for @multi_paste__stat__selected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected'**
+  String get multi_paste__stat__selected;
+
+  /// No description provided for @multi_paste__stat__text.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get multi_paste__stat__text;
+
+  /// No description provided for @multi_paste__stat__non_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Non-text'**
+  String get multi_paste__stat__non_text;
+
+  /// No description provided for @multi_paste__merge__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge consecutive text clips'**
+  String get multi_paste__merge__title;
+
+  /// No description provided for @multi_paste__merge__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Text clips merge until a non-text clip interrupts the sequence.'**
+  String get multi_paste__merge__subtitle;
+
+  /// No description provided for @multi_paste__separator__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Separator'**
+  String get multi_paste__separator__title;
+
+  /// No description provided for @multi_paste__separator__new_line.
+  ///
+  /// In en, this message translates to:
+  /// **'New line'**
+  String get multi_paste__separator__new_line;
+
+  /// No description provided for @multi_paste__separator__space.
+  ///
+  /// In en, this message translates to:
+  /// **'Space'**
+  String get multi_paste__separator__space;
+
+  /// No description provided for @multi_paste__separator__custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get multi_paste__separator__custom;
+
+  /// No description provided for @multi_paste__separator__custom_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom separator'**
+  String get multi_paste__separator__custom_label;
+
+  /// No description provided for @multi_paste__separator__custom_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Supports escape sequences like \\n and \\t'**
+  String get multi_paste__separator__custom_hint;
+
+  /// No description provided for @multi_paste__pacing__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste pacing'**
+  String get multi_paste__pacing__title;
+
+  /// No description provided for @multi_paste__pacing__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase the delay if the target app misses paste events.'**
+  String get multi_paste__pacing__subtitle;
+
+  /// No description provided for @multi_paste__wait_between_pastes.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait time between pastes'**
+  String get multi_paste__wait_between_pastes;
+
+  /// No description provided for @multi_paste__validation__wait_positive.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait time must be a positive number.'**
+  String get multi_paste__validation__wait_positive;
+
+  /// No description provided for @multi_paste__validation__custom_separator_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a custom separator.'**
+  String get multi_paste__validation__custom_separator_required;
+
+  /// No description provided for @settings__tile__backup_restore__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup & Restore'**
+  String get settings__tile__backup_restore__title;
+
+  /// No description provided for @settings__tile__backup_restore__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create .ccbkup backups and restore locally'**
+  String get settings__tile__backup_restore__subtitle;
+
+  /// No description provided for @settings__switch__prevent_duplicates__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Avoid Immediate Duplicates'**
+  String get settings__switch__prevent_duplicates__title;
+
+  /// No description provided for @settings__switch__prevent_duplicates__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Avoid copying the same content twice in a row'**
+  String get settings__switch__prevent_duplicates__subtitle;
+
+  /// No description provided for @settings__switch__rich_data_capture__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Rich Data Capture'**
+  String get settings__switch__rich_data_capture__title;
+
+  /// No description provided for @settings__switch__rich_data_capture__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep formatting when you copy and paste between apps.'**
+  String get settings__switch__rich_data_capture__subtitle;
+
+  /// No description provided for @settings__decrypt__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard Decryption'**
+  String get settings__decrypt__title;
+
+  /// No description provided for @settings__decrypt__count.
+  ///
+  /// In en, this message translates to:
+  /// **'Currently you have {count} encrypted clips locally.'**
+  String settings__decrypt__count({required int count});
+
+  /// No description provided for @settings__decrypt__progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrypted: {decrypted} of {total} clips.'**
+  String settings__decrypt__progress({
+    required int decrypted,
+    required int total,
+  });
+
+  /// No description provided for @settings__decrypt__warning.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Please keep this screen open during this process to avoid data corruption or inconsistencies.'**
+  String get settings__decrypt__warning;
+
+  /// No description provided for @not_found__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Page Not Found'**
+  String get not_found__title;
+
+  /// No description provided for @not_found__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The page you are looking for is not found.'**
+  String get not_found__subtitle;
+
+  /// No description provided for @not_found__go_home.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Home'**
+  String get not_found__go_home;
+
+  /// No description provided for @backup_restore__dialog__save_as.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Backup As'**
+  String get backup_restore__dialog__save_as;
+
+  /// No description provided for @backup_restore__busy__creating.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating backup...'**
+  String get backup_restore__busy__creating;
+
+  /// No description provided for @backup_restore__error__encryption_unavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Encryption is enabled but currently unavailable. Please unlock E2EE and try again.'**
+  String get backup_restore__error__encryption_unavailable;
+
+  /// No description provided for @backup_restore__snackbar__saved.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup saved to {outputPath}'**
+  String backup_restore__snackbar__saved({required String outputPath});
+
+  /// No description provided for @backup_restore__snackbar__create_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup failed: {message}'**
+  String backup_restore__snackbar__create_failed({required String message});
+
+  /// No description provided for @backup_restore__dialog__select_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Backup File'**
+  String get backup_restore__dialog__select_file;
+
+  /// No description provided for @backup_restore__dialog__restore_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Backup'**
+  String get backup_restore__dialog__restore_title;
+
+  /// No description provided for @backup_restore__dialog__restore_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter password if this backup is password-protected.'**
+  String get backup_restore__dialog__restore_subtitle;
+
+  /// No description provided for @backup_restore__dialog__restore_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get backup_restore__dialog__restore_action;
+
+  /// No description provided for @backup_restore__busy__restoring.
+  ///
+  /// In en, this message translates to:
+  /// **'Restoring backup...'**
+  String get backup_restore__busy__restoring;
+
+  /// No description provided for @backup_restore__snackbar__restore_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore completed: {clips} clips, {collections} collections.'**
+  String backup_restore__snackbar__restore_completed({
+    required int clips,
+    required int collections,
+  });
+
+  /// No description provided for @backup_restore__snackbar__restore_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore failed: {message}'**
+  String backup_restore__snackbar__restore_failed({required String message});
+
+  /// No description provided for @backup_restore__error__select_clip_type.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one clip type.'**
+  String get backup_restore__error__select_clip_type;
+
+  /// No description provided for @backup_restore__error__from_after_to.
+  ///
+  /// In en, this message translates to:
+  /// **'From date must be earlier than To date.'**
+  String get backup_restore__error__from_after_to;
+
+  /// No description provided for @backup_restore__dialog__options__description.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what to include in this backup archive.'**
+  String get backup_restore__dialog__options__description;
+
+  /// No description provided for @backup_restore__section__clip_types.
+  ///
+  /// In en, this message translates to:
+  /// **'Clip Types'**
+  String get backup_restore__section__clip_types;
+
+  /// No description provided for @backup_restore__section__cached_files.
+  ///
+  /// In en, this message translates to:
+  /// **'Cached Files'**
+  String get backup_restore__section__cached_files;
+
+  /// No description provided for @backup_restore__input__max_cached_file_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Max cached file size (MB)'**
+  String get backup_restore__input__max_cached_file_size;
+
+  /// No description provided for @backup_restore__input__max_cached_file_size__hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional, e.g. 50'**
+  String get backup_restore__input__max_cached_file_size__hint;
+
+  /// No description provided for @backup_restore__error__positive_number.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a positive number.'**
+  String get backup_restore__error__positive_number;
+
+  /// No description provided for @backup_restore__text__select_file_media_for_cache_limit.
+  ///
+  /// In en, this message translates to:
+  /// **'Select File or Media clip types to configure a max cached file size.'**
+  String get backup_restore__text__select_file_media_for_cache_limit;
+
+  /// No description provided for @backup_restore__section__date_range.
+  ///
+  /// In en, this message translates to:
+  /// **'Date Range'**
+  String get backup_restore__section__date_range;
+
+  /// No description provided for @backup_restore__from_date.
+  ///
+  /// In en, this message translates to:
+  /// **'From date'**
+  String get backup_restore__from_date;
+
+  /// No description provided for @backup_restore__to_date.
+  ///
+  /// In en, this message translates to:
+  /// **'To date'**
+  String get backup_restore__to_date;
+
+  /// No description provided for @backup_restore__no_minimum_date.
+  ///
+  /// In en, this message translates to:
+  /// **'No minimum date'**
+  String get backup_restore__no_minimum_date;
+
+  /// No description provided for @backup_restore__no_maximum_date.
+  ///
+  /// In en, this message translates to:
+  /// **'No maximum date'**
+  String get backup_restore__no_maximum_date;
+
+  /// No description provided for @backup_restore__clear_date_filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear date filter'**
+  String get backup_restore__clear_date_filter;
+
+  /// No description provided for @backup_restore__section__security.
+  ///
+  /// In en, this message translates to:
+  /// **'Security'**
+  String get backup_restore__section__security;
+
+  /// No description provided for @backup_restore__toggle__password_protect.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect backup with password'**
+  String get backup_restore__toggle__password_protect;
+
+  /// No description provided for @backup_restore__input__password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get backup_restore__input__password;
+
+  /// No description provided for @backup_restore__input__password__hint.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 6 characters'**
+  String get backup_restore__input__password__hint;
+
+  /// No description provided for @backup_restore__error__password_min_length.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters.'**
+  String get backup_restore__error__password_min_length;
+
+  /// No description provided for @backup_restore__dialog__create_manual_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Manual Backup'**
+  String get backup_restore__dialog__create_manual_title;
+
+  /// No description provided for @backup_restore__appbar__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup & Restore'**
+  String get backup_restore__appbar__title;
+
+  /// No description provided for @backup_restore__card__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual Backup & Restore'**
+  String get backup_restore__card__title;
+
+  /// No description provided for @backup_restore__card__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create local .ccbkup archives with optional password protection and restore them locally with best-effort dedupe.'**
+  String get backup_restore__card__subtitle;
+
+  /// No description provided for @backup_restore__actions__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get backup_restore__actions__title;
+
+  /// No description provided for @backup_restore__button__create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Backup'**
+  String get backup_restore__button__create;
+
+  /// No description provided for @backup_restore__button__restore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Backup'**
+  String get backup_restore__button__restore;
+
+  /// No description provided for @backup_restore__snapshot__backup_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest Backup Snapshot'**
+  String get backup_restore__snapshot__backup_title;
+
+  /// No description provided for @backup_restore__snapshot__restore_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest Restore Snapshot'**
+  String get backup_restore__snapshot__restore_title;
+
+  /// No description provided for @backup_restore__snapshot__restore_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Best-effort dedupe and integrity report'**
+  String get backup_restore__snapshot__restore_subtitle;
+
+  /// No description provided for @backup_restore__empty_session.
+  ///
+  /// In en, this message translates to:
+  /// **'No backup or restore has been run in this session yet.'**
+  String get backup_restore__empty_session;
+
+  /// No description provided for @backup_restore__label__collections.
+  ///
+  /// In en, this message translates to:
+  /// **'Collections'**
+  String get backup_restore__label__collections;
+
+  /// No description provided for @backup_restore__label__clips.
+  ///
+  /// In en, this message translates to:
+  /// **'Clips'**
+  String get backup_restore__label__clips;
+
+  /// No description provided for @backup_restore__label__files_included.
+  ///
+  /// In en, this message translates to:
+  /// **'Files Included'**
+  String get backup_restore__label__files_included;
+
+  /// No description provided for @backup_restore__label__files_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Files Missing'**
+  String get backup_restore__label__files_missing;
+
+  /// No description provided for @backup_restore__label__files_skipped_by_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped by Size'**
+  String get backup_restore__label__files_skipped_by_size;
+
+  /// No description provided for @backup_restore__label__encrypted_clips.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypted Clips'**
+  String get backup_restore__label__encrypted_clips;
+
+  /// No description provided for @backup_restore__label__collections_restored.
+  ///
+  /// In en, this message translates to:
+  /// **'Collections Restored'**
+  String get backup_restore__label__collections_restored;
+
+  /// No description provided for @backup_restore__label__collections_duplicates.
+  ///
+  /// In en, this message translates to:
+  /// **'Collections Duplicates'**
+  String get backup_restore__label__collections_duplicates;
+
+  /// No description provided for @backup_restore__label__collections_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Collections Failed'**
+  String get backup_restore__label__collections_failed;
+
+  /// No description provided for @backup_restore__label__clips_restored.
+  ///
+  /// In en, this message translates to:
+  /// **'Clips Restored'**
+  String get backup_restore__label__clips_restored;
+
+  /// No description provided for @backup_restore__label__clips_duplicates.
+  ///
+  /// In en, this message translates to:
+  /// **'Clips Duplicates'**
+  String get backup_restore__label__clips_duplicates;
+
+  /// No description provided for @backup_restore__label__clips_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Clips Failed'**
+  String get backup_restore__label__clips_failed;
+
+  /// No description provided for @backup_restore__label__attachments_restored.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments Restored'**
+  String get backup_restore__label__attachments_restored;
+
+  /// No description provided for @backup_restore__label__attachments_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments Missing'**
+  String get backup_restore__label__attachments_missing;
+
+  /// No description provided for @backup_restore__label__attachments_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Attachments Failed'**
+  String get backup_restore__label__attachments_failed;
+
+  /// No description provided for @backup_restore__label__corrupt_entries.
+  ///
+  /// In en, this message translates to:
+  /// **'Corrupt Entries'**
+  String get backup_restore__label__corrupt_entries;
+
+  /// No description provided for @subscription__loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
+  String get subscription__loading;
 }
 
 class _AppLocalizationsDelegate

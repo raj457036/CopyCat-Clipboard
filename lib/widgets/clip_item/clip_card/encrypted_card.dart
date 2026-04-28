@@ -1,4 +1,5 @@
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class EncryptedClipItem extends StatelessWidget {
@@ -7,11 +8,14 @@ class EncryptedClipItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Column(
         spacing: 4,
         mainAxisSize: MainAxisSize.min,
-        children: [Icon(Icons.lock), Text("Encrypted")],
+        children: [
+          const Icon(Icons.lock),
+          Text(context.locale.preview__inspector__status__encrypted),
+        ],
       ),
     );
   }

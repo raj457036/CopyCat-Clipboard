@@ -327,13 +327,21 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                 onChanged: writingConfig
                     ? null
                     : (val) => _onSyncModeChanged(val, subscription),
-                title: const Row(
+                title: Row(
                   spacing: padding8,
-                  children: [Text("2-Way Sync"), ProBadge()],
+                  children: [
+                    Text(context.locale.abc__tile__two_way_sync__title),
+                    const ProBadge(),
+                  ],
                 ),
                 subtitle: Text(
-                  "Keeps your clipboard synced across devices instantly.\n"
-                  "${!realtimeSyncEnabled ? "⚠️ Realtime mode required." : ""}",
+                  context.locale.abc__tile__two_way_sync__subtitle(
+                    warning: !realtimeSyncEnabled
+                        ? context
+                              .locale
+                              .abc__tile__two_way_sync__realtime_required
+                        : '',
+                  ),
                 ),
               );
             },

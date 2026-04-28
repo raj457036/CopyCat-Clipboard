@@ -1,5 +1,6 @@
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class MultiPasteOptions {
@@ -64,13 +65,14 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
   }
 
   String _separatorLabel(_SeparatorPreset preset) {
+    final locale = context.locale;
     switch (preset) {
       case _SeparatorPreset.newLine:
-        return 'New line';
+        return locale.multi_paste__separator__new_line;
       case _SeparatorPreset.space:
-        return 'Space';
+        return locale.multi_paste__separator__space;
       case _SeparatorPreset.custom:
-        return 'Custom';
+        return locale.multi_paste__separator__custom;
     }
   }
 
@@ -82,10 +84,11 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
   }
 
   void _submit() {
+    final locale = context.locale;
     final waitMs = int.tryParse(waitMsController.text.trim());
     if (waitMs == null || waitMs < 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Wait time must be a positive number.')),
+        SnackBar(content: Text(locale.multi_paste__validation__wait_positive)),
       );
       return;
     }
@@ -94,7 +97,11 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
         separatorPreset == _SeparatorPreset.custom &&
         customSeparatorController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a custom separator.')),
+        SnackBar(
+          content: Text(
+            locale.multi_paste__validation__custom_separator_required,
+          ),
+        ),
       );
       return;
     }
@@ -110,6 +117,8 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = context.locale;
+    final mlocale = context.mlocale;
     final theme = Theme.of(context);
     final textClipCount = widget.items.where((item) => item.isTextType).length;
     final mediaClipCount = widget.items.length - textClipCount;
@@ -140,12 +149,12 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Multi Paste Setup',
+                    locale.multi_paste__title,
                     style: theme.textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Control how selected clips are merged and paced.',
+                    locale.multi_paste__subtitle,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
@@ -173,21 +182,21 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                       children: [
                         Expanded(
                           child: _StatTile(
-                            label: 'Selected',
+                            label: locale.multi_paste__stat__selected,
                             value: '${widget.items.length}',
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: _StatTile(
-                            label: 'Text',
+                            label: locale.multi_paste__stat__text,
                             value: '$textClipCount',
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: _StatTile(
-                            label: 'Non-text',
+                            label: locale.multi_paste__stat__non_text,
                             value: '$mediaClipCount',
                           ),
                         ),
@@ -210,12 +219,12 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Merge consecutive text clips',
+                                    locale.multi_paste__merge__title,
                                     style: theme.textTheme.titleMedium,
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    'Text clips merge until a non-text clip interrupts the sequence.',
+                                    locale.multi_paste__merge__subtitle,
                                     style: theme.textTheme.bodyMedium?.copyWith(
                                       color: theme.colorScheme.onSurfaceVariant,
                                     ),
@@ -236,7 +245,10 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                         ),
                         if (mergeConsecutiveText) ...[
                           const SizedBox(height: 16),
-                          Text('Separator', style: theme.textTheme.labelLarge),
+                          Text(
+                            locale.multi_paste__separator__title,
+                            style: theme.textTheme.labelLarge,
+                          ),
                           const SizedBox(height: 10),
                           SegmentedButton<_SeparatorPreset>(
                             showSelectedIcon: false,
@@ -262,11 +274,12 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                             const SizedBox(height: 12),
                             TextField(
                               controller: customSeparatorController,
-                              decoration: const InputDecoration(
-                                labelText: 'Custom separator',
+                              decoration: InputDecoration(
+                                labelText:
+                                    locale.multi_paste__separator__custom_label,
                                 hintText:
-                                    'Supports escape sequences like \\n and \\t',
-                                border: OutlineInputBorder(),
+                                    locale.multi_paste__separator__custom_hint,
+                                border: const OutlineInputBorder(),
                               ),
                             ),
                           ],
@@ -284,12 +297,12 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Paste pacing',
+                          locale.multi_paste__pacing__title,
                           style: theme.textTheme.titleMedium,
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'Increase the delay if the target app misses paste events.',
+                          locale.multi_paste__pacing__subtitle,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
@@ -298,10 +311,10 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                         TextField(
                           controller: waitMsController,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: 'Wait time between pastes',
+                          decoration: InputDecoration(
+                            labelText: locale.multi_paste__wait_between_pastes,
                             suffixText: 'ms',
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                           ),
                         ),
                       ],
@@ -316,12 +329,12 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
         actions: [
           OutlinedButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(mlocale.cancelButtonLabel),
           ),
           FilledButton.icon(
             onPressed: _submit,
             icon: const Icon(Icons.play_arrow_rounded),
-            label: const Text('Paste'),
+            label: Text(locale.app__paste),
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/widgets.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/blur_hash.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -46,7 +47,7 @@ class MediaPreview extends StatelessWidget {
         future: getImageFromBlurHash(item.imgBlurHash!),
         builder: (context, ss) {
           if (ss.hasError) {
-            return const Center(child: Text("Something went wrong"));
+            return Center(child: Text(context.locale.app__unknown_error));
           }
           if (!ss.hasData) return loadingCard;
 

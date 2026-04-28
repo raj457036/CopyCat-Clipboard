@@ -1,3 +1,4 @@
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -7,16 +8,19 @@ class NotFoundPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Page Not Found'), centerTitle: true),
+      appBar: AppBar(
+        title: Text(context.locale.not_found__title),
+        centerTitle: true,
+      ),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           spacing: 10,
           children: [
-            const Text('The page you are looking for is not found.'),
+            Text(context.locale.not_found__subtitle),
             ElevatedButton(
               onPressed: () => context.go("/"),
-              child: const Text("Go Home"),
+              child: Text(context.locale.not_found__go_home),
             ),
           ],
         ),

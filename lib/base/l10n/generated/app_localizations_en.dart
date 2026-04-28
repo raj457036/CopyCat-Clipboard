@@ -67,6 +67,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app__share => 'Share';
 
   @override
+  String get app__loading => 'Loading...';
+
+  @override
   String get app__uploading => 'Uploading...';
 
   @override
@@ -77,6 +80,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get app__local => 'Local';
+
+  @override
+  String get app__utc => 'UTC';
 
   @override
   String get app__send_message => 'Send Message';
@@ -116,6 +122,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get app__language => 'Language';
+
+  @override
+  String get app__yes => 'Yes';
+
+  @override
+  String get app__no => 'No';
+
+  @override
+  String get app__quit => 'Quit';
+
+  @override
+  String get app__clear => 'Clear';
+
+  @override
+  String get app__reset => 'Reset';
+
+  @override
+  String get app__continue => 'Continue';
+
+  @override
+  String get app__paste => 'Paste';
+
+  @override
+  String get app__copycat_logo => 'CopyCat Logo';
 
   @override
   String get app__logout => 'Logout';
@@ -175,15 +205,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app__ack__logout_success => 'You are successfully logged out.';
 
   @override
-  String get app__ack__missing_e2e_setup => 'Missing encryption setup';
-
-  @override
   String get app__ack__no_app_for_file =>
       'No application found to open this file.';
 
   @override
   String get app__ack__perm_fail_to_open_file =>
       'Permission to open this file not granted.';
+
+  @override
+  String get app__ack__missing_e2e_setup => 'Missing encryption setup';
 
   @override
   String get dialog__delete_clip__title => 'Delete Clip';
@@ -278,6 +308,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dialog__grant_entitlement__enter_code =>
       'Enter the code and press Submit';
+
+  @override
+  String get dialog__grant_entitlement__code_label => 'Code';
 
   @override
   String get dialog__grant_entitlement__apply_code => 'Apply';
@@ -533,6 +566,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'This feature is experimental and might not work as expected.';
 
   @override
+  String get badges__label__pro => 'PRO';
+
+  @override
   String get badges__tooltip__pro_only =>
       'This feature is available for Pro users only.';
 
@@ -613,6 +649,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get search_filter__text_cat__color => 'Color';
 
   @override
+  String get search_filter__text_cat__struct => 'Struct';
+
+  @override
   String get search_filter__text__sort_by => 'Sort By';
 
   @override
@@ -635,6 +674,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get search_filter__sort_ord__desc => 'Desc';
+
+  @override
+  String get search_filter__tooltip__clear => 'Clear';
+
+  @override
+  String get search_filter__empty => '∅';
+
+  @override
+  String get search_filter__button__reset => 'Reset';
 
   @override
   String get login__local_signin__tooltip =>
@@ -1829,4 +1877,387 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get abc__enhanced_clip_detection__subtitle =>
       'Enable this option for more accurate clipboard detection. Note that it might not work on every device.';
+
+  @override
+  String get abc__tile__two_way_sync__title => '2-Way Sync';
+
+  @override
+  String abc__tile__two_way_sync__subtitle({required String warning}) {
+    return 'Keeps your clipboard synced across devices instantly.\n$warning';
+  }
+
+  @override
+  String get abc__tile__two_way_sync__realtime_required =>
+      '⚠️ Realtime mode required.';
+
+  @override
+  String current_time__local({required String time}) {
+    return 'Local: $time';
+  }
+
+  @override
+  String current_time__utc({required String time}) {
+    return 'UTC: $time';
+  }
+
+  @override
+  String encrypted_stat__summary({required int count}) {
+    return 'You currently have $count encrypted clips that are inaccessible.';
+  }
+
+  @override
+  String get encrypted_stat__all_decrypted =>
+      '🥳 Congratulations! All your clips have been successfully decrypted locally, so rebuilding the database is not required.';
+
+  @override
+  String get encrypted_stat__rebuild_database => 'Rebuild Database';
+
+  @override
+  String tray__tooltip__paused_till({required String time}) {
+    return 'CopyCat Clipboard - Paused till $time';
+  }
+
+  @override
+  String get tray__menu__resume_copycat => '▶️ Resume CopyCat';
+
+  @override
+  String get tray__menu__pause_copycat => '⏸️ Pause CopyCat';
+
+  @override
+  String get tray__dialog__quit__subtitle => 'Are you sure you want to quit?';
+
+  @override
+  String get splash__checking_authentication =>
+      'Checking for authentication...';
+
+  @override
+  String paste_stack__title({required int count}) {
+    return 'Paste Stack • $count';
+  }
+
+  @override
+  String get paste_stack__reverse_tooltip => 'Reverse Stack';
+
+  @override
+  String get multi_paste__title => 'Multi Paste Setup';
+
+  @override
+  String get multi_paste__subtitle =>
+      'Control how selected clips are merged and paced.';
+
+  @override
+  String get multi_paste__stat__selected => 'Selected';
+
+  @override
+  String get multi_paste__stat__text => 'Text';
+
+  @override
+  String get multi_paste__stat__non_text => 'Non-text';
+
+  @override
+  String get multi_paste__merge__title => 'Merge consecutive text clips';
+
+  @override
+  String get multi_paste__merge__subtitle =>
+      'Text clips merge until a non-text clip interrupts the sequence.';
+
+  @override
+  String get multi_paste__separator__title => 'Separator';
+
+  @override
+  String get multi_paste__separator__new_line => 'New line';
+
+  @override
+  String get multi_paste__separator__space => 'Space';
+
+  @override
+  String get multi_paste__separator__custom => 'Custom';
+
+  @override
+  String get multi_paste__separator__custom_label => 'Custom separator';
+
+  @override
+  String get multi_paste__separator__custom_hint =>
+      'Supports escape sequences like \\n and \\t';
+
+  @override
+  String get multi_paste__pacing__title => 'Paste pacing';
+
+  @override
+  String get multi_paste__pacing__subtitle =>
+      'Increase the delay if the target app misses paste events.';
+
+  @override
+  String get multi_paste__wait_between_pastes => 'Wait time between pastes';
+
+  @override
+  String get multi_paste__validation__wait_positive =>
+      'Wait time must be a positive number.';
+
+  @override
+  String get multi_paste__validation__custom_separator_required =>
+      'Please enter a custom separator.';
+
+  @override
+  String get settings__tile__backup_restore__title => 'Backup & Restore';
+
+  @override
+  String get settings__tile__backup_restore__subtitle =>
+      'Create .ccbkup backups and restore locally';
+
+  @override
+  String get settings__switch__prevent_duplicates__title =>
+      'Avoid Immediate Duplicates';
+
+  @override
+  String get settings__switch__prevent_duplicates__subtitle =>
+      'Avoid copying the same content twice in a row';
+
+  @override
+  String get settings__switch__rich_data_capture__title => 'Rich Data Capture';
+
+  @override
+  String get settings__switch__rich_data_capture__subtitle =>
+      'Keep formatting when you copy and paste between apps.';
+
+  @override
+  String get settings__decrypt__title => 'Clipboard Decryption';
+
+  @override
+  String settings__decrypt__count({required int count}) {
+    return 'Currently you have $count encrypted clips locally.';
+  }
+
+  @override
+  String settings__decrypt__progress({
+    required int decrypted,
+    required int total,
+  }) {
+    return 'Decrypted: $decrypted of $total clips.';
+  }
+
+  @override
+  String get settings__decrypt__warning =>
+      '⚠️ Please keep this screen open during this process to avoid data corruption or inconsistencies.';
+
+  @override
+  String get not_found__title => 'Page Not Found';
+
+  @override
+  String get not_found__subtitle =>
+      'The page you are looking for is not found.';
+
+  @override
+  String get not_found__go_home => 'Go Home';
+
+  @override
+  String get backup_restore__dialog__save_as => 'Save Backup As';
+
+  @override
+  String get backup_restore__busy__creating => 'Creating backup...';
+
+  @override
+  String get backup_restore__error__encryption_unavailable =>
+      'Encryption is enabled but currently unavailable. Please unlock E2EE and try again.';
+
+  @override
+  String backup_restore__snackbar__saved({required String outputPath}) {
+    return 'Backup saved to $outputPath';
+  }
+
+  @override
+  String backup_restore__snackbar__create_failed({required String message}) {
+    return 'Backup failed: $message';
+  }
+
+  @override
+  String get backup_restore__dialog__select_file => 'Select Backup File';
+
+  @override
+  String get backup_restore__dialog__restore_title => 'Restore Backup';
+
+  @override
+  String get backup_restore__dialog__restore_subtitle =>
+      'Enter password if this backup is password-protected.';
+
+  @override
+  String get backup_restore__dialog__restore_action => 'Restore';
+
+  @override
+  String get backup_restore__busy__restoring => 'Restoring backup...';
+
+  @override
+  String backup_restore__snackbar__restore_completed({
+    required int clips,
+    required int collections,
+  }) {
+    return 'Restore completed: $clips clips, $collections collections.';
+  }
+
+  @override
+  String backup_restore__snackbar__restore_failed({required String message}) {
+    return 'Restore failed: $message';
+  }
+
+  @override
+  String get backup_restore__error__select_clip_type =>
+      'Select at least one clip type.';
+
+  @override
+  String get backup_restore__error__from_after_to =>
+      'From date must be earlier than To date.';
+
+  @override
+  String get backup_restore__dialog__options__description =>
+      'Choose what to include in this backup archive.';
+
+  @override
+  String get backup_restore__section__clip_types => 'Clip Types';
+
+  @override
+  String get backup_restore__section__cached_files => 'Cached Files';
+
+  @override
+  String get backup_restore__input__max_cached_file_size =>
+      'Max cached file size (MB)';
+
+  @override
+  String get backup_restore__input__max_cached_file_size__hint =>
+      'Optional, e.g. 50';
+
+  @override
+  String get backup_restore__error__positive_number =>
+      'Enter a positive number.';
+
+  @override
+  String get backup_restore__text__select_file_media_for_cache_limit =>
+      'Select File or Media clip types to configure a max cached file size.';
+
+  @override
+  String get backup_restore__section__date_range => 'Date Range';
+
+  @override
+  String get backup_restore__from_date => 'From date';
+
+  @override
+  String get backup_restore__to_date => 'To date';
+
+  @override
+  String get backup_restore__no_minimum_date => 'No minimum date';
+
+  @override
+  String get backup_restore__no_maximum_date => 'No maximum date';
+
+  @override
+  String get backup_restore__clear_date_filter => 'Clear date filter';
+
+  @override
+  String get backup_restore__section__security => 'Security';
+
+  @override
+  String get backup_restore__toggle__password_protect =>
+      'Protect backup with password';
+
+  @override
+  String get backup_restore__input__password => 'Password';
+
+  @override
+  String get backup_restore__input__password__hint => 'At least 6 characters';
+
+  @override
+  String get backup_restore__error__password_min_length =>
+      'Password must be at least 6 characters.';
+
+  @override
+  String get backup_restore__dialog__create_manual_title =>
+      'Create Manual Backup';
+
+  @override
+  String get backup_restore__appbar__title => 'Backup & Restore';
+
+  @override
+  String get backup_restore__card__title => 'Manual Backup & Restore';
+
+  @override
+  String get backup_restore__card__subtitle =>
+      'Create local .ccbkup archives with optional password protection and restore them locally with best-effort dedupe.';
+
+  @override
+  String get backup_restore__actions__title => 'Actions';
+
+  @override
+  String get backup_restore__button__create => 'Create Backup';
+
+  @override
+  String get backup_restore__button__restore => 'Restore Backup';
+
+  @override
+  String get backup_restore__snapshot__backup_title => 'Latest Backup Snapshot';
+
+  @override
+  String get backup_restore__snapshot__restore_title =>
+      'Latest Restore Snapshot';
+
+  @override
+  String get backup_restore__snapshot__restore_subtitle =>
+      'Best-effort dedupe and integrity report';
+
+  @override
+  String get backup_restore__empty_session =>
+      'No backup or restore has been run in this session yet.';
+
+  @override
+  String get backup_restore__label__collections => 'Collections';
+
+  @override
+  String get backup_restore__label__clips => 'Clips';
+
+  @override
+  String get backup_restore__label__files_included => 'Files Included';
+
+  @override
+  String get backup_restore__label__files_missing => 'Files Missing';
+
+  @override
+  String get backup_restore__label__files_skipped_by_size => 'Skipped by Size';
+
+  @override
+  String get backup_restore__label__encrypted_clips => 'Encrypted Clips';
+
+  @override
+  String get backup_restore__label__collections_restored =>
+      'Collections Restored';
+
+  @override
+  String get backup_restore__label__collections_duplicates =>
+      'Collections Duplicates';
+
+  @override
+  String get backup_restore__label__collections_failed => 'Collections Failed';
+
+  @override
+  String get backup_restore__label__clips_restored => 'Clips Restored';
+
+  @override
+  String get backup_restore__label__clips_duplicates => 'Clips Duplicates';
+
+  @override
+  String get backup_restore__label__clips_failed => 'Clips Failed';
+
+  @override
+  String get backup_restore__label__attachments_restored =>
+      'Attachments Restored';
+
+  @override
+  String get backup_restore__label__attachments_missing =>
+      'Attachments Missing';
+
+  @override
+  String get backup_restore__label__attachments_failed => 'Attachments Failed';
+
+  @override
+  String get backup_restore__label__corrupt_entries => 'Corrupt Entries';
+
+  @override
+  String get subscription__loading => 'Loading...';
 }

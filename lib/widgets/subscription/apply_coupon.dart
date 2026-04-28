@@ -101,7 +101,8 @@ class _ApplyCouponDialogState extends State<ApplyCouponDialog> {
                 enabled: !loading,
                 controller: couponController,
                 decoration: InputDecoration(
-                  labelText: "Code",
+                  labelText:
+                      context.locale.dialog__grant_entitlement__code_label,
                   helperText:
                       context.locale.dialog__grant_entitlement__enter_code,
                   errorText: errorMessage,
