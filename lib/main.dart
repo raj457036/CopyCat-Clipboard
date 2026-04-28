@@ -278,7 +278,9 @@ class AppContent extends StatelessWidget {
                         AppLocalizations.localizationsDelegates,
                     supportedLocales: AppLocalizations.supportedLocales,
                     builder: (context, child) {
-                      return UpgraderBuilder(child: child);
+                      return TrayManager.forPlatform(
+                        child: UpgraderBuilder(child: child),
+                      );
                     },
                   ),
                 );
@@ -297,9 +299,7 @@ class MainApp extends StatelessWidget {
     Widget content = EventBridge(
       eventBus: sl(),
       child: WindowFocusManager.forPlatform(
-        child: TrayManager.forPlatform(
-          child: const SystemShortcutListener(child: AppContent()),
-        ),
+        child: const SystemShortcutListener(child: AppContent()),
       ),
     );
     final child = MultiBlocProvider(

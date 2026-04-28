@@ -1,5 +1,6 @@
 import 'dart:async' show FutureOr;
 
+import 'package:clipboard/base/background/file_ops_worker.dart';
 import 'package:clipboard/base/constants/misc.dart';
 import 'package:clipboard/base/data/services/clipboard/clip_models.dart';
 import 'package:clipboard/base/data/services/clipboard/format_processor.dart';
@@ -8,7 +9,6 @@ import 'package:clipboard/base/data/services/clipboard/read_strategy.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard_watcher/clipboard_watcher.dart';
-import 'package:easy_worker/easy_worker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
@@ -333,11 +333,7 @@ class CopyToClipboard {
     if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
       final ext = p.extension(file.path);
       outputFile = p.setExtension(outputFile, ext);
-      final result = await EasyWorker.compute<bool, (String, String)>(
-        copyFile,
-        (file.path, outputFile),
-        name: "Copy File",
-      );
+      final result = await copyFileInBackground(file.path, outputFile);
       return result;
     }
     return true;

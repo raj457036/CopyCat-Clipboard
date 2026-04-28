@@ -1,5 +1,5 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/base/l10n/generated/app_localizations.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
@@ -30,11 +30,13 @@ class TrayManager extends StatefulWidget {
 }
 
 class TrayManagerState extends State<TrayManager> with TrayListener {
+  late final Future<AppLocalizations> englishL10n;
   late final AppConfigCubit configCubit;
   bool paused = false;
 
   @override
   void initState() {
+    englishL10n = lookupAppLocalizations(const Locale('en'));
     configCubit = context.read<AppConfigCubit>();
 
     if (configCubit.state is AppConfigLoaded) {
@@ -75,7 +77,7 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
   }
 
   Future<void> _setToolTip() async {
-    final locale = context.locale;
+    final locale = await englishL10n;
     if (paused) {
       final config = (configCubit.state as AppConfigLoaded).config;
       final pausedTill = DateFormat(
@@ -90,7 +92,7 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
   }
 
   Future<void> initTray() async {
-    final locale = context.locale;
+    final locale = await englishL10n;
     await trayManager.setIcon(icon);
     Menu menu = Menu(
       items: [
@@ -121,7 +123,7 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
   }
 
   Future<void> quitApp() async {
-    final locale = context.locale;
+    final locale = await englishL10n;
     final result = await FlutterPlatformAlert.showCustomAlert(
       windowTitle: locale.app__name,
       text: locale.tray__dialog__quit__subtitle,

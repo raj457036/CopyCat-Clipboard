@@ -1,6 +1,7 @@
 import 'dart:async' show Completer, TimeoutException;
 import 'dart:convert' show utf8;
 
+import 'package:clipboard/base/background/file_ops_worker.dart';
 import 'package:clipboard/base/constants/misc.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/data/services/clipboard/clip_models.dart';
@@ -9,7 +10,6 @@ import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:crypto/crypto.dart' show sha1, Digest;
-import 'package:easy_worker/easy_worker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' as service;
 import 'package:mime/mime.dart' as mime;
@@ -23,22 +23,6 @@ import 'package:universal_io/io.dart';
 
 ImmediateClip? _immediateClip;
 const _duplicateTag = "<-Duplicate";
-
-// ---------------------------------------------------------------------------
-// Isolate-safe file-copy helper (passed to EasyWorker.compute).
-// ---------------------------------------------------------------------------
-
-void copyFile((String, String) paths, Sender sender) {
-  final (from, to) = paths;
-  final fromFile = File(from);
-  try {
-    fromFile.copySync(to);
-    sender(true);
-  } catch (e) {
-    logger.e("Failed to copy file in isolate", error: e);
-    sender(false);
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Cache-file writer — persists raw bytes / text into the app cache directory.
@@ -67,10 +51,10 @@ Future<(File?, String?, int)> writeToClipboardCacheFile({
   final file_ = File(path);
 
   if (file != null) {
-    await EasyWorker.compute(copyFile, (
+    await copyFileInBackground(
       file.uri.toFilePath(windows: Platform.isWindows),
       path,
-    ), name: "Copy File");
+    );
     return (file_, mime.lookupMimeType(file.path), await file.length());
   } else if (textContent != null) {
     await file_.writeAsString(textContent);
