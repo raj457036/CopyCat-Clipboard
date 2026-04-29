@@ -59,4 +59,13 @@ abstract class QuickPastePopupPlatform extends PlatformInterface {
   Future<bool> insertTextDirect(String text) {
     throw UnimplementedError('insertTextDirect() has not been implemented.');
   }
+
+  /// Capture the caret position and focused element context immediately.
+  ///
+  /// Must be called while the target application still has focus (before
+  /// CopyCat activates). The native side caches the result so that the
+  /// subsequent [showQuickPastePopup] call can position itself at the caret.
+  Future<bool> captureCaretContext() {
+    throw UnimplementedError('captureCaretContext() has not been implemented.');
+  }
 }

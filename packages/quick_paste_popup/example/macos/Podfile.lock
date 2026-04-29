@@ -1,0 +1,22 @@
+PODS:
+  - FlutterMacOS (1.0.0)
+  - quick_paste_popup (0.0.1):
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - FlutterMacOS (from `Flutter/ephemeral`)
+  - quick_paste_popup (from `Flutter/ephemeral/.symlinks/plugins/quick_paste_popup/macos`)
+
+EXTERNAL SOURCES:
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+  quick_paste_popup:
+    :path: Flutter/ephemeral/.symlinks/plugins/quick_paste_popup/macos
+
+SPEC CHECKSUMS:
+  FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
+  quick_paste_popup: 0ed179088e77d0add387a5acb6e641940c9230bf
+
+PODFILE CHECKSUM: 54d867c82ac51cbd61b565781b9fada492027009
+
+COCOAPODS: 1.16.2

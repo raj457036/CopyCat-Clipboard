@@ -2,6 +2,7 @@ import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipbo
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
+import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
@@ -126,6 +127,15 @@ class EventBridge extends StatelessWidget {
               androidCubit.updateExclusionRule(rules);
             },
           ),
+        BlocListener<AppConfigCubit, AppConfigState>(
+          listenWhen: (previous, current) =>
+              previous.config.sortBy != current.config.sortBy ||
+              previous.config.sortOrder != current.config.sortOrder,
+          listener: (context, state) {
+            final clipboardCubit = context.read<ClipboardCubit>();
+            clipboardCubit.fetch(fromTop: true);
+          },
+        ),
         BlocListener<AppConfigCubit, AppConfigState>(
           listenWhen: (previous, current) {
             final prev = previous.config;

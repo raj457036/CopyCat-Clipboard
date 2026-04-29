@@ -56,6 +56,11 @@ class QuickPasteService {
   /// Returns the result of the user interaction
   Future<QuickPasteResult?> showQuickPastePopup() async {
     try {
+      // Capture the caret position FIRST, while the target app still has
+      // focus. Once any async work runs CopyCat may become the frontmost
+      // app and the AX query would target CopyCat instead of the editor.
+      await _quickPastePopup.captureCaretContext();
+
       final targetWindowId = await focusWindow.getActiveWindowId();
       var items = await getTopItems();
       debugPrint(

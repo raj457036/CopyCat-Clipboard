@@ -102,4 +102,15 @@ class MethodChannelQuickPastePopup extends QuickPastePopupPlatform {
       return false;
     }
   }
+
+  @override
+  Future<bool> captureCaretContext() async {
+    try {
+      return await methodChannel.invokeMethod<bool>('captureCaretContext') ??
+          false;
+    } catch (e) {
+      debugPrint('Error capturing caret context: $e');
+      return false;
+    }
+  }
 }

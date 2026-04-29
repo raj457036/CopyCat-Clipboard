@@ -7,72 +7,80 @@ public class QuickPastePopupPlugin: NSObject, FlutterPlugin, NSPopoverDelegate {
     private var anchorWindow: NSWindow?
     private var pendingResult: FlutterResult?
     private var didSendResultForCurrentPopup = false
+    private var cachedCaretPosition: CGPoint?
     private var appDeactivationObserver: NSObjectProtocol?
     private var selectionColor: NSColor = .controlAccentColor
-    
+
+    /// PID of the last non-CopyCat app that was active.
+    private var previousActiveAppPID: pid_t?
+    private var activeAppTrackingObserver: NSObjectProtocol?
+
+    // MARK: - Registration
+
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "quick_paste_popup", binaryMessenger: registrar.messenger)
+        let channel = FlutterMethodChannel(
+            name: "quick_paste_popup", binaryMessenger: registrar.messenger
+        )
         let instance = QuickPastePopupPlugin()
         instance.methodChannel = channel
         registrar.addMethodCallDelegate(instance, channel: channel)
+        instance.startTrackingActiveApp()
     }
 
-    public func dummyMethodToEnforceBundling() {
-        // This method is required for the plugin to work properly in release builds
+    /// Continuously track the last non-self app so we can query its AX tree
+    /// for caret position even after CopyCat steals focus.
+    private func startTrackingActiveApp() {
+        let myPID = ProcessInfo.processInfo.processIdentifier
+
+        if let front = NSWorkspace.shared.frontmostApplication,
+           front.processIdentifier != myPID {
+            previousActiveAppPID = front.processIdentifier
+        }
+
+        activeAppTrackingObserver = NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didActivateApplicationNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let app = notification.userInfo?[NSWorkspace.applicationUserInfoKey]
+                    as? NSRunningApplication else { return }
+            if app.processIdentifier != myPID {
+                self?.previousActiveAppPID = app.processIdentifier
+            }
+        }
     }
+
+    // MARK: - Method channel dispatch
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        NSLog("[QuickPastePopupPlugin] Received call: \(call.method)")
         switch call.method {
-        case "getPlatformVersion":
-            handleGetPlatformVersion(result: result)
-            
-        case "getCursorPosition":
-            handleGetCursorPosition(result: result)
-            
-        case "getFocusedApp":
-            handleGetFocusedApp(result: result)
-            
         case "showQuickPastePopup":
             handleShowQuickPastePopup(call: call, result: result)
-
         case "setTheme":
             handleSetTheme(call: call, result: result)
-
         case "insertTextDirect":
             handleInsertTextDirect(call: call, result: result)
-            
+        case "captureCaretContext":
+            handleCaptureCaretContext(result: result)
+        case "getCursorPosition":
+            handleGetCursorPosition(result: result)
+        case "getFocusedApp":
+            result(SystemUtilities.getFocusedApp())
+        case "getPlatformVersion":
+            result("macOS " + ProcessInfo.processInfo.operatingSystemVersionString)
         default:
             result(FlutterMethodNotImplemented)
         }
     }
-    
-    // MARK: - Method Handlers
-    
-    private func handleGetPlatformVersion(result: FlutterResult) {
-        let version = "macOS " + ProcessInfo.processInfo.operatingSystemVersionString
-        result(version)
-    }
-    
+
+    // MARK: - Handlers
+
     private func handleGetCursorPosition(result: FlutterResult) {
-        guard let position = SystemUtilities.getCursorPosition() else {
-            NSLog("[QuickPastePopupPlugin] Cursor position unavailable")
+        guard let pos = SystemUtilities.getCursorPosition() else {
             result(nil)
             return
         }
-
-        NSLog("[QuickPastePopupPlugin] Cursor position x=\(position.x) y=\(position.y)")
-        
-        result([
-            "x": position.x,
-            "y": position.y,
-        ])
-    }
-    
-    private func handleGetFocusedApp(result: FlutterResult) {
-        let appInfo = SystemUtilities.getFocusedApp()
-        NSLog("[QuickPastePopupPlugin] Focused app=\(String(describing: appInfo))")
-        result(appInfo)
+        result(["x": pos.x, "y": pos.y])
     }
 
     private func handleInsertTextDirect(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -81,7 +89,6 @@ public class QuickPastePopupPlugin: NSObject, FlutterPlugin, NSPopoverDelegate {
             result(false)
             return
         }
-
         DispatchQueue.main.async {
             result(PasteboardHelper.insertTextDirectToFocusedElement(text))
         }
@@ -93,216 +100,162 @@ public class QuickPastePopupPlugin: NSObject, FlutterPlugin, NSPopoverDelegate {
             return
         }
 
-        if let selectionColorValue = args["selectionColor"] as? Int64 {
-            selectionColor = NSColor(argb: UInt32(truncatingIfNeeded: selectionColorValue))
+        if let v = args["selectionColor"] as? Int64 {
+            selectionColor = NSColor(argb: UInt32(truncatingIfNeeded: v))
             result(true)
-            return
-        }
-
-        if let selectionColorValue = args["selectionColor"] as? Int {
-            selectionColor = NSColor(argb: UInt32(truncatingIfNeeded: selectionColorValue))
+        } else if let v = args["selectionColor"] as? Int {
+            selectionColor = NSColor(argb: UInt32(truncatingIfNeeded: v))
             result(true)
-            return
+        } else {
+            result(false)
         }
-
-        result(false)
     }
-    
+
+    private func handleCaptureCaretContext(result: @escaping FlutterResult) {
+        guard let targetPID = previousActiveAppPID,
+              let targetApp = NSRunningApplication(processIdentifier: targetPID) else {
+            self.cachedCaretPosition = SystemUtilities.getCursorPosition()
+            result(false)
+            return
+        }
+
+        // Activate the target app so macOS populates its AX focused element.
+        targetApp.activate(options: [.activateAllWindows, .activateIgnoringOtherApps])
+        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+
+        var caretPos = SystemUtilities.getCaretPositionForApp(pid: targetPID)
+        if caretPos == nil {
+            caretPos = SystemUtilities.getFocusedTextCaretPosition()
+        }
+
+        self.cachedCaretPosition = caretPos ?? SystemUtilities.getCursorPosition()
+        result(caretPos != nil)
+    }
+
     private func handleShowQuickPastePopup(call: FlutterMethodCall, result: @escaping FlutterResult) {
         runOnMain {
             self.closeCurrentPopup(sendDismissedIfPending: true)
 
             guard let args = call.arguments as? [String: Any],
                   let itemsData = args["items"] as? [[String: Any]] else {
-                NSLog("[QuickPastePopupPlugin] Invalid arguments for showQuickPastePopup")
-                result([
-                    "selectedItemId": nil,
-                    "dismissed": true,
-                    "error": "Invalid arguments provided",
-                ])
+                result(["selectedItemId": NSNull(), "dismissed": true, "error": "Invalid arguments"])
                 return
             }
 
-            NSLog("[QuickPastePopupPlugin] showQuickPastePopup with items=\(itemsData.count)")
-            let anchorPosition = SystemUtilities.getCursorPosition()
-            NSLog("[QuickPastePopupPlugin] Anchor for popup=\(String(describing: anchorPosition))")
-            
-            let viewController = QuickPastePopupViewController()
-            viewController.items = itemsData
-            viewController.selectionColor = self.selectionColor
+            let anchor = self.cachedCaretPosition
+                ?? SystemUtilities.getFocusedTextCaretPosition()
+                ?? SystemUtilities.getCursorPosition()
+            self.cachedCaretPosition = nil
+
+            let vc = QuickPastePopupViewController()
+            vc.items = itemsData
+            vc.selectionColor = self.selectionColor
 
             let popover = NSPopover()
-            popover.contentViewController = viewController
+            popover.contentViewController = vc
             popover.behavior = .transient
             popover.animates = true
             popover.delegate = self
-            
+
             self.currentPopover = popover
             self.pendingResult = result
             self.didSendResultForCurrentPopup = false
 
-            viewController.completionHandler = { [weak self] selectedItemId, dismissed, error in
+            vc.completionHandler = { [weak self] selectedItemId, dismissed, error in
                 guard let self = self else { return }
                 self.runOnMain {
-                    NSLog(
-                        "[QuickPastePopupPlugin] Completion selectedItemId=\(String(describing: selectedItemId)) dismissed=\(dismissed) error=\(String(describing: error))"
-                    )
-                    
-                    var resultData: [String: Any] = [
-                        "dismissed": dismissed,
-                    ]
-                    
-                    if let itemId = selectedItemId {
-                        resultData["selectedItemId"] = itemId
-                    }
-                    
-                    if let error = error {
-                        resultData["error"] = error
-                    }
-
-                    self.sendResultIfPending(resultData)
+                    var data: [String: Any] = ["dismissed": dismissed]
+                    if let id = selectedItemId { data["selectedItemId"] = id }
+                    if let e = error { data["error"] = e }
+                    self.sendResultIfPending(data)
                     self.closeCurrentPopup(sendDismissedIfPending: false)
                 }
             }
 
-            NSLog("[QuickPastePopupPlugin] Presenting popover")
-
-            guard let anchorView = self.createAnchorView(cursorPosition: anchorPosition) else {
-                self.sendResultIfPending([
-                    "dismissed": true,
-                    "error": "Failed to create anchor view for popover",
-                ])
+            guard let anchorView = self.createAnchorView(at: anchor) else {
+                self.sendResultIfPending(["dismissed": true, "error": "Failed to create anchor"])
                 self.closeCurrentPopup(sendDismissedIfPending: false)
                 return
             }
 
             self.installAppDeactivationObserver()
-
-            popover.show(
-                relativeTo: anchorView.bounds,
-                of: anchorView,
-                preferredEdge: .maxY
-            )
+            popover.show(relativeTo: anchorView.bounds, of: anchorView, preferredEdge: .maxY)
         }
     }
 
+    // MARK: - Popover lifecycle
+
     public func popoverDidClose(_ notification: Notification) {
-        // Only fires from AppKit-initiated closes (transient click-outside)
-        // because we nil the delegate before calling close() ourselves.
-        NSLog("[QuickPastePopupPlugin] Popover closed by AppKit (transient)")
-
-        sendResultIfPending([
-            "dismissed": true,
-        ])
-
+        sendResultIfPending(["dismissed": true])
         cleanupPopupReferences()
     }
 
-    private func sendResultIfPending(_ resultData: [String: Any]) {
+    private func sendResultIfPending(_ data: [String: Any]) {
         guard !didSendResultForCurrentPopup else { return }
         didSendResultForCurrentPopup = true
-        pendingResult?(resultData)
+        pendingResult?(data)
         pendingResult = nil
     }
 
     private func closeCurrentPopup(sendDismissedIfPending: Bool) {
         assert(Thread.isMainThread)
-
-        if sendDismissedIfPending {
-            sendResultIfPending([
-                "dismissed": true,
-            ])
-        }
-
-        // Nil the delegate BEFORE calling close() to prevent a re-entrant call
-        // to popoverDidClose (which fires synchronously on the same call stack).
-        // popoverDidClose is only intended for AppKit-initiated transient closes.
+        if sendDismissedIfPending { sendResultIfPending(["dismissed": true]) }
         currentPopover?.delegate = nil
-
-        if let popover = currentPopover, popover.isShown {
-            popover.close()
-        }
-
+        if let p = currentPopover, p.isShown { p.close() }
         cleanupPopupReferences()
     }
 
     private func cleanupPopupReferences() {
-        // Capture and clear the observer ivar BEFORE removing from NotificationCenter.
-        // This prevents a crash when removal is triggered from inside the observer callback.
-        let observerToRemove = appDeactivationObserver
+        let obs = appDeactivationObserver
         appDeactivationObserver = nil
-        if let observer = observerToRemove {
-            NotificationCenter.default.removeObserver(observer)
-        }
+        if let obs = obs { NotificationCenter.default.removeObserver(obs) }
 
         currentPopover?.delegate = nil
         currentPopover = nil
 
-        // Capture-and-nil BEFORE close to prevent any ARC double-release.
-        let windowToClose = anchorWindow
+        let win = anchorWindow
         anchorWindow = nil
-        windowToClose?.orderOut(nil)
-        windowToClose?.close()
+        win?.orderOut(nil)
+        win?.close()
     }
 
     private func installAppDeactivationObserver() {
-        // Clear any previous observer before installing a new one.
-        let oldObserver = appDeactivationObserver
+        let old = appDeactivationObserver
         appDeactivationObserver = nil
-        if let old = oldObserver {
-            NotificationCenter.default.removeObserver(old)
-        }
+        if let old = old { NotificationCenter.default.removeObserver(old) }
 
         appDeactivationObserver = NotificationCenter.default.addObserver(
             forName: NSApplication.didResignActiveNotification,
-            object: NSApp,
-            queue: .main
+            object: NSApp, queue: .main
         ) { [weak self] _ in
-            guard let self = self else { return }
-            if self.currentPopover?.isShown == true {
-                NSLog("[QuickPastePopupPlugin] App resigned active, closing popover")
-                self.closeCurrentPopup(sendDismissedIfPending: true)
-            }
+            guard let self = self, self.currentPopover?.isShown == true else { return }
+            self.closeCurrentPopup(sendDismissedIfPending: true)
         }
     }
 
-    private func removeAppDeactivationObserver() {
-        let observerToRemove = appDeactivationObserver
-        appDeactivationObserver = nil
-        if let observer = observerToRemove {
-            NotificationCenter.default.removeObserver(observer)
-        }
-    }
+    // MARK: - Utilities
 
     private func runOnMain(_ block: @escaping () -> Void) {
-        if Thread.isMainThread {
-            block()
-        } else {
-            DispatchQueue.main.async {
-                block()
-            }
-        }
+        if Thread.isMainThread { block() }
+        else { DispatchQueue.main.async { block() } }
     }
 
-    private func createAnchorView(cursorPosition: CGPoint?) -> NSView? {
+    private func createAnchorView(at position: CGPoint?) -> NSView? {
         assert(Thread.isMainThread)
 
         let origin: CGPoint
-
-        if let cursorPosition {
-            origin = cursorPosition
+        if let p = position {
+            origin = p
         } else if let screen = NSScreen.main {
             origin = CGPoint(x: screen.visibleFrame.midX, y: screen.visibleFrame.midY)
         } else {
             origin = CGPoint(x: 100, y: 100)
         }
 
-        let frame = NSRect(x: origin.x, y: origin.y, width: 1, height: 1)
         let panel = NSPanel(
-            contentRect: frame,
+            contentRect: NSRect(x: origin.x, y: origin.y, width: 1, height: 1),
             styleMask: [.borderless, .nonactivatingPanel],
-            backing: .buffered,
-            defer: false
+            backing: .buffered, defer: false
         )
         panel.isOpaque = false
         panel.backgroundColor = .clear
@@ -312,16 +265,13 @@ public class QuickPastePopupPlugin: NSObject, FlutterPlugin, NSPopoverDelegate {
         panel.hidesOnDeactivate = false
         panel.isFloatingPanel = true
         panel.collectionBehavior = [.canJoinAllSpaces, .transient, .ignoresCycle]
-        // Must be false under ARC to prevent double-release crash when close() is called.
         panel.isReleasedWhenClosed = false
 
-        let anchorView = NSView(frame: NSRect(x: 0, y: 0, width: 1, height: 1))
-        panel.contentView = anchorView
-        // Show without activating the app, so the original text field keeps focus.
+        let view = NSView(frame: NSRect(x: 0, y: 0, width: 1, height: 1))
+        panel.contentView = view
         panel.orderFrontRegardless()
 
         self.anchorWindow = panel
-        return anchorView
+        return view
     }
 }
-

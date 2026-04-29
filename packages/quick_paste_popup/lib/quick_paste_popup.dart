@@ -44,4 +44,14 @@ class QuickPastePopup {
   Future<bool> insertTextDirect(String text) {
     return QuickPastePopupPlatform.instance.insertTextDirect(text);
   }
+
+  /// Capture the caret position while the target app still has focus.
+  ///
+  /// Call this **immediately** when the hotkey fires, before any async work
+  /// that might cause CopyCat to become the frontmost application. The native
+  /// side caches the caret position so that the next [showQuickPastePopup]
+  /// opens at the correct location.
+  Future<bool> captureCaretContext() {
+    return QuickPastePopupPlatform.instance.captureCaretContext();
+  }
 }

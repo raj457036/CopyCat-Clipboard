@@ -200,9 +200,13 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
         switch appId {
         case "com.google.Chrome", "com.google.Chrome.beta", "com.google.Chrome.dev", "com.google.Chrome.canary", "com.brave.Browser", "com.brave.Browser.beta", "com.brave.Browser.nightly", "com.microsoft.edgemac", "com.microsoft.edgemac.Beta", "com.microsoft.edgemac.Dev", "com.microsoft.edgemac.Canary", "com.mighty.app", "com.ghostbrowser.gb1", "com.bookry.wavebox", "com.pushplaylabs.sidekick", "com.vivaldi.Vivaldi", "company.thebrowser.Browser":
 
-            let chromeObject: ChromeProtocol = SBApplication.init(bundleIdentifier: appId)!
+            let chromeObject: ChromeProtocol? = SBApplication.init(bundleIdentifier: appId)
 
-            let frontWindow = chromeObject.windows?()[0]
+            if (chromeObject == nil) {
+                return nil;
+            }
+
+            let frontWindow = chromeObject!.windows?()[0]
             let activeTab = frontWindow?.activeTab
             return activeTab?.title
         default:

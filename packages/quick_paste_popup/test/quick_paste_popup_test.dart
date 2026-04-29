@@ -28,6 +28,9 @@ class MockQuickPastePopupPlatform
 
   @override
   Future<bool> insertTextDirect(String text) => Future.value(true);
+
+  @override
+  Future<bool> captureCaretContext() => Future.value(true);
 }
 
 void main() {
