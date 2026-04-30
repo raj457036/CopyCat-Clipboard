@@ -41,9 +41,20 @@ class QuickPasteHotKeySwitch extends StatelessWidget {
                   style: textTheme.bodySmall?.copyWith(color: colors.outline),
                 )
               else
-                Text(
-                  'Hotkey configured to open quick paste popup.',
-                  style: textTheme.bodySmall?.copyWith(color: colors.outline),
+                RichText(
+                  text: TextSpan(
+                    text: context.locale.settings__hotkey__preview_start,
+                    children: [
+                      WidgetSpan(
+                        child: HotKeyVirtualView(hotKey: state),
+                        alignment: PlaceholderAlignment.middle,
+                      ),
+                      TextSpan(
+                        text: context.locale.settings__hotkey__preview_end,
+                      ),
+                    ],
+                    style: textTheme.bodySmall?.copyWith(color: colors.outline),
+                  ),
                   maxLines: 2,
                 ),
             ],
