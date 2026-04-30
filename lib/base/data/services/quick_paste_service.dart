@@ -5,7 +5,6 @@ import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:focus_window/focus_window.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart' as p;
