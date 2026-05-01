@@ -34,24 +34,29 @@ const IsarApplicationMetaSchema = CollectionSchema(
       name: r'iconLocalPath',
       type: IsarType.string,
     ),
-    r'identifier': PropertySchema(
+    r'iconRemotePath': PropertySchema(
       id: 4,
+      name: r'iconRemotePath',
+      type: IsarType.string,
+    ),
+    r'identifier': PropertySchema(
+      id: 5,
       name: r'identifier',
       type: IsarType.string,
     ),
     r'modified': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'modified',
       type: IsarType.dateTime,
     ),
     r'os': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'os',
       type: IsarType.string,
       enumMap: _IsarApplicationMetaosEnumValueMap,
     ),
     r'sourceId': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'sourceId',
       type: IsarType.string,
     ),
@@ -124,6 +129,12 @@ int _isarApplicationMetaEstimateSize(
     }
   }
   {
+    final value = object.iconRemotePath;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.identifier;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -144,10 +155,11 @@ void _isarApplicationMetaSerialize(
   writer.writeString(offsets[1], object.appName);
   writer.writeDateTime(offsets[2], object.created);
   writer.writeString(offsets[3], object.iconLocalPath);
-  writer.writeString(offsets[4], object.identifier);
-  writer.writeDateTime(offsets[5], object.modified);
-  writer.writeString(offsets[6], object.os.name);
-  writer.writeString(offsets[7], object.sourceId);
+  writer.writeString(offsets[4], object.iconRemotePath);
+  writer.writeString(offsets[5], object.identifier);
+  writer.writeDateTime(offsets[6], object.modified);
+  writer.writeString(offsets[7], object.os.name);
+  writer.writeString(offsets[8], object.sourceId);
 }
 
 IsarApplicationMeta _isarApplicationMetaDeserialize(
@@ -161,13 +173,14 @@ IsarApplicationMeta _isarApplicationMetaDeserialize(
   object.appName = reader.readStringOrNull(offsets[1]);
   object.created = reader.readDateTime(offsets[2]);
   object.iconLocalPath = reader.readStringOrNull(offsets[3]);
-  object.identifier = reader.readStringOrNull(offsets[4]);
+  object.iconRemotePath = reader.readStringOrNull(offsets[4]);
+  object.identifier = reader.readStringOrNull(offsets[5]);
   object.isarId = id;
-  object.modified = reader.readDateTime(offsets[5]);
+  object.modified = reader.readDateTime(offsets[6]);
   object.os =
-      _IsarApplicationMetaosValueEnumMap[reader.readStringOrNull(offsets[6])] ??
+      _IsarApplicationMetaosValueEnumMap[reader.readStringOrNull(offsets[7])] ??
       PlatformOS.android;
-  object.sourceId = reader.readString(offsets[7]);
+  object.sourceId = reader.readString(offsets[8]);
   return object;
 }
 
@@ -189,14 +202,16 @@ P _isarApplicationMetaDeserializeProp<P>(
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 6:
+      return (reader.readDateTime(offset)) as P;
+    case 7:
       return (_IsarApplicationMetaosValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               PlatformOS.android)
           as P;
-    case 7:
+    case 8:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1044,6 +1059,165 @@ extension IsarApplicationMetaQueryFilter
   }
 
   QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterFilterCondition>
+  iconRemotePathIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'iconRemotePath'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterFilterCondition>
+  iconRemotePathIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'iconRemotePath'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterFilterCondition>
+  iconRemotePathEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'iconRemotePath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterFilterCondition>
+  iconRemotePathGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'iconRemotePath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterFilterCondition>
+  iconRemotePathLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'iconRemotePath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterFilterCondition>
+  iconRemotePathBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'iconRemotePath',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterFilterCondition>
+  iconRemotePathStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'iconRemotePath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterFilterCondition>
+  iconRemotePathEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'iconRemotePath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterFilterCondition>
+  iconRemotePathContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'iconRemotePath',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterFilterCondition>
+  iconRemotePathMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'iconRemotePath',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterFilterCondition>
+  iconRemotePathIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'iconRemotePath', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterFilterCondition>
+  iconRemotePathIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'iconRemotePath', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterFilterCondition>
   identifierIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -1670,6 +1844,20 @@ extension IsarApplicationMetaQuerySortBy
   }
 
   QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterSortBy>
+  sortByIconRemotePath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'iconRemotePath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterSortBy>
+  sortByIconRemotePathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'iconRemotePath', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterSortBy>
   sortByIdentifier() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'identifier', Sort.asc);
@@ -1785,6 +1973,20 @@ extension IsarApplicationMetaQuerySortThenBy
   }
 
   QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterSortBy>
+  thenByIconRemotePath() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'iconRemotePath', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterSortBy>
+  thenByIconRemotePathDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'iconRemotePath', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QAfterSortBy>
   thenByIdentifier() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'identifier', Sort.asc);
@@ -1889,6 +2091,16 @@ extension IsarApplicationMetaQueryWhereDistinct
   }
 
   QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QDistinct>
+  distinctByIconRemotePath({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(
+        r'iconRemotePath',
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, IsarApplicationMeta, QDistinct>
   distinctByIdentifier({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'identifier', caseSensitive: caseSensitive);
@@ -1950,6 +2162,13 @@ extension IsarApplicationMetaQueryProperty
   iconLocalPathProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'iconLocalPath');
+    });
+  }
+
+  QueryBuilder<IsarApplicationMeta, String?, QQueryOperations>
+  iconRemotePathProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'iconRemotePath');
     });
   }
 

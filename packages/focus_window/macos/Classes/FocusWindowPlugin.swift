@@ -130,6 +130,9 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
             case "getIcon":
                 getIcon(call, result: result)
                 break
+            case "getIconByIdentifier":
+                getIconByIdentifier(call, result: result)
+                break
             case "getActivity":
                 getActivity(call, result: result)
                 break
@@ -173,6 +176,13 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
     private func getIconForApplicationPath(_ applicationPath: String) -> NSImage? {
         let application = NSWorkspace.shared.icon(forFile: applicationPath)
         return application
+    }
+
+    private func getIconForApplicationIdentifier(_ identifier: String) -> NSImage? {
+        guard let applicationUrl = NSWorkspace.shared.urlForApplication(withBundleIdentifier: identifier) else {
+            return nil
+        }
+        return getIconForApplicationPath(applicationUrl.path)
     }
     
     private func getFrontApp() -> NSRunningApplication? {
@@ -437,6 +447,21 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
                 result(data)
             }
         }
+    }
+
+    public func getIconByIdentifier(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let args:[String: Any] = call.arguments as! [String: Any]
+        let identifier: String = args["identifier"] as! String
+        let application = getIconForApplicationIdentifier(identifier)
+        if (application != nil) {
+            let data = NSBitmapImageRep(data: application!.tiffRepresentation(using: .lzw, factor: .greatestFiniteMagnitude)!)!.representation(using: .png, properties: [:]);
+
+            if (data != nil) {
+                result(data)
+                return
+            }
+        }
+        result(nil)
     }
 
     public func isAccessibilityPermissionGranted(_ call: FlutterMethodCall, result: @escaping FlutterResult) {

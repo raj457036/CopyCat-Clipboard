@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:universal_io/io.dart';
 
 class Failure {
@@ -14,6 +15,12 @@ class Failure {
   factory Failure.fromException(dynamic e) {
     if (e is Failure) return e;
     if (e is SocketException) return noInternetConnectionFailure;
+    if (e is FunctionException) {
+      return Failure(
+        message: e.reasonPhrase ?? "Function error",
+        code: e.status.toString(),
+      );
+    }
     try {
       return Failure(message: e.message, code: e.runtimeType.toString());
     } catch (e) {

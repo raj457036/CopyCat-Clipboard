@@ -3,6 +3,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
+import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/pages/preview/page.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
@@ -481,6 +482,7 @@ class _ClipInspectorState extends State<ClipInspector> {
           label: context.locale.preview__inspector__label__source_app,
           sourceApp: item.sourceApp!.trim(),
           sourceId: item.sourceId,
+          sourceOs: item.os,
         ),
       );
     }
@@ -747,11 +749,13 @@ class _InspectorSourceAppRow extends StatelessWidget {
   final String label;
   final String sourceApp;
   final String? sourceId;
+  final PlatformOS sourceOs;
 
   const _InspectorSourceAppRow({
     required this.label,
     required this.sourceApp,
     required this.sourceId,
+    required this.sourceOs,
   });
 
   @override
@@ -777,7 +781,11 @@ class _InspectorSourceAppRow extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SourceAppIcon(sourceId: sourceId, trailingSpacing: 8),
+                SourceAppIcon(
+                  sourceId: sourceId,
+                  sourceOs: sourceOs,
+                  trailingSpacing: 8,
+                ),
                 Expanded(
                   child: SelectableText(sourceApp, style: textTheme.bodyMedium),
                 ),

@@ -27,6 +27,10 @@ class FocusWindow {
     return FocusWindowPlatform.instance.getIcon(applicationPath);
   }
 
+  Future<Uint8List?> getIconByIdentifier(String identifier) {
+    return FocusWindowPlatform.instance.getIconByIdentifier(identifier);
+  }
+
   Future<bool> isAccessibilityPermissionGranted() {
     return FocusWindowPlatform.instance.isAccessibilityPermissionGranted();
   }

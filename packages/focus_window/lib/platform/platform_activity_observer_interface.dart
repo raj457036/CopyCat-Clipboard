@@ -4,6 +4,7 @@ import 'activity_info.dart';
 
 abstract class PlatformActivityObserverInterface {
   Future<Uint8List?> getIcon(String applicationPath);
+  Future<Uint8List?> getIconByIdentifier(String identifier);
   Future<ActivityInfo> getActivity({bool withIcon = false});
   Future<bool> requestAccessibilityPermission();
   Future<bool> isAccessibilityPermissionGranted();

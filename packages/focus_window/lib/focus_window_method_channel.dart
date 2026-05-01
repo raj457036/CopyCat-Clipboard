@@ -57,6 +57,11 @@ class MethodChannelFocusWindow extends FocusWindowPlatform {
   }
 
   @override
+  Future<Uint8List?> getIconByIdentifier(String identifier) {
+    return activityObserver.getIconByIdentifier(identifier);
+  }
+
+  @override
   Future<bool> isAccessibilityPermissionGranted() {
     return activityObserver.isAccessibilityPermissionGranted();
   }

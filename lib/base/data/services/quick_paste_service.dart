@@ -252,7 +252,10 @@ class QuickPasteService {
     if (sourceId == null || sourceId.isEmpty) {
       return null;
     }
-    return await applicationMetaResolver.getIconPathBySourceId(sourceId);
+    return await applicationMetaResolver.getIconPathBySourceId(
+      sourceId,
+      sourceOs: item.os,
+    );
   }
 
   Color _resolvedQuickPasteSelectionColor() {

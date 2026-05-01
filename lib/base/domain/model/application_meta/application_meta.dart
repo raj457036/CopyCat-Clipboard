@@ -8,6 +8,7 @@ class ApplicationMeta {
   final String? appFilePath;
   final PlatformOS os;
   final String? iconLocalPath;
+  final String? iconRemotePath;
   final DateTime created;
   final DateTime modified;
 
@@ -19,6 +20,7 @@ class ApplicationMeta {
     this.appFilePath,
     required this.os,
     this.iconLocalPath,
+    this.iconRemotePath,
     required this.created,
     required this.modified,
   });
@@ -32,6 +34,7 @@ class ApplicationMeta {
     PlatformOS? os,
     String? iconLocalPath,
     bool clearIconLocalPath = false,
+    String? iconRemotePath,
     DateTime? created,
     DateTime? modified,
   }) {
@@ -45,8 +48,12 @@ class ApplicationMeta {
       iconLocalPath: clearIconLocalPath
           ? null
           : (iconLocalPath ?? this.iconLocalPath),
+      iconRemotePath: iconRemotePath ?? this.iconRemotePath,
       created: created ?? this.created,
       modified: modified ?? this.modified,
     );
   }
+
+  bool get directorySynced => iconRemotePath != null;
+  bool get hasIcon => iconLocalPath != null || iconRemotePath != null;
 }

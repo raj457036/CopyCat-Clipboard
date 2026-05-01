@@ -50,6 +50,7 @@ import 'package:clipboard/base/data/isar/services/isar_clip_batch_sync_service.d
     as _i639;
 import 'package:clipboard/base/data/repositories/analytics.dart' as _i202;
 import 'package:clipboard/base/data/repositories/app_config.dart' as _i655;
+import 'package:clipboard/base/data/repositories/app_directory.dart' as _i715;
 import 'package:clipboard/base/data/repositories/application_meta.dart'
     as _i756;
 import 'package:clipboard/base/data/repositories/auth.dart' as _i346;
@@ -94,6 +95,7 @@ import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart'
     as _i1066;
 import 'package:clipboard/base/domain/repositories/analytics.dart' as _i707;
 import 'package:clipboard/base/domain/repositories/app_config.dart' as _i891;
+import 'package:clipboard/base/domain/repositories/app_directory.dart' as _i636;
 import 'package:clipboard/base/domain/repositories/application_meta.dart'
     as _i110;
 import 'package:clipboard/base/domain/repositories/auth.dart' as _i579;
@@ -243,12 +245,22 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'local',
     );
+    gh.lazySingleton<_i636.AppDirectoryRepository>(
+      () => _i715.AppDirectoryRepositoryImpl(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i670.ClipCollectionSource>(
       () => _i899.RemoteClipCollectionSource(gh<_i454.SupabaseClient>()),
       instanceName: 'remote',
     );
     gh.lazySingleton<_i579.AuthRepository>(
       () => _i346.AuthRepositoryImpl(client: gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i533.ApplicationMetaResolver>(
+      () => _i375.ApplicationMetaResolverImpl(
+        gh<_i110.ApplicationMetaRepository>(),
+        gh<_i291.FocusWindow>(),
+        gh<_i636.AppDirectoryRepository>(),
+      ),
     );
     gh.singleton<_i542.AppConfigCubit>(
       () => _i542.AppConfigCubit(gh<_i891.AppConfigRepository>()),
@@ -276,12 +288,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i23.ClipboardSource>(
       () => _i411.RemoteClipboardSource(gh<_i454.SupabaseClient>()),
       instanceName: 'remote',
-    );
-    gh.lazySingleton<_i533.ApplicationMetaResolver>(
-      () => _i375.ApplicationMetaResolverImpl(
-        gh<_i110.ApplicationMetaRepository>(),
-        gh<_i291.FocusWindow>(),
-      ),
     );
     gh.lazySingleton<_i782.SyncClipboardSource>(
       () => _i425.SyncClipboardSourceImpl(gh<_i454.SupabaseClient>()),

@@ -94,6 +94,7 @@ class LeadingClipboardOption extends StatelessWidget {
       children: [
         SourceAppIcon(
           sourceId: item.sourceId,
+          sourceOs: item.os,
           padding: const EdgeInsets.only(left: padding10),
         ),
         createTime,

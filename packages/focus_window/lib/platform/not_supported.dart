@@ -19,6 +19,11 @@ class NotSupportedPlatformActivityObserver
   }
 
   @override
+  Future<Uint8List?> getIconByIdentifier(String identifier) {
+    return Future.value(null);
+  }
+
+  @override
   Future<bool> isAccessibilityPermissionGranted() {
     return Future.value(false);
   }

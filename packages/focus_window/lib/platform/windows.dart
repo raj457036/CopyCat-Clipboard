@@ -71,6 +71,18 @@ class WindowsActivityObserver implements PlatformActivityObserverInterface {
     return base64.decode(result.trim());
   }
 
+  @override
+  Future<Uint8List?> getIconByIdentifier(String identifier) async {
+    if (!cached) await cacheAll();
+
+    final current = _lastActivity ?? await getActivity(withIcon: false);
+    if (current.identifier == identifier) {
+      return getIcon(current.appFilePath);
+    }
+
+    return null;
+  }
+
   Future<String?> getUrl(String app, String windowTitle) async {
     final result = await runInPowershell(
       [

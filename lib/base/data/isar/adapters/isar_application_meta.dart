@@ -22,6 +22,7 @@ class IsarApplicationMeta {
   late PlatformOS os;
 
   String? iconLocalPath;
+  String? iconRemotePath;
   late DateTime created;
   late DateTime modified;
 
@@ -33,6 +34,7 @@ class IsarApplicationMeta {
     appFilePath: appFilePath,
     os: os,
     iconLocalPath: iconLocalPath,
+    iconRemotePath: iconRemotePath,
     created: created,
     modified: modified,
   );
@@ -46,6 +48,7 @@ class IsarApplicationMeta {
         ..appFilePath = item.appFilePath
         ..os = item.os
         ..iconLocalPath = item.iconLocalPath
+        ..iconRemotePath = item.iconRemotePath
         ..created = item.created
         ..modified = item.modified;
 }

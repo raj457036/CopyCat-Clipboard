@@ -49,6 +49,11 @@ abstract class FocusWindowPlatform extends PlatformInterface
   }
 
   @override
+  Future<Uint8List?> getIconByIdentifier(String identifier) {
+    throw UnimplementedError("getIconByIdentifier() has not been implemented");
+  }
+
+  @override
   Future<ActivityInfo> getActivity({bool withIcon = false}) {
     throw UnimplementedError("ActivityInfo() has not been implemented");
   }

@@ -49,6 +49,15 @@ class MacosActivityObserver implements PlatformActivityObserverInterface {
   }
 
   @override
+  Future<Uint8List?> getIconByIdentifier(String identifier) async {
+    final result = await _channel.invokeMethod('getIconByIdentifier', {
+      'identifier': identifier,
+    });
+
+    return result;
+  }
+
+  @override
   Future<bool> requestAccessibilityPermission() async {
     return await _channel.invokeMethod('requestAccessibilityPermission') ??
         false;
