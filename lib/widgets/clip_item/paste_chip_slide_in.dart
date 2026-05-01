@@ -7,23 +7,27 @@ import 'package:flutter/material.dart';
 class PasteChipSlideIn extends StatelessWidget {
   final Widget clipChild;
   final bool showPasteChip;
+  final bool isCentered;
 
   const PasteChipSlideIn({
     super.key,
     required this.clipChild,
     required this.showPasteChip,
+    this.isCentered = false,
   });
 
   @override
   Widget build(BuildContext context) {
     if (!isDesktopPlatform) return clipChild;
     return Stack(
+      alignment: Alignment.bottomCenter,
       children: [
-        Positioned.fill(child: clipChild),
+        clipChild,
         Positioned(
-          bottom: padding10,
+          bottom: isCentered ? 0 : padding10,
           left: 0,
           right: 0,
+          top: isCentered ? 0 : null,
           child: IgnorePointer(
             ignoring: !showPasteChip,
             child: AnimatedOpacity(

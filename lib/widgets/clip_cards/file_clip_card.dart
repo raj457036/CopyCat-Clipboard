@@ -34,42 +34,18 @@ class FileClipCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
     final textTheme = context.textTheme;
-    final label = "${_displayFileType()} • ~${formatBytes(item.fileSize!)}";
-
-    final metaChip = Chip(
-      labelPadding: EdgeInsets.zero,
-      padding: const EdgeInsets.symmetric(horizontal: padding6),
-
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      shape: const StadiumBorder(),
-      label: Text(
-        label,
-        style: textTheme.labelSmall?.copyWith(fontVariations: fontVarW700),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      // side: BorderSide.none,
-    );
+    final label =
+        "${_displayFileType()} • ${formatBytes(item.fileSize!)} • ${item.fileName?.sub(end: 30) ?? "No Name"}";
 
     return SizedBox.expand(
       child: Padding(
         padding: const EdgeInsets.all(padding8),
-        child: Stack(
-          children: [
-            Text(
-              item.fileName?.sub(end: 30) ?? "No Name",
-              overflow: TextOverflow.fade,
-              maxLines: 5,
-              textAlign: TextAlign.center,
-              style: textTheme.bodySmall?.copyWith(
-                color: colors.onSurface,
-                height: 1.8,
-              ),
-            ),
-            Align(alignment: const Alignment(0.0, 0.95), child: metaChip),
-          ],
+        child: Text(
+          label,
+          style: textTheme.labelMedium,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     );

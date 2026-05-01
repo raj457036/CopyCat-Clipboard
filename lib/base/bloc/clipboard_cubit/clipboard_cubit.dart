@@ -24,6 +24,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   final ClipboardRepository repo;
   final AppConfigCubit _appConfigCubit;
   late StreamSubscription eventBusSubscription;
+  bool _isFetching = false;
 
   ClipboardCubit(
     this.syncEventBus,
@@ -49,7 +50,6 @@ class ClipboardCubit extends Cubit<ClipboardState> {
 
   void refresh() {
     if (state.loading) return;
-    emit(state.copyWith(loading: true, offset: 0));
     fetch(fromTop: true);
   }
 
@@ -211,6 +211,11 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     SearchFilterState? filterState,
     int? limit,
   }) async {
+    if (_isFetching) return;
+    if (!fromTop && !state.hasMore) return;
+
+    _isFetching = true;
+
     final resolvedQuery = query ?? state.query;
     final resolvedFilter = fromTop
         ? filterState ??
@@ -220,40 +225,44 @@ class ClipboardCubit extends Cubit<ClipboardState> {
               )
         : state.filterState;
 
-    emit(
-      state.copyWith(
-        loading: true,
-        query: resolvedQuery,
-        offset: fromTop ? 0 : state.offset,
-        filterState: resolvedFilter,
-        limit: limit ?? 50,
-      ),
-    );
-
-    final items = await repo.getList(
-      limit: state.limit,
-      offset: fromTop ? 0 : state.offset,
-      search: resolvedQuery.isEmpty ? null : resolvedQuery,
-      types: state.filterState.typeIncludes,
-      category: state.filterState.textCategories,
-      from: state.filterState.from,
-      to: state.filterState.to,
-      order: state.filterState.sortOrder ?? SortOrder.desc,
-      sortBy: state.filterState.sortBy,
-    );
-
-    emit(
-      items.fold(
-        (l) => state.copyWith(failure: l, loading: false),
-        (r) => state.copyWith(
-          loading: false,
-          items: fromTop ? r.results : [...state.items, ...r.results],
-          offset: state.offset + r.results.length,
-          limit: state.limit,
-          hasMore: r.hasMore,
+    try {
+      emit(
+        state.copyWith(
+          loading: true,
+          query: resolvedQuery,
+          offset: fromTop ? 0 : state.offset,
+          filterState: resolvedFilter,
+          limit: limit ?? 50,
         ),
-      ),
-    );
+      );
+
+      final items = await repo.getList(
+        limit: state.limit,
+        offset: fromTop ? 0 : state.offset,
+        search: resolvedQuery.isEmpty ? null : resolvedQuery,
+        types: state.filterState.typeIncludes,
+        category: state.filterState.textCategories,
+        from: state.filterState.from,
+        to: state.filterState.to,
+        order: state.filterState.sortOrder ?? SortOrder.desc,
+        sortBy: state.filterState.sortBy,
+      );
+
+      emit(
+        items.fold(
+          (l) => state.copyWith(failure: l, loading: false),
+          (r) => state.copyWith(
+            loading: false,
+            items: fromTop ? r.results : [...state.items, ...r.results],
+            offset: state.offset + r.results.length,
+            limit: state.limit,
+            hasMore: r.hasMore,
+          ),
+        ),
+      );
+    } finally {
+      _isFetching = false;
+    }
   }
 
   Future<void> deleteItem(List<ClipboardItem> items) async {

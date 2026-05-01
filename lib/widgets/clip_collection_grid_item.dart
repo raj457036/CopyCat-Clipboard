@@ -72,7 +72,7 @@ class ClipCollectionGridItem extends StatelessWidget {
           child: InkWell(
             mouseCursor: SystemMouseCursors.click,
             borderRadius: radius12,
-            onSecondaryTapDown: selectionOnly
+            onSecondaryTapUp: selectionOnly
                 ? null
                 : (detail) {
                     final position = detail.globalPosition;

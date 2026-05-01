@@ -23,11 +23,20 @@ class ScaffoldBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = context.mq.size.width;
     final isMobile = Breakpoints.isMobile(width);
+    BorderRadius borderRadius_ = const BorderRadius.vertical(
+      top: Radius.circular(18),
+    );
     if (isMobile) {
       return Card(
-        margin: EdgeInsets.zero,
+        elevation: 0,
+        clipBehavior: Clip.hardEdge,
+        margin: const EdgeInsets.only(
+          top: padding8,
+          left: padding8,
+          right: padding8,
+        ),
         color: background,
-        shape: const RoundedRectangleBorder(),
+        shape: RoundedRectangleBorder(borderRadius: borderRadius_),
         child: child,
       );
     }
@@ -38,7 +47,6 @@ class ScaffoldBody extends StatelessWidget {
       (BorderRadius, EdgeInsetsGeometry)
     >(
       selector: (state) {
-        BorderRadius borderRadius_;
         EdgeInsets margin_;
         switch (state.view) {
           case AppView.topDocked || AppView.bottomDocked:
@@ -48,9 +56,6 @@ class ScaffoldBody extends StatelessWidget {
             }
 
           default:
-            borderRadius_ = const BorderRadius.vertical(
-              top: Radius.circular(18),
-            );
             margin_ = const EdgeInsets.only(right: padding12);
         }
 

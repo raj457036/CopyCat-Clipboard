@@ -49,6 +49,8 @@ class PasteStackBody extends StatelessWidget {
                     noView: true,
                     selectionActive: false,
                     selectionIndex: -1,
+                    // isFirst: index == 0,
+                    // isLast: index == items.length - 1,
                   );
                 },
               ),

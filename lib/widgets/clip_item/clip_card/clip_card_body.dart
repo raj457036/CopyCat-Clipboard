@@ -207,9 +207,9 @@ class _ClipCardBodyState extends State<ClipCardBody> {
             ? colors.primary
             : colors.outlineVariant,
         width: focused
-            ? focusedItemBorderWidth
+            ? focusedGridItemBorderWidth
             : widget.selected
-            ? selectedItemBorderWidth
+            ? selectedGridItemBorderWidth
             : 1.0,
         strokeAlign: BorderSide.strokeAlignInside,
       ),
@@ -246,7 +246,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
               ? () => performPrimaryActionOnClip(context, widget.item, canPaste)
               : () => toggleSelect(context),
           // onLongPress: () => menu.openOptionDialog(context),
-          onSecondaryTapDown: !widget.selectionActive
+          onSecondaryTapUp: !widget.selectionActive
               ? (detail) async {
                   final menu = Menu.of(context);
                   if (isMobilePlatform) {

@@ -27,6 +27,8 @@ class ClipListItem extends StatefulWidget {
   final bool noView;
   final bool selectionActive;
   final ClipboardItem item;
+  final bool isFirst;
+  final bool isLast;
 
   const ClipListItem({
     super.key,
@@ -36,6 +38,8 @@ class ClipListItem extends StatefulWidget {
     this.noView = false,
     this.selectionActive = false,
     required this.selectionIndex,
+    this.isFirst = false,
+    this.isLast = false,
   });
 
   @override
@@ -99,22 +103,40 @@ class _ClipListItemState extends State<ClipListItem> {
     }
   }
 
+  BorderRadiusGeometry getRadius() {
+    if (widget.isFirst) {
+      return const BorderRadius.vertical(
+        top: Radius.circular(12),
+        bottom: Radius.circular(4),
+      );
+    } else if (widget.isLast) {
+      return const BorderRadius.vertical(
+        top: Radius.circular(4),
+        bottom: Radius.circular(12),
+      );
+    } else {
+      return BorderRadius.circular(4);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final canPaste = CanPasteScope.of(context);
     final colors = context.colors;
     final textTheme = context.textTheme;
 
-    final selectedShape = focused || widget.selected
+    final selectedShape = focused || widget.selected || hovered
         ? RoundedRectangleBorder(
             side: BorderSide(
               color: colors.primary,
-              width: focused ? focusedItemBorderWidth : selectedItemBorderWidth,
+              width: focused
+                  ? focusedListItemBorderWidth
+                  : selectedListItemBorderWidth,
               strokeAlign: BorderSide.strokeAlignInside,
             ),
-            borderRadius: radius12,
+            borderRadius: getRadius(),
           )
-        : null;
+        : RoundedRectangleBorder(borderRadius: getRadius());
 
     final child = SpaceEnterListener(
       onSpace: (context) => widget.selectionActive
@@ -128,8 +150,9 @@ class _ClipListItemState extends State<ClipListItem> {
       onShiftC: (context) => onShiftC(context, widget.item, canPaste),
       child: Card.outlined(
         shape: selectedShape,
+        margin: const EdgeInsets.symmetric(vertical: padding2),
         elevation: focused ? 2 : 0,
-        clipBehavior: Clip.antiAlias,
+        clipBehavior: Clip.hardEdge,
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 60, maxHeight: 160),
           child: InkWell(
@@ -140,7 +163,7 @@ class _ClipListItemState extends State<ClipListItem> {
                 ? () =>
                       performPrimaryActionOnClip(context, widget.item, canPaste)
                 : () => toggleSelect(context),
-            onSecondaryTapDown: !widget.selectionActive
+            onSecondaryTapUp: !widget.selectionActive
                 ? (detail) async {
                     final menu = Menu.of(context);
                     if (isMobilePlatform) {
@@ -179,7 +202,7 @@ class _ClipListItemState extends State<ClipListItem> {
                       child: Text(
                         widget.item.displayTitle!,
                         style: textTheme.titleSmall?.copyWith(
-                          fontVariations: fontVarW700,
+                          fontVariations: fontVarW600,
                         ),
                         maxLines: 2,
                       ),

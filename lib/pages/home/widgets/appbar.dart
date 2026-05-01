@@ -10,17 +10,16 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final size = context.mq.size;
-    final scrollUnderElevation = size.width < 600 ? 4.0 : 0.0;
     late final Widget defaultAppBar;
     if (size.shortestSide < 250) {
       defaultAppBar = const SizedBox.shrink();
     } else {
       defaultAppBar = AppBar(
         title: const SearchInputBar(),
-        titleSpacing: 6,
-        scrolledUnderElevation: scrollUnderElevation,
+        titleSpacing: 16,
+        scrolledUnderElevation: 0.0,
         centerTitle: true,
-        backgroundColor: scrollUnderElevation > 0 ? null : colors.surface,
+        backgroundColor: colors.surface,
       );
     }
     return SelectionAppbar(defaultChild: defaultAppBar);

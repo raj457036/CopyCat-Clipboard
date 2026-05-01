@@ -76,8 +76,8 @@ class MediaClipCard extends StatelessWidget {
       if (item.fileMimeType!.startsWith(mediaMimeRegex)) {
         final label = "${item.fileMimeType!} • ${formatBytes(item.fileSize!)}";
         return Chip(
-          padding: EdgeInsets.zero,
-          materialTapTargetSize: MaterialTapTargetSize.padded,
+          // padding: EdgeInsets.zero,
+          // materialTapTargetSize: MaterialTapTargetSize.padded,
           label: Text(
             label,
             style: textTheme.labelSmall?.copyWith(fontVariations: fontVarW700),

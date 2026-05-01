@@ -71,5 +71,7 @@ const dockedTBMinHeight = 240.0;
 const initialWindowSize = Size(initialWindowWidth, initialWindowHeight);
 const minimumWindowSize = Size(dockedLRMinWidth, dockedTBMinHeight);
 
-const focusedItemBorderWidth = 3.0;
-const selectedItemBorderWidth = 2.0;
+const focusedGridItemBorderWidth = 3.0;
+const selectedGridItemBorderWidth = 2.0;
+const focusedListItemBorderWidth = 2.5;
+const selectedListItemBorderWidth = 1.5;

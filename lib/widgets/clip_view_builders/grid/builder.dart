@@ -11,7 +11,6 @@ import 'package:clipboard/widgets/clip_item/clip_card/clip_card.dart';
 import 'package:clipboard/widgets/clip_item/clip_meta_info.dart';
 import 'package:clipboard/widgets/clipcard_loading.dart';
 import 'package:clipboard/widgets/empty.dart';
-import 'package:clipboard/widgets/load_more_card.dart';
 import 'package:clipboard/widgets/on_event.dart';
 import 'package:clipboard/widgets/select_clip_builder.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +41,17 @@ class ClipGridBuilder extends StatelessWidget {
     }
   }
 
+  bool onScrollNotification(
+    ScrollNotification notification,
+    bool hasMore,
+    bool loading,
+  ) {
+    if (!hasMore || loading) return false;
+    if (notification.metrics.extentAfter > 800) return false;
+    loadMore();
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = context.mq.size.width;
@@ -57,37 +67,34 @@ class ClipGridBuilder extends StatelessWidget {
       trigger: onIndexPaste,
       child: SelectedClipBuilder(
         builder: (context, selectedClips) {
-          return GridView.builder(
-            padding: isMobile ? const EdgeInsets.all(padding8) : inset12,
-            primary: true,
-            scrollDirection: scrollDirection,
-            gridDelegate: delegate,
-            itemCount: items.length + (hasMore ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index == items.length) {
-                return LoadMoreCard(
-                  key: const ValueKey("clipboard-items-load-more"),
-                  loadMore: loadMore,
+          return NotificationListener<ScrollNotification>(
+            onNotification: (notification) =>
+                onScrollNotification(notification, hasMore, loading),
+            child: GridView.builder(
+              padding: isMobile ? const EdgeInsets.all(padding8) : inset12,
+              primary: true,
+              scrollDirection: scrollDirection,
+              gridDelegate: delegate,
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                final selectedItemIndex = selectedClips.indexOf(item);
+                final isSelected = selectedItemIndex != -1;
+                Widget card = ClipCard(
+                  key: ValueKey("clipboard-item-${item.id}"),
+                  autoFocus: !isSelected && index == 0 && isDesktopPlatform,
+                  item: item,
+                  selected: isSelected,
+                  selectionIndex: selectedItemIndex,
+                  selectionActive: selectedClips.isNotEmpty,
                 );
-              }
 
-              final item = items[index];
-              final selectedItemIndex = selectedClips.indexOf(item);
-              final isSelected = selectedItemIndex != -1;
-              Widget card = ClipCard(
-                key: ValueKey("clipboard-item-${item.id}"),
-                autoFocus: !isSelected && index == 0 && isDesktopPlatform,
-                item: item,
-                selected: isSelected,
-                selectionIndex: selectedItemIndex,
-                selectionActive: selectedClips.isNotEmpty,
-              );
-
-              if (isDesktopPlatform && index < 9) {
-                card = ClipMetaInfo(index: index + 1, child: card);
-              }
-              return card;
-            },
+                if (isDesktopPlatform && index < 9) {
+                  card = ClipMetaInfo(index: index + 1, child: card);
+                }
+                return card;
+              },
+            ),
           );
         },
       ),
