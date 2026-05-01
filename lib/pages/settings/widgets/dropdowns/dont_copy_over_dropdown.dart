@@ -1,7 +1,7 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/numbers/file_sizes.dart';
-import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/widgets/settings_menu_dropdown.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +9,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DontAutoCopyOverDropdown extends StatelessWidget {
   const DontAutoCopyOverDropdown({super.key});
+
+  ({Widget leading, Widget child}) _itemDetails(
+    BuildContext context,
+    int value,
+  ) {
+    final (double size, String label) = switch (value) {
+      $5MB => (5, context.locale.settings__text__5MB),
+      $10MB => (10, context.locale.settings__text__10MB),
+      $20MB => (15, context.locale.settings__text__20MB),
+      $50MB => (20, context.locale.settings__text__50MB),
+      $100MB => (24, context.locale.settings__text__100MB),
+      _ => (10, formatBytes(value, precise: false)),
+    };
+
+    return (
+      leading: SizedBox.square(
+        dimension: 24,
+        child: Icon(Icons.circle, size: size),
+      ),
+      child: Text(label),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,86 +58,25 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
             ),
             style: textTheme.bodyMedium?.copyWith(color: colors.outline),
           ),
-          trailing: DropdownButtonHideUnderline(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 160),
-              child: DropdownButton<int>(
-                value: state,
-                isExpanded: true,
-                padding: const EdgeInsets.symmetric(horizontal: padding16),
-                borderRadius: radius26,
-                items: [
-                  DropdownMenuItem(
-                    value: $5MB,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox.square(
-                          dimension: 24,
-                          child: Icon(Icons.circle, size: 5),
-                        ),
-                        width12,
-                        Text(context.locale.settings__text__5MB),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: $10MB,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox.square(
-                          dimension: 24,
-                          child: Icon(Icons.circle, size: 10),
-                        ),
-                        width12,
-                        Text(context.locale.settings__text__10MB),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: $20MB,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox.square(
-                          dimension: 24,
-                          child: Icon(Icons.circle, size: 15),
-                        ),
-                        width12,
-                        Text(context.locale.settings__text__20MB),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: $50MB,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox.square(
-                          dimension: 24,
-                          child: Icon(Icons.circle, size: 20),
-                        ),
-                        width12,
-                        Text(context.locale.settings__text__50MB),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: $100MB,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.circle, size: 24),
-                        width12,
-                        Text(context.locale.settings__text__100MB),
-                      ],
-                    ),
-                  ),
-                ],
-                onChanged: cubit.changeDontCopyOver,
-              ),
-            ),
+          trailing: SettingsMenuDropdown<int>(
+            value: state,
+            maxWidth: 170,
+            items: const [
+              SettingsDropdownItem(value: $5MB),
+              SettingsDropdownItem(value: $10MB),
+              SettingsDropdownItem(value: $20MB),
+              SettingsDropdownItem(value: $50MB),
+              SettingsDropdownItem(value: $100MB),
+            ],
+            itemBuilder: (context, value) {
+              final details = _itemDetails(context, value);
+              return (
+                leading: details.leading,
+                child: details.child,
+                trailing: null,
+              );
+            },
+            onSelected: cubit.changeDontCopyOver,
           ),
         );
       },

@@ -779,13 +779,17 @@ class _InspectorSourceAppRow extends StatelessWidget {
           Expanded(
             flex: 6,
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SourceAppIcon(
                   sourceId: sourceId,
                   sourceOs: sourceOs,
-                  trailingSpacing: 8,
+                  padding: const EdgeInsets.only(right: padding8),
+                  radius: 14,
                 ),
+
                 Expanded(
                   child: SelectableText(sourceApp, style: textTheme.bodyMedium),
                 ),

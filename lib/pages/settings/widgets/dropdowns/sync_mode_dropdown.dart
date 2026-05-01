@@ -3,6 +3,7 @@ import 'package:clipboard/base/constants/numbers/duration.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/widgets/settings_menu_dropdown.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/badges.dart';
 import 'package:clipboard/widgets/subscription/subscription_provider.dart';
@@ -37,39 +38,39 @@ class SyncModeDropdown extends StatelessWidget {
                 context.locale.settings__dropdown__sync_mode__subtitle,
                 style: textTheme.bodyMedium?.copyWith(color: colors.outline),
               ),
-              trailing: DropdownButtonHideUnderline(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 185),
-                  child: DropdownButton<SyncSpeed>(
-                    value: speed,
-                    isExpanded: true,
-                    padding: const EdgeInsets.symmetric(horizontal: padding16),
-                    borderRadius: radius26,
-                    items: [
-                      if (subscription != null)
-                        DropdownMenuItem(
-                          enabled: subscription.syncInterval < $10S,
-                          value: SyncSpeed.realtime,
-                          child: Row(
-                            spacing: 8,
-                            children: [
-                              Text(
-                                context.locale.settings__sync_mode__realtime,
-                              ),
-                              const ProBadge(),
-                            ],
-                          ),
-                        ),
-                      DropdownMenuItem(
-                        value: SyncSpeed.balanced,
-                        child: Text(
-                          context.locale.settings__sync_mode__balanced,
-                        ),
+              trailing: SettingsMenuDropdown<SyncSpeed>(
+                value: speed,
+                maxWidth: 190,
+                items: [
+                  if (subscription != null)
+                    SettingsDropdownItem(
+                      value: SyncSpeed.realtime,
+                      enabled: subscription.syncInterval < $10S,
+                    ),
+                  const SettingsDropdownItem(value: SyncSpeed.balanced),
+                ],
+                itemBuilder: (context, value) {
+                  return switch (value) {
+                    SyncSpeed.realtime => (
+                      leading: null,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(context.locale.settings__sync_mode__realtime),
+                          width8,
+                          const ProBadge(),
+                        ],
                       ),
-                    ],
-                    onChanged: enabled ? cubit.changeSyncMode : null,
-                  ),
-                ),
+                      trailing: null,
+                    ),
+                    SyncSpeed.balanced => (
+                      leading: null,
+                      child: Text(context.locale.settings__sync_mode__balanced),
+                      trailing: null,
+                    ),
+                  };
+                },
+                onSelected: enabled ? cubit.changeSyncMode : null,
               ),
             );
           },

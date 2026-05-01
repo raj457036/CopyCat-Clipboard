@@ -17,20 +17,22 @@ class BottomNavBar extends StatelessWidget {
         if (constraints.maxWidth <= 330) return const SizedBox.shrink();
         return NavigationBarTheme(
           data: NavigationBarThemeData(
-            labelTextStyle: textTheme.labelMedium
-                ?.copyWith(fontVariations: fontVarW500)
+            labelTextStyle: textTheme.labelSmall
+                ?.copyWith(fontVariations: fontVarW400)
                 .msp,
-
-            height: 64,
+            indicatorShape: const StadiumBorder(),
             // iconTheme: IconThemeData(size: 20).msp,
           ),
+
           child: NavigationBar(
+            height: 64,
+            maintainBottomViewPadding: true,
             selectedIndex: navbarActiveIndex,
             onDestinationSelected: (idx) => onNavItemTapped(context, idx),
             labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
             destinations: [
               NavigationDestination(
-                icon: const Icon(Icons.paste_outlined),
+                icon: const Icon(Icons.paste_rounded),
                 selectedIcon: const Icon(Icons.paste_rounded),
                 label: context.locale.layout__navbar__clipboard.sub(end: 15),
                 tooltip: context.locale.layout__navbar__clipboard,
@@ -44,10 +46,7 @@ class BottomNavBar extends StatelessWidget {
               NavigationDestination(
                 icon: const Icon(Icons.settings_outlined),
                 selectedIcon: const Icon(Icons.settings_rounded),
-                label: context.locale.layout__navbar__settings.sub(
-                  start: 0,
-                  end: 8,
-                ),
+                label: context.locale.layout__navbar__settings.sub(end: 8),
                 tooltip: context.locale.layout__navbar__settings,
               ),
             ],

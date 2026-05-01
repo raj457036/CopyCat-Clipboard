@@ -40,7 +40,7 @@ class ClipListItemOptionHeader extends StatelessWidget {
                 child: LeadingClipboardOption(
                   createdPadding: const EdgeInsets.symmetric(
                     vertical: padding4,
-                    horizontal: padding10,
+                    horizontal: padding6,
                   ),
                   created: item.created,
                   hovered: hovered || selectionActive,

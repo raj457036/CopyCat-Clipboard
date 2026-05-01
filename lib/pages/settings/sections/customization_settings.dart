@@ -22,7 +22,10 @@ class CustomizationSettings extends StatelessWidget {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 650),
       child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: padding12),
+        padding: const EdgeInsets.symmetric(
+          vertical: padding12,
+          // horizontal: padding16,
+        ),
         children: [
           SettingHeader(name: locale.settings__header__appearance),
           const ThemeDropdownTile(),

@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
 import 'package:clipboard/di/di.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_io/io.dart';
 
@@ -10,15 +9,13 @@ class SourceAppIcon extends StatelessWidget {
   final String? sourceId;
   final PlatformOS? sourceOs;
   final double radius;
-  final double trailingSpacing;
   final EdgeInsetsGeometry padding;
 
   const SourceAppIcon({
     super.key,
     required this.sourceId,
     this.sourceOs,
-    this.radius = 9,
-    this.trailingSpacing = 0,
+    this.radius = 10,
     this.padding = EdgeInsets.zero,
   });
 
@@ -38,7 +35,6 @@ class SourceAppIcon extends StatelessWidget {
       builder: (context, snapshot) {
         final iconPath = snapshot.data;
         if (iconPath == null || iconPath.isEmpty) {
-          if (kDebugMode) return const CircularProgressIndicator.adaptive();
           return const SizedBox.shrink();
         }
 
@@ -49,16 +45,12 @@ class SourceAppIcon extends StatelessWidget {
 
         return Padding(
           padding: padding,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                radius: radius,
-                backgroundColor: Colors.transparent,
-                foregroundImage: image,
-              ),
-              if (trailingSpacing > 0) SizedBox(width: trailingSpacing),
-            ],
+          child: Image(
+            image: image,
+            width: radius * 2,
+            height: radius * 2,
+            gaplessPlayback: true,
+            semanticLabel: "Source application icon",
           ),
         );
       },

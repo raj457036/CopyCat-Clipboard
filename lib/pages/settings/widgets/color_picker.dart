@@ -38,7 +38,6 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       actionsPadding: const EdgeInsets.only(bottom: padding12),
-      // titlePadding: EdgeInsets.zero,
       content: SingleChildScrollView(
         child: ColorPicker(
           portraitOnly: true,
@@ -106,10 +105,6 @@ class ColorPickerTile extends StatelessWidget {
               const ProBadge(),
             ],
           ),
-          contentPadding: const EdgeInsets.only(
-            left: padding16,
-            right: padding4,
-          ),
           subtitle: Text(
             context.locale.settings__tile__theme_color__subtitle,
             style: textTheme.bodyMedium?.copyWith(color: colors.outline),
@@ -122,14 +117,10 @@ class ColorPickerTile extends StatelessWidget {
               final color = Color(
                 themeColor.isNegative ? defaultThemeColor : themeColor,
               );
-              return FilledButton.icon(
+              return ElevatedButton.icon(
                 onPressed: hasAccess ? () => chooseColor(context, color) : null,
                 label: Text(context.locale.app__change),
                 icon: const Icon(Icons.color_lens_rounded),
-                style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(150, 46),
-                  textStyle: textTheme.titleMedium,
-                ),
               );
             },
           ),

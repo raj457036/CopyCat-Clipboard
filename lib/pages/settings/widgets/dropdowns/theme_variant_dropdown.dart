@@ -1,6 +1,7 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/widgets/settings_menu_dropdown.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/badges.dart';
 import 'package:clipboard/widgets/subscription/subscription_provider.dart';
@@ -45,84 +46,62 @@ class ThemeVariantDropdown extends StatelessWidget {
                   return state.config.themeVariant;
                 },
                 builder: (context, variant) {
-                  return DropdownButtonHideUnderline(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 160),
-                      child: DropdownButton<DynamicSchemeVariant>(
-                        value: variant,
-                        isExpanded: true,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: padding16,
-                        ),
-                        borderRadius: radius26,
-                        items: [
-                          DropdownMenuItem(
-                            value: DynamicSchemeVariant.tonalSpot,
-                            child: Text(
-                              context.locale.settings__color_mode__tonalSpot,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: DynamicSchemeVariant.content,
-                            child: Text(
-                              context.locale.settings__color_mode__content,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: DynamicSchemeVariant.expressive,
-                            child: Text(
-                              context.locale.settings__color_mode__expressive,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: DynamicSchemeVariant.fidelity,
-                            child: Text(
-                              context.locale.settings__color_mode__fidelity,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: DynamicSchemeVariant.fruitSalad,
-                            child: Text(
-                              context.locale.settings__color_mode__fruit_salad,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: DynamicSchemeVariant.monochrome,
-                            child: Text(
-                              context.locale.settings__color_mode__monochrome,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: DynamicSchemeVariant.neutral,
-                            child: Text(
-                              context.locale.settings__color_mode__neutral,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: DynamicSchemeVariant.rainbow,
-                            child: Text(
-                              context.locale.settings__color_mode__rainbow,
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: DynamicSchemeVariant.vibrant,
-                            child: Text(
-                              context.locale.settings__color_mode__vibrant,
-                            ),
-                          ),
-                        ],
-                        onChanged: hasAccess
-                            ? cubit.setThemeColorVariant
-                            : null,
+                  return SettingsMenuDropdown<DynamicSchemeVariant>(
+                    value: variant,
+                    maxWidth: 180,
+                    items: const [
+                      SettingsDropdownItem(
+                        value: DynamicSchemeVariant.tonalSpot,
                       ),
-                    ),
+                      SettingsDropdownItem(value: DynamicSchemeVariant.content),
+                      SettingsDropdownItem(
+                        value: DynamicSchemeVariant.expressive,
+                      ),
+                      SettingsDropdownItem(
+                        value: DynamicSchemeVariant.fidelity,
+                      ),
+                      SettingsDropdownItem(
+                        value: DynamicSchemeVariant.fruitSalad,
+                      ),
+                      SettingsDropdownItem(
+                        value: DynamicSchemeVariant.monochrome,
+                      ),
+                      SettingsDropdownItem(value: DynamicSchemeVariant.neutral),
+                      SettingsDropdownItem(value: DynamicSchemeVariant.rainbow),
+                      SettingsDropdownItem(value: DynamicSchemeVariant.vibrant),
+                    ],
+                    itemBuilder: (context, value) {
+                      final label = switch (value) {
+                        DynamicSchemeVariant.tonalSpot =>
+                          context.locale.settings__color_mode__tonalSpot,
+                        DynamicSchemeVariant.content =>
+                          context.locale.settings__color_mode__content,
+                        DynamicSchemeVariant.expressive =>
+                          context.locale.settings__color_mode__expressive,
+                        DynamicSchemeVariant.fidelity =>
+                          context.locale.settings__color_mode__fidelity,
+                        DynamicSchemeVariant.fruitSalad =>
+                          context.locale.settings__color_mode__fruit_salad,
+                        DynamicSchemeVariant.monochrome =>
+                          context.locale.settings__color_mode__monochrome,
+                        DynamicSchemeVariant.neutral =>
+                          context.locale.settings__color_mode__neutral,
+                        DynamicSchemeVariant.rainbow =>
+                          context.locale.settings__color_mode__rainbow,
+                        DynamicSchemeVariant.vibrant =>
+                          context.locale.settings__color_mode__vibrant,
+                      };
+
+                      return (
+                        leading: null,
+                        child: Text(label),
+                        trailing: null,
+                      );
+                    },
+                    onSelected: hasAccess ? cubit.setThemeColorVariant : null,
                   );
                 },
               ),
-          contentPadding: const EdgeInsets.only(
-            left: padding16,
-            right: padding4,
-          ),
         );
       },
     );

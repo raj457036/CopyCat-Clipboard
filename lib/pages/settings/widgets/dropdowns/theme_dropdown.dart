@@ -1,18 +1,37 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/widgets/settings_menu_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ThemeDropdownTile extends StatelessWidget {
   const ThemeDropdownTile({super.key});
 
+  ({IconData icon, String label}) _themeDetails(
+    BuildContext context,
+    ThemeMode mode,
+  ) {
+    return switch (mode) {
+      ThemeMode.system => (
+        icon: Icons.contrast_rounded,
+        label: context.locale.settings__theme__system,
+      ),
+      ThemeMode.light => (
+        icon: Icons.light_mode_rounded,
+        label: context.locale.settings__theme__light,
+      ),
+      ThemeMode.dark => (
+        icon: Icons.dark_mode_rounded,
+        label: context.locale.settings__theme__dark,
+      ),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<AppConfigCubit>();
     return ListTile(
       title: Text(context.locale.settings__dropdown__theme__title),
-      contentPadding: const EdgeInsets.only(left: padding16, right: padding4),
       trailing: BlocSelector<AppConfigCubit, AppConfigState, ThemeMode>(
         selector: (state) {
           switch (state) {
@@ -23,53 +42,22 @@ class ThemeDropdownTile extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          return DropdownButtonHideUnderline(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 160),
-              child: DropdownButton<ThemeMode>(
-                isExpanded: true,
-                value: state,
-                padding: const EdgeInsets.symmetric(horizontal: padding16),
-                borderRadius: radius26,
-                icon: const Icon(Icons.arrow_drop_down_rounded),
-                items: [
-                  DropdownMenuItem(
-                    value: ThemeMode.system,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.contrast_rounded),
-                        width12,
-                        Text(context.locale.settings__theme__system),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: ThemeMode.light,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.light_mode_rounded),
-                        width12,
-                        Text(context.locale.settings__theme__light),
-                      ],
-                    ),
-                  ),
-                  DropdownMenuItem(
-                    value: ThemeMode.dark,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.dark_mode_rounded),
-                        width12,
-                        Text(context.locale.settings__theme__dark),
-                      ],
-                    ),
-                  ),
-                ],
-                onChanged: cubit.changeThemeMode,
-              ),
-            ),
+          return SettingsMenuDropdown<ThemeMode>(
+            value: state,
+            items: const [
+              SettingsDropdownItem(value: ThemeMode.system),
+              SettingsDropdownItem(value: ThemeMode.light),
+              SettingsDropdownItem(value: ThemeMode.dark),
+            ],
+            itemBuilder: (context, mode) {
+              final details = _themeDetails(context, mode);
+              return (
+                leading: Icon(details.icon),
+                child: Text(details.label),
+                trailing: null,
+              );
+            },
+            onSelected: cubit.changeThemeMode,
           );
         },
       ),
