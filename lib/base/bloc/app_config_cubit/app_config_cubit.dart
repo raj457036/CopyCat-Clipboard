@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert' show jsonEncode;
 import 'dart:math';
 
+import 'package:flutter/services.dart' show PlatformException;
+
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/constants/review_config.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';

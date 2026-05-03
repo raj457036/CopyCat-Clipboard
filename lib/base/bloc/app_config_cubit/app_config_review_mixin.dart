@@ -85,7 +85,7 @@ mixin AppConfigReviewMixin on Cubit<AppConfigState> {
   }
 
   /// Triggers the native review flow
-  Future<void> requestReview() async {
+  Future<bool> requestReview() async {
     try {
       final available = await reviewService.isAvailable();
       if (available) {
@@ -93,8 +93,20 @@ mixin AppConfigReviewMixin on Cubit<AppConfigState> {
       } else {
         await reviewService.openStoreListing();
       }
+      return true;
+    } on PlatformException catch (e) {
+      logger.w(
+        'InAppReview native sheet unavailable (${e.code}), opening store listing',
+      );
+      try {
+        await reviewService.openStoreListing();
+        return true;
+      } catch (e2) {
+        logger.e('InAppReview fallback error: $e2');
+      }
     } catch (e) {
       logger.e('InAppReview error: $e');
     }
+    return false;
   }
 }

@@ -27,10 +27,14 @@ Future<void> showInAppReviewDialog({required AppConfigCubit cubit}) async {
 
   if (response == null) return;
 
-  await cubit.recordReviewResponse(response);
   if (response == ReviewResponse.rateNow) {
-    await cubit.requestReview();
+    final result = await cubit.requestReview();
+    if (result) {
+      await cubit.recordReviewResponse(response);
+    }
+    return;
   }
+  await cubit.recordReviewResponse(response);
 }
 
 class _NeverButton extends StatefulWidget {
