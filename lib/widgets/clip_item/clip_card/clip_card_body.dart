@@ -126,10 +126,21 @@ class ClipCardBody extends StatefulWidget {
 
 class _ClipCardBodyState extends State<ClipCardBody> {
   bool focused = false;
+  void onFocusChange(bool hasFocus) {
+    if (hasFocus) {
+      Scrollable.ensureVisible(
+        context,
+        alignment: 0.5,
+        duration: Durations.medium1,
+        curve: Curves.easeOut,
+      );
+    }
 
-  @override
-  void dispose() {
-    super.dispose();
+    if (focused != hasFocus) {
+      setState(() {
+        focused = hasFocus;
+      });
+    }
   }
 
   bool get canPaste => CanPasteScope.of(context);
@@ -152,23 +163,6 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       persitCubit.persist([item_]);
     } catch (e) {
       showFailureSnackbar(Failure.fromException(e));
-    }
-  }
-
-  void focus() => !focused ? setState(() => focused = true) : null;
-  void unfocus() => focused ? setState(() => focused = false) : null;
-
-  void onFocusChange(bool value) {
-    if (value) {
-      Scrollable.ensureVisible(
-        context,
-        alignment: 0.5,
-        duration: Durations.medium1,
-        curve: Curves.easeOut,
-      );
-      focus();
-    } else {
-      unfocus();
     }
   }
 

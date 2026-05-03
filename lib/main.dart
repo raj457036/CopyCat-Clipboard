@@ -55,6 +55,7 @@ import 'package:upgrader/upgrader.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'widgets/keyboard_shortcuts/actions/actions.dart';
+import 'widgets/keyboard_shortcuts/arrow_focus_visibility_listener.dart';
 
 Future<void> appRunner() async {
   MediaKit.ensureInitialized();
@@ -300,7 +301,9 @@ class MainApp extends StatelessWidget {
     Widget content = EventBridge(
       eventBus: sl(),
       child: WindowFocusManager.forPlatform(
-        child: const SystemShortcutListener(child: AppContent()),
+        child: const SystemShortcutListener(
+          child: ArrowFocusVisibilityListener(child: AppContent()),
+        ),
       ),
     );
     final child = MultiBlocProvider(

@@ -49,29 +49,28 @@ class ClipListItem extends StatefulWidget {
 class _ClipListItemState extends State<ClipListItem> {
   bool hovered = false;
   bool focused = false;
-
-  void onHover(bool isHovered) {
-    if (hovered == isHovered) return;
-    setState(() {
-      hovered = isHovered;
-    });
-  }
-
-  void focus() => !focused ? setState(() => focused = true) : null;
-  void unfocus() => focused ? setState(() => focused = false) : null;
-
-  void onFocusChange(bool value) {
-    if (value) {
+  void onFocusChange(bool hasFocus) {
+    if (hasFocus) {
       Scrollable.ensureVisible(
         context,
         alignment: 0.5,
         duration: Durations.medium1,
         curve: Curves.easeOut,
       );
-      focus();
-    } else {
-      unfocus();
     }
+
+    if (focused != hasFocus) {
+      setState(() {
+        focused = hasFocus;
+      });
+    }
+  }
+
+  void onHover(bool isHovered) {
+    if (hovered == isHovered) return;
+    setState(() {
+      hovered = isHovered;
+    });
   }
 
   void toggleSelect(BuildContext context) {
@@ -174,7 +173,7 @@ class _ClipListItemState extends State<ClipListItem> {
                     menu.openPopupMenu(context, position);
                   }
                 : null,
-            onFocusChange: onFocusChange,
+              onFocusChange: onFocusChange,
             onHover: onHover,
             child: PasteChipSlideIn(
               showPasteChip: hovered && canPaste,
