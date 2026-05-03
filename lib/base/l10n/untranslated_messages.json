@@ -168,7 +168,14 @@
     "backup_restore__label__attachments_missing",
     "backup_restore__label__attachments_failed",
     "backup_restore__label__corrupt_entries",
-    "subscription__loading"
+    "subscription__loading",
+    "review__dialog__title",
+    "review__dialog__message",
+    "review__dialog__never",
+    "review__dialog__remind_later",
+    "review__dialog__rate_now",
+    "settings__tile__review__title",
+    "settings__tile__review__subtitle"
   ],
 
   "es": [
@@ -340,7 +347,14 @@
     "backup_restore__label__attachments_missing",
     "backup_restore__label__attachments_failed",
     "backup_restore__label__corrupt_entries",
-    "subscription__loading"
+    "subscription__loading",
+    "review__dialog__title",
+    "review__dialog__message",
+    "review__dialog__never",
+    "review__dialog__remind_later",
+    "review__dialog__rate_now",
+    "settings__tile__review__title",
+    "settings__tile__review__subtitle"
   ],
 
   "fr": [
@@ -512,7 +526,14 @@
     "backup_restore__label__attachments_missing",
     "backup_restore__label__attachments_failed",
     "backup_restore__label__corrupt_entries",
-    "subscription__loading"
+    "subscription__loading",
+    "review__dialog__title",
+    "review__dialog__message",
+    "review__dialog__never",
+    "review__dialog__remind_later",
+    "review__dialog__rate_now",
+    "settings__tile__review__title",
+    "settings__tile__review__subtitle"
   ],
 
   "pt": [
@@ -684,7 +705,14 @@
     "backup_restore__label__attachments_missing",
     "backup_restore__label__attachments_failed",
     "backup_restore__label__corrupt_entries",
-    "subscription__loading"
+    "subscription__loading",
+    "review__dialog__title",
+    "review__dialog__message",
+    "review__dialog__never",
+    "review__dialog__remind_later",
+    "review__dialog__rate_now",
+    "settings__tile__review__title",
+    "settings__tile__review__subtitle"
   ],
 
   "zh": [
@@ -856,6 +884,13 @@
     "backup_restore__label__attachments_missing",
     "backup_restore__label__attachments_failed",
     "backup_restore__label__corrupt_entries",
-    "subscription__loading"
+    "subscription__loading",
+    "review__dialog__title",
+    "review__dialog__message",
+    "review__dialog__never",
+    "review__dialog__remind_later",
+    "review__dialog__rate_now",
+    "settings__tile__review__title",
+    "settings__tile__review__subtitle"
   ]
 }

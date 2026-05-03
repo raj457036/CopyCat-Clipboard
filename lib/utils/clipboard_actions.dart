@@ -8,6 +8,7 @@ import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart'
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
@@ -17,6 +18,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
+Future<void> _maybeShowReviewPrompt(BuildContext ctx) async {
+  if (!ctx.mounted) return;
+  try {
+    final appConfigCubit = ctx.read<AppConfigCubit>();
+    await appConfigCubit.trackCopyPasteSuccess();
+  } catch (e) {
+    logger.e("Error tracking copy/paste success for review prompt: $e");
+  }
+}
 
 /// Write multiple clips to clipboard.
 Future<void> multiCopyToClipboard(
@@ -34,12 +45,13 @@ Future<void> multiCopyToClipboard(
         closePrevious: true,
         context: ctx,
       );
+      _maybeShowReviewPrompt(ctx);
     }
   } catch (e) {
     showTextSnackbar(
       ctx.locale.app__unknown_error,
       closePrevious: true,
-      context: context,
+      context: ctx,
     );
   }
 }
@@ -62,12 +74,13 @@ Future<void> copyToClipboard(
         closePrevious: true,
         context: ctx,
       );
+      _maybeShowReviewPrompt(ctx);
     }
   } catch (e) {
     showTextSnackbar(
       ctx.locale.app__unknown_error,
       closePrevious: true,
-      context: context,
+      context: ctx,
     );
   }
 }
@@ -177,7 +190,8 @@ Future<void> launchEmail(ClipboardItem item) async {
 
 Future<void> pasteOnLastWindow(BuildContext context, ClipboardItem item) async {
   final focusManager = WindowFocusManager.of(context);
-  focusManager?.toggleAndPaste(item);
+  await _maybeShowReviewPrompt(context);
+  await focusManager?.toggleAndPaste(item);
 }
 
 List<ClipboardItem> selectedClips(BuildContext context) {

@@ -933,5 +933,12 @@
   "backup_restore__label__attachments_missing": "Attachments Missing",
   "backup_restore__label__attachments_failed": "Attachments Failed",
   "backup_restore__label__corrupt_entries": "Corrupt Entries",
-  "subscription__loading": "Loading..."
+  "subscription__loading": "Loading...",
+  "review__dialog__title": "Liking CopyCat so far?",
+  "review__dialog__message": "A quick rating helps more people discover CopyCat and keeps new features coming.",
+  "review__dialog__never": "Never",
+  "review__dialog__remind_later": "Remind me in 7 days",
+  "review__dialog__rate_now": "Give a Quick Rating",
+  "settings__tile__review__title": "Rate CopyCat",
+  "settings__tile__review__subtitle": "Leave a review on the App Store"
 }

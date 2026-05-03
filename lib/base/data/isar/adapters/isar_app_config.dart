@@ -52,6 +52,11 @@ class IsarAppConfig {
   bool duplicatePrevention = false;
   bool richDataCapture = false;
   bool onBoardComplete = true;
+  int reviewQualifyingEventCount = 0;
+  DateTime? lastReviewPromptDate;
+  bool reviewNeverAsk = false;
+
+  static int _sanitizeCounter(int value) => value < 0 ? 0 : value;
 
   AppConfig toDomain() => AppConfig(
     id: isarId == Isar.autoIncrement ? null : isarId,
@@ -87,6 +92,9 @@ class IsarAppConfig {
     duplicatePrevention: duplicatePrevention,
     richDataCapture: richDataCapture,
     onBoardComplete: onBoardComplete,
+    reviewQualifyingEventCount: _sanitizeCounter(reviewQualifyingEventCount),
+    lastReviewPromptDate: lastReviewPromptDate,
+    reviewNeverAsk: reviewNeverAsk,
   );
 
   static IsarAppConfig fromDomain(AppConfig config) => IsarAppConfig()
@@ -124,5 +132,10 @@ class IsarAppConfig {
     ..androidBgListener = config.androidBgListener
     ..duplicatePrevention = config.duplicatePrevention
     ..richDataCapture = config.richDataCapture
-    ..onBoardComplete = config.onBoardComplete;
+    ..onBoardComplete = config.onBoardComplete
+    ..reviewQualifyingEventCount = _sanitizeCounter(
+      config.reviewQualifyingEventCount,
+    )
+    ..lastReviewPromptDate = config.lastReviewPromptDate
+    ..reviewNeverAsk = config.reviewNeverAsk;
 }

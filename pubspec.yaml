@@ -58,6 +58,7 @@ dependencies:
   device_preview_screenshot: ^1.0.0
   encrypt: ^5.0.3
   upgrader: 13.1.0
+  in_app_review: ^2.0.9
   retry: ^3.1.2
   launch_at_startup: ^0.5.1
   flutter_colorpicker: ^1.1.0

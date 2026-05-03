@@ -19,24 +19,36 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$AppConfigState {
   AppConfig get config => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
+  int get reviewPromptSignal => throw _privateConstructorUsedError;
   Failure? get failure => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(
       AppConfig config,
       bool isLoading,
+      int reviewPromptSignal,
       Failure? failure,
     )
     loaded,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(AppConfig config, bool isLoading, Failure? failure)?
+    TResult? Function(
+      AppConfig config,
+      bool isLoading,
+      int reviewPromptSignal,
+      Failure? failure,
+    )?
     loaded,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(AppConfig config, bool isLoading, Failure? failure)?
+    TResult Function(
+      AppConfig config,
+      bool isLoading,
+      int reviewPromptSignal,
+      Failure? failure,
+    )?
     loaded,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
@@ -68,7 +80,12 @@ abstract class $AppConfigStateCopyWith<$Res> {
     $Res Function(AppConfigState) then,
   ) = _$AppConfigStateCopyWithImpl<$Res, AppConfigState>;
   @useResult
-  $Res call({AppConfig config, bool isLoading, Failure? failure});
+  $Res call({
+    AppConfig config,
+    bool isLoading,
+    int reviewPromptSignal,
+    Failure? failure,
+  });
 
   $AppConfigCopyWith<$Res> get config;
 }
@@ -90,6 +107,7 @@ class _$AppConfigStateCopyWithImpl<$Res, $Val extends AppConfigState>
   $Res call({
     Object? config = null,
     Object? isLoading = null,
+    Object? reviewPromptSignal = null,
     Object? failure = freezed,
   }) {
     return _then(
@@ -102,6 +120,10 @@ class _$AppConfigStateCopyWithImpl<$Res, $Val extends AppConfigState>
                 ? _value.isLoading
                 : isLoading // ignore: cast_nullable_to_non_nullable
                       as bool,
+            reviewPromptSignal: null == reviewPromptSignal
+                ? _value.reviewPromptSignal
+                : reviewPromptSignal // ignore: cast_nullable_to_non_nullable
+                      as int,
             failure: freezed == failure
                 ? _value.failure
                 : failure // ignore: cast_nullable_to_non_nullable
@@ -131,7 +153,12 @@ abstract class _$$AppConfigLoadedImplCopyWith<$Res>
   ) = __$$AppConfigLoadedImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({AppConfig config, bool isLoading, Failure? failure});
+  $Res call({
+    AppConfig config,
+    bool isLoading,
+    int reviewPromptSignal,
+    Failure? failure,
+  });
 
   @override
   $AppConfigCopyWith<$Res> get config;
@@ -153,6 +180,7 @@ class __$$AppConfigLoadedImplCopyWithImpl<$Res>
   $Res call({
     Object? config = null,
     Object? isLoading = null,
+    Object? reviewPromptSignal = null,
     Object? failure = freezed,
   }) {
     return _then(
@@ -165,6 +193,10 @@ class __$$AppConfigLoadedImplCopyWithImpl<$Res>
             ? _value.isLoading
             : isLoading // ignore: cast_nullable_to_non_nullable
                   as bool,
+        reviewPromptSignal: null == reviewPromptSignal
+            ? _value.reviewPromptSignal
+            : reviewPromptSignal // ignore: cast_nullable_to_non_nullable
+                  as int,
         failure: freezed == failure
             ? _value.failure
             : failure // ignore: cast_nullable_to_non_nullable
@@ -180,6 +212,7 @@ class _$AppConfigLoadedImpl implements AppConfigLoaded {
   const _$AppConfigLoadedImpl({
     required this.config,
     this.isLoading = false,
+    this.reviewPromptSignal = 0,
     this.failure,
   });
 
@@ -189,11 +222,14 @@ class _$AppConfigLoadedImpl implements AppConfigLoaded {
   @JsonKey()
   final bool isLoading;
   @override
+  @JsonKey()
+  final int reviewPromptSignal;
+  @override
   final Failure? failure;
 
   @override
   String toString() {
-    return 'AppConfigState.loaded(config: $config, isLoading: $isLoading, failure: $failure)';
+    return 'AppConfigState.loaded(config: $config, isLoading: $isLoading, reviewPromptSignal: $reviewPromptSignal, failure: $failure)';
   }
 
   @override
@@ -204,11 +240,14 @@ class _$AppConfigLoadedImpl implements AppConfigLoaded {
             (identical(other.config, config) || other.config == config) &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
+            (identical(other.reviewPromptSignal, reviewPromptSignal) ||
+                other.reviewPromptSignal == reviewPromptSignal) &&
             (identical(other.failure, failure) || other.failure == failure));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, config, isLoading, failure);
+  int get hashCode =>
+      Object.hash(runtimeType, config, isLoading, reviewPromptSignal, failure);
 
   /// Create a copy of AppConfigState
   /// with the given fields replaced by the non-null parameter values.
@@ -227,31 +266,42 @@ class _$AppConfigLoadedImpl implements AppConfigLoaded {
     required TResult Function(
       AppConfig config,
       bool isLoading,
+      int reviewPromptSignal,
       Failure? failure,
     )
     loaded,
   }) {
-    return loaded(config, isLoading, failure);
+    return loaded(config, isLoading, reviewPromptSignal, failure);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(AppConfig config, bool isLoading, Failure? failure)?
+    TResult? Function(
+      AppConfig config,
+      bool isLoading,
+      int reviewPromptSignal,
+      Failure? failure,
+    )?
     loaded,
   }) {
-    return loaded?.call(config, isLoading, failure);
+    return loaded?.call(config, isLoading, reviewPromptSignal, failure);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(AppConfig config, bool isLoading, Failure? failure)?
+    TResult Function(
+      AppConfig config,
+      bool isLoading,
+      int reviewPromptSignal,
+      Failure? failure,
+    )?
     loaded,
     required TResult orElse(),
   }) {
     if (loaded != null) {
-      return loaded(config, isLoading, failure);
+      return loaded(config, isLoading, reviewPromptSignal, failure);
     }
     return orElse();
   }
@@ -289,6 +339,7 @@ abstract class AppConfigLoaded implements AppConfigState {
   const factory AppConfigLoaded({
     required final AppConfig config,
     final bool isLoading,
+    final int reviewPromptSignal,
     final Failure? failure,
   }) = _$AppConfigLoadedImpl;
 
@@ -296,6 +347,8 @@ abstract class AppConfigLoaded implements AppConfigState {
   AppConfig get config;
   @override
   bool get isLoading;
+  @override
+  int get reviewPromptSignal;
   @override
   Failure? get failure;
 

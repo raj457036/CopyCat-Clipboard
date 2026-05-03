@@ -2267,4 +2267,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get subscription__loading => 'Loading...';
+
+  @override
+  String get review__dialog__title => 'Liking CopyCat so far?';
+
+  @override
+  String get review__dialog__message =>
+      'A quick rating helps more people discover CopyCat and keeps new features coming.';
+
+  @override
+  String get review__dialog__never => 'Never';
+
+  @override
+  String get review__dialog__remind_later => 'Remind me in 7 days';
+
+  @override
+  String get review__dialog__rate_now => 'Give a Quick Rating';
+
+  @override
+  String get settings__tile__review__title => 'Rate CopyCat';
+
+  @override
+  String get settings__tile__review__subtitle =>
+      'Leave a review on the App Store';
 }

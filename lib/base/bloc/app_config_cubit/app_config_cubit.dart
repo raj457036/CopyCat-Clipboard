@@ -3,11 +3,13 @@ import 'dart:convert' show jsonEncode;
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
+import 'package:clipboard/base/constants/review_config.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_checker.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_rules.dart';
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/repositories/app_config.dart';
+import 'package:clipboard/base/domain/services/in_app_review_service.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -26,17 +28,21 @@ import 'package:universal_io/io.dart';
 
 part 'app_config_cubit.freezed.dart';
 part 'app_config_state.dart';
+part 'app_config_review_mixin.dart';
 
 ExclusionChecker? exclusionChecker;
 DateTime? currentInternetTime;
 
 @singleton
-class AppConfigCubit extends Cubit<AppConfigState> {
+class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
   ActivityInfo? lastActivity;
+  @override
   final AppConfigRepository repo;
+  @override
+  final InAppReviewService reviewService;
   final FocusWindow focusWindow = FocusWindow();
 
-  AppConfigCubit(this.repo)
+  AppConfigCubit(this.repo, this.reviewService)
     : super(AppConfigState.loaded(isLoading: true, config: AppConfig()));
 
   @override

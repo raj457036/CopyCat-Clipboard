@@ -70,107 +70,122 @@ const IsarAppConfigSchema = CollectionSchema(
 
       target: r'ExclusionRules',
     ),
-    r'launchAtStartup': PropertySchema(
+    r'lastReviewPromptDate': PropertySchema(
       id: 11,
+      name: r'lastReviewPromptDate',
+      type: IsarType.dateTime,
+    ),
+    r'launchAtStartup': PropertySchema(
+      id: 12,
       name: r'launchAtStartup',
       type: IsarType.bool,
     ),
     r'layout': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'layout',
       type: IsarType.string,
       enumMap: _IsarAppConfiglayoutEnumValueMap,
     ),
-    r'locale': PropertySchema(id: 13, name: r'locale', type: IsarType.string),
+    r'locale': PropertySchema(id: 14, name: r'locale', type: IsarType.string),
     r'onBoardComplete': PropertySchema(
-      id: 14,
+      id: 15,
       name: r'onBoardComplete',
       type: IsarType.bool,
     ),
     r'pausedTill': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'pausedTill',
       type: IsarType.dateTime,
     ),
-    r'pinned': PropertySchema(id: 16, name: r'pinned', type: IsarType.bool),
+    r'pinned': PropertySchema(id: 17, name: r'pinned', type: IsarType.bool),
     r'quickPasteHotkey': PropertySchema(
-      id: 17,
+      id: 18,
       name: r'quickPasteHotkey',
       type: IsarType.string,
     ),
+    r'reviewNeverAsk': PropertySchema(
+      id: 19,
+      name: r'reviewNeverAsk',
+      type: IsarType.bool,
+    ),
+    r'reviewQualifyingEventCount': PropertySchema(
+      id: 20,
+      name: r'reviewQualifyingEventCount',
+      type: IsarType.long,
+    ),
     r'richDataCapture': PropertySchema(
-      id: 18,
+      id: 21,
       name: r'richDataCapture',
       type: IsarType.bool,
     ),
     r'smartPaste': PropertySchema(
-      id: 19,
+      id: 22,
       name: r'smartPaste',
       type: IsarType.bool,
     ),
     r'sortBy': PropertySchema(
-      id: 20,
+      id: 23,
       name: r'sortBy',
       type: IsarType.string,
       enumMap: _IsarAppConfigsortByEnumValueMap,
     ),
     r'sortOrder': PropertySchema(
-      id: 21,
+      id: 24,
       name: r'sortOrder',
       type: IsarType.string,
       enumMap: _IsarAppConfigsortOrderEnumValueMap,
     ),
     r'syncSpeed': PropertySchema(
-      id: 22,
+      id: 25,
       name: r'syncSpeed',
       type: IsarType.string,
       enumMap: _IsarAppConfigsyncSpeedEnumValueMap,
     ),
     r'themeColor': PropertySchema(
-      id: 23,
+      id: 26,
       name: r'themeColor',
       type: IsarType.long,
     ),
     r'themeMode': PropertySchema(
-      id: 24,
+      id: 27,
       name: r'themeMode',
       type: IsarType.string,
       enumMap: _IsarAppConfigthemeModeEnumValueMap,
     ),
     r'themeVariant': PropertySchema(
-      id: 25,
+      id: 28,
       name: r'themeVariant',
       type: IsarType.string,
       enumMap: _IsarAppConfigthemeVariantEnumValueMap,
     ),
     r'toggleHotkey': PropertySchema(
-      id: 26,
+      id: 29,
       name: r'toggleHotkey',
       type: IsarType.string,
     ),
     r'transformAsNewClip': PropertySchema(
-      id: 27,
+      id: 30,
       name: r'transformAsNewClip',
       type: IsarType.bool,
     ),
     r'useEncryptionNonce': PropertySchema(
-      id: 28,
+      id: 31,
       name: r'useEncryptionNonce',
       type: IsarType.bool,
     ),
     r'view': PropertySchema(
-      id: 29,
+      id: 32,
       name: r'view',
       type: IsarType.string,
       enumMap: _IsarAppConfigviewEnumValueMap,
     ),
     r'windowHeight': PropertySchema(
-      id: 30,
+      id: 33,
       name: r'windowHeight',
       type: IsarType.double,
     ),
     r'windowWidth': PropertySchema(
-      id: 31,
+      id: 34,
       name: r'windowWidth',
       type: IsarType.double,
     ),
@@ -263,27 +278,30 @@ void _isarAppConfigSerialize(
     IsarExclusionRulesSchema.serialize,
     object.exclusionRules,
   );
-  writer.writeBool(offsets[11], object.launchAtStartup);
-  writer.writeString(offsets[12], object.layout.name);
-  writer.writeString(offsets[13], object.locale);
-  writer.writeBool(offsets[14], object.onBoardComplete);
-  writer.writeDateTime(offsets[15], object.pausedTill);
-  writer.writeBool(offsets[16], object.pinned);
-  writer.writeString(offsets[17], object.quickPasteHotkey);
-  writer.writeBool(offsets[18], object.richDataCapture);
-  writer.writeBool(offsets[19], object.smartPaste);
-  writer.writeString(offsets[20], object.sortBy.name);
-  writer.writeString(offsets[21], object.sortOrder.name);
-  writer.writeString(offsets[22], object.syncSpeed.name);
-  writer.writeLong(offsets[23], object.themeColor);
-  writer.writeString(offsets[24], object.themeMode.name);
-  writer.writeString(offsets[25], object.themeVariant.name);
-  writer.writeString(offsets[26], object.toggleHotkey);
-  writer.writeBool(offsets[27], object.transformAsNewClip);
-  writer.writeBool(offsets[28], object.useEncryptionNonce);
-  writer.writeString(offsets[29], object.view.name);
-  writer.writeDouble(offsets[30], object.windowHeight);
-  writer.writeDouble(offsets[31], object.windowWidth);
+  writer.writeDateTime(offsets[11], object.lastReviewPromptDate);
+  writer.writeBool(offsets[12], object.launchAtStartup);
+  writer.writeString(offsets[13], object.layout.name);
+  writer.writeString(offsets[14], object.locale);
+  writer.writeBool(offsets[15], object.onBoardComplete);
+  writer.writeDateTime(offsets[16], object.pausedTill);
+  writer.writeBool(offsets[17], object.pinned);
+  writer.writeString(offsets[18], object.quickPasteHotkey);
+  writer.writeBool(offsets[19], object.reviewNeverAsk);
+  writer.writeLong(offsets[20], object.reviewQualifyingEventCount);
+  writer.writeBool(offsets[21], object.richDataCapture);
+  writer.writeBool(offsets[22], object.smartPaste);
+  writer.writeString(offsets[23], object.sortBy.name);
+  writer.writeString(offsets[24], object.sortOrder.name);
+  writer.writeString(offsets[25], object.syncSpeed.name);
+  writer.writeLong(offsets[26], object.themeColor);
+  writer.writeString(offsets[27], object.themeMode.name);
+  writer.writeString(offsets[28], object.themeVariant.name);
+  writer.writeString(offsets[29], object.toggleHotkey);
+  writer.writeBool(offsets[30], object.transformAsNewClip);
+  writer.writeBool(offsets[31], object.useEncryptionNonce);
+  writer.writeString(offsets[32], object.view.name);
+  writer.writeDouble(offsets[33], object.windowHeight);
+  writer.writeDouble(offsets[34], object.windowWidth);
 }
 
 IsarAppConfig _isarAppConfigDeserialize(
@@ -309,49 +327,52 @@ IsarAppConfig _isarAppConfigDeserialize(
     allOffsets,
   );
   object.isarId = id;
-  object.launchAtStartup = reader.readBool(offsets[11]);
+  object.lastReviewPromptDate = reader.readDateTimeOrNull(offsets[11]);
+  object.launchAtStartup = reader.readBool(offsets[12]);
   object.layout =
-      _IsarAppConfiglayoutValueEnumMap[reader.readStringOrNull(offsets[12])] ??
+      _IsarAppConfiglayoutValueEnumMap[reader.readStringOrNull(offsets[13])] ??
       AppLayout.grid;
-  object.locale = reader.readString(offsets[13]);
-  object.onBoardComplete = reader.readBool(offsets[14]);
-  object.pausedTill = reader.readDateTimeOrNull(offsets[15]);
-  object.pinned = reader.readBool(offsets[16]);
-  object.quickPasteHotkey = reader.readStringOrNull(offsets[17]);
-  object.richDataCapture = reader.readBool(offsets[18]);
-  object.smartPaste = reader.readBool(offsets[19]);
+  object.locale = reader.readString(offsets[14]);
+  object.onBoardComplete = reader.readBool(offsets[15]);
+  object.pausedTill = reader.readDateTimeOrNull(offsets[16]);
+  object.pinned = reader.readBool(offsets[17]);
+  object.quickPasteHotkey = reader.readStringOrNull(offsets[18]);
+  object.reviewNeverAsk = reader.readBool(offsets[19]);
+  object.reviewQualifyingEventCount = reader.readLong(offsets[20]);
+  object.richDataCapture = reader.readBool(offsets[21]);
+  object.smartPaste = reader.readBool(offsets[22]);
   object.sortBy =
-      _IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(offsets[20])] ??
+      _IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(offsets[23])] ??
       ClipboardSortKey.created;
   object.sortOrder =
       _IsarAppConfigsortOrderValueEnumMap[reader.readStringOrNull(
-        offsets[21],
+        offsets[24],
       )] ??
       SortOrder.asc;
   object.syncSpeed =
       _IsarAppConfigsyncSpeedValueEnumMap[reader.readStringOrNull(
-        offsets[22],
+        offsets[25],
       )] ??
       SyncSpeed.realtime;
-  object.themeColor = reader.readLong(offsets[23]);
+  object.themeColor = reader.readLong(offsets[26]);
   object.themeMode =
       _IsarAppConfigthemeModeValueEnumMap[reader.readStringOrNull(
-        offsets[24],
+        offsets[27],
       )] ??
       ThemeMode.system;
   object.themeVariant =
       _IsarAppConfigthemeVariantValueEnumMap[reader.readStringOrNull(
-        offsets[25],
+        offsets[28],
       )] ??
       DynamicSchemeVariant.tonalSpot;
-  object.toggleHotkey = reader.readStringOrNull(offsets[26]);
-  object.transformAsNewClip = reader.readBool(offsets[27]);
-  object.useEncryptionNonce = reader.readBool(offsets[28]);
+  object.toggleHotkey = reader.readStringOrNull(offsets[29]);
+  object.transformAsNewClip = reader.readBool(offsets[30]);
+  object.useEncryptionNonce = reader.readBool(offsets[31]);
   object.view =
-      _IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offsets[29])] ??
+      _IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offsets[32])] ??
       AppView.topDocked;
-  object.windowHeight = reader.readDouble(offsets[30]);
-  object.windowWidth = reader.readDouble(offsets[31]);
+  object.windowHeight = reader.readDouble(offsets[33]);
+  object.windowWidth = reader.readDouble(offsets[34]);
   return object;
 }
 
@@ -390,72 +411,78 @@ P _isarAppConfigDeserializeProp<P>(
           ))
           as P;
     case 11:
-      return (reader.readBool(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 12:
+      return (reader.readBool(offset)) as P;
+    case 13:
       return (_IsarAppConfiglayoutValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               AppLayout.grid)
           as P;
-    case 13:
-      return (reader.readString(offset)) as P;
     case 14:
-      return (reader.readBool(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 15:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 16:
-      return (reader.readBool(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 17:
-      return (reader.readStringOrNull(offset)) as P;
-    case 18:
       return (reader.readBool(offset)) as P;
+    case 18:
+      return (reader.readStringOrNull(offset)) as P;
     case 19:
       return (reader.readBool(offset)) as P;
     case 20:
+      return (reader.readLong(offset)) as P;
+    case 21:
+      return (reader.readBool(offset)) as P;
+    case 22:
+      return (reader.readBool(offset)) as P;
+    case 23:
       return (_IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               ClipboardSortKey.created)
           as P;
-    case 21:
+    case 24:
       return (_IsarAppConfigsortOrderValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               SortOrder.asc)
           as P;
-    case 22:
+    case 25:
       return (_IsarAppConfigsyncSpeedValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               SyncSpeed.realtime)
           as P;
-    case 23:
+    case 26:
       return (reader.readLong(offset)) as P;
-    case 24:
+    case 27:
       return (_IsarAppConfigthemeModeValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               ThemeMode.system)
           as P;
-    case 25:
+    case 28:
       return (_IsarAppConfigthemeVariantValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               DynamicSchemeVariant.tonalSpot)
           as P;
-    case 26:
-      return (reader.readStringOrNull(offset)) as P;
-    case 27:
-      return (reader.readBool(offset)) as P;
-    case 28:
-      return (reader.readBool(offset)) as P;
     case 29:
+      return (reader.readStringOrNull(offset)) as P;
+    case 30:
+      return (reader.readBool(offset)) as P;
+    case 31:
+      return (reader.readBool(offset)) as P;
+    case 32:
       return (_IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offset)] ??
               AppView.topDocked)
           as P;
-    case 30:
+    case 33:
       return (reader.readDouble(offset)) as P;
-    case 31:
+    case 34:
       return (reader.readDouble(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1049,6 +1076,82 @@ extension IsarAppConfigQueryFilter
   }
 
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  lastReviewPromptDateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'lastReviewPromptDate'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  lastReviewPromptDateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'lastReviewPromptDate'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  lastReviewPromptDateEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'lastReviewPromptDate',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  lastReviewPromptDateGreaterThan(DateTime? value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'lastReviewPromptDate',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  lastReviewPromptDateLessThan(DateTime? value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'lastReviewPromptDate',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  lastReviewPromptDateBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'lastReviewPromptDate',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
   launchAtStartupEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -1585,6 +1688,73 @@ extension IsarAppConfigQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.greaterThan(property: r'quickPasteHotkey', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  reviewNeverAskEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'reviewNeverAsk', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  reviewQualifyingEventCountEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'reviewQualifyingEventCount',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  reviewQualifyingEventCountGreaterThan(int value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'reviewQualifyingEventCount',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  reviewQualifyingEventCountLessThan(int value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'reviewQualifyingEventCount',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  reviewQualifyingEventCountBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'reviewQualifyingEventCount',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
       );
     });
   }
@@ -2991,6 +3161,20 @@ extension IsarAppConfigQuerySortBy
   }
 
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByLastReviewPromptDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastReviewPromptDate', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByLastReviewPromptDateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastReviewPromptDate', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
   sortByLaunchAtStartup() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'launchAtStartup', Sort.asc);
@@ -3078,6 +3262,34 @@ extension IsarAppConfigQuerySortBy
   sortByQuickPasteHotkeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'quickPasteHotkey', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByReviewNeverAsk() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'reviewNeverAsk', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByReviewNeverAskDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'reviewNeverAsk', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByReviewQualifyingEventCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'reviewQualifyingEventCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByReviewQualifyingEventCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'reviewQualifyingEventCount', Sort.desc);
     });
   }
 
@@ -3419,6 +3631,20 @@ extension IsarAppConfigQuerySortThenBy
   }
 
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByLastReviewPromptDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastReviewPromptDate', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByLastReviewPromptDateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastReviewPromptDate', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
   thenByLaunchAtStartup() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'launchAtStartup', Sort.asc);
@@ -3506,6 +3732,34 @@ extension IsarAppConfigQuerySortThenBy
   thenByQuickPasteHotkeyDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'quickPasteHotkey', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByReviewNeverAsk() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'reviewNeverAsk', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByReviewNeverAskDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'reviewNeverAsk', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByReviewQualifyingEventCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'reviewQualifyingEventCount', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByReviewQualifyingEventCountDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'reviewQualifyingEventCount', Sort.desc);
     });
   }
 
@@ -3769,6 +4023,13 @@ extension IsarAppConfigQueryWhereDistinct
   }
 
   QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct>
+  distinctByLastReviewPromptDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastReviewPromptDate');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct>
   distinctByLaunchAtStartup() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'launchAtStartup');
@@ -3817,6 +4078,20 @@ extension IsarAppConfigQueryWhereDistinct
         r'quickPasteHotkey',
         caseSensitive: caseSensitive,
       );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct>
+  distinctByReviewNeverAsk() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'reviewNeverAsk');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct>
+  distinctByReviewQualifyingEventCount() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'reviewQualifyingEventCount');
     });
   }
 
@@ -4003,6 +4278,13 @@ extension IsarAppConfigQueryProperty
     });
   }
 
+  QueryBuilder<IsarAppConfig, DateTime?, QQueryOperations>
+  lastReviewPromptDateProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastReviewPromptDate');
+    });
+  }
+
   QueryBuilder<IsarAppConfig, bool, QQueryOperations>
   launchAtStartupProperty() {
     return QueryBuilder.apply(this, (query) {
@@ -4046,6 +4328,19 @@ extension IsarAppConfigQueryProperty
   quickPasteHotkeyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'quickPasteHotkey');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, bool, QQueryOperations> reviewNeverAskProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'reviewNeverAsk');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, int, QQueryOperations>
+  reviewQualifyingEventCountProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'reviewQualifyingEventCount');
     });
   }
 

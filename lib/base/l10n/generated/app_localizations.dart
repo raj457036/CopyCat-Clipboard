@@ -4041,6 +4041,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading...'**
   String get subscription__loading;
+
+  /// No description provided for @review__dialog__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Liking CopyCat so far?'**
+  String get review__dialog__title;
+
+  /// No description provided for @review__dialog__message.
+  ///
+  /// In en, this message translates to:
+  /// **'A quick rating helps more people discover CopyCat and keeps new features coming.'**
+  String get review__dialog__message;
+
+  /// No description provided for @review__dialog__never.
+  ///
+  /// In en, this message translates to:
+  /// **'Never'**
+  String get review__dialog__never;
+
+  /// No description provided for @review__dialog__remind_later.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me in 7 days'**
+  String get review__dialog__remind_later;
+
+  /// No description provided for @review__dialog__rate_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Give a Quick Rating'**
+  String get review__dialog__rate_now;
+
+  /// No description provided for @settings__tile__review__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate CopyCat'**
+  String get settings__tile__review__title;
+
+  /// No description provided for @settings__tile__review__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave a review on the App Store'**
+  String get settings__tile__review__subtitle;
 }
 
 class _AppLocalizationsDelegate

@@ -58,6 +58,12 @@ _$AppConfigImpl _$$AppConfigImplFromJson(
   duplicatePrevention: json['duplicatePrevention'] as bool? ?? false,
   richDataCapture: json['richDataCapture'] as bool? ?? false,
   onBoardComplete: json['onBoardComplete'] as bool? ?? true,
+  reviewQualifyingEventCount:
+      (json['reviewQualifyingEventCount'] as num?)?.toInt() ?? 0,
+  lastReviewPromptDate: json['lastReviewPromptDate'] == null
+      ? null
+      : DateTime.parse(json['lastReviewPromptDate'] as String),
+  reviewNeverAsk: json['reviewNeverAsk'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
@@ -94,6 +100,9 @@ Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
       'duplicatePrevention': instance.duplicatePrevention,
       'richDataCapture': instance.richDataCapture,
       'onBoardComplete': instance.onBoardComplete,
+      'reviewQualifyingEventCount': instance.reviewQualifyingEventCount,
+      'lastReviewPromptDate': instance.lastReviewPromptDate?.toIso8601String(),
+      'reviewNeverAsk': instance.reviewNeverAsk,
     };
 
 const _$ThemeModeEnumMap = {

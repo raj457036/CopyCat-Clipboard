@@ -171,6 +171,15 @@ class WindowFocusManagerState extends State<WindowFocusManager>
       isWindowInBackground = false;
     });
     context.windowAction?.isFocused = true;
+    _maybeTrackWindowForeground();
+  }
+
+  Future<void> _maybeTrackWindowForeground() async {
+    try {
+      await appConfigCubit.trackAppEntry();
+    } catch (e) {
+      logger.e("Error tracking app entry for review prompt. $e");
+    }
   }
 
   Future<void> onResized() async {

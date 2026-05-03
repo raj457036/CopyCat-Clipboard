@@ -11,6 +11,7 @@ import 'package:clipboard/utils/applink_listener.dart';
 import 'package:clipboard/utils/debounce.dart';
 import 'package:clipboard/utils/share_listener.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/dialogs/in_app_review_dialog.dart';
 import 'package:clipboard/widgets/in_background_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,6 +57,21 @@ class _StateInitializerState extends State<StateInitializer>
     appLinkListener.init();
     shareListener.init();
     setupWindow();
+    if (isMobilePlatform) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _trackMobileAppLaunch(),
+      );
+    }
+  }
+
+  Future<void> _trackMobileAppLaunch() async {
+    if (!mounted) return;
+    try {
+      final appConfigCubit = context.read<AppConfigCubit>();
+      await appConfigCubit.trackAppEntry();
+    } catch (e) {
+      logger.e("Error tracking app launch for review prompt. $e");
+    }
   }
 
   void disableRendering(bool disable) {
@@ -125,6 +141,13 @@ class _StateInitializerState extends State<StateInitializer>
 
     if (isPowerSaverActive) return const SizedBox.shrink();
 
-    return FadeIn(duration: Durations.medium3, child: widget.child);
+    return BlocListener<AppConfigCubit, AppConfigState>(
+      listenWhen: (previous, current) =>
+          previous.reviewPromptSignal != current.reviewPromptSignal,
+      listener: (context, state) async {
+        await showInAppReviewDialog(cubit: context.read<AppConfigCubit>());
+      },
+      child: FadeIn(duration: Durations.medium3, child: widget.child),
+    );
   }
 }

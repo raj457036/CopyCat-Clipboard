@@ -72,6 +72,8 @@ import 'package:clipboard/base/data/services/file_cloud_services/google_drive/go
     as _i563;
 import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_services.dart'
     as _i543;
+import 'package:clipboard/base/data/services/in_app_review_service.dart'
+    as _i930;
 import 'package:clipboard/base/data/services/quick_paste_service.dart' as _i227;
 import 'package:clipboard/base/data/sources/application_meta/local_source.dart'
     as _i651;
@@ -118,6 +120,8 @@ import 'package:clipboard/base/domain/services/cross_sync_listener.dart'
     as _i543;
 import 'package:clipboard/base/domain/services/file_cloud_service.dart'
     as _i112;
+import 'package:clipboard/base/domain/services/in_app_review_service.dart'
+    as _i952;
 import 'package:clipboard/base/domain/services/sync_adapter.dart' as _i589;
 import 'package:clipboard/base/domain/services/sync_event_bus.dart' as _i292;
 import 'package:clipboard/base/domain/sources/application_meta.dart' as _i284;
@@ -174,6 +178,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i616.ClipBatchSyncService>(
       () => _i639.IsarClipBatchSyncService(),
+    );
+    gh.lazySingleton<_i952.InAppReviewService>(
+      () => _i930.InAppReviewServiceImpl(),
     );
     gh.lazySingleton<_i284.ApplicationMetaSource>(
       () => _i651.LocalApplicationMetaSource(gh<_i214.Isar>()),
@@ -262,9 +269,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i636.AppDirectoryRepository>(),
       ),
     );
-    gh.singleton<_i542.AppConfigCubit>(
-      () => _i542.AppConfigCubit(gh<_i891.AppConfigRepository>()),
-    );
     gh.lazySingleton<_i543.CollectionCrossSyncListener>(
       () => _i95.SBCollectionCrossSyncListener(
         gh<_i454.SupabaseClient>(),
@@ -284,6 +288,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i422.SubscriptionSource>(
       () => _i35.RemoteSubscriptionSource(client: gh<_i454.SupabaseClient>()),
       instanceName: 'remote',
+    );
+    gh.singleton<_i542.AppConfigCubit>(
+      () => _i542.AppConfigCubit(
+        gh<_i891.AppConfigRepository>(),
+        gh<_i952.InAppReviewService>(),
+      ),
     );
     gh.lazySingleton<_i23.ClipboardSource>(
       () => _i411.RemoteClipboardSource(gh<_i454.SupabaseClient>()),

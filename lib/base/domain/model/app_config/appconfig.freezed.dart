@@ -80,7 +80,11 @@ mixin _$AppConfig {
   bool get richDataCapture => throw _privateConstructorUsedError; // on boarding
   bool get onBoardComplete =>
       throw _privateConstructorUsedError; // On logout/unauth this will be set to true
-  //? Local App States
+  // In-App Review tracking
+  int get reviewQualifyingEventCount => throw _privateConstructorUsedError;
+  DateTime? get lastReviewPromptDate => throw _privateConstructorUsedError;
+  bool get reviewNeverAsk =>
+      throw _privateConstructorUsedError; //? Local App States
   /// last focus window id
   @JsonKey(includeFromJson: false, includeToJson: false)
   int? get lastFocusedWindowId => throw _privateConstructorUsedError;
@@ -138,6 +142,9 @@ abstract class $AppConfigCopyWith<$Res> {
     bool duplicatePrevention,
     bool richDataCapture,
     bool onBoardComplete,
+    int reviewQualifyingEventCount,
+    DateTime? lastReviewPromptDate,
+    bool reviewNeverAsk,
     @JsonKey(includeFromJson: false, includeToJson: false)
     int? lastFocusedWindowId,
     @JsonKey(includeFromJson: false, includeToJson: false) bool clockUnSynced,
@@ -195,6 +202,9 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? duplicatePrevention = null,
     Object? richDataCapture = null,
     Object? onBoardComplete = null,
+    Object? reviewQualifyingEventCount = null,
+    Object? lastReviewPromptDate = freezed,
+    Object? reviewNeverAsk = null,
     Object? lastFocusedWindowId = freezed,
     Object? clockUnSynced = null,
   }) {
@@ -336,6 +346,18 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
                 ? _value.onBoardComplete
                 : onBoardComplete // ignore: cast_nullable_to_non_nullable
                       as bool,
+            reviewQualifyingEventCount: null == reviewQualifyingEventCount
+                ? _value.reviewQualifyingEventCount
+                : reviewQualifyingEventCount // ignore: cast_nullable_to_non_nullable
+                      as int,
+            lastReviewPromptDate: freezed == lastReviewPromptDate
+                ? _value.lastReviewPromptDate
+                : lastReviewPromptDate // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
+            reviewNeverAsk: null == reviewNeverAsk
+                ? _value.reviewNeverAsk
+                : reviewNeverAsk // ignore: cast_nullable_to_non_nullable
+                      as bool,
             lastFocusedWindowId: freezed == lastFocusedWindowId
                 ? _value.lastFocusedWindowId
                 : lastFocusedWindowId // ignore: cast_nullable_to_non_nullable
@@ -409,6 +431,9 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     bool duplicatePrevention,
     bool richDataCapture,
     bool onBoardComplete,
+    int reviewQualifyingEventCount,
+    DateTime? lastReviewPromptDate,
+    bool reviewNeverAsk,
     @JsonKey(includeFromJson: false, includeToJson: false)
     int? lastFocusedWindowId,
     @JsonKey(includeFromJson: false, includeToJson: false) bool clockUnSynced,
@@ -466,6 +491,9 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? duplicatePrevention = null,
     Object? richDataCapture = null,
     Object? onBoardComplete = null,
+    Object? reviewQualifyingEventCount = null,
+    Object? lastReviewPromptDate = freezed,
+    Object? reviewNeverAsk = null,
     Object? lastFocusedWindowId = freezed,
     Object? clockUnSynced = null,
   }) {
@@ -607,6 +635,18 @@ class __$$AppConfigImplCopyWithImpl<$Res>
             ? _value.onBoardComplete
             : onBoardComplete // ignore: cast_nullable_to_non_nullable
                   as bool,
+        reviewQualifyingEventCount: null == reviewQualifyingEventCount
+            ? _value.reviewQualifyingEventCount
+            : reviewQualifyingEventCount // ignore: cast_nullable_to_non_nullable
+                  as int,
+        lastReviewPromptDate: freezed == lastReviewPromptDate
+            ? _value.lastReviewPromptDate
+            : lastReviewPromptDate // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        reviewNeverAsk: null == reviewNeverAsk
+            ? _value.reviewNeverAsk
+            : reviewNeverAsk // ignore: cast_nullable_to_non_nullable
+                  as bool,
         lastFocusedWindowId: freezed == lastFocusedWindowId
             ? _value.lastFocusedWindowId
             : lastFocusedWindowId // ignore: cast_nullable_to_non_nullable
@@ -658,6 +698,9 @@ class _$AppConfigImpl extends _AppConfig {
     this.duplicatePrevention = false,
     this.richDataCapture = false,
     this.onBoardComplete = true,
+    this.reviewQualifyingEventCount = 0,
+    this.lastReviewPromptDate,
+    this.reviewNeverAsk = false,
     @JsonKey(includeFromJson: false, includeToJson: false)
     this.lastFocusedWindowId,
     @JsonKey(includeFromJson: false, includeToJson: false)
@@ -791,6 +834,15 @@ class _$AppConfigImpl extends _AppConfig {
   @JsonKey()
   final bool onBoardComplete;
   // On logout/unauth this will be set to true
+  // In-App Review tracking
+  @override
+  @JsonKey()
+  final int reviewQualifyingEventCount;
+  @override
+  final DateTime? lastReviewPromptDate;
+  @override
+  @JsonKey()
+  final bool reviewNeverAsk;
   //? Local App States
   /// last focus window id
   @override
@@ -802,7 +854,7 @@ class _$AppConfigImpl extends _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, richDataCapture: $richDataCapture, onBoardComplete: $onBoardComplete, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
+    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, richDataCapture: $richDataCapture, onBoardComplete: $onBoardComplete, reviewQualifyingEventCount: $reviewQualifyingEventCount, lastReviewPromptDate: $lastReviewPromptDate, reviewNeverAsk: $reviewNeverAsk, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
   }
 
   @override
@@ -871,6 +923,16 @@ class _$AppConfigImpl extends _AppConfig {
                 other.richDataCapture == richDataCapture) &&
             (identical(other.onBoardComplete, onBoardComplete) ||
                 other.onBoardComplete == onBoardComplete) &&
+            (identical(
+                  other.reviewQualifyingEventCount,
+                  reviewQualifyingEventCount,
+                ) ||
+                other.reviewQualifyingEventCount ==
+                    reviewQualifyingEventCount) &&
+            (identical(other.lastReviewPromptDate, lastReviewPromptDate) ||
+                other.lastReviewPromptDate == lastReviewPromptDate) &&
+            (identical(other.reviewNeverAsk, reviewNeverAsk) ||
+                other.reviewNeverAsk == reviewNeverAsk) &&
             (identical(other.lastFocusedWindowId, lastFocusedWindowId) ||
                 other.lastFocusedWindowId == lastFocusedWindowId) &&
             (identical(other.clockUnSynced, clockUnSynced) ||
@@ -915,6 +977,9 @@ class _$AppConfigImpl extends _AppConfig {
     duplicatePrevention,
     richDataCapture,
     onBoardComplete,
+    reviewQualifyingEventCount,
+    lastReviewPromptDate,
+    reviewNeverAsk,
     lastFocusedWindowId,
     clockUnSynced,
   ]);
@@ -970,6 +1035,9 @@ abstract class _AppConfig extends AppConfig {
     final bool duplicatePrevention,
     final bool richDataCapture,
     final bool onBoardComplete,
+    final int reviewQualifyingEventCount,
+    final DateTime? lastReviewPromptDate,
+    final bool reviewNeverAsk,
     @JsonKey(includeFromJson: false, includeToJson: false)
     final int? lastFocusedWindowId,
     @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1067,7 +1135,13 @@ abstract class _AppConfig extends AppConfig {
   bool get richDataCapture; // on boarding
   @override
   bool get onBoardComplete; // On logout/unauth this will be set to true
-  //? Local App States
+  // In-App Review tracking
+  @override
+  int get reviewQualifyingEventCount;
+  @override
+  DateTime? get lastReviewPromptDate;
+  @override
+  bool get reviewNeverAsk; //? Local App States
   /// last focus window id
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)

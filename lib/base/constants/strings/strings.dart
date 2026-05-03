@@ -50,6 +50,9 @@ const keyboardShortcutDemoVideo = String.fromEnvironment(
 
 const googleOAuthClientID = String.fromEnvironment("GOOGLE_OAUTH_CLIENT_ID");
 
+const iosAppStoreId = String.fromEnvironment("IOS_APP_STORE_ID");
+const microsoftStoreId = String.fromEnvironment("MICROSOFT_STORE_ID");
+
 const dbName = "CopyCat-Clipboard-DB";
 
 const sentryDSN = String.fromEnvironment("SENTRY_DSN");

@@ -95,6 +95,11 @@ class AppConfig with _$AppConfig, Identifiable {
     // on boarding
     @Default(true)
     bool onBoardComplete, // On logout/unauth this will be set to true
+    // In-App Review tracking
+    @Default(0) int reviewQualifyingEventCount,
+    DateTime? lastReviewPromptDate,
+    @Default(false) bool reviewNeverAsk,
+
     //? Local App States
     /// last focus window id
     @JsonKey(includeFromJson: false, includeToJson: false)
