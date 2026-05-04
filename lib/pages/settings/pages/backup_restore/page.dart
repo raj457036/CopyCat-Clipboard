@@ -1,4 +1,5 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/encryption.dart';
 import 'package:clipboard/base/data/services/manual_backup_restore_service.dart';
@@ -13,6 +14,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart' show GoRouterHelper;
 
 class BackupRestorePage extends StatefulWidget {
   const BackupRestorePage({super.key});
@@ -23,6 +25,7 @@ class BackupRestorePage extends StatefulWidget {
 
 class _BackupRestorePageState extends State<BackupRestorePage> {
   late final ManualBackupRestoreService _service;
+  late final ClipboardCubit _clipboardCubit;
 
   bool _busy = false;
   String _busyLabel = '';
@@ -33,6 +36,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
   @override
   void initState() {
     super.initState();
+    _clipboardCubit = context.read<ClipboardCubit>();
     _service = ManualBackupRestoreService(
       sl<ClipboardSource>(instanceName: 'local'),
       sl<ClipCollectionSource>(instanceName: 'local'),
@@ -141,6 +145,8 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
         _restoreSummary = summary;
       });
 
+      _clipboardCubit.refresh();
+
       showTextSnackbar(
         context.locale.backup_restore__snackbar__restore_completed(
           clips: summary.clipsRestored,
@@ -197,7 +203,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
       }
 
       final maxSizeMb = int.tryParse(maxSizeController.text.trim());
-      Navigator.of(context).pop(
+      context.pop(
         _BackupOptions(
           clipTypes: selectedClipTypes,
           fromDate: fromDate,

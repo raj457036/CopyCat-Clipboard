@@ -48,6 +48,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     });
   }
 
+  /// Refresh the current list of clipboard items.
   void refresh() {
     if (state.loading) return;
     fetch(fromTop: true);
