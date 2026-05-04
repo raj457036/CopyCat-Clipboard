@@ -55,6 +55,8 @@ mixin _$Subscription {
   int get maxSyncDevices => throw _privateConstructorUsedError;
   @JsonKey(name: "cers")
   bool get customExclusionRules => throw _privateConstructorUsedError;
+  @JsonKey(name: "ps_limit")
+  int get pasteStackLimit => throw _privateConstructorUsedError;
   int get grants => throw _privateConstructorUsedError;
   String? get tkn => throw _privateConstructorUsedError; // local state
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -99,6 +101,7 @@ abstract class $SubscriptionCopyWith<$Res> {
     @DateTimeConverter() DateTime? activeTill,
     @JsonKey(name: "devices") int maxSyncDevices,
     @JsonKey(name: "cers") bool customExclusionRules,
+    @JsonKey(name: "ps_limit") int pasteStackLimit,
     int grants,
     String? tkn,
     @JsonKey(includeFromJson: false, includeToJson: false)
@@ -142,6 +145,7 @@ class _$SubscriptionCopyWithImpl<$Res, $Val extends Subscription>
     Object? activeTill = freezed,
     Object? maxSyncDevices = null,
     Object? customExclusionRules = null,
+    Object? pasteStackLimit = null,
     Object? grants = null,
     Object? tkn = freezed,
     Object? managementUrl = freezed,
@@ -232,6 +236,10 @@ class _$SubscriptionCopyWithImpl<$Res, $Val extends Subscription>
                 ? _value.customExclusionRules
                 : customExclusionRules // ignore: cast_nullable_to_non_nullable
                       as bool,
+            pasteStackLimit: null == pasteStackLimit
+                ? _value.pasteStackLimit
+                : pasteStackLimit // ignore: cast_nullable_to_non_nullable
+                      as int,
             grants: null == grants
                 ? _value.grants
                 : grants // ignore: cast_nullable_to_non_nullable
@@ -281,6 +289,7 @@ abstract class _$$SubscriptionImplCopyWith<$Res>
     @DateTimeConverter() DateTime? activeTill,
     @JsonKey(name: "devices") int maxSyncDevices,
     @JsonKey(name: "cers") bool customExclusionRules,
+    @JsonKey(name: "ps_limit") int pasteStackLimit,
     int grants,
     String? tkn,
     @JsonKey(includeFromJson: false, includeToJson: false)
@@ -323,6 +332,7 @@ class __$$SubscriptionImplCopyWithImpl<$Res>
     Object? activeTill = freezed,
     Object? maxSyncDevices = null,
     Object? customExclusionRules = null,
+    Object? pasteStackLimit = null,
     Object? grants = null,
     Object? tkn = freezed,
     Object? managementUrl = freezed,
@@ -413,6 +423,10 @@ class __$$SubscriptionImplCopyWithImpl<$Res>
             ? _value.customExclusionRules
             : customExclusionRules // ignore: cast_nullable_to_non_nullable
                   as bool,
+        pasteStackLimit: null == pasteStackLimit
+            ? _value.pasteStackLimit
+            : pasteStackLimit // ignore: cast_nullable_to_non_nullable
+                  as int,
         grants: null == grants
             ? _value.grants
             : grants // ignore: cast_nullable_to_non_nullable
@@ -444,17 +458,18 @@ class _$SubscriptionImpl extends _Subscription {
     required this.source,
     @DateTimeConverter() this.trialStart,
     @DateTimeConverter() this.trialEnd,
-    this.collections = 3,
-    this.itemsPerCollection = 50,
+    this.collections = defaultCollectionCount,
+    this.itemsPerCollection = defaultMaxItemPerCollection,
     this.dragNdrop = false,
     this.theming = false,
-    @JsonKey(name: "syncHr") this.syncHours = 24,
+    @JsonKey(name: "syncHr") this.syncHours = defaultSyncHourOffset,
     this.ads = true,
     @JsonKey(name: "syncInt") this.syncInterval = $45S,
     this.edit = false,
     @DateTimeConverter() this.activeTill,
-    @JsonKey(name: "devices") this.maxSyncDevices = 3,
+    @JsonKey(name: "devices") this.maxSyncDevices = defaultNoOfSyncedDevices,
     @JsonKey(name: "cers") this.customExclusionRules = false,
+    @JsonKey(name: "ps_limit") this.pasteStackLimit = defaultPasteStackLimit,
     this.grants = 0,
     this.tkn,
     @JsonKey(includeFromJson: false, includeToJson: false) this.managementUrl,
@@ -525,6 +540,9 @@ class _$SubscriptionImpl extends _Subscription {
   @JsonKey(name: "cers")
   final bool customExclusionRules;
   @override
+  @JsonKey(name: "ps_limit")
+  final int pasteStackLimit;
+  @override
   @JsonKey()
   final int grants;
   @override
@@ -536,7 +554,7 @@ class _$SubscriptionImpl extends _Subscription {
 
   @override
   String toString() {
-    return 'Subscription(id: $id, serverId: $serverId, created: $created, modified: $modified, userId: $userId, planName: $planName, subId: $subId, source: $source, trialStart: $trialStart, trialEnd: $trialEnd, collections: $collections, itemsPerCollection: $itemsPerCollection, dragNdrop: $dragNdrop, theming: $theming, syncHours: $syncHours, ads: $ads, syncInterval: $syncInterval, edit: $edit, activeTill: $activeTill, maxSyncDevices: $maxSyncDevices, customExclusionRules: $customExclusionRules, grants: $grants, tkn: $tkn, managementUrl: $managementUrl)';
+    return 'Subscription(id: $id, serverId: $serverId, created: $created, modified: $modified, userId: $userId, planName: $planName, subId: $subId, source: $source, trialStart: $trialStart, trialEnd: $trialEnd, collections: $collections, itemsPerCollection: $itemsPerCollection, dragNdrop: $dragNdrop, theming: $theming, syncHours: $syncHours, ads: $ads, syncInterval: $syncInterval, edit: $edit, activeTill: $activeTill, maxSyncDevices: $maxSyncDevices, customExclusionRules: $customExclusionRules, pasteStackLimit: $pasteStackLimit, grants: $grants, tkn: $tkn, managementUrl: $managementUrl)';
   }
 
   @override
@@ -578,6 +596,8 @@ class _$SubscriptionImpl extends _Subscription {
                 other.maxSyncDevices == maxSyncDevices) &&
             (identical(other.customExclusionRules, customExclusionRules) ||
                 other.customExclusionRules == customExclusionRules) &&
+            (identical(other.pasteStackLimit, pasteStackLimit) ||
+                other.pasteStackLimit == pasteStackLimit) &&
             (identical(other.grants, grants) || other.grants == grants) &&
             (identical(other.tkn, tkn) || other.tkn == tkn) &&
             (identical(other.managementUrl, managementUrl) ||
@@ -609,6 +629,7 @@ class _$SubscriptionImpl extends _Subscription {
     activeTill,
     maxSyncDevices,
     customExclusionRules,
+    pasteStackLimit,
     grants,
     tkn,
     managementUrl,
@@ -655,6 +676,7 @@ abstract class _Subscription extends Subscription {
     @DateTimeConverter() final DateTime? activeTill,
     @JsonKey(name: "devices") final int maxSyncDevices,
     @JsonKey(name: "cers") final bool customExclusionRules,
+    @JsonKey(name: "ps_limit") final int pasteStackLimit,
     final int grants,
     final String? tkn,
     @JsonKey(includeFromJson: false, includeToJson: false)
@@ -720,6 +742,9 @@ abstract class _Subscription extends Subscription {
   @override
   @JsonKey(name: "cers")
   bool get customExclusionRules;
+  @override
+  @JsonKey(name: "ps_limit")
+  int get pasteStackLimit;
   @override
   int get grants;
   @override

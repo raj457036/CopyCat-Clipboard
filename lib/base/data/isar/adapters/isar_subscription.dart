@@ -27,6 +27,7 @@ class IsarSubscription {
   DateTime? activeTill;
   int maxSyncDevices = 3;
   bool customExclusionRules = false;
+  int pasteStackLimit = 10;
   int grants = 0;
   String? tkn;
 
@@ -52,6 +53,7 @@ class IsarSubscription {
     activeTill: activeTill,
     maxSyncDevices: maxSyncDevices,
     customExclusionRules: customExclusionRules,
+    pasteStackLimit: pasteStackLimit,
     grants: grants,
     tkn: tkn,
   );
@@ -78,6 +80,7 @@ class IsarSubscription {
     ..activeTill = sub.activeTill
     ..maxSyncDevices = sub.maxSyncDevices
     ..customExclusionRules = sub.customExclusionRules
+    ..pasteStackLimit = sub.pasteStackLimit
     ..grants = sub.grants
     ..tkn = sub.tkn;
 }

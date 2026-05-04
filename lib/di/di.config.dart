@@ -449,6 +449,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i891.SyncStatusCubit(
         gh<_i443.SyncOrchestrator>(),
         gh<_i292.SyncEventBus>(),
+        gh<_i246.MonetizationCubit>(),
       ),
     );
     return this;

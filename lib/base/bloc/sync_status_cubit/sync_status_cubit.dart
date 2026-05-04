@@ -1,6 +1,8 @@
 import 'dart:async' show StreamSubscription;
 
 import 'package:bloc/bloc.dart';
+import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/failure.dart';
@@ -14,6 +16,7 @@ part 'sync_status_state.dart';
 class SyncAllParams {
   final bool force;
   final bool freshPull;
+
   const SyncAllParams({this.force = false, this.freshPull = false});
 }
 
@@ -26,6 +29,7 @@ class SyncProgressInitParams {
 class SyncStatusCubit extends Cubit<SyncStatusState> {
   static const _notificationDedupeWindow = Duration(seconds: 3);
 
+  final MonetizationCubit monetizationCubit;
   final SyncOrchestrator orchestrator;
   final SyncEventBus eventBus;
   StreamSubscription? _eventSub;
@@ -33,10 +37,18 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
   final Map<String, DateTime> _lastNotifiedAt = {};
   bool _isManualSyncing = false;
 
-  SyncStatusCubit(this.orchestrator, this.eventBus)
+  SyncStatusCubit(this.orchestrator, this.eventBus, this.monetizationCubit)
     : super(const SyncStatusState.unknown()) {
     _subscribeToEvents();
   }
+
+  Subscription? get _activeSubscription =>
+      monetizationCubit.state.when(unknown: () => null, active: (sub) => sub);
+
+  /// Determines the pull offset for fresh pulls based on subscription status.
+  int get pullOffset => _activeSubscription?.syncHours != null
+      ? _activeSubscription!.syncInterval * 60 * 60
+      : 24 * 60 * 60; // Default to 24 hours for non-subscribers
 
   void initializeProgress(SyncProgressInitParams params) {
     final progress = params.totalCounts.map(
@@ -125,10 +137,12 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     if (state is! SyncingStatus) {
       emit(const SyncStatusState.syncing());
     }
+
     try {
       final success = await orchestrator.syncAll(
         force: params.force,
         freshPull: params.freshPull,
+        pullOffset: pullOffset,
       );
       if (success) {
         emit(const SyncStatusState.complete());

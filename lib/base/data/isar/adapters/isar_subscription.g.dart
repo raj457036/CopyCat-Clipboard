@@ -60,37 +60,42 @@ const IsarSubscriptionSchema = CollectionSchema(
       name: r'modified',
       type: IsarType.dateTime,
     ),
-    r'planName': PropertySchema(
+    r'pasteStackLimit': PropertySchema(
       id: 11,
+      name: r'pasteStackLimit',
+      type: IsarType.long,
+    ),
+    r'planName': PropertySchema(
+      id: 12,
       name: r'planName',
       type: IsarType.string,
     ),
-    r'serverId': PropertySchema(id: 12, name: r'serverId', type: IsarType.long),
-    r'source': PropertySchema(id: 13, name: r'source', type: IsarType.string),
-    r'subId': PropertySchema(id: 14, name: r'subId', type: IsarType.string),
+    r'serverId': PropertySchema(id: 13, name: r'serverId', type: IsarType.long),
+    r'source': PropertySchema(id: 14, name: r'source', type: IsarType.string),
+    r'subId': PropertySchema(id: 15, name: r'subId', type: IsarType.string),
     r'syncHours': PropertySchema(
-      id: 15,
+      id: 16,
       name: r'syncHours',
       type: IsarType.long,
     ),
     r'syncInterval': PropertySchema(
-      id: 16,
+      id: 17,
       name: r'syncInterval',
       type: IsarType.long,
     ),
-    r'theming': PropertySchema(id: 17, name: r'theming', type: IsarType.bool),
-    r'tkn': PropertySchema(id: 18, name: r'tkn', type: IsarType.string),
+    r'theming': PropertySchema(id: 18, name: r'theming', type: IsarType.bool),
+    r'tkn': PropertySchema(id: 19, name: r'tkn', type: IsarType.string),
     r'trialEnd': PropertySchema(
-      id: 19,
+      id: 20,
       name: r'trialEnd',
       type: IsarType.dateTime,
     ),
     r'trialStart': PropertySchema(
-      id: 20,
+      id: 21,
       name: r'trialStart',
       type: IsarType.dateTime,
     ),
-    r'userId': PropertySchema(id: 21, name: r'userId', type: IsarType.string),
+    r'userId': PropertySchema(id: 22, name: r'userId', type: IsarType.string),
   },
 
   estimateSize: _isarSubscriptionEstimateSize,
@@ -144,17 +149,18 @@ void _isarSubscriptionSerialize(
   writer.writeLong(offsets[8], object.itemsPerCollection);
   writer.writeLong(offsets[9], object.maxSyncDevices);
   writer.writeDateTime(offsets[10], object.modified);
-  writer.writeString(offsets[11], object.planName);
-  writer.writeLong(offsets[12], object.serverId);
-  writer.writeString(offsets[13], object.source);
-  writer.writeString(offsets[14], object.subId);
-  writer.writeLong(offsets[15], object.syncHours);
-  writer.writeLong(offsets[16], object.syncInterval);
-  writer.writeBool(offsets[17], object.theming);
-  writer.writeString(offsets[18], object.tkn);
-  writer.writeDateTime(offsets[19], object.trialEnd);
-  writer.writeDateTime(offsets[20], object.trialStart);
-  writer.writeString(offsets[21], object.userId);
+  writer.writeLong(offsets[11], object.pasteStackLimit);
+  writer.writeString(offsets[12], object.planName);
+  writer.writeLong(offsets[13], object.serverId);
+  writer.writeString(offsets[14], object.source);
+  writer.writeString(offsets[15], object.subId);
+  writer.writeLong(offsets[16], object.syncHours);
+  writer.writeLong(offsets[17], object.syncInterval);
+  writer.writeBool(offsets[18], object.theming);
+  writer.writeString(offsets[19], object.tkn);
+  writer.writeDateTime(offsets[20], object.trialEnd);
+  writer.writeDateTime(offsets[21], object.trialStart);
+  writer.writeString(offsets[22], object.userId);
 }
 
 IsarSubscription _isarSubscriptionDeserialize(
@@ -176,17 +182,18 @@ IsarSubscription _isarSubscriptionDeserialize(
   object.itemsPerCollection = reader.readLong(offsets[8]);
   object.maxSyncDevices = reader.readLong(offsets[9]);
   object.modified = reader.readDateTime(offsets[10]);
-  object.planName = reader.readString(offsets[11]);
-  object.serverId = reader.readLongOrNull(offsets[12]);
-  object.source = reader.readString(offsets[13]);
-  object.subId = reader.readString(offsets[14]);
-  object.syncHours = reader.readLong(offsets[15]);
-  object.syncInterval = reader.readLong(offsets[16]);
-  object.theming = reader.readBool(offsets[17]);
-  object.tkn = reader.readStringOrNull(offsets[18]);
-  object.trialEnd = reader.readDateTimeOrNull(offsets[19]);
-  object.trialStart = reader.readDateTimeOrNull(offsets[20]);
-  object.userId = reader.readString(offsets[21]);
+  object.pasteStackLimit = reader.readLong(offsets[11]);
+  object.planName = reader.readString(offsets[12]);
+  object.serverId = reader.readLongOrNull(offsets[13]);
+  object.source = reader.readString(offsets[14]);
+  object.subId = reader.readString(offsets[15]);
+  object.syncHours = reader.readLong(offsets[16]);
+  object.syncInterval = reader.readLong(offsets[17]);
+  object.theming = reader.readBool(offsets[18]);
+  object.tkn = reader.readStringOrNull(offsets[19]);
+  object.trialEnd = reader.readDateTimeOrNull(offsets[20]);
+  object.trialStart = reader.readDateTimeOrNull(offsets[21]);
+  object.userId = reader.readString(offsets[22]);
   return object;
 }
 
@@ -220,26 +227,28 @@ P _isarSubscriptionDeserializeProp<P>(
     case 10:
       return (reader.readDateTime(offset)) as P;
     case 11:
-      return (reader.readString(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 12:
-      return (reader.readLongOrNull(offset)) as P;
-    case 13:
       return (reader.readString(offset)) as P;
+    case 13:
+      return (reader.readLongOrNull(offset)) as P;
     case 14:
       return (reader.readString(offset)) as P;
     case 15:
-      return (reader.readLong(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 16:
       return (reader.readLong(offset)) as P;
     case 17:
-      return (reader.readBool(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 18:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 19:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 20:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 21:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 22:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -833,6 +842,61 @@ extension IsarSubscriptionQueryFilter
       return query.addFilterCondition(
         FilterCondition.between(
           property: r'modified',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSubscription, IsarSubscription, QAfterFilterCondition>
+  pasteStackLimitEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'pasteStackLimit', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSubscription, IsarSubscription, QAfterFilterCondition>
+  pasteStackLimitGreaterThan(int value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'pasteStackLimit',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSubscription, IsarSubscription, QAfterFilterCondition>
+  pasteStackLimitLessThan(int value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'pasteStackLimit',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarSubscription, IsarSubscription, QAfterFilterCondition>
+  pasteStackLimitBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'pasteStackLimit',
           lower: lower,
           includeLower: includeLower,
           upper: upper,
@@ -2065,6 +2129,20 @@ extension IsarSubscriptionQuerySortBy
   }
 
   QueryBuilder<IsarSubscription, IsarSubscription, QAfterSortBy>
+  sortByPasteStackLimit() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pasteStackLimit', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarSubscription, IsarSubscription, QAfterSortBy>
+  sortByPasteStackLimitDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pasteStackLimit', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarSubscription, IsarSubscription, QAfterSortBy>
   sortByPlanName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'planName', Sort.asc);
@@ -2386,6 +2464,20 @@ extension IsarSubscriptionQuerySortThenBy
   }
 
   QueryBuilder<IsarSubscription, IsarSubscription, QAfterSortBy>
+  thenByPasteStackLimit() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pasteStackLimit', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarSubscription, IsarSubscription, QAfterSortBy>
+  thenByPasteStackLimitDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'pasteStackLimit', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarSubscription, IsarSubscription, QAfterSortBy>
   thenByPlanName() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'planName', Sort.asc);
@@ -2616,6 +2708,13 @@ extension IsarSubscriptionQueryWhereDistinct
   }
 
   QueryBuilder<IsarSubscription, IsarSubscription, QDistinct>
+  distinctByPasteStackLimit() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'pasteStackLimit');
+    });
+  }
+
+  QueryBuilder<IsarSubscription, IsarSubscription, QDistinct>
   distinctByPlanName({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'planName', caseSensitive: caseSensitive);
@@ -2773,6 +2872,13 @@ extension IsarSubscriptionQueryProperty
   modifiedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'modified');
+    });
+  }
+
+  QueryBuilder<IsarSubscription, int, QQueryOperations>
+  pasteStackLimitProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'pasteStackLimit');
     });
   }
 

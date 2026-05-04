@@ -1,4 +1,11 @@
 import 'package:clipboard/base/constants/numbers/duration.dart';
+import 'package:clipboard/base/constants/numbers/values.dart'
+    show
+        defaultPasteStackLimit,
+        defaultSyncHourOffset,
+        defaultMaxItemPerCollection,
+        defaultCollectionCount,
+        defaultNoOfSyncedDevices;
 import 'package:clipboard/base/domain/model/base.dart';
 import 'package:clipboard/base/domain/model/json_converters/datetime_converters.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -22,17 +29,22 @@ class Subscription with _$Subscription, Identifiable {
     required String source,
     @DateTimeConverter() DateTime? trialStart,
     @DateTimeConverter() DateTime? trialEnd,
-    @Default(3) int collections,
-    @Default(50) int itemsPerCollection,
+    @Default(defaultCollectionCount) int collections,
+    @Default(defaultMaxItemPerCollection) int itemsPerCollection,
     @Default(false) bool dragNdrop,
     @Default(false) bool theming,
-    @JsonKey(name: "syncHr") @Default(24) int syncHours,
+    @JsonKey(name: "syncHr") @Default(defaultSyncHourOffset) int syncHours,
     @Default(true) bool ads,
     @JsonKey(name: "syncInt") @Default($45S) int syncInterval,
     @Default(false) bool edit,
     @DateTimeConverter() DateTime? activeTill,
-    @JsonKey(name: "devices") @Default(3) int maxSyncDevices,
+    @JsonKey(name: "devices")
+    @Default(defaultNoOfSyncedDevices)
+    int maxSyncDevices,
     @JsonKey(name: "cers") @Default(false) bool customExclusionRules,
+    @JsonKey(name: "ps_limit")
+    @Default(defaultPasteStackLimit)
+    int pasteStackLimit,
     @Default(0) int grants,
     String? tkn,
     // local state

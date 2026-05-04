@@ -4,7 +4,7 @@ import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/badges.dart';
-import 'package:clipboard/widgets/subscription/subscription_provider.dart';
+import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -90,12 +90,10 @@ class ColorPickerTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
     final colors = context.colors;
-    return SubscriptionBuilder(
-      builder: (context, subscription) {
-        final hasAccess =
-            subscription != null &&
-            subscription.isActive &&
-            subscription.theming;
+    return HasAccessToFeature(
+      hasAccess: (subscription) =>
+          subscription.isActive && subscription.theming,
+      builder: (context, hasAccess, _) {
         return ListTile(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,

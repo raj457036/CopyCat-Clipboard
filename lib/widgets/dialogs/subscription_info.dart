@@ -8,7 +8,7 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/subscription/apply_coupon.dart';
 import 'package:clipboard/widgets/subscription/paywall/manage_subscription_button.dart';
 import 'package:clipboard/widgets/subscription/paywall/paywall.dart';
-import 'package:clipboard/widgets/subscription/subscription_provider.dart';
+import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

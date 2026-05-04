@@ -4,7 +4,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/widgets/settings_menu_dropdown.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/badges.dart';
-import 'package:clipboard/widgets/subscription/subscription_provider.dart';
+import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,12 +17,10 @@ class ThemeVariantDropdown extends StatelessWidget {
     final colors = context.colors;
     final cubit = context.read<AppConfigCubit>();
 
-    return SubscriptionBuilder(
-      builder: (context, subscription) {
-        final hasAccess =
-            subscription != null &&
-            subscription.isActive &&
-            subscription.theming;
+    return HasAccessToFeature(
+      hasAccess: (subscription) =>
+          subscription.isActive && subscription.theming,
+      builder: (context, hasAccess, _) {
         return ListTile(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,

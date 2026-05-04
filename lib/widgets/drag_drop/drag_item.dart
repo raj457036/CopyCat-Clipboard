@@ -8,7 +8,7 @@ import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/clip_cards/file_clip_card.dart';
 import 'package:clipboard/widgets/clip_cards/media_clip_card.dart';
-import 'package:clipboard/widgets/subscription/subscription_provider.dart';
+import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
@@ -72,23 +72,23 @@ class DraggableItem extends StatelessWidget {
       },
       builder: (context, enabled) {
         if (!enabled) return child;
-        return SubscriptionBuilder(
-          builder: (context, subscription) {
-            if (subscription == null) return child;
-            if (subscription.isActive && subscription.dragNdrop) {
-              return DragItemWidget(
-                canAddItemToExistingSession: true,
-                dragItemProvider: dragItemProvider,
-                allowedOperations: () => const [
-                  DropOperation.copy,
-                  // DropOperation.userCancelled,
-                ],
-                liftBuilder: previewBuilder,
-                dragBuilder: previewBuilder,
-                child: DraggableWidget(child: child),
-              );
-            }
-            return child;
+        return HasAccessToFeature(
+          hasAccess: (subscription) =>
+              subscription.isActive && subscription.dragNdrop,
+          fallbackWidget: child,
+          alwaysBuild: false,
+          builder: (context, hasAccess, _) {
+            return DragItemWidget(
+              canAddItemToExistingSession: true,
+              dragItemProvider: dragItemProvider,
+              allowedOperations: () => const [
+                DropOperation.copy,
+                // DropOperation.userCancelled,
+              ],
+              liftBuilder: previewBuilder,
+              dragBuilder: previewBuilder,
+              child: DraggableWidget(child: child),
+            );
           },
         );
       },

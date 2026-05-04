@@ -2,6 +2,7 @@ import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/constants/numbers/duration.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
@@ -9,7 +10,7 @@ import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/settings/pages/android_bg_clipboard/accessibility_service_notice.dart';
 import 'package:clipboard/pages/settings/pages/android_bg_clipboard/draw_over_other_app_notice.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
-import 'package:clipboard/widgets/subscription/subscription_provider.dart';
+import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/widgets/badges.dart';
@@ -313,17 +314,16 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                 : (_) => openAccessibilitySetting(),
           ),
           height5,
-          SubscriptionBuilder(
-            builder: (context, subscription) {
+          HasAccessToFeature(
+            hasAccess: (subscription) => subscription.syncInterval < $10S,
+            builder: (context, hasAccess, subscription) {
               final realtimeSyncEnabled =
                   appConfigCubit.state.config.syncSpeed == SyncSpeed.realtime;
-              final allowSync =
-                  subscription != null &&
-                  subscription.syncInterval < 10 &&
-                  realtimeSyncEnabled;
+
+              realtimeSyncEnabled;
               return SwitchListTile(
-                value: _syncMode && allowSync,
-                thumbIcon: _syncMode && allowSync ? checked : unchecked,
+                value: _syncMode && hasAccess,
+                thumbIcon: _syncMode && hasAccess ? checked : unchecked,
                 onChanged: writingConfig
                     ? null
                     : (val) => _onSyncModeChanged(val, subscription),

@@ -34,8 +34,9 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
   void initState() {
     super.initState();
     pasteStack = context.read<PasteStackCubit>();
-    pasteStack.activate();
-    pasteStack.pushItems(widget.initialItems ?? const []);
+    pasteStack
+      ..activate()
+      ..pushItems(widget.initialItems ?? const []);
     pasteHotKey = HotKey(
       key: PhysicalKeyboardKey.keyV,
       modifiers: Platform.isMacOS

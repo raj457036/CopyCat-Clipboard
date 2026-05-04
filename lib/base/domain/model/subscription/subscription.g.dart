@@ -23,11 +23,14 @@ _$SubscriptionImpl _$$SubscriptionImplFromJson(Map<String, dynamic> json) =>
         json['trialEnd'],
         const DateTimeConverter().fromJson,
       ),
-      collections: (json['collections'] as num?)?.toInt() ?? 3,
-      itemsPerCollection: (json['itemsPerCollection'] as num?)?.toInt() ?? 50,
+      collections:
+          (json['collections'] as num?)?.toInt() ?? defaultCollectionCount,
+      itemsPerCollection:
+          (json['itemsPerCollection'] as num?)?.toInt() ??
+          defaultMaxItemPerCollection,
       dragNdrop: json['dragNdrop'] as bool? ?? false,
       theming: json['theming'] as bool? ?? false,
-      syncHours: (json['syncHr'] as num?)?.toInt() ?? 24,
+      syncHours: (json['syncHr'] as num?)?.toInt() ?? defaultSyncHourOffset,
       ads: json['ads'] as bool? ?? true,
       syncInterval: (json['syncInt'] as num?)?.toInt() ?? $45S,
       edit: json['edit'] as bool? ?? false,
@@ -35,8 +38,11 @@ _$SubscriptionImpl _$$SubscriptionImplFromJson(Map<String, dynamic> json) =>
         json['activeTill'],
         const DateTimeConverter().fromJson,
       ),
-      maxSyncDevices: (json['devices'] as num?)?.toInt() ?? 3,
+      maxSyncDevices:
+          (json['devices'] as num?)?.toInt() ?? defaultNoOfSyncedDevices,
       customExclusionRules: json['cers'] as bool? ?? false,
+      pasteStackLimit:
+          (json['ps_limit'] as num?)?.toInt() ?? defaultPasteStackLimit,
       grants: (json['grants'] as num?)?.toInt() ?? 0,
       tkn: json['tkn'] as String?,
     );
@@ -71,6 +77,7 @@ Map<String, dynamic> _$$SubscriptionImplToJson(_$SubscriptionImpl instance) =>
       ),
       'devices': instance.maxSyncDevices,
       'cers': instance.customExclusionRules,
+      'ps_limit': instance.pasteStackLimit,
       'grants': instance.grants,
       'tkn': instance.tkn,
     };

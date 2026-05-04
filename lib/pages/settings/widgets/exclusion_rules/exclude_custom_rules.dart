@@ -2,7 +2,7 @@ import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/widgets/badges.dart';
-import 'package:clipboard/widgets/subscription/subscription_provider.dart';
+import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,10 +16,9 @@ class ExcludeCustomRules extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SubscriptionBuilder(
-      builder: (context, subscription) {
-        final hasAccess =
-            (subscription != null && subscription.customExclusionRules);
+    return HasAccessToFeature(
+      hasAccess: (subscription) => subscription.customExclusionRules,
+      builder: (context, hasAccess, _) {
         return ListTile(
           title: Row(
             mainAxisSize: MainAxisSize.min,

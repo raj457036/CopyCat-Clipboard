@@ -82,6 +82,7 @@ class EventBridge extends StatelessWidget {
     if (Platform.isAndroid) context.read<AndroidBgClipboardCubit?>()?.reset();
     context.read<MonetizationCubit>().logout();
     context.read<ClipCollectionCubit>().reset();
+    context.read<ClipboardCubit>().reset();
     if (isDesktopPlatform) {
       context.read<WindowActionCubit>()
         ..setWindowdView()

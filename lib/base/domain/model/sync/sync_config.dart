@@ -29,5 +29,8 @@ class SyncConfig with _$SyncConfig {
 
     /// Delay before attempting to reconnect to realtime stream after a drop.
     @Default(10) int reconnectDelaySeconds,
+
+    /// Whether fresh pull offset is enabled.
+    @Default(false) bool freshPullOffsetEnabled,
   }) = _SyncConfig;
 }

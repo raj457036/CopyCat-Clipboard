@@ -321,6 +321,7 @@ class MainApp extends StatelessWidget {
           create: (context) => PasteStackCubit(
             context.read<AppConfigCubit>(),
             context.read<WindowActionCubit>(),
+            context.read<MonetizationCubit>(),
           ),
         ),
         BlocProvider<EventBusCubit>(create: (context) => sl()),

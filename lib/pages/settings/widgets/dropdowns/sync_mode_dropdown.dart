@@ -6,7 +6,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/widgets/settings_menu_dropdown.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/badges.dart';
-import 'package:clipboard/widgets/subscription/subscription_provider.dart';
+import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,8 +18,9 @@ class SyncModeDropdown extends StatelessWidget {
     final textTheme = context.textTheme;
     final colors = context.colors;
     final cubit = context.read<AppConfigCubit>();
-    return SubscriptionBuilder(
-      builder: (context, subscription) {
+    return HasAccessToFeature(
+      hasAccess: (subscription) => subscription.syncInterval < $10S,
+      builder: (context, hasAccess, _) {
         return BlocSelector<AppConfigCubit, AppConfigState, (SyncSpeed, bool)>(
           selector: (state) {
             switch (state) {
@@ -42,11 +43,10 @@ class SyncModeDropdown extends StatelessWidget {
                 value: speed,
                 maxWidth: 190,
                 items: [
-                  if (subscription != null)
-                    SettingsDropdownItem(
-                      value: SyncSpeed.realtime,
-                      enabled: subscription.syncInterval < $10S,
-                    ),
+                  SettingsDropdownItem(
+                    value: SyncSpeed.realtime,
+                    enabled: hasAccess,
+                  ),
                   const SettingsDropdownItem(value: SyncSpeed.balanced),
                 ],
                 itemBuilder: (context, value) {

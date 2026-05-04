@@ -3,7 +3,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/badges.dart';
-import 'package:clipboard/widgets/subscription/subscription_provider.dart';
+import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universal_io/io.dart';
@@ -29,17 +29,13 @@ class DragAndDropSwitchTile extends StatelessWidget {
         }
       },
       builder: (context, enabled) {
-        return SubscriptionBuilder(
-          builder: (context, subscription) {
-            final supported =
-                subscription != null &&
-                subscription.isActive &&
-                subscription.dragNdrop &&
-                isDNDSupported;
-
+        return HasAccessToFeature(
+          hasAccess: (subscription) =>
+              subscription.isActive && subscription.dragNdrop && isDNDSupported,
+          builder: (context, hasAccess, _) {
             return SwitchListTile(
               value: enabled,
-              onChanged: supported
+              onChanged: hasAccess
                   ? context.read<AppConfigCubit>().toggleDragNDrop
                   : null,
               title: Row(

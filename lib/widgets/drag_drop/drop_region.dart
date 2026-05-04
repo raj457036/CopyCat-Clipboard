@@ -8,7 +8,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/widgets/drag_drop/drop_area.dart';
-import 'package:clipboard/widgets/subscription/subscription_provider.dart';
+import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:super_clipboard/super_clipboard.dart';
@@ -44,17 +44,17 @@ class ClipDropRegionProvider extends StatelessWidget {
       },
       builder: (context, enabled) {
         if (!enabled) return child;
-        return SubscriptionBuilder(
-          builder: (context, subscription) {
-            if (subscription == null) return child;
-            if (subscription.isActive && subscription.dragNdrop) {
-              return ClipDropRegion(
-                onDragStart: onDragStart,
-                onDragStop: onDragStop,
-                child: child,
-              );
-            }
-            return child;
+        return HasAccessToFeature(
+          hasAccess: (subscription) =>
+              subscription.isActive && subscription.dragNdrop,
+          fallbackWidget: child,
+          alwaysBuild: false,
+          builder: (context, hasAccess, _) {
+            return ClipDropRegion(
+              onDragStart: onDragStart,
+              onDragStop: onDragStop,
+              child: child,
+            );
           },
         );
       },

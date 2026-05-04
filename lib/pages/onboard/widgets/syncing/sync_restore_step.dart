@@ -57,7 +57,8 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
       final statRes = await widget.restorationStatusRepository.getStatus();
       statRes.fold((l) => null, (r) => syncStatus = r);
       final lastSync =
-          syncStatus?.lastSyncPoint ?? DateTime.fromMillisecondsSinceEpoch(0);
+          syncStatus?.lastSyncPoint ??
+          systemTime().subtract(Duration(seconds: syncCubit.pullOffset));
 
       final results = await Future.wait([
         widget.collectionRepository.getCount(local: false),

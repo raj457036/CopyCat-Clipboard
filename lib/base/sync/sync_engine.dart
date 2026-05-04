@@ -52,16 +52,33 @@ class SyncEngine<T extends Syncable> {
   // ─── PULL (Server → Local) ────────────────────────────────────────────────
 
   /// Fetches changes and deletions from the server and applies them locally.
-  Future<SyncResult> pull({bool force = false, bool freshPull = false}) async {
+  ///
+  /// If [force] is true, it will run even if a sync is already in progress.
+  /// If [freshPull] is true, it will ignore the last synced cursor and pull
+  /// all changes since [pullOffset] seconds ago (default 0, i.e. from now ).
+  Future<SyncResult> pull({
+    bool force = false,
+    bool freshPull = false,
+    int? pullOffset,
+  }) async {
     if (_busy && !force) return SyncResult.skipped;
     _busy = true;
     eventBus.emitEngineStatus(adapter.entityType, true);
 
     try {
       final cursor = await cursorRepo.get(adapter.entityType);
-      final lastSynced = freshPull
-          ? DateTime.fromMillisecondsSinceEpoch(0)
-          : (cursor?.lastSyncedAt ?? await adapter.getLatestSyncTimestamp());
+      final DateTime? lastSynced;
+      if (freshPull) {
+        if (pullOffset == 0 || pullOffset == null) {
+          // If pulling fresh with 0 offset, we will fetch from the beginning of time.
+          lastSynced = DateTime.fromMillisecondsSinceEpoch(0);
+        } else {
+          lastSynced = systemTime().subtract(Duration(seconds: pullOffset));
+        }
+      } else {
+        lastSynced =
+            (cursor?.lastSyncedAt ?? await adapter.getLatestSyncTimestamp());
+      }
       final excludeDeviceId = freshPull ? null : deviceId;
 
       // 1. Sync Deleted Items

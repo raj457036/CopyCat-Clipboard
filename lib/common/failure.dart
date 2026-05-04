@@ -53,4 +53,10 @@ Failure frequentSyncing(int seconds) {
   );
 }
 
+const pasteStackOverlimit = Failure(
+  message:
+      'Paste stack is already full. Please remove some items before adding new ones.',
+  code: 'paste-stack-overlimit',
+);
+
 typedef FailureOr<T> = Future<Either<Failure, T>>;

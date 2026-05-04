@@ -38,7 +38,14 @@ class SyncOrchestrator {
     SyncEventBus eventBus,
     @Named('device_id') String deviceId,
   ) {
-    _bootstrapEngine(clipAdapter, cursorRepo, _outboxRepo, eventBus, deviceId);
+    _bootstrapEngine(
+      clipAdapter,
+      cursorRepo,
+      _outboxRepo,
+      eventBus,
+      deviceId,
+      const SyncConfig(freshPullOffsetEnabled: true),
+    );
     _bootstrapEngine(
       collectionAdapter,
       cursorRepo,
@@ -53,14 +60,15 @@ class SyncOrchestrator {
     SyncCursorRepository cursorRepo,
     SyncOutboxRepository outboxRepo,
     SyncEventBus eventBus,
-    String deviceId,
-  ) {
+    String deviceId, [
+    SyncConfig config = const SyncConfig(),
+  ]) {
     final engine = SyncEngine<T>(
       adapter: adapter,
       cursorRepo: cursorRepo,
       outboxRepo: outboxRepo,
       eventBus: eventBus,
-      config: const SyncConfig(),
+      config: config,
       conflictResolver: LastModifiedWinsResolver<T>(),
       deviceId: deviceId,
     );
@@ -109,12 +117,20 @@ class SyncOrchestrator {
   }
 
   /// Triggers a full push and pull sync across all engines, respecting dependencies.
-  Future<bool> syncAll({bool force = false, bool freshPull = false}) async {
+  Future<bool> syncAll({
+    bool force = false,
+    bool freshPull = false,
+    int? pullOffset,
+  }) async {
     final sortedEngines = _getSortedEngines();
 
     for (final engine in sortedEngines) {
       await engine.processOutbox();
-      final result = await engine.pull(force: force, freshPull: freshPull);
+      final result = await engine.pull(
+        force: force,
+        freshPull: freshPull,
+        pullOffset: engine.config.freshPullOffsetEnabled ? pullOffset : null,
+      );
       if (result == SyncResult.failed) {
         logger.w(
           "Sync failed for ${engine.adapter.entityType}. Stopping cascade.",
