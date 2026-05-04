@@ -1,5 +1,4 @@
-import 'package:animate_do/animate_do.dart'
-    show SlideInDown, SlideInLeft, SlideInUp, Tada;
+import 'package:animate_do/animate_do.dart' show SlideInLeft, SlideInUp, Tada;
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
