@@ -67,6 +67,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
       offset: offset,
       excludeDeviceId: excludeDeviceId,
       lastSynced: lastSynced,
+      havingCollection: true,
     );
   }
 

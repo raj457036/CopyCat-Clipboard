@@ -49,7 +49,7 @@ class SyncEngine<T extends Syncable> {
     required this.deviceId,
   });
 
-  // ─── PULL (Server → Local) ────────────────────────────────────────────────
+  // PULL (Server → Local)
 
   /// Fetches changes and deletions from the server and applies them locally.
   ///

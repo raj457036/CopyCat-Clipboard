@@ -145,10 +145,12 @@ class RemoteClipboardSource implements ClipboardSource {
   @override
   Future<int> getClipCounts([DateTime? fromTs]) async {
     if (fromTs != null) {
+      final isoTimestamp = fromTs.toIso8601String();
+
       final count = await db
           .from(clipItemTable)
           .count(CountOption.exact)
-          .gt("modified", fromTs)
+          .or('collectionId.not.is.null,modified.gt."$isoTimestamp"')
           .filter("deletedAt", "is", null);
       return count;
     }

@@ -16,6 +16,7 @@ class KeyboardShortcutStep extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
     return ZoomIn(
+      duration: Durations.short2,
       child: Center(
         child: SingleChildScrollView(
           child: Column(

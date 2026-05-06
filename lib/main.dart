@@ -17,6 +17,7 @@ import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.da
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/generated/app_localizations.dart';
 import 'package:clipboard/base/text_theme.dart';
@@ -109,22 +110,22 @@ Future<void> initializeDesktopServices() async {
   );
 
   WindowOptions windowOptions = WindowOptions(
-    // size:  minimumWindowSize,
-    // minimumSize: minimumWindowSize,
+    size: initialWindowSize,
+    minimumSize: minimumWindowSize,
     // make sure to change it in main.cpp ( windows ) &
     // ? my_application.cc ( linux ) and other places too if changing the title.
     title: englishL10n.app__name,
     skipTaskbar: kReleaseMode,
     windowButtonVisibility: true,
-    backgroundColor: Colors.transparent,
-    titleBarStyle: TitleBarStyle.hidden,
   );
   unawaited(
-    windowManager
-        .waitUntilReadyToShow(windowOptions)
-        .then(
-          (_) async => kDebugMode ? windowManager.show() : windowManager.hide(),
-        ),
+    windowManager.waitUntilReadyToShow(windowOptions).then((_) async {
+      if (kDebugMode) {
+        return windowManager.show();
+      } else {
+        return windowManager.hide();
+      }
+    }),
   );
 }
 

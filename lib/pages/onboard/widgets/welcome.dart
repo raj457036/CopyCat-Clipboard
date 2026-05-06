@@ -14,8 +14,9 @@ class WelcomeStep extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
     return ZoomIn(
+      duration: Durations.short2,
       child: FadeIn(
-        delay: Durations.short2,
+        duration: Durations.short2,
         child: Material(
           child: Center(
             child: Column(

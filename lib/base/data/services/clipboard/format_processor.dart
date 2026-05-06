@@ -17,16 +17,12 @@ import 'package:path/path.dart' as p;
 import 'package:super_clipboard/super_clipboard.dart';
 import 'package:universal_io/io.dart';
 
-// ---------------------------------------------------------------------------
 // Globals used for duplicate detection across clipboard reads.
-// ---------------------------------------------------------------------------
 
 ImmediateClip? _immediateClip;
 const _duplicateTag = "<-Duplicate";
 
-// ---------------------------------------------------------------------------
 // Cache-file writer — persists raw bytes / text into the app cache directory.
-// ---------------------------------------------------------------------------
 
 /// Writes clipboard content to a local cache file and returns
 /// `(file, mimeType, sizeInBytes)`. At least one of [content], [textContent],
@@ -69,10 +65,6 @@ Future<(File?, String?, int)> writeToClipboardCacheFile({
   }
   return (null, null, 0);
 }
-
-// ---------------------------------------------------------------------------
-// ClipboardFormatProcessor
-// ---------------------------------------------------------------------------
 
 /// Processes clipboard format data into a [ClipItem].
 /// Handles text, images, URIs, and generic file formats with automatic extension resolution.
