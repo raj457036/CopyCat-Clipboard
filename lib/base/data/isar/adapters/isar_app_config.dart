@@ -1,3 +1,4 @@
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/isar/adapters/isar_exclusion_rules.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
@@ -21,8 +22,8 @@ class IsarAppConfig {
   @Enumerated(EnumType.name)
   AppView view = AppView.windowed;
   bool pinned = false;
-  double windowWidth = 400;
-  double windowHeight = 550;
+  double windowWidth = initialWindowWidth;
+  double windowHeight = initialWindowHeight;
 
   @Enumerated(EnumType.name)
   ClipboardSortKey sortBy = ClipboardSortKey.modified;
