@@ -47,7 +47,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
 
   /// Determines the pull offset for fresh pulls based on subscription status.
   int get pullOffset => _activeSubscription?.syncHours != null
-      ? _activeSubscription!.syncInterval * 60 * 60
+      ? _activeSubscription!.syncHours * 60 * 60
       : 24 * 60 * 60; // Default to 24 hours for non-subscribers
 
   void initializeProgress(SyncProgressInitParams params) {

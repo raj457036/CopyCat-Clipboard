@@ -328,6 +328,8 @@ class _RestorePanel extends StatelessWidget {
         progress['collection'] ?? const SyncProgress(synced: 0, total: 0);
     final clipProgress =
         progress['clip'] ?? const SyncProgress(synced: 0, total: 0);
+    final clipDecryptionProgress =
+        progress['clip_decryption'] ?? const SyncProgress(synced: 0, total: 0);
     final locale = context.locale;
 
     return FadeIn(
@@ -426,6 +428,17 @@ class _RestorePanel extends StatelessWidget {
                       description:
                           locale.sync_restore__clipboard_items_description,
                       progress: clipProgress,
+                      complete: complete,
+                      colors: colors,
+                      text: text,
+                      locale: locale,
+                    ),
+                    height16,
+                    _RestoreRow(
+                      title: locale.settings__decrypt__title,
+                      description:
+                          "Decrypting your clips securely on this device ( This might take a while )",
+                      progress: clipDecryptionProgress,
                       complete: complete,
                       colors: colors,
                       text: text,

@@ -26,6 +26,29 @@
       "program": "lib/main.dart",
       "flutterMode": "release",
       "args": ["--dart-define-from-file", "local/dev.json"]
+    },
+    {
+      "name": "prod clipboard",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--dart-define-from-file", "local/prod.json", "--verbose"]
+    },
+    {
+      "name": "prod clipboard (profile mode)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "profile",
+      "args": ["--dart-define-from-file", "local/prod.json", "--verbose"]
+    },
+    {
+      "name": "prod clipboard (release mode)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "release",
+      "args": ["--dart-define-from-file", "local/prod.json"]
     }
   ]
 }

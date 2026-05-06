@@ -49,6 +49,11 @@ abstract class SyncAdapter<T extends Syncable> {
     required ConflictResolver<T> conflictResolver,
   });
 
+  /// Apply a transformation to an incoming item before it is saved locally.
+  ///
+  /// For example, decryption, cleanup, or masking. This is optional and can be a no-op.
+  Future<T> beforeLocalWrite(T item);
+
   /// Delete items locally.
   Future<List<T>> deleteLocally(List<T> items);
 

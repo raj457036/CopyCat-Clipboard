@@ -49,18 +49,13 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
       query = query.neq("deviceId", excludeDeviceId);
     }
 
-    final docs = await query.order("modified").range(offset, offset + limit);
-    final clips = await Future.wait(
-      (docs.map((e) => ClipboardItem.fromJson(e)).map((e) async {
-        try {
-          return await e.decrypt();
-        } catch (e_) {
-          logger.e(e_);
-          return e;
-        }
-      })).toList(),
-    );
-    return PaginatedResult(results: clips, hasMore: clips.length >= limit);
+    final docs = (await query.order("modified").range(offset, offset + limit))
+        .map(ClipboardItem.fromJson)
+        .toList();
+
+    logger.d("[SyncClipboardSource] Fetched ${docs.length} clipboard items.");
+
+    return PaginatedResult(results: docs, hasMore: docs.length >= limit);
   }
 
   @override
@@ -90,6 +85,9 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
         .map((e) => ClipCollection.fromJson(e))
         .map((e) => e.copyWith(lastSynced: systemTime()))
         .toList();
+    logger.d(
+      "[SyncClipboardSource] Fetched ${collections.length} clip collections.",
+    );
     return PaginatedResult(
       results: collections,
       hasMore: collections.length >= limit,
