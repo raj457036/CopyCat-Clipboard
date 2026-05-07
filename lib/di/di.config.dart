@@ -397,6 +397,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i533.ApplicationMetaResolver>(),
         gh<_i707.AnalyticsRepository>(),
         gh<String>(instanceName: 'device_id'),
+        gh<_i292.SyncEventBus>(),
       ),
     );
     gh.lazySingleton<_i112.FileCloudService>(
@@ -408,7 +409,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i227.QuickPasteService>(
       () => _i227.QuickPasteService(
         gh<_i542.AppConfigCubit>(),
-        gh<_i489.ClipboardCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
         gh<_i706.OfflinePersistenceCubit>(),
         gh<_i533.ApplicationMetaResolver>(),
         gh<_i291.FocusWindow>(),

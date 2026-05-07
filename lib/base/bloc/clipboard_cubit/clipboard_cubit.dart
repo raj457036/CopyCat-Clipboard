@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
@@ -25,6 +26,9 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   final AppConfigCubit _appConfigCubit;
   late StreamSubscription eventBusSubscription;
   bool _isFetching = false;
+  final List<ClipboardItem> _items = [];
+
+  List<ClipboardItem> get items => UnmodifiableListView(_items);
 
   ClipboardCubit(
     this.syncEventBus,
@@ -32,7 +36,6 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     this._appConfigCubit,
   ) : super(
         ClipboardState.loaded(
-          items: [],
           filterState: SearchFilterState(
             sortBy: _appConfigCubit.state.config.sortBy,
             sortOrder: _appConfigCubit.state.config.sortOrder,
@@ -46,6 +49,17 @@ class ClipboardCubit extends Cubit<ClipboardState> {
         onBatchSyncEvent(event.events);
       }
     });
+  }
+
+  void setBackgrounded(bool isBackgrounded) {
+    if (isBackgrounded) {
+      _items.clear();
+      emit(
+        state.copyWith(offset: 0, hasMore: true, revision: state.revision + 1),
+      );
+      return;
+    }
+    refresh();
   }
 
   /// Refresh the current list of clipboard items.
@@ -73,68 +87,53 @@ class ClipboardCubit extends Cubit<ClipboardState> {
 
   void onBatchSyncEvent(List<ClipCrossSyncEvent> events) {
     if (events.isEmpty) return;
-    // Deleted (Treat both true DELETE events and UPDATEs with deletedAt as deletions)
-    final deleted = events
-        .where((event) {
-          final (type, item) = event;
-          return type == CrossSyncEventType.delete || item.deletedAt != null;
-        })
-        .map((event) => event.$2)
-        .toList();
+
+    final deleted = <ClipboardItem>[];
+    final created = <ClipboardItem>[];
+    final updated = <ClipboardItem>[];
+
+    final hasSearch = state.query.isNotEmpty;
+    final filter = state.filterState;
+
+    // Single pass: classify each event into deleted / created / updated.
+    for (final event in events) {
+      final (type, item) = event;
+      if (type == CrossSyncEventType.delete || item.deletedAt != null) {
+        deleted.add(item);
+        continue;
+      }
+      if (hasSearch) continue; // create/update processing skipped under search
+      if (type == CrossSyncEventType.create && filter.matchedByFilter(item)) {
+        created.add(item);
+      } else if (type == CrossSyncEventType.update &&
+          filter.matchedByFilter(item)) {
+        updated.add(item);
+      }
+    }
 
     if (deleted.isNotEmpty) {
       deleteItem(deleted);
       fetch(limit: deleted.length);
     }
 
-    if (state.query.isNotEmpty) return;
-    final filter = state.filterState;
-
-    // Filter out items that are marked as deleted from the rest of the processing
-    final activeEvents = events.where((e) => e.$2.deletedAt == null).toList();
-
-    // Created
-    final created = activeEvents
-        .where((event) {
-          final (type, item) = event;
-          return type == CrossSyncEventType.create &&
-              filter.matchedByFilter(item);
-        })
-        .map((event) => event.$2)
-        .toList();
     if (created.isNotEmpty) {
-      emit(state.copyWith(items: [...created, ...state.items]));
+      _items.insertAll(0, created);
+      emit(state.copyWith(revision: state.revision + 1));
     }
 
-    // Updates
-    final updated = activeEvents
-        .where((event) {
-          final (type, item) = event;
-          return type == CrossSyncEventType.update &&
-              filter.matchedByFilter(item);
-        })
-        .map((event) => event.$2)
-        .toList();
-    if (updated.isEmpty) return;
-    final updateIndexMap = <int, int>{};
-    for (var i = 0; i < updated.length; i++) {
-      final item = updated[i];
-      updateIndexMap[item.id!] = i;
-    }
-
-    final replaced = <ClipboardItem>[];
-    for (var i = 0; i < state.items.length; i++) {
-      final item = state.items[i];
-      final found = updateIndexMap[item.id];
-      if (found != null) {
-        replaced.add(updated[found]);
-      } else {
-        replaced.add(item);
+    if (updated.isNotEmpty) {
+      final updateMap = {for (final e in updated) e.id: e};
+      for (var i = 0; i < _items.length; i++) {
+        final current = _items[i];
+        final replacement = updateMap[current.id];
+        if (replacement != null) _items[i] = replacement;
       }
+      final sorted = _applySort(_items);
+      _items
+        ..clear()
+        ..addAll(sorted);
+      emit(state.copyWith(revision: state.revision + 1));
     }
-
-    final sortedItems = _applySort(replaced);
-    emit(state.copyWith(items: sortedItems));
   }
 
   void onSyncEvent(ClipCrossSyncEvent event) {
@@ -160,19 +159,24 @@ class ClipboardCubit extends Cubit<ClipboardState> {
 
   void reset() {
     _isFetching = false;
-    emit(const ClipboardState.loaded(items: [], loading: false));
+    _items.clear();
+    emit(const ClipboardState.loaded(loading: false));
   }
 
   void put(ClipboardItem item, {bool isNew = false}) {
     if (isNew) {
-      final items = [item, ...state.items];
-      final sortedItems = _applySort(items);
-      emit(state.copyWith(items: sortedItems));
+      _items.insert(0, item);
     } else {
-      final items = state.items.replaceWhere((it) => it.id == item.id, item);
-      final sortedItems = _applySort(items);
-      emit(state.copyWith(items: sortedItems));
+      final updated = _items.replaceWhere((it) => it.id == item.id, item);
+      _items
+        ..clear()
+        ..addAll(updated);
     }
+    final sortedItems = _applySort(_items);
+    _items
+      ..clear()
+      ..addAll(sortedItems);
+    emit(state.copyWith(revision: state.revision + 1));
   }
 
   List<ClipboardItem> _applySort(List<ClipboardItem> items) {
@@ -200,7 +204,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   }
 
   bool fetchIfInitBatch() {
-    if (state.items.length <= 50) {
+    if (_items.length <= 50) {
       fetch(fromTop: true);
       return true;
     }
@@ -253,16 +257,24 @@ class ClipboardCubit extends Cubit<ClipboardState> {
       );
 
       emit(
-        items.fold(
-          (l) => state.copyWith(failure: l, loading: false),
-          (r) => state.copyWith(
+        items.fold((l) => state.copyWith(failure: l, loading: false), (r) {
+          if (fromTop) {
+            _items
+              ..clear()
+              ..addAll(r.results);
+          } else {
+            _items.addAll(r.results);
+          }
+          return state.copyWith(
             loading: false,
-            items: fromTop ? r.results : [...state.items, ...r.results],
-            offset: state.offset + r.results.length,
+            offset: fromTop
+                ? r.results.length
+                : state.offset + r.results.length,
             limit: state.limit,
             hasMore: r.hasMore,
-          ),
-        ),
+            revision: state.revision + 1,
+          );
+        }),
       );
     } finally {
       _isFetching = false;
@@ -270,29 +282,28 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   }
 
   Future<void> deleteItem(List<ClipboardItem> items) async {
-    state.mapOrNull(
-      loaded: (result) {
-        final ids = items.map((item) => item.id).whereType<int>().toSet();
-        final serverIds = items
-            .map((item) => item.serverId)
-            .whereType<int>()
-            .toSet();
+    final ids = items.map((item) => item.id).whereType<int>().toSet();
+    final serverIds = items
+        .map((item) => item.serverId)
+        .whereType<int>()
+        .toSet();
 
-        final items_ = result.items.where((it) {
-          final isLocallyDeleted = it.id != null && ids.contains(it.id);
-          final isRemotelyDeleted =
-              it.serverId != null && serverIds.contains(it.serverId);
-          return !isLocallyDeleted && !isRemotelyDeleted;
-        }).toList();
+    final before = _items.length;
+    _items.removeWhere((it) {
+      final isLocallyDeleted = it.id != null && ids.contains(it.id);
+      final isRemotelyDeleted =
+          it.serverId != null && serverIds.contains(it.serverId);
+      return isLocallyDeleted || isRemotelyDeleted;
+    });
 
-        final isDeleted = items_.length < result.items.length;
-        emit(
-          result.copyWith(
-            items: items_,
-            offset: isDeleted ? result.offset - 1 : result.offset,
-          ),
-        );
-      },
+    final isDeleted = _items.length < before;
+    if (!isDeleted) return;
+
+    emit(
+      state.copyWith(
+        offset: state.offset > 0 ? state.offset - 1 : 0,
+        revision: state.revision + 1,
+      ),
     );
   }
 

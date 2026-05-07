@@ -44,6 +44,6 @@
 		<key>NSAppleEventsUsageDescription</key>
 		<string>Used to read the active window for exclusion rules.</string>
 		<key>FLTEnableImpeller</key>
-		<false />
+		<true />
 	</dict>
 </plist>

@@ -4,6 +4,8 @@ import 'dart:ui' as ui;
 import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
+import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/constants/numbers/breakpoints.dart';
 import 'package:clipboard/common/logging.dart';
@@ -33,6 +35,14 @@ class _StateInitializerState extends State<StateInitializer>
   final powerSaverDebounce = Debouncer(milliseconds: 180000); // 3 minutes
   ui.FlutterView? _view;
   bool renderingDisabled = false;
+  bool _isAppLifecycleBackgrounded = false;
+  bool _isWindowBackgrounded = false;
+  bool? _lastClipboardBackgroundState;
+
+  // We consider the app backgrounded if either Flutter lifecycle is paused/
+  // inactive OR the desktop window manager reports the window in background.
+  bool get _isEffectivelyBackgrounded =>
+      _isAppLifecycleBackgrounded || _isWindowBackgrounded;
 
   Future<void> setupWindow() async {
     final appConfigCubit = context.read<AppConfigCubit>();
@@ -84,6 +94,9 @@ class _StateInitializerState extends State<StateInitializer>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
+    _isAppLifecycleBackgrounded = state != AppLifecycleState.resumed;
+    _syncClipboardBackgroundState();
+
     if (state == AppLifecycleState.resumed) {
       syncAndroidBgClipboardStates();
       disableRendering(false);
@@ -96,6 +109,11 @@ class _StateInitializerState extends State<StateInitializer>
   void didChangeDependencies() {
     super.didChangeDependencies();
     _view = View.maybeOf(context);
+    final inBackground = InBackgroundState.of(context)?.inBackground ?? false;
+    if (_isWindowBackgrounded != inBackground) {
+      _isWindowBackgrounded = inBackground;
+      _syncClipboardBackgroundState();
+    }
   }
 
   @override
@@ -135,9 +153,7 @@ class _StateInitializerState extends State<StateInitializer>
 
   @override
   Widget build(BuildContext context) {
-    final windowInBackground =
-        (InBackgroundState.of(context)?.inBackground ?? false);
-    final isPowerSaverActive = windowInBackground && renderingDisabled;
+    final isPowerSaverActive = _isEffectivelyBackgrounded && renderingDisabled;
 
     if (isPowerSaverActive) return const SizedBox.shrink();
 
@@ -149,5 +165,23 @@ class _StateInitializerState extends State<StateInitializer>
       },
       child: FadeIn(duration: Durations.medium3, child: widget.child),
     );
+  }
+
+  void _syncClipboardBackgroundState() {
+    if (!mounted) return;
+
+    final isBackgrounded = _isEffectivelyBackgrounded;
+
+    if (_lastClipboardBackgroundState == isBackgrounded) return;
+    _lastClipboardBackgroundState = isBackgrounded;
+
+    if (isBackgrounded) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+
+    context.read<ClipboardCubit>().setBackgrounded(isBackgrounded);
+    if (isBackgrounded) {
+      context.read<OfflinePersistenceCubit>().clearTransientState();
+    }
   }
 }

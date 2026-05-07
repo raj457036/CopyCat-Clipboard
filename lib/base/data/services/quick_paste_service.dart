@@ -1,21 +1,24 @@
-import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
+import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
+import 'package:clipboard/base/enums/sort.dart';
 import 'package:flutter/material.dart';
 import 'package:focus_window/focus_window.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart' as p;
 import 'package:quick_paste_popup/quick_paste_popup.dart';
 
-/// Service to manage quick paste popup functionality
-/// Uses the top-level ClipboardCubit to access clipboard items
+/// Service to manage quick paste popup functionality.
+/// Fetches items directly from the local DB so it works correctly when the
+/// app is in the background (where the in-memory cubit list is cleared).
 @singleton
 class QuickPasteService {
   final AppConfigCubit appConfigCubit;
-  final ClipboardCubit clipboardCubit;
+  final ClipboardRepository repo;
   final OfflinePersistenceCubit offlinePersistenceCubit;
   final ApplicationMetaResolver applicationMetaResolver;
   final FocusWindow focusWindow;
@@ -23,31 +26,35 @@ class QuickPasteService {
 
   QuickPasteService(
     this.appConfigCubit,
-    this.clipboardCubit,
+    @Named("local") this.repo,
     this.offlinePersistenceCubit,
     this.applicationMetaResolver,
     this.focusWindow,
   );
 
-  /// Get the top 10 clipboard items for quick paste from the cubit
-  Future<List<ClipboardItemDto>> getTopItems({int limit = 10}) async {
+  /// Fetch the top [limit] clipboard items directly from the local DB,
+  /// sorted by modified descending. Returns both the domain items and their
+  /// DTOs so callers can look up the selected item without a second DB hit.
+  Future<(List<ClipboardItem>, List<ClipboardItemDto>)> getTopItems({
+    int limit = 10,
+  }) async {
     try {
-      // If clipboard is still loading, return empty list and let caller handle it
-      final allItems = clipboardCubit.state.items;
-
-      if (allItems.isEmpty) {
-        return [];
-      }
-
-      final items = allItems.take(limit).toList();
-
-      debugPrint(
-        '[QuickPasteService] Retrieved ${items.length} items from ClipboardCubit for quick paste',
+      final result = await repo.getList(
+        limit: limit,
+        offset: 0,
+        order: SortOrder.desc,
+        sortBy: ClipboardSortKey.modified,
       );
-
-      return await Future.wait(items.map(_convertToDto));
+      final items = result.fold((_) => <ClipboardItem>[], (r) => r.results);
+      if (items.isEmpty) return (items, <ClipboardItemDto>[]);
+      final dtos = await Future.wait(items.map(_convertToDto));
+      debugPrint(
+        '[QuickPasteService] Fetched ${items.length} items from DB for quick paste',
+      );
+      return (items, dtos);
     } catch (e) {
-      return [];
+      debugPrint('[QuickPasteService] getTopItems error: $e');
+      return (<ClipboardItem>[], <ClipboardItemDto>[]);
     }
   }
 
@@ -61,25 +68,14 @@ class QuickPasteService {
       await _quickPastePopup.captureCaretContext();
 
       final targetWindowId = await focusWindow.getActiveWindowId();
-      var items = await getTopItems();
+      var (clipItems, dtos) = await getTopItems();
       debugPrint(
-        '[QuickPasteService] Fetched ${items.length} items for quick paste popup',
-      );
-
-      // Ensure quick paste still works when the user triggers the hotkey
-      // before the initial clipboard fetch has completed.
-      if (items.isEmpty) {
-        await clipboardCubit.fetch(fromTop: true);
-        items = await getTopItems();
-      }
-
-      debugPrint(
-        '[QuickPasteService] Opening quick paste popup with ${items.length} items',
+        '[QuickPasteService] Fetched ${dtos.length} items for quick paste popup',
       );
 
       final selectionColor = _resolvedQuickPasteSelectionColor().toARGB32();
       await _quickPastePopup.setTheme(selectionColor: selectionColor);
-      final result = await _quickPastePopup.showQuickPastePopup(items: items);
+      final result = await _quickPastePopup.showQuickPastePopup(items: dtos);
 
       debugPrint(
         '[QuickPasteService] Popup result selected=${result.selectedItemId} dismissed=${result.dismissed} error=${result.error}',
@@ -88,6 +84,7 @@ class QuickPasteService {
       if (!result.dismissed && result.selectedItemId != null) {
         final pasteError = await _pasteSelectedItem(
           result.selectedItemId!,
+          clipItems: clipItems,
           targetWindowId: targetWindowId,
         );
         if (pasteError != null) {
@@ -125,9 +122,10 @@ class QuickPasteService {
 
   Future<String?> _pasteSelectedItem(
     String selectedItemId, {
+    required List<ClipboardItem> clipItems,
     required int? targetWindowId,
   }) async {
-    final selectedItem = _findItemById(selectedItemId);
+    final selectedItem = clipItems.where((e) => e.id?.toString() == selectedItemId).firstOrNull;
     if (selectedItem == null) {
       return 'Selected item no longer exists';
     }
@@ -170,14 +168,6 @@ class QuickPasteService {
     return null;
   }
 
-  ClipboardItem? _findItemById(String selectedItemId) {
-    for (final item in clipboardCubit.state.items) {
-      if (item.id?.toString() == selectedItemId) {
-        return item;
-      }
-    }
-    return null;
-  }
 
   bool _shouldUseDirectInsert(ClipboardItem item) {
     if (!item.isTextType) {

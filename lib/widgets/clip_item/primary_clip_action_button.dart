@@ -58,7 +58,7 @@ class PrimaryClipActionButton extends StatelessWidget {
         child: IconButton(
           onPressed: () {
             final menu = Menu.of(context);
-            menu.openOptionBottomSheet(context);
+            menu.openMenu(context);
           },
           iconSize: 22,
           icon: CircleAvatar(

@@ -20,12 +20,12 @@ mixin _$OfflinePersistanceState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(List<ClipboardItem> items) creatingItems,
-    required TResult Function(List<ClipboardItem> items) updatingItems,
-    required TResult Function(List<ClipboardItem> items) deletingItems,
-    required TResult Function(List<ClipboardItem> items) deletedItems,
+    required TResult Function(int count) creatingItems,
+    required TResult Function(int count) updatingItems,
+    required TResult Function(int count) deletingItems,
+    required TResult Function(int count) deletedItems,
     required TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -36,12 +36,12 @@ mixin _$OfflinePersistanceState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(List<ClipboardItem> items)? creatingItems,
-    TResult? Function(List<ClipboardItem> items)? updatingItems,
-    TResult? Function(List<ClipboardItem> items)? deletingItems,
-    TResult? Function(List<ClipboardItem> items)? deletedItems,
+    TResult? Function(int count)? creatingItems,
+    TResult? Function(int count)? updatingItems,
+    TResult? Function(int count)? deletingItems,
+    TResult? Function(int count)? deletedItems,
     TResult? Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -52,12 +52,12 @@ mixin _$OfflinePersistanceState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(List<ClipboardItem> items)? creatingItems,
-    TResult Function(List<ClipboardItem> items)? updatingItems,
-    TResult Function(List<ClipboardItem> items)? deletingItems,
-    TResult Function(List<ClipboardItem> items)? deletedItems,
+    TResult Function(int count)? creatingItems,
+    TResult Function(int count)? updatingItems,
+    TResult Function(int count)? deletingItems,
+    TResult Function(int count)? deletedItems,
     TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -173,12 +173,12 @@ class _$OfflinePersistanceInitialImpl implements OfflinePersistanceInitial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(List<ClipboardItem> items) creatingItems,
-    required TResult Function(List<ClipboardItem> items) updatingItems,
-    required TResult Function(List<ClipboardItem> items) deletingItems,
-    required TResult Function(List<ClipboardItem> items) deletedItems,
+    required TResult Function(int count) creatingItems,
+    required TResult Function(int count) updatingItems,
+    required TResult Function(int count) deletingItems,
+    required TResult Function(int count) deletedItems,
     required TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -193,12 +193,12 @@ class _$OfflinePersistanceInitialImpl implements OfflinePersistanceInitial {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(List<ClipboardItem> items)? creatingItems,
-    TResult? Function(List<ClipboardItem> items)? updatingItems,
-    TResult? Function(List<ClipboardItem> items)? deletingItems,
-    TResult? Function(List<ClipboardItem> items)? deletedItems,
+    TResult? Function(int count)? creatingItems,
+    TResult? Function(int count)? updatingItems,
+    TResult? Function(int count)? deletingItems,
+    TResult? Function(int count)? deletedItems,
     TResult? Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -213,12 +213,12 @@ class _$OfflinePersistanceInitialImpl implements OfflinePersistanceInitial {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(List<ClipboardItem> items)? creatingItems,
-    TResult Function(List<ClipboardItem> items)? updatingItems,
-    TResult Function(List<ClipboardItem> items)? deletingItems,
-    TResult Function(List<ClipboardItem> items)? deletedItems,
+    TResult Function(int count)? creatingItems,
+    TResult Function(int count)? updatingItems,
+    TResult Function(int count)? deletingItems,
+    TResult Function(int count)? deletedItems,
     TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -291,7 +291,7 @@ abstract class _$$OfflinePersistanceCreatingImplCopyWith<$Res> {
     $Res Function(_$OfflinePersistanceCreatingImpl) then,
   ) = __$$OfflinePersistanceCreatingImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<ClipboardItem> items});
+  $Res call({int count});
 }
 
 /// @nodoc
@@ -311,13 +311,13 @@ class __$$OfflinePersistanceCreatingImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? items = null}) {
+  $Res call({Object? count = null}) {
     return _then(
       _$OfflinePersistanceCreatingImpl(
-        null == items
-            ? _value._items
-            : items // ignore: cast_nullable_to_non_nullable
-                  as List<ClipboardItem>,
+        null == count
+            ? _value.count
+            : count // ignore: cast_nullable_to_non_nullable
+                  as int,
       ),
     );
   }
@@ -326,20 +326,14 @@ class __$$OfflinePersistanceCreatingImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$OfflinePersistanceCreatingImpl implements OfflinePersistanceCreating {
-  const _$OfflinePersistanceCreatingImpl(final List<ClipboardItem> items)
-    : _items = items;
+  const _$OfflinePersistanceCreatingImpl(this.count);
 
-  final List<ClipboardItem> _items;
   @override
-  List<ClipboardItem> get items {
-    if (_items is EqualUnmodifiableListView) return _items;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_items);
-  }
+  final int count;
 
   @override
   String toString() {
-    return 'OfflinePersistanceState.creatingItems(items: $items)';
+    return 'OfflinePersistanceState.creatingItems(count: $count)';
   }
 
   @override
@@ -347,12 +341,11 @@ class _$OfflinePersistanceCreatingImpl implements OfflinePersistanceCreating {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OfflinePersistanceCreatingImpl &&
-            const DeepCollectionEquality().equals(other._items, _items));
+            (identical(other.count, count) || other.count == count));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_items));
+  int get hashCode => Object.hash(runtimeType, count);
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
@@ -369,12 +362,12 @@ class _$OfflinePersistanceCreatingImpl implements OfflinePersistanceCreating {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(List<ClipboardItem> items) creatingItems,
-    required TResult Function(List<ClipboardItem> items) updatingItems,
-    required TResult Function(List<ClipboardItem> items) deletingItems,
-    required TResult Function(List<ClipboardItem> items) deletedItems,
+    required TResult Function(int count) creatingItems,
+    required TResult Function(int count) updatingItems,
+    required TResult Function(int count) deletingItems,
+    required TResult Function(int count) deletedItems,
     required TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -382,19 +375,19 @@ class _$OfflinePersistanceCreatingImpl implements OfflinePersistanceCreating {
     saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
   }) {
-    return creatingItems(items);
+    return creatingItems(count);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(List<ClipboardItem> items)? creatingItems,
-    TResult? Function(List<ClipboardItem> items)? updatingItems,
-    TResult? Function(List<ClipboardItem> items)? deletingItems,
-    TResult? Function(List<ClipboardItem> items)? deletedItems,
+    TResult? Function(int count)? creatingItems,
+    TResult? Function(int count)? updatingItems,
+    TResult? Function(int count)? deletingItems,
+    TResult? Function(int count)? deletedItems,
     TResult? Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -402,19 +395,19 @@ class _$OfflinePersistanceCreatingImpl implements OfflinePersistanceCreating {
     saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
   }) {
-    return creatingItems?.call(items);
+    return creatingItems?.call(count);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(List<ClipboardItem> items)? creatingItems,
-    TResult Function(List<ClipboardItem> items)? updatingItems,
-    TResult Function(List<ClipboardItem> items)? deletingItems,
-    TResult Function(List<ClipboardItem> items)? deletedItems,
+    TResult Function(int count)? creatingItems,
+    TResult Function(int count)? updatingItems,
+    TResult Function(int count)? deletingItems,
+    TResult Function(int count)? deletedItems,
     TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -424,7 +417,7 @@ class _$OfflinePersistanceCreatingImpl implements OfflinePersistanceCreating {
     required TResult orElse(),
   }) {
     if (creatingItems != null) {
-      return creatingItems(items);
+      return creatingItems(count);
     }
     return orElse();
   }
@@ -477,10 +470,10 @@ class _$OfflinePersistanceCreatingImpl implements OfflinePersistanceCreating {
 }
 
 abstract class OfflinePersistanceCreating implements OfflinePersistanceState {
-  const factory OfflinePersistanceCreating(final List<ClipboardItem> items) =
+  const factory OfflinePersistanceCreating(final int count) =
       _$OfflinePersistanceCreatingImpl;
 
-  List<ClipboardItem> get items;
+  int get count;
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
@@ -496,7 +489,7 @@ abstract class _$$OfflinePersistanceUpdatingImplCopyWith<$Res> {
     $Res Function(_$OfflinePersistanceUpdatingImpl) then,
   ) = __$$OfflinePersistanceUpdatingImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<ClipboardItem> items});
+  $Res call({int count});
 }
 
 /// @nodoc
@@ -516,13 +509,13 @@ class __$$OfflinePersistanceUpdatingImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? items = null}) {
+  $Res call({Object? count = null}) {
     return _then(
       _$OfflinePersistanceUpdatingImpl(
-        null == items
-            ? _value._items
-            : items // ignore: cast_nullable_to_non_nullable
-                  as List<ClipboardItem>,
+        null == count
+            ? _value.count
+            : count // ignore: cast_nullable_to_non_nullable
+                  as int,
       ),
     );
   }
@@ -531,20 +524,14 @@ class __$$OfflinePersistanceUpdatingImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$OfflinePersistanceUpdatingImpl implements OfflinePersistanceUpdating {
-  const _$OfflinePersistanceUpdatingImpl(final List<ClipboardItem> items)
-    : _items = items;
+  const _$OfflinePersistanceUpdatingImpl(this.count);
 
-  final List<ClipboardItem> _items;
   @override
-  List<ClipboardItem> get items {
-    if (_items is EqualUnmodifiableListView) return _items;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_items);
-  }
+  final int count;
 
   @override
   String toString() {
-    return 'OfflinePersistanceState.updatingItems(items: $items)';
+    return 'OfflinePersistanceState.updatingItems(count: $count)';
   }
 
   @override
@@ -552,12 +539,11 @@ class _$OfflinePersistanceUpdatingImpl implements OfflinePersistanceUpdating {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OfflinePersistanceUpdatingImpl &&
-            const DeepCollectionEquality().equals(other._items, _items));
+            (identical(other.count, count) || other.count == count));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_items));
+  int get hashCode => Object.hash(runtimeType, count);
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
@@ -574,12 +560,12 @@ class _$OfflinePersistanceUpdatingImpl implements OfflinePersistanceUpdating {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(List<ClipboardItem> items) creatingItems,
-    required TResult Function(List<ClipboardItem> items) updatingItems,
-    required TResult Function(List<ClipboardItem> items) deletingItems,
-    required TResult Function(List<ClipboardItem> items) deletedItems,
+    required TResult Function(int count) creatingItems,
+    required TResult Function(int count) updatingItems,
+    required TResult Function(int count) deletingItems,
+    required TResult Function(int count) deletedItems,
     required TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -587,19 +573,19 @@ class _$OfflinePersistanceUpdatingImpl implements OfflinePersistanceUpdating {
     saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
   }) {
-    return updatingItems(items);
+    return updatingItems(count);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(List<ClipboardItem> items)? creatingItems,
-    TResult? Function(List<ClipboardItem> items)? updatingItems,
-    TResult? Function(List<ClipboardItem> items)? deletingItems,
-    TResult? Function(List<ClipboardItem> items)? deletedItems,
+    TResult? Function(int count)? creatingItems,
+    TResult? Function(int count)? updatingItems,
+    TResult? Function(int count)? deletingItems,
+    TResult? Function(int count)? deletedItems,
     TResult? Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -607,19 +593,19 @@ class _$OfflinePersistanceUpdatingImpl implements OfflinePersistanceUpdating {
     saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
   }) {
-    return updatingItems?.call(items);
+    return updatingItems?.call(count);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(List<ClipboardItem> items)? creatingItems,
-    TResult Function(List<ClipboardItem> items)? updatingItems,
-    TResult Function(List<ClipboardItem> items)? deletingItems,
-    TResult Function(List<ClipboardItem> items)? deletedItems,
+    TResult Function(int count)? creatingItems,
+    TResult Function(int count)? updatingItems,
+    TResult Function(int count)? deletingItems,
+    TResult Function(int count)? deletedItems,
     TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -629,7 +615,7 @@ class _$OfflinePersistanceUpdatingImpl implements OfflinePersistanceUpdating {
     required TResult orElse(),
   }) {
     if (updatingItems != null) {
-      return updatingItems(items);
+      return updatingItems(count);
     }
     return orElse();
   }
@@ -682,10 +668,10 @@ class _$OfflinePersistanceUpdatingImpl implements OfflinePersistanceUpdating {
 }
 
 abstract class OfflinePersistanceUpdating implements OfflinePersistanceState {
-  const factory OfflinePersistanceUpdating(final List<ClipboardItem> items) =
+  const factory OfflinePersistanceUpdating(final int count) =
       _$OfflinePersistanceUpdatingImpl;
 
-  List<ClipboardItem> get items;
+  int get count;
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
@@ -701,7 +687,7 @@ abstract class _$$OfflinePersistanceDeletingImplCopyWith<$Res> {
     $Res Function(_$OfflinePersistanceDeletingImpl) then,
   ) = __$$OfflinePersistanceDeletingImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<ClipboardItem> items});
+  $Res call({int count});
 }
 
 /// @nodoc
@@ -721,13 +707,13 @@ class __$$OfflinePersistanceDeletingImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? items = null}) {
+  $Res call({Object? count = null}) {
     return _then(
       _$OfflinePersistanceDeletingImpl(
-        null == items
-            ? _value._items
-            : items // ignore: cast_nullable_to_non_nullable
-                  as List<ClipboardItem>,
+        null == count
+            ? _value.count
+            : count // ignore: cast_nullable_to_non_nullable
+                  as int,
       ),
     );
   }
@@ -736,20 +722,14 @@ class __$$OfflinePersistanceDeletingImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$OfflinePersistanceDeletingImpl implements OfflinePersistanceDeleting {
-  const _$OfflinePersistanceDeletingImpl(final List<ClipboardItem> items)
-    : _items = items;
+  const _$OfflinePersistanceDeletingImpl(this.count);
 
-  final List<ClipboardItem> _items;
   @override
-  List<ClipboardItem> get items {
-    if (_items is EqualUnmodifiableListView) return _items;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_items);
-  }
+  final int count;
 
   @override
   String toString() {
-    return 'OfflinePersistanceState.deletingItems(items: $items)';
+    return 'OfflinePersistanceState.deletingItems(count: $count)';
   }
 
   @override
@@ -757,12 +737,11 @@ class _$OfflinePersistanceDeletingImpl implements OfflinePersistanceDeleting {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OfflinePersistanceDeletingImpl &&
-            const DeepCollectionEquality().equals(other._items, _items));
+            (identical(other.count, count) || other.count == count));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_items));
+  int get hashCode => Object.hash(runtimeType, count);
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
@@ -779,12 +758,12 @@ class _$OfflinePersistanceDeletingImpl implements OfflinePersistanceDeleting {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(List<ClipboardItem> items) creatingItems,
-    required TResult Function(List<ClipboardItem> items) updatingItems,
-    required TResult Function(List<ClipboardItem> items) deletingItems,
-    required TResult Function(List<ClipboardItem> items) deletedItems,
+    required TResult Function(int count) creatingItems,
+    required TResult Function(int count) updatingItems,
+    required TResult Function(int count) deletingItems,
+    required TResult Function(int count) deletedItems,
     required TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -792,19 +771,19 @@ class _$OfflinePersistanceDeletingImpl implements OfflinePersistanceDeleting {
     saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
   }) {
-    return deletingItems(items);
+    return deletingItems(count);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(List<ClipboardItem> items)? creatingItems,
-    TResult? Function(List<ClipboardItem> items)? updatingItems,
-    TResult? Function(List<ClipboardItem> items)? deletingItems,
-    TResult? Function(List<ClipboardItem> items)? deletedItems,
+    TResult? Function(int count)? creatingItems,
+    TResult? Function(int count)? updatingItems,
+    TResult? Function(int count)? deletingItems,
+    TResult? Function(int count)? deletedItems,
     TResult? Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -812,19 +791,19 @@ class _$OfflinePersistanceDeletingImpl implements OfflinePersistanceDeleting {
     saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
   }) {
-    return deletingItems?.call(items);
+    return deletingItems?.call(count);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(List<ClipboardItem> items)? creatingItems,
-    TResult Function(List<ClipboardItem> items)? updatingItems,
-    TResult Function(List<ClipboardItem> items)? deletingItems,
-    TResult Function(List<ClipboardItem> items)? deletedItems,
+    TResult Function(int count)? creatingItems,
+    TResult Function(int count)? updatingItems,
+    TResult Function(int count)? deletingItems,
+    TResult Function(int count)? deletedItems,
     TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -834,7 +813,7 @@ class _$OfflinePersistanceDeletingImpl implements OfflinePersistanceDeleting {
     required TResult orElse(),
   }) {
     if (deletingItems != null) {
-      return deletingItems(items);
+      return deletingItems(count);
     }
     return orElse();
   }
@@ -887,10 +866,10 @@ class _$OfflinePersistanceDeletingImpl implements OfflinePersistanceDeleting {
 }
 
 abstract class OfflinePersistanceDeleting implements OfflinePersistanceState {
-  const factory OfflinePersistanceDeleting(final List<ClipboardItem> items) =
+  const factory OfflinePersistanceDeleting(final int count) =
       _$OfflinePersistanceDeletingImpl;
 
-  List<ClipboardItem> get items;
+  int get count;
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
@@ -906,7 +885,7 @@ abstract class _$$OfflinePersistanceDeletedImplCopyWith<$Res> {
     $Res Function(_$OfflinePersistanceDeletedImpl) then,
   ) = __$$OfflinePersistanceDeletedImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<ClipboardItem> items});
+  $Res call({int count});
 }
 
 /// @nodoc
@@ -926,13 +905,13 @@ class __$$OfflinePersistanceDeletedImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? items = null}) {
+  $Res call({Object? count = null}) {
     return _then(
       _$OfflinePersistanceDeletedImpl(
-        null == items
-            ? _value._items
-            : items // ignore: cast_nullable_to_non_nullable
-                  as List<ClipboardItem>,
+        null == count
+            ? _value.count
+            : count // ignore: cast_nullable_to_non_nullable
+                  as int,
       ),
     );
   }
@@ -941,20 +920,14 @@ class __$$OfflinePersistanceDeletedImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$OfflinePersistanceDeletedImpl implements OfflinePersistanceDeleted {
-  const _$OfflinePersistanceDeletedImpl(final List<ClipboardItem> items)
-    : _items = items;
+  const _$OfflinePersistanceDeletedImpl(this.count);
 
-  final List<ClipboardItem> _items;
   @override
-  List<ClipboardItem> get items {
-    if (_items is EqualUnmodifiableListView) return _items;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_items);
-  }
+  final int count;
 
   @override
   String toString() {
-    return 'OfflinePersistanceState.deletedItems(items: $items)';
+    return 'OfflinePersistanceState.deletedItems(count: $count)';
   }
 
   @override
@@ -962,12 +935,11 @@ class _$OfflinePersistanceDeletedImpl implements OfflinePersistanceDeleted {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OfflinePersistanceDeletedImpl &&
-            const DeepCollectionEquality().equals(other._items, _items));
+            (identical(other.count, count) || other.count == count));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_items));
+  int get hashCode => Object.hash(runtimeType, count);
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
@@ -984,12 +956,12 @@ class _$OfflinePersistanceDeletedImpl implements OfflinePersistanceDeleted {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(List<ClipboardItem> items) creatingItems,
-    required TResult Function(List<ClipboardItem> items) updatingItems,
-    required TResult Function(List<ClipboardItem> items) deletingItems,
-    required TResult Function(List<ClipboardItem> items) deletedItems,
+    required TResult Function(int count) creatingItems,
+    required TResult Function(int count) updatingItems,
+    required TResult Function(int count) deletingItems,
+    required TResult Function(int count) deletedItems,
     required TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -997,19 +969,19 @@ class _$OfflinePersistanceDeletedImpl implements OfflinePersistanceDeleted {
     saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
   }) {
-    return deletedItems(items);
+    return deletedItems(count);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(List<ClipboardItem> items)? creatingItems,
-    TResult? Function(List<ClipboardItem> items)? updatingItems,
-    TResult? Function(List<ClipboardItem> items)? deletingItems,
-    TResult? Function(List<ClipboardItem> items)? deletedItems,
+    TResult? Function(int count)? creatingItems,
+    TResult? Function(int count)? updatingItems,
+    TResult? Function(int count)? deletingItems,
+    TResult? Function(int count)? deletedItems,
     TResult? Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -1017,19 +989,19 @@ class _$OfflinePersistanceDeletedImpl implements OfflinePersistanceDeleted {
     saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
   }) {
-    return deletedItems?.call(items);
+    return deletedItems?.call(count);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(List<ClipboardItem> items)? creatingItems,
-    TResult Function(List<ClipboardItem> items)? updatingItems,
-    TResult Function(List<ClipboardItem> items)? deletingItems,
-    TResult Function(List<ClipboardItem> items)? deletedItems,
+    TResult Function(int count)? creatingItems,
+    TResult Function(int count)? updatingItems,
+    TResult Function(int count)? deletingItems,
+    TResult Function(int count)? deletedItems,
     TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -1039,7 +1011,7 @@ class _$OfflinePersistanceDeletedImpl implements OfflinePersistanceDeleted {
     required TResult orElse(),
   }) {
     if (deletedItems != null) {
-      return deletedItems(items);
+      return deletedItems(count);
     }
     return orElse();
   }
@@ -1092,10 +1064,10 @@ class _$OfflinePersistanceDeletedImpl implements OfflinePersistanceDeleted {
 }
 
 abstract class OfflinePersistanceDeleted implements OfflinePersistanceState {
-  const factory OfflinePersistanceDeleted(final List<ClipboardItem> items) =
+  const factory OfflinePersistanceDeleted(final int count) =
       _$OfflinePersistanceDeletedImpl;
 
-  List<ClipboardItem> get items;
+  int get count;
 
   /// Create a copy of OfflinePersistanceState
   /// with the given fields replaced by the non-null parameter values.
@@ -1112,7 +1084,7 @@ abstract class _$$OfflinePersistanceSavedImplCopyWith<$Res> {
   ) = __$$OfflinePersistanceSavedImplCopyWithImpl<$Res>;
   @useResult
   $Res call({
-    List<ClipboardItem> items,
+    int count,
     bool created,
     bool synced,
     List<String>? updatedFields,
@@ -1137,17 +1109,17 @@ class __$$OfflinePersistanceSavedImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? items = null,
+    Object? count = null,
     Object? created = null,
     Object? synced = null,
     Object? updatedFields = freezed,
   }) {
     return _then(
       _$OfflinePersistanceSavedImpl(
-        null == items
-            ? _value._items
-            : items // ignore: cast_nullable_to_non_nullable
-                  as List<ClipboardItem>,
+        count: null == count
+            ? _value.count
+            : count // ignore: cast_nullable_to_non_nullable
+                  as int,
         created: null == created
             ? _value.created
             : created // ignore: cast_nullable_to_non_nullable
@@ -1168,22 +1140,16 @@ class __$$OfflinePersistanceSavedImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
-  const _$OfflinePersistanceSavedImpl(
-    final List<ClipboardItem> items, {
+  const _$OfflinePersistanceSavedImpl({
+    this.count = 0,
     this.created = false,
     this.synced = false,
     final List<String>? updatedFields,
-  }) : _items = items,
-       _updatedFields = updatedFields;
+  }) : _updatedFields = updatedFields;
 
-  final List<ClipboardItem> _items;
   @override
-  List<ClipboardItem> get items {
-    if (_items is EqualUnmodifiableListView) return _items;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_items);
-  }
-
+  @JsonKey()
+  final int count;
   @override
   @JsonKey()
   final bool created;
@@ -1202,7 +1168,7 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
 
   @override
   String toString() {
-    return 'OfflinePersistanceState.saved(items: $items, created: $created, synced: $synced, updatedFields: $updatedFields)';
+    return 'OfflinePersistanceState.saved(count: $count, created: $created, synced: $synced, updatedFields: $updatedFields)';
   }
 
   @override
@@ -1210,7 +1176,7 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OfflinePersistanceSavedImpl &&
-            const DeepCollectionEquality().equals(other._items, _items) &&
+            (identical(other.count, count) || other.count == count) &&
             (identical(other.created, created) || other.created == created) &&
             (identical(other.synced, synced) || other.synced == synced) &&
             const DeepCollectionEquality().equals(
@@ -1222,7 +1188,7 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
   @override
   int get hashCode => Object.hash(
     runtimeType,
-    const DeepCollectionEquality().hash(_items),
+    count,
     created,
     synced,
     const DeepCollectionEquality().hash(_updatedFields),
@@ -1243,12 +1209,12 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(List<ClipboardItem> items) creatingItems,
-    required TResult Function(List<ClipboardItem> items) updatingItems,
-    required TResult Function(List<ClipboardItem> items) deletingItems,
-    required TResult Function(List<ClipboardItem> items) deletedItems,
+    required TResult Function(int count) creatingItems,
+    required TResult Function(int count) updatingItems,
+    required TResult Function(int count) deletingItems,
+    required TResult Function(int count) deletedItems,
     required TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -1256,19 +1222,19 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
     saved,
     required TResult Function(Failure failure, ClipboardItem? item) error,
   }) {
-    return saved(items, created, synced, updatedFields);
+    return saved(count, created, synced, updatedFields);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(List<ClipboardItem> items)? creatingItems,
-    TResult? Function(List<ClipboardItem> items)? updatingItems,
-    TResult? Function(List<ClipboardItem> items)? deletingItems,
-    TResult? Function(List<ClipboardItem> items)? deletedItems,
+    TResult? Function(int count)? creatingItems,
+    TResult? Function(int count)? updatingItems,
+    TResult? Function(int count)? deletingItems,
+    TResult? Function(int count)? deletedItems,
     TResult? Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -1276,19 +1242,19 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
     saved,
     TResult? Function(Failure failure, ClipboardItem? item)? error,
   }) {
-    return saved?.call(items, created, synced, updatedFields);
+    return saved?.call(count, created, synced, updatedFields);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(List<ClipboardItem> items)? creatingItems,
-    TResult Function(List<ClipboardItem> items)? updatingItems,
-    TResult Function(List<ClipboardItem> items)? deletingItems,
-    TResult Function(List<ClipboardItem> items)? deletedItems,
+    TResult Function(int count)? creatingItems,
+    TResult Function(int count)? updatingItems,
+    TResult Function(int count)? deletingItems,
+    TResult Function(int count)? deletedItems,
     TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -1298,7 +1264,7 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
     required TResult orElse(),
   }) {
     if (saved != null) {
-      return saved(items, created, synced, updatedFields);
+      return saved(count, created, synced, updatedFields);
     }
     return orElse();
   }
@@ -1351,14 +1317,14 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
 }
 
 abstract class OfflinePersistanceSaved implements OfflinePersistanceState {
-  const factory OfflinePersistanceSaved(
-    final List<ClipboardItem> items, {
+  const factory OfflinePersistanceSaved({
+    final int count,
     final bool created,
     final bool synced,
     final List<String>? updatedFields,
   }) = _$OfflinePersistanceSavedImpl;
 
-  List<ClipboardItem> get items;
+  int get count;
   bool get created;
   bool get synced;
   List<String>? get updatedFields;
@@ -1471,12 +1437,12 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(List<ClipboardItem> items) creatingItems,
-    required TResult Function(List<ClipboardItem> items) updatingItems,
-    required TResult Function(List<ClipboardItem> items) deletingItems,
-    required TResult Function(List<ClipboardItem> items) deletedItems,
+    required TResult Function(int count) creatingItems,
+    required TResult Function(int count) updatingItems,
+    required TResult Function(int count) deletingItems,
+    required TResult Function(int count) deletedItems,
     required TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -1491,12 +1457,12 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(List<ClipboardItem> items)? creatingItems,
-    TResult? Function(List<ClipboardItem> items)? updatingItems,
-    TResult? Function(List<ClipboardItem> items)? deletingItems,
-    TResult? Function(List<ClipboardItem> items)? deletedItems,
+    TResult? Function(int count)? creatingItems,
+    TResult? Function(int count)? updatingItems,
+    TResult? Function(int count)? deletingItems,
+    TResult? Function(int count)? deletedItems,
     TResult? Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,
@@ -1511,12 +1477,12 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(List<ClipboardItem> items)? creatingItems,
-    TResult Function(List<ClipboardItem> items)? updatingItems,
-    TResult Function(List<ClipboardItem> items)? deletingItems,
-    TResult Function(List<ClipboardItem> items)? deletedItems,
+    TResult Function(int count)? creatingItems,
+    TResult Function(int count)? updatingItems,
+    TResult Function(int count)? deletingItems,
+    TResult Function(int count)? deletedItems,
     TResult Function(
-      List<ClipboardItem> items,
+      int count,
       bool created,
       bool synced,
       List<String>? updatedFields,

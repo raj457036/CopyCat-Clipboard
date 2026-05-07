@@ -88,6 +88,12 @@ mixin _$ClipboardItem {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get userIntent => throw _privateConstructorUsedError;
 
+  /// This clip was loaded as a lightweight preview: [text] may be truncated
+  /// and [richData] is omitted. The full content must be fetched from DB
+  /// before copying or pasting to avoid data loss.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool get previewOnly => throw _privateConstructorUsedError;
+
   /// Serializes this ClipboardItem to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
@@ -148,6 +154,7 @@ abstract class $ClipboardItemCopyWith<$Res> {
     double? uploadProgress,
     @JsonKey(includeFromJson: false, includeToJson: false) Failure? failure,
     @JsonKey(includeFromJson: false, includeToJson: false) bool userIntent,
+    @JsonKey(includeFromJson: false, includeToJson: false) bool previewOnly,
   });
 }
 
@@ -206,6 +213,7 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
     Object? uploadProgress = freezed,
     Object? failure = freezed,
     Object? userIntent = null,
+    Object? previewOnly = null,
   }) {
     return _then(
       _value.copyWith(
@@ -369,6 +377,10 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
                 ? _value.userIntent
                 : userIntent // ignore: cast_nullable_to_non_nullable
                       as bool,
+            previewOnly: null == previewOnly
+                ? _value.previewOnly
+                : previewOnly // ignore: cast_nullable_to_non_nullable
+                      as bool,
           )
           as $Val,
     );
@@ -427,6 +439,7 @@ abstract class _$$ClipboardItemImplCopyWith<$Res>
     double? uploadProgress,
     @JsonKey(includeFromJson: false, includeToJson: false) Failure? failure,
     @JsonKey(includeFromJson: false, includeToJson: false) bool userIntent,
+    @JsonKey(includeFromJson: false, includeToJson: false) bool previewOnly,
   });
 }
 
@@ -484,6 +497,7 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
     Object? uploadProgress = freezed,
     Object? failure = freezed,
     Object? userIntent = null,
+    Object? previewOnly = null,
   }) {
     return _then(
       _$ClipboardItemImpl(
@@ -647,6 +661,10 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
             ? _value.userIntent
             : userIntent // ignore: cast_nullable_to_non_nullable
                   as bool,
+        previewOnly: null == previewOnly
+            ? _value.previewOnly
+            : previewOnly // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -701,6 +719,8 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     @JsonKey(includeFromJson: false, includeToJson: false) this.failure,
     @JsonKey(includeFromJson: false, includeToJson: false)
     this.userIntent = false,
+    @JsonKey(includeFromJson: false, includeToJson: false)
+    this.previewOnly = false,
   }) : super._();
 
   factory _$ClipboardItemImpl.fromJson(Map<String, dynamic> json) =>
@@ -822,9 +842,16 @@ class _$ClipboardItemImpl extends _ClipboardItem {
   @JsonKey(includeFromJson: false, includeToJson: false)
   final bool userIntent;
 
+  /// This clip was loaded as a lightweight preview: [text] may be truncated
+  /// and [richData] is omitted. The full content must be fetched from DB
+  /// before copying or pasting to avoid data loss.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final bool previewOnly;
+
   @override
   String toString() {
-    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, encrypted: $encrypted, iv: $iv, encMode: $encMode, text: $text, richData: $richData, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, sourceId: $sourceId, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent)';
+    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, encrypted: $encrypted, iv: $iv, encMode: $encMode, text: $text, richData: $richData, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, sourceId: $sourceId, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent, previewOnly: $previewOnly)';
   }
 
   @override
@@ -900,7 +927,9 @@ class _$ClipboardItemImpl extends _ClipboardItem {
                 other.uploadProgress == uploadProgress) &&
             (identical(other.failure, failure) || other.failure == failure) &&
             (identical(other.userIntent, userIntent) ||
-                other.userIntent == userIntent));
+                other.userIntent == userIntent) &&
+            (identical(other.previewOnly, previewOnly) ||
+                other.previewOnly == previewOnly));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -947,6 +976,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     uploadProgress,
     failure,
     userIntent,
+    previewOnly,
   ]);
 
   /// Create a copy of ClipboardItem
@@ -1017,6 +1047,8 @@ abstract class _ClipboardItem extends ClipboardItem {
     final Failure? failure,
     @JsonKey(includeFromJson: false, includeToJson: false)
     final bool userIntent,
+    @JsonKey(includeFromJson: false, includeToJson: false)
+    final bool previewOnly,
   }) = _$ClipboardItemImpl;
   _ClipboardItem._() : super._();
 
@@ -1127,6 +1159,13 @@ abstract class _ClipboardItem extends ClipboardItem {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get userIntent;
+
+  /// This clip was loaded as a lightweight preview: [text] may be truncated
+  /// and [richData] is omitted. The full content must be fetched from DB
+  /// before copying or pasting to avoid data loss.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool get previewOnly;
 
   /// Create a copy of ClipboardItem
   /// with the given fields replaced by the non-null parameter values.

@@ -59,6 +59,13 @@ class WindowFocusManagerState extends State<WindowFocusManager>
 
   late final AppConfigCubit appConfigCubit;
 
+  void _setWindowInBackground(bool value) {
+    if (isWindowInBackground == value) return;
+    setState(() {
+      isWindowInBackground = value;
+    });
+  }
+
   Future<void> toggleAndPaste(ClipboardItem item) async {
     await copyToClipboard(context, item, noAck: true);
     final unfocused = await toggleWindow();
@@ -120,9 +127,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
       context.windowAction?.hide();
       await widget.focusWindow.setActiveWindowId(windowId!);
     }
-    setState(() {
-      isWindowInBackground = true;
-    });
+    _setWindowInBackground(true);
   }
 
   Future<void> pasteOnFocusedWindow() async {
@@ -166,10 +171,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
 
   @override
   void onWindowFocus() {
-    // Make sure to call once.
-    setState(() {
-      isWindowInBackground = false;
-    });
+    _setWindowInBackground(false);
     context.windowAction?.isFocused = true;
     _maybeTrackWindowForeground();
   }
@@ -204,6 +206,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
 
   @override
   Future<void> onWindowBlur() async {
+    _setWindowInBackground(true);
     if (!appConfigCubit.isPinned) {
       context.windowAction?.hide();
     }

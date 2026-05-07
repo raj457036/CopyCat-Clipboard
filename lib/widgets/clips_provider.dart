@@ -49,26 +49,27 @@ class ClipsProviderWithBuilder extends StatelessWidget {
 
   Widget buildRoot(BuildContext context) {
     return BlocSelector<
-      ClipboardCubit,
-      ClipboardState,
-      (List<ClipboardItem>, bool, bool)
-    >(
-      selector: (state) {
-        return (state.items, state.hasMore, state.loading);
-      },
-      builder: (context, state) {
-        final (items, hasMore, loading) = state;
-        return ClipsProvider(
-          clips: items,
-          child: builder(
-            context,
-            items,
-            hasMore,
-            loading,
-            () => loadMore(context),
-          ),
-        );
-      },
+        ClipboardCubit,
+        ClipboardState,
+        (int, bool, bool)
+      >(
+        selector: (state) {
+          return (state.revision, state.hasMore, state.loading);
+        },
+        builder: (context, state) {
+          final (_, hasMore, loading) = state;
+          final items = context.read<ClipboardCubit>().items;
+          return ClipsProvider(
+            clips: items,
+            child: builder(
+              context,
+              items,
+              hasMore,
+              loading,
+              () => loadMore(context),
+            ),
+          );
+        },
     );
   }
 

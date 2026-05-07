@@ -75,8 +75,7 @@ class ClipCollectionGridItem extends StatelessWidget {
             onSecondaryTapUp: selectionOnly
                 ? null
                 : (detail) {
-                    final position = detail.globalPosition;
-                    Menu.of(context).openPopupMenu(context, position);
+                    Menu.of(context).openPopupMenu(context, detail.globalPosition);
                   },
             onFocusChange: (isFocused) {
               setState(() => selected = isFocused);
@@ -90,7 +89,7 @@ class ClipCollectionGridItem extends StatelessWidget {
             autofocus: autoFocus,
             onLongPress: selectionOnly
                 ? null
-                : () => Menu.of(context).openOptionBottomSheet(context),
+                : () => Menu.of(context).openMenu(context),
             onTap: onTap ?? () => showDetail(context),
             child: Padding(
               padding: const EdgeInsets.symmetric(
