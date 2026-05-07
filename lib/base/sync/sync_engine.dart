@@ -194,20 +194,8 @@ class SyncEngine<T extends Syncable> {
             return true;
           }
 
-          final transformedItems = await Future.wait(
-            paginated.results.map((item) {
-              eventBus.emitProgress(
-                SyncProgressParams(
-                  entityType: "clip_decryption",
-                  syncedCount: offset,
-                ),
-              );
-              return adapter.beforeLocalWrite(item);
-            }),
-          );
-
           final events = await adapter.applyBatch(
-            transformedItems,
+            paginated.results,
             conflictResolver: conflictResolver,
           );
 

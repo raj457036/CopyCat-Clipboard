@@ -289,18 +289,4 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
       );
     }
   }
-
-  @override
-  Future<ClipboardItem> beforeLocalWrite(ClipboardItem item) async {
-    if (item.text == null ||
-        item.encrypted == false ||
-        (item.text?.length ?? 0) > 5000) {
-      logger.w(
-        '[ClipSync] Skipping decryption for item id=${item.id} due to text length or encryption flag.'
-        ' textLength=${item.text?.length} encrypted=${item.encrypted}',
-      );
-      return item;
-    }
-    return await item.decrypt();
-  }
 }

@@ -263,5 +263,9 @@ Future<void> wait([int milliSeconds = 2000]) async {
   await Future.delayed(Duration(milliseconds: milliSeconds));
 }
 
+// A dummy function to await on when we just want to
+//yield execution to the event loop.
+void dud() {}
+
 bool get iapCatSupportedPlatform =>
     Platform.isIOS || Platform.isMacOS || Platform.isAndroid;

@@ -57,7 +57,7 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
 
     while (hasMore && !stopped) {
       final result = await widget.clipboardRepository.getList(
-        limit: 350,
+        limit: 20,
         encrypted: true,
         sortBy: ClipboardSortKey.modified,
       );
@@ -76,9 +76,10 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
             for (int i = 0; i < r.results.length && !stopped; i++) {
               final item = r.results[i];
               try {
-                final decrypted = await item.decrypt(throwException: true);
+                final decrypted = await item.decrypt(throwException: false);
                 toSave.add(decrypted);
                 decryptedCount++;
+                await Future(dud);
               } catch (e) {
                 showFailureSnackbar(Failure.fromException(e));
                 hasMore = false;

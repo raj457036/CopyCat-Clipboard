@@ -71,6 +71,7 @@ class ClipGridBuilder extends StatelessWidget {
             onNotification: (notification) =>
                 onScrollNotification(notification, hasMore, loading),
             child: GridView.builder(
+              cacheExtent: 300,
               padding: isMobile ? const EdgeInsets.all(padding8) : inset12,
               primary: true,
               scrollDirection: scrollDirection,

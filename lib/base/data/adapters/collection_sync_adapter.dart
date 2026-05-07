@@ -164,10 +164,4 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
   }) async {
     return item;
   }
-
-  @override
-  Future<ClipCollection> beforeLocalWrite(ClipCollection item) async {
-    // No-op
-    return item;
-  }
 }

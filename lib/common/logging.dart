@@ -22,7 +22,7 @@ class CustomOutput extends LogOutput {
 }
 
 final logger = Logger(
-  level: kDebugMode ? Level.debug : Level.error,
+  level: kDebugMode ? Level.debug : Level.warning,
   printer: PrettyPrinter(
     methodCount: 0,
     errorMethodCount: 10,

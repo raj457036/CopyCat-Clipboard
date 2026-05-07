@@ -45,6 +45,7 @@ class ClipCollectionSelectionPage extends StatelessWidget {
                       return const NoCollectionAvailable();
                     }
                     return GridView.builder(
+                      cacheExtent: 300,
                       padding: const EdgeInsets.all(padding10),
                       gridDelegate:
                           const SliverGridDelegateWithMaxCrossAxisExtent(

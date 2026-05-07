@@ -66,6 +66,9 @@ Future<void> appRunner() async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  PaintingBinding.instance.imageCache.maximumSize = 20;
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 50 << 20;
+
   if (sentryDSN != "" && !kDebugMode) {
     await SentryFlutter.init((options) {
       options.dsn = sentryDSN;

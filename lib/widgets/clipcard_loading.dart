@@ -21,6 +21,7 @@ class ClipcardLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      cacheExtent: 300,
       padding: compact ? const EdgeInsets.all(padding8) : inset12,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
