@@ -74,6 +74,8 @@ import 'package:clipboard/base/data/services/file_cloud_services/google_drive/go
     as _i543;
 import 'package:clipboard/base/data/services/in_app_review_service.dart'
     as _i930;
+import 'package:clipboard/base/data/services/post_sync_decryption_service.dart'
+    as _i579;
 import 'package:clipboard/base/data/services/quick_paste_service.dart' as _i227;
 import 'package:clipboard/base/data/sources/application_meta/local_source.dart'
     as _i651;
@@ -316,6 +318,11 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'remote',
     );
+    gh.lazySingleton<_i579.PostSyncDecryptionService>(
+      () => _i579.PostSyncDecryptionService(
+        gh<_i23.ClipboardSource>(instanceName: 'local'),
+      ),
+    );
     gh.singleton<_i29.AuthCubit>(
       () => _i29.AuthCubit(
         gh<_i579.AuthRepository>(),
@@ -451,6 +458,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i443.SyncOrchestrator>(),
         gh<_i292.SyncEventBus>(),
         gh<_i246.MonetizationCubit>(),
+        gh<_i579.PostSyncDecryptionService>(),
       ),
     );
     return this;

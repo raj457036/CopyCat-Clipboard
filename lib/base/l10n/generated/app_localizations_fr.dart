@@ -1052,6 +1052,20 @@ class AppLocalizationsFr extends AppLocalizations {
       'Vérification de la sauvegarde distante...';
 
   @override
+  String get sync_restore__decrypting_title => 'Decrypting clips';
+
+  @override
+  String get sync_restore__decrypting_counting => 'Counting encrypted clips...';
+
+  @override
+  String sync_restore__decrypting_progress({
+    required int decrypted,
+    required int total,
+  }) {
+    return 'Decrypted $decrypted of $total';
+  }
+
+  @override
   String get sync_restore__workspace_restored => 'Espace de travail restauré';
 
   @override

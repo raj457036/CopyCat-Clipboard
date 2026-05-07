@@ -34,7 +34,6 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   final ClipCollectionCubit _collectionCubit;
   final ClipCrossSyncListener _realtimeListener;
   final FileCloudService _fileCloudService;
-
   /// Direct local source access for write-back operations that must NOT
   /// trigger outbox re-enqueue (e.g., saving serverId after remote creation).
   final ClipboardSource _localSource;
@@ -112,11 +111,8 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     await _batchSyncService.waitUntilReady();
     final collectionMapping = _collectionCubit.serverMapping;
 
-    // Note: The current batchSyncService isolate doesn't use the conflictResolver
-    // because it runs in a separate isolate and can't easily execute closures/classes
-    // passed to it. In a robust setup, we'd pass conflict logic or run it here before
-    // sending to isolate. For now, it delegates to the existing isolate logic.
-    return _batchSyncService.syncBatch(items, collectionMapping);
+    final events = await _batchSyncService.syncBatch(items, collectionMapping);
+    return events;
   }
 
   @override

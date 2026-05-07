@@ -37,6 +37,9 @@ class SyncStatusFAB extends StatelessWidget {
               case SyncingStatus():
                 disabled = true;
                 isSyncing = true;
+              case SyncStatusDecrypting():
+                disabled = true;
+                isSyncing = true;
               case SyncStatusComplete():
                 disabled = false;
                 isSyncing = false;

@@ -1032,6 +1032,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sync_restore__checking_backup => 'Checking remote backup...';
 
   @override
+  String get sync_restore__decrypting_title => 'Decrypting clips';
+
+  @override
+  String get sync_restore__decrypting_counting => 'Counting encrypted clips...';
+
+  @override
+  String sync_restore__decrypting_progress({
+    required int decrypted,
+    required int total,
+  }) {
+    return 'Decrypted $decrypted of $total';
+  }
+
+  @override
   String get sync_restore__workspace_restored => 'Workspace restored';
 
   @override

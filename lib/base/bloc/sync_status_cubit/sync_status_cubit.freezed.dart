@@ -21,6 +21,7 @@ mixin _$SyncStatusState {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function(Map<String, SyncProgress> progress) syncing,
+    required TResult Function(int decrypted, int total) decrypting,
     required TResult Function() complete,
     required TResult Function(Failure failure) failed,
   }) => throw _privateConstructorUsedError;
@@ -28,6 +29,7 @@ mixin _$SyncStatusState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function(Map<String, SyncProgress> progress)? syncing,
+    TResult? Function(int decrypted, int total)? decrypting,
     TResult? Function()? complete,
     TResult? Function(Failure failure)? failed,
   }) => throw _privateConstructorUsedError;
@@ -35,6 +37,7 @@ mixin _$SyncStatusState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function(Map<String, SyncProgress> progress)? syncing,
+    TResult Function(int decrypted, int total)? decrypting,
     TResult Function()? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
@@ -43,6 +46,7 @@ mixin _$SyncStatusState {
   TResult map<TResult extends Object?>({
     required TResult Function(SyncStatusUnknown value) unknown,
     required TResult Function(SyncingStatus value) syncing,
+    required TResult Function(SyncStatusDecrypting value) decrypting,
     required TResult Function(SyncStatusComplete value) complete,
     required TResult Function(SyncStatusFailed value) failed,
   }) => throw _privateConstructorUsedError;
@@ -50,6 +54,7 @@ mixin _$SyncStatusState {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(SyncStatusUnknown value)? unknown,
     TResult? Function(SyncingStatus value)? syncing,
+    TResult? Function(SyncStatusDecrypting value)? decrypting,
     TResult? Function(SyncStatusComplete value)? complete,
     TResult? Function(SyncStatusFailed value)? failed,
   }) => throw _privateConstructorUsedError;
@@ -57,6 +62,7 @@ mixin _$SyncStatusState {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(SyncStatusUnknown value)? unknown,
     TResult Function(SyncingStatus value)? syncing,
+    TResult Function(SyncStatusDecrypting value)? decrypting,
     TResult Function(SyncStatusComplete value)? complete,
     TResult Function(SyncStatusFailed value)? failed,
     required TResult orElse(),
@@ -130,6 +136,7 @@ class _$SyncStatusUnknownImpl implements SyncStatusUnknown {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function(Map<String, SyncProgress> progress) syncing,
+    required TResult Function(int decrypted, int total) decrypting,
     required TResult Function() complete,
     required TResult Function(Failure failure) failed,
   }) {
@@ -141,6 +148,7 @@ class _$SyncStatusUnknownImpl implements SyncStatusUnknown {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function(Map<String, SyncProgress> progress)? syncing,
+    TResult? Function(int decrypted, int total)? decrypting,
     TResult? Function()? complete,
     TResult? Function(Failure failure)? failed,
   }) {
@@ -152,6 +160,7 @@ class _$SyncStatusUnknownImpl implements SyncStatusUnknown {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function(Map<String, SyncProgress> progress)? syncing,
+    TResult Function(int decrypted, int total)? decrypting,
     TResult Function()? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
@@ -167,6 +176,7 @@ class _$SyncStatusUnknownImpl implements SyncStatusUnknown {
   TResult map<TResult extends Object?>({
     required TResult Function(SyncStatusUnknown value) unknown,
     required TResult Function(SyncingStatus value) syncing,
+    required TResult Function(SyncStatusDecrypting value) decrypting,
     required TResult Function(SyncStatusComplete value) complete,
     required TResult Function(SyncStatusFailed value) failed,
   }) {
@@ -178,6 +188,7 @@ class _$SyncStatusUnknownImpl implements SyncStatusUnknown {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(SyncStatusUnknown value)? unknown,
     TResult? Function(SyncingStatus value)? syncing,
+    TResult? Function(SyncStatusDecrypting value)? decrypting,
     TResult? Function(SyncStatusComplete value)? complete,
     TResult? Function(SyncStatusFailed value)? failed,
   }) {
@@ -189,6 +200,7 @@ class _$SyncStatusUnknownImpl implements SyncStatusUnknown {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(SyncStatusUnknown value)? unknown,
     TResult Function(SyncingStatus value)? syncing,
+    TResult Function(SyncStatusDecrypting value)? decrypting,
     TResult Function(SyncStatusComplete value)? complete,
     TResult Function(SyncStatusFailed value)? failed,
     required TResult orElse(),
@@ -285,6 +297,7 @@ class _$SyncingStatusImpl implements SyncingStatus {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function(Map<String, SyncProgress> progress) syncing,
+    required TResult Function(int decrypted, int total) decrypting,
     required TResult Function() complete,
     required TResult Function(Failure failure) failed,
   }) {
@@ -296,6 +309,7 @@ class _$SyncingStatusImpl implements SyncingStatus {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function(Map<String, SyncProgress> progress)? syncing,
+    TResult? Function(int decrypted, int total)? decrypting,
     TResult? Function()? complete,
     TResult? Function(Failure failure)? failed,
   }) {
@@ -307,6 +321,7 @@ class _$SyncingStatusImpl implements SyncingStatus {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function(Map<String, SyncProgress> progress)? syncing,
+    TResult Function(int decrypted, int total)? decrypting,
     TResult Function()? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
@@ -322,6 +337,7 @@ class _$SyncingStatusImpl implements SyncingStatus {
   TResult map<TResult extends Object?>({
     required TResult Function(SyncStatusUnknown value) unknown,
     required TResult Function(SyncingStatus value) syncing,
+    required TResult Function(SyncStatusDecrypting value) decrypting,
     required TResult Function(SyncStatusComplete value) complete,
     required TResult Function(SyncStatusFailed value) failed,
   }) {
@@ -333,6 +349,7 @@ class _$SyncingStatusImpl implements SyncingStatus {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(SyncStatusUnknown value)? unknown,
     TResult? Function(SyncingStatus value)? syncing,
+    TResult? Function(SyncStatusDecrypting value)? decrypting,
     TResult? Function(SyncStatusComplete value)? complete,
     TResult? Function(SyncStatusFailed value)? failed,
   }) {
@@ -344,6 +361,7 @@ class _$SyncingStatusImpl implements SyncingStatus {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(SyncStatusUnknown value)? unknown,
     TResult Function(SyncingStatus value)? syncing,
+    TResult Function(SyncStatusDecrypting value)? decrypting,
     TResult Function(SyncStatusComplete value)? complete,
     TResult Function(SyncStatusFailed value)? failed,
     required TResult orElse(),
@@ -366,6 +384,182 @@ abstract class SyncingStatus implements SyncStatusState {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SyncingStatusImplCopyWith<_$SyncingStatusImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SyncStatusDecryptingImplCopyWith<$Res> {
+  factory _$$SyncStatusDecryptingImplCopyWith(
+    _$SyncStatusDecryptingImpl value,
+    $Res Function(_$SyncStatusDecryptingImpl) then,
+  ) = __$$SyncStatusDecryptingImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int decrypted, int total});
+}
+
+/// @nodoc
+class __$$SyncStatusDecryptingImplCopyWithImpl<$Res>
+    extends _$SyncStatusStateCopyWithImpl<$Res, _$SyncStatusDecryptingImpl>
+    implements _$$SyncStatusDecryptingImplCopyWith<$Res> {
+  __$$SyncStatusDecryptingImplCopyWithImpl(
+    _$SyncStatusDecryptingImpl _value,
+    $Res Function(_$SyncStatusDecryptingImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of SyncStatusState
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? decrypted = null, Object? total = null}) {
+    return _then(
+      _$SyncStatusDecryptingImpl(
+        decrypted: null == decrypted
+            ? _value.decrypted
+            : decrypted // ignore: cast_nullable_to_non_nullable
+                  as int,
+        total: null == total
+            ? _value.total
+            : total // ignore: cast_nullable_to_non_nullable
+                  as int,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$SyncStatusDecryptingImpl implements SyncStatusDecrypting {
+  const _$SyncStatusDecryptingImpl({this.decrypted = 0, this.total = 0});
+
+  @override
+  @JsonKey()
+  final int decrypted;
+  @override
+  @JsonKey()
+  final int total;
+
+  @override
+  String toString() {
+    return 'SyncStatusState.decrypting(decrypted: $decrypted, total: $total)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SyncStatusDecryptingImpl &&
+            (identical(other.decrypted, decrypted) ||
+                other.decrypted == decrypted) &&
+            (identical(other.total, total) || other.total == total));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, decrypted, total);
+
+  /// Create a copy of SyncStatusState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SyncStatusDecryptingImplCopyWith<_$SyncStatusDecryptingImpl>
+  get copyWith =>
+      __$$SyncStatusDecryptingImplCopyWithImpl<_$SyncStatusDecryptingImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() unknown,
+    required TResult Function(Map<String, SyncProgress> progress) syncing,
+    required TResult Function(int decrypted, int total) decrypting,
+    required TResult Function() complete,
+    required TResult Function(Failure failure) failed,
+  }) {
+    return decrypting(decrypted, total);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? unknown,
+    TResult? Function(Map<String, SyncProgress> progress)? syncing,
+    TResult? Function(int decrypted, int total)? decrypting,
+    TResult? Function()? complete,
+    TResult? Function(Failure failure)? failed,
+  }) {
+    return decrypting?.call(decrypted, total);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? unknown,
+    TResult Function(Map<String, SyncProgress> progress)? syncing,
+    TResult Function(int decrypted, int total)? decrypting,
+    TResult Function()? complete,
+    TResult Function(Failure failure)? failed,
+    required TResult orElse(),
+  }) {
+    if (decrypting != null) {
+      return decrypting(decrypted, total);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(SyncStatusUnknown value) unknown,
+    required TResult Function(SyncingStatus value) syncing,
+    required TResult Function(SyncStatusDecrypting value) decrypting,
+    required TResult Function(SyncStatusComplete value) complete,
+    required TResult Function(SyncStatusFailed value) failed,
+  }) {
+    return decrypting(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(SyncStatusUnknown value)? unknown,
+    TResult? Function(SyncingStatus value)? syncing,
+    TResult? Function(SyncStatusDecrypting value)? decrypting,
+    TResult? Function(SyncStatusComplete value)? complete,
+    TResult? Function(SyncStatusFailed value)? failed,
+  }) {
+    return decrypting?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(SyncStatusUnknown value)? unknown,
+    TResult Function(SyncingStatus value)? syncing,
+    TResult Function(SyncStatusDecrypting value)? decrypting,
+    TResult Function(SyncStatusComplete value)? complete,
+    TResult Function(SyncStatusFailed value)? failed,
+    required TResult orElse(),
+  }) {
+    if (decrypting != null) {
+      return decrypting(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class SyncStatusDecrypting implements SyncStatusState {
+  const factory SyncStatusDecrypting({final int decrypted, final int total}) =
+      _$SyncStatusDecryptingImpl;
+
+  int get decrypted;
+  int get total;
+
+  /// Create a copy of SyncStatusState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SyncStatusDecryptingImplCopyWith<_$SyncStatusDecryptingImpl>
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -413,6 +607,7 @@ class _$SyncStatusCompleteImpl implements SyncStatusComplete {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function(Map<String, SyncProgress> progress) syncing,
+    required TResult Function(int decrypted, int total) decrypting,
     required TResult Function() complete,
     required TResult Function(Failure failure) failed,
   }) {
@@ -424,6 +619,7 @@ class _$SyncStatusCompleteImpl implements SyncStatusComplete {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function(Map<String, SyncProgress> progress)? syncing,
+    TResult? Function(int decrypted, int total)? decrypting,
     TResult? Function()? complete,
     TResult? Function(Failure failure)? failed,
   }) {
@@ -435,6 +631,7 @@ class _$SyncStatusCompleteImpl implements SyncStatusComplete {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function(Map<String, SyncProgress> progress)? syncing,
+    TResult Function(int decrypted, int total)? decrypting,
     TResult Function()? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
@@ -450,6 +647,7 @@ class _$SyncStatusCompleteImpl implements SyncStatusComplete {
   TResult map<TResult extends Object?>({
     required TResult Function(SyncStatusUnknown value) unknown,
     required TResult Function(SyncingStatus value) syncing,
+    required TResult Function(SyncStatusDecrypting value) decrypting,
     required TResult Function(SyncStatusComplete value) complete,
     required TResult Function(SyncStatusFailed value) failed,
   }) {
@@ -461,6 +659,7 @@ class _$SyncStatusCompleteImpl implements SyncStatusComplete {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(SyncStatusUnknown value)? unknown,
     TResult? Function(SyncingStatus value)? syncing,
+    TResult? Function(SyncStatusDecrypting value)? decrypting,
     TResult? Function(SyncStatusComplete value)? complete,
     TResult? Function(SyncStatusFailed value)? failed,
   }) {
@@ -472,6 +671,7 @@ class _$SyncStatusCompleteImpl implements SyncStatusComplete {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(SyncStatusUnknown value)? unknown,
     TResult Function(SyncingStatus value)? syncing,
+    TResult Function(SyncStatusDecrypting value)? decrypting,
     TResult Function(SyncStatusComplete value)? complete,
     TResult Function(SyncStatusFailed value)? failed,
     required TResult orElse(),
@@ -562,6 +762,7 @@ class _$SyncStatusFailedImpl implements SyncStatusFailed {
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
     required TResult Function(Map<String, SyncProgress> progress) syncing,
+    required TResult Function(int decrypted, int total) decrypting,
     required TResult Function() complete,
     required TResult Function(Failure failure) failed,
   }) {
@@ -573,6 +774,7 @@ class _$SyncStatusFailedImpl implements SyncStatusFailed {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function(Map<String, SyncProgress> progress)? syncing,
+    TResult? Function(int decrypted, int total)? decrypting,
     TResult? Function()? complete,
     TResult? Function(Failure failure)? failed,
   }) {
@@ -584,6 +786,7 @@ class _$SyncStatusFailedImpl implements SyncStatusFailed {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function(Map<String, SyncProgress> progress)? syncing,
+    TResult Function(int decrypted, int total)? decrypting,
     TResult Function()? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
@@ -599,6 +802,7 @@ class _$SyncStatusFailedImpl implements SyncStatusFailed {
   TResult map<TResult extends Object?>({
     required TResult Function(SyncStatusUnknown value) unknown,
     required TResult Function(SyncingStatus value) syncing,
+    required TResult Function(SyncStatusDecrypting value) decrypting,
     required TResult Function(SyncStatusComplete value) complete,
     required TResult Function(SyncStatusFailed value) failed,
   }) {
@@ -610,6 +814,7 @@ class _$SyncStatusFailedImpl implements SyncStatusFailed {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(SyncStatusUnknown value)? unknown,
     TResult? Function(SyncingStatus value)? syncing,
+    TResult? Function(SyncStatusDecrypting value)? decrypting,
     TResult? Function(SyncStatusComplete value)? complete,
     TResult? Function(SyncStatusFailed value)? failed,
   }) {
@@ -621,6 +826,7 @@ class _$SyncStatusFailedImpl implements SyncStatusFailed {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(SyncStatusUnknown value)? unknown,
     TResult Function(SyncingStatus value)? syncing,
+    TResult Function(SyncStatusDecrypting value)? decrypting,
     TResult Function(SyncStatusComplete value)? complete,
     TResult Function(SyncStatusFailed value)? failed,
     required TResult orElse(),

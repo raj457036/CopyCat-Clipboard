@@ -396,6 +396,15 @@
   "sync_restore__title": "Restoring your workspace",
   "sync_restore__subtitle": "CopyCat is bringing your synced collections and clipboard history onto this device.",
   "sync_restore__checking_backup": "Checking remote backup...",
+  "sync_restore__decrypting_title": "Decrypting clips",
+  "sync_restore__decrypting_counting": "Counting encrypted clips...",
+  "sync_restore__decrypting_progress": "Decrypted {decrypted} of {total}",
+  "@sync_restore__decrypting_progress": {
+    "placeholders": {
+      "decrypted": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
   "sync_restore__workspace_restored": "Workspace restored",
   "sync_restore__data_ready": "Your synced data is ready on this device.",
   "sync_restore__restoring_collections": "Restoring collections so clipboard items keep their organization.",

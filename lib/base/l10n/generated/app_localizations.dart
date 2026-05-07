@@ -1971,6 +1971,27 @@ abstract class AppLocalizations {
   /// **'Checking remote backup...'**
   String get sync_restore__checking_backup;
 
+  /// No description provided for @sync_restore__decrypting_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrypting clips'**
+  String get sync_restore__decrypting_title;
+
+  /// No description provided for @sync_restore__decrypting_counting.
+  ///
+  /// In en, this message translates to:
+  /// **'Counting encrypted clips...'**
+  String get sync_restore__decrypting_counting;
+
+  /// No description provided for @sync_restore__decrypting_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrypted {decrypted} of {total}'**
+  String sync_restore__decrypting_progress({
+    required int decrypted,
+    required int total,
+  });
+
   /// No description provided for @sync_restore__workspace_restored.
   ///
   /// In en, this message translates to:
