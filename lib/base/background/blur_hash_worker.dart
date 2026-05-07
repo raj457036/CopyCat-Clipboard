@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:cacherine/cacherine.dart';
+
 import 'package:blurhash_dart/blurhash_dart.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:easy_worker/easy_worker.dart';
@@ -32,6 +34,12 @@ String? calculateBlurHash(String path) {
 
       case "image/tiff":
         image = img.decodeTiff(bin);
+
+      case "image/bmp":
+        image = img.decodeBmp(bin);
+
+      case "image/x-icon":
+        image = img.decodeIco(bin);
 
       case _:
     }
@@ -67,6 +75,10 @@ final blurHashWorker = EasyCompute<(Uint8List?, String?), (String, String)>(
   workerName: "BlurHash Enc/Dec",
 );
 
+// LRU cache: avoids re-decoding the same blurHash every time a card
+// re-enters the viewport. Capped at 100 entries (~3–4 KB each → ~400 KB max).
+final _decodeCache = SimpleLRUCache<String, Uint8List>(100);
+
 Future<String?> getBlurHash(String path) async {
   await blurHashWorker.waitUntilReady();
   final (_, blurHash) = await blurHashWorker.compute(("encode", path));
@@ -75,7 +87,13 @@ Future<String?> getBlurHash(String path) async {
 }
 
 Future<Uint8List?> getImageFromBlurHash(String blurHash) async {
+  final cached = _decodeCache.get(blurHash);
+  if (cached != null) return cached;
+
   await blurHashWorker.waitUntilReady();
   final (bin, _) = await blurHashWorker.compute(("decode", blurHash));
+  if (bin != null) {
+    _decodeCache.set(blurHash, bin);
+  }
   return bin;
 }

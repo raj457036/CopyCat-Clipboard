@@ -17,44 +17,67 @@ void isarSyncingClipsInBackground(
   final Isar db = Isar.getInstance(dbName)!;
   final collection = db.collection<IsarClipboardItem>();
 
-  final events = <ClipCrossSyncEvent>[];
   var (items, collectionMap) = record;
 
-  db.writeTxnSync(() {
-    for (var index = 0; index < items.length; index++) {
-      var item = items[index];
-      final found = collection
-          .filter()
-          .serverIdEqualTo(item.serverId)
-          .findFirstSync();
-      final collectionId = collectionMap[item.serverCollectionId];
-      if (found == null) {
-        item = item.copyWith(
-          collectionId: collectionId,
-          lastSynced: systemTime(),
-        );
-        items[index] = item;
-        events.add((CrossSyncEventType.create, item));
-        continue;
-      }
+  // Phase 1: Single batch read — fetch all existing items by their serverIds
+  // in ONE query, outside the write lock. This replaces N individual queries.
+  final serverIds = items
+      .map((e) => e.serverId)
+      .whereType<int>()
+      .toList(growable: false);
 
-      // Conflict Resolution: Last-Modified-Wins
-      if (item.modified.isAfter(found.modified)) {
-        item = item.copyWith(
-          id: found.isarId == Isar.autoIncrement ? null : found.isarId,
-          lastSynced: systemTime(),
-          localPath: found.localPath,
-          collectionId: collectionId,
-        );
-      } else {
-        item = found.toDomain().copyWith(lastSynced: systemTime());
-      }
+  final existingItems = serverIds.isEmpty
+      ? <IsarClipboardItem>[]
+      : collection
+            .filter()
+            .anyOf(serverIds, (q, id) => q.serverIdEqualTo(id))
+            .findAllSync();
 
+  // Phase 2: In-memory map for O(1) conflict-resolution lookups.
+  final existingByServerId = <int, IsarClipboardItem>{
+    for (final e in existingItems)
+      if (e.serverId != null) e.serverId!: e,
+  };
+
+  final events = <ClipCrossSyncEvent>[];
+  final now = systemTime();
+
+  // Phase 3: Pure in-memory conflict resolution — zero DB reads.
+  for (var index = 0; index < items.length; index++) {
+    var item = items[index];
+    final collectionId = collectionMap[item.serverCollectionId];
+    final found = item.serverId != null
+        ? existingByServerId[item.serverId]
+        : null;
+
+    if (found == null) {
+      item = item.copyWith(collectionId: collectionId, lastSynced: now);
       items[index] = item;
-      events.add((CrossSyncEventType.update, item));
+      events.add((CrossSyncEventType.create, item));
+      continue;
     }
 
-    final isarItems = items.map(IsarClipboardItem.fromDomain).toList();
+    // Conflict Resolution: Last-Modified-Wins
+    if (item.modified.isAfter(found.modified)) {
+      item = item.copyWith(
+        id: found.isarId == Isar.autoIncrement ? null : found.isarId,
+        lastSynced: now,
+        localPath: found.localPath,
+        collectionId: collectionId,
+      );
+    } else {
+      item = found.toDomain().copyWith(lastSynced: now);
+    }
+
+    items[index] = item;
+    events.add((CrossSyncEventType.update, item));
+  }
+
+  // Phase 4: Single write — no reads inside the write lock.
+  db.writeTxnSync(() {
+    final isarItems = items
+        .map(IsarClipboardItem.fromDomain)
+        .toList(growable: false);
     final ids = collection.putAllSync(isarItems);
     for (int i = 0; i < events.length; i++) {
       events[i] = (events[i].$1, events[i].$2.copyWith(id: ids[i]));

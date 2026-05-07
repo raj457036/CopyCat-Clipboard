@@ -88,6 +88,7 @@ dependencies:
   super_clipboard: ^0.9.1
   super_drag_and_drop: ^0.9.1
   easy_worker: ^1.2.3
+  cacherine: ^1.1.4
   clipboard_watcher: ^0.3.0
   crypto: ^3.0.7
   logger: ^2.7.0
