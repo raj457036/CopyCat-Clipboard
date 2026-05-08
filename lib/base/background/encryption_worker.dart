@@ -608,10 +608,26 @@ class EncryptionWorker {
         customIV: customIV,
         mode: resolvedMode,
       );
-      return convert.utf8
-          .decode(decryptedBytes, allowMalformed: true)
-          .trimRight();
+      final decoded = convert.utf8.decode(decryptedBytes, allowMalformed: true);
+      return _stripLegacyTrailingPadding(decoded).trimRight();
     });
+  }
+
+  String _stripLegacyTrailingPadding(String value) {
+    if (value.isEmpty) return value;
+
+    final padCode = value.codeUnitAt(value.length - 1);
+    if (padCode < 1 || padCode > 16) return value;
+    if (value.length < padCode) return value;
+
+    final suffixStart = value.length - padCode;
+    for (int i = suffixStart; i < value.length; i++) {
+      if (value.codeUnitAt(i) != padCode) {
+        return value;
+      }
+    }
+
+    return value.substring(0, suffixStart);
   }
 
   Future<void> _restartAfterTimeout() async {

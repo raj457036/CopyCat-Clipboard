@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
@@ -17,6 +18,7 @@ import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -317,7 +319,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
           return ClipboardItem.fromFile(
             path,
             userId: userId,
-            preview: clip.text?.substring(0, 256),
+            preview: clip.text?.sub(end: 256),
             fileName: clip.fileName,
             fileMimeType: clip.fileMimeType,
             fileExtension: clip.fileExtension,

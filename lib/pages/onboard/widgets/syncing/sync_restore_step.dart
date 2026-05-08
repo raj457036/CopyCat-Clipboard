@@ -717,153 +717,150 @@ class _DecryptingPanel extends StatelessWidget {
       (count, item) => count + item.total,
     );
 
-    return FadeIn(
-      child: Column(
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: colors.surfaceContainer,
-                borderRadius: radius16,
-                border: Border.all(color: colors.outlineVariant),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(padding20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                locale.sync_restore__decrypting_title,
-                                style: text.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              height4,
-                              Text(
-                                total > 0
-                                    ? locale.sync_restore__decrypting_progress(
-                                        decrypted: decrypted,
-                                        total: total,
-                                      )
-                                    : locale.sync_restore__decrypting_counting,
-                                style: text.bodyMedium?.copyWith(
-                                  color: colors.onSurfaceVariant,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        width12,
-                        DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: colors.secondaryContainer,
-                            borderRadius: radius8,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: padding10,
-                              vertical: 6,
-                            ),
-                            child: Text(
-                              total > 0
-                                  ? '${((progressValue ?? 0) * 100).round()}%'
-                                  : locale.sync_restore__progress_estimating,
-                              style: text.labelMedium?.copyWith(
-                                color: colors.onSecondaryContainer,
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: colors.surfaceContainer,
+              borderRadius: radius16,
+              border: Border.all(color: colors.outlineVariant),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(padding20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              locale.sync_restore__decrypting_title,
+                              style: text.titleLarge?.copyWith(
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    height16,
-                    LinearProgressIndicator(
-                      value: progressValue,
-                      minHeight: 8,
-                      borderRadius: radius8,
-                      backgroundColor: colors.surfaceContainerHighest,
-                    ),
-                    height16,
-                    DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: colors.surfaceContainerHigh,
-                        borderRadius: radius12,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(padding16),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.cloud_done_rounded,
-                                  size: 18,
-                                  color: colors.primary,
-                                ),
-                                width10,
-                                Expanded(
-                                  child: Text(
-                                    syncedTotal > 0
-                                        ? locale.sync_restore__restored_of_total(
-                                            synced: syncedCount,
-                                            total: syncedTotal,
-                                          )
-                                        : locale.sync_restore__workspace_restored,
-                                    style: text.labelLarge?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            height12,
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: _DecryptingStatusChip(
-                                    title:
-                                        locale.sync_restore__collections_title,
-                                    value:
-                                        '${collectionProgress.visibleSynced}/${collectionProgress.total}',
-                                    complete: collectionProgress.isComplete,
-                                    colors: colors,
-                                    text: text,
-                                  ),
-                                ),
-                                width12,
-                                Expanded(
-                                  child: _DecryptingStatusChip(
-                                    title:
-                                        locale.sync_restore__clipboard_items_title,
-                                    value:
-                                        '${clipProgress.visibleSynced}/${clipProgress.total}',
-                                    complete: clipProgress.isComplete,
-                                    colors: colors,
-                                    text: text,
-                                  ),
-                                ),
-                              ],
+                            height4,
+                            Text(
+                              total > 0
+                                  ? locale.sync_restore__decrypting_progress(
+                                      decrypted: decrypted,
+                                      total: total,
+                                    )
+                                  : locale.sync_restore__decrypting_counting,
+                              style: text.bodyMedium?.copyWith(
+                                color: colors.onSurfaceVariant,
+                              ),
                             ),
                           ],
                         ),
                       ),
+                      width12,
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: colors.secondaryContainer,
+                          borderRadius: radius8,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: padding10,
+                            vertical: 6,
+                          ),
+                          child: Text(
+                            total > 0
+                                ? '${((progressValue ?? 0) * 100).round()}%'
+                                : locale.sync_restore__progress_estimating,
+                            style: text.labelMedium?.copyWith(
+                              color: colors.onSecondaryContainer,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  height16,
+                  LinearProgressIndicator(
+                    value: progressValue,
+                    minHeight: 8,
+                    borderRadius: radius8,
+                    backgroundColor: colors.surfaceContainerHighest,
+                  ),
+                  height16,
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: colors.surfaceContainerHigh,
+                      borderRadius: radius12,
                     ),
-                  ],
-                ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(padding16),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.cloud_done_rounded,
+                                size: 18,
+                                color: colors.primary,
+                              ),
+                              width10,
+                              Expanded(
+                                child: Text(
+                                  syncedTotal > 0
+                                      ? locale.sync_restore__restored_of_total(
+                                          synced: syncedCount,
+                                          total: syncedTotal,
+                                        )
+                                      : locale.sync_restore__workspace_restored,
+                                  style: text.labelLarge?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          height12,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _DecryptingStatusChip(
+                                  title: locale.sync_restore__collections_title,
+                                  value:
+                                      '${collectionProgress.visibleSynced}/${collectionProgress.total}',
+                                  complete: collectionProgress.isComplete,
+                                  colors: colors,
+                                  text: text,
+                                ),
+                              ),
+                              width12,
+                              Expanded(
+                                child: _DecryptingStatusChip(
+                                  title:
+                                      locale.sync_restore__clipboard_items_title,
+                                  value:
+                                      '${clipProgress.visibleSynced}/${clipProgress.total}',
+                                  complete: clipProgress.isComplete,
+                                  colors: colors,
+                                  text: text,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
