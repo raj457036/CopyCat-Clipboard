@@ -1,4 +1,5 @@
 import Cocoa
+import SwiftUI
 
 /// View controller for the quick paste popup list
 class QuickPastePopupViewController: NSViewController {
@@ -10,8 +11,10 @@ class QuickPastePopupViewController: NSViewController {
     var completionHandler: ((String?, Bool, String?) -> Void)?
     
     private let itemHeight: CGFloat = 56
+    private let mediumItemHeight: CGFloat = 72
+    private let imageItemHeight: CGFloat = 92
+    private let maxTextLines: Int = 4
     private let padding: CGFloat = 0
-    private let paddingBottom: CGFloat = 10
     private let maxHeight: CGFloat = 400
     private let minWidth: CGFloat = 360
     
@@ -46,8 +49,6 @@ class QuickPastePopupViewController: NSViewController {
     
     override func viewDidAppear() {
         super.viewDidAppear()
-        // Keep focus in the originating app (emoji-picker style behavior).
-        // Avoid forcing this popup to become first responder.
     }
 
     override func viewDidLayout() {
@@ -76,16 +77,16 @@ class QuickPastePopupViewController: NSViewController {
             return
         }
         
-        // Create scroll view
+        // scroll view
         let scrollView = NSScrollView()
         scrollView.hasHorizontalScroller = false
         scrollView.hasVerticalScroller = true
         scrollView.autohidesScrollers = true
         scrollView.drawsBackground = false
         scrollView.horizontalScrollElasticity = .none
-        scrollView.contentInsets = NSEdgeInsets(top: 1, left: 1, bottom: 50, right: 1)
+        scrollView.contentInsets = NSEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
         
-        // Create table view
+        // table view
         let tableView = NSTableView()
         tableView.dataSource = self
         tableView.delegate = self
@@ -115,12 +116,11 @@ class QuickPastePopupViewController: NSViewController {
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: padding),
-            scrollView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -paddingBottom),
+            scrollView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -padding),
             scrollView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: padding),
             scrollView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -padding),
         ])
         
-        // Select first item
         tableView.selectRowIndexes(NSIndexSet(index: 0) as IndexSet, byExtendingSelection: false)
         selectedIndex = 0
         syncTableWidthToViewport()
@@ -142,7 +142,54 @@ class QuickPastePopupViewController: NSViewController {
         if abs(frame.width - viewportWidth) > 0.5 {
             frame.size.width = viewportWidth
             tableView.frame = frame
+            if !items.isEmpty {
+                tableView.noteHeightOfRows(withIndexesChanged: IndexSet(integersIn: 0..<items.count))
+            }
         }
+    }
+
+    private func rowHeight(for row: Int, tableView: NSTableView) -> CGFloat {
+        guard row >= 0 && row < items.count else {
+            return itemHeight
+        }
+
+        let item = items[row]
+        let isImage = item["isImage"] as? Bool ?? false
+        let text = (item["text"] as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Keep image rows noticeably taller so preview thumbnails are useful.
+        var resolvedHeight = isImage ? imageItemHeight : itemHeight
+
+        guard !text.isEmpty else {
+            return resolvedHeight
+        }
+
+        let font = NSFont.systemFont(ofSize: 13, weight: .semibold)
+        let lineHeight = max(font.boundingRectForFont.size.height, 1)
+
+        // leading(5) + icon(28) + iconGap(6) + trailing(4) + preview(optional).
+        var textWidth = (tableView.tableColumns.first?.width ?? minWidth)
+        textWidth -= (5 + 28 + 6 + 4)
+        if isImage {
+            textWidth -= (34 + 4)
+        }
+
+        let bounded = (text as NSString).boundingRect(
+            with: NSSize(width: max(textWidth, 80), height: .greatestFiniteMagnitude),
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            attributes: [.font: font],
+            context: nil
+        )
+        let measuredLines = Int(ceil(bounded.height / lineHeight))
+        let lines = max(1, min(maxTextLines, measuredLines))
+
+        if lines >= 4 {
+            resolvedHeight = max(resolvedHeight, imageItemHeight)
+        } else if lines >= 3 {
+            resolvedHeight = max(resolvedHeight, mediumItemHeight)
+        }
+
+        return resolvedHeight
     }
     
     // MARK: - Keyboard Handling
@@ -151,19 +198,72 @@ class QuickPastePopupViewController: NSViewController {
         return true
     }
 
-    func scrollToRowSmooth(_ row: Int, tableView: NSTableView) {
-        guard let scrollView = tableView.enclosingScrollView else { return }
+    private func refreshVisibleSelectionState(_ tableView: NSTableView) {
+        tableView.enumerateAvailableRowViews { _, row in
+            if let cell = tableView.view(
+                atColumn: 0,
+                row: row,
+                makeIfNecessary: false
+            ) as? ClipboardItemCellView {
+                cell.setSelected(
+                    row == self.selectedIndex,
+                    selectionColor: self.selectionColor
+                )
+            }
+        }
+    }
+
+    private func revealSelectionIfNeeded(
+        _ row: Int,
+        movingDown: Bool,
+        tableView: NSTableView
+    ) {
+        guard let scrollView = tableView.enclosingScrollView else {
+            return
+        }
 
         let rowRect = tableView.rect(ofRow: row)
-        let targetPoint = NSPoint(x: 0, y: rowRect.origin.y)
+        let visibleRect = scrollView.contentView.documentVisibleRect
 
-        NSAnimationContext.runAnimationGroup { context in
-            context.duration = 0.25
-            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        let maxOffsetY = max(0, tableView.bounds.height - visibleRect.height)
+        var targetOffsetY: CGFloat?
 
-            scrollView.contentView.animator().setBoundsOrigin(targetPoint)
-            scrollView.reflectScrolledClipView(scrollView.contentView)
+        if movingDown, rowRect.maxY > visibleRect.maxY {
+            targetOffsetY = rowRect.maxY - visibleRect.height
+        } else if !movingDown, rowRect.minY < visibleRect.minY {
+            targetOffsetY = rowRect.minY
         }
+
+        guard let targetOffsetY else {
+            return
+        }
+
+        let clampedOffsetY = min(max(0, targetOffsetY), maxOffsetY)
+        scrollView.contentView.setBoundsOrigin(NSPoint(x: 0, y: clampedOffsetY))
+        scrollView.reflectScrolledClipView(scrollView.contentView)
+    }
+
+    private func moveSelectionBy(_ delta: Int, tableView: NSTableView) {
+        guard !items.isEmpty else {
+            return
+        }
+
+        let nextIndex = max(0, min(items.count - 1, selectedIndex + delta))
+        guard nextIndex != selectedIndex else {
+            return
+        }
+
+        selectedIndex = nextIndex
+        tableView.selectRowIndexes(
+            NSIndexSet(index: selectedIndex) as IndexSet,
+            byExtendingSelection: false
+        )
+        revealSelectionIfNeeded(
+            selectedIndex,
+            movingDown: delta > 0,
+            tableView: tableView
+        )
+        refreshVisibleSelectionState(tableView)
     }
     
     override func keyDown(with event: NSEvent) {
@@ -194,18 +294,10 @@ class QuickPastePopupViewController: NSViewController {
             dismiss(dismissed: true)
             
         case 0x7E: // Up arrow key
-            if selectedIndex > 0 {
-                selectedIndex -= 1
-                tableView.selectRowIndexes(NSIndexSet(index: selectedIndex) as IndexSet, byExtendingSelection: false)
-                tableView.scrollRowToVisible(selectedIndex)
-            }
+            moveSelectionBy(-1, tableView: tableView)
             
         case 0x7D: // Down arrow key
-            if selectedIndex < items.count - 1 {
-                selectedIndex += 1
-                tableView.selectRowIndexes(NSIndexSet(index: selectedIndex) as IndexSet, byExtendingSelection: false)
-                tableView.scrollRowToVisible(selectedIndex+1)
-            }
+            moveSelectionBy(1, tableView: tableView)
             
         default:
             super.keyDown(with: event)
@@ -277,6 +369,10 @@ extension QuickPastePopupViewController: NSTableViewDataSource {
 // MARK: - NSTableViewDelegate
 
 extension QuickPastePopupViewController: NSTableViewDelegate {
+    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
+        return rowHeight(for: row, tableView: tableView)
+    }
+
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         guard row >= 0 && row < items.count else {
             return nil
@@ -317,18 +413,7 @@ extension QuickPastePopupViewController: NSTableViewDelegate {
             return
         }
         selectedIndex = tableView.selectedRow
-        tableView.enumerateAvailableRowViews { _, row in
-            if let cell = tableView.view(
-                atColumn: 0,
-                row: row,
-                makeIfNecessary: false
-            ) as? ClipboardItemCellView {
-                cell.setSelected(
-                    row == self.selectedIndex,
-                    selectionColor: self.selectionColor
-                )
-            }
-        }
+        refreshVisibleSelectionState(tableView)
     }
 }
 
@@ -345,15 +430,18 @@ class ClipboardItemCell: NSTextFieldCell {
 }
 
 class ClipboardItemCellView: NSTableCellView {
-    private let iconView = NSImageView()
-    private let iconFallbackLabel = NSTextField(labelWithString: "")
-    private let iconContainer = NSView()
-    private let titleLabel = NSTextField(labelWithString: "")
-    private let previewImageView = NSImageView()
-    private var titleTrailingToPreviewConstraint: NSLayoutConstraint?
-    private var titleTrailingToEdgeConstraint: NSLayoutConstraint?
-    private var previewWidthConstraint: NSLayoutConstraint?
-    
+    private var hostingView: NSHostingView<ClipboardRowContentView>?
+
+    private func resolvedAppIcon(from appIconPath: String?) -> NSImage? {
+        if let appIconPath,
+           let icon = NSImage(contentsOfFile: appIconPath) {
+            return icon
+        }
+
+        let mainAppIcon = NSWorkspace.shared.icon(forFile: Bundle.main.bundlePath)
+        return mainAppIcon
+    }
+
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         setupUI()
@@ -367,78 +455,27 @@ class ClipboardItemCellView: NSTableCellView {
     private func setupUI() {
         wantsLayer = true
         layer?.cornerRadius = 12
+        layer?.masksToBounds = true
 
-        iconContainer.wantsLayer = true
-        iconContainer.layer?.cornerRadius = 9
-        iconContainer.layer?.backgroundColor = NSColor.white.withAlphaComponent(0.08).cgColor
-
-        iconView.imageScaling = .scaleAxesIndependently
-        iconView.wantsLayer = true
-        iconView.layer?.cornerRadius = 9
-        iconView.layer?.masksToBounds = true
-
-        iconFallbackLabel.font = NSFont.systemFont(ofSize: 11, weight: .semibold)
-        iconFallbackLabel.textColor = NSColor.secondaryLabelColor
-        iconFallbackLabel.alignment = .center
-
-        titleLabel.font = NSFont.systemFont(ofSize: 13, weight: .semibold)
-        titleLabel.textColor = NSColor.labelColor
-        titleLabel.lineBreakMode = .byCharWrapping
-        titleLabel.maximumNumberOfLines = 2
-        titleLabel.cell?.wraps = true
-        titleLabel.cell?.usesSingleLineMode = false
-        titleLabel.cell?.lineBreakMode = .byCharWrapping
-        titleLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-
-        previewImageView.imageScaling = .scaleAxesIndependently
-        previewImageView.wantsLayer = true
-        previewImageView.layer?.cornerRadius = 8
-        previewImageView.layer?.masksToBounds = true
-        previewImageView.isHidden = true
-        previewImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
-
-        addSubview(iconContainer)
-        iconContainer.addSubview(iconView)
-        iconContainer.addSubview(iconFallbackLabel)
-        addSubview(titleLabel)
-        addSubview(previewImageView)
-
-        iconContainer.translatesAutoresizingMaskIntoConstraints = false
-        iconView.translatesAutoresizingMaskIntoConstraints = false
-        iconFallbackLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        previewImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        titleTrailingToPreviewConstraint = titleLabel.trailingAnchor.constraint(equalTo: previewImageView.leadingAnchor, constant: -4)
-        titleTrailingToEdgeConstraint = titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -4)
-        previewWidthConstraint = previewImageView.widthAnchor.constraint(equalToConstant: 0)
-
+        let host = NSHostingView(
+            rootView: ClipboardRowContentView(
+                title: "",
+                appIcon: nil,
+                previewImage: nil,
+                isImage: false
+            )
+        )
+        host.translatesAutoresizingMaskIntoConstraints = false
+        host.setContentCompressionResistancePriority(.required, for: .horizontal)
+        host.setContentCompressionResistancePriority(.required, for: .vertical)
+        addSubview(host)
         NSLayoutConstraint.activate([
-            iconContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 5),
-            iconContainer.centerYAnchor.constraint(equalTo: centerYAnchor),
-            iconContainer.widthAnchor.constraint(equalToConstant: 28),
-            iconContainer.heightAnchor.constraint(equalToConstant: 28),
-
-            iconView.leadingAnchor.constraint(equalTo: iconContainer.leadingAnchor),
-            iconView.trailingAnchor.constraint(equalTo: iconContainer.trailingAnchor),
-            iconView.topAnchor.constraint(equalTo: iconContainer.topAnchor),
-            iconView.bottomAnchor.constraint(equalTo: iconContainer.bottomAnchor),
-
-            iconFallbackLabel.centerXAnchor.constraint(equalTo: iconContainer.centerXAnchor),
-            iconFallbackLabel.centerYAnchor.constraint(equalTo: iconContainer.centerYAnchor),
-
-            titleLabel.leadingAnchor.constraint(equalTo: iconContainer.trailingAnchor, constant: 6),
-            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            titleLabel.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: 6),
-            titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -6),
-
-            previewImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -4),
-            previewImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            previewImageView.heightAnchor.constraint(equalToConstant: 34),
-            titleTrailingToPreviewConstraint!,
-            titleTrailingToEdgeConstraint!,
-            previewWidthConstraint!,
+            host.leadingAnchor.constraint(equalTo: leadingAnchor),
+            host.trailingAnchor.constraint(equalTo: trailingAnchor),
+            host.topAnchor.constraint(equalTo: topAnchor),
+            host.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
+        hostingView = host
     }
 
     func configure(
@@ -449,36 +486,17 @@ class ClipboardItemCellView: NSTableCellView {
         selected: Bool,
         selectionColor: NSColor
     ) {
-        titleLabel.stringValue = title
         setSelected(selected, selectionColor: selectionColor)
 
-        if let appIconPath,
-           let appIcon = NSImage(contentsOfFile: appIconPath) {
-            iconView.image = appIcon
-            iconView.isHidden = false
-            iconFallbackLabel.isHidden = true
-        } else {
-            iconView.image = nil
-            iconView.isHidden = true
-            iconFallbackLabel.stringValue = "•"
-            iconFallbackLabel.isHidden = false
-        }
+        let resolvedIcon = resolvedAppIcon(from: appIconPath)
+        let resolvedPreview = previewImagePath.flatMap { NSImage(contentsOfFile: $0) }
 
-        if isImage,
-           let previewImagePath,
-           let previewImage = NSImage(contentsOfFile: previewImagePath) {
-            previewImageView.image = previewImage
-            previewImageView.isHidden = false
-            previewWidthConstraint?.constant = 34
-            titleTrailingToPreviewConstraint?.isActive = true
-            titleTrailingToEdgeConstraint?.isActive = false
-        } else {
-            previewImageView.image = nil
-            previewImageView.isHidden = true
-            previewWidthConstraint?.constant = 0
-            titleTrailingToPreviewConstraint?.isActive = false
-            titleTrailingToEdgeConstraint?.isActive = true
-        }
+        hostingView?.rootView = ClipboardRowContentView(
+            title: title,
+            appIcon: resolvedIcon,
+            previewImage: resolvedPreview,
+            isImage: isImage
+        )
     }
 
     func setSelected(_ selected: Bool, selectionColor: NSColor = .controlAccentColor) {
@@ -489,6 +507,88 @@ class ClipboardItemCellView: NSTableCellView {
         layer?.borderColor = selected
             ? selectionColor.withAlphaComponent(0.75).cgColor
             : NSColor.white.withAlphaComponent(0.06).cgColor
+    }
+}
+
+private struct ClipboardRowContentView: View {
+    let title: String
+    let appIcon: NSImage?
+    let previewImage: NSImage?
+    let isImage: Bool
+
+    var body: some View {
+        Group {
+            if isImage, let previewImage {
+                imageContent(previewImage)
+            } else {
+                textContent
+            }
+        }
+        .padding(6)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(Color.clear)
+    }
+
+    private var iconBadge: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 9, style: .continuous)
+                .fill(Color.black.opacity(0.22))
+            RoundedRectangle(cornerRadius: 9, style: .continuous)
+                .stroke(Color.white.opacity(0.12), lineWidth: 1)
+
+            if let appIcon {
+                Image(nsImage: appIcon)
+                    .resizable()
+                    .interpolation(.high)
+                    .renderingMode(.original)
+                    .scaledToFit()
+                    .padding(2)
+            } else {
+                Text("CC")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundColor(.white.opacity(0.9))
+            }
+        }
+        .frame(width: 28, height: 28)
+        .zIndex(2)
+    }
+
+    private var textContent: some View {
+        HStack(alignment: .center, spacing: 6) {
+            iconBadge
+
+            Text(title)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundColor(.primary)
+                .multilineTextAlignment(.leading)
+                .lineLimit(4)
+
+            Spacer(minLength: 0)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    }
+
+    private func imageContent(_ image: NSImage) -> some View {
+        GeometryReader { proxy in
+            ZStack(alignment: .topLeading) {
+                Image(nsImage: image)
+                    .resizable()
+                    .interpolation(.high)
+                    .aspectRatio(contentMode: .fill)
+                    .frame(
+                        width: proxy.size.width,
+                        height: proxy.size.height,
+                        alignment: .center
+                    )
+                    .clipped()
+
+                iconBadge
+                    .padding(6)
+            }
+            .frame(width: proxy.size.width, height: proxy.size.height)
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .clipped()
+        }
     }
 }
 
@@ -509,9 +609,6 @@ class ClipboardItemRowView: NSTableRowView {
     }
 
     override func drawSelection(in dirtyRect: NSRect) {
-        // Selection is rendered by ClipboardItemCellView.setSelected using the
-        // theme color from the plugin. Keep row-level selection fully transparent
-        // to avoid AppKit accent color blending.
     }
 
     override func drawBackground(in dirtyRect: NSRect) {
@@ -520,7 +617,7 @@ class ClipboardItemRowView: NSTableRowView {
         }
 
         let backgroundRect = bounds.insetBy(dx: 1, dy: 1)
-        let path = NSBezierPath(roundedRect: backgroundRect, xRadius: 12, yRadius: 12)
+        let path = NSBezierPath(roundedRect: backgroundRect, xRadius: 8, yRadius: 8)
         NSColor.clear.setFill()
         path.fill()
     }

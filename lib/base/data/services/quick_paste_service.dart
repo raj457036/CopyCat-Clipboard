@@ -13,8 +13,6 @@ import 'package:path/path.dart' as p;
 import 'package:quick_paste_popup/quick_paste_popup.dart';
 
 /// Service to manage quick paste popup functionality.
-/// Fetches items directly from the local DB so it works correctly when the
-/// app is in the background (where the in-memory cubit list is cleared).
 @singleton
 class QuickPasteService {
   final AppConfigCubit appConfigCubit;
@@ -32,30 +30,79 @@ class QuickPasteService {
     this.focusWindow,
   );
 
-  /// Fetch the top [limit] clipboard items directly from the local DB,
-  /// sorted by modified descending. Returns both the domain items and their
-  /// DTOs so callers can look up the selected item without a second DB hit.
   Future<(List<ClipboardItem>, List<ClipboardItemDto>)> getTopItems({
     int limit = 10,
   }) async {
     try {
-      final result = await repo.getList(
-        limit: limit,
-        offset: 0,
-        order: SortOrder.desc,
-        sortBy: ClipboardSortKey.modified,
-      );
-      final items = result.fold((_) => <ClipboardItem>[], (r) => r.results);
-      if (items.isEmpty) return (items, <ClipboardItemDto>[]);
-      final dtos = await Future.wait(items.map(_convertToDto));
+      final pastableItems = <ClipboardItem>[];
+      var totalFetched = 0;
+      var offset = 0;
+      final pageSize = limit.clamp(10, 50);
+      const maxRowsToScan = 200;
+
+      while (pastableItems.length < limit && totalFetched < maxRowsToScan) {
+        final result = await repo.getList(
+          limit: pageSize,
+          offset: offset,
+          order: SortOrder.desc,
+          sortBy: ClipboardSortKey.modified,
+          encrypted: false,
+        );
+
+        final items = result.fold((_) => <ClipboardItem>[], (r) => r.results);
+        if (items.isEmpty) {
+          break;
+        }
+
+        totalFetched += items.length;
+        offset += items.length;
+
+        for (final item in items) {
+          if (item.inCache && !item.encrypted && _canBePasted(item)) {
+            pastableItems.add(item);
+            if (pastableItems.length >= limit) {
+              break;
+            }
+          }
+        }
+
+        if (items.length < pageSize) {
+          break;
+        }
+      }
+
+      if (pastableItems.length > limit) {
+        pastableItems.removeRange(limit, pastableItems.length);
+      }
+
+      if (pastableItems.isEmpty) return (pastableItems, <ClipboardItemDto>[]);
+      final dtos = await Future.wait(pastableItems.map(_convertToDto));
       debugPrint(
-        '[QuickPasteService] Fetched ${items.length} items from DB for quick paste',
+        '[QuickPasteService] Scanned $totalFetched items, ${pastableItems.length} are pastable for quick paste',
       );
-      return (items, dtos);
+      return (pastableItems, dtos);
     } catch (e) {
       debugPrint('[QuickPasteService] getTopItems error: $e');
       return (<ClipboardItem>[], <ClipboardItemDto>[]);
     }
+  }
+
+  /// Check if an item has content that can be pasted
+  bool _canBePasted(ClipboardItem item) {
+    if (item.type == ClipItemType.text) {
+      return (item.text?.trim().isNotEmpty ?? false) ||
+          (item.richData?.trim().isNotEmpty ?? false);
+    }
+
+    if (item.type == ClipItemType.url) {
+      return item.url?.trim().isNotEmpty ?? false;
+    }
+
+    if (item.localPath?.trim().isNotEmpty ?? false) {
+      return true;
+    }
+
+    return false;
   }
 
   /// Show the quick paste popup with the top items
@@ -125,7 +172,9 @@ class QuickPasteService {
     required List<ClipboardItem> clipItems,
     required int? targetWindowId,
   }) async {
-    final selectedItem = clipItems.where((e) => e.id?.toString() == selectedItemId).firstOrNull;
+    final selectedItem = clipItems
+        .where((e) => e.id?.toString() == selectedItemId)
+        .firstOrNull;
     if (selectedItem == null) {
       return 'Selected item no longer exists';
     }
@@ -167,7 +216,6 @@ class QuickPasteService {
     await focusWindow.pasteContent();
     return null;
   }
-
 
   bool _shouldUseDirectInsert(ClipboardItem item) {
     if (!item.isTextType) {
