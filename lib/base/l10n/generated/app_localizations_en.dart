@@ -1892,14 +1892,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get abc__other_setting__title => 'Other Settings';
 
   @override
-  String get abc__enhanced_clip_detection__title =>
-      'Enhanced Clipboard Detection';
-
-  @override
-  String get abc__enhanced_clip_detection__subtitle =>
-      'Enable this option for more accurate clipboard detection. Note that it might not work on every device.';
-
-  @override
   String get abc__tile__two_way_sync__title => '2-Way Sync';
 
   @override

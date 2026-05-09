@@ -8,6 +8,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.ClipDescription
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -19,11 +20,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.PowerManager
+import android.os.SystemClock
 import android.util.Log
-import android.view.WindowManager
 import android.view.textclassifier.TextClassifier
 import android.view.textclassifier.TextLinks
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -47,15 +47,20 @@ enum class ClipAction {
 }
 
 class CopyCatClipboardService : Service() {
-    private lateinit var clipboardManager: ClipboardManager;
-    private lateinit var notificationManager: NotificationManager;
-    lateinit var copycatStorage: CopyCatSharedStorage;
-    private lateinit var windowManager: WindowManager
+    private lateinit var clipboardManager: ClipboardManager
+    private lateinit var notificationManager: NotificationManager
+    lateinit var copycatStorage: CopyCatSharedStorage
     private val notificationId: Int = 1
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private var lastCopiedText: String? = null
-
-    private var overlayLayout: LinearLayout? = null
+    private var lastClipFingerprint: String? = null
+    private var lastClipCapturedAtMs: Long = 0L
+    private val mainHandler by lazy { Handler(mainLooper) }
+    private val pasteActionDelayMs = 1000L
+    private val delayedPasteRunnable = Runnable {
+        disableDuplicateAnnouncement = true
+        performClipboardRead("")
+    }
     
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -85,7 +90,7 @@ class CopyCatClipboardService : Service() {
     }
 
     // Disable duplicate announcement for one read cycle
-    var disableDuplicateAnnouncement: Boolean = false;
+    var disableDuplicateAnnouncement: Boolean = false
 
     private val ackToastEnable: Boolean
         get() = copycatStorage.showAckToast
@@ -115,6 +120,42 @@ class CopyCatClipboardService : Service() {
     }
 
     fun performClipboardRead(appPackageName: String) {
+        performClipboardReadFromClipData(clipboardManager.primaryClip, appPackageName)
+    }
+
+    fun writeToClipboard(data: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Mark this as already handled so listener does not re-capture and re-sync it.
+            markCaptured(buildClipFingerprint(data, ClipType.Text))
+            lastCopiedText = data
+            val clip = ClipData.newPlainText("CopyCat", data)
+            clipboardManager.setPrimaryClip(clip)
+        }
+    }
+
+    private fun buildClipFingerprint(text: String, type: ClipType): String {
+        return "$type::$text"
+    }
+
+    private fun markCaptured(fingerprint: String) {
+        lastClipFingerprint = fingerprint
+        lastClipCapturedAtMs = SystemClock.elapsedRealtime()
+    }
+
+    private fun isDuplicateBurst(fingerprint: String): Boolean {
+        val now = SystemClock.elapsedRealtime()
+        val duplicateWindowMs = when (copycatStorage.detectionMode) {
+            ClipboardDetectionMode.MODE_1_ACK_TEXT -> 900L
+            ClipboardDetectionMode.MODE_2_AGGRESSIVE -> 1800L
+            ClipboardDetectionMode.MODE_3_SEQUENCE -> 1300L
+            ClipboardDetectionMode.MODE_4_OVERLAY -> 700L
+        }
+
+        return lastClipFingerprint == fingerprint &&
+            now - lastClipCapturedAtMs < duplicateWindowMs
+    }
+
+    fun performClipboardReadFromClipData(clipData: ClipData?, appPackageName: String) {
         if (!isScreenOn()) {
             Log.d(logTag, "Clipboard capture paused: screen is off")
             return
@@ -125,7 +166,6 @@ class CopyCatClipboardService : Service() {
             Log.w(logTag, "Service not configured")
             return
         }
-        // Checking package exclusion
         val excluded =
             (copycatStorage.excludePasswordManagers && copycatStorage.passwordManagers.contains(
                 appPackageName
@@ -133,27 +173,12 @@ class CopyCatClipboardService : Service() {
         if (excluded) {
             Log.i(logTag, "$appPackageName is excluded by exclusion rules.")
             if (!disableDuplicateAnnouncement) {
-                showAck("Clip Excluded!");
+                showAck("Clip Excluded!")
             }
             return
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getFocusOnOverlay()
-            readClipboard()
-            removeFocusOnOverlay()
-        }
-    }
-
-    fun writeToClipboard(data: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Mark this as already handled so listener does not re-capture and re-sync it.
-            lastCopiedText = data
-            getFocusOnOverlay()
-            val clip = ClipData.newPlainText("CopyCat", data)
-            clipboardManager.setPrimaryClip(clip)
-            removeFocusOnOverlay()
-        }
+        readClipboard(clipData)
     }
 
     private fun readUriClip(uri: Uri, label: String? = null): ClipAction {
@@ -161,7 +186,7 @@ class CopyCatClipboardService : Service() {
             "content" -> {
                 // Media or File!
                 try {
-                    contentResolver.openInputStream(uri)?.use { inputStream ->
+                    contentResolver.openInputStream(uri)?.use { _ ->
                         // Process the stream if needed
                     }
                     ClipAction.Success
@@ -213,19 +238,20 @@ class CopyCatClipboardService : Service() {
         type: ClipType,
         label: String? = null
     ): ClipAction {
-        if (lastCopiedText == text) {
+        val fingerprint = buildClipFingerprint(text, type)
+        if (isDuplicateBurst(fingerprint)) {
             Log.d(logTag, "Detected duplicate item")
             return ClipAction.Duplicate
         }
+
+        markCaptured(fingerprint)
         lastCopiedText = text
         copycatStorage.writeTextClip(text, type, label ?: "")
-        disableDuplicateAnnouncement = false;
+        disableDuplicateAnnouncement = false
         return ClipAction.Success
     }
 
-    private fun readClipboard() {
-        val clipData = clipboardManager.primaryClip
-
+    private fun readClipboard(clipData: ClipData?) {
         serviceScope.launch(Dispatchers.IO) {
             var actionStatus: ClipAction = ClipAction.Pending
 
@@ -299,41 +325,6 @@ class CopyCatClipboardService : Service() {
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 
-    private fun removeFocusOnOverlay() {
-        overlayLayout?.let {
-            try {
-                windowManager.removeView(it)
-            } catch (e: Exception) {
-                Log.w(logTag, "Failed to remove overlay: ${e.message}")
-            }
-        }
-        overlayLayout = null
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getFocusOnOverlay() {
-        // Initialize the WindowManager to add the overlay
-        windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-
-        // Create the overlay layout
-        overlayLayout = LinearLayout(this)
-        overlayLayout?.alpha = 0.8f
-        val color = ContextCompat.getColor(this, android.R.color.transparent)
-        overlayLayout?.setBackgroundColor(color)
-        overlayLayout?.orientation = LinearLayout.VERTICAL
-        overlayLayout?.layoutParams = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,  // For Android O and above
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE or
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-            android.graphics.PixelFormat.TRANSPARENT
-        )
-
-        // Add overlay to the window
-        windowManager.addView(overlayLayout, overlayLayout?.layoutParams)
-    }
-
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -397,11 +388,7 @@ class CopyCatClipboardService : Service() {
             return@OnPrimaryClipChangedListener
         }
         Log.d(logTag, "Reading Primary Clipboard")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getFocusOnOverlay()
-            readClipboard()
-            removeFocusOnOverlay()
-        }
+        readClipboard(clipboardManager.primaryClip)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -448,13 +435,13 @@ class CopyCatClipboardService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        (application as? Application)?.registerActivityLifecycleCallbacks(appLifecycleCallbacks)
+        application.registerActivityLifecycleCallbacks(appLifecycleCallbacks)
         copycatStorage = CopyCatSharedStorage.getInstance(this)
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         copycatStorage.start()
         copycatStorage.setRemoteClipApplier { content ->
-            Handler(mainLooper).post {
+            mainHandler.post {
                 disableDuplicateAnnouncement = true
                 writeToClipboard(content)
             }
@@ -483,18 +470,14 @@ class CopyCatClipboardService : Service() {
             "RESTART_SERVICE" -> {
                 Log.d(logTag, "Service restart requested")
                 // Just ensure notification is showing, don't call onCreate
-                prepareAndShowNotification();
+                prepareAndShowNotification()
                 if (!isRunning) {
                     isRunning = true
                 }
             }
             "PASTE_ACTION" -> {
-                val delayMills = 1000L;
-                val handler = android.os.Handler(mainLooper)
-                handler.postDelayed({
-                    disableDuplicateAnnouncement = true;
-                    performClipboardRead("");
-                }, delayMills)
+                        mainHandler.removeCallbacks(delayedPasteRunnable)
+                        mainHandler.postDelayed(delayedPasteRunnable, pasteActionDelayMs)
             }
         }
         return START_STICKY
@@ -505,7 +488,8 @@ class CopyCatClipboardService : Service() {
     override fun onDestroy() {
         // Cancel all coroutines
         serviceScope.cancel()
-        (application as? Application)?.unregisterActivityLifecycleCallbacks(appLifecycleCallbacks)
+        mainHandler.removeCallbacksAndMessages(null)
+        application.unregisterActivityLifecycleCallbacks(appLifecycleCallbacks)
         
         clipboardManager.removePrimaryClipChangedListener(onClipChangeListener)
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
@@ -515,8 +499,9 @@ class CopyCatClipboardService : Service() {
         copycatStorage.clean()
         
         // Clear references to prevent memory leaks
-        overlayLayout = null
         lastCopiedText = null
+        lastClipFingerprint = null
+        lastClipCapturedAtMs = 0L
         
         super.onDestroy()
     }

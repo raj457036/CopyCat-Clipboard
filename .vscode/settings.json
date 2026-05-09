@@ -6,30 +6,21 @@
     "editor.defaultFormatter": "denoland.vscode-deno"
   },
   "deno.enable": true,
-  "cSpell.words": [
-    "cers",
-    "datetime",
-    "Ndrop"
-  ],
-  "cSpell.enableFiletypes": [
-    "!dart"
-  ],
+  "cSpell.words": ["cers", "datetime", "Ndrop"],
+  "cSpell.enableFiletypes": ["!dart"],
   "csv-preview.separator": ";",
   "csv-preview.resizeColumns": "all",
   "csv-preview.lineNumbers": "ordinal",
   "todohighlight.keywordsPattern": "\"@@[A-Z_]+\":.*",
-  "todohighlight.include": [
-    "*.arb"
-  ],
+  "todohighlight.include": ["*.arb"],
   "todohighlight.isEnable": true,
   "todohighlight.defaultStyle": {
     "color": "#101820",
     "backgroundColor": "#FEE715"
   },
-  "arb-editor.suppressedWarnings": [
-    "missing_metadata_for_key",
-  ],
+  "arb-editor.suppressedWarnings": ["missing_metadata_for_key"],
   "chat.tools.terminal.autoApprove": {
-    "flutter": true
+    "flutter": true,
+    "./gradlew": true
   }
 }

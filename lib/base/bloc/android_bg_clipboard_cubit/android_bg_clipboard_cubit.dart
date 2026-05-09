@@ -8,7 +8,6 @@ import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/failure.dart';
-import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -109,23 +108,39 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
     try {
       final endMark = await plugin.readShared<int>("endId") ?? -1;
       if (endMark == -1) return;
-      final deleteKeys = <String>[];
-      for (var i = 0; i < endMark + 1; i++) {
-        final clipKey = "Clip-$i";
-        final clip = await plugin.readShared<Map?>(clipKey);
 
-        if (clip != null && clip.isNotEmpty) {
+      const batchSize = 100;
+      final deleteKeys = <String>[];
+      final seenKeys = <String>{};
+
+      for (var start = 0; start <= endMark; start += batchSize) {
+        final end = (start + batchSize - 1 > endMark)
+            ? endMark
+            : start + batchSize - 1;
+        final clips = await plugin.readClipsBatch(start, end);
+
+        for (final clip in clips) {
+          if (clip.isEmpty) continue;
+
+          final clipKey = clip['id'] as String?;
+          if (clipKey == null || clipKey.isEmpty) continue;
+
+          seenKeys.add(clipKey);
           final clipItem = parseClip(clip);
           final success = await writeToLocal(clipItem);
           if (success) {
             deleteKeys.add(clipKey);
           }
-        } else {
+        }
+      }
+
+      for (var i = 0; i < endMark + 1; i++) {
+        final clipKey = "Clip-$i";
+        if (!seenKeys.contains(clipKey)) {
           deleteKeys.add(clipKey);
         }
-
-        logger.w("Clip: $clip");
       }
+
       await plugin.writeShared("endId", -1);
       await plugin.deleteShared(deleteKeys);
     } finally {

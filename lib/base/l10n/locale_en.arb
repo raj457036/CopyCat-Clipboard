@@ -401,8 +401,12 @@
   "sync_restore__decrypting_progress": "Decrypted {decrypted} of {total}",
   "@sync_restore__decrypting_progress": {
     "placeholders": {
-      "decrypted": { "type": "int" },
-      "total": { "type": "int" }
+      "decrypted": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "sync_restore__workspace_restored": "Workspace restored",
@@ -745,8 +749,6 @@
   "abc__accessibility_perm_alert__p5_suffix": " (if enabled) in transit and at rest, ensuring privacy across devices.",
   "abc__accessibility_perm_alert__agree": "By enabling the Accessibility Service, you acknowledge and agree to the above terms.",
   "abc__other_setting__title": "Other Settings",
-  "abc__enhanced_clip_detection__title": "Enhanced Clipboard Detection",
-  "abc__enhanced_clip_detection__subtitle": "Enable this option for more accurate clipboard detection. Note that it might not work on every device.",
   "abc__tile__two_way_sync__title": "2-Way Sync",
   "abc__tile__two_way_sync__subtitle": "Keeps your clipboard synced across devices instantly.\n{warning}",
   "@abc__tile__two_way_sync__subtitle": {

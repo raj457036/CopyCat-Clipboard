@@ -1,11 +1,35 @@
 group = "com.entilitystudio.android_background_clipboard"
 version = "1.0-SNAPSHOT"
 
+def localProperties = new Properties()
+def localPropertiesCandidates = [
+    rootProject.file("local.properties"),
+    rootProject.file("../../../android/local.properties"),
+]
+def localPropertiesFile = localPropertiesCandidates.find { it.exists() }
+if (localPropertiesFile != null) {
+    localPropertiesFile.withReader("UTF-8") { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterSdkPath = System.getenv("FLUTTER_ROOT") ?: localProperties.getProperty("flutter.sdk")
+if (flutterSdkPath == null) {
+    throw new RuntimeException("Flutter SDK not found. Set FLUTTER_ROOT or define flutter.sdk in android/local.properties")
+}
+
+def engineVersionFile = new File(flutterSdkPath, "bin/internal/engine.version")
+if (!engineVersionFile.exists()) {
+    throw new RuntimeException("Unable to locate engine.version at ${engineVersionFile.path}")
+}
+def flutterEmbeddingVersion = "1.0.0-${engineVersionFile.text.trim()}"
+
 buildscript {
     ext.kotlin_version = "1.9.23"
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://storage.googleapis.com/download.flutter.io' }
     }
 
     dependencies {
@@ -18,6 +42,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://storage.googleapis.com/download.flutter.io' }
     }
 }
 
@@ -38,6 +63,7 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs += ["-Xskip-metadata-version-check"]
     }
 
     sourceSets {
@@ -73,4 +99,6 @@ dependencies {
     implementation "androidx.annotation:annotation:1.9.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2"
     implementation "androidx.core:core-ktx:1.17.0"
+    debugImplementation "io.flutter:flutter_embedding_debug:${flutterEmbeddingVersion}"
+    releaseImplementation "io.flutter:flutter_embedding_release:${flutterEmbeddingVersion}"
 }

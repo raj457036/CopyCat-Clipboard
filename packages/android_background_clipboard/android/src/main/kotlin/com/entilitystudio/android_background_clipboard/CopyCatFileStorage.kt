@@ -78,9 +78,18 @@ class CopyCatFileStorage(private val context: Context) {
         val pruneCount = clipsByTimestamp.size - maxCachedClips
         clipsByTimestamp.take(pruneCount).forEach { (clipFile, _, clipId) ->
             ensureServerIdIndexLoaded()
-            serverIdIndex?.entries?.removeIf { it.value == clipId }
+            removeServerIdForClipId(clipId)
             if (!clipFile.delete()) {
                 Log.w(logTag, "Failed to prune clip file $clipId")
+            }
+        }
+    }
+
+    private fun removeServerIdForClipId(clipId: String) {
+        val iterator = serverIdIndex?.entries?.iterator() ?: return
+        while (iterator.hasNext()) {
+            if (iterator.next().value == clipId) {
+                iterator.remove()
             }
         }
     }
@@ -190,7 +199,7 @@ class CopyCatFileStorage(private val context: Context) {
             val clipFile = File(storageDir, "$clipId.txt")
             if (clipFile.exists()) {
                 ensureServerIdIndexLoaded()
-                serverIdIndex?.entries?.removeIf { it.value == clipId }
+                removeServerIdForClipId(clipId)
                 val deleted = clipFile.delete()
                 if (deleted) {
                     Log.d(logTag, "Deleted clip file $clipId")

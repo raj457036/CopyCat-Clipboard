@@ -8,9 +8,9 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/settings/pages/android_bg_clipboard/accessibility_service_notice.dart';
-import 'package:clipboard/pages/settings/pages/android_bg_clipboard/draw_over_other_app_notice.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
 import 'package:clipboard/widgets/subscription/subscription_builder.dart';
+import 'package:clipboard/widgets/settings_menu_dropdown.dart';
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/widgets/badges.dart';
@@ -49,11 +49,21 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   bool isRunning = false;
   // required permissions
   bool notification = false;
-  bool overlay = false;
   bool batteryOptimization = false;
   bool accessibility = false;
-  bool strictCheck = true;
   bool enable = false;
+
+  String _selectedMode = "mode_1_ack_text"; // Default mode
+  final List<(String, String)> _detectionModes = const [
+    ("mode_1_ack_text", "Mode 1"),
+    ("mode_2_aggressive", "Mode 2"),
+  ];
+
+  String _normalizeDetectionMode(String? mode) {
+    final value = (mode ?? '').trim();
+    final supported = _detectionModes.any((entry) => entry.$1 == value);
+    return supported ? value : _detectionModes.first.$1;
+  }
 
   @override
   void initState() {
@@ -99,13 +109,17 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     });
 
     notification = await widget.bgService.isNotificationPermissionGranted();
-    overlay = await widget.bgService.isOverlayPermissionGranted();
     batteryOptimization = !await widget.bgService
         .isBatteryOptimizationEnabled();
     accessibility = await widget.bgService.isAccessibilityPermissionGranted();
     isRunning = await widget.bgService.isServiceRunning();
-    strictCheck =
-        await widget.bgService.readShared<bool>("strictCheck") ?? true;
+    final storedMode = await widget.bgService.readShared<String>(
+      "detectionMode",
+    );
+    _selectedMode = _normalizeDetectionMode(storedMode);
+    if (storedMode != _selectedMode) {
+      await widget.bgService.setDetectionMode(_selectedMode);
+    }
 
     setState(() {
       loading = false;
@@ -114,17 +128,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
 
   Future<void> openNotificationSetting() async {
     await widget.bgService.requestNotificationPermission();
-  }
-
-  Future<void> openOverlaySetting() async {
-    if (!overlay) {
-      final agree = await const DrawOverOtherAppNotice().show(context);
-
-      if (!agree) {
-        return;
-      }
-    }
-    await widget.bgService.requestOverlayPermission();
   }
 
   Future<void> openBatteryOptimizationSetting() async {
@@ -141,16 +144,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     }
 
     await widget.bgService.openAccessibilityService();
-  }
-
-  Future<void> changeStrictCheck(bool value) async {
-    final success = await widget.bgService.writeShared("strictCheck", value);
-
-    if (!success) return;
-
-    setState(() {
-      strictCheck = value;
-    });
   }
 
   bool _syncMode = false;
@@ -248,9 +241,27 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     });
   }
 
+  Future<void> _onModeChanged(String? newMode) async {
+    if (newMode == null) return;
+
+    setState(() {
+      _selectedMode = newMode;
+    });
+
+    try {
+      await widget.bgService.setDetectionMode(newMode);
+      showTextSnackbar("Detection mode updated", success: true);
+    } catch (e) {
+      logger.e("Failed to update detection mode: $e");
+      showTextSnackbar("Failed to update detection mode", failure: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLight = context.theme.brightness == Brightness.light;
+    final textTheme = context.textTheme;
+    final colors = context.colors;
     Widget child = const Center(child: CircularProgressIndicator());
 
     if (!loading) {
@@ -290,28 +301,37 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                 : (_) => openBatteryOptimizationSetting(),
           ),
           SwitchListTile(
-            title: Text(context.locale.abc__tile__overlay_title),
-            subtitle: Text(context.locale.abc__tile__overlay_subtitle),
-            value: overlay,
-            enableFeedback: true,
-            thumbIcon: overlay ? checked : unchecked,
-            onChanged: writingConfig || !notification
-                ? null
-                : (_) => openOverlaySetting(),
-          ),
-          SwitchListTile(
             title: Text(context.locale.abc__tile__acc_title),
             subtitle: Text(context.locale.abc__tile__acc_subtitle),
             value: accessibility,
             enableFeedback: true,
             thumbIcon: accessibility ? checked : unchecked,
-            onChanged:
-                writingConfig ||
-                    !notification ||
-                    !overlay ||
-                    !batteryOptimization
+            onChanged: writingConfig || !notification || !batteryOptimization
                 ? null
                 : (_) => openAccessibilitySetting(),
+          ),
+          height5,
+          ListTile(
+            title: const Text("Detection Mode"),
+            subtitle: Text(
+              "Choose how CopyCat detects copy actions in other apps. "
+              "Try different modes to see which one works best with your device.",
+              style: textTheme.bodyMedium?.copyWith(color: colors.outline),
+            ),
+            trailing: SettingsMenuDropdown<String>(
+              value: _normalizeDetectionMode(_selectedMode),
+              maxWidth: 220,
+              items: _detectionModes
+                  .map((mode) => SettingsDropdownItem(value: mode.$1))
+                  .toList(),
+              itemBuilder: (context, value) {
+                final label = _detectionModes
+                    .firstWhere((mode) => mode.$1 == value)
+                    .$2;
+                return (leading: null, child: Text(label), trailing: null);
+              },
+              onSelected: writingConfig ? null : _onModeChanged,
+            ),
           ),
           height5,
           HasAccessToFeature(
@@ -346,25 +366,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
               );
             },
           ),
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            initiallyExpanded: true,
-            title: SettingHeader(
-              name: context.locale.abc__other_setting__title,
-            ),
-            children: [
-              SwitchListTile(
-                title: Text(context.locale.abc__enhanced_clip_detection__title),
-                subtitle: Text(
-                  context.locale.abc__enhanced_clip_detection__subtitle,
-                ),
-                value: strictCheck,
-                enableFeedback: true,
-                thumbIcon: strictCheck ? checked : unchecked,
-                onChanged: changeStrictCheck,
-              ),
-            ],
-          ),
         ],
       );
     }
@@ -372,7 +373,11 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     return PopScope(
       canPop: !writingConfig,
       child: Scaffold(
-        appBar: AppBar(title: Text(context.locale.abc_title)),
+        appBar: AppBar(
+          title: Text(context.locale.abc_title),
+          scrolledUnderElevation: 0.0,
+          backgroundColor: context.colors.surface,
+        ),
         body: child,
       ),
     );

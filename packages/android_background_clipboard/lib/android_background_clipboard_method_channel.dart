@@ -88,6 +88,26 @@ class MethodChannelAndroidBackgroundClipboard
   }
 
   @override
+  Future<List<Map<Object?, Object?>>> readClipsBatch(
+    int start,
+    int end,
+  ) async {
+    final result = await methodChannel.invokeMethod<List<dynamic>>(
+      'readClipsBatch',
+      {
+        'start': start,
+        'end': end,
+      },
+    );
+    if (result == null) return const [];
+
+    return result
+        .whereType<Map>()
+        .map((clip) => Map<Object?, Object?>.from(clip))
+        .toList();
+  }
+
+  @override
   Future<bool> writeShared<T>(
     String key,
     T value, {
@@ -114,5 +134,14 @@ class MethodChannelAndroidBackgroundClipboard
   @override
   Future<void> clearStorage() async {
     await methodChannel.invokeMethod("clearStorage");
+  }
+
+  @override
+  Future<void> setDetectionMode(String mode) async {
+    await methodChannel.invokeMethod<void>('writeShared', {
+      'key': 'detectionMode',
+      'value': mode,
+      'secure': false,
+    });
   }
 }

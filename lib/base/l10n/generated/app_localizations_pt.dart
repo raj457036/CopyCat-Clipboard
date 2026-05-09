@@ -1923,14 +1923,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String get abc__other_setting__title => 'Outras configurações';
 
   @override
-  String get abc__enhanced_clip_detection__title =>
-      'Detecção aprimorada da área de transferência';
-
-  @override
-  String get abc__enhanced_clip_detection__subtitle =>
-      'Ative esta opção para uma detecção mais precisa da área de transferência. Note que ela pode não funcionar em todos os dispositivos.';
-
-  @override
   String get abc__tile__two_way_sync__title => '2-Way Sync';
 
   @override

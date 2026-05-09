@@ -1910,14 +1910,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get abc__other_setting__title => 'Autres paramètres';
 
   @override
-  String get abc__enhanced_clip_detection__title =>
-      'Détection améliorée du presse-papiers';
-
-  @override
-  String get abc__enhanced_clip_detection__subtitle =>
-      'Activez cette option pour une détection plus précise du presse-papiers. Notez qu\'elle pourrait ne pas fonctionner sur tous les appareils.';
-
-  @override
   String get abc__tile__two_way_sync__title => '2-Way Sync';
 
   @override

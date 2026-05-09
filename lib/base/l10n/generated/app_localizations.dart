@@ -3409,18 +3409,6 @@ abstract class AppLocalizations {
   /// **'Other Settings'**
   String get abc__other_setting__title;
 
-  /// No description provided for @abc__enhanced_clip_detection__title.
-  ///
-  /// In en, this message translates to:
-  /// **'Enhanced Clipboard Detection'**
-  String get abc__enhanced_clip_detection__title;
-
-  /// No description provided for @abc__enhanced_clip_detection__subtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Enable this option for more accurate clipboard detection. Note that it might not work on every device.'**
-  String get abc__enhanced_clip_detection__subtitle;
-
   /// No description provided for @abc__tile__two_way_sync__title.
   ///
   /// In en, this message translates to:

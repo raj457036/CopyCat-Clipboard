@@ -54,6 +54,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     var excludeEmail: Boolean = false
     var excludePhone: Boolean = false
     var useEncryptionNonce: Boolean = false
+    var detectionMode: ClipboardDetectionMode = ClipboardDetectionMode.MODE_1_ACK_TEXT
     private var remoteClipApplier: ((String) -> Unit)? = null
 //    For Future Use
     var autoCopyOtp: Boolean = false
@@ -124,6 +125,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         }
         if (key == "useEncryptionNonce") {
             useEncryptionNonce = sharedPreferences.getBoolean(key, false)
+        }
+        if (key == "detectionMode") {
+            val modeValue = sharedPreferences.getString(key, ClipboardDetectionMode.MODE_1_ACK_TEXT.value) ?: ClipboardDetectionMode.MODE_1_ACK_TEXT.value
+            detectionMode = ClipboardDetectionMode.fromString(modeValue) ?: ClipboardDetectionMode.MODE_1_ACK_TEXT
+            Log.d(logTag, "Detection mode changed to: ${detectionMode.value}")
         }
         if (key == "projectKey") {
             readSecure(key)?.let {
@@ -236,6 +242,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         excludeEmail = sp.getBoolean("exclude-email", false)
         excludePhone = sp.getBoolean("exclude-phone", false)
         useEncryptionNonce = sp.getBoolean("useEncryptionNonce", false)
+        
+        val modeValue = sp.getString("detectionMode", ClipboardDetectionMode.MODE_1_ACK_TEXT.value) ?: ClipboardDetectionMode.MODE_1_ACK_TEXT.value
+        detectionMode = ClipboardDetectionMode.fromString(modeValue) ?: ClipboardDetectionMode.MODE_1_ACK_TEXT
 
         readSecure("projectKey")?.let {
             syncManager.projectKey = it
@@ -307,6 +316,25 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     fun readClip(key: String): CopyCatFileStorage.ClipData? {
         Log.d(logTag, "Reading clip $key from file storage")
         return fileStorage.readClipItem(key)
+    }
+
+    fun readAllClips(): List<CopyCatFileStorage.ClipData> {
+        return fileStorage.readAllClips()
+    }
+
+    fun readClipBatch(startInclusive: Int, endInclusive: Int): List<CopyCatFileStorage.ClipData> {
+        if (startInclusive > endInclusive) return emptyList()
+
+        val clips = mutableListOf<CopyCatFileStorage.ClipData>()
+        for (index in startInclusive..endInclusive) {
+            val clipId = "Clip-$index"
+            val clip = fileStorage.readClipItem(clipId)
+            if (clip != null) {
+                clips.add(clip)
+            }
+        }
+
+        return clips
     }
 
     fun writeTextClip(text: String, type: ClipType, label: String = "") {
@@ -416,6 +444,15 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
     fun setRemoteClipApplier(applier: ((String) -> Unit)?) {
         remoteClipApplier = applier
+    }
+
+    fun getDetectionStrategy(): ClipboardDetectionStrategy {
+        return when (detectionMode) {
+            ClipboardDetectionMode.MODE_1_ACK_TEXT -> Mode1AckTextStrategy()
+            ClipboardDetectionMode.MODE_2_AGGRESSIVE -> Mode2AggressiveStrategy()
+            ClipboardDetectionMode.MODE_3_SEQUENCE -> Mode1AckTextStrategy() // Placeholder
+            ClipboardDetectionMode.MODE_4_OVERLAY -> Mode1AckTextStrategy() // Placeholder
+        }
     }
 
     private fun decryptRemoteContent(clip: RemoteClipPayload): String? {

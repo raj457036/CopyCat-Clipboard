@@ -1909,14 +1909,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get abc__other_setting__title => 'Otras configuraciones';
 
   @override
-  String get abc__enhanced_clip_detection__title =>
-      'Detección mejorada del portapapeles';
-
-  @override
-  String get abc__enhanced_clip_detection__subtitle =>
-      'Habilite esta opción para una detección del portapapeles más precisa. Tenga en cuenta que podría no funcionar en todos los dispositivos.';
-
-  @override
   String get abc__tile__two_way_sync__title => '2-Way Sync';
 
   @override
