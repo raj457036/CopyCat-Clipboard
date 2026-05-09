@@ -256,7 +256,8 @@ class CopyToClipboard {
     }
   }
 
-  bool writeText(String text) {
+  Future<bool> writeText(String text) async {
+    if (text.isEmpty) return false;
     final item = DataWriterItem(suggestedName: "Text");
     item.add(Formats.plainText(text));
     _items.add(item);
@@ -265,19 +266,20 @@ class CopyToClipboard {
 
   /// Writes rich text + plain text when rich data is available and [mode]
   /// allows it; falls back to plain text otherwise.
-  bool writeRichText(
+  Future<bool> writeRichText(
     ClipboardService service, {
     required String text,
     String? richData,
     TextPasteFormat mode = TextPasteFormat.auto,
-  }) {
-    return service.writeRichTextIfAvailable(
-          _items,
-          text: text,
-          richData: richData,
-          mode: mode,
-        ) ||
-        writeText(text);
+  }) async {
+    final success = service.writeRichTextIfAvailable(
+      _items,
+      text: text,
+      richData: richData,
+      mode: mode,
+    );
+    if (!success) return await writeText(text);
+    return success;
   }
 
   bool writeUrl(Uri? uri) {

@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
 class CustomOutput extends LogOutput {
-  late final LogOutput _output;
+  LogOutput _output = ConsoleOutput();
 
   @override
   Future<void> init() async {

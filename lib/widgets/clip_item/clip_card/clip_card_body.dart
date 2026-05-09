@@ -3,7 +3,6 @@ import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistanc
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
@@ -28,14 +27,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universal_io/io.dart';
 
 class ClipCardBodyContent extends StatelessWidget {
-  final bool hovered;
-  final bool canPaste;
+  /// If true, the card will be rendered in a simplified way without
+  /// loading other interactives.
+  final bool liteMode;
 
-  const ClipCardBodyContent({
-    super.key,
-    this.hovered = false,
-    this.canPaste = false,
-  });
+  const ClipCardBodyContent({super.key, this.liteMode = false});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +40,7 @@ class ClipCardBodyContent extends StatelessWidget {
     final child = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ClipCardOptionsHeader(hasFocusForPaste: canPaste, hovered: hovered),
+        const ClipCardOptionsHeader(),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -63,17 +59,14 @@ class ClipCardBodyContent extends StatelessWidget {
                     style: textTheme.titleSmall?.copyWith(
                       fontVariations: fontVarW700,
                     ),
-                    maxLines: 2,
+                    maxLines: 1,
                   ),
                 ),
-
-              Expanded(
-                child: ClipPreview(item: item, layout: AppLayout.grid),
-              ),
+              Expanded(child: ClipPreview(item: item)),
             ],
           ),
         ),
-        const _SyncStatusFooter(),
+        if (!liteMode) const _SyncStatusFooter(),
       ],
     );
 
@@ -198,22 +191,20 @@ class _ClipCardBodyState extends State<ClipCardBody> {
     final selectedShape = RoundedRectangleBorder(
       side: BorderSide(
         color: focused || widget.selected
-            ? colors.primary
+            ? focused
+                  ? colors.primary
+                  : colors.secondary
             : colors.outlineVariant,
-        width: focused
-            ? focusedGridItemBorderWidth
-            : widget.selected
-            ? selectedGridItemBorderWidth
-            : 1.0,
+        width: focused ? gridItemBorderWidth * 2 : gridItemBorderWidth,
         strokeAlign: BorderSide.strokeAlignInside,
       ),
-      borderRadius: radius12,
+      borderRadius: radius8,
     );
 
-    final cardContent = HoverStateBuilder(
+    final cardContent = HoverScopeProvider(
       builder: (context, hovered) => PasteChipSlideIn(
-        clipChild: ClipCardBodyContent(hovered: hovered, canPaste: canPaste),
         showPasteChip: hovered && canPaste,
+        child: const ClipCardBodyContent(),
       ),
     );
 
@@ -228,7 +219,6 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       onShiftSpaceEnter: (context) => onShiftEnter(context),
       onShiftC: (context) => onShiftC(context, widget.item),
       child: Card.outlined(
-        margin: EdgeInsets.zero,
         elevation: focused ? 2 : 0,
         shape: selectedShape,
         clipBehavior: Clip.hardEdge,

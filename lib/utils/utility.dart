@@ -246,6 +246,10 @@ String? cleanUpString(String? input) {
   // Remove other control characters (U+0001 to U+001F, U+007F), but allow newlines (\n) and carriage returns (\r)
   cleanedString = cleanedString.replaceAll(cleanUpStringRegex, '');
 
+  // Normalize newlines to \n to prevent issues in downstream
+  // processing and display.
+  cleanedString = cleanedString.replaceAll(RegExp('\r[\n]?'), '\n');
+
   return cleanedString;
 }
 

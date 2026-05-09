@@ -19,3 +19,7 @@ const allSupportedClipFormats = [...Formats.standardFormats, avif, svg];
 /// Note: 256 KB is chosen as a reasonable limit to allow rich
 /// clipboard data while preventing excessive memory usage.
 const kRichClipboardDataMaxBytes = 256 * 1024;
+
+/// Maximum allowed length for text clips. Clips with text longer than this
+/// will be saved as file clips instead to prevent performance issues.
+const kMaxTextClipLength = 4096;

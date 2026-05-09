@@ -15,6 +15,6 @@ class InBackgroundState extends InheritedWidget {
 
   @override
   bool updateShouldNotify(InBackgroundState oldWidget) {
-    return true;
+    return oldWidget.inBackground != inBackground;
   }
 }

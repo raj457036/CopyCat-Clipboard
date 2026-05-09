@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
@@ -230,7 +229,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     for (final item in items) {
       switch (item.type) {
         case ClipItemType.text:
-          copy.writeRichText(
+          await copy.writeRichText(
             clipboard,
             text: item.text ?? "",
             richData: item.richData,

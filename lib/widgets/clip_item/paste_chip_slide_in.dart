@@ -5,24 +5,24 @@ import 'package:flutter/material.dart';
 
 /// A widget that shows a paste chip sliding in from the bottom when [showPasteChip] is true.
 class PasteChipSlideIn extends StatelessWidget {
-  final Widget clipChild;
+  final Widget child;
   final bool showPasteChip;
   final bool isCentered;
 
   const PasteChipSlideIn({
     super.key,
-    required this.clipChild,
+    required this.child,
     required this.showPasteChip,
     this.isCentered = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (!isDesktopPlatform) return clipChild;
+    if (!isDesktopPlatform) return child;
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        clipChild,
+        child,
         Positioned(
           bottom: isCentered ? 0 : padding10,
           left: 0,

@@ -15,11 +15,11 @@ class ClipCollectionCreateEditPage extends StatelessWidget {
         ? context.locale.collections__appbar__title__create
         : context.locale.collections__appbar__title__edit;
 
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
+    final width = context.mq.size.width;
+    final height = context.mq.size.height;
 
     // Responsive sizing: use 90% of screen on mobile, 80% on tablet, fixed on desktop
-    final dialogWidth = width < 600
+    final dialogWidth = context.mq.isMobile || context.mq.isTablet
         ? width * 0.9
         : width < 1200
         ? width * 0.5
@@ -31,7 +31,7 @@ class ClipCollectionCreateEditPage extends StatelessWidget {
       ),
       child: Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: context.mq.size.width < 600,
+          automaticallyImplyLeading: context.mq.isMobile || context.mq.isTablet,
           title: FittedBox(child: Text(title)),
         ),
         body: SingleChildScrollView(

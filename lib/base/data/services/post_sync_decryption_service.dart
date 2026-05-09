@@ -1,3 +1,4 @@
+import 'package:clipboard/base/constants/misc.dart' show kMaxTextClipLength;
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:injectable/injectable.dart';
@@ -35,7 +36,7 @@ class PostSyncDecryptionService {
 
       for (final item in page.results) {
         // Skip very large text payloads to avoid long blocking decrypt work.
-        if ((item.text?.length ?? 0) > 4096) {
+        if ((item.text?.length ?? 0) > kMaxTextClipLength) {
           decrypted++;
           onProgress?.call(decrypted, total);
           continue;

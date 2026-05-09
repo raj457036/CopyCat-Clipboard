@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LeadingClipboardOption extends StatelessWidget {
-  final DateTime created;
   final bool hovered;
   final EdgeInsets? createdPadding;
   final EdgeInsets? padding;
@@ -19,7 +18,6 @@ class LeadingClipboardOption extends StatelessWidget {
     this.hovered = false,
     this.createdPadding,
     this.padding,
-    required this.created,
   });
 
   void toggleSelect(BuildContext context, bool selected) {
@@ -57,31 +55,27 @@ class LeadingClipboardOption extends StatelessWidget {
     if (hovered || selected) {
       return SizedBox.square(
         dimension: iconSize * 1.44,
-        child: Focus(
-          canRequestFocus: false,
-          descendantsAreTraversable: false,
-          child: IconButton(
-            isSelected: selected,
-            style: IconButton.styleFrom(padding: EdgeInsets.zero),
-            iconSize: iconSize,
-            tooltip: selected
-                ? "${context.locale.app__select} #$order"
-                : context.locale.app__select,
-            onPressed: () => toggleSelect(context, selected),
-            selectedIcon: _SelectionOrderBadge(
-              label: orderLabel,
-              compact: order > 99,
-              backgroundColor: colors.primary,
-              foregroundColor: colors.onPrimary,
-            ),
-            icon: const Icon(Icons.circle_outlined),
+        child: IconButton(
+          isSelected: selected,
+          style: IconButton.styleFrom(padding: EdgeInsets.zero),
+          iconSize: iconSize,
+          tooltip: selected
+              ? "${context.locale.app__select} #$order"
+              : context.locale.app__select,
+          onPressed: () => toggleSelect(context, selected),
+          selectedIcon: _SelectionOrderBadge(
+            label: orderLabel,
+            compact: order > 99,
+            backgroundColor: colors.primary,
+            foregroundColor: colors.onPrimary,
           ),
+          icon: const Icon(Icons.circle_outlined),
         ),
       );
     }
 
     final createTime = ClipCreateTime(
-      created: created,
+      created: item.created,
       padding: createdPadding,
     );
 

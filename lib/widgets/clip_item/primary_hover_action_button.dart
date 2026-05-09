@@ -5,13 +5,14 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_item/clip_meta_info.dart';
-import 'package:clipboard/widgets/clip_item/clip_card/hover_state_builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class PrimaryHoverAction extends StatelessWidget {
-  const PrimaryHoverAction({super.key});
+  final bool hovered;
+
+  const PrimaryHoverAction({super.key, required this.hovered});
 
   Future<void> editClip(BuildContext context, String itemId) async {
     context.pushNamed(RouteConstants.preview, pathParameters: {"id": itemId});
@@ -19,51 +20,43 @@ class PrimaryHoverAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HoverStateBuilder(
-      builder: (context, hovered) {
-        final textTheme = context.textTheme;
-        final item = ClipItemScope.of(context);
-        Widget child;
-        if (!hovered) {
-          final meta = ClipMetaInfo.of(context);
-          if (meta == null || item.encrypted) return const SizedBox.shrink();
-          child = Card.filled(
-            margin: const EdgeInsets.only(right: padding8),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(6)),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: padding4),
-              child: SizedBox(
-                height: 20,
-                child: Center(
-                  child: Text(
-                    keyboardShortcut(key: meta.index.toString()),
-                    textAlign: TextAlign.center,
-                    style: textTheme.labelSmall?.copyWith(
-                      fontVariations: fontVarW600,
-                    ),
-                  ),
+    final textTheme = context.textTheme;
+    final item = ClipItemScope.of(context);
+
+    if (!hovered) {
+      final meta = ClipMetaInfo.of(context);
+      if (meta == null || item.encrypted) return const SizedBox.shrink();
+      return Card.filled(
+        margin: const EdgeInsets.only(right: padding8),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(6)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: padding4),
+          child: SizedBox(
+            height: 20,
+            child: Center(
+              child: Text(
+                keyboardShortcut(key: meta.index.toString()),
+                textAlign: TextAlign.center,
+                style: textTheme.labelSmall?.copyWith(
+                  fontVariations: fontVarW600,
                 ),
               ),
             ),
-          );
-        } else {
-          child = SizedBox.square(
-            child: Focus(
-              canRequestFocus: false,
-              descendantsAreTraversable: false,
-              child: IconButton(
-                onPressed: () => editClip(context, item.id.toString()),
-                iconSize: 22,
-                tooltip: context.locale.app__preview,
-                icon: const Icon(Icons.edit),
-              ),
-            ),
-          );
-        }
-        return child;
-      },
+          ),
+        ),
+      );
+    }
+    return SizedBox.square(
+      dimension: 34,
+      child: IconButton(
+        onPressed: () => editClip(context, item.id.toString()),
+        iconSize: 20,
+        style: IconButton.styleFrom(padding: EdgeInsets.zero),
+        tooltip: context.locale.app__preview,
+        icon: const Icon(Icons.edit_rounded),
+      ),
     );
   }
 }

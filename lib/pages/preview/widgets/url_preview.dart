@@ -22,18 +22,22 @@ class URLClipPreviewCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           spacing: 12,
           children: [
             SizedBox.fromSize(
               size: const Size(280, 240),
               child: LinkPreview(
                 url: item.url!,
-                withProgress: true,
                 onTap: () => launchUrl(item),
+                maxTitleLines: 3,
+                maxDescLines: 5,
+                withShadow: true,
               ),
             ),
             SelectableText(
               item.url ?? context.locale.preview__card__missing_text,
+              textAlign: TextAlign.center,
             ),
           ],
         ),

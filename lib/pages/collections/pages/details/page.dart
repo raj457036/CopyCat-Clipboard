@@ -1,15 +1,12 @@
 import 'package:clipboard/base/bloc/collection_clips_cubit/collection_clips_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/widgets/app_bar/selection_appbar.dart';
 import 'package:clipboard/widgets/app_layout_builder.dart';
 import 'package:clipboard/widgets/can_paste_builder.dart';
-import 'package:clipboard/widgets/clip_view_builders/grid/builder.dart';
-import 'package:clipboard/widgets/clip_view_builders/grid/view.dart';
-import 'package:clipboard/widgets/clip_view_builders/list/builder.dart';
+import 'package:clipboard/widgets/clip_view_builders/builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_collection_indicator_scope.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:clipboard/widgets/keyboard_shortcuts/seq_selection_listener.dart';
@@ -23,7 +20,7 @@ class CollectionDetailPage extends StatelessWidget {
   const CollectionDetailPage({super.key, required this.collection});
 
   void loadMore(BuildContext context) {
-    context.read<CollectionClipsCubit>().search(null);
+    context.read<CollectionClipsCubit>().fetch(null);
   }
 
   @override
@@ -58,41 +55,23 @@ class CollectionDetailPage extends StatelessWidget {
           body: ScaffoldBody(
             margin: const EdgeInsets.only(right: padding12, left: padding12),
             child: AppLayoutBuilder(
-              builder: (context, layout, _) {
-                return switch (layout) {
-                  AppLayout.grid => ClipGrid(
-                    builder: (delegate, scrollDirection) {
-                      return ClipsProviderWithBuilder(
-                        isCollectionClips: true,
-                        builder: (context, clips, hasMore, loading, loadMore) {
-                          return ClipGridBuilder(
-                            items: clips,
-                            hasMore: hasMore,
-                            loading: loading,
-                            loadMore: loadMore,
-                            delegate: delegate,
-                            scrollDirection: scrollDirection,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                  AppLayout.list => CanPasteBuilder(
-                    builder: (context, canPaste) {
-                      return ClipsProviderWithBuilder(
-                        isCollectionClips: true,
-                        builder: (context, clips, hasMore, loading, loadMore) {
-                          return ClipListBuilder(
-                            items: clips,
-                            hasMore: hasMore,
-                            loading: loading,
-                            loadMore: loadMore,
-                          );
-                        },
-                      );
-                    },
-                  ),
-                };
+              builder: (context, layoutView, _) {
+                return CanPasteBuilder(
+                  builder: (context, _) {
+                    return ClipsProviderWithBuilder(
+                      isCollectionClips: true,
+                      builder: (context, clips, hasMore, loading, loadMore) {
+                        return ClipsBuilder(
+                          items: clips,
+                          hasMore: hasMore,
+                          loading: loading,
+                          loadMore: loadMore,
+                          layoutView: layoutView,
+                        );
+                      },
+                    );
+                  },
+                );
               },
             ),
           ),

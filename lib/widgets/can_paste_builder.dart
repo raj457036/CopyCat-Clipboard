@@ -39,7 +39,7 @@ class CanPasteBuilder extends StatelessWidget {
       builder: (context, canPaste) {
         return CanPasteScope(
           canPaste: canPaste,
-          child: Builder(builder: (context) => builder(context, canPaste)),
+          child: builder(context, canPaste),
         );
       },
     );

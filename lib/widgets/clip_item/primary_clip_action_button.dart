@@ -1,5 +1,4 @@
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -8,18 +7,11 @@ import 'package:clipboard/widgets/menu.dart';
 import 'package:flutter/material.dart';
 
 class PrimaryClipActionButton extends StatelessWidget {
-  final bool hasFocusForPaste;
-  final AppLayout layout;
-  const PrimaryClipActionButton({
-    super.key,
-    this.hasFocusForPaste = false,
-    required this.layout,
-  });
+  const PrimaryClipActionButton({super.key});
 
   @override
   Widget build(BuildContext context) {
     final item = ClipItemScope.of(context);
-    final isGrid = layout == AppLayout.grid;
     final colors = context.colors;
 
     if (item.encrypted) {
@@ -32,9 +24,7 @@ class PrimaryClipActionButton extends StatelessWidget {
             ? context.locale.app__downloading
             : context.locale.app__download,
         child: Padding(
-          padding: isGrid
-              ? const EdgeInsets.all(padding8)
-              : const EdgeInsets.all(padding4),
+          padding: const EdgeInsets.all(padding6),
           child: item.downloading
               ? SizedBox.square(
                   dimension: 20,

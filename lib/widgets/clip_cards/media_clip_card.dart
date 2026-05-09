@@ -1,11 +1,7 @@
-import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/widgets.dart';
-import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/blur_hash.dart';
-import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clipcard_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -65,51 +61,12 @@ class MediaPreview extends StatelessWidget {
 }
 
 class MediaClipCard extends StatelessWidget {
-  final AppLayout layout;
   final ClipboardItem item;
 
-  const MediaClipCard({super.key, required this.item, required this.layout});
-
-  Widget getIcon(BuildContext context) {
-    final textTheme = context.textTheme;
-    if (item.fileMimeType != null) {
-      if (item.fileMimeType!.startsWith(mediaMimeRegex)) {
-        final label = "${item.fileMimeType!} • ${formatBytes(item.fileSize!)}";
-        return Chip(
-          // padding: EdgeInsets.zero,
-          // materialTapTargetSize: MaterialTapTargetSize.padded,
-          label: Text(
-            label,
-            style: textTheme.labelSmall?.copyWith(fontVariations: fontVarW700),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          side: BorderSide.none,
-        );
-      }
-    }
-    return const Icon(Icons.image, color: Colors.white);
-  }
+  const MediaClipCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
-    final isGrid = AppLayout.grid == layout;
-    final preview = MediaPreview(item: item);
-    final isNarrow = context.mq.size.height < 230;
-    final child = SizedBox.expand(
-      child: isGrid && !isNarrow
-          ? Stack(
-              children: [
-                Positioned.fill(child: preview),
-                Align(
-                  alignment: const Alignment(0.0, 0.95),
-                  child: getIcon(context),
-                ),
-              ],
-            )
-          : preview,
-    );
-
-    return child;
+    return SizedBox.expand(child: MediaPreview(item: item));
   }
 }

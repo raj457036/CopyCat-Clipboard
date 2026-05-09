@@ -37,7 +37,7 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
     });
   }
 
-  Future<void> search([String? searchQuery, int? limit]) async {
+  Future<void> fetch([String? searchQuery, int? limit]) async {
     currentQuery = searchQuery;
     switch (state) {
       case InitialCollectionClipsState() || CollectionClipsErrorState():
@@ -110,7 +110,7 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
             offset: isDeleted ? result.offset - 1 : result.offset,
           ),
         );
-        search(currentQuery, items.length);
+        fetch(currentQuery, items.length);
       },
     );
   }

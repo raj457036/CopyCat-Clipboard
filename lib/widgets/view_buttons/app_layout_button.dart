@@ -18,11 +18,11 @@ class AppLayoutToggleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return AppLayoutBuilder(
-      builder: (context, layout, supported) {
+      builder: (context, layoutView, supported) {
         if (!supported) return const SizedBox.shrink();
         return IconButton(
           onPressed: () {
-            switch (layout) {
+            switch (layoutView.layout) {
               case AppLayout.grid:
                 changeLayout(context, AppLayout.list);
               case AppLayout.list:
@@ -35,10 +35,10 @@ class AppLayoutToggleButton extends StatelessWidget {
             backgroundColor: rounded ? colors.surfaceContainerHighest : null,
           ),
           iconSize: 20,
-          icon: layout == AppLayout.grid
+          icon: layoutView.layout == AppLayout.grid
               ? const Icon(Icons.view_agenda_rounded)
               : const Icon(Icons.grid_view_rounded),
-          tooltip: layout == AppLayout.grid
+          tooltip: layoutView.layout == AppLayout.grid
               ? context.locale.view_button__switch_to_list
               : context.locale.view_button__switch_to_grid,
         );

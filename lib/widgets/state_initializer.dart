@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
-import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
@@ -33,6 +32,9 @@ class _StateInitializerState extends State<StateInitializer>
   final appLinkListener = ApplinkListener();
   final shareListener = ShareListener();
   final powerSaverDebounce = Debouncer(milliseconds: 180000); // 3 minutes
+  final backgroundStateDebounce = Debouncer(milliseconds: 60000); // 1 minute
+
+  late final AppConfigCubit appConfigCubit;
   ui.FlutterView? _view;
   bool renderingDisabled = false;
   bool _isAppLifecycleBackgrounded = false;
@@ -40,12 +42,13 @@ class _StateInitializerState extends State<StateInitializer>
   bool? _lastClipboardBackgroundState;
 
   // We consider the app backgrounded if either Flutter lifecycle is paused/
-  // inactive OR the desktop window manager reports the window in background.
+  // inactive OR the desktop window manager reports the window in background
+  // while the app is not pinned.
   bool get _isEffectivelyBackgrounded =>
-      _isAppLifecycleBackgrounded || _isWindowBackgrounded;
+      !appConfigCubit.state.config.pinned &&
+      (_isAppLifecycleBackgrounded || _isWindowBackgrounded);
 
   Future<void> setupWindow() async {
-    final appConfigCubit = context.read<AppConfigCubit>();
     final windowCubit = context.read<WindowActionCubit>();
     await Future.delayed(Durations.extralong4);
     final appConfig = appConfigCubit.state.config;
@@ -64,6 +67,7 @@ class _StateInitializerState extends State<StateInitializer>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    appConfigCubit = context.read<AppConfigCubit>();
     appLinkListener.init();
     shareListener.init();
     setupWindow();
@@ -77,7 +81,6 @@ class _StateInitializerState extends State<StateInitializer>
   Future<void> _trackMobileAppLaunch() async {
     if (!mounted) return;
     try {
-      final appConfigCubit = context.read<AppConfigCubit>();
       await appConfigCubit.trackAppEntry();
     } catch (e) {
       logger.e("Error tracking app launch for review prompt. $e");
@@ -94,15 +97,16 @@ class _StateInitializerState extends State<StateInitializer>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
-    _isAppLifecycleBackgrounded = state != AppLifecycleState.resumed;
-    _syncClipboardBackgroundState();
-
-    if (state == AppLifecycleState.resumed) {
-      syncAndroidBgClipboardStates();
-      disableRendering(false);
-    } else {
-      powerSaverDebounce(() => disableRendering(true));
+    switch (state) {
+      case AppLifecycleState.resumed:
+        syncAndroidBgClipboardStates();
+        disableRendering(false);
+        _isAppLifecycleBackgrounded = false;
+      case _:
+        powerSaverDebounce(() => disableRendering(true));
+        _isAppLifecycleBackgrounded = true;
     }
+    _syncClipboardBackgroundState();
   }
 
   @override
@@ -163,7 +167,7 @@ class _StateInitializerState extends State<StateInitializer>
       listener: (context, state) async {
         await showInAppReviewDialog(cubit: context.read<AppConfigCubit>());
       },
-      child: FadeIn(duration: Durations.medium3, child: widget.child),
+      child: widget.child,
     );
   }
 
@@ -179,9 +183,14 @@ class _StateInitializerState extends State<StateInitializer>
       FocusManager.instance.primaryFocus?.unfocus();
     }
 
-    context.read<ClipboardCubit>().setBackgrounded(isBackgrounded);
     if (isBackgrounded) {
+      backgroundStateDebounce(
+        () => context.read<ClipboardCubit>().setBackgrounded(isBackgrounded),
+      );
       context.read<OfflinePersistenceCubit>().clearTransientState();
+    } else {
+      backgroundStateDebounce.cancel();
+      context.read<ClipboardCubit>().setBackgrounded(false);
     }
   }
 }

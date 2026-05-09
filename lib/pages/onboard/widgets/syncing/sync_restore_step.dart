@@ -840,8 +840,8 @@ class _DecryptingPanel extends StatelessWidget {
                               width12,
                               Expanded(
                                 child: _DecryptingStatusChip(
-                                  title:
-                                      locale.sync_restore__clipboard_items_title,
+                                  title: locale
+                                      .sync_restore__clipboard_items_title,
                                   value:
                                       '${clipProgress.visibleSynced}/${clipProgress.total}',
                                   complete: clipProgress.isComplete,

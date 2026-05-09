@@ -181,7 +181,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
 
   List<ClipboardItem> _applySort(List<ClipboardItem> items) {
     final sorted = List<ClipboardItem>.from(items);
-    final sortBy = state.filterState.sortBy ?? ClipboardSortKey.created;
+    final sortBy = state.filterState.sortBy ?? ClipboardSortKey.modified;
     final order = state.filterState.sortOrder ?? SortOrder.desc;
 
     sorted.sort((a, b) {
@@ -225,13 +225,10 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     _isFetching = true;
 
     final resolvedQuery = query ?? state.query;
-    final resolvedFilter = fromTop
-        ? filterState ??
-              SearchFilterState(
-                sortBy: _appConfigCubit.state.config.sortBy,
-                sortOrder: _appConfigCubit.state.config.sortOrder,
-              )
-        : state.filterState;
+
+    /// Use provided filterState if available, otherwise preserve current filters.
+    /// This ensures filters are only reset when explicitly cleared via clearSearch().
+    final resolvedFilter = filterState ?? state.filterState;
 
     try {
       emit(
