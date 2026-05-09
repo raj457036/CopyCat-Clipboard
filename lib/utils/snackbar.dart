@@ -36,6 +36,15 @@ void closeSnackbar() {
   state?.removeCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
 }
 
+EdgeInsets? _getSnackBarMargin(BuildContext context) {
+  final mq = context.mq;
+  const double snackBarWidth = 480.0;
+  final double horizontalMargin = (mq.size.width - snackBarWidth) / 2;
+  return Breakpoints.isMobile(mq.size.width)
+      ? null
+      : EdgeInsets.symmetric(horizontal: horizontalMargin, vertical: 8.0);
+}
+
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showFailureSnackbar(
   Failure failure,
 ) {
@@ -70,7 +79,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showFailureSnackbar(
       shape: isMobile ? null : const StadiumBorder(),
       closeIconColor: style.foreground ?? colors.onErrorContainer,
       behavior: isMobile ? SnackBarBehavior.fixed : SnackBarBehavior.floating,
-      width: isMobile ? null : 480,
+      margin: _getSnackBarMargin(context),
       showCloseIcon: !isMobile,
       backgroundColor: style.background ?? colors.errorContainer,
     ),
@@ -146,7 +155,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showTextSnackbar(
       showCloseIcon: !isMobile && !isLoading,
       closeIconColor: style.foreground ?? colors.onInverseSurface,
       behavior: isMobile ? SnackBarBehavior.fixed : SnackBarBehavior.floating,
-      width: isMobile ? null : 480,
+      margin: _getSnackBarMargin(innerContext),
       duration: duration != null
           ? Duration(seconds: duration)
           : isLoading

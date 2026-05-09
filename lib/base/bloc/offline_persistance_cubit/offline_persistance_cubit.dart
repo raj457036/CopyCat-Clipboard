@@ -307,7 +307,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
             fileSize: clip.fileSize,
             blurHash: clip.blurHash,
             sourceApp: sourceApp,
-            sourceUrl: sourceUrl,
+            sourceUrl: sourceUrl ?? clip.uri?.toString(),
             sourceId: sourceId,
           );
         }
@@ -324,7 +324,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
             fileExtension: clip.fileExtension,
             fileSize: clip.fileSize,
             sourceApp: sourceApp,
-            sourceUrl: sourceUrl,
+            sourceUrl: sourceUrl ?? clip.uri?.toString(),
             sourceId: sourceId,
           );
         }
@@ -364,7 +364,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
           clip.fileSize != null &&
           !appConfig.canCopyFile(clip.fileSize!)) {
         logger.i("Auto copy is disabled for files over the limit.");
-        clip.cleanup();
+        unawaited(clip.cleanup());
 
         emit(
           const OfflinePersistanceState.error(

@@ -4,7 +4,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/pages/settings/widgets/switches/smart_paste_switch.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/widgets/loop_video_player.dart';
+import 'package:clipboard/widgets/video_players/adaptive_video_player.dart';
 import 'package:flutter/material.dart';
 
 class SmartPasteStep extends StatelessWidget {
@@ -14,6 +14,7 @@ class SmartPasteStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
+
     return ZoomIn(
       duration: Durations.short2,
       child: Center(
@@ -30,7 +31,7 @@ class SmartPasteStep extends StatelessWidget {
                 style: textTheme.headlineMedium,
               ),
               height10,
-              const LoopVideoPlayer(
+              const AdaptiveVideoPlayer(
                 width: 620,
                 borderRadius: radius16,
                 url: smartPasteDemoVideo,

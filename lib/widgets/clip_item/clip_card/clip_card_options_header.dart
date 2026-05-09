@@ -38,10 +38,10 @@ class ClipCardOptionsHeader extends StatelessWidget {
                 ),
               ),
             ),
+            if (!selectionActive && hovered) const SecondaryClipActionButton(),
+            if (!selectionActive) const PrimaryClipActionButton(),
             if (!selectionActive && isDesktopPlatform)
               PrimaryHoverAction(hovered: hovered),
-            if (!selectionActive) const SecondaryClipActionButton(),
-            if (!selectionActive) const PrimaryClipActionButton(),
           ],
         ),
       ),

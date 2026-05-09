@@ -178,9 +178,13 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
       state.config.pausedTill != null &&
       state.config.pausedTill!.isAfter(systemTime());
 
-  bool canUploadFile(int size) => state.config.dontUploadOver >= size;
+  bool canUploadFile(int size) {
+    return state.config.dontUploadOver >= size;
+  }
 
-  bool canCopyFile(int size) => state.config.dontCopyOver >= size;
+  bool canCopyFile(int size) {
+    return state.config.dontCopyOver >= size;
+  }
 
   bool get isSyncEnabled =>
       !state.config.clockUnSynced && state.config.enableSync;

@@ -20,6 +20,7 @@ import irondash_engine_context
 import isar_community_flutter_libs
 import media_kit_libs_macos_video
 import media_kit_video
+import open_dir_macos
 import package_info_plus
 import purchases_flutter
 import quick_paste_popup
@@ -32,6 +33,7 @@ import sqflite_darwin
 import super_native_extensions
 import tray_manager
 import url_launcher_macos
+import video_player_avfoundation
 import wakelock_plus
 import window_manager
 
@@ -51,6 +53,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   IsarFlutterLibsPlugin.register(with: registry.registrar(forPlugin: "IsarFlutterLibsPlugin"))
   MediaKitLibsMacosVideoPlugin.register(with: registry.registrar(forPlugin: "MediaKitLibsMacosVideoPlugin"))
   MediaKitVideoPlugin.register(with: registry.registrar(forPlugin: "MediaKitVideoPlugin"))
+  OpenDirMacosPlugin.register(with: registry.registrar(forPlugin: "OpenDirMacosPlugin"))
   FPPPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FPPPackageInfoPlusPlugin"))
   PurchasesFlutterPlugin.register(with: registry.registrar(forPlugin: "PurchasesFlutterPlugin"))
   QuickPastePopupPlugin.register(with: registry.registrar(forPlugin: "QuickPastePopupPlugin"))
@@ -63,6 +66,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   SuperNativeExtensionsPlugin.register(with: registry.registrar(forPlugin: "SuperNativeExtensionsPlugin"))
   TrayManagerPlugin.register(with: registry.registrar(forPlugin: "TrayManagerPlugin"))
   UrlLauncherPlugin.register(with: registry.registrar(forPlugin: "UrlLauncherPlugin"))
+  VideoPlayerPlugin.register(with: registry.registrar(forPlugin: "VideoPlayerPlugin"))
   WakelockPlusMacosPlugin.register(with: registry.registrar(forPlugin: "WakelockPlusMacosPlugin"))
   WindowManagerPlugin.register(with: registry.registrar(forPlugin: "WindowManagerPlugin"))
 }

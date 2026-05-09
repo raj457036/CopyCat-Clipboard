@@ -25,9 +25,9 @@ const _duplicateTag = "<-Duplicate";
 // Cache-file writer — persists raw bytes / text into the app cache directory.
 
 /// Writes clipboard content to a local cache file and returns
-/// `(file, mimeType, sizeInBytes)`. At least one of [content], [textContent],
+/// `(file, mimeType, sizeInBytes, original file path)`. At least one of [content], [textContent],
 /// or [file] must be provided.
-Future<(File?, String?, int)> writeToClipboardCacheFile({
+Future<(File?, String?, int, String?)> writeToClipboardCacheFile({
   required String folder,
   required String ext,
   String? fileName,
@@ -51,19 +51,25 @@ Future<(File?, String?, int)> writeToClipboardCacheFile({
       file.uri.toFilePath(windows: Platform.isWindows),
       path,
     );
-    return (file_, mime.lookupMimeType(file.path), await file.length());
+    return (
+      file_,
+      mime.lookupMimeType(file.path),
+      await file.length(),
+      file.path,
+    );
   } else if (textContent != null) {
     await file_.writeAsString(textContent);
-    return (file_, "text/plain", textContent.length);
+    return (file_, "text/plain", textContent.length, file_.path);
   } else if (content != null) {
     await file_.writeAsBytes(content, flush: true);
     return (
       file_,
       mime.lookupMimeType(path, headerBytes: content.sublist(0, 100)),
       content.length,
+      file_.path,
     );
   }
-  return (null, null, 0);
+  return (null, null, 0, null);
 }
 
 /// Processes clipboard format data into a [ClipItem].
@@ -298,7 +304,12 @@ class ClipboardFormatProcessor {
     String? storageFileName,
     String? displayFileName,
   }) async {
-    final (file, mimeType, size) = await writeToClipboardCacheFile(
+    final (
+      file,
+      mimeType,
+      size,
+      originalPath,
+    ) = await writeToClipboardCacheFile(
       folder: "files",
       ext: extension,
       fileName: storageFileName,
@@ -312,6 +323,7 @@ class ClipboardFormatProcessor {
       textPreview: text,
       fileName: displayFileName,
       fileSize: size,
+      originalPathUri: Uri.file(originalPath ?? file.path),
     );
   }
 
@@ -439,7 +451,12 @@ class ClipboardFormatProcessor {
         fileNameExtension: result.fileExtension ?? preferredExtension,
         preferredMimeType: preferredMimeType,
       );
-      final (file, mimeType, size) = await writeToClipboardCacheFile(
+      final (
+        file,
+        mimeType,
+        size,
+        originalPath,
+      ) = await writeToClipboardCacheFile(
         folder: folder,
         ext: resolvedExtension,
         fileName: fileName,
@@ -449,11 +466,12 @@ class ClipboardFormatProcessor {
       final resolvedMimeType =
           mimeType ?? preferredMimeType ?? _mimeTypeFromFormat(format);
       if (type == ClipItemType.media) {
-        return ClipItem.imageFile(
+        return ClipItem.mediaFile(
           file: file,
           mimeType: resolvedMimeType ?? "application/octet-stream",
           fileName: fileName,
           fileSize: size,
+          originalPathUri: Uri.file(originalPath ?? file.path),
         );
       }
 
@@ -462,6 +480,7 @@ class ClipboardFormatProcessor {
         mimeType: resolvedMimeType ?? "application/octet-stream",
         fileName: fileName,
         fileSize: size,
+        originalPathUri: Uri.file(originalPath ?? file.path),
       );
     } catch (e) {
       return null;
@@ -502,7 +521,12 @@ class ClipboardFormatProcessor {
 
     final ext = p.extension(file.path).substring(1);
     final fileName = p.basenameWithoutExtension(file.path);
-    final (cacheFile, mimeType, size) = await writeToClipboardCacheFile(
+    final (
+      cacheFile,
+      mimeType,
+      size,
+      originalPath,
+    ) = await writeToClipboardCacheFile(
       folder: "files",
       ext: ext,
       file: file,
@@ -515,6 +539,7 @@ class ClipboardFormatProcessor {
       mimeType: mimeType ?? "application/octet-stream",
       fileName: fileName,
       fileSize: size,
+      originalPathUri: Uri.file(originalPath ?? file.path),
     );
   }
 

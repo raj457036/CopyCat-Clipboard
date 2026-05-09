@@ -67,7 +67,12 @@ class ShareListener {
   Future<ClipItem?> getFileClipItem(String path, String category) async {
     final ext = p.extension(path).replaceFirst(".", "");
     final fileName = p.basenameWithoutExtension(path);
-    final (file, mimeType, size) = await writeToClipboardCacheFile(
+    final (
+      file,
+      mimeType,
+      size,
+      originalFilePath,
+    ) = await writeToClipboardCacheFile(
       folder: category,
       ext: ext,
       fileName: fileName,
@@ -76,11 +81,12 @@ class ShareListener {
     if (file != null) {
       ClipItem? clip;
       if (category == "medias") {
-        clip = ClipItem.imageFile(
+        clip = ClipItem.mediaFile(
           file: file,
           mimeType: mimeType ?? "application/octet-stream",
           fileName: fileName,
           fileSize: size,
+          originalPathUri: Uri.file(originalFilePath ?? path),
         );
       } else {
         clip = ClipItem.file(
@@ -88,6 +94,7 @@ class ShareListener {
           mimeType: mimeType ?? "application/octet-stream",
           fileName: fileName,
           fileSize: size,
+          originalPathUri: Uri.file(originalFilePath ?? path),
         );
       }
       return clip;

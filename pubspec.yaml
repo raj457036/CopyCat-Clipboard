@@ -78,6 +78,7 @@ dependencies:
   media_kit: ^1.2.6
   media_kit_video: ^2.0.1
   media_kit_libs_video: ^1.0.7
+  video_player: ^2.10.0
   emoji_picker_flutter:
     git:
       url: https://github.com/raj457036/emoji_picker_flutter.git
@@ -103,6 +104,7 @@ dependencies:
   synchronized: ^3.4.0
   archive: ^4.0.9
   statsfl: ^2.3.0
+  open_dir: ^0.0.2+1
 
 dev_dependencies:
   flutter_test:

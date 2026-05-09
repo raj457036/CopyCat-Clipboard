@@ -5,6 +5,8 @@ import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:open_dir/open_dir.dart' show OpenDir;
+import 'package:path/path.dart' as p;
 import 'package:clipboard/pages/preview/page.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -16,18 +18,21 @@ import 'package:clipboard/widgets/source_app_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:universal_io/universal_io.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class ClipInspector extends StatefulWidget {
   final ClipboardItem item;
   final bool includePagePadding;
   final bool showHeader;
+  final String currentDeviceId;
 
   const ClipInspector({
     super.key,
     required this.item,
     this.includePagePadding = true,
     this.showHeader = true,
+    required this.currentDeviceId,
   });
 
   @override
@@ -214,6 +219,26 @@ class _ClipInspectorState extends State<ClipInspector> {
 
   String _formatCount(int value) {
     return MaterialLocalizations.of(context).formatDecimal(value);
+  }
+
+  Future<void> _openFileSource() async {
+    if (item.sourceUrl == null) return;
+    final uri = Uri.tryParse(
+      item.sourceUrl!,
+    )?.toFilePath(windows: Platform.isWindows);
+    final directory = p.dirname(uri!);
+    final highlightedFileName = p.basename(uri);
+    final openDirPlugin = OpenDir();
+    final success = await openDirPlugin.openNativeDir(
+      path: directory,
+      highlightedFileName: highlightedFileName,
+    );
+
+    if (success == true) return;
+
+    if (!mounted) return;
+
+    await launchUrlString(p.dirname(item.sourceUrl!));
   }
 
   int? get _contentLength {
@@ -416,13 +441,25 @@ class _ClipInspectorState extends State<ClipInspector> {
     }
 
     if (item.sourceUrl?.trim().isNotEmpty == true) {
-      buttons.add(
-        OutlinedButton.icon(
-          onPressed: () => launchUrlString(item.sourceUrl!.trim()),
-          icon: const Icon(Icons.public_outlined),
-          label: Text(context.locale.preview__inspector__open_source),
-        ),
-      );
+      if (item.sourceUrl!.startsWith("file")) {
+        if (item.deviceId == widget.currentDeviceId) {
+          buttons.add(
+            OutlinedButton.icon(
+              onPressed: _openFileSource,
+              icon: const Icon(Icons.public_outlined),
+              label: Text(context.locale.preview__inspector__open_source),
+            ),
+          );
+        }
+      } else {
+        buttons.add(
+          OutlinedButton.icon(
+            onPressed: () => launchUrlString(item.sourceUrl!),
+            icon: const Icon(Icons.public_outlined),
+            label: Text(context.locale.preview__inspector__open_source),
+          ),
+        );
+      }
     }
 
     buttons.add(

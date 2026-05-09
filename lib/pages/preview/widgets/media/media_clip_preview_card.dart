@@ -1,11 +1,13 @@
 import 'dart:typed_data';
 
-import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
-import 'package:clipboard/utils/blur_hash.dart';
-import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/base/constants/strings/asset_constants.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
+import 'package:clipboard/pages/preview/widgets/media/media_audio_preview.dart';
+import 'package:clipboard/pages/preview/widgets/media/media_image_preview.dart';
+import 'package:clipboard/pages/preview/widgets/media/media_video_preview.dart';
+import 'package:clipboard/utils/blur_hash.dart';
+import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:universal_io/io.dart';
@@ -46,7 +48,7 @@ class _MediaClipPreviewCardState extends State<MediaClipPreviewCard> {
 
   ImageProvider? _getPreview() {
     if (widget.item.localPath != null) {
-      if (widget.item.fileMimeType!.contains("svg")) {
+      if (widget.item.fileMimeType!.contains('svg')) {
         return Svg(widget.item.localPath!, source: SvgSource.file);
       }
       return FileImage(File(widget.item.localPath!));
@@ -55,64 +57,32 @@ class _MediaClipPreviewCardState extends State<MediaClipPreviewCard> {
     if (widget.item.imgBlurHash == null) {
       return const AssetImage(AssetConstants.placeholderImage);
     }
-    // still loading — return null so the card renders without an image first.
     return null;
   }
 
   void _open() => openFile(widget.item);
 
-  Widget? _getPrimaryView(BuildContext context) {
-    if (widget.item.fileMimeType != null) {
-      if (widget.item.fileMimeType!.startsWith("image")) {
-        return const Align(
-          alignment: Alignment(-.98, -.98),
-          child: Icon(Icons.image_rounded, color: Colors.white),
-        );
-      }
-      if (widget.item.fileMimeType!.startsWith("video")) {
-        if (widget.item.inCache) {
-          return Center(
-            child: ElevatedButton.icon(
-              icon: const Icon(Icons.play_arrow_rounded),
-              onPressed: _open,
-              label: Text(context.locale.preview__card__video__play),
-            ),
-          );
-        }
-        return const Align(
-          alignment: Alignment(-.98, -.98),
-          child: Icon(Icons.video_file, color: Colors.white),
-        );
-      }
-      if (widget.item.fileMimeType!.startsWith("audio")) {
-        return const Align(
-          alignment: Alignment(-.98, -.98),
-          child: Icon(Icons.audiotrack, color: Colors.white),
-        );
-      }
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     final config = ClipPreviewConfig.of(context);
     final preview = _getPreview();
+    final mimeType = widget.item.fileMimeType ?? '';
 
-    return Card.filled(
-      margin: EdgeInsets.zero,
+    if (mimeType.startsWith('video')) {
+      return MediaVideoPreview(
+        item: widget.item,
+        shape: config?.shape,
+        preview: preview,
+        onOpen: _open,
+      );
+    }
+    if (mimeType.startsWith('audio')) {
+      return MediaAudioPreview(item: widget.item, shape: config?.shape);
+    }
+    return MediaImagePreview(
+      item: widget.item,
       shape: config?.shape,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          image: preview != null
-              ? DecorationImage(image: preview, fit: BoxFit.contain)
-              : null,
-          borderRadius: const BorderRadius.horizontal(
-            left: Radius.circular(12),
-          ),
-        ),
-        child: _getPrimaryView(context),
-      ),
+      preview: preview,
     );
   }
 }
