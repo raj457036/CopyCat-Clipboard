@@ -199,6 +199,39 @@ class _MenuState extends State<Menu> {
     ];
   }
 
+  List<MenuItem> _flattenBottomSheetItems(
+    List<MenuItem> source, {
+    String? fallbackSection,
+  }) {
+    final flattened = <MenuItem>[];
+
+    for (final item in source) {
+      final section = item.section ?? fallbackSection;
+
+      if (item.onPressed != null || item.children.isEmpty) {
+        flattened.add(
+          MenuItem(
+            text: item.text,
+            icon: item.icon,
+            onPressed: item.onPressed,
+            section: section,
+          ),
+        );
+      }
+
+      if (item.children.isNotEmpty) {
+        flattened.addAll(
+          _flattenBottomSheetItems(
+            item.children,
+            fallbackSection: item.text ?? section,
+          ),
+        );
+      }
+    }
+
+    return flattened;
+  }
+
   Map<String?, List<MenuItem>> _grouped(List<MenuItem> source) {
     final map = <String?, List<MenuItem>>{};
     for (final item in source) {
@@ -209,11 +242,12 @@ class _MenuState extends State<Menu> {
 
   Future<void> _openMenu(BuildContext context) async {
     await _runBeforeOpen();
+    await WidgetsBinding.instance.endOfFrame;
     if (!context.mounted) return;
     final mq = context.mq;
     final colors = context.colors;
     final safeArea = mq.systemGestureInsets.bottom + padding8;
-    final grouped = _grouped(widget.items);
+    final grouped = _grouped(_flattenBottomSheetItems(widget.items));
 
     await showModalBottomSheet(
       context: context,
