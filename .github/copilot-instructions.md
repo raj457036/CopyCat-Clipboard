@@ -1,29 +1,40 @@
+## Start Here
+
+- Read [README.md](../README.md) for product context and [ChangeLog.md](../ChangeLog.md) for recent feature history. Keep this file focused on agent-only guidance.
+- Start architecture tracing in [lib/main.dart](../lib/main.dart), [lib/routes/routes.dart](../lib/routes/routes.dart), and [lib/widgets/state_initializer.dart](../lib/widgets/state_initializer.dart). Those files control startup, navigation, and cross-platform lifecycle side effects.
+- The workspace contains app code in `lib/`, local plugins in `packages/`, release automation in [scripts/](../scripts), and Supabase assets in [supabase/](../supabase). Stay inside the owning layer instead of adding cross-cutting logic from UI code.
+
+## Build And Validation
+
+- Use the narrowest useful validation first: `flutter analyze`, targeted `flutter test`, then broader app runs only when the change needs runtime verification.
+- Run `flutter pub run build_runner build --delete-conflicting-outputs` after editing anything annotated with `@freezed`, `@JsonSerializable`, `@Injectable`/`@LazySingleton`, or Isar collections. [\_build.yaml](../_build.yaml) forces `freezed` to run before the Isar generator.
+- Run `flutter gen-l10n` after changing `.arb` files or localization-facing code. The authoritative config lives in [l10n.yaml](../l10n.yaml).
+- App runs and release builds expect `--dart-define-from-file=local/dev.json` or `local/prod.json`. Those files are environment-specific; do not assume they exist or contain usable secrets.
+- Release preparation is scripted through [scripts/prepare_for_build.sh](../scripts/prepare_for_build.sh) and the platform wrappers in [scripts/](../scripts). Use those instead of inventing new build flags.
+- Supabase local function work should follow [supabase/scripts.txt](../supabase/scripts.txt).
+
 ## Architecture
-- `lib/main.dart` bootstraps the app: initializes platform services, calls `configureDependencies()`, and wires the `MultiBlocProvider` that wraps the UI; start here to understand startup side-effects.
-- `AppContent` (in `lib/main.dart`) drives theme/locale/window settings via `AppConfigCubit` and `StateInitializer`; changes to UI chrome should flow through this cubit rather than reaching into platform APIs directly.
-- Navigation lives in `lib/routes/routes.dart` using `go_router` with a `ShellRoute` for the main layout and modal `DynamicPage` wrappers for dialogs; add new pages there and expose dependencies through the surrounding `BlocProvider`s.
-- Desktop/mobile specific behavior is layered through widgets such as `EventBridge`, `WindowFocusManager`, and `TrayManager` in `lib/widgets`; hook platform-specific features by extending these wrappers instead of touching pages.
 
-## Data & State
-- `lib/base` is layered: `db/` holds Isar collections, `domain/` declares interfaces and Freezed models, `data/` supplies `@LazySingleton` repositories/sources; mirror this structure for new features.
-- Clipboard items (`lib/base/db/clipboard_item/clipboard_item.dart`) manage encryption, file clean-up, and syncing; always call `copyWith(..)..applyId(original)` to preserve Isar IDs when mutating persisted items.
-- App-level preferences live in `lib/base/db/app_config/appconfig.dart` and are surfaced through `AppConfigCubit`; rely on its helpers (`changePausedTill`, theme setters) instead of writing to Isar manually.
-- Most async calls return `FailureOr<T>` (a `Future<Either<Failure, T>>` from `lib/common/failure.dart`); capture errors with `result.fold(...)` and construct new failures via `Failure.fromException` for consistency.
+- [lib/main.dart](../lib/main.dart) bootstraps services, calls `configureDependencies()`, and wires the `MultiBlocProvider` around `AppContent`. Theme, locale, and window changes should flow through `AppConfigCubit` rather than direct platform calls.
+- Navigation lives in [lib/routes/routes.dart](../lib/routes/routes.dart) using `go_router`, a `ShellRoute` for the main layout, and modal `DynamicPage` wrappers. New pages should be added there with the surrounding `BlocProvider` dependencies.
+- `lib/base` is layered: `domain/model/` for persisted Freezed and Isar-backed models, `domain/repositories` and `domain/sources` for interfaces, `data/` for implementations and services, and `bloc/` for cubits. Mirror that structure for new features.
+- Platform-specific behavior is intentionally wrapped in `lib/widgets` and `packages/`. Extend `EventBridge`, `WindowFocusManager`, `TrayManager`, `SystemShortcutListeners`, or the local packages before reaching for new platform channels.
 
-## Sync & Integrations
-- Supabase drives remote CRUD in `lib/base/data/sources/**/remote_source.dart` and real-time updates via `SBClipCrossSyncListener` / `SBCollectionCrossSyncListener`; when adding filters, respect the existing `deviceId` exclusion to avoid echoing local changes.
-- Local persistence (`lib/base/data/sources/clipboard/local_source.dart`) builds complex Isar queries for search, encryption filters, and pagination; reuse those builders rather than re-querying outside the source.
-- File attachments sync through Google Drive (`lib/base/data/services/google_drive_service.dart`); updates must set `driveFileId`, defer cleanup to `ClipboardItem.cleanUp`, and invoke `syncDone`/`cancelOperation` to release background workers.
-- Background services (hotkeys, Android clipboard listener, media kit) live under `lib/widgets/` and `packages/`; reuse these entry points instead of introducing new platform channels.
+## Data, Sync, And State
 
-## Build & Tooling
-- Run `flutter pub run build_runner build --delete-conflicting-outputs` after editing anything annotated with `@freezed`, `@JsonSerializable`, `@injectable`, or Isar collections to regenerate `*.g.dart` files.
-- Localization is configured via `l10n.yaml`; regenerate translations with `flutter gen-l10n` (the `watch_locale.dart` helper can auto-run it, but double-check the working directory before use).
-- Use `flutter run --dart-define-from-file=local/prod.json` for feature testing so Supabase, RevenueCat, and Sentry keys resolve; release workflows are scripted under `scripts/build_*.sh` and expect the same defines plus obfuscation/split debug info.
-- Supabase functions can be tested locally with `supabase functions serve --env-file supabase/.env.local --no-verify-jwt` as documented in `supabase/scripts.txt`.
+- Clipboard items in [lib/base/domain/model/clipboard_item/clipboard_item.dart](../lib/base/domain/model/clipboard_item/clipboard_item.dart) manage encryption, file clean-up, and sync metadata. Preserve persisted Isar IDs with `copyWith(..)..applyId(original)` when mutating stored items.
+- App preferences live in [lib/base/domain/model/app_config/appconfig.dart](../lib/base/domain/model/app_config/appconfig.dart) and should be changed through `AppConfigCubit` helpers instead of direct Isar writes.
+- Most async flows return `FailureOr<T>` from [lib/common/failure.dart](../lib/common/failure.dart). Handle them with `result.fold(...)` and normalize new failures with `Failure.fromException(...)`.
+- Local clipboard queries belong in `lib/base/data/sources/clipboard/local_source.dart`; reuse the existing Isar query builders for filters, encryption state, and pagination instead of re-querying elsewhere.
+- Supabase remote CRUD and realtime listeners live under `lib/base/data/sources/**/remote_source.dart`. Preserve the existing `deviceId` exclusion when changing cross-device sync so local updates do not echo back.
+- Google Drive attachment sync lives in [lib/base/data/services/file_cloud_services/google_drive/google_drive_service.dart](../lib/base/data/services/file_cloud_services/google_drive/google_drive_service.dart). Updates must set `driveFileId`, leave cleanup to `ClipboardItem.cleanUp`, and release background workers with `syncDone` or `cancelOperation`.
 
-## Conventions & Tips
-- Register new services via `@LazySingleton`/`@Injectable` and access them through `sl()`; avoid manual `GetIt` lookups in widgets.
-- BLoC states/events use Freezed partials (`part 'xyz.freezed.dart'`); update state with `emit(state.copyWith(...))` and keep logic inside cubits rather than views.
-- UI code favors helpers from `lib/utils/common_extension.dart` and `lib/utils/utility.dart` (e.g., `context.colors`, `keyboardShortcut`); using them keeps desktop/mobile behavior aligned.
-- Follow `analysis_options.yaml` and never edit generated outputs under `**/*.g.dart` or `**/*.freezed.dart`; rerun generation instead if changes are needed.
+## Conventions And Pitfalls
+
+- Register services with `@LazySingleton` or `@Injectable` and resolve them through `sl()`. Avoid manual `GetIt` lookups from widgets.
+- BLoC and cubit state uses Freezed partials. Keep business logic in cubits, update with `emit(state.copyWith(...))`, and do not move domain logic into views.
+- Reuse helpers from `lib/utils/common_extension.dart` and `lib/utils/utility.dart` such as `context.colors` and `keyboardShortcut` to keep desktop and mobile behavior aligned.
+- Never hand-edit generated files under `**/*.g.dart`, `**/*.freezed.dart`, or `**/generated/*.dart`. [analysis_options.yaml](../analysis_options.yaml) excludes them from analysis for a reason.
+- [watch_locale.dart](../watch_locale.dart) still points at an old `packages/copycat_base` path. Treat it as stale until that script is fixed; run `flutter gen-l10n` directly when you need reliable localization generation.
+- Linux desktop work may require the packages listed in [notes.txt](../notes.txt) for hotkeys and tray support.
+- `pubspec.yaml` pins `isar_community` and `isar_community_flutter_libs` to the same `isar_version` anchor and overrides `connectivity_plus`. Keep those compatibility constraints intact unless the user asks for dependency upgrades.
