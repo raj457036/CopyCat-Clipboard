@@ -26,6 +26,7 @@ import 'package:clipboard/common/bloc_config.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/routes/routes.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/scroll_behaviour.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/utils/windows/update_registry.dart';
 import 'package:clipboard/widgets/debug/gizmo_overlay.dart';
@@ -225,6 +226,7 @@ class AppContent extends StatelessWidget {
                     routerConfig: routeConfig,
                     scaffoldMessengerKey: scaffoldMessengerKey,
                     color: surfaceColor,
+                    scrollBehavior: ClampingScrollBehavior(),
                     themeMode: theme,
                     shortcuts: {
                       ...WidgetsApp.defaultShortcuts,

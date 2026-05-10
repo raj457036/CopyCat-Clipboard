@@ -14,6 +14,7 @@ import android.widget.Toast
 class CopyCatSharedStorage private constructor(applicationContext: Context) {
     companion object {
         private const val MODE1_ACK_TEXT_KEY = "mode1AckText"
+        private const val NOTIFICATION_PAUSED_KEY = "notificationPaused"
 
         @Volatile
         private var instance: CopyCatSharedStorage? = null
@@ -66,9 +67,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     var excludeEmail: Boolean = false
     var excludePhone: Boolean = false
     var useEncryptionNonce: Boolean = false
+    var notificationPaused: Boolean = false
     var detectionMode: ClipboardDetectionMode = ClipboardDetectionMode.default()
     private var mode1AckText: String? = null
     private val detectionModeListeners = linkedSetOf<(ClipboardDetectionMode) -> Unit>()
+    private val notificationPausedListeners = linkedSetOf<(Boolean) -> Unit>()
     private var remoteClipApplier: ((String) -> Unit)? = null
 //    For Future Use
     var autoCopyOtp: Boolean = false
@@ -139,6 +142,10 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         }
         if (key == "useEncryptionNonce") {
             useEncryptionNonce = sharedPreferences.getBoolean(key, false)
+        }
+        if (key == NOTIFICATION_PAUSED_KEY) {
+            notificationPaused = sharedPreferences.getBoolean(key, false)
+            notifyNotificationPausedChanged()
         }
         if (key == "detectionMode") {
             val previousMode = detectionMode
@@ -250,10 +257,15 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         excludeEmail = sp.getBoolean("exclude-email", false)
         excludePhone = sp.getBoolean("exclude-phone", false)
         useEncryptionNonce = sp.getBoolean("useEncryptionNonce", false)
+        notificationPaused = sp.getBoolean(NOTIFICATION_PAUSED_KEY, false)
         mode1AckText = sp.getString(MODE1_ACK_TEXT_KEY, null)?.trim()?.takeIf { it.isNotEmpty() }
         
         val modeValue = sp.getString("detectionMode", ClipboardDetectionMode.default().value) ?: ClipboardDetectionMode.default().value
         detectionMode = ClipboardDetectionMode.fromString(modeValue) ?: ClipboardDetectionMode.default()
+        if (detectionMode == ClipboardDetectionMode.MODE_INACTIVE && notificationPaused) {
+            notificationPaused = false
+            sp.edit().putBoolean(NOTIFICATION_PAUSED_KEY, false).apply()
+        }
 
         readSecure("projectKey")?.let {
             syncManager.projectKey = it
@@ -284,6 +296,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             ) ?: detectionMode
             val nextMode = ClipboardDetectionMode.fromString(value) ?: ClipboardDetectionMode.default()
             maybeResetMode1Calibration(previousMode, nextMode)
+            if (nextMode == ClipboardDetectionMode.MODE_INACTIVE && notificationPaused) {
+                updateNotificationPaused(false)
+            }
         }
         val editor = sp.edit()
         when (value) {
@@ -310,6 +325,10 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         detectionModeListeners.add(listener)
     }
 
+    fun addNotificationPausedListener(listener: (Boolean) -> Unit) {
+        notificationPausedListeners.add(listener)
+    }
+
     fun getMode1AckText(): String? = mode1AckText
 
     fun writeMode1AckText(value: String) {
@@ -320,6 +339,15 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
         mode1AckText = normalizedValue
         write(MODE1_ACK_TEXT_KEY, normalizedValue)
+    }
+
+    fun updateNotificationPaused(value: Boolean) {
+        if (notificationPaused == value && sp.contains(NOTIFICATION_PAUSED_KEY)) {
+            return
+        }
+
+        notificationPaused = value
+        write(NOTIFICATION_PAUSED_KEY, value)
     }
 
     private fun maybeResetMode1Calibration(
@@ -347,9 +375,19 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         detectionModeListeners.remove(listener)
     }
 
+    fun removeNotificationPausedListener(listener: (Boolean) -> Unit) {
+        notificationPausedListeners.remove(listener)
+    }
+
     private fun notifyDetectionModeChanged() {
         detectionModeListeners.toList().forEach { listener ->
             listener(detectionMode)
+        }
+    }
+
+    private fun notifyNotificationPausedChanged() {
+        notificationPausedListeners.toList().forEach { listener ->
+            listener(notificationPaused)
         }
     }
 

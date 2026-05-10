@@ -59,7 +59,6 @@ class SettingsPage extends StatelessWidget {
                   ),
                   const Expanded(
                     child: Material(
-                      //? prevents color bleading from list tile on scoll
                       child: TabBarView(
                         children: [
                           Align(

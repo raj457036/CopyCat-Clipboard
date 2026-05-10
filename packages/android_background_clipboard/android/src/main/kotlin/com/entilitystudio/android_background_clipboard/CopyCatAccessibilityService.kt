@@ -39,6 +39,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
     }
     private val modeRelearnRunnable = Runnable {
         if (!isClipboardServiceConnected || !::detectionStrategy.isInitialized) return@Runnable
+        if (isCapturePaused()) return@Runnable
         if (!detectionStrategy.requiresDetectionTest()) return@Runnable
         detectCopyAck()
     }
@@ -54,10 +55,23 @@ class CopyCatAccessibilityService : AccessibilityService() {
             initializeDetectionStrategy(force = true)
         }
     }
+    private val notificationPausedListener: (Boolean) -> Unit = { paused ->
+        handler.post {
+            if (paused) {
+                handler.removeCallbacks(modeRelearnRunnable)
+                cancelDetectionTest()
+                return@post
+            }
+
+            scheduleModeRelearnIfNeeded()
+        }
+    }
 
     private fun updateDetectionStatus(state: String, outcome: String? = null) {
         detectionStatusReporter.update(state, outcome ?: "none")
     }
+
+    private fun isCapturePaused(): Boolean = clipboardService?.copycatStorage?.notificationPaused == true
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
@@ -65,6 +79,8 @@ class CopyCatAccessibilityService : AccessibilityService() {
             clipboardService = (binder as CopyCatClipboardService.LocalBinder).getService()
             clipboardService?.copycatStorage?.removeDetectionModeListener(detectionModeListener)
             clipboardService?.copycatStorage?.addDetectionModeListener(detectionModeListener)
+            clipboardService?.copycatStorage?.removeNotificationPausedListener(notificationPausedListener)
+            clipboardService?.copycatStorage?.addNotificationPausedListener(notificationPausedListener)
             isClipboardServiceConnected = true
 
             // Initialize strategy based on current mode
@@ -76,6 +92,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
             handler.removeCallbacks(modeRelearnRunnable)
             cancelDetectionTest()
             clipboardService?.copycatStorage?.removeDetectionModeListener(detectionModeListener)
+            clipboardService?.copycatStorage?.removeNotificationPausedListener(notificationPausedListener)
             clipboardService = null
             isClipboardServiceConnected = false
             restartClipboardService()
@@ -98,6 +115,10 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
         if (!isClipboardServiceConnected) {
             Log.w(logTag, "ClipboardService not connected yet, ignoring onCopyEvent")
+            return
+        }
+        if (isCapturePaused()) {
+            debugLog(logTag) { "Capture paused, ignoring onCopyEvent before clipboard read" }
             return
         }
         if (!isScreenOn()) {
@@ -132,6 +153,10 @@ class CopyCatAccessibilityService : AccessibilityService() {
     }
 
     private fun detectCopyAck() {
+        if (isCapturePaused()) {
+            debugLog(logTag) { "Capture paused, skipping detection test start" }
+            return
+        }
         if (detectingCopyAck) {
             debugLog(logTag) { "Detection test already running; skipping duplicate start" }
             return
@@ -263,6 +288,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
     private fun scheduleModeRelearnIfNeeded() {
         if (!isClipboardServiceConnected ||
+            isCapturePaused() ||
             !::detectionStrategy.isInitialized ||
             !detectionStrategy.requiresDetectionTest()
         ) {
@@ -333,6 +359,10 @@ class CopyCatAccessibilityService : AccessibilityService() {
             return
         }
 
+        if (isCapturePaused()) {
+            return
+        }
+
         val isOwnAppEvent = event.packageName?.toString() == packageName
         if (isOwnAppEvent && !detectingCopyAck) {
             return
@@ -389,6 +419,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
         removeFocusOnOverlay()
 
         clipboardService?.copycatStorage?.removeDetectionModeListener(detectionModeListener)
+        clipboardService?.copycatStorage?.removeNotificationPausedListener(notificationPausedListener)
         if (isClipboardServiceConnected) unbindService(connection)
         stopClipboardService()
         Toast.makeText(this, "CopyCat Service Stopped", Toast.LENGTH_SHORT).show()
