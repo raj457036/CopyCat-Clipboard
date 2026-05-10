@@ -12,6 +12,18 @@ import android.widget.Toast
 
 
 class CopyCatSharedStorage private constructor(applicationContext: Context) {
+    companion object {
+        private const val MODE1_ACK_TEXT_KEY = "mode1AckText"
+
+        @Volatile
+        private var instance: CopyCatSharedStorage? = null
+        fun getInstance(applicationContext: Context): CopyCatSharedStorage {
+            return instance ?: synchronized(this) {
+                instance ?: CopyCatSharedStorage(applicationContext).also { instance = it }
+            }
+        }
+    }
+
     private val appContext: Context = applicationContext
     private val logTag = "CopyCatSharedStorage"
     private val sp =
@@ -54,7 +66,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     var excludeEmail: Boolean = false
     var excludePhone: Boolean = false
     var useEncryptionNonce: Boolean = false
-    var detectionMode: ClipboardDetectionMode = ClipboardDetectionMode.MODE_1_ACK_TEXT
+    var detectionMode: ClipboardDetectionMode = ClipboardDetectionMode.default()
+    private var mode1AckText: String? = null
+    private val detectionModeListeners = linkedSetOf<(ClipboardDetectionMode) -> Unit>()
     private var remoteClipApplier: ((String) -> Unit)? = null
 //    For Future Use
     var autoCopyOtp: Boolean = false
@@ -127,9 +141,13 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             useEncryptionNonce = sharedPreferences.getBoolean(key, false)
         }
         if (key == "detectionMode") {
-            val modeValue = sharedPreferences.getString(key, ClipboardDetectionMode.MODE_1_ACK_TEXT.value) ?: ClipboardDetectionMode.MODE_1_ACK_TEXT.value
-            detectionMode = ClipboardDetectionMode.fromString(modeValue) ?: ClipboardDetectionMode.MODE_1_ACK_TEXT
+            val modeValue = sharedPreferences.getString(key, ClipboardDetectionMode.default().value) ?: ClipboardDetectionMode.default().value
+            detectionMode = ClipboardDetectionMode.fromString(modeValue) ?: ClipboardDetectionMode.default()
             Log.d(logTag, "Detection mode changed to: ${detectionMode.value}")
+            notifyDetectionModeChanged()
+        }
+        if (key == MODE1_ACK_TEXT_KEY) {
+            mode1AckText = sharedPreferences.getString(key, null)?.trim()?.takeIf { it.isNotEmpty() }
         }
         if (key == "projectKey") {
             readSecure(key)?.let {
@@ -155,18 +173,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             }
         }
     }
-
-
-    companion object {
-        @Volatile
-        private var instance: CopyCatSharedStorage? = null
-        fun getInstance(applicationContext: Context): CopyCatSharedStorage {
-            return instance ?: synchronized(this) {
-                instance ?: CopyCatSharedStorage(applicationContext).also { instance = it }
-            }
-        }
-    }
-
     private fun setupEncryptor(key: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
@@ -242,9 +248,10 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         excludeEmail = sp.getBoolean("exclude-email", false)
         excludePhone = sp.getBoolean("exclude-phone", false)
         useEncryptionNonce = sp.getBoolean("useEncryptionNonce", false)
+        mode1AckText = sp.getString(MODE1_ACK_TEXT_KEY, null)?.trim()?.takeIf { it.isNotEmpty() }
         
-        val modeValue = sp.getString("detectionMode", ClipboardDetectionMode.MODE_1_ACK_TEXT.value) ?: ClipboardDetectionMode.MODE_1_ACK_TEXT.value
-        detectionMode = ClipboardDetectionMode.fromString(modeValue) ?: ClipboardDetectionMode.MODE_1_ACK_TEXT
+        val modeValue = sp.getString("detectionMode", ClipboardDetectionMode.default().value) ?: ClipboardDetectionMode.default().value
+        detectionMode = ClipboardDetectionMode.fromString(modeValue) ?: ClipboardDetectionMode.default()
 
         readSecure("projectKey")?.let {
             syncManager.projectKey = it
@@ -288,6 +295,32 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             }
         }
         editor.apply()
+    }
+
+    fun addDetectionModeListener(listener: (ClipboardDetectionMode) -> Unit) {
+        detectionModeListeners.add(listener)
+    }
+
+    fun getMode1AckText(): String? = mode1AckText
+
+    fun writeMode1AckText(value: String) {
+        val normalizedValue = value.trim()
+        if (normalizedValue.isEmpty()) {
+            return
+        }
+
+        mode1AckText = normalizedValue
+        write(MODE1_ACK_TEXT_KEY, normalizedValue)
+    }
+
+    fun removeDetectionModeListener(listener: (ClipboardDetectionMode) -> Unit) {
+        detectionModeListeners.remove(listener)
+    }
+
+    private fun notifyDetectionModeChanged() {
+        detectionModeListeners.toList().forEach { listener ->
+            listener(detectionMode)
+        }
     }
 
     fun read(key: String, type: String): Any? {
@@ -448,10 +481,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
     fun getDetectionStrategy(): ClipboardDetectionStrategy {
         return when (detectionMode) {
-            ClipboardDetectionMode.MODE_1_ACK_TEXT -> Mode1AckTextStrategy()
+            ClipboardDetectionMode.MODE_INACTIVE -> ModeInactiveStrategy()
+            ClipboardDetectionMode.MODE_1_ACK_TEXT ->
+                Mode1AckTextStrategy(initialAckText = mode1AckText)
             ClipboardDetectionMode.MODE_2_AGGRESSIVE -> Mode2AggressiveStrategy()
-            ClipboardDetectionMode.MODE_3_SEQUENCE -> Mode1AckTextStrategy() // Placeholder
-            ClipboardDetectionMode.MODE_4_OVERLAY -> Mode1AckTextStrategy() // Placeholder
+            ClipboardDetectionMode.MODE_3_OVERLAY -> Mode3OverlayStrategy()
         }
     }
 

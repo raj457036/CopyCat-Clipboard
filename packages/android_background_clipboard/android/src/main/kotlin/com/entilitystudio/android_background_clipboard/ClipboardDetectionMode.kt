@@ -6,6 +6,11 @@ package com.entilitystudio.android_background_clipboard
  */
 enum class ClipboardDetectionMode(val value: String) {
     /**
+     * Detection is inactive until the user explicitly selects a mode.
+     */
+    MODE_INACTIVE("inactive"),
+
+    /**
      * Mode 1: Ack-text based detection
      * Relies on detecting OS acknowledgement toast/announcement text when a copy happens.
      * Works on most OEMs with standard copy feedback. Low battery overhead.
@@ -20,23 +25,16 @@ enum class ClipboardDetectionMode(val value: String) {
     MODE_2_AGGRESSIVE("mode_2_aggressive"),
 
     /**
-     * Mode 3: Sequence-based detection (future)
-     * Records the sequence of accessibility events during initial detection test,
-     * then matches that sequence on subsequent copies. More robust to OEM variations.
+     * Mode 3: Persistent overlay.
+     * Keeps a 1x1 pixel accessibility overlay active so direct clipboard
+     * callbacks are more likely to fire without toast/announcement heuristics.
      */
-    MODE_3_SEQUENCE("mode_3_sequence"),
-
-    /**
-     * Mode 4: Persistent overlay
-     * Keeps a 1x1 pixel transparent overlay in foreground so the clipboard
-     * listener fires directly without needing heuristics.
-     */
-    MODE_4_OVERLAY("mode_4_overlay");
+    MODE_3_OVERLAY("mode_3_overlay");
 
     companion object {
         fun fromString(value: String): ClipboardDetectionMode? =
             values().firstOrNull { it.value == value }
 
-        fun default(): ClipboardDetectionMode = MODE_1_ACK_TEXT
+        fun default(): ClipboardDetectionMode = MODE_INACTIVE
     }
 }

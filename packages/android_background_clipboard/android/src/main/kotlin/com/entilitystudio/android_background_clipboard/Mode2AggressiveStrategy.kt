@@ -51,7 +51,7 @@ class Mode2AggressiveStrategy : ClipboardDetectionStrategy() {
         }
     }
 
-    override fun startDetectionTest(callback: ClipboardDetectionCallback) {
+    override fun startDetectionTest(probeText: String, callback: ClipboardDetectionCallback) {
         Log.d(logTag, "Detection test not applicable for aggressive mode")
     }
 

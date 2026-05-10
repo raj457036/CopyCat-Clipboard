@@ -90,4 +90,8 @@ abstract class AndroidBackgroundClipboardPlatform extends PlatformInterface {
   Future<void> setDetectionMode(String mode) async {
     throw UnimplementedError();
   }
+
+  Stream<Map<String, String>> detectionStatusStream() {
+    throw UnimplementedError();
+  }
 }

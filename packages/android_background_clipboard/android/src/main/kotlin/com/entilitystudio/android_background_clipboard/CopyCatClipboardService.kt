@@ -145,10 +145,10 @@ class CopyCatClipboardService : Service() {
     private fun isDuplicateBurst(fingerprint: String): Boolean {
         val now = SystemClock.elapsedRealtime()
         val duplicateWindowMs = when (copycatStorage.detectionMode) {
+            ClipboardDetectionMode.MODE_INACTIVE -> 0L
             ClipboardDetectionMode.MODE_1_ACK_TEXT -> 900L
             ClipboardDetectionMode.MODE_2_AGGRESSIVE -> 1800L
-            ClipboardDetectionMode.MODE_3_SEQUENCE -> 1300L
-            ClipboardDetectionMode.MODE_4_OVERLAY -> 700L
+            ClipboardDetectionMode.MODE_3_OVERLAY -> 700L
         }
 
         return lastClipFingerprint == fingerprint &&
@@ -156,6 +156,10 @@ class CopyCatClipboardService : Service() {
     }
 
     fun performClipboardReadFromClipData(clipData: ClipData?, appPackageName: String) {
+        if (copycatStorage.detectionMode == ClipboardDetectionMode.MODE_INACTIVE) {
+            Log.d(logTag, "Clipboard capture paused: detection mode is inactive")
+            return
+        }
         if (!isScreenOn()) {
             Log.d(logTag, "Clipboard capture paused: screen is off")
             return
@@ -375,6 +379,10 @@ class CopyCatClipboardService : Service() {
     }
 
     private val onClipChangeListener = ClipboardManager.OnPrimaryClipChangedListener {
+        if (copycatStorage.detectionMode == ClipboardDetectionMode.MODE_INACTIVE) {
+            Log.d(logTag, "Primary Clipboard capture paused: detection mode is inactive")
+            return@OnPrimaryClipChangedListener
+        }
         if (!isScreenOn()) {
             Log.d(logTag, "Primary Clipboard capture paused: screen is off")
             return@OnPrimaryClipChangedListener

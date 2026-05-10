@@ -82,4 +82,8 @@ class AndroidBackgroundClipboard {
   Future<void> setDetectionMode(String mode) {
     return AndroidBackgroundClipboardPlatform.instance.setDetectionMode(mode);
   }
+
+  Stream<Map<String, String>> detectionStatusStream() {
+    return AndroidBackgroundClipboardPlatform.instance.detectionStatusStream();
+  }
 }

@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -15,16 +16,20 @@ import io.flutter.plugin.common.MethodChannel.Result
 
 /** AndroidBackgroundClipboardPlugin */
 class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
-    Application.ActivityLifecycleCallbacks {
+    Application.ActivityLifecycleCallbacks,
+    EventChannel.StreamHandler {
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
     /// when the Flutter Engine is detached from the Activity
     private lateinit var channel: MethodChannel
+    private lateinit var statusChannel: EventChannel
     private lateinit var applicationContext: Context
     private var applicationActivity: Activity? = null
     private lateinit var storage: CopyCatSharedStorage
     private var application: Application? = null
+    private val detectionStatusReporter = DetectionStatusReporter.getInstance()
+    private var detectionStatusListener: ((Map<String, String>) -> Unit)? = null
 
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -32,7 +37,12 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
         Utils.isActivityOnTop = true
         channel =
             MethodChannel(flutterPluginBinding.binaryMessenger, "android_background_clipboard")
+        statusChannel = EventChannel(
+            flutterPluginBinding.binaryMessenger,
+            "android_background_clipboard/detection_status",
+        )
         channel.setMethodCallHandler(this)
+        statusChannel.setStreamHandler(this)
         applicationContext = flutterPluginBinding.applicationContext
         storage = CopyCatSharedStorage.getInstance(applicationContext)
 
@@ -168,9 +178,33 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         Log.d("CopyCat Service", "onDetachedFromEngine")
+        clearDetectionStatusListener()
         channel.setMethodCallHandler(null)
+        statusChannel.setStreamHandler(null)
         Utils.isActivityOnTop = false
         application?.unregisterActivityLifecycleCallbacks(this)
+    }
+
+    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+        clearDetectionStatusListener()
+        if (events == null) return
+
+        val listener: (Map<String, String>) -> Unit = { payload ->
+            events.success(payload)
+        }
+        detectionStatusListener = listener
+        detectionStatusReporter.addListener(listener)
+    }
+
+    override fun onCancel(arguments: Any?) {
+        clearDetectionStatusListener()
+    }
+
+    private fun clearDetectionStatusListener() {
+        detectionStatusListener?.let { listener ->
+            detectionStatusReporter.removeListener(listener)
+        }
+        detectionStatusListener = null
     }
 
     // Life Cycle events

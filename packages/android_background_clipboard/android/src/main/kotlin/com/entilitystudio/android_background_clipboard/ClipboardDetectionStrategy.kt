@@ -7,7 +7,7 @@ import android.view.accessibility.AccessibilityEvent
  */
 interface ClipboardDetectionCallback {
     fun onCopyDetected(packageName: String)
-    fun onTestAckDetected()
+    fun onTestAckCandidate(ackText: String)
 }
 
 /**
@@ -41,7 +41,11 @@ abstract class ClipboardDetectionStrategy {
      *
      * @param callback Callback when the test acknowledgement is detected
      */
-    abstract fun startDetectionTest(callback: ClipboardDetectionCallback)
+    abstract fun startDetectionTest(probeText: String, callback: ClipboardDetectionCallback)
+
+    open fun acceptDetectionTestAckText(ackText: String) = Unit
+
+    open fun requiresDetectionTest(): Boolean = false
 
     /**
      * Called when detection test acknowledgement is detected.
