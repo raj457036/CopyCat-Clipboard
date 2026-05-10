@@ -198,7 +198,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
         width: focused ? gridItemBorderWidth * 2 : gridItemBorderWidth,
         strokeAlign: BorderSide.strokeAlignInside,
       ),
-      borderRadius: radius8,
+      borderRadius: radius12,
     );
 
     final cardContent = HoverScopeProvider(
