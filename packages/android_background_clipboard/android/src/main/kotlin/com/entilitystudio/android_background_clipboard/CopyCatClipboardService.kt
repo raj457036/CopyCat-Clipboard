@@ -57,6 +57,7 @@ class CopyCatClipboardService : Service() {
     private var lastClipCapturedAtMs: Long = 0L
     private val mainHandler by lazy { Handler(mainLooper) }
     private val pasteActionDelayMs = 1000L
+    private val clipboardAckToastCooldownMs = 3000L
     private val delayedPasteRunnable = Runnable {
         disableDuplicateAnnouncement = true
         performClipboardRead("")
@@ -68,6 +69,7 @@ class CopyCatClipboardService : Service() {
     private val logTag = "CopyCatClipboardService"
     private val binder = LocalBinder()
     private var resumedActivityCount = 0
+    private val lastAckToastAtMsByPackage = mutableMapOf<String, Long>()
 
     private val appLifecycleCallbacks = object : Application.ActivityLifecycleCallbacks {
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = Unit
@@ -148,7 +150,6 @@ class CopyCatClipboardService : Service() {
             ClipboardDetectionMode.MODE_INACTIVE -> 0L
             ClipboardDetectionMode.MODE_1_ACK_TEXT -> 900L
             ClipboardDetectionMode.MODE_2_AGGRESSIVE -> 1800L
-            ClipboardDetectionMode.MODE_3_OVERLAY -> 700L
         }
 
         return lastClipFingerprint == fingerprint &&
@@ -157,15 +158,15 @@ class CopyCatClipboardService : Service() {
 
     fun performClipboardReadFromClipData(clipData: ClipData?, appPackageName: String) {
         if (copycatStorage.detectionMode == ClipboardDetectionMode.MODE_INACTIVE) {
-            Log.d(logTag, "Clipboard capture paused: detection mode is inactive")
+            debugLog(logTag) { "Clipboard capture paused: detection mode is inactive" }
             return
         }
         if (!isScreenOn()) {
-            Log.d(logTag, "Clipboard capture paused: screen is off")
+            debugLog(logTag) { "Clipboard capture paused: screen is off" }
             return
         }
-        Log.d(logTag, "Current Package: $appPackageName")
-        Log.d(logTag, "Current Exclusions: ${copycatStorage.excludedPackages}")
+        debugLog(logTag) { "Current Package: $appPackageName" }
+        debugLog(logTag) { "Current Exclusions: ${copycatStorage.excludedPackages}" }
         if (!copycatStorage.serviceEnabled) {
             Log.w(logTag, "Service not configured")
             return
@@ -177,12 +178,12 @@ class CopyCatClipboardService : Service() {
         if (excluded) {
             Log.i(logTag, "$appPackageName is excluded by exclusion rules.")
             if (!disableDuplicateAnnouncement) {
-                showAck("Clip Excluded!")
+                showClipboardAck("Clip Excluded!", appPackageName)
             }
             return
         }
 
-        readClipboard(clipData)
+        readClipboard(clipData, appPackageName)
     }
 
     private fun readUriClip(uri: Uri, label: String? = null): ClipAction {
@@ -214,7 +215,7 @@ class CopyCatClipboardService : Service() {
             if (link.getConfidenceScore(TextClassifier.TYPE_URL) == 1.0f) {
                 val url = text.substring(link.start, link.end)
                 if (url.startsWith("http://") || url.startsWith("https://")) {
-                    Log.d(logTag, "Clipboard Link: ${redactForLog(url)}")
+                    debugLog(logTag) { "Clipboard Link: ${redactForLog(url)}" }
                     return writeTextToCopyCatClipboard(url, ClipType.Url, label)
                 }
             }
@@ -222,14 +223,14 @@ class CopyCatClipboardService : Service() {
                 if (copycatStorage.excludeEmail) return ClipAction.Excluded
 
                 val email = text.substring(link.start, link.end)
-                Log.d(logTag, "Clipboard Email: ${redactForLog(email)}")
+                debugLog(logTag) { "Clipboard Email: ${redactForLog(email)}" }
                 return writeTextToCopyCatClipboard(email, ClipType.Email, label)
             }
             if (link.getConfidenceScore(TextClassifier.TYPE_PHONE) == 1.0f) {
                 if (copycatStorage.excludePhone) return ClipAction.Excluded
 
                 val phone = text.substring(link.start, link.end)
-                Log.d(logTag, "Clipboard Phone: ${redactForLog(phone)}")
+                debugLog(logTag) { "Clipboard Phone: ${redactForLog(phone)}" }
                 return writeTextToCopyCatClipboard(phone, ClipType.Phone, label)
             }
         }
@@ -244,7 +245,7 @@ class CopyCatClipboardService : Service() {
     ): ClipAction {
         val fingerprint = buildClipFingerprint(text, type)
         if (isDuplicateBurst(fingerprint)) {
-            Log.d(logTag, "Detected duplicate item")
+            debugLog(logTag) { "Detected duplicate item" }
             return ClipAction.Duplicate
         }
 
@@ -255,15 +256,15 @@ class CopyCatClipboardService : Service() {
         return ClipAction.Success
     }
 
-    private fun readClipboard(clipData: ClipData?) {
+    private fun readClipboard(clipData: ClipData?, sourcePackageName: String) {
         serviceScope.launch(Dispatchers.IO) {
             var actionStatus: ClipAction = ClipAction.Pending
 
             if (clipData != null && clipData.itemCount > 0) {
                 val clipLabel = clipData.description?.label?.toString()
-                Log.d(logTag, "Description Label: $clipLabel")
+                debugLog(logTag) { "Description Label: $clipLabel" }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Log.d(logTag, "Description Extras: ${clipData.description?.extras}")
+                    debugLog(logTag) { "Description Extras: ${clipData.description?.extras}" }
                 }
                 val item = clipData.getItemAt(0)
 
@@ -284,37 +285,40 @@ class CopyCatClipboardService : Service() {
                 if (actionStatus != ClipAction.Excluded) {
                     if (actionStatus != ClipAction.Success)
                         item.text?.let {
-                            Log.d(logTag, "Clipboard Text: ${redactForLog(it.toString())}")
+                            debugLog(logTag) { "Clipboard Text: ${redactForLog(it.toString())}" }
                             actionStatus =
                                 writeTextToCopyCatClipboard(it.toString(), ClipType.Text, clipLabel)
                         }
 
                     if (actionStatus != ClipAction.Success)
                         item.uri?.let {
-                            Log.d(logTag, "Clipboard URI: $it")
+                            debugLog(logTag) { "Clipboard URI: $it" }
                             actionStatus = readUriClip(it, clipLabel)
                         }
                 }
             }
 
             withContext(Dispatchers.Main) {
-                Log.d(logTag, "Clip Action: $actionStatus")
-                Log.d(logTag, "Clip Content: ${redactForLog(lastCopiedText)}")
+                debugLog(logTag) { "Clip Action: $actionStatus" }
+                debugLog(logTag) { "Clip Content: ${redactForLog(lastCopiedText)}" }
                 when (actionStatus) {
                     ClipAction.Duplicate -> {
                         if (!disableDuplicateAnnouncement) {
-                            showAck("Detected duplicate item")
+                            showClipboardAck("Detected duplicate item", sourcePackageName)
                         }
                     }
-                    ClipAction.Failed -> showAck("CopyCat failed to capture clipboard")
+                    ClipAction.Failed -> showClipboardAck(
+                        "CopyCat failed to capture clipboard",
+                        sourcePackageName,
+                    )
                     ClipAction.Excluded -> {
                         if (!disableDuplicateAnnouncement) {
-                            showAck("Clip Excluded!")
+                            showClipboardAck("Clip Excluded!", sourcePackageName)
                         }
                     }
                     ClipAction.Success -> {
                         if (!disableDuplicateAnnouncement) {
-                            showAck("Clip Captured!")
+                            showClipboardAck("Clip Captured!", sourcePackageName)
                         }
                     }
                     else -> {}
@@ -322,6 +326,21 @@ class CopyCatClipboardService : Service() {
             }
         }
 
+    }
+
+    private fun showClipboardAck(text: String, sourcePackageName: String) {
+        if (!ackToastEnable) return
+
+        val now = SystemClock.elapsedRealtime()
+        val packageKey = sourcePackageName.trim().ifBlank { "<unknown>" }
+        val lastToastAtMs = lastAckToastAtMsByPackage[packageKey] ?: 0L
+        if (now - lastToastAtMs < clipboardAckToastCooldownMs) {
+            debugLog(logTag) { "Suppressing clipboard ack toast for package=$packageKey" }
+            return
+        }
+
+        lastAckToastAtMsByPackage[packageKey] = now
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
 
     private fun showAck(text: String) {
@@ -380,23 +399,24 @@ class CopyCatClipboardService : Service() {
 
     private val onClipChangeListener = ClipboardManager.OnPrimaryClipChangedListener {
         if (copycatStorage.detectionMode == ClipboardDetectionMode.MODE_INACTIVE) {
-            Log.d(logTag, "Primary Clipboard capture paused: detection mode is inactive")
+            debugLog(logTag) { "Primary Clipboard capture paused: detection mode is inactive" }
             return@OnPrimaryClipChangedListener
         }
         if (!isScreenOn()) {
-            Log.d(logTag, "Primary Clipboard capture paused: screen is off")
+            debugLog(logTag) { "Primary Clipboard capture paused: screen is off" }
             return@OnPrimaryClipChangedListener
         }
         if (isHostAppForeground()) {
-            Log.d(logTag, "Primary Clipboard capture paused: app is in foreground.")
+            debugLog(logTag) { "Primary Clipboard capture paused: app is in foreground." }
             return@OnPrimaryClipChangedListener
         }
         if (Utils.isActivityOnTop) {
-            Log.d(logTag, "Primary Clipboard disabled! Because top activity is CopyCat itself.")
+            debugLog(logTag) { "Primary Clipboard disabled! Because top activity is CopyCat itself." }
             return@OnPrimaryClipChangedListener
         }
-        Log.d(logTag, "Reading Primary Clipboard")
-        readClipboard(clipboardManager.primaryClip)
+
+        debugLog(logTag) { "Reading Primary Clipboard" }
+        readClipboard(clipboardManager.primaryClip, "")
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -476,7 +496,7 @@ class CopyCatClipboardService : Service() {
         
         when (intent?.action) {
             "RESTART_SERVICE" -> {
-                Log.d(logTag, "Service restart requested")
+                debugLog(logTag) { "Service restart requested" }
                 // Just ensure notification is showing, don't call onCreate
                 prepareAndShowNotification()
                 if (!isRunning) {
@@ -501,7 +521,7 @@ class CopyCatClipboardService : Service() {
         
         clipboardManager.removePrimaryClipChangedListener(onClipChangeListener)
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
-        Log.d(logTag, "CopyCatClipboardService Destroyed")
+        debugLog(logTag) { "CopyCatClipboardService Destroyed" }
         showAck("CopyCat Clipboard Stopped")
         isRunning = false
         copycatStorage.clean()
@@ -510,6 +530,7 @@ class CopyCatClipboardService : Service() {
         lastCopiedText = null
         lastClipFingerprint = null
         lastClipCapturedAtMs = 0L
+        lastAckToastAtMsByPackage.clear()
         
         super.onDestroy()
     }

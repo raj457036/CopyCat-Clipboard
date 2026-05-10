@@ -66,7 +66,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     ('inactive', 'Select mode'),
     ("mode_1_ack_text", "Mode 1"),
     ("mode_2_aggressive", "Mode 2"),
-    ("mode_3_overlay", "Mode 3"),
   ];
 
   String _normalizeDetectionMode(String? mode) {
@@ -178,7 +177,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
       'inactive' => ('inactive', 'none'),
       'mode_1_ack_text' => ('starting', 'pending'),
       'mode_2_aggressive' => ('running_aggressive', 'none'),
-      'mode_3_overlay' => ('running_overlay', 'none'),
       _ => ('inactive', 'none'),
     };
   }
@@ -345,27 +343,32 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   Future<void> _onModeChanged(String? newMode) async {
     if (newMode == null) return;
 
+    final normalizedMode = _normalizeDetectionMode(newMode);
+    if (normalizedMode == _selectedMode) {
+      return;
+    }
+
     final previousMode = _selectedMode;
     final previousStatusState = _detectionStatusState;
     final previousStatusOutcome = _detectionStatusOutcome;
-    final nextStatus = _statusForMode(newMode);
+    final nextStatus = _statusForMode(normalizedMode);
 
     setState(() {
-      _selectedMode = newMode;
+      _selectedMode = normalizedMode;
       _detectionStatusState = nextStatus.$1;
       _detectionStatusOutcome = nextStatus.$2;
     });
 
     try {
-      await widget.bgService.setDetectionMode(newMode);
-      if (newMode == 'inactive') {
+      await widget.bgService.setDetectionMode(normalizedMode);
+      if (normalizedMode == 'inactive') {
         setState(() {
           _detectionStatusState = 'inactive';
           _detectionStatusOutcome = 'none';
         });
       }
       showTextSnackbar(
-        newMode == 'inactive'
+        normalizedMode == 'inactive'
             ? 'Detection mode cleared'
             : 'Detection mode updated',
         success: true,

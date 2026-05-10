@@ -19,7 +19,6 @@ class DetectionStatusCard extends StatelessWidget {
       'calibrating' => 'Calibrating detection',
       'running_heuristic' => 'Heuristic detection active',
       'running_aggressive' => 'Aggressive detection active',
-      'running_overlay' => 'Overlay detection active',
       'starting' => 'Preparing detection',
       'stopped' => 'Detection service stopped',
       _ => 'Detection status unavailable',
@@ -36,8 +35,6 @@ class DetectionStatusCard extends StatelessWidget {
         'CopyCat is running the acknowledgement heuristic.',
       'running_aggressive' =>
         'CopyCat is scanning broader accessibility events.',
-      'running_overlay' =>
-        'CopyCat is using the persistent overlay clipboard listener.',
       'starting' => 'CopyCat is preparing the selected detection mode.',
       'stopped' =>
         'Enable the accessibility service to resume background capture.',
@@ -67,7 +64,6 @@ class DetectionStatusCard extends StatelessWidget {
     return switch (state) {
       'inactive' => Icons.radio_button_unchecked_rounded,
       'calibrating' => Icons.tune_rounded,
-      'running_overlay' => Icons.layers_clear_rounded,
       'running_aggressive' => Icons.bolt_rounded,
       'running_heuristic' => Icons.auto_awesome_motion_rounded,
       'stopped' => Icons.pause_circle_outline_rounded,

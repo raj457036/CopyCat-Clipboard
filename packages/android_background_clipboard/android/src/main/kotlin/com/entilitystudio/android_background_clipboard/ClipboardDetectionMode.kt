@@ -22,14 +22,7 @@ enum class ClipboardDetectionMode(val value: String) {
      * Monitors all accessibility events with debouncing to catch copies.
      * More battery overhead but broader compatibility.
      */
-    MODE_2_AGGRESSIVE("mode_2_aggressive"),
-
-    /**
-     * Mode 3: Persistent overlay.
-     * Keeps a 1x1 pixel accessibility overlay active so direct clipboard
-     * callbacks are more likely to fire without toast/announcement heuristics.
-     */
-    MODE_3_OVERLAY("mode_3_overlay");
+    MODE_2_AGGRESSIVE("mode_2_aggressive");
 
     companion object {
         fun fromString(value: String): ClipboardDetectionMode? =

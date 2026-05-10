@@ -190,7 +190,7 @@ class CopyCatSyncManager(
         isScreenOn = readScreenInteractiveState()
         registerScreenStateReceiver()
 
-        Log.d(logTag, "Configuring CopyCat Sync")
+        debugLog(logTag) { "Configuring CopyCat Sync" }
         token = sp.getString(tokenKey, "{}")!!
         load()
         loggingInterceptor.redactHeader("Authorization")
@@ -223,7 +223,7 @@ class CopyCatSyncManager(
         reconnectTimer?.cancel()
         reconnectTimer = null
 
-        Log.d(logTag, "Stopped")
+        debugLog(logTag) { "Stopped" }
     }
 
     fun reconfigureConnections() {
@@ -249,7 +249,7 @@ class CopyCatSyncManager(
 
     private fun load() {
         if (token == "{}") {
-            Log.d(logTag, "Load failed, token = {}")
+            debugLog(logTag) { "Load failed, token = {}" }
             isStopped = true
             return
         }
@@ -419,7 +419,7 @@ class CopyCatSyncManager(
     }
 
     private fun sendRealtimeHeartbeat() {
-        Log.d(logTag, "Sending realtime heartbeat")
+        debugLog(logTag) { "Sending realtime heartbeat" }
         val heartbeatPayload = JSONObject().apply {
             put("topic", "phoenix")
             put("event", "phx_heartbeat")

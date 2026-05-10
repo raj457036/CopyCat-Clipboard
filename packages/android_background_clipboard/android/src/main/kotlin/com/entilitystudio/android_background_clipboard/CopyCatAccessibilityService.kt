@@ -12,7 +12,6 @@ import android.os.IBinder
 import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
-import android.view.Gravity
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.widget.LinearLayout
@@ -32,7 +31,6 @@ class CopyCatAccessibilityService : AccessibilityService() {
     private lateinit var clipboardManager: ClipboardManager
     private lateinit var windowManager: WindowManager
     private var transientOverlayLayout: LinearLayout? = null
-    private var persistentOverlayLayout: LinearLayout? = null
     private val handler = Handler(Looper.getMainLooper())
     private val ackDetectionTimeoutRunnable = Runnable {
         if (!detectingCopyAck) return@Runnable
@@ -63,7 +61,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
-            Log.d(logTag, "OnServiceConnected $name")
+            debugLog(logTag) { "OnServiceConnected $name" }
             clipboardService = (binder as CopyCatClipboardService.LocalBinder).getService()
             clipboardService?.copycatStorage?.removeDetectionModeListener(detectionModeListener)
             clipboardService?.copycatStorage?.addDetectionModeListener(detectionModeListener)
@@ -74,7 +72,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-            Log.d(logTag, "OnServiceDisconnected $name")
+            debugLog(logTag) { "OnServiceDisconnected $name" }
             handler.removeCallbacks(modeRelearnRunnable)
             cancelDetectionTest()
             clipboardService?.copycatStorage?.removeDetectionModeListener(detectionModeListener)
@@ -91,19 +89,19 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
     // Method to restart the clipboard service if it's disconnected
     private fun restartClipboardService() {
-        Log.d(logTag, "Attempting to restart the clipboard service")
+        debugLog(logTag) { "Attempting to restart the clipboard service" }
         startClipboardService() // Re-start the service
     }
 
     private fun onCopyEvent(packageName: String = "") {
-        Log.d(logTag, "Copy Event Detected, Reading Clipboard")
+        debugLog(logTag) { "Copy Event Detected, Reading Clipboard" }
 
         if (!isClipboardServiceConnected) {
             Log.w(logTag, "ClipboardService not connected yet, ignoring onCopyEvent")
             return
         }
         if (!isScreenOn()) {
-            Log.d(logTag, "Screen is OFF, skipping onCopyEvent")
+            debugLog(logTag) { "Screen is OFF, skipping onCopyEvent" }
             return
         }
         withAccessibilityOverlayFocus {
@@ -124,7 +122,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
         val bindIntent = Intent(this, CopyCatClipboardService::class.java)
         bindService(bindIntent, connection, Context.BIND_AUTO_CREATE)
-        Log.d(logTag, "Clipboard service start requested")
+        debugLog(logTag) { "Clipboard service start requested" }
         Toast.makeText(this, "CopyCat Service Starting", Toast.LENGTH_SHORT).show()
     }
 
@@ -135,10 +133,10 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
     private fun detectCopyAck() {
         if (detectingCopyAck) {
-            Log.d(logTag, "Detection test already running; skipping duplicate start")
+            debugLog(logTag) { "Detection test already running; skipping duplicate start" }
             return
         }
-        Log.d(logTag, "Starting copy acknowledgement detection...")
+        debugLog(logTag) { "Starting copy acknowledgement detection..." }
         detectingCopyAck = true
         updateDetectionStatus(state = "calibrating", outcome = "pending")
         handler.removeCallbacks(ackDetectionTimeoutRunnable)
@@ -148,7 +146,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
             override fun onCopyDetected(packageName: String) {}
             override fun onTestAckCandidate(ackText: String) {
                 if (!isDetectionProbeStillOnClipboard(probeText)) {
-                    Log.d(logTag, "Ignoring ack candidate because clipboard no longer matches probe")
+                    debugLog(logTag) { "Ignoring ack candidate because clipboard no longer matches probe" }
                     return
                 }
                 detectionStrategy.acceptDetectionTestAckText(ackText)
@@ -198,7 +196,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
         )
         if (succeeded) {
             Toast.makeText(this, "CopyCat Service Started", Toast.LENGTH_SHORT).show()
-            Log.d(logTag, "CopyCat Service successfully detected copy acknowledgement")
+            debugLog(logTag) { "CopyCat Service successfully detected copy acknowledgement" }
         } else {
             Toast.makeText(this, "CopyCat started with fallback detection", Toast.LENGTH_SHORT)
                 .show()
@@ -247,51 +245,6 @@ class CopyCatAccessibilityService : AccessibilityService() {
         transientOverlayLayout = null
     }
 
-    private fun enablePersistentOverlayIfNeeded() {
-        if (persistentOverlayLayout != null || Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return
-        }
-
-        val overlayView = LinearLayout(this)
-        val layoutParams = WindowManager.LayoutParams(
-            1,
-            1,
-            WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            android.graphics.PixelFormat.TRANSPARENT,
-        ).apply {
-            gravity = Gravity.TOP or Gravity.START
-        }
-
-        try {
-            windowManager.addView(overlayView, layoutParams)
-            persistentOverlayLayout = overlayView
-            Log.d(logTag, "Enabled persistent accessibility overlay")
-        } catch (e: Exception) {
-            Log.e(logTag, "Failed to enable persistent accessibility overlay: ${e.message}")
-        }
-    }
-
-    private fun disablePersistentOverlay() {
-        persistentOverlayLayout?.let {
-            try {
-                windowManager.removeView(it)
-            } catch (e: Exception) {
-                Log.w(logTag, "Failed to remove persistent accessibility overlay: ${e.message}")
-            }
-        }
-        persistentOverlayLayout = null
-    }
-
-    private fun updatePersistentOverlayState(mode: ClipboardDetectionMode) {
-        if (mode == ClipboardDetectionMode.MODE_3_OVERLAY) {
-            enablePersistentOverlayIfNeeded()
-        } else {
-            disablePersistentOverlay()
-        }
-    }
-
     private fun withAccessibilityOverlayFocus(action: () -> Unit) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             action()
@@ -331,7 +284,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
         val previousMode = strategyMode
 
         if (detectingCopyAck) {
-            Log.d(logTag, "Cancelling in-flight detection test due to mode reinitialization")
+            debugLog(logTag) { "Cancelling in-flight detection test due to mode reinitialization" }
             cancelDetectionTest(nextState = "starting", nextOutcome = "pending")
         }
 
@@ -350,10 +303,8 @@ class CopyCatAccessibilityService : AccessibilityService() {
                 },
             )
             ClipboardDetectionMode.MODE_2_AGGRESSIVE -> Mode2AggressiveStrategy()
-            ClipboardDetectionMode.MODE_3_OVERLAY -> Mode3OverlayStrategy()
         }
 
-        updatePersistentOverlayState(selectedMode)
         val requiresDetectionTest = detectionStrategy.requiresDetectionTest()
         updateDetectionStatus(
             state = when (selectedMode) {
@@ -361,7 +312,6 @@ class CopyCatAccessibilityService : AccessibilityService() {
                 ClipboardDetectionMode.MODE_1_ACK_TEXT ->
                     if (requiresDetectionTest) "starting" else "running_heuristic"
                 ClipboardDetectionMode.MODE_2_AGGRESSIVE -> "running_aggressive"
-                ClipboardDetectionMode.MODE_3_OVERLAY -> "running_overlay"
             },
             outcome = when (selectedMode) {
                 ClipboardDetectionMode.MODE_1_ACK_TEXT ->
@@ -371,7 +321,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
             },
         )
 
-        Log.d(logTag, "Initialized detection strategy for mode: ${selectedMode.value}")
+        debugLog(logTag) { "Initialized detection strategy for mode: ${selectedMode.value}" }
 
         if (force || !hadStrategy || selectedMode != previousMode) {
             scheduleModeRelearnIfNeeded()
@@ -389,7 +339,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
         }
 
         if (verboseEventLogging) {
-            Log.d(logTag, "Event : $event")
+            debugLog(logTag) { "Event : $event" }
         }
 
         initializeDetectionStrategy()
@@ -418,7 +368,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
     }
 
     override fun onInterrupt() {
-        Log.d(logTag, "Interrupt")
+        debugLog(logTag) { "Interrupt" }
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
@@ -436,7 +386,6 @@ class CopyCatAccessibilityService : AccessibilityService() {
         handler.removeCallbacks(ackDetectionTimeoutRunnable)
         handler.removeCallbacksAndMessages(null)
         updateDetectionStatus(state = "stopped", outcome = "none")
-        disablePersistentOverlay()
         removeFocusOnOverlay()
 
         clipboardService?.copycatStorage?.removeDetectionModeListener(detectionModeListener)

@@ -33,7 +33,7 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
 
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        Log.d("CopyCat Service", "onAttachedToEngine")
+        debugLog("CopyCat Service") { "onAttachedToEngine" }
         Utils.isActivityOnTop = true
         channel =
             MethodChannel(flutterPluginBinding.binaryMessenger, "android_background_clipboard")
@@ -177,7 +177,7 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        Log.d("CopyCat Service", "onDetachedFromEngine")
+        debugLog("CopyCat Service") { "onDetachedFromEngine" }
         clearDetectionStatusListener()
         channel.setMethodCallHandler(null)
         statusChannel.setStreamHandler(null)
@@ -211,61 +211,54 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         Utils.isActivityOnTop = true
         applicationActivity = activity
-        Log.d(
-            "ActivityLifecycle",
+        debugLog("ActivityLifecycle") {
             "onActivityCreated: ${activity.localClassName}, isActivityOnTop set to true"
-        )
+        }
     }
 
     override fun onActivityStarted(activity: Activity) {
         Utils.isActivityOnTop = true
         applicationActivity = activity
-        Log.d(
-            "ActivityLifecycle",
+        debugLog("ActivityLifecycle") {
             "onActivityStarted: ${activity.localClassName}, isActivityOnTop set to true"
-        )
+        }
     }
 
     override fun onActivityResumed(activity: Activity) {
         Utils.isActivityOnTop = true
         applicationActivity = activity
-        Log.d(
-            "ActivityLifecycle",
+        debugLog("ActivityLifecycle") {
             "onActivityResumed: ${activity.localClassName}, isActivityOnTop set to true"
-        )
+        }
     }
 
     override fun onActivityPaused(activity: Activity) {
         Utils.isActivityOnTop = false
         applicationActivity = activity
-        Log.d(
-            "ActivityLifecycle",
+        debugLog("ActivityLifecycle") {
             "onActivityPaused: ${activity.localClassName}, isActivityOnTop set to false"
-        )
+        }
     }
 
     override fun onActivityStopped(activity: Activity) {
         Utils.isActivityOnTop = false
         applicationActivity = null
-        Log.d(
-            "ActivityLifecycle",
+        debugLog("ActivityLifecycle") {
             "onActivityStopped: ${activity.localClassName}, isActivityOnTop set to false"
-        )
+        }
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
-        Log.d(
-            "ActivityLifecycle",
+        debugLog("ActivityLifecycle") {
             "onActivitySaveInstanceState: ${activity.localClassName}, no change to isActivityOnTop"
-        )
+        }
     }
 
     override fun onActivityDestroyed(activity: Activity) {
         Utils.isActivityOnTop = false
         applicationActivity = null
-        Log.d(
-            "ActivityLifecycle",
+        debugLog("ActivityLifecycle") {
             "onActivityDestroyed: ${activity.localClassName}, isActivityOnTop set to false"
-        )
+        }
     }
 }

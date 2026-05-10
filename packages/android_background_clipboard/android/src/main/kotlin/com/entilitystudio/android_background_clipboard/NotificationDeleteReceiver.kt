@@ -11,7 +11,7 @@ import androidx.annotation.RequiresApi
 class NotificationDeleteReceiver : BroadcastReceiver() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("NotificationBroadcast", "Notification swiped away, restarting service")
+        debugLog("NotificationBroadcast") { "Notification swiped away, restarting service" }
 
         // Restart the service and show the notification again
         val serviceIntent = Intent(context, CopyCatClipboardService::class.java)

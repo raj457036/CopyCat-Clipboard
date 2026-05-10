@@ -47,7 +47,7 @@ class Mode1AckTextStrategy(
 
         // Early exit if screen is off or CopyCat is in foreground
         if (!isScreenOn || isAppInForeground) {
-            Log.d(logTag, "Ignoring event: screen=$isScreenOn, appInFg=$isAppInForeground")
+            debugLog(logTag) { "Ignoring event: screen=$isScreenOn, appInFg=$isAppInForeground" }
             return
         }
 
@@ -69,7 +69,7 @@ class Mode1AckTextStrategy(
     }
 
     override fun startDetectionTest(probeText: String, callback: ClipboardDetectionCallback) {
-        Log.d(logTag, "Starting detection test")
+        debugLog(logTag) { "Starting detection test" }
         isInDetectionTest = true
         currentCallback = callback
     }
@@ -88,7 +88,7 @@ class Mode1AckTextStrategy(
     override fun requiresDetectionTest(): Boolean = !hasLearnedAckText
 
     override fun completeDetectionTest() {
-        Log.d(logTag, "Completed detection test. Ack text: '$notificationAckText'")
+        debugLog(logTag) { "Completed detection test. Ack text: '$notificationAckText'" }
         clearDetectionTestState()
     }
 
@@ -116,7 +116,7 @@ class Mode1AckTextStrategy(
         }
 
         val fullText = event.text.joinToString(" ")
-        Log.d(logTag, "Ack TEXT: $fullText")
+        debugLog(logTag) { "Ack TEXT: $fullText" }
 
         val ackTextSplit = fullText.split(",")
         // If the text has multiple parts (e.g. "<content>, Copied"), use the last part.
@@ -125,7 +125,7 @@ class Mode1AckTextStrategy(
 
         val copyDetected = (ackText == notificationAckText.trim()) || notificationAckText.isBlank()
         if (copyDetected && shouldEmitCopy()) {
-            Log.d(logTag, "Copy detected via window state change")
+            debugLog(logTag) { "Copy detected via window state change" }
             callback.onCopyDetected(packageName)
         }
     }
@@ -138,7 +138,7 @@ class Mode1AckTextStrategy(
         val copyDetected = ackText.trim() == notificationAckText.trim()
 
         if (copyDetected && shouldEmitCopy()) {
-            Log.d(logTag, "Copy detected via announcement")
+            debugLog(logTag) { "Copy detected via announcement" }
             callback.onCopyDetected(event.packageName?.toString() ?: "")
         }
     }
@@ -149,12 +149,12 @@ class Mode1AckTextStrategy(
     ) {
         if (event.className != "android.widget.Toast") return
 
-        Log.d(logTag, "Toast Event: $event")
+        debugLog(logTag) { "Toast Event: $event" }
         val ackText = event.text.joinToString(" ")
         val copyDetected = ackText.trim() == notificationAckText.trim()
 
         if (copyDetected && event.packageName.toString().contains("android") && shouldEmitCopy()) {
-            Log.d(logTag, "Copy detected via toast notification")
+            debugLog(logTag) { "Copy detected via toast notification" }
             callback.onCopyDetected(event.packageName?.toString() ?: "")
         }
     }
@@ -180,7 +180,7 @@ class Mode1AckTextStrategy(
             else -> null
         } ?: return
 
-        Log.d(logTag, "Detected ack candidate: '$ackCandidate'")
+        debugLog(logTag) { "Detected ack candidate: '$ackCandidate'" }
         callback.onTestAckCandidate(ackCandidate)
     }
 
@@ -213,7 +213,7 @@ class Mode1AckTextStrategy(
     private fun shouldEmitCopy(): Boolean {
         val now = SystemClock.elapsedRealtime()
         if (now - lastCopyDetectedAtMs < duplicateSuppressionWindowMs) {
-            Log.d(logTag, "Suppressing duplicate copy detection")
+            debugLog(logTag) { "Suppressing duplicate copy detection" }
             return false
         }
 
