@@ -15,6 +15,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   media_kit_libs_windows_video
   media_kit_video
   open_dir_windows
+  quick_paste_popup
   screen_retriever_windows
   sentry_flutter
   share_plus

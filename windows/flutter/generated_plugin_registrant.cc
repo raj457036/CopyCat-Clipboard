@@ -18,6 +18,7 @@
 #include <media_kit_libs_windows_video/media_kit_libs_windows_video_plugin_c_api.h>
 #include <media_kit_video/media_kit_video_plugin_c_api.h>
 #include <open_dir_windows/open_dir_windows_plugin_c_api.h>
+#include <quick_paste_popup/quick_paste_popup_plugin_c_api.h>
 #include <screen_retriever_windows/screen_retriever_windows_plugin_c_api.h>
 #include <sentry_flutter/sentry_flutter_plugin.h>
 #include <share_plus/share_plus_windows_plugin_c_api.h>
@@ -51,6 +52,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("MediaKitVideoPluginCApi"));
   OpenDirWindowsPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("OpenDirWindowsPluginCApi"));
+  QuickPastePopupPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("QuickPastePopupPluginCApi"));
   ScreenRetrieverWindowsPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("ScreenRetrieverWindowsPluginCApi"));
   SentryFlutterPluginRegisterWithRegistrar(
