@@ -5,6 +5,8 @@ class ClipboardItemDto {
   final String? appIconPath;
   final String? previewImagePath;
   final bool isImage;
+  final int? fileSize;
+  final String? fileMimeType;
   final String? imageBase64; // Base64 encoded image for preview
   final DateTime copiedAt;
 
@@ -14,6 +16,8 @@ class ClipboardItemDto {
     this.appIconPath,
     this.previewImagePath,
     required this.isImage,
+    this.fileSize,
+    this.fileMimeType,
     this.imageBase64,
     required this.copiedAt,
   });
@@ -26,6 +30,8 @@ class ClipboardItemDto {
       'appIconPath': appIconPath,
       'previewImagePath': previewImagePath,
       'isImage': isImage,
+      'fileSize': fileSize,
+      'fileMimeType': fileMimeType,
       'imageBase64': imageBase64,
       'copiedAt': copiedAt.millisecondsSinceEpoch,
     };

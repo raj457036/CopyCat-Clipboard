@@ -19,10 +19,12 @@ namespace quick_paste_popup {
 struct ClipboardItem {
     std::string id;
     std::string text;
+    std::string subtitle;
     std::string app_icon_path;
     std::string preview_image_path;
     bool is_image;
-    // ... other fields as needed
+    int file_size = 0;
+    std::string file_mime_type;
 };
 
 class QuickPastePopupWindow {

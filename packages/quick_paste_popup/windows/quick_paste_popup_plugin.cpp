@@ -87,6 +87,10 @@ void QuickPastePopupPlugin::HandleShowQuickPastePopup(
     auto text_it = item_map.find(flutter::EncodableValue("text"));
     if (text_it != item_map.end()) item.text = std::get<std::string>(text_it->second);
     
+    auto subtitle_it = item_map.find(flutter::EncodableValue("subtitle"));
+    if (subtitle_it != item_map.end() && !std::holds_alternative<std::monostate>(subtitle_it->second))
+        item.subtitle = std::get<std::string>(subtitle_it->second);
+
     auto icon_it = item_map.find(flutter::EncodableValue("appIconPath"));
     if (icon_it != item_map.end() && !std::holds_alternative<std::monostate>(icon_it->second)) 
         item.app_icon_path = std::get<std::string>(icon_it->second);
@@ -98,13 +102,35 @@ void QuickPastePopupPlugin::HandleShowQuickPastePopup(
     auto is_image_it = item_map.find(flutter::EncodableValue("isImage"));
     if (is_image_it != item_map.end()) item.is_image = std::get<bool>(is_image_it->second);
 
+    auto size_it = item_map.find(flutter::EncodableValue("fileSize"));
+    if (size_it != item_map.end() && !std::holds_alternative<std::monostate>(size_it->second))
+        item.file_size = std::get<int>(size_it->second);
+
+    auto mime_it = item_map.find(flutter::EncodableValue("fileMimeType"));
+    if (mime_it != item_map.end() && !std::holds_alternative<std::monostate>(mime_it->second))
+        item.file_mime_type = std::get<std::string>(mime_it->second);
+
     items.push_back(item);
   }
 
   POINT anchor;
   if (cached_caret_position_.has_value()) {
     anchor = cached_caret_position_.value();
+    
+    // If it was a fallback to center screen, adjust anchor so window is centered
+    if (!cached_caret_found_) {
+      int totalHeight = 0;
+      for (const auto& item : items) {
+          totalHeight += item.is_image ? 80 + 10 : 64; // Use constants from window.cpp
+      }
+      if (totalHeight > 5 * 64) totalHeight = 5 * 64 + 10;
+      
+      anchor.x -= 380 / 2; // kWidth / 2
+      anchor.y -= totalHeight / 2;
+    }
+    
     cached_caret_position_.reset();
+    cached_caret_found_ = false;
   } else {
     GetCursorPos(&anchor);
   }
@@ -138,25 +164,22 @@ void QuickPastePopupPlugin::HandleCaptureCaretContext(
   POINT p = {0, 0};
   bool found = false;
 
-  // 1. Try UI Automation (Modern approach for Chrome/VS Code/etc.)
+  // 1. Try UI Automation (Modern approach)
   IUIAutomation* pAutomation = NULL;
+  // Use a fast timeout for COM initialization/calls if possible
   HRESULT hr = CoCreateInstance(CLSID_CUIAutomation, NULL, CLSCTX_INPROC_SERVER, IID_IUIAutomation, (void**)&pAutomation);
   if (SUCCEEDED(hr) && pAutomation) {
     IUIAutomationElement* pFocusedElement = NULL;
-    hr = pAutomation->GetFocusedElement(&pFocusedElement);
-    if (SUCCEEDED(hr) && pFocusedElement) {
+    if (SUCCEEDED(pAutomation->GetFocusedElement(&pFocusedElement)) && pFocusedElement) {
         IUIAutomationTextPattern* pTextPattern = NULL;
-        hr = pFocusedElement->GetCurrentPattern(UIA_TextPatternId, (IUnknown**)&pTextPattern);
-        if (SUCCEEDED(hr) && pTextPattern) {
+        if (SUCCEEDED(pFocusedElement->GetCurrentPattern(UIA_TextPatternId, (IUnknown**)&pTextPattern)) && pTextPattern) {
             IUIAutomationTextRangeArray* pSelectionRanges = NULL;
-            hr = pTextPattern->GetSelection(&pSelectionRanges);
-            if (SUCCEEDED(hr) && pSelectionRanges) {
+            if (SUCCEEDED(pTextPattern->GetSelection(&pSelectionRanges)) && pSelectionRanges) {
                 int count = 0;
                 pSelectionRanges->get_Length(&count);
                 if (count > 0) {
                     IUIAutomationTextRange* pRange = NULL;
-                    pSelectionRanges->GetElement(0, &pRange);
-                    if (pRange) {
+                    if (SUCCEEDED(pSelectionRanges->GetElement(0, &pRange)) && pRange) {
                         SAFEARRAY* pRects = NULL;
                         if (SUCCEEDED(pRange->GetBoundingRectangles(&pRects)) && pRects) {
                             double* rectData;
@@ -166,7 +189,7 @@ void QuickPastePopupPlugin::HandleCaptureCaretContext(
                                 SafeArrayGetUBound(pRects, 1, &upperBound);
                                 if ((upperBound - lowerBound + 1) >= 4) {
                                     p.x = (long)rectData[0];
-                                    p.y = (long)rectData[1];
+                                    p.y = (long)(rectData[1] + rectData[3]); 
                                     found = true;
                                 }
                                 SafeArrayUnaccessData(pRects);
@@ -185,25 +208,34 @@ void QuickPastePopupPlugin::HandleCaptureCaretContext(
     pAutomation->Release();
   }
 
-  // 2. Fallback to standard Win32 Caret (Notepad/Explorer/etc.)
+  // 2. Fallback to standard Win32 Caret
   if (!found) {
     GUITHREADINFO gti = {sizeof(GUITHREADINFO)};
     if (GetGUIThreadInfo(0, &gti)) {
-        POINT caret_p = {gti.rcCaret.left, gti.rcCaret.top};
-        if (gti.hwndCaret && (caret_p.x != 0 || caret_p.y != 0)) {
+        if (gti.hwndCaret) {
+            POINT caret_p = {gti.rcCaret.left, gti.rcCaret.bottom};
             ClientToScreen(gti.hwndCaret, &caret_p);
+            p = caret_p;
+            found = true;
+        } else if (gti.hwndFocus && (gti.rcCaret.left != 0 || gti.rcCaret.top != 0)) {
+            POINT caret_p = {gti.rcCaret.left, gti.rcCaret.bottom};
+            ClientToScreen(gti.hwndFocus, &caret_p);
             p = caret_p;
             found = true;
         }
     }
   }
 
-  // 3. Final fallback to Cursor Position
+  // 3. Final fallback to Screen Center (Usability priority)
   if (!found) {
-    GetCursorPos(&p);
+    int screenW = GetSystemMetrics(SM_CXSCREEN);
+    int screenH = GetSystemMetrics(SM_CYSCREEN);
+    p.x = screenW / 2;
+    p.y = screenH / 2;
   }
 
   cached_caret_position_ = p;
+  cached_caret_found_ = found;
   result->Success(flutter::EncodableValue(found));
 }
 

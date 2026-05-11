@@ -13,9 +13,9 @@ using namespace Gdiplus;
 namespace quick_paste_popup {
 
 const wchar_t kWindowClassName[] = L"QuickPastePopupWindow";
-const int kItemHeight = 70;
-const int kWidth = 420;
-const int kMaxVisibleItems = 6;
+const int kItemHeight = 64;
+const int kWidth = 380;
+const int kMaxVisibleItems = 5;
 
 // Fallback for Windows 11 DWM attributes if using an older SDK
 #ifndef DWMWA_WINDOW_CORNER_PREFERENCE
@@ -247,18 +247,86 @@ void QuickPastePopupWindow::DrawItem(Gdiplus::Graphics& graphics, int index, int
         if (preview.GetLastStatus() == Gdiplus::Ok) {
             float imgWidth = (float)preview.GetWidth();
             float imgHeight = (float)preview.GetHeight();
-            float scale = (float)(itemHeight - 10) / imgHeight;
+            float scale = (float)(itemHeight - 16) / imgHeight;
             float drawWidth = imgWidth * scale;
             
-            graphics.DrawImage(&preview, (Gdiplus::REAL)50, (Gdiplus::REAL)(y + 5), (Gdiplus::REAL)drawWidth, (Gdiplus::REAL)(itemHeight - 10));
+            if (drawWidth > width / 3) drawWidth = (float)width / 3;
+            
+            graphics.DrawImage(&preview, (Gdiplus::REAL)60, (Gdiplus::REAL)(y + 8), (Gdiplus::REAL)drawWidth, (Gdiplus::REAL)(itemHeight - 16));
+
+            std::wstring metadata;
+            if (!item.subtitle.empty()) {
+                metadata = Utf8ToWide(item.subtitle);
+            } else if (!item.file_mime_type.empty()) {
+                std::wstring wmime = Utf8ToWide(item.file_mime_type);
+                if (item.file_size > 0) {
+                    // Simple C++ size formatting (recalculate here since Dart is forbidden)
+                    wchar_t sz[64];
+                    if (item.file_size < 1024) 
+                        swprintf(sz, 64, L"%d KB • ", item.file_size);
+                    else
+                        swprintf(sz, 64, L"%.2f MB • ", (float)item.file_size / 1024.0f);
+                    metadata = std::wstring(sz) + wmime;
+                } else {
+                    metadata = wmime;
+                }
+            }
+
+            if (!metadata.empty()) {
+                // Higher contrast gray for metadata
+                Color subColor = is_dark_mode_ ? Color(200, 160, 160, 160) : Color(200, 100, 100, 100);
+                SolidBrush subBrush(subColor);
+                Font subFont(&fontFamily, 9, FontStyleRegular, UnitPoint);
+                
+                RectF infoRect(60 + drawWidth + 12, (float)y + 8, (float)width - (60 + drawWidth + 20), (float)itemHeight - 16);
+                StringFormat format;
+                format.SetAlignment(StringAlignmentNear);
+                format.SetLineAlignment(StringAlignmentCenter);
+                format.SetTrimming(StringTrimmingEllipsisCharacter);
+                graphics.DrawString(metadata.c_str(), -1, &subFont, infoRect, &format, &subBrush);
+            }
         }
     } else {
         std::wstring wtext = Utf8ToWide(item.text);
-        Gdiplus::RectF textRect(65, (float)y + 5, (float)width - 85, (float)itemHeight - 10);
-        Gdiplus::StringFormat format;
+        
+        std::wstring metadata;
+        if (!item.subtitle.empty()) {
+            metadata = Utf8ToWide(item.subtitle);
+        } else if (!item.file_mime_type.empty()) {
+            std::wstring wmime = Utf8ToWide(item.file_mime_type);
+            if (item.file_size > 0) {
+                wchar_t sz[64];
+                if (item.file_size < 1024) 
+                    swprintf(sz, 64, L"%d KB • ", item.file_size);
+                else
+                    swprintf(sz, 64, L"%.2f MB • ", (float)item.file_size / 1024.0f);
+                metadata = std::wstring(sz) + wmime;
+            } else {
+                metadata = wmime;
+            }
+        }
+
+        bool hasMetadata = !metadata.empty();
+        
+        // Main Text Rect
+        RectF textRect(65, (float)y + (hasMetadata ? 6 : 5), (float)width - 85, (float)(hasMetadata ? itemHeight / 2 : itemHeight - 10));
+        StringFormat format;
         format.SetTrimming(Gdiplus::StringTrimmingEllipsisCharacter);
-        format.SetLineAlignment(StringAlignmentCenter);
+        format.SetLineAlignment(hasMetadata ? StringAlignmentNear : StringAlignmentCenter);
         graphics.DrawString(wtext.c_str(), -1, &font, textRect, &format, &textBrush);
+
+        // Subtitle Rect
+        if (hasMetadata) {
+            Color subColor = is_dark_mode_ ? Color(200, 160, 160, 160) : Color(200, 100, 100, 100);
+            SolidBrush subBrush(subColor);
+            Font subFont(&fontFamily, 8.5f, FontStyleRegular, UnitPoint);
+            
+            RectF subRect(65, (float)y + (itemHeight / 2) + 2, (float)width - 85, (float)itemHeight / 2 - 8);
+            StringFormat subFormat;
+            subFormat.SetTrimming(StringTrimmingEllipsisCharacter);
+            subFormat.SetLineAlignment(StringAlignmentNear);
+            graphics.DrawString(metadata.c_str(), -1, &subFont, subRect, &subFormat, &subBrush);
+        }
     }
 }
 
@@ -313,19 +381,21 @@ LRESULT QuickPastePopupWindow::HandleMessage(HWND hwnd, UINT uMsg, WPARAM wParam
         case WM_MOUSEWHEEL: {
             int delta = GET_WHEEL_DELTA_WPARAM(wParam);
             
-            // Calculate max top index to prevent overscroll
             RECT clientRect;
             GetClientRect(hwnd, &clientRect);
             int windowH = clientRect.bottom - clientRect.top;
             
+            // Calculate max top index by summing heights from the bottom up
+            int maxTopIndex = 0;
             int totalH = 0;
-            int visibleCount = 0;
             for (int i = (int)items_.size() - 1; i >= 0; --i) {
-                totalH += items_[i].is_image ? kThumbnailHeight + 10 : kItemHeight;
-                if (totalH > windowH - 10) break;
-                visibleCount++;
+                int h = items_[i].is_image ? kThumbnailHeight + 10 : kItemHeight;
+                if (totalH + h > windowH) {
+                    maxTopIndex = i + 1;
+                    break;
+                }
+                totalH += h;
             }
-            int maxTopIndex = std::max(0, (int)items_.size() - visibleCount);
 
             if (delta > 0) {
                 top_index_ = std::max(0, top_index_ - 1);
