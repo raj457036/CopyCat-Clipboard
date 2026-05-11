@@ -162,6 +162,8 @@ class QuickPasteService {
       appIconPath: appIconPath,
       previewImagePath: isImage ? item.localPath : null,
       isImage: isImage,
+      fileSize: item.fileSize,
+      fileMimeType: item.fileMimeType,
       imageBase64: null,
       copiedAt: item.created,
     );

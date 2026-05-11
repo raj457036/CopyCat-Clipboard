@@ -60,6 +60,7 @@ class QuickPastePopupPlugin : public flutter::Plugin {
 
   // Cached caret position from the last captureCaretContext call.
   std::optional<POINT> cached_caret_position_;
+  bool cached_caret_found_ = false;
   
   // Theme selection color.
   uint32_t selection_color_ = 0xFF0078D7; // Default Windows Blue
