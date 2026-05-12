@@ -5,7 +5,6 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
   clipboard_watcher
-  connectivity_plus
   emoji_picker_flutter
   flutter_platform_alert
   focus_window
