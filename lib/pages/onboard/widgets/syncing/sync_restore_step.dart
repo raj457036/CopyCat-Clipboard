@@ -1,6 +1,10 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart'
+    show InAppNotificationService;
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/domain/model/sync_status/syncstatus.dart';
 import 'package:clipboard/base/domain/repositories/clip_collection.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
@@ -8,7 +12,6 @@ import 'package:clipboard/base/domain/repositories/restoration_status.dart';
 import 'package:clipboard/base/l10n/generated/app_localizations.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,8 +69,26 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
       ]);
 
       int colTotal = 0, clipTotal = 0;
-      results[0].fold((l) => showFailureSnackbar(l), (r) => colTotal = r);
-      results[1].fold((l) => showFailureSnackbar(l), (r) => clipTotal = r);
+      results[0].fold(
+        (l) => InAppNotificationService.i.notify(
+          NotificationMessage(
+            id: "sync_restore_step_collection_error",
+            body: l.toString(),
+            type: .error,
+          ),
+        ),
+        (r) => colTotal = r,
+      );
+      results[1].fold(
+        (l) => InAppNotificationService.i.notify(
+          NotificationMessage(
+            id: "sync_restore_step_clip_error",
+            body: l.toString(),
+            type: .error,
+          ),
+        ),
+        (r) => clipTotal = r,
+      );
 
       final progress = {'collection': colTotal, 'clip': clipTotal};
       _lastProgress = progress.map(

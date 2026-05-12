@@ -1,17 +1,17 @@
 import 'dart:async';
 
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
-import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/base/domain/services/analysis/text_analysis.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
-import 'package:clipboard/utils/snackbar.dart';
+import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as p;
 import 'package:share_handler/share_handler.dart';
@@ -20,7 +20,7 @@ import "package:universal_io/io.dart";
 class ShareListener {
   StreamSubscription? subscription;
 
-  BuildContext get context => rootNavKey.currentContext!;
+  BuildContext get context => rootNavigationKey.currentContext!;
   ShareHandlerPlatform get handler => ShareHandlerPlatform.instance;
 
   void init() {
@@ -33,19 +33,25 @@ class ShareListener {
 
         try {
           await putMediaToClipboard(media);
-          closeSnackbar();
         } catch (e) {
           if (context.mounted) {
-            showTextSnackbar(
-              context.locale.app__unknown_error,
-              closePrevious: true,
+            InAppNotificationService.i.notify(
+              NotificationMessage(
+                id: "share_listener_error",
+                body: context.locale.app__unknown_error,
+              ),
             );
           }
         }
       },
       onError: (error) {
         if (context.mounted) {
-          showFailureSnackbar(Failure.fromException(error));
+          InAppNotificationService.i.notify(
+            NotificationMessage(
+              id: "share_listener_error",
+              body: Failure.fromException(error).message,
+            ),
+          );
         }
       },
     );
@@ -132,7 +138,7 @@ class ShareListener {
     await processImageFilePath(media.imageFilePath, clips);
 
     if (context.mounted) {
-      showSnackbar(context, isFile: media.attachments != null);
+      showPopActionSnackbar(context, isFile: media.attachments != null);
       await context.read<OfflinePersistenceCubit>().onClips(
         clips,
         manualPaste: true,
@@ -161,18 +167,25 @@ class ShareListener {
     if (clip != null) clips.add(clip);
   }
 
-  void showSnackbar(BuildContext context, {bool isFile = false}) {
+  void showPopActionSnackbar(BuildContext context, {bool isFile = false}) {
     if (Platform.isAndroid) {
-      showTextSnackbar(
-        context.locale.app__ack__done,
-        closePrevious: true,
-        duration: isFile ? 15 : 5,
-        isProgress: true,
-        action: SnackBarAction(
-          label: context.locale.app__ack__quit_app,
-          onPressed: () {
-            SystemNavigator.pop(animated: true);
-          },
+      // showTextSnackbar(
+      //   context.locale.app__ack__done,
+      //   closePrevious: true,
+      //   duration: isFile ? 15 : 5,
+      //   isProgress: true,
+      //   action: SnackBarAction(
+      //     label: context.locale.app__ack__quit_app,
+      //     onPressed: () {
+      //       SystemNavigator.pop(animated: true);
+      //     },
+      //   ),
+      // );
+
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "share_listener_success",
+          body: context.locale.app__ack__done,
         ),
       );
     }

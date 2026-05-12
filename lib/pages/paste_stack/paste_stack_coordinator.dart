@@ -1,8 +1,8 @@
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
-import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -67,7 +67,7 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
   }
 
   Future<void> onPasteHotKey() async {
-    final context = rootNavKey.currentContext;
+    final context = rootNavigationKey.currentContext;
     if (context == null || !mounted) return;
 
     final offlinePersistence = context.read<OfflinePersistenceCubit>();
@@ -116,7 +116,7 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
             return;
           }
         } else {
-          rootNavKey.currentContext?.pop();
+          rootNavigationKey.currentContext?.pop();
         }
         await unregisterPasteHotKey();
       },

@@ -7,6 +7,7 @@ import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:flutter/widgets.dart';
 import 'package:clipboard/utils/debounce.dart' show Debouncer;
+import 'package:injectable/injectable.dart';
 
 @immutable
 class PasteStackState {
@@ -29,6 +30,7 @@ class PasteStackState {
   }
 }
 
+@lazySingleton
 class PasteStackCubit extends Cubit<PasteStackState> {
   static const Size stackWindowSize = Size(320, 720);
 

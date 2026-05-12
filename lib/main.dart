@@ -15,9 +15,10 @@ import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart'
     show SelectedClipsCubit;
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
-import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart'
+    show InAppNotificationService;
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/generated/app_localizations.dart';
 import 'package:clipboard/base/text_theme.dart';
@@ -223,8 +224,9 @@ class AppContent extends StatelessWidget {
                 return AnnotatedRegion<SystemUiOverlayStyle>(
                   value: getUiOverlay(theme),
                   child: MaterialApp.router(
-                    routerConfig: routeConfig,
-                    scaffoldMessengerKey: scaffoldMessengerKey,
+                    routerConfig: rootRouter,
+                    scaffoldMessengerKey:
+                        InAppNotificationService.scaffoldMessengerKey,
                     color: surfaceColor,
                     scrollBehavior: ClampingScrollBehavior(),
                     themeMode: theme,
@@ -317,11 +319,6 @@ class MainApp extends StatelessWidget {
         BlocProvider<AuthCubit>(create: (context) => sl()),
         BlocProvider<AppConfigCubit>(create: (context) => sl()..load()),
         BlocProvider<MonetizationCubit>(create: (context) => sl()),
-        BlocProvider<SyncStatusCubit>(create: (context) => sl()),
-        BlocProvider<OfflinePersistenceCubit>(create: (context) => sl()),
-        BlocProvider<CloudPersistanceCubit>(create: (context) => sl()),
-        BlocProvider<ClipCollectionCubit>(create: (context) => sl()),
-        BlocProvider<DriveSetupCubit>(create: (context) => sl()),
         BlocProvider<WindowActionCubit>(create: (context) => sl()),
         BlocProvider<PasteStackCubit>(
           create: (context) => PasteStackCubit(
@@ -330,6 +327,11 @@ class MainApp extends StatelessWidget {
             context.read<MonetizationCubit>(),
           ),
         ),
+        BlocProvider<SyncStatusCubit>(create: (context) => sl()),
+        BlocProvider<OfflinePersistenceCubit>(create: (context) => sl()),
+        BlocProvider<CloudPersistanceCubit>(create: (context) => sl()),
+        BlocProvider<ClipCollectionCubit>(create: (context) => sl()),
+        BlocProvider<DriveSetupCubit>(create: (context) => sl()),
         BlocProvider<EventBusCubit>(create: (context) => sl()),
         BlocProvider<SelectedClipsCubit>(create: (context) => sl()),
         BlocProvider<ClipboardCubit>(

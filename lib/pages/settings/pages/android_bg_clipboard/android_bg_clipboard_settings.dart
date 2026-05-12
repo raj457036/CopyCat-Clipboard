@@ -6,6 +6,9 @@ import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/constants/numbers/duration.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/di/di.dart';
@@ -19,7 +22,6 @@ import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/widgets/badges.dart';
 import 'package:clipboard/utils/color_extension.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/pro_tip_banner.dart';
 import 'package:flutter/material.dart';
@@ -275,7 +277,13 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   }
 
   Future<void> setupConfiguration() async {
-    showTextSnackbar(context.locale.abc__ack__preparing, isLoading: true);
+    InAppNotificationService.i.notify(
+      NotificationMessage(
+        id: "bg_setup",
+        body: context.locale.abc__ack__preparing,
+        type: .loading,
+      ),
+    );
     setState(() {
       writingConfig = true;
     });
@@ -324,16 +332,19 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
         secure: true,
       );
       await wait(1000);
-      if (mounted) {
-        showTextSnackbar(
-          context.locale.abc__ack__ready,
-          success: true,
-          closePrevious: true,
-        );
-      }
+      if (!mounted) return;
+
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "bg_setup_success",
+          body: context.locale.abc__ack__ready,
+          type: .success,
+        ),
+      );
     } catch (e) {
       logger.e(e);
-      closeSnackbar();
+    } finally {
+      InAppNotificationService.i.dismiss("bg_setup");
     }
     setState(() {
       writingConfig = false;
@@ -367,22 +378,37 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
           _detectionStatusOutcome = 'none';
         });
       }
-      showTextSnackbar(
-        normalizedMode == 'inactive'
-            ? 'Detection mode cleared'
-            : 'Detection mode updated',
-        success: true,
+
+      if (!mounted) return;
+
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "detection_mode_updated",
+          body: normalizedMode == 'inactive'
+              ? context.locale.abc__ack__detection_mode_cleared
+              : context.locale.abc__ack__detection_mode_updated,
+          type: .success,
+        ),
       );
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          _selectedMode = previousMode;
-          _detectionStatusState = previousStatusState;
-          _detectionStatusOutcome = previousStatusOutcome;
-        });
-      }
       logger.e("Failed to update detection mode: $e");
-      showTextSnackbar("Failed to update detection mode", failure: true);
+      if (!mounted) return;
+
+      setState(() {
+        _selectedMode = previousMode;
+        _detectionStatusState = previousStatusState;
+        _detectionStatusOutcome = previousStatusOutcome;
+      });
+
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "detection_mode_update_failed",
+          body: context.locale.abc__ack__detection_mode_update_failed(
+            message: e.toString(),
+          ),
+          type: .error,
+        ),
+      );
     }
   }
 

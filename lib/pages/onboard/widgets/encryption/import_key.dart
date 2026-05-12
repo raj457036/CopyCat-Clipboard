@@ -4,12 +4,15 @@ import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart'
+    show InAppNotificationService;
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/pages/onboard/widgets/locale_and_logout.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:clipboard/widgets/dialogs/info_dialog.dart';
@@ -77,13 +80,24 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
           importedKeyId != widget.importableKeyId ||
           importedKey == null) {
         importedKey = null;
-        showFailureSnackbar(
-          Failure.fromMessage(locale.onboarding__snackbar__invalid_key),
+
+        InAppNotificationService.i.notify(
+          NotificationMessage(
+            id: "invalid_key",
+            body: locale.onboarding__snackbar__invalid_key,
+            type: .error,
+          ),
         );
         return;
       }
     } catch (e) {
-      showFailureSnackbar(Failure.fromException(e));
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "import_key_failed",
+          body: Failure.fromException(e).message,
+          type: .error,
+        ),
+      );
     } finally {
       await wait(200);
       setState(() {
@@ -104,7 +118,13 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
       await appConfigCubit.toggleAutoEncrypt(true);
       widget.onImportSuccess();
     } catch (e) {
-      showFailureSnackbar(Failure.fromException(e));
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "save_key_failed",
+          body: Failure.fromException(e).message,
+          type: .error,
+        ),
+      );
     } finally {
       if (mounted) {
         setState(() {
@@ -141,13 +161,25 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
 
     try {
       final result = await widget.clipboardRepository.deleteAllEncrypted();
-      await result.fold((l) async => showFailureSnackbar(l), (_) async {
-        await authCubit.removeEncryptionSetup();
-        showTextSnackbar(
-          locale.onboarding__snackbar__reset_key__success,
-          success: true,
-        );
-      });
+      await result.fold(
+        (l) async => InAppNotificationService.i.notify(
+          NotificationMessage(
+            id: "reset_key_failed",
+            body: Failure.fromException(l).message,
+            type: .error,
+          ),
+        ),
+        (_) async {
+          await authCubit.removeEncryptionSetup();
+          InAppNotificationService.i.notify(
+            NotificationMessage(
+              id: "reset_key_success",
+              body: locale.onboarding__snackbar__reset_key__success,
+              type: .success,
+            ),
+          );
+        },
+      );
     } finally {
       setState(() {
         saving = false;

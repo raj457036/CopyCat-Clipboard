@@ -1,15 +1,18 @@
+import 'dart:async';
+
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
-import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
-import 'package:clipboard/utils/snackbar.dart';
+import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
@@ -34,24 +37,28 @@ Future<void> multiCopyToClipboard(
   BuildContext context,
   List<ClipboardItem> items,
 ) async {
-  final ctx = context.mounted ? context : rootNavKey.currentContext!;
+  final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   try {
     final cubit = ctx.read<OfflinePersistenceCubit>();
     final result = await cubit.copyToClipboard(items);
     if (!ctx.mounted) return;
     if (result) {
-      showTextSnackbar(
-        ctx.locale.app__ack__copied,
-        closePrevious: true,
-        context: ctx,
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "copy_to_clipboard_success",
+          body: ctx.locale.app__ack__copied,
+          type: .success,
+        ),
       );
       _maybeShowReviewPrompt(ctx);
     }
   } catch (e) {
-    showTextSnackbar(
-      ctx.locale.app__unknown_error,
-      closePrevious: true,
-      context: ctx,
+    InAppNotificationService.i.notify(
+      NotificationMessage(
+        id: "copy_to_clipboard_error",
+        body: ctx.locale.app__unknown_error,
+        type: .error,
+      ),
     );
   }
 }
@@ -62,31 +69,42 @@ Future<void> copyToClipboard(
   bool saveFile = false,
   bool noAck = false,
 }) async {
-  final ctx = context.mounted ? context : rootNavKey.currentContext!;
+  final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   try {
     final cubit = ctx.read<OfflinePersistenceCubit>();
     final result = await cubit.copyToClipboard([item], saveFile: saveFile);
     if (!ctx.mounted) return;
     if (noAck) return;
     if (result) {
-      showTextSnackbar(
-        saveFile ? ctx.locale.app__ack__exported : ctx.locale.app__ack__copied,
-        closePrevious: true,
-        context: ctx,
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "copy_to_clipboard_success",
+          body: saveFile
+              ? ctx.locale.app__ack__exported
+              : ctx.locale.app__ack__copied,
+          type: .success,
+        ),
       );
       _maybeShowReviewPrompt(ctx);
     }
   } catch (e) {
-    showTextSnackbar(
-      ctx.locale.app__unknown_error,
-      closePrevious: true,
-      context: ctx,
+    // showTextSnackbar(
+    //   ctx.locale.app__unknown_error,
+    //   closePrevious: true,
+    //   context: ctx,
+    // );
+    InAppNotificationService.i.notify(
+      NotificationMessage(
+        id: "copy_to_clipboard_error",
+        body: ctx.locale.app__unknown_error,
+        type: .error,
+      ),
     );
   }
 }
 
 Future<void> preview(BuildContext context, ClipboardItem item) async {
-  final ctx = context.mounted ? context : rootNavKey.currentContext!;
+  final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   ctx.pushNamed(
     RouteConstants.preview,
     pathParameters: {"id": item.id.toString()},
@@ -97,19 +115,26 @@ Future<void> shareClipboardItem(
   BuildContext context,
   ClipboardItem item,
 ) async {
-  final ctx = context.mounted ? context : rootNavKey.currentContext!;
+  final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   try {
-    final shared = await ctx.read<OfflinePersistenceCubit>().shareClipboardItem(
-      ctx,
-      item,
+    unawaited(
+      ctx.read<OfflinePersistenceCubit>().shareClipboardItem(ctx, item),
     );
-    if (!shared && ctx.mounted) {
-      showTextSnackbar(ctx.locale.app__feature_unavailable, context: ctx);
-    }
+    InAppNotificationService.i.notify(
+      NotificationMessage(
+        id: "share_item_unavailable",
+        body: ctx.locale.app__feature_unavailable,
+        type: .warning,
+      ),
+    );
   } catch (e) {
-    if (ctx.mounted) {
-      showTextSnackbar(ctx.locale.app__unknown_error, context: ctx);
-    }
+    InAppNotificationService.i.notify(
+      NotificationMessage(
+        id: "share_item_error",
+        body: ctx.locale.app__unknown_error,
+        type: .error,
+      ),
+    );
   }
 }
 
@@ -117,23 +142,31 @@ Future<void> shareClipboardItems(
   BuildContext context,
   List<ClipboardItem> items,
 ) async {
-  final ctx = context.mounted ? context : rootNavKey.currentContext!;
+  final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   try {
-    final shared = await ctx
-        .read<OfflinePersistenceCubit>()
-        .shareClipboardItems(ctx, items);
-    if (!shared && ctx.mounted) {
-      showTextSnackbar(ctx.locale.app__feature_unavailable, context: ctx);
-    }
+    unawaited(
+      ctx.read<OfflinePersistenceCubit>().shareClipboardItems(ctx, items),
+    );
+    InAppNotificationService.i.notify(
+      NotificationMessage(
+        id: "share_items_unavailable",
+        body: ctx.locale.app__feature_unavailable,
+        type: .warning,
+      ),
+    );
   } catch (e) {
-    if (ctx.mounted) {
-      showTextSnackbar(ctx.locale.app__unknown_error, context: ctx);
-    }
+    InAppNotificationService.i.notify(
+      NotificationMessage(
+        id: "share_items_error",
+        body: ctx.locale.app__unknown_error,
+        type: .error,
+      ),
+    );
   }
 }
 
 Future<void> selectClip(BuildContext context, ClipboardItem item) async {
-  final ctx = context.mounted ? context : rootNavKey.currentContext!;
+  final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   ctx.read<SelectedClipsCubit>().select(item);
 }
 
@@ -141,10 +174,11 @@ Future<void> decryptItem(BuildContext context, ClipboardItem item) async {
   final persitCubit = context.read<OfflinePersistenceCubit>();
   final appConfig = context.read<AppConfigCubit>();
   if (!appConfig.isE2EESetupDone) {
-    showFailureSnackbar(
-      Failure(
-        message: context.locale.app__ack__missing_e2e_setup,
-        code: "e2ee-no-setup",
+    InAppNotificationService.i.notify(
+      NotificationMessage(
+        id: "e2ee-no-setup",
+        body: context.locale.app__ack__missing_e2e_setup,
+        type: .error,
       ),
     );
     return;
@@ -155,7 +189,7 @@ Future<void> decryptItem(BuildContext context, ClipboardItem item) async {
 }
 
 Future<void> downloadFile(BuildContext context, ClipboardItem item) async {
-  final ctx = context.mounted ? context : rootNavKey.currentContext!;
+  final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   ctx.read<CloudPersistanceCubit>().download(item);
 }
 
@@ -169,7 +203,7 @@ Future<ClipboardItem?> editTextContent(
   BuildContext context,
   ClipboardItem item,
 ) async {
-  final ctx = context.mounted ? context : rootNavKey.currentContext!;
+  final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   return await ctx.pushNamed<ClipboardItem?>(
     RouteConstants.createClipNote,
     queryParameters: {"id": item.id.toString()},
@@ -250,7 +284,7 @@ Future<bool> deleteClipboardItem(
   BuildContext context,
   List<ClipboardItem> items,
 ) async {
-  final ctx = context.mounted ? context : rootNavKey.currentContext!;
+  final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   final confirmation = await ConfirmDialog(
     title: context.locale.dialog__delete_clip__title,
     message: context.locale.dialog__delete_clip__subtitle(
@@ -273,35 +307,58 @@ Future<void> openFile(ClipboardItem item) async {
       case ResultType.error:
       case ResultType.noAppToOpen:
         final errorMessage =
-            rootNavKey.currentContext?.locale.app__ack__no_app_for_file;
-        if (errorMessage != null) showTextSnackbar(errorMessage);
+            rootNavigationKey.currentContext?.locale.app__ack__no_app_for_file;
+        if (errorMessage != null) {
+          // showTextSnackbar(errorMessage);
+          InAppNotificationService.i.notify(
+            NotificationMessage(
+              id: "open_file_error_no_app",
+              body: errorMessage,
+            ),
+          );
+        }
       case ResultType.permissionDenied:
-        final errorMessage =
-            rootNavKey.currentContext?.locale.app__ack__perm_fail_to_open_file;
-        if (errorMessage != null) showTextSnackbar(errorMessage);
+        final errorMessage = rootNavigationKey
+            .currentContext
+            ?.locale
+            .app__ack__perm_fail_to_open_file;
+        if (errorMessage != null) {
+          InAppNotificationService.i.notify(
+            NotificationMessage(
+              id: "open_file_error_permission_denied",
+              body: errorMessage,
+            ),
+          );
+        }
       case _:
     }
   }
 }
 
 Future<void> pasteContent(BuildContext context) async {
-  final ctx = context.mounted ? context : rootNavKey.currentContext!;
-  showTextSnackbar(
-    ctx.locale.app__ack__pasting,
-    isLoading: true,
-    closePrevious: true,
+  final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
+  InAppNotificationService.i.notify(
+    NotificationMessage(
+      id: "pasting",
+      body: ctx.locale.app__ack__pasting,
+      type: .loading,
+    ),
   );
-  await ctx.read<OfflinePersistenceCubit>().paste();
-  if (ctx.mounted) {
-    showTextSnackbar(ctx.locale.app__ack__pasted, closePrevious: true);
-  }
+  unawaited(ctx.read<OfflinePersistenceCubit>().paste());
+  InAppNotificationService.i.notify(
+    NotificationMessage(
+      id: "pasted",
+      body: ctx.locale.app__ack__pasted,
+      type: .success,
+    ),
+  );
 }
 
 Future<void> changeCollection(
   BuildContext context,
   List<ClipboardItem> items,
 ) async {
-  final ctx = context.mounted ? context : rootNavKey.currentContext!;
+  final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   final cubit = ctx.read<OfflinePersistenceCubit>();
 
   final selectedCollectionId = items.isNotEmpty

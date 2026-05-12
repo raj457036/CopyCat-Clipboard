@@ -4,12 +4,15 @@ import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/numbers/breakpoints.dart';
 import 'package:clipboard/base/constants/strings/asset_constants.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart'
+    show InAppNotificationService;
 import 'package:clipboard/base/domain/model/localization.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/pages/login/widgets/local_signin_button.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/widgets/forms/login_form.dart';
 import 'package:clipboard/widgets/locale_dropdown_button.dart';
 import 'package:flutter/gestures.dart';
@@ -119,7 +122,13 @@ class LoginForm extends StatelessWidget {
                         final cubit = context.read<AuthCubit>();
                         final failure = Failure.fromException(error);
                         cubit.unauthenticated(failure);
-                        showFailureSnackbar(failure);
+                        InAppNotificationService.i.notify(
+                          NotificationMessage(
+                            id: "login_failed",
+                            body: failure.message,
+                            type: .error,
+                          ),
+                        );
                       },
                       localization: AuthUserFormLocalization(
                         displayNameLabel:

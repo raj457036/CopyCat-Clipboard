@@ -57,7 +57,6 @@
   "app__ack__done": "完成",
   "app__ack__quit_app": "退出应用",
   "app__ack__deleted": "已删除",
-  "app__ack__deleting": "删除中",
   "app__ack__internet_connected": "互联网已连接",
   "app__ack__internet_disconnected": "互联网已断开连接",
   "app__ack__logout_success": "您已成功退出。",

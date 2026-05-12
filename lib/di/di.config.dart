@@ -32,6 +32,8 @@ import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart'
     as _i246;
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart'
     as _i706;
+import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart'
+    as _i554;
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart'
     as _i653;
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart'
@@ -395,31 +397,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<String>(instanceName: 'device_id'),
       ),
     );
-    gh.lazySingleton<_i706.OfflinePersistenceCubit>(
-      () => _i706.OfflinePersistenceCubit(
-        gh<_i29.AuthCubit>(),
-        gh<_i230.ClipboardRepository>(instanceName: 'local'),
-        gh<_i63.ClipboardService>(),
-        gh<_i542.AppConfigCubit>(),
-        gh<_i533.ApplicationMetaResolver>(),
-        gh<_i707.AnalyticsRepository>(),
-        gh<String>(instanceName: 'device_id'),
-        gh<_i292.SyncEventBus>(),
-      ),
-    );
     gh.lazySingleton<_i112.FileCloudService>(
       () => _i858.GoogleDriveFileCloudService(
         gh<_i521.DriveSetupCubit>(),
         gh<_i542.AppConfigCubit>(),
       ),
     );
-    gh.singleton<_i227.QuickPasteService>(
-      () => _i227.QuickPasteService(
+    gh.lazySingleton<_i554.PasteStackCubit>(
+      () => _i554.PasteStackCubit(
         gh<_i542.AppConfigCubit>(),
-        gh<_i230.ClipboardRepository>(instanceName: 'local'),
-        gh<_i706.OfflinePersistenceCubit>(),
-        gh<_i533.ApplicationMetaResolver>(),
-        gh<_i291.FocusWindow>(),
+        gh<_i657.WindowActionCubit>(),
+        gh<_i246.MonetizationCubit>(),
       ),
     );
     gh.lazySingleton<_i283.CloudPersistanceCubit>(
@@ -429,6 +417,19 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i542.AppConfigCubit>(),
         gh<String>(instanceName: 'device_id'),
         gh<_i230.ClipboardRepository>(instanceName: 'remote'),
+      ),
+    );
+    gh.lazySingleton<_i706.OfflinePersistenceCubit>(
+      () => _i706.OfflinePersistenceCubit(
+        gh<_i29.AuthCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i63.ClipboardService>(),
+        gh<_i554.PasteStackCubit>(),
+        gh<_i542.AppConfigCubit>(),
+        gh<_i533.ApplicationMetaResolver>(),
+        gh<_i707.AnalyticsRepository>(),
+        gh<String>(instanceName: 'device_id'),
+        gh<_i292.SyncEventBus>(),
       ),
     );
     gh.lazySingleton<_i589.SyncAdapter<_i1066.ClipboardItem>>(
@@ -441,6 +442,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i543.ClipCrossSyncListener>(),
         gh<_i112.FileCloudService>(),
         gh<_i23.ClipboardSource>(instanceName: 'local'),
+      ),
+    );
+    gh.singleton<_i227.QuickPasteService>(
+      () => _i227.QuickPasteService(
+        gh<_i542.AppConfigCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i706.OfflinePersistenceCubit>(),
+        gh<_i533.ApplicationMetaResolver>(),
+        gh<_i291.FocusWindow>(),
       ),
     );
     gh.singleton<_i443.SyncOrchestrator>(

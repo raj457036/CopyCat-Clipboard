@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
-import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/domain/model/application_meta/activity_meta_payload.dart';
@@ -36,6 +35,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   final ClipboardRepository repo;
   final ClipboardService clipboard;
   final AppConfigCubit appConfig;
+  final PasteStackCubit pasteStack;
   final ApplicationMetaResolver appMetaResolver;
   final String deviceId;
   final AnalyticsRepository analyticsRepo;
@@ -49,6 +49,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     this.auth,
     @Named("local") this.repo,
     this.clipboard,
+    this.pasteStack,
     this.appConfig,
     this.appMetaResolver,
     this.analyticsRepo,
@@ -397,7 +398,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         await persist([userItem]);
         continue;
       }
-      rootNavKey.currentContext?.read<PasteStackCubit>().pushItems([item]);
+      pasteStack.pushItems([item]);
       await persist([item]);
     }
   }

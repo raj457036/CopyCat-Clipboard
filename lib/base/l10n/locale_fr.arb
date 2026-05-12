@@ -57,7 +57,6 @@
   "app__ack__done": "Terminé",
   "app__ack__quit_app": "Quitter l'application",
   "app__ack__deleted": "Supprimé",
-  "app__ack__deleting": "Suppression",
   "app__ack__internet_connected": "Internet connecté",
   "app__ack__internet_disconnected": "Internet déconnecté",
   "app__ack__logout_success": "Vous vous êtes déconnecté avec succès.",

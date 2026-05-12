@@ -513,6 +513,15 @@ abstract class AppLocalizations {
   /// **'Missing encryption setup'**
   String get app__ack__missing_e2e_setup;
 
+  /// No description provided for @app__ack__failed_to_sync.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to sync {entityType}: {message}'**
+  String app__ack__failed_to_sync({
+    required String entityType,
+    required String message,
+  });
+
   /// No description provided for @dialog__delete_clip__title.
   ///
   /// In en, this message translates to:
@@ -3426,6 +3435,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'⚠️ Realtime mode required.'**
   String get abc__tile__two_way_sync__realtime_required;
+
+  /// No description provided for @abc__ack__detection_mode_cleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Detection mode cleared'**
+  String get abc__ack__detection_mode_cleared;
+
+  /// No description provided for @abc__ack__detection_mode_updated.
+  ///
+  /// In en, this message translates to:
+  /// **'Detection mode updated'**
+  String get abc__ack__detection_mode_updated;
+
+  /// No description provided for @abc__ack__detection_mode_update_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update detection mode: {message}'**
+  String abc__ack__detection_mode_update_failed({required String message});
 
   /// No description provided for @current_time__local.
   ///

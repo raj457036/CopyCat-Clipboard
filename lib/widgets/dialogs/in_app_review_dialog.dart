@@ -1,9 +1,9 @@
 import 'package:animate_do/animate_do.dart' show SlideInLeft, SlideInUp, Tada;
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/copycat_logo.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import 'package:go_router/go_router.dart';
 
 /// Shows the in-app review dialog
 Future<void> showInAppReviewDialog({required AppConfigCubit cubit}) async {
-  final context = rootNavKey.currentContext;
+  final context = rootNavigationKey.currentContext;
   if (context == null) {
     logger.w('Cannot show review dialog: root navigator context is null');
     return;

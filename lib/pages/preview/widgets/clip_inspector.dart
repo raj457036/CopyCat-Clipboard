@@ -1,7 +1,11 @@
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart'
+    show InAppNotificationService;
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
@@ -11,7 +15,6 @@ import 'package:clipboard/pages/preview/page.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/datetime_extension.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/collection_selector_tile.dart';
 import 'package:clipboard/widgets/source_app_icon.dart';
@@ -184,10 +187,12 @@ class _ClipInspectorState extends State<ClipInspector> {
 
     ClipboardItemPreviewPage.of(context).updateItem(updatedItem);
     FocusScope.of(context).unfocus();
-    showTextSnackbar(
-      context.locale.preview__inspector__saved,
-      closePrevious: true,
-      context: context,
+    InAppNotificationService.i.notify(
+      NotificationMessage(
+        id: "clip_inspector_saved",
+        body: context.locale.preview__inspector__saved,
+        type: .success,
+      ),
     );
   }
 

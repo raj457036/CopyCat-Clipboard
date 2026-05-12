@@ -2,12 +2,15 @@ import 'dart:async' show StreamSubscription;
 
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationContent, NotificationMessage;
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/data/services/post_sync_decryption_service.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/failure.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -44,8 +47,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     this.eventBus,
     this.monetizationCubit,
     this.decryptionService,
-  )
-    : super(const SyncStatusState.unknown()) {
+  ) : super(const SyncStatusState.unknown()) {
     _subscribeToEvents();
   }
 
@@ -111,7 +113,18 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     }
 
     _lastNotifiedAt[key] = now;
-    showFailureSnackbar(failure);
+    InAppNotificationService.i.notify(
+      NotificationMessage.builder(
+        builder: (context) => NotificationContent(
+          body: context.locale.app__ack__failed_to_sync(
+            entityType: event.entityType,
+            message: failure.message,
+          ),
+        ),
+        id: key,
+        type: .error,
+      ),
+    );
   }
 
   Failure _toUserFailure(Failure failure) {
@@ -187,9 +200,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     await decryptionService.decryptAll(
       onProgress: (decrypted, total) {
         if (!isClosed) {
-          emit(
-            SyncStatusState.decrypting(decrypted: decrypted, total: total),
-          );
+          emit(SyncStatusState.decrypting(decrypted: decrypted, total: total));
         }
       },
     );

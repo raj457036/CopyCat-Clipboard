@@ -4,9 +4,12 @@ import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/constants/misc.dart';
 import 'package:clipboard/base/constants/numbers/values.dart';
+import 'package:clipboard/base/data/services/notification_service.dart'
+    show InAppNotificationService;
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/widgets/drag_drop/drop_area.dart';
 import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
@@ -175,9 +178,12 @@ class _ClipDropRegionState extends State<ClipDropRegion> {
       }
 
       if (items.length > kMaxDropItemCount) {
-        showTextSnackbar(
-          context.locale.dnd__ack__error_max_drop_count(
-            count: kMaxDropItemCount,
+        InAppNotificationService.i.notify(
+          NotificationMessage(
+            id: "drop_region_error_max_drop_count",
+            body: context.locale.dnd__ack__error_max_drop_count(
+              count: kMaxDropItemCount,
+            ),
           ),
         );
       }

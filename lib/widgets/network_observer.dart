@@ -5,8 +5,11 @@ import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/data/services/notification_service.dart'
+    show InAppNotificationService;
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -73,18 +76,22 @@ class _NetworkObserverState extends State<NetworkObserver> {
       if (wasDisconnected) {
         wasDisconnected = false;
         refetchStates();
-        showTextSnackbar(
-          context.locale.app__ack__internet_connected,
-          success: true,
-          closePrevious: true,
+        InAppNotificationService.i.notify(
+          NotificationMessage(
+            id: "internet_connected",
+            body: context.locale.app__ack__internet_connected,
+            type: .success,
+          ),
         );
       }
     } else {
       wasDisconnected = true;
-      showTextSnackbar(
-        context.locale.app__ack__internet_disconnected,
-        failure: true,
-        closePrevious: true,
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "internet_disconnected",
+          body: context.locale.app__ack__internet_disconnected,
+          type: .warning,
+        ),
       );
     }
   }

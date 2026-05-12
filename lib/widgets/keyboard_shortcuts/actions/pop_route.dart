@@ -1,4 +1,4 @@
-import 'package:clipboard/base/constants/key.dart';
+import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +14,7 @@ class PopRouteIntent extends Intent {
 
 class HideWindowAction extends ContextAction<PopRouteIntent> {
   bool _dismissTopRoute() {
-    final rootNavigator = rootNavKey.currentState;
+    final rootNavigator = rootNavigationKey.currentState;
     if (rootNavigator == null || !rootNavigator.canPop()) return false;
 
     FocusManager.instance.primaryFocus?.unfocus();
@@ -26,7 +26,7 @@ class HideWindowAction extends ContextAction<PopRouteIntent> {
   void invoke(PopRouteIntent intent, [BuildContext? context]) {
     if (context == null) return;
 
-    final rootContext = rootNavKey.currentContext ?? context;
+    final rootContext = rootNavigationKey.currentContext ?? context;
 
     if (_dismissTopRoute()) {
       return;

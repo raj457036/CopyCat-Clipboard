@@ -4,11 +4,14 @@ import 'dart:convert' show utf8, base64;
 import 'package:app_links/app_links.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
-import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
+import 'package:clipboard/base/data/services/notification_service.dart'
+    show InAppNotificationService;
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +21,7 @@ class ApplinkListener {
   late final StreamSubscription sub;
   final appLink = AppLinks();
 
-  BuildContext get context => rootNavKey.currentContext!;
+  BuildContext get context => rootNavigationKey.currentContext!;
 
   Future<void> onUri(Uri uri) async {
     logger.w("🔗 NEW APP LINK: $uri");
@@ -67,10 +70,15 @@ class ApplinkListener {
         if (path != null) {
           router.pushNamed(path);
         }
-        if (failure != null) {
-          logger.e("Failed to validate auth code: $failure");
-          showFailureSnackbar(failure);
-        }
+        if (failure == null) return;
+        logger.e("Failed to validate auth code: $failure");
+        InAppNotificationService.i.notify(
+          NotificationMessage(
+            id: "auth_code_validation_error",
+            body: failure.message,
+            type: .error,
+          ),
+        );
       }
     }
   }

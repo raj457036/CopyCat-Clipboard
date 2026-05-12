@@ -1,7 +1,7 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +26,7 @@ class InconsistentTiming extends StatefulWidget {
     _visible = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       showAdaptiveDialog(
-        context: rootNavKey.currentContext!,
+        context: rootNavigationKey.currentContext!,
         barrierDismissible: false,
         routeSettings: const RouteSettings(name: "Inconsistent-Time"),
         builder: (context) {

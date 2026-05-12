@@ -69,13 +69,23 @@
   "app__ack__done": "Done",
   "app__ack__quit_app": "Quit App",
   "app__ack__deleted": "Deleted",
-  "app__ack__deleting": "Deleting",
   "app__ack__internet_connected": "Internet Connected",
   "app__ack__internet_disconnected": "Internet Disconnected",
   "app__ack__logout_success": "You are successfully logged out.",
   "app__ack__no_app_for_file": "No application found to open this file.",
   "app__ack__perm_fail_to_open_file": "Permission to open this file not granted.",
   "app__ack__missing_e2e_setup": "Missing encryption setup",
+  "app__ack__failed_to_sync": "Failed to sync {entityType}: {message}",
+  "@app__ack__failed_to_sync": {
+    "placeholders": {
+      "entityType": {
+        "type": "String"
+      },
+      "message": {
+        "type": "String"
+      }
+    }
+  },
   "@@DIALOG": "Common Dialog",
   "dialog__delete_clip__title": "Delete Clip",
   "dialog__delete_clip__subtitle": "{itemCount, plural, other{Are you sure you want to delete these clips?} one{Are you sure you want to delete this clip?}}",
@@ -759,6 +769,16 @@
     }
   },
   "abc__tile__two_way_sync__realtime_required": "⚠️ Realtime mode required.",
+  "abc__ack__detection_mode_cleared": "Detection mode cleared",
+  "abc__ack__detection_mode_updated": "Detection mode updated",
+  "abc__ack__detection_mode_update_failed": "Failed to update detection mode: {message}",
+  "@abc__ack__detection_mode_update_failed": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
   "current_time__local": "Local: {time}",
   "@current_time__local": {
     "placeholders": {

@@ -1,7 +1,9 @@
 import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,7 +22,13 @@ class DriveSetupPage extends StatelessWidget {
           switch (state) {
             case DriveSetupDone():
               Navigator.pop(context);
-              showTextSnackbar(context.locale.drive__snackbar__success);
+              InAppNotificationService.i.notify(
+                NotificationMessage(
+                  id: "drive_setup_success",
+                  body: context.locale.drive__snackbar__success,
+                  type: .success,
+                ),
+              );
           }
         },
         builder: (context, state) {

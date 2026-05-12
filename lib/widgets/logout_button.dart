@@ -1,8 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,15 +21,16 @@ class LogoutButton extends StatelessWidget {
       confirmationDelay: 3, // wait 5 second
     ).show(context);
 
-    if (confirm) {
-      showTextSnackbar(
-        context.locale.dialog__logging_out__ack,
-        isLoading: true,
-        closePrevious: true,
-      );
+    if (!confirm) return;
 
-      await context.read<AuthCubit>().logout();
-    }
+    InAppNotificationService.i.notify(
+      NotificationMessage(
+        id: "logout_in_progress",
+        body: context.locale.dialog__logging_out__ack,
+      ),
+    );
+
+    await context.read<AuthCubit>().logout();
   }
 
   @override

@@ -1,5 +1,7 @@
+import 'package:clipboard/base/data/services/notification_service.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/common/failure.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
@@ -84,9 +86,14 @@ class _MeidaKitVideoPlayerState extends State<MeidaKitVideoPlayer> {
     try {
       await controller.waitUntilFirstFrameRendered;
     } catch (e) {
-      if (mounted) {
-        showFailureSnackbar(Failure.fromException(e));
-      }
+      if (!mounted) return;
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "video_player_error",
+          body: Failure.fromException(e).message,
+          type: .error,
+        ),
+      );
     } finally {
       if (mounted) {
         setState(() => loading = false);

@@ -217,6 +217,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'Falta configuración de encriptación';
 
   @override
+  String app__ack__failed_to_sync({
+    required String entityType,
+    required String message,
+  }) {
+    return 'Failed to sync $entityType: $message';
+  }
+
+  @override
   String get dialog__delete_clip__title => 'Eliminar Clip';
 
   @override
@@ -1919,6 +1927,17 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get abc__tile__two_way_sync__realtime_required =>
       '⚠️ Realtime mode required.';
+
+  @override
+  String get abc__ack__detection_mode_cleared => 'Detection mode cleared';
+
+  @override
+  String get abc__ack__detection_mode_updated => 'Detection mode updated';
+
+  @override
+  String abc__ack__detection_mode_update_failed({required String message}) {
+    return 'Failed to update detection mode: $message';
+  }
 
   @override
   String current_time__local({required String time}) {

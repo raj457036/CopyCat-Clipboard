@@ -31,17 +31,18 @@ import "package:clipboard/widgets/page_route/dynamic_page_route.dart";
 import "package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart";
 import "package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart";
 import "package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart";
-import "package:clipboard/base/constants/key.dart";
 import "package:clipboard/base/constants/strings/route_constants.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:go_router/go_router.dart";
 
+final GlobalKey<NavigatorState> rootNavigationKey = GlobalKey<NavigatorState>();
+
 final rootRouter = GoRouter(
   // observers: observers,
   debugLogDiagnostics: kDebugMode,
-  navigatorKey: rootNavKey,
+  navigatorKey: rootNavigationKey,
   // initialLocation: "/",
   errorBuilder: (context, state) {
     return const NotFoundPage();
@@ -313,10 +314,3 @@ FutureOr<String?> idPresentOrRedirect(
   }
   return null;
 }
-
-final routeConfig = RouterConfig(
-  routeInformationParser: rootRouter.routeInformationParser,
-  routeInformationProvider: rootRouter.routeInformationProvider,
-  routerDelegate: rootRouter.routerDelegate,
-  backButtonDispatcher: rootRouter.backButtonDispatcher,
-);

@@ -1,13 +1,16 @@
 import 'dart:async';
 
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart'
+    show InAppNotificationService;
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:flutter/material.dart';
@@ -41,10 +44,19 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
     try {
       final countResult = await widget.clipboardRepository
           .fetchEncryptedCount();
-      countResult.fold((l) => showFailureSnackbar(l), (r) {
-        totalEncrypted = r;
-        startDecryption();
-      });
+      countResult.fold(
+        (l) => InAppNotificationService.i.notify(
+          NotificationMessage(
+            id: "decrypt_clips_error",
+            body: l.message,
+            type: .error,
+          ),
+        ),
+        (r) {
+          totalEncrypted = r;
+          startDecryption();
+        },
+      );
     } finally {
       setState(() {
         loading = false;
@@ -64,7 +76,13 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
 
       await result.fold(
         (l) async {
-          showFailureSnackbar(l);
+          InAppNotificationService.i.notify(
+            NotificationMessage(
+              id: "decrypt_clips_error",
+              body: l.message,
+              type: .error,
+            ),
+          );
           hasMore = false;
           totalEncrypted = -1;
           decryptedCount = 0;
@@ -81,7 +99,13 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
                 decryptedCount++;
                 await Future(dud);
               } catch (e) {
-                showFailureSnackbar(Failure.fromException(e));
+                InAppNotificationService.i.notify(
+                  NotificationMessage(
+                    id: "decrypt_clips_error",
+                    body: Failure.fromException(e).message,
+                    type: .error,
+                  ),
+                );
                 hasMore = false;
                 totalEncrypted = -1;
                 decryptedCount = 0;

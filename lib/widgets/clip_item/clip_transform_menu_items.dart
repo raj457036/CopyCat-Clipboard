@@ -7,7 +7,6 @@ import 'package:clipboard/base/domain/services/analysis/code_text_analysis.dart'
 import 'package:clipboard/base/domain/services/analysis/text_analysis.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/menu.dart';
 import 'package:flutter/material.dart';
@@ -222,7 +221,6 @@ Future<void> _copyOrPasteResult(
   TextCategory? categoryOverride,
 }) async {
   if (text.trim().isEmpty) {
-    showTextSnackbar('No result for $label.', failure: true);
     return;
   }
 
@@ -240,7 +238,6 @@ Future<void> _copyOrPasteResult(
 
   if (saveAsNewClip) {
     await context.read<OfflinePersistenceCubit>().persist([transformed]);
-    showTextSnackbar('Saved transformed clip as a new item.');
     return;
   }
 

@@ -1,5 +1,8 @@
+import 'package:clipboard/base/data/services/notification_service.dart'
+    show InAppNotificationService;
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/common/failure.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -79,7 +82,13 @@ class _NativeVideoPlayerState extends State<NativeVideoPlayer> {
       await controller.play();
     } catch (e) {
       if (mounted && identical(_controller, controller)) {
-        showFailureSnackbar(Failure.fromException(e));
+        InAppNotificationService.i.notify(
+          NotificationMessage(
+            id: "video_player_error",
+            body: Failure.fromException(e).message,
+            type: .error,
+          ),
+        );
       }
     } finally {
       await previous?.dispose();

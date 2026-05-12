@@ -3,11 +3,14 @@ import 'dart:convert' show jsonEncode, jsonDecode, utf8;
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/data/services/encryption.dart';
+import 'package:clipboard/base/data/services/notification_service.dart'
+    show InAppNotificationService;
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialogs/export_e2ee.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialogs/generate_e2ee.dart';
@@ -109,7 +112,12 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
       }
       if (context.mounted) {
         context.pop();
-        showTextSnackbar(context.locale.app__ack__exported);
+        InAppNotificationService.i.notify(
+          NotificationMessage(
+            id: "e2ee_dialog_exported",
+            body: context.locale.app__ack__exported,
+          ),
+        );
       }
     }
   }

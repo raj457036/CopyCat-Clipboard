@@ -9,10 +9,12 @@ import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
-import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
@@ -23,8 +25,8 @@ import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/di/di.dart';
+import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/inconsistent_timing.dart';
 import 'package:flutter/material.dart';
@@ -91,12 +93,12 @@ class EventBridge extends StatelessWidget {
     clearPersistedRootDir();
     await dbService.clearAll();
 
-    if (context.mounted && rootNavKey.currentContext != null) {
-      showTextSnackbar(
-        rootNavKey.currentContext!.locale.app__ack__logout_success,
-        closePrevious: true,
-      );
-    }
+    InAppNotificationService.i.notify(
+      NotificationMessage(
+        id: "logout_success",
+        body: rootNavigationKey.currentContext!.locale.app__ack__logout_success,
+      ),
+    );
   }
 
   @override
@@ -110,7 +112,7 @@ class EventBridge extends StatelessWidget {
             listener: (context, state) {
               final view = state.config.view;
               if (view != AppView.windowed) {
-                rootNavKey.currentContext?.goNamed(RouteConstants.home);
+                rootNavigationKey.currentContext?.goNamed(RouteConstants.home);
               }
               final size = view == AppView.windowed
                   ? initialWindowSize
@@ -198,9 +200,11 @@ class EventBridge extends StatelessWidget {
                       context.read<SyncStatusCubit>().syncAll(
                         const SyncAllParams(),
                       );
-                      rootNavKey.currentContext?.goNamed(RouteConstants.home);
+                      rootNavigationKey.currentContext?.goNamed(
+                        RouteConstants.home,
+                      );
                     } else {
-                      rootNavKey.currentContext?.goNamed(
+                      rootNavigationKey.currentContext?.goNamed(
                         RouteConstants.onboard,
                       );
                     }
@@ -214,17 +218,19 @@ class EventBridge extends StatelessWidget {
                     ..setWindowdView()
                     ..show();
                 }
-                rootNavKey.currentContext?.goNamed(RouteConstants.login);
+                rootNavigationKey.currentContext?.goNamed(RouteConstants.login);
               case UnknownAuthState() || AuthenticatingAuthState():
                 logger.i(
                   "Auth State Unknown or Authenticating or Unauthenticated",
                 );
-                rootNavKey.currentContext?.goNamed(RouteConstants.login);
-                closeSnackbar();
+                rootNavigationKey.currentContext?.goNamed(RouteConstants.login);
+                InAppNotificationService.i.dismissAll();
                 await context.windowAction?.show();
               case LocalAuthenticatedAuthState():
                 {
-                  rootNavKey.currentContext?.goNamed(RouteConstants.home);
+                  rootNavigationKey.currentContext?.goNamed(
+                    RouteConstants.home,
+                  );
                   await Future.wait([
                     context.read<AppConfigCubit>().load(),
                     context.read<ClipCollectionCubit>().fetch(),
@@ -259,60 +265,29 @@ class EventBridge extends StatelessWidget {
             }
           },
         ),
-        BlocListener<OfflinePersistenceCubit, OfflinePersistanceState>(
-          listener: (context, state) async {
-            final locales = rootNavKey.currentContext?.locale;
-            switch (state) {
-              case OfflinePersistanceSaved(synced: true):
-                showDebugSnackbar("Offline Saved ( Synced )");
-              case OfflinePersistanceSaved(synced: false):
-                break; // broadcast now handled directly in OfflinePersistenceCubit
-              case OfflinePersistanceError(:final failure):
-                showFailureSnackbar(failure);
-              case OfflinePersistanceDeleted():
-                if (locales != null) {
-                  showTextSnackbar(
-                    locales.app__ack__deleted,
-                    closePrevious: true,
-                  );
-                }
-              case _:
-            }
-          },
-        ),
         BlocListener<CloudPersistanceCubit, CloudPersistanceState>(
           listener: (context, state) async {
-            final locales = rootNavKey.currentContext?.locale;
             final offlineCubit = context.read<OfflinePersistenceCubit>();
             switch (state) {
               case CloudPersistanceSaved(:final item):
-                // Write back the serverId/lastSynced to local DB
-                // (used by manual sync button and download flows)
-                showDebugSnackbar("Cloud Saved ${item.serverId}");
                 offlineCubit.persist([item], synced: true);
               case CloudPersistanceDeleted(:final items):
                 offlineCubit.delete(items);
-              case CloudPersistanceDeleting():
-                if (locales != null) {
-                  showTextSnackbar(
-                    locales.app__ack__deleting,
-                    isLoading: true,
-                    closePrevious: true,
-                  );
-                }
               case CloudPersistanceError(:final failure, :final item):
-                showFailureSnackbar(failure);
+                InAppNotificationService.i.notify(
+                  NotificationMessage(
+                    id: "cloud_persistance_error",
+                    body: failure.message,
+                    type: .error,
+                  ),
+                );
                 if (item != null) {
                   broadcastEvent(CrossSyncEventType.update, item);
                 }
               case CloudPersistanceCreating(:final item) ||
                   CloudPersistanceUpdating(:final item):
-                showDebugSnackbar("Creating/Updating ${item.serverId}");
               case CloudPersistanceUploadingFile(:final item) ||
                   CloudPersistanceDownloadingFile(:final item):
-                showDebugSnackbar(
-                  "Downloading ${item.downloadProgress} | Uploading ${item.uploadProgress}",
-                );
                 broadcastEvent(CrossSyncEventType.update, item);
               case _:
             }

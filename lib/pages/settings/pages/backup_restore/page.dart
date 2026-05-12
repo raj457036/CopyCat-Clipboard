@@ -3,13 +3,15 @@ import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/encryption.dart';
 import 'package:clipboard/base/data/services/manual_backup_restore_service.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart'
+    show NotificationMessage;
 import 'package:clipboard/base/domain/sources/clip_collection.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/snackbar.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -88,16 +90,30 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
       setState(() {
         _backupSummary = result;
       });
-      showTextSnackbar(
-        context.locale.backup_restore__snackbar__saved(
-          outputPath: result.outputPath,
+      // showTextSnackbar(
+      //   context.locale.backup_restore__snackbar__saved(
+      //     outputPath: result.outputPath,
+      //   ),
+      //   success: true,
+      // );
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "backup_created",
+          body: context.locale.backup_restore__snackbar__saved(
+            outputPath: result.outputPath,
+          ),
+          type: .success,
         ),
-        success: true,
       );
     } catch (e) {
-      showTextSnackbar(
-        context.locale.backup_restore__snackbar__create_failed(message: '$e'),
-        failure: true,
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "backup_create_failed",
+          body: context.locale.backup_restore__snackbar__create_failed(
+            message: '$e',
+          ),
+          type: .error,
+        ),
       );
     } finally {
       if (mounted) {
@@ -147,17 +163,25 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
 
       _clipboardCubit.refresh();
 
-      showTextSnackbar(
-        context.locale.backup_restore__snackbar__restore_completed(
-          clips: summary.clipsRestored,
-          collections: summary.collectionsRestored,
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "backup_restore_completed",
+          body: context.locale.backup_restore__snackbar__restore_completed(
+            clips: summary.clipsRestored,
+            collections: summary.collectionsRestored,
+          ),
+          type: .success,
         ),
-        success: true,
       );
     } catch (e) {
-      showTextSnackbar(
-        context.locale.backup_restore__snackbar__restore_failed(message: '$e'),
-        failure: true,
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "backup_restore_failed",
+          body: context.locale.backup_restore__snackbar__restore_failed(
+            message: '$e',
+          ),
+          type: .error,
+        ),
       );
     } finally {
       if (mounted) {
@@ -188,16 +212,22 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
     void onContinue(BuildContext context) {
       if (!formKey.currentState!.validate()) return;
       if (selectedClipTypes.isEmpty) {
-        showTextSnackbar(
-          locale.backup_restore__error__select_clip_type,
-          failure: true,
+        InAppNotificationService.i.notify(
+          NotificationMessage(
+            id: "backup_options_error",
+            body: locale.backup_restore__error__select_clip_type,
+            type: .error,
+          ),
         );
         return;
       }
       if (fromDate != null && toDate != null && fromDate!.isAfter(toDate!)) {
-        showTextSnackbar(
-          locale.backup_restore__error__from_after_to,
-          failure: true,
+        InAppNotificationService.i.notify(
+          NotificationMessage(
+            id: "backup_options_error",
+            body: locale.backup_restore__error__from_after_to,
+            type: .error,
+          ),
         );
         return;
       }

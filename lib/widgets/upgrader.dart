@@ -1,7 +1,7 @@
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
-import 'package:clipboard/base/constants/key.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ import 'package:upgrader/upgrader.dart';
 
 final upgrader = Upgrader(
   debugLogging: false,
-  languageCode: rootNavKey.currentContext?.locale.localeName,
+  languageCode: rootNavigationKey.currentContext?.locale.localeName,
   storeController: UpgraderStoreController(
     onMacOS: () => UpgraderAppcastStore(
       appcastURL: kDebugMode ? devMacAppcastUrl : macAppcastUrl,
@@ -28,7 +28,7 @@ final upgrader = Upgrader(
         String? installedVersion,
         UpgraderVersionInfo? versionInfo,
       }) {
-        final context = rootNavKey.currentContext;
+        final context = rootNavigationKey.currentContext;
         if (display &&
             context != null &&
             context.mounted &&
@@ -47,7 +47,7 @@ class UpgraderBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return UpgradeAlert(
-      navigatorKey: rootNavKey,
+      navigatorKey: rootNavigationKey,
       upgrader: upgrader,
       shouldPopScope: () => true,
       showLater: kDebugMode,

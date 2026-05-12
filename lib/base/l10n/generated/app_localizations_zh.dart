@@ -213,6 +213,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app__ack__missing_e2e_setup => '缺少加密设置';
 
   @override
+  String app__ack__failed_to_sync({
+    required String entityType,
+    required String message,
+  }) {
+    return 'Failed to sync $entityType: $message';
+  }
+
+  @override
   String get dialog__delete_clip__title => '删除剪辑';
 
   @override
@@ -1809,6 +1817,17 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get abc__tile__two_way_sync__realtime_required =>
       '⚠️ Realtime mode required.';
+
+  @override
+  String get abc__ack__detection_mode_cleared => 'Detection mode cleared';
+
+  @override
+  String get abc__ack__detection_mode_updated => 'Detection mode updated';
+
+  @override
+  String abc__ack__detection_mode_update_failed({required String message}) {
+    return 'Failed to update detection mode: $message';
+  }
 
   @override
   String current_time__local({required String time}) {
