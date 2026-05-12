@@ -4,7 +4,7 @@ import 'package:clipboard/base/constants/strings/asset_constants.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage;
+    show NotificationMessage, NotificationType;
 import 'package:clipboard/pages/login/widgets/login_form.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class LoginPage extends StatelessWidget {
               NotificationMessage(
                 id: "login_failed",
                 body: failure.message,
-                type: .error,
+                type: NotificationType.error,
               ),
             );
 

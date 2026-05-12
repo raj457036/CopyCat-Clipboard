@@ -1,5 +1,6 @@
 import 'package:clipboard/base/enums/notification.dart';
 import 'package:flutter/widgets.dart';
+export 'package:clipboard/base/enums/notification.dart';
 
 const _emptyMessage = '';
 

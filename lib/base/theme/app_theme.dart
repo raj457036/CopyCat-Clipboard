@@ -51,12 +51,6 @@ ThemeData buildAppTheme({
       backButtonIconBuilder: (BuildContext context) =>
           const Icon(Icons.arrow_back),
     ),
-    // pageTransitionsTheme: const PageTransitionsTheme(
-    //   builders: <TargetPlatform, PageTransitionsBuilder>{
-    //     TargetPlatform.android:
-    //         PredictiveBackFullscreenPageTransitionsBuilder(),
-    //   },
-    // ),
   );
 
   return theme.copyWith(textTheme: robotoFlexTextTheme(theme.textTheme));

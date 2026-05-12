@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
@@ -19,9 +20,10 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository repo;
   final TinyStorage localCache;
+  final AppConfigCubit appConfigCubit;
   final AnalyticsRepository analyticsRepo;
 
-  AuthCubit(this.repo, this.localCache, this.analyticsRepo)
+  AuthCubit(this.repo, this.localCache, this.analyticsRepo, this.appConfigCubit)
     : super(const AuthState.unknown());
 
   /// validate the code and return a suitable page path
@@ -113,7 +115,21 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> authenticated(AuthUser user, String accessToken) async {
     analyticsRepo.setAnalyticUser(user);
 
-    emit(AuthState.authenticated(user: user, accessToken: accessToken));
+    final onboardingComplete = appConfigCubit.state.config.onBoardComplete;
+    emit(
+      AuthState.authenticated(
+        user: user,
+        accessToken: accessToken,
+        onBoarded: onboardingComplete,
+      ),
+    );
+  }
+
+  Future<void> oboardingComplete() async {
+    final currentState = state;
+    if (currentState is AuthenticatedAuthState) {
+      emit(currentState.copyWith(onBoarded: true));
+    }
   }
 
   void unauthenticated(Failure failure) {

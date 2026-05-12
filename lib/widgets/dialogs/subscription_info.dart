@@ -166,7 +166,13 @@ class FeatureTabs extends StatelessWidget {
 
 class SubscriptionInfoDialog extends StatelessWidget {
   final bool entitlementGrantMode;
-  const SubscriptionInfoDialog({super.key, this.entitlementGrantMode = false});
+  final MonetizationCubit monetizationCubit;
+
+  const SubscriptionInfoDialog({
+    super.key,
+    this.entitlementGrantMode = false,
+    required this.monetizationCubit,
+  });
 
   Future<void> open(BuildContext context) async {
     return await showDialog(context: context, builder: (context) => this);
@@ -179,7 +185,6 @@ class SubscriptionInfoDialog extends StatelessWidget {
   }
 
   Future<void> upgrade(BuildContext context) async {
-    final monetizationCubit = context.read<MonetizationCubit>();
     if (isMobilePlatform) {
       presentPaywall();
       return;
@@ -208,91 +213,100 @@ class SubscriptionInfoDialog extends StatelessWidget {
       builder: (context, constraints) {
         final isMobile = Breakpoints.isMobile(constraints.maxWidth);
 
-        return SubscriptionBuilder(
-          builder: (context, state) {
-            if (state == null) {
-              return AlertDialog(
-                title: Text(context.locale.paywall_dialog__text__subscription),
-                content: Center(
-                  child: SizedBox(
-                    width: 250,
-                    child: Text(
-                      context.locale.app__loading,
-                      textAlign: TextAlign.center,
+        return BlocProvider.value(
+          value: monetizationCubit,
+          child: SubscriptionBuilder(
+            builder: (context, state) {
+              if (state == null) {
+                return AlertDialog(
+                  title: Text(
+                    context.locale.paywall_dialog__text__subscription,
+                  ),
+                  content: Center(
+                    child: SizedBox(
+                      width: 250,
+                      child: Text(
+                        context.locale.app__loading,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                );
+              }
+
+              final expired = !state.isActive;
+              final isTrial = state.isTrial;
+              return Scaffold(
+                backgroundColor: Colors.transparent,
+                body: AlertDialog(
+                  title: Row(
+                    children: [
+                      Text(context.locale.paywall_dialog__text__subscription),
+                      const Spacer(),
+                      const CloseButton(),
+                    ],
+                  ),
+                  insetPadding: isMobile
+                      ? const EdgeInsets.all(padding8)
+                      : const EdgeInsets.symmetric(
+                          horizontal: 40.0,
+                          vertical: 24.0,
+                        ),
+                  contentPadding: isMobile ? EdgeInsets.zero : null,
+                  content: SizedBox(
+                    width: 600,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          title: Text(
+                            expired
+                                ? context
+                                      .locale
+                                      .paywall_dialog__text__expired_plan
+                                : context
+                                      .locale
+                                      .paywall_dialog__text__current_plan,
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(state.planName, style: textTheme.titleLarge),
+                              height2,
+                              if (isTrial && state.trialEnd != null)
+                                Text(
+                                  context.locale
+                                      .paywall_dialog__text__trial_till(
+                                        till: state.trialEnd!,
+                                      ),
+                                ),
+                            ],
+                          ),
+                          trailing: expired || state.isFree
+                              ? ElevatedButton.icon(
+                                  onPressed: () => upgrade(context),
+                                  onLongPress: () =>
+                                      upgradeByPromoCode(context),
+                                  icon: const Icon(
+                                    Icons.workspace_premium_rounded,
+                                  ),
+                                  label: Text(
+                                    context
+                                        .locale
+                                        .paywall_dialog__text__upgrade,
+                                  ),
+                                )
+                              : const ManageSubscriptionButton(),
+                        ),
+                        const Expanded(child: FeatureTabs()),
+                      ],
                     ),
                   ),
                 ),
               );
-            }
-
-            final expired = !state.isActive;
-            final isTrial = state.isTrial;
-            return Scaffold(
-              backgroundColor: Colors.transparent,
-              body: AlertDialog(
-                title: Row(
-                  children: [
-                    Text(context.locale.paywall_dialog__text__subscription),
-                    const Spacer(),
-                    const CloseButton(),
-                  ],
-                ),
-                insetPadding: isMobile
-                    ? const EdgeInsets.all(padding8)
-                    : const EdgeInsets.symmetric(
-                        horizontal: 40.0,
-                        vertical: 24.0,
-                      ),
-                contentPadding: isMobile ? EdgeInsets.zero : null,
-                content: SizedBox(
-                  width: 600,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        title: Text(
-                          expired
-                              ? context
-                                    .locale
-                                    .paywall_dialog__text__expired_plan
-                              : context
-                                    .locale
-                                    .paywall_dialog__text__current_plan,
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(state.planName, style: textTheme.titleLarge),
-                            height2,
-                            if (isTrial && state.trialEnd != null)
-                              Text(
-                                context.locale.paywall_dialog__text__trial_till(
-                                  till: state.trialEnd!,
-                                ),
-                              ),
-                          ],
-                        ),
-                        trailing: expired || state.isFree
-                            ? ElevatedButton.icon(
-                                onPressed: () => upgrade(context),
-                                onLongPress: () => upgradeByPromoCode(context),
-                                icon: const Icon(
-                                  Icons.workspace_premium_rounded,
-                                ),
-                                label: Text(
-                                  context.locale.paywall_dialog__text__upgrade,
-                                ),
-                              )
-                            : const ManageSubscriptionButton(),
-                      ),
-                      const Expanded(child: FeatureTabs()),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
+            },
+          ),
         );
       },
     );

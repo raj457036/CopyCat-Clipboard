@@ -2,7 +2,7 @@ import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage;
+    show NotificationMessage, NotificationType;
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/datetime_extension.dart';
@@ -30,7 +30,7 @@ class ManageSubscriptionButton extends StatelessWidget {
         NotificationMessage(
           id: "promo_code_applied",
           body: context.locale.manage_sub__ack__promo_sub(till: till),
-          type: .success,
+          type: NotificationType.success,
         ),
       );
     }

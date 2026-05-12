@@ -1,8 +1,5 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
-import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
-import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
-import 'package:clipboard/base/constants/strings/route_constants.dart';
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/onboard/widgets/encryption.dart';
@@ -14,7 +11,6 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/titlebar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class OnBoardPage extends StatefulWidget {
   final int startingStep;
@@ -40,13 +36,9 @@ class _OnBoardPageState extends State<OnBoardPage> {
     });
   }
 
-  void goHome() {
-    context.read<DriveSetupCubit>().fetch();
-    context.read<OfflinePersistenceCubit>().startListeners();
-    // starts
-    context.read<SyncStatusCubit>().start();
+  void finishOnboarding() {
     context.read<AppConfigCubit>().changeOnBoardStatus(true);
-    context.goNamed(RouteConstants.home);
+    context.read<AuthCubit>().oboardingComplete();
   }
 
   @override
@@ -54,6 +46,7 @@ class _OnBoardPageState extends State<OnBoardPage> {
     return TitlebarView(
       hideLayoutToggle: true,
       hideTabToggle: true,
+      hidePasteStackToggle: true,
       child: Scaffold(
         body: SafeArea(
           child: Padding(
@@ -72,7 +65,7 @@ class _OnBoardPageState extends State<OnBoardPage> {
               2 => SmartPasteStep(onContinue: () => goToPage(3)),
               3 => KeyboardShortcutStep(onContinue: () => goToPage(4)),
               4 => SyncRestoreStep(
-                onContinue: goHome,
+                onContinue: finishOnboarding,
                 clipboardRepository: sl(instanceName: "remote"),
                 collectionRepository: sl(),
                 restorationStatusRepository: sl(),

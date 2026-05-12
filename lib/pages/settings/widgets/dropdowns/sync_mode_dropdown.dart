@@ -3,9 +3,11 @@ import 'package:clipboard/base/constants/numbers/duration.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/widgets/settings_menu_dropdown.dart';
+import 'package:clipboard/base/sync/sync_orchestrator.dart';
+import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/badges.dart';
+import 'package:clipboard/widgets/settings_menu_dropdown.dart';
 import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,11 +15,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SyncModeDropdown extends StatelessWidget {
   const SyncModeDropdown({super.key});
 
+  void _setSyncMode(BuildContext context, SyncSpeed speed) {
+    final appConfigCubit = context.read<AppConfigCubit>();
+    appConfigCubit.changeSyncMode(speed);
+
+    // NOTE(raj): This condition is always false since the dropdown is
+    // disabled when sync is not enabled. This is just a reminder to
+    // not change the ochestrator's state when sync is disabled.
+    if (appConfigCubit.state.config.enableSync) return;
+
+    final syncSpeed = appConfigCubit.state.config.syncSpeed;
+
+    switch (syncSpeed) {
+      case SyncSpeed.realtime:
+        sl<SyncOrchestrator>().startRealtime();
+      case SyncSpeed.balanced:
+      // polling only handled by start()
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
     final colors = context.colors;
-    final cubit = context.read<AppConfigCubit>();
     return HasAccessToFeature(
       hasAccess: (subscription) => subscription.syncInterval < $10S,
       builder: (context, hasAccess, _) {
@@ -70,7 +90,9 @@ class SyncModeDropdown extends StatelessWidget {
                     ),
                   };
                 },
-                onSelected: enabled ? cubit.changeSyncMode : null,
+                onSelected: enabled
+                    ? (speed) => _setSyncMode(context, speed)
+                    : null,
               ),
             );
           },

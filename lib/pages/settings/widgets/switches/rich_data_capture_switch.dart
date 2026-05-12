@@ -1,6 +1,8 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/di/di.dart';
 import 'package:clipboard/widgets/badges.dart';
 import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +11,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class RichDataCaptureSwitchTile extends StatelessWidget {
   const RichDataCaptureSwitchTile({super.key});
 
+  void _setRichDataCapture(BuildContext context, bool enabled) {
+    final appConfigCubit = context.read<AppConfigCubit>();
+    appConfigCubit.toggleRichDataCapture(enabled);
+    sl<ClipboardService>().setRichDataEnabled(enabled);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<AppConfigCubit>();
     return HasAccessToFeature(
       hasAccess: (subscription) =>
           subscription.isActive && !subscription.isFree,
@@ -28,7 +35,9 @@ class RichDataCaptureSwitchTile extends StatelessWidget {
           builder: (context, enabled) {
             return SwitchListTile(
               value: enabled && hasAccess,
-              onChanged: hasAccess ? cubit.toggleRichDataCapture : null,
+              onChanged: hasAccess
+                  ? (value) => _setRichDataCapture(context, value)
+                  : null,
               title: Row(
                 spacing: padding8,
                 children: [

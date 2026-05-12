@@ -61,6 +61,7 @@ class TitlebarView extends StatelessWidget {
   final bool hideTabToggle;
   final bool hideLayoutToggle;
   final bool hideViewToggle;
+  final bool hidePasteStackToggle;
 
   const TitlebarView({
     super.key,
@@ -68,6 +69,7 @@ class TitlebarView extends StatelessWidget {
     this.hideTabToggle = false,
     this.hideLayoutToggle = false,
     this.hideViewToggle = false,
+    this.hidePasteStackToggle = false,
   });
 
   @override
@@ -110,7 +112,8 @@ class TitlebarView extends StatelessWidget {
                         children: [
                           const PinToTopButton(),
                           width2,
-                          const PasteStackToggleButton(),
+                          if (!hidePasteStackToggle)
+                            const PasteStackToggleButton(),
                           width2,
                           if (!hideLayoutToggle) const AppLayoutToggleButton(),
                           width2,

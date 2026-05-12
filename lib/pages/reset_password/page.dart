@@ -3,7 +3,7 @@ import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/localization.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage;
+    show NotificationMessage, NotificationType;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/widgets/forms/reset_password_form.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +51,7 @@ class ResetPasswordPage extends StatelessWidget {
                     NotificationMessage(
                       id: "reset_password_error",
                       body: error.toString(),
-                      type: .error,
+                      type: NotificationType.error,
                     ),
                   );
                 },

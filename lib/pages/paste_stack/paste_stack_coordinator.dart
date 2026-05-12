@@ -2,12 +2,11 @@ import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistanc
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
+import 'package:clipboard/routes/routes.dart' show appRouter, rootNavigationKey;
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:universal_io/io.dart';
 
@@ -116,7 +115,7 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
             return;
           }
         } else {
-          rootNavigationKey.currentContext?.pop();
+          appRouter.pop();
         }
         await unregisterPasteHotKey();
       },

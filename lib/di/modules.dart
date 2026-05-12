@@ -2,6 +2,7 @@ import "package:android_background_clipboard/android_background_clipboard.dart";
 import "package:clipboard/base/constants/strings/strings.dart";
 import "package:clipboard/base/data/isar/isar_database.dart";
 import "package:clipboard/base/data/isar/isar_database_service.dart";
+import "package:clipboard/base/domain/services/database_service.dart";
 import 'package:device_info_plus/device_info_plus.dart';
 import "package:flutter/foundation.dart";
 import "package:focus_window/focus_window.dart";
@@ -67,7 +68,7 @@ abstract class RegisterModule {
   }
 
   @LazySingleton()
-  IsarDatabaseService databaseService(Isar db) => IsarDatabaseService(db);
+  DatabaseService databaseService(Isar db) => IsarDatabaseService(db);
 
   @preResolve
   @Named("device_id")

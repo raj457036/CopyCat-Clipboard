@@ -45,7 +45,9 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
   final FocusWindow focusWindow = FocusWindow();
 
   AppConfigCubit(this.repo, this.reviewService)
-    : super(AppConfigState.loaded(isLoading: true, config: AppConfig()));
+    : super(AppConfigState.loaded(isLoading: true, config: AppConfig())) {
+    load();
+  }
 
   @override
   void emit(AppConfigState state) {
@@ -61,7 +63,7 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
     }
   }
 
-  Future<bool?> syncClocks() async {
+  Future<bool> syncClocks() async {
     try {
       final timeServers = [
         'time.google.com',
@@ -111,7 +113,7 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
       return true;
     } catch (e) {
       logger.e(e);
-      return null;
+      return false;
     }
   }
 

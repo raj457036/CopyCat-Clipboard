@@ -9,7 +9,7 @@ import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage;
+    show NotificationMessage, NotificationType;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
@@ -47,7 +47,7 @@ Future<void> multiCopyToClipboard(
         NotificationMessage(
           id: "copy_to_clipboard_success",
           body: ctx.locale.app__ack__copied,
-          type: .success,
+          type: NotificationType.success,
         ),
       );
       _maybeShowReviewPrompt(ctx);
@@ -57,7 +57,7 @@ Future<void> multiCopyToClipboard(
       NotificationMessage(
         id: "copy_to_clipboard_error",
         body: ctx.locale.app__unknown_error,
-        type: .error,
+        type: NotificationType.error,
       ),
     );
   }
@@ -82,7 +82,7 @@ Future<void> copyToClipboard(
           body: saveFile
               ? ctx.locale.app__ack__exported
               : ctx.locale.app__ack__copied,
-          type: .success,
+          type: NotificationType.success,
         ),
       );
       _maybeShowReviewPrompt(ctx);
@@ -97,7 +97,7 @@ Future<void> copyToClipboard(
       NotificationMessage(
         id: "copy_to_clipboard_error",
         body: ctx.locale.app__unknown_error,
-        type: .error,
+        type: NotificationType.error,
       ),
     );
   }
@@ -124,7 +124,7 @@ Future<void> shareClipboardItem(
       NotificationMessage(
         id: "share_item_unavailable",
         body: ctx.locale.app__feature_unavailable,
-        type: .warning,
+        type: NotificationType.warning,
       ),
     );
   } catch (e) {
@@ -132,7 +132,7 @@ Future<void> shareClipboardItem(
       NotificationMessage(
         id: "share_item_error",
         body: ctx.locale.app__unknown_error,
-        type: .error,
+        type: NotificationType.error,
       ),
     );
   }
@@ -151,7 +151,7 @@ Future<void> shareClipboardItems(
       NotificationMessage(
         id: "share_items_unavailable",
         body: ctx.locale.app__feature_unavailable,
-        type: .warning,
+        type: NotificationType.warning,
       ),
     );
   } catch (e) {
@@ -159,7 +159,7 @@ Future<void> shareClipboardItems(
       NotificationMessage(
         id: "share_items_error",
         body: ctx.locale.app__unknown_error,
-        type: .error,
+        type: NotificationType.error,
       ),
     );
   }
@@ -178,7 +178,7 @@ Future<void> decryptItem(BuildContext context, ClipboardItem item) async {
       NotificationMessage(
         id: "e2ee-no-setup",
         body: context.locale.app__ack__missing_e2e_setup,
-        type: .error,
+        type: NotificationType.error,
       ),
     );
     return;
@@ -341,7 +341,7 @@ Future<void> pasteContent(BuildContext context) async {
     NotificationMessage(
       id: "pasting",
       body: ctx.locale.app__ack__pasting,
-      type: .loading,
+      type: NotificationType.loading,
     ),
   );
   unawaited(ctx.read<OfflinePersistenceCubit>().paste());
@@ -349,7 +349,7 @@ Future<void> pasteContent(BuildContext context) async {
     NotificationMessage(
       id: "pasted",
       body: ctx.locale.app__ack__pasted,
-      type: .success,
+      type: NotificationType.success,
     ),
   );
 }

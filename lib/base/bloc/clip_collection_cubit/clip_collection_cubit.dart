@@ -16,7 +16,7 @@ import 'package:injectable/injectable.dart';
 part 'clip_collection_cubit.freezed.dart';
 part 'clip_collection_state.dart';
 
-@lazySingleton
+@Injectable(cache: true)
 class ClipCollectionCubit extends Cubit<ClipCollectionState> {
   final SyncEventBus syncEventBus;
   final AuthCubit auth;

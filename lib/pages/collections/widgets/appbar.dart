@@ -1,4 +1,4 @@
-import 'package:clipboard/widgets/subscription/active_plan.dart';
+import 'package:clipboard/widgets/subscription/active_plan_button.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +12,7 @@ class CollectionAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       scrolledUnderElevation: 0,
       title: Text(context.locale.collections__appbar__title),
-      actions: const [ActivePlanAction(), width12],
+      actions: const [ActivePlanButton(), width12],
     );
   }
 

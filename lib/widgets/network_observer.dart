@@ -8,8 +8,9 @@ import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage;
+    show NotificationMessage, NotificationType;
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/widgets/dialogs/inconsistent_timing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -56,7 +57,15 @@ class _NetworkObserverState extends State<NetworkObserver> {
     driveSetupCubit = BlocProvider.of<DriveSetupCubit>(context);
     appConfigCubit = BlocProvider.of<AppConfigCubit>(context);
     syncStatusCubit = BlocProvider.of<SyncStatusCubit>(context);
-    appConfigCubit.syncClocks();
+
+    syncClocks();
+  }
+
+  Future<void> syncClocks() async {
+    final synced = await appConfigCubit.syncClocks();
+    if (synced) return;
+
+    const InconsistentTiming().open();
   }
 
   Future<void> refetchStates() async {
@@ -80,7 +89,7 @@ class _NetworkObserverState extends State<NetworkObserver> {
           NotificationMessage(
             id: "internet_connected",
             body: context.locale.app__ack__internet_connected,
-            type: .success,
+            type: NotificationType.success,
           ),
         );
       }
@@ -90,7 +99,7 @@ class _NetworkObserverState extends State<NetworkObserver> {
         NotificationMessage(
           id: "internet_disconnected",
           body: context.locale.app__ack__internet_disconnected,
-          type: .warning,
+          type: NotificationType.warning,
         ),
       );
     }

@@ -20,7 +20,8 @@ mixin _$AuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function(AuthUser user, String accessToken) authenticated,
+    required TResult Function(AuthUser user, String accessToken, bool onBoarded)
+    authenticated,
     required TResult Function() localAuthenticated,
     required TResult Function() authenticating,
     required TResult Function(Failure? failure) unauthenticated,
@@ -28,7 +29,8 @@ mixin _$AuthState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function(AuthUser user, String accessToken)? authenticated,
+    TResult? Function(AuthUser user, String accessToken, bool onBoarded)?
+    authenticated,
     TResult? Function()? localAuthenticated,
     TResult? Function()? authenticating,
     TResult? Function(Failure? failure)? unauthenticated,
@@ -36,7 +38,8 @@ mixin _$AuthState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function(AuthUser user, String accessToken)? authenticated,
+    TResult Function(AuthUser user, String accessToken, bool onBoarded)?
+    authenticated,
     TResult Function()? localAuthenticated,
     TResult Function()? authenticating,
     TResult Function(Failure? failure)? unauthenticated,
@@ -134,7 +137,8 @@ class _$UnknownAuthStateImpl implements UnknownAuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function(AuthUser user, String accessToken) authenticated,
+    required TResult Function(AuthUser user, String accessToken, bool onBoarded)
+    authenticated,
     required TResult Function() localAuthenticated,
     required TResult Function() authenticating,
     required TResult Function(Failure? failure) unauthenticated,
@@ -146,7 +150,8 @@ class _$UnknownAuthStateImpl implements UnknownAuthState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function(AuthUser user, String accessToken)? authenticated,
+    TResult? Function(AuthUser user, String accessToken, bool onBoarded)?
+    authenticated,
     TResult? Function()? localAuthenticated,
     TResult? Function()? authenticating,
     TResult? Function(Failure? failure)? unauthenticated,
@@ -158,7 +163,8 @@ class _$UnknownAuthStateImpl implements UnknownAuthState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function(AuthUser user, String accessToken)? authenticated,
+    TResult Function(AuthUser user, String accessToken, bool onBoarded)?
+    authenticated,
     TResult Function()? localAuthenticated,
     TResult Function()? authenticating,
     TResult Function(Failure? failure)? unauthenticated,
@@ -223,7 +229,7 @@ abstract class _$$AuthenticatedAuthStateImplCopyWith<$Res> {
     $Res Function(_$AuthenticatedAuthStateImpl) then,
   ) = __$$AuthenticatedAuthStateImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({AuthUser user, String accessToken});
+  $Res call({AuthUser user, String accessToken, bool onBoarded});
 
   $AuthUserCopyWith<$Res> get user;
 }
@@ -241,7 +247,11 @@ class __$$AuthenticatedAuthStateImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? user = null, Object? accessToken = null}) {
+  $Res call({
+    Object? user = null,
+    Object? accessToken = null,
+    Object? onBoarded = null,
+  }) {
     return _then(
       _$AuthenticatedAuthStateImpl(
         user: null == user
@@ -252,6 +262,10 @@ class __$$AuthenticatedAuthStateImplCopyWithImpl<$Res>
             ? _value.accessToken
             : accessToken // ignore: cast_nullable_to_non_nullable
                   as String,
+        onBoarded: null == onBoarded
+            ? _value.onBoarded
+            : onBoarded // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -273,16 +287,19 @@ class _$AuthenticatedAuthStateImpl implements AuthenticatedAuthState {
   const _$AuthenticatedAuthStateImpl({
     required this.user,
     required this.accessToken,
+    required this.onBoarded,
   });
 
   @override
   final AuthUser user;
   @override
   final String accessToken;
+  @override
+  final bool onBoarded;
 
   @override
   String toString() {
-    return 'AuthState.authenticated(user: $user, accessToken: $accessToken)';
+    return 'AuthState.authenticated(user: $user, accessToken: $accessToken, onBoarded: $onBoarded)';
   }
 
   @override
@@ -292,11 +309,13 @@ class _$AuthenticatedAuthStateImpl implements AuthenticatedAuthState {
             other is _$AuthenticatedAuthStateImpl &&
             (identical(other.user, user) || other.user == user) &&
             (identical(other.accessToken, accessToken) ||
-                other.accessToken == accessToken));
+                other.accessToken == accessToken) &&
+            (identical(other.onBoarded, onBoarded) ||
+                other.onBoarded == onBoarded));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, user, accessToken);
+  int get hashCode => Object.hash(runtimeType, user, accessToken, onBoarded);
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
@@ -314,38 +333,41 @@ class _$AuthenticatedAuthStateImpl implements AuthenticatedAuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function(AuthUser user, String accessToken) authenticated,
+    required TResult Function(AuthUser user, String accessToken, bool onBoarded)
+    authenticated,
     required TResult Function() localAuthenticated,
     required TResult Function() authenticating,
     required TResult Function(Failure? failure) unauthenticated,
   }) {
-    return authenticated(user, accessToken);
+    return authenticated(user, accessToken, onBoarded);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function(AuthUser user, String accessToken)? authenticated,
+    TResult? Function(AuthUser user, String accessToken, bool onBoarded)?
+    authenticated,
     TResult? Function()? localAuthenticated,
     TResult? Function()? authenticating,
     TResult? Function(Failure? failure)? unauthenticated,
   }) {
-    return authenticated?.call(user, accessToken);
+    return authenticated?.call(user, accessToken, onBoarded);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function(AuthUser user, String accessToken)? authenticated,
+    TResult Function(AuthUser user, String accessToken, bool onBoarded)?
+    authenticated,
     TResult Function()? localAuthenticated,
     TResult Function()? authenticating,
     TResult Function(Failure? failure)? unauthenticated,
     required TResult orElse(),
   }) {
     if (authenticated != null) {
-      return authenticated(user, accessToken);
+      return authenticated(user, accessToken, onBoarded);
     }
     return orElse();
   }
@@ -396,10 +418,12 @@ abstract class AuthenticatedAuthState implements AuthState {
   const factory AuthenticatedAuthState({
     required final AuthUser user,
     required final String accessToken,
+    required final bool onBoarded,
   }) = _$AuthenticatedAuthStateImpl;
 
   AuthUser get user;
   String get accessToken;
+  bool get onBoarded;
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
@@ -453,7 +477,8 @@ class _$LocalAuthenticatedAuthStateImpl implements LocalAuthenticatedAuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function(AuthUser user, String accessToken) authenticated,
+    required TResult Function(AuthUser user, String accessToken, bool onBoarded)
+    authenticated,
     required TResult Function() localAuthenticated,
     required TResult Function() authenticating,
     required TResult Function(Failure? failure) unauthenticated,
@@ -465,7 +490,8 @@ class _$LocalAuthenticatedAuthStateImpl implements LocalAuthenticatedAuthState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function(AuthUser user, String accessToken)? authenticated,
+    TResult? Function(AuthUser user, String accessToken, bool onBoarded)?
+    authenticated,
     TResult? Function()? localAuthenticated,
     TResult? Function()? authenticating,
     TResult? Function(Failure? failure)? unauthenticated,
@@ -477,7 +503,8 @@ class _$LocalAuthenticatedAuthStateImpl implements LocalAuthenticatedAuthState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function(AuthUser user, String accessToken)? authenticated,
+    TResult Function(AuthUser user, String accessToken, bool onBoarded)?
+    authenticated,
     TResult Function()? localAuthenticated,
     TResult Function()? authenticating,
     TResult Function(Failure? failure)? unauthenticated,
@@ -581,7 +608,8 @@ class _$AuthenticatingAuthStateImpl implements AuthenticatingAuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function(AuthUser user, String accessToken) authenticated,
+    required TResult Function(AuthUser user, String accessToken, bool onBoarded)
+    authenticated,
     required TResult Function() localAuthenticated,
     required TResult Function() authenticating,
     required TResult Function(Failure? failure) unauthenticated,
@@ -593,7 +621,8 @@ class _$AuthenticatingAuthStateImpl implements AuthenticatingAuthState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function(AuthUser user, String accessToken)? authenticated,
+    TResult? Function(AuthUser user, String accessToken, bool onBoarded)?
+    authenticated,
     TResult? Function()? localAuthenticated,
     TResult? Function()? authenticating,
     TResult? Function(Failure? failure)? unauthenticated,
@@ -605,7 +634,8 @@ class _$AuthenticatingAuthStateImpl implements AuthenticatingAuthState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function(AuthUser user, String accessToken)? authenticated,
+    TResult Function(AuthUser user, String accessToken, bool onBoarded)?
+    authenticated,
     TResult Function()? localAuthenticated,
     TResult Function()? authenticating,
     TResult Function(Failure? failure)? unauthenticated,
@@ -737,7 +767,8 @@ class _$UnauthenticatedAuthStateImpl implements UnauthenticatedAuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function(AuthUser user, String accessToken) authenticated,
+    required TResult Function(AuthUser user, String accessToken, bool onBoarded)
+    authenticated,
     required TResult Function() localAuthenticated,
     required TResult Function() authenticating,
     required TResult Function(Failure? failure) unauthenticated,
@@ -749,7 +780,8 @@ class _$UnauthenticatedAuthStateImpl implements UnauthenticatedAuthState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function(AuthUser user, String accessToken)? authenticated,
+    TResult? Function(AuthUser user, String accessToken, bool onBoarded)?
+    authenticated,
     TResult? Function()? localAuthenticated,
     TResult? Function()? authenticating,
     TResult? Function(Failure? failure)? unauthenticated,
@@ -761,7 +793,8 @@ class _$UnauthenticatedAuthStateImpl implements UnauthenticatedAuthState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function(AuthUser user, String accessToken)? authenticated,
+    TResult Function(AuthUser user, String accessToken, bool onBoarded)?
+    authenticated,
     TResult Function()? localAuthenticated,
     TResult Function()? authenticating,
     TResult Function(Failure? failure)? unauthenticated,

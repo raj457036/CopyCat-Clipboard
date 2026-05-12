@@ -5,7 +5,7 @@ import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage;
+    show NotificationMessage, NotificationType;
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
@@ -49,7 +49,7 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
           NotificationMessage(
             id: "decrypt_clips_error",
             body: l.message,
-            type: .error,
+            type: NotificationType.error,
           ),
         ),
         (r) {
@@ -80,7 +80,7 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
             NotificationMessage(
               id: "decrypt_clips_error",
               body: l.message,
-              type: .error,
+              type: NotificationType.error,
             ),
           );
           hasMore = false;
@@ -103,7 +103,7 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
                   NotificationMessage(
                     id: "decrypt_clips_error",
                     body: Failure.fromException(e).message,
-                    type: .error,
+                    type: NotificationType.error,
                   ),
                 );
                 hasMore = false;

@@ -92,8 +92,8 @@ class LinkPreview extends StatelessWidget {
 
           final colors = context.colors;
           final body = Column(
-            mainAxisSize: .max,
-            crossAxisAlignment: .stretch,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (provider != null)
                 Expanded(child: LinkPreviewImage(provider: provider)),

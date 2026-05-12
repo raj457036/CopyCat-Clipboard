@@ -20,15 +20,21 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> checkAuth() async {
-    final authenticated = await context
-        .read<AuthCubit>()
-        .checkForAuthentication();
+    final authCubit = context.read<AuthCubit>();
+    await authCubit.checkForAuthentication();
+
     if (!mounted) return;
-    if (authenticated) {
-      context.goNamed(RouteConstants.home);
-    } else {
-      context.goNamed(RouteConstants.login);
-    }
+
+    authCubit.state.maybeWhen(
+      authenticated: (user, accessToken, onBoarded) {
+        if (!onBoarded) {
+          context.goNamed(RouteConstants.onboard);
+        } else {
+          context.goNamed(RouteConstants.home);
+        }
+      },
+      orElse: () => context.goNamed(RouteConstants.login),
+    );
   }
 
   @override

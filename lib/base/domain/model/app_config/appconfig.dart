@@ -129,9 +129,8 @@ class AppConfig with _$AppConfig, Identifiable {
       enc2 != null ? EncryptionSecret.deserilize(enc2!) : null;
 
   String? decryptEnc2(String? enc1) {
-    final enc2Key_ = enc2Key;
-    if (enc2Key_ == null || enc1 == null) return null;
-    final encMngr = EncryptionManager(enc2Key_);
+    if (enc2Key == null || enc1 == null) return null;
+    final encMngr = EncryptionManager(enc2Key!);
     final enc1Decrypt = encMngr.decrypt(enc1);
     return enc1Decrypt;
   }

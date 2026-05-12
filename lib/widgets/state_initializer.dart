@@ -49,17 +49,17 @@ class _StateInitializerState extends State<StateInitializer>
       (_isAppLifecycleBackgrounded || _isWindowBackgrounded);
 
   Future<void> setupWindow() async {
-    final windowCubit = context.read<WindowActionCubit>();
+    final windowCubit = context.read<WindowActionCubit?>();
     await Future.delayed(Durations.extralong4);
     final appConfig = appConfigCubit.state.config;
-    windowCubit.setup(appConfig.view, appConfig.windowSize);
+    windowCubit?.setup(appConfig.view, appConfig.windowSize);
   }
 
   Future<void> syncAndroidBgClipboardStates() async {
     if (!Platform.isAndroid) return;
-    final cubit = context.read<AndroidBgClipboardCubit>();
+    final cubit = context.read<AndroidBgClipboardCubit?>();
     await Future.delayed(Durations.extralong4);
-    cubit.syncStates();
+    cubit?.syncStates();
   }
 
   @override
@@ -185,12 +185,12 @@ class _StateInitializerState extends State<StateInitializer>
 
     if (isBackgrounded) {
       backgroundStateDebounce(
-        () => context.read<ClipboardCubit>().setBackgrounded(isBackgrounded),
+        () => context.read<ClipboardCubit?>()?.setBackgrounded(isBackgrounded),
       );
-      context.read<OfflinePersistenceCubit>().clearTransientState();
+      context.read<OfflinePersistenceCubit?>()?.clearTransientState();
     } else {
       backgroundStateDebounce.cancel();
-      context.read<ClipboardCubit>().setBackgrounded(false);
+      context.read<ClipboardCubit?>()?.setBackgrounded(false);
     }
   }
 }

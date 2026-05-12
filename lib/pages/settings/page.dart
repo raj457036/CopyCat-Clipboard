@@ -11,7 +11,7 @@ import 'package:clipboard/widgets/layout/custom_scaffold.dart';
 import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/widgets/logout_button.dart';
 import 'package:clipboard/widgets/scaffold_body.dart';
-import 'package:clipboard/widgets/subscription/active_plan.dart';
+import 'package:clipboard/widgets/subscription/active_plan_button.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -30,7 +30,7 @@ class SettingsPage extends StatelessWidget {
           scrolledUnderElevation: 0,
           title: Text(context.locale.settings__appbar__title),
           actions: const [
-            ActivePlanAction(),
+            ActivePlanButton(),
             width12,
             DisableForLocalUser(child: AccountDetailButton()),
             width12,

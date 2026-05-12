@@ -8,14 +8,13 @@ import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage;
+    show NotificationMessage, NotificationType;
 import 'package:clipboard/common/logging.dart';
-import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
+import 'package:clipboard/routes/routes.dart' show appRouter, rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class ApplinkListener {
   late final StreamSubscription sub;
@@ -26,7 +25,6 @@ class ApplinkListener {
   Future<void> onUri(Uri uri) async {
     logger.w("🔗 NEW APP LINK: $uri");
     // return;
-    final router = GoRouter.of(context);
     if (isDesktopPlatform) {
       await context.windowAction?.show();
     }
@@ -50,7 +48,7 @@ class ApplinkListener {
       final scope = payload["scope"];
 
       if (code != null && scope != null) {
-        router.goNamed(
+        appRouter.goNamed(
           RouteConstants.driveConnect,
           pathParameters: {"code": code},
           queryParameters: {"scopes": scope},
@@ -68,7 +66,7 @@ class ApplinkListener {
             .read<AuthCubit>()
             .validateAuthCode(code);
         if (path != null) {
-          router.pushNamed(path);
+          appRouter.pushNamed(path);
         }
         if (failure == null) return;
         logger.e("Failed to validate auth code: $failure");
@@ -76,7 +74,7 @@ class ApplinkListener {
           NotificationMessage(
             id: "auth_code_validation_error",
             body: failure.message,
-            type: .error,
+            type: NotificationType.error,
           ),
         );
       }

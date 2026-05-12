@@ -35,54 +35,55 @@ class _CustomExclusionRulePageState extends State<CustomExclusionRulePage> {
       ),
       body: Platform.isAndroid
           ? const AppExclusionTab()
-          : Row(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: NavigationRail(
-                    selectedIndex: selectedIndex,
-                    extended: true,
-                    minExtendedWidth: 140,
-                    onDestinationSelected: onDestinationSelected,
-                    destinations: [
-                      NavigationRailDestination(
-                        icon: const Icon(Icons.apps),
-                        label: Text(context.locale.custom_er__nav__1),
-                      ),
-                      NavigationRailDestination(
-                        icon: const Icon(Icons.abc),
-                        label: Text(context.locale.custom_er__nav__2),
-                        disabled: !isDesktopPlatform,
-                      ),
-                      NavigationRailDestination(
-                        icon: const Icon(Icons.link),
-                        label: Text(context.locale.custom_er__nav__3),
-                        disabled: !isDesktopPlatform,
-                      ),
-                      NavigationRailDestination(
-                        icon: const Icon(Icons.pattern_rounded),
-                        label: Text(context.locale.custom_er__nav__4),
-                        disabled: !isDesktopPlatform,
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: ScaffoldBody(
-                    margin: const EdgeInsets.only(
-                      right: padding12,
-                      left: padding12,
-                    ),
-                    child: switch (selectedIndex) {
-                      0 => const AppExclusionTab(),
-                      1 => const TitleTextExclusionTab(),
-                      2 => const UrlTextExclusionTab(),
-                      _ => const PatternExclusionTab(),
-                    },
-                  ),
-                ),
-              ],
-            ),
+          : _buildDesktopExclusionNavRail(context),
+    );
+  }
+
+  Widget _buildDesktopExclusionNavRail(BuildContext context) {
+    return Row(
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: NavigationRail(
+            selectedIndex: selectedIndex,
+            extended: true,
+            minExtendedWidth: 140,
+            onDestinationSelected: onDestinationSelected,
+            destinations: [
+              NavigationRailDestination(
+                icon: const Icon(Icons.apps),
+                label: Text(context.locale.custom_er__nav__1),
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.abc),
+                label: Text(context.locale.custom_er__nav__2),
+                disabled: !isDesktopPlatform,
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.link),
+                label: Text(context.locale.custom_er__nav__3),
+                disabled: !isDesktopPlatform,
+              ),
+              NavigationRailDestination(
+                icon: const Icon(Icons.pattern_rounded),
+                label: Text(context.locale.custom_er__nav__4),
+                disabled: !isDesktopPlatform,
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: ScaffoldBody(
+            margin: const EdgeInsets.only(right: padding12, left: padding12),
+            child: switch (selectedIndex) {
+              0 => const AppExclusionTab(),
+              1 => const TitleTextExclusionTab(),
+              2 => const UrlTextExclusionTab(),
+              _ => const PatternExclusionTab(),
+            },
+          ),
+        ),
+      ],
     );
   }
 }

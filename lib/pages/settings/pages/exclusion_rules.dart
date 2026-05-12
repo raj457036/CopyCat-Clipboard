@@ -1,3 +1,4 @@
+import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_rules.dart';
@@ -19,9 +20,11 @@ class ExclusionRulesPage extends StatelessWidget {
     ExclusionRules rules,
   ) async {
     final cubit = context.read<AppConfigCubit>();
+    final androidCubit = context.read<AndroidBgClipboardCubit>();
     final granted = await cubit.confirmAccessibilityPermission();
     if (!granted) return;
     cubit.updateExclusionRule(rules);
+    androidCubit.updateExclusionRule(rules);
   }
 
   @override

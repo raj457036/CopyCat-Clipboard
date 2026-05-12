@@ -1,3 +1,4 @@
+import 'package:clipboard/base/background/encryption_worker.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -10,10 +11,12 @@ class E2EESettings extends StatelessWidget {
 
   void toggleAutoEncrypt(BuildContext context, bool value) {
     context.read<AppConfigCubit>().toggleAutoEncrypt(value);
+    EncryptionWorker.instance.setEncryption(value);
   }
 
   void toggleUseEncryptionNonce(BuildContext context, bool value) {
     context.read<AppConfigCubit>().toggleUseEncryptionNonce(value);
+    EncryptionWorker.instance.setUseNonce(value);
   }
 
   @override

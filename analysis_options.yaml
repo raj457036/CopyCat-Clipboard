@@ -12,9 +12,6 @@ analyzer:
     avoid_renaming_method_parameters: ignore
     invalid_annotation_target: ignore
 
-  enable-experiment:
-    - dot-shorthands
-
 linter:
   rules:
     - unnecessary_breaks

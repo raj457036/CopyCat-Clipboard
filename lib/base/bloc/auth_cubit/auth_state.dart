@@ -6,6 +6,7 @@ class AuthState with _$AuthState {
   const factory AuthState.authenticated({
     required AuthUser user,
     required String accessToken,
+    required bool onBoarded,
   }) = AuthenticatedAuthState;
   const factory AuthState.localAuthenticated() = LocalAuthenticatedAuthState;
   const factory AuthState.authenticating() = AuthenticatingAuthState;

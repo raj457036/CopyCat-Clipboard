@@ -29,7 +29,7 @@ import "package:universal_io/io.dart";
 part 'offline_persistance_cubit.freezed.dart';
 part 'offline_persistance_state.dart';
 
-@lazySingleton
+@Injectable(cache: true)
 class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   final AuthCubit auth;
   final ClipboardRepository repo;
@@ -113,14 +113,6 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     clipboard.start(onCaptureClipboard);
     copySub = clipboard.onCopy?.listen(onClips);
     _listening = true;
-  }
-
-  void stopListeners() {
-    if (!_listening) return;
-    clipboard.dispose();
-    copySub?.cancel();
-    copySub = null;
-    _listening = false;
   }
 
   Future<void> paste([String? content]) async {
@@ -487,6 +479,14 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       syncEventBus.emitBatch<ClipboardItem>(deleteEvents);
     }
     emit(OfflinePersistanceState.deletedItems(items.length));
+  }
+
+  void stopListeners() {
+    if (!_listening) return;
+    clipboard.dispose();
+    copySub?.cancel();
+    copySub = null;
+    _listening = false;
   }
 
   @override

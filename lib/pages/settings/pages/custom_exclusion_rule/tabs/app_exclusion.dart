@@ -1,3 +1,4 @@
+import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:clipboard/widgets/empty.dart';
 import 'package:clipboard/widgets/sheets/select_app.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
@@ -14,6 +15,7 @@ class AppExclusionTab extends StatelessWidget {
 
   void deleteItem(BuildContext context, int index) {
     final cubit = context.read<AppConfigCubit>();
+    final androidCubit = context.read<AndroidBgClipboardCubit>();
     final rules = cubit.exclusionRules;
     final excludedApps = [
       ...rules.apps.take(index),
@@ -21,15 +23,18 @@ class AppExclusionTab extends StatelessWidget {
     ];
     final updatedRules = cubit.exclusionRules.copyWith(apps: excludedApps);
     cubit.updateExclusionRule(updatedRules);
+    androidCubit.updateExclusionRule(updatedRules);
   }
 
   void addApp(BuildContext context) async {
     final cubit = context.read<AppConfigCubit>();
+    final androidCubit = context.read<AndroidBgClipboardCubit>();
     final apps = await selectApp(context);
     if (apps.isEmpty) return;
     final excludedApps = {...apps, ...cubit.exclusionRules.apps}.toList();
     final updatedRules = cubit.exclusionRules.copyWith(apps: excludedApps);
     cubit.updateExclusionRule(updatedRules);
+    androidCubit.updateExclusionRule(updatedRules);
   }
 
   Future<Iterable<AppInfo>> selectApp(BuildContext context) async {

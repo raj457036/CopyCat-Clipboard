@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationContent, NotificationMessage;
+    show NotificationContent, NotificationMessage, NotificationType;
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/data/services/post_sync_decryption_service.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
@@ -122,7 +122,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
           ),
         ),
         id: key,
-        type: .error,
+        type: NotificationType.error,
       ),
     );
   }
