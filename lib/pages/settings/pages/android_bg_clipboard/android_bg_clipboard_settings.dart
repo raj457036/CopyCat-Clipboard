@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
@@ -8,9 +10,10 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/settings/pages/android_bg_clipboard/accessibility_service_notice.dart';
-import 'package:clipboard/pages/settings/pages/android_bg_clipboard/draw_over_other_app_notice.dart';
+import 'package:clipboard/pages/settings/pages/android_bg_clipboard/detection_status_card.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
 import 'package:clipboard/widgets/subscription/subscription_builder.dart';
+import 'package:clipboard/widgets/settings_menu_dropdown.dart';
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/widgets/badges.dart';
@@ -49,11 +52,27 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   bool isRunning = false;
   // required permissions
   bool notification = false;
-  bool overlay = false;
   bool batteryOptimization = false;
   bool accessibility = false;
-  bool strictCheck = true;
   bool enable = false;
+  bool _awaitingAccessibilityRefresh = false;
+  StreamSubscription<Map<String, String>>? _detectionStatusSubscription;
+  Map<String, String>? _latestDetectionStatusPayload;
+  String _detectionStatusState = 'inactive';
+  String _detectionStatusOutcome = 'none';
+
+  String _selectedMode = 'inactive';
+  final List<(String, String)> _detectionModes = const [
+    ('inactive', 'Select mode'),
+    ("mode_1_ack_text", "Mode 1"),
+    ("mode_2_aggressive", "Mode 2"),
+  ];
+
+  String _normalizeDetectionMode(String? mode) {
+    final value = (mode ?? '').trim();
+    final supported = _detectionModes.any((entry) => entry.$1 == value);
+    return supported ? value : 'inactive';
+  }
 
   @override
   void initState() {
@@ -70,6 +89,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await widget.bgService.initStorage();
+      _subscribeToDetectionStatus();
       await checkStatus();
       await setupConfiguration();
     });
@@ -77,6 +97,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
 
   @override
   void dispose() {
+    _detectionStatusSubscription?.cancel();
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }
@@ -99,32 +120,112 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     });
 
     notification = await widget.bgService.isNotificationPermissionGranted();
-    overlay = await widget.bgService.isOverlayPermissionGranted();
     batteryOptimization = !await widget.bgService
         .isBatteryOptimizationEnabled();
-    accessibility = await widget.bgService.isAccessibilityPermissionGranted();
+    accessibility = await _readAccessibilityStatus();
+    _awaitingAccessibilityRefresh = false;
     isRunning = await widget.bgService.isServiceRunning();
-    strictCheck =
-        await widget.bgService.readShared<bool>("strictCheck") ?? true;
+
+    if (!accessibility) {
+      // Accessibility is off — reset mode to inactive so user picks fresh when they enable it.
+      _selectedMode = 'inactive';
+      await widget.bgService.setDetectionMode('inactive');
+    } else {
+      final storedMode = await widget.bgService.readShared<String>(
+        'detectionMode',
+      );
+      _selectedMode = _normalizeDetectionMode(storedMode);
+      if (storedMode != null &&
+          storedMode.isNotEmpty &&
+          storedMode != _selectedMode) {
+        await widget.bgService.setDetectionMode(_selectedMode);
+      }
+    }
+
+    if (!mounted) return;
 
     setState(() {
+      if (!accessibility || _selectedMode == 'inactive') {
+        _detectionStatusState = 'inactive';
+        _detectionStatusOutcome = 'none';
+      }
       loading = false;
     });
+
+    _applyLatestDetectionStatus();
+  }
+
+  Future<bool> _readAccessibilityStatus() async {
+    var granted = await widget.bgService.isAccessibilityPermissionGranted();
+    if (granted || !_awaitingAccessibilityRefresh) {
+      return granted;
+    }
+
+    for (var attempt = 0; attempt < 6; attempt++) {
+      await Future<void>.delayed(const Duration(milliseconds: 250));
+      granted = await widget.bgService.isAccessibilityPermissionGranted();
+      if (granted) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  (String, String) _statusForMode(String mode) {
+    return switch (mode) {
+      'inactive' => ('inactive', 'none'),
+      'mode_1_ack_text' => ('starting', 'pending'),
+      'mode_2_aggressive' => ('running_aggressive', 'none'),
+      _ => ('inactive', 'none'),
+    };
+  }
+
+  void _setDisplayedDetectionStatus(String state, String outcome) {
+    if (!mounted) return;
+    if (state == _detectionStatusState && outcome == _detectionStatusOutcome) {
+      return;
+    }
+
+    setState(() {
+      _detectionStatusState = state;
+      _detectionStatusOutcome = outcome;
+    });
+  }
+
+  void _applyLatestDetectionStatus() {
+    if (!accessibility || _selectedMode == 'inactive') {
+      _setDisplayedDetectionStatus('inactive', 'none');
+      return;
+    }
+
+    final payload = _latestDetectionStatusPayload;
+    if (payload == null) {
+      return;
+    }
+
+    final state = (payload['state'] ?? 'inactive').trim();
+    final outcome = (payload['outcome'] ?? 'none').trim();
+    _setDisplayedDetectionStatus(state, outcome);
+  }
+
+  void _subscribeToDetectionStatus() {
+    _detectionStatusSubscription?.cancel();
+    _detectionStatusSubscription = widget.bgService
+        .detectionStatusStream()
+        .listen((payload) {
+          if (!mounted) return;
+
+          _latestDetectionStatusPayload = {
+            'state': (payload['state'] ?? 'inactive').trim(),
+            'outcome': (payload['outcome'] ?? 'none').trim(),
+          };
+          _applyLatestDetectionStatus();
+        });
   }
 
   Future<void> openNotificationSetting() async {
     await widget.bgService.requestNotificationPermission();
-  }
-
-  Future<void> openOverlaySetting() async {
-    if (!overlay) {
-      final agree = await const DrawOverOtherAppNotice().show(context);
-
-      if (!agree) {
-        return;
-      }
-    }
-    await widget.bgService.requestOverlayPermission();
   }
 
   Future<void> openBatteryOptimizationSetting() async {
@@ -140,17 +241,8 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
       }
     }
 
+    _awaitingAccessibilityRefresh = true;
     await widget.bgService.openAccessibilityService();
-  }
-
-  Future<void> changeStrictCheck(bool value) async {
-    final success = await widget.bgService.writeShared("strictCheck", value);
-
-    if (!success) return;
-
-    setState(() {
-      strictCheck = value;
-    });
   }
 
   bool _syncMode = false;
@@ -248,9 +340,58 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     });
   }
 
+  Future<void> _onModeChanged(String? newMode) async {
+    if (newMode == null) return;
+
+    final normalizedMode = _normalizeDetectionMode(newMode);
+    if (normalizedMode == _selectedMode) {
+      return;
+    }
+
+    final previousMode = _selectedMode;
+    final previousStatusState = _detectionStatusState;
+    final previousStatusOutcome = _detectionStatusOutcome;
+    final nextStatus = _statusForMode(normalizedMode);
+
+    setState(() {
+      _selectedMode = normalizedMode;
+      _detectionStatusState = nextStatus.$1;
+      _detectionStatusOutcome = nextStatus.$2;
+    });
+
+    try {
+      await widget.bgService.setDetectionMode(normalizedMode);
+      if (normalizedMode == 'inactive') {
+        setState(() {
+          _detectionStatusState = 'inactive';
+          _detectionStatusOutcome = 'none';
+        });
+      }
+      showTextSnackbar(
+        normalizedMode == 'inactive'
+            ? 'Detection mode cleared'
+            : 'Detection mode updated',
+        success: true,
+      );
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _selectedMode = previousMode;
+          _detectionStatusState = previousStatusState;
+          _detectionStatusOutcome = previousStatusOutcome;
+        });
+      }
+      logger.e("Failed to update detection mode: $e");
+      showTextSnackbar("Failed to update detection mode", failure: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLight = context.theme.brightness == Brightness.light;
+    final textTheme = context.textTheme;
+    final colors = context.colors;
+    final canChooseMode = accessibility && !writingConfig;
     Widget child = const Center(child: CircularProgressIndicator());
 
     if (!loading) {
@@ -290,28 +431,49 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                 : (_) => openBatteryOptimizationSetting(),
           ),
           SwitchListTile(
-            title: Text(context.locale.abc__tile__overlay_title),
-            subtitle: Text(context.locale.abc__tile__overlay_subtitle),
-            value: overlay,
-            enableFeedback: true,
-            thumbIcon: overlay ? checked : unchecked,
-            onChanged: writingConfig || !notification
-                ? null
-                : (_) => openOverlaySetting(),
-          ),
-          SwitchListTile(
             title: Text(context.locale.abc__tile__acc_title),
             subtitle: Text(context.locale.abc__tile__acc_subtitle),
             value: accessibility,
             enableFeedback: true,
             thumbIcon: accessibility ? checked : unchecked,
-            onChanged:
-                writingConfig ||
-                    !notification ||
-                    !overlay ||
-                    !batteryOptimization
+            onChanged: writingConfig || !notification || !batteryOptimization
                 ? null
                 : (_) => openAccessibilitySetting(),
+          ),
+          height5,
+          ListTile(
+            title: const Text("Detection Mode"),
+            subtitle: Text(
+              accessibility
+                  ? "Choose how CopyCat detects copy actions in other apps. "
+                        "CopyCat stays inactive until you pick a mode."
+                  : "Enable accessibility service first, then choose a detection mode.",
+              style: textTheme.bodyMedium?.copyWith(color: colors.outline),
+            ),
+            trailing: SettingsMenuDropdown<String>(
+              value: _normalizeDetectionMode(_selectedMode),
+              maxWidth: 220,
+              items: _detectionModes
+                  .map(
+                    (mode) => SettingsDropdownItem(
+                      value: mode.$1,
+                      enabled: accessibility || mode.$1 == 'inactive',
+                    ),
+                  )
+                  .toList(),
+              itemBuilder: (context, value) {
+                final label = _detectionModes
+                    .firstWhere((mode) => mode.$1 == value)
+                    .$2;
+                return (leading: null, child: Text(label), trailing: null);
+              },
+              onSelected: canChooseMode ? _onModeChanged : null,
+            ),
+          ),
+          height5,
+          DetectionStatusCard(
+            state: _detectionStatusState,
+            outcome: _detectionStatusOutcome,
           ),
           height5,
           HasAccessToFeature(
@@ -346,25 +508,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
               );
             },
           ),
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            initiallyExpanded: true,
-            title: SettingHeader(
-              name: context.locale.abc__other_setting__title,
-            ),
-            children: [
-              SwitchListTile(
-                title: Text(context.locale.abc__enhanced_clip_detection__title),
-                subtitle: Text(
-                  context.locale.abc__enhanced_clip_detection__subtitle,
-                ),
-                value: strictCheck,
-                enableFeedback: true,
-                thumbIcon: strictCheck ? checked : unchecked,
-                onChanged: changeStrictCheck,
-              ),
-            ],
-          ),
         ],
       );
     }
@@ -372,7 +515,11 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     return PopScope(
       canPop: !writingConfig,
       child: Scaffold(
-        appBar: AppBar(title: Text(context.locale.abc_title)),
+        appBar: AppBar(
+          title: Text(context.locale.abc_title),
+          scrolledUnderElevation: 0.0,
+          backgroundColor: context.colors.surface,
+        ),
         body: child,
       ),
     );

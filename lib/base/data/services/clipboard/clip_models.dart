@@ -110,16 +110,17 @@ class ClipItem {
     fileSize: null,
   );
 
-  factory ClipItem.imageFile({
+  factory ClipItem.mediaFile({
     required File file,
     String? fileName,
     required String mimeType,
     required int fileSize,
     String? blurHash,
+    Uri? originalPathUri,
   }) => ClipItem(
     fileName: fileName,
     file: file,
-    uri: null,
+    uri: originalPathUri,
     text: null,
     type: ClipItemType.media,
     fileMimeType: mimeType,
@@ -134,10 +135,11 @@ class ClipItem {
     String? fileName,
     required String mimeType,
     required int fileSize,
+    Uri? originalPathUri,
   }) => ClipItem(
     file: file,
     fileName: fileName,
-    uri: null,
+    uri: originalPathUri,
     text: textPreview,
     type: ClipItemType.file,
     fileMimeType: mimeType,

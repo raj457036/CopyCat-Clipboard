@@ -24,6 +24,10 @@ class SyncStatusState with _$SyncStatusState {
   const factory SyncStatusState.syncing({
     @Default(<String, SyncProgress>{}) Map<String, SyncProgress> progress,
   }) = SyncingStatus;
+  const factory SyncStatusState.decrypting({
+    @Default(0) int decrypted,
+    @Default(0) int total,
+  }) = SyncStatusDecrypting;
   const factory SyncStatusState.complete() = SyncStatusComplete;
   const factory SyncStatusState.failed(Failure failure) = SyncStatusFailed;
 }

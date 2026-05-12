@@ -1,6 +1,7 @@
 package com.entilitystudio.android_background_clipboard
 
 import android.accessibilityservice.AccessibilityService
+import android.content.ClipboardManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -9,8 +10,11 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.os.SystemClock
 import android.util.Log
+import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
+import android.widget.LinearLayout
 import android.widget.Toast
 
 
@@ -18,44 +22,78 @@ const val DetectionText = "CopyCat"
 
 class CopyCatAccessibilityService : AccessibilityService() {
     private val logTag = "CopyCatAccService"
+    private val ackDetectionTimeoutMs = 4000L
+    private val modeRelearnDelayMs = 500L
+    private val verboseEventLogging = false
     private var detectingCopyAck: Boolean = false
-    private var notificationAckText: String = "[Copied]"
     private var isClipboardServiceConnected: Boolean = false
     private var currentlyActiveApp: String = ""
+    private lateinit var clipboardManager: ClipboardManager
+    private lateinit var windowManager: WindowManager
+    private var transientOverlayLayout: LinearLayout? = null
     private val handler = Handler(Looper.getMainLooper())
-    private val copyRunnable = Runnable {
-        val currentTimestamp = System.currentTimeMillis()
-        if (currentTimestamp - lastCopiedTimestamp > 400 && isScreenOn()) {
-            onCopyEvent(true)
-        } else {
-            Log.d(logTag, "Skipped onCopyEvent: Screen OFF or duplicate")
+    private val ackDetectionTimeoutRunnable = Runnable {
+        if (!detectingCopyAck) return@Runnable
+        Log.w(logTag, "Ack detection timed out; completing setup with fallback")
+        completeDetectionTest(succeeded = false)
+    }
+    private val modeRelearnRunnable = Runnable {
+        if (!isClipboardServiceConnected || !::detectionStrategy.isInitialized) return@Runnable
+        if (isCapturePaused()) return@Runnable
+        if (!detectionStrategy.requiresDetectionTest()) return@Runnable
+        detectCopyAck()
+    }
+    private var strategyMode: ClipboardDetectionMode = ClipboardDetectionMode.default()
+
+    // Strategy for detection
+    private lateinit var detectionStrategy: ClipboardDetectionStrategy
+
+    private val detectionStatusReporter = DetectionStatusReporter.getInstance()
+    private var clipboardService: CopyCatClipboardService? = null
+    private val detectionModeListener: (ClipboardDetectionMode) -> Unit = {
+        handler.post {
+            initializeDetectionStrategy(force = true)
         }
     }
-    private var lastCopiedTimestamp: Long = 0;
+    private val notificationPausedListener: (Boolean) -> Unit = { paused ->
+        handler.post {
+            if (paused) {
+                handler.removeCallbacks(modeRelearnRunnable)
+                cancelDetectionTest()
+                return@post
+            }
 
-    private val strictCheck: Boolean
-        get() = clipboardService?.copycatStorage?.strictCheck == true
+            scheduleModeRelearnIfNeeded()
+        }
+    }
 
+    private fun updateDetectionStatus(state: String, outcome: String? = null) {
+        detectionStatusReporter.update(state, outcome ?: "none")
+    }
 
-
-    private var clipboardService: CopyCatClipboardService? = null
+    private fun isCapturePaused(): Boolean = clipboardService?.copycatStorage?.notificationPaused == true
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
-            Log.d(logTag, "OnServiceConnected $name")
+            debugLog(logTag) { "OnServiceConnected $name" }
             clipboardService = (binder as CopyCatClipboardService.LocalBinder).getService()
+            clipboardService?.copycatStorage?.removeDetectionModeListener(detectionModeListener)
+            clipboardService?.copycatStorage?.addDetectionModeListener(detectionModeListener)
+            clipboardService?.copycatStorage?.removeNotificationPausedListener(notificationPausedListener)
+            clipboardService?.copycatStorage?.addNotificationPausedListener(notificationPausedListener)
             isClipboardServiceConnected = true
 
-            // Safe to do ack detection later
-            handler.postDelayed({
-                if (isClipboardServiceConnected) {
-                    detectCopyAck()
-                }
-            }, 1500)
+            // Initialize strategy based on current mode
+            initializeDetectionStrategy(force = true)
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-            Log.d(logTag, "OnServiceDisconnected $name")
+            debugLog(logTag) { "OnServiceDisconnected $name" }
+            handler.removeCallbacks(modeRelearnRunnable)
+            cancelDetectionTest()
+            clipboardService?.copycatStorage?.removeDetectionModeListener(detectionModeListener)
+            clipboardService?.copycatStorage?.removeNotificationPausedListener(notificationPausedListener)
+            clipboardService = null
             isClipboardServiceConnected = false
             restartClipboardService()
         }
@@ -68,26 +106,31 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
     // Method to restart the clipboard service if it's disconnected
     private fun restartClipboardService() {
-        Log.d(logTag, "Attempting to restart the clipboard service")
+        debugLog(logTag) { "Attempting to restart the clipboard service" }
         startClipboardService() // Re-start the service
     }
 
-    private fun onCopyEvent(disableDuplicateAnnouncements: Boolean = false) {
-        Log.d(logTag, "Copy Event Detected, Reading Clipboard")
+    private fun onCopyEvent(packageName: String = "") {
+        debugLog(logTag) { "Copy Event Detected, Reading Clipboard" }
 
         if (!isClipboardServiceConnected) {
             Log.w(logTag, "ClipboardService not connected yet, ignoring onCopyEvent")
             return
         }
-        if (!isScreenOn()) {
-            Log.d(logTag, "Screen is OFF, skipping onCopyEvent")
+        if (isCapturePaused()) {
+            debugLog(logTag) { "Capture paused, ignoring onCopyEvent before clipboard read" }
             return
         }
-        if (disableDuplicateAnnouncements) {
-            clipboardService?.disableDuplicateAnnouncement = true;
+        if (!isScreenOn()) {
+            debugLog(logTag) { "Screen is OFF, skipping onCopyEvent" }
+            return
         }
-        clipboardService?.performClipboardRead(currentlyActiveApp)
-        lastCopiedTimestamp = System.currentTimeMillis();
+        withAccessibilityOverlayFocus {
+            clipboardService?.performClipboardReadFromClipData(
+                clipboardManager.primaryClip,
+                packageName,
+            )
+        }
     }
 
     private fun startClipboardService() {
@@ -100,7 +143,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
         val bindIntent = Intent(this, CopyCatClipboardService::class.java)
         bindService(bindIntent, connection, Context.BIND_AUTO_CREATE)
-        Log.d(logTag, "Clipboard service start requested")
+        debugLog(logTag) { "Clipboard service start requested" }
         Toast.makeText(this, "CopyCat Service Starting", Toast.LENGTH_SHORT).show()
     }
 
@@ -110,132 +153,273 @@ class CopyCatAccessibilityService : AccessibilityService() {
     }
 
     private fun detectCopyAck() {
-        Log.d(logTag, "CopyCat Service is detecting ack event...")
+        if (isCapturePaused()) {
+            debugLog(logTag) { "Capture paused, skipping detection test start" }
+            return
+        }
+        if (detectingCopyAck) {
+            debugLog(logTag) { "Detection test already running; skipping duplicate start" }
+            return
+        }
+        debugLog(logTag) { "Starting copy acknowledgement detection..." }
         detectingCopyAck = true
-        clipboardService?.writeToClipboard(DetectionText)
+        updateDetectionStatus(state = "calibrating", outcome = "pending")
+        handler.removeCallbacks(ackDetectionTimeoutRunnable)
+        handler.postDelayed(ackDetectionTimeoutRunnable, ackDetectionTimeoutMs)
+        val probeText = "$DetectionText-${SystemClock.uptimeMillis()}"
+        detectionStrategy.startDetectionTest(probeText, object : ClipboardDetectionCallback {
+            override fun onCopyDetected(packageName: String) {}
+            override fun onTestAckCandidate(ackText: String) {
+                if (!isDetectionProbeStillOnClipboard(probeText)) {
+                    debugLog(logTag) { "Ignoring ack candidate because clipboard no longer matches probe" }
+                    return
+                }
+                detectionStrategy.acceptDetectionTestAckText(ackText)
+                completeDetectionTest(succeeded = true)
+            }
+        })
+        withAccessibilityOverlayFocus {
+            clipboardService?.writeToClipboard(probeText)
+        }
     }
 
-    private fun detectCopyAckComplete() {
+    private fun isDetectionProbeStillOnClipboard(probeText: String): Boolean {
+        var clipboardText: String? = null
+        withAccessibilityOverlayFocus {
+            val clipData = clipboardManager.primaryClip
+            if (clipData != null && clipData.itemCount > 0) {
+                clipboardText = clipData.getItemAt(0).coerceToText(this)?.toString()
+            }
+        }
+
+        return clipboardText?.trim() == probeText
+    }
+
+    private fun cancelDetectionTest(nextState: String? = null, nextOutcome: String? = null) {
+        if (!detectingCopyAck) {
+            return
+        }
+
         detectingCopyAck = false
-        Toast.makeText(this, "CopyCat Service Started", Toast.LENGTH_SHORT).show()
-        Log.d(logTag, "CopyCat Service successfully detected ($notificationAckText) ack event.")
+        handler.removeCallbacks(ackDetectionTimeoutRunnable)
+        if (::detectionStrategy.isInitialized) {
+            detectionStrategy.completeDetectionTest()
+        }
+        if (nextState != null) {
+            updateDetectionStatus(nextState, nextOutcome ?: "none")
+        }
     }
 
-    private fun debounceOnCopyEvent(delayMillis: Long = 1200) {
-        handler.removeCallbacks(copyRunnable) // cancel any pending run
-        handler.postDelayed(copyRunnable, delayMillis)
+    private fun completeDetectionTest(succeeded: Boolean) {
+        if (!detectingCopyAck) return
+        detectingCopyAck = false
+        handler.removeCallbacks(ackDetectionTimeoutRunnable)
+        detectionStrategy.completeDetectionTest()
+        updateDetectionStatus(
+            state = "running_heuristic",
+            outcome = if (succeeded) "success" else "failure",
+        )
+        if (succeeded) {
+            Toast.makeText(this, "CopyCat Service Started", Toast.LENGTH_SHORT).show()
+            debugLog(logTag) { "CopyCat Service successfully detected copy acknowledgement" }
+        } else {
+            Toast.makeText(this, "CopyCat started with fallback detection", Toast.LENGTH_SHORT)
+                .show()
+            Log.w(logTag, "CopyCat calibration timed out; continuing with fallback detection")
+        }
     }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
         Log.i(logTag, "CopyCat Accessibility Service Connected")
+        clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         startClipboardService()
     }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        Log.d(logTag, "Event : $event")
+    private fun getFocusOnOverlay(): Boolean {
+        transientOverlayLayout = LinearLayout(this)
+        val layoutParams = WindowManager.LayoutParams(
+            0,
+            0,
+            WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            android.graphics.PixelFormat.TRANSPARENT,
+        )
 
-        if (event == null || event?.packageName == "com.entilitystudio.CopyCat") {
-            Log.d(logTag, "Ignoring CopyCat Clipboard Events")
+        return try {
+            windowManager.addView(transientOverlayLayout, layoutParams)
+            true
+        } catch (e: Exception) {
+            Log.e(logTag, "Failed to add accessibility overlay: ${e.message}")
+            transientOverlayLayout = null
+            false
+        }
+    }
+
+    private fun removeFocusOnOverlay() {
+        transientOverlayLayout?.let {
+            try {
+                windowManager.removeView(it)
+            } catch (e: Exception) {
+                Log.w(logTag, "Failed to remove accessibility overlay: ${e.message}")
+            }
+        }
+        transientOverlayLayout = null
+    }
+
+    private fun withAccessibilityOverlayFocus(action: () -> Unit) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            action()
             return
         }
 
-        if (!detectingCopyAck) {
-            if (Utils.isActivityOnTop) {
-                Log.d(logTag, "Ignoring events as current activity is CopyCat itself")
-                return
+        val overlayAdded = getFocusOnOverlay()
+        try {
+            action()
+        } finally {
+            if (overlayAdded) {
+                removeFocusOnOverlay()
             }
+        }
+    }
 
-            if (event?.packageName?.startsWith("com.entilitystudio") == true) {
-                Log.d(logTag, "Ignoring CopyCat Clipboard Events")
-                return
+    private fun scheduleModeRelearnIfNeeded() {
+        if (!isClipboardServiceConnected ||
+            isCapturePaused() ||
+            !::detectionStrategy.isInitialized ||
+            !detectionStrategy.requiresDetectionTest()
+        ) {
+            return
+        }
+        handler.removeCallbacks(modeRelearnRunnable)
+        handler.postDelayed(modeRelearnRunnable, modeRelearnDelayMs)
+    }
+    
+    private fun initializeDetectionStrategy(force: Boolean = false) {
+        val selectedMode = clipboardService?.copycatStorage?.detectionMode
+            ?: ClipboardDetectionMode.default()
+
+        if (!force && ::detectionStrategy.isInitialized && selectedMode == strategyMode) {
+            return
+        }
+
+        val hadStrategy = ::detectionStrategy.isInitialized
+        val previousMode = strategyMode
+
+        if (detectingCopyAck) {
+            debugLog(logTag) { "Cancelling in-flight detection test due to mode reinitialization" }
+            cancelDetectionTest(nextState = "starting", nextOutcome = "pending")
+        }
+
+        if (hadStrategy) {
+            detectionStrategy.shutdown()
+        }
+
+        strategyMode = selectedMode
+        val cachedMode1AckText = clipboardService?.copycatStorage?.getMode1AckText()
+        detectionStrategy = when (selectedMode) {
+            ClipboardDetectionMode.MODE_INACTIVE -> ModeInactiveStrategy()
+            ClipboardDetectionMode.MODE_1_ACK_TEXT -> Mode1AckTextStrategy(
+                initialAckText = cachedMode1AckText,
+                onAckTextLearned = { ackText ->
+                    clipboardService?.copycatStorage?.writeMode1AckText(ackText)
+                },
+            )
+            ClipboardDetectionMode.MODE_2_AGGRESSIVE -> Mode2AggressiveStrategy()
+        }
+
+        val requiresDetectionTest = detectionStrategy.requiresDetectionTest()
+        updateDetectionStatus(
+            state = when (selectedMode) {
+                ClipboardDetectionMode.MODE_INACTIVE -> "inactive"
+                ClipboardDetectionMode.MODE_1_ACK_TEXT ->
+                    if (requiresDetectionTest) "starting" else "running_heuristic"
+                ClipboardDetectionMode.MODE_2_AGGRESSIVE -> "running_aggressive"
+            },
+            outcome = when (selectedMode) {
+                ClipboardDetectionMode.MODE_1_ACK_TEXT ->
+                    if (requiresDetectionTest) "pending" else "success"
+
+                else -> "none"
+            },
+        )
+
+        debugLog(logTag) { "Initialized detection strategy for mode: ${selectedMode.value}" }
+
+        if (force || !hadStrategy || selectedMode != previousMode) {
+            scheduleModeRelearnIfNeeded()
+        }
+    }
+
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) {
+        if (event == null) {
+            return
+        }
+
+        if (isCapturePaused()) {
+            return
+        }
+
+        val isOwnAppEvent = event.packageName?.toString() == packageName
+        if (isOwnAppEvent && !detectingCopyAck) {
+            return
+        }
+
+        if (verboseEventLogging) {
+            debugLog(logTag) { "Event : $event" }
+        }
+
+        initializeDetectionStrategy()
+
+        // Update currently active app for context
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            event.packageName?.let {
+                if (it != "com.android.systemui")
+                    currentlyActiveApp = it.toString()
             }
         }
 
-        when (event?.eventType) {
-            AccessibilityEvent.TYPE_VIEW_CLICKED,
-            AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED,
-            AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED -> {
-                if (!strictCheck) debounceOnCopyEvent();
+        // Delegate to detection strategy
+        detectionStrategy.onAccessibilityEvent(
+            event,
+            packageName = currentlyActiveApp,
+            isScreenOn = isScreenOn(),
+            isAppInForeground = Utils.isActivityOnTop,
+            callback = object : ClipboardDetectionCallback {
+                override fun onCopyDetected(packageName: String) {
+                    onCopyEvent(packageName = packageName)
+                }
+                override fun onTestAckCandidate(ackText: String) {}
             }
-            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
-                event.packageName?.let {
-                    if (it != "com.android.systemui")
-                        currentlyActiveApp = it.toString()
-                }
-
-                // Special case for announcement type copy acknowledgement
-                if ((event.packageName != "com.android.systemui" ||  event.className.toString() != "android.widget.FrameLayout") || event.text.isEmpty()) {
-                    return
-                }
-
-                val ackTextSplit = event.text.toString().split(",")
-                Log.d(logTag, "Ack TEXT: ${event.text} | $ackTextSplit")
-
-                if (strictCheck && ackTextSplit.size > 1 || notificationAckText.isBlank()) {
-                    val detectionText = ackTextSplit.first()
-
-                    val ackText = ackTextSplit.last()
-                    if (detectingCopyAck) {
-                        if (!detectionText.contains(DetectionText)) return
-                        notificationAckText = ackText
-                        detectCopyAckComplete()
-                        return
-                    }
-
-                    val copyDetected = ackText == notificationAckText || notificationAckText.isBlank()
-                    if (copyDetected) onCopyEvent()
-                } else if (!strictCheck && ackTextSplit.size == 1 && event.text.contains(DetectionText) && detectingCopyAck) {
-                    notificationAckText = ""
-                    detectCopyAckComplete()
-                    return
-                }
-            }
-            AccessibilityEvent.TYPE_ANNOUNCEMENT -> {
-                if (strictCheck && event.packageName != "com.android.systemui") return
-
-                val ackText = event.text.toString()
-                if (detectingCopyAck && ackText.isNotEmpty()) {
-                    notificationAckText = ackText
-                    detectCopyAckComplete()
-                    return
-                }
-
-                val copyDetected = ackText == notificationAckText
-                if (copyDetected) onCopyEvent()
-                else if (!strictCheck) debounceOnCopyEvent()
-            }
-            AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED -> {
-                if (event.className != "android.widget.Toast") return
-                Log.d(logTag, "Toast Event: $event")
-                val ackText = event.text.toString()
-                if (detectingCopyAck && ackText.isNotEmpty()) {
-                    notificationAckText = ackText
-                    detectCopyAckComplete()
-                    return
-                }
-                Log.d(logTag, "Notification Text: $ackText | Expected: $notificationAckText")
-                val copyDetected = ackText == notificationAckText
-                if (copyDetected && ((strictCheck && event.packageName.contains("android")) || !strictCheck)) onCopyEvent()
-                else if (!strictCheck) debounceOnCopyEvent()
-            }
-            else -> {}
-        }
-
+        )
     }
 
     override fun onInterrupt() {
-        Log.d(logTag, "Interrupt")
+        debugLog(logTag) { "Interrupt" }
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
         Log.i(logTag, "CopyCat Accessibility Service Disconnected")
 
-        // Cancel any pending handler callbacks to prevent leaks
-        handler.removeCallbacks(copyRunnable)
-        handler.removeCallbacksAndMessages(null)
+        cancelDetectionTest()
 
+        // Clean up strategy
+        if (::detectionStrategy.isInitialized) {
+            detectionStrategy.shutdown()
+        }
+
+        // Cancel any pending handler callbacks to prevent leaks
+        handler.removeCallbacks(modeRelearnRunnable)
+        handler.removeCallbacks(ackDetectionTimeoutRunnable)
+        handler.removeCallbacksAndMessages(null)
+        updateDetectionStatus(state = "stopped", outcome = "none")
+        removeFocusOnOverlay()
+
+        clipboardService?.copycatStorage?.removeDetectionModeListener(detectionModeListener)
+        clipboardService?.copycatStorage?.removeNotificationPausedListener(notificationPausedListener)
         if (isClipboardServiceConnected) unbindService(connection)
         stopClipboardService()
         Toast.makeText(this, "CopyCat Service Stopped", Toast.LENGTH_SHORT).show()

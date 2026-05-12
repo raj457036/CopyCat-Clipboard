@@ -25,9 +25,9 @@ const _duplicateTag = "<-Duplicate";
 // Cache-file writer — persists raw bytes / text into the app cache directory.
 
 /// Writes clipboard content to a local cache file and returns
-/// `(file, mimeType, sizeInBytes)`. At least one of [content], [textContent],
+/// `(file, mimeType, sizeInBytes, original file path)`. At least one of [content], [textContent],
 /// or [file] must be provided.
-Future<(File?, String?, int)> writeToClipboardCacheFile({
+Future<(File?, String?, int, String?)> writeToClipboardCacheFile({
   required String folder,
   required String ext,
   String? fileName,
@@ -51,19 +51,25 @@ Future<(File?, String?, int)> writeToClipboardCacheFile({
       file.uri.toFilePath(windows: Platform.isWindows),
       path,
     );
-    return (file_, mime.lookupMimeType(file.path), await file.length());
+    return (
+      file_,
+      mime.lookupMimeType(file.path),
+      await file.length(),
+      file.path,
+    );
   } else if (textContent != null) {
     await file_.writeAsString(textContent);
-    return (file_, "text/plain", textContent.length);
+    return (file_, "text/plain", textContent.length, file_.path);
   } else if (content != null) {
     await file_.writeAsBytes(content, flush: true);
     return (
       file_,
       mime.lookupMimeType(path, headerBytes: content.sublist(0, 100)),
       content.length,
+      file_.path,
     );
   }
-  return (null, null, 0);
+  return (null, null, 0, null);
 }
 
 /// Processes clipboard format data into a [ClipItem].
@@ -279,24 +285,82 @@ class ClipboardFormatProcessor {
     return ClipItem.text(text: text, textCategory: TextCategory.struct);
   }
 
-  Future<ClipItem?> _getPlainText(DataReader reader) async {
-    String? text;
-
+  Future<String?> _readTextWithFallback(
+    DataReader reader,
+    ValueFormat<String> format,
+    String mimeType,
+  ) async {
     try {
-      text = await readValue(reader, Formats.plainText);
+      return await readValue(reader, format);
     } catch (e) {
-      final data = await service.Clipboard.getData("text/plain");
-      if (data != null) text = data.text;
+      final data = await service.Clipboard.getData(mimeType);
+      return data?.text;
     }
+  }
 
-    if (text == null) {
+  Future<ClipItem?> _createTextFileClip({
+    required String text,
+    required String extension,
+    String? storageFileName,
+    String? displayFileName,
+  }) async {
+    final (
+      file,
+      mimeType,
+      size,
+      originalPath,
+    ) = await writeToClipboardCacheFile(
+      folder: "files",
+      ext: extension,
+      fileName: storageFileName,
+      textContent: text,
+    );
+    if (file == null) return null;
+
+    return ClipItem.file(
+      file: file,
+      mimeType: mimeType ?? "application/octet-stream",
+      textPreview: text,
+      fileName: displayFileName,
+      fileSize: size,
+      originalPathUri: Uri.file(originalPath ?? file.path),
+    );
+  }
+
+  Future<ClipItem?> _getPlainText(DataReader reader) async {
+    final textValue = await _readTextWithFallback(
+      reader,
+      Formats.plainText,
+      "text/plain",
+    );
+
+    if (textValue == null) {
       logger.w("Text is null");
       return null;
     }
 
-    text = cleanText(text);
+    // Check if the text is a URI
+    final uri = Uri.tryParse(textValue.trim());
+    if (uri != null && supportedUriSchemas.contains(uri.scheme)) {
+      return ClipItem.uri(uri: uri);
+    }
+
+    final text = cleanText(textValue);
     if (text.trim().isEmpty) return null;
-    text = text.replaceAll(RegExp('\r[\n]?'), '\n');
+
+    if (text.length > kMaxTextClipLength) {
+      logger.w(
+        "Text length \${text.length} exceeds max limit of \$kMaxTextClipLength, "
+        "saving as file clip instead",
+      );
+      return _createTextFileClip(
+        text: text,
+        extension: "txt",
+        storageFileName: "clipboard_text",
+        displayFileName: "clipboard_text.txt",
+      );
+    }
+
     final (textCategory, parsedText) = TextAnalysis.getTextCategory(text);
 
     if (isDuplicate(type: ClipItemType.text, text: parsedText, save: true)) {
@@ -310,33 +374,24 @@ class ClipboardFormatProcessor {
   Future<ClipItem?> _getPlainTextFile(DataReader reader) async {
     final fileData = await readFile(reader, Formats.plainTextFile);
     final fileName = fileData.fileName;
-    final binary = fileData.bytes;
+    final fileBytes = fileData.bytes;
 
     if (fileName == _duplicateTag) return ClipItem.duplicate();
-    if (binary == null) {
+    if (fileBytes == null) {
       logger.w("Text file is null or empty.");
       return null;
     }
 
-    final text = cleanText(utf8.decode(binary, allowMalformed: true));
-    if (text.isNotEmpty && text.length <= 1024) {
-      return ClipItem.text(text: text);
+    if (fileBytes.isNotEmpty && fileBytes.length <= kMaxTextClipLength) {
+      return await _getPlainText(reader);
     }
 
-    final (file, mimeType, size) = await writeToClipboardCacheFile(
-      folder: "files",
-      ext: "txt",
-      fileName: fileName,
-      textContent: text,
-    );
-    if (file == null) return null;
-
-    return ClipItem.file(
-      file: file,
-      mimeType: mimeType ?? "application/octet-stream",
-      textPreview: text,
-      fileName: fileName,
-      fileSize: size,
+    final text = cleanText(utf8.decode(fileBytes, allowMalformed: true));
+    return _createTextFileClip(
+      text: text,
+      extension: "txt",
+      storageFileName: fileName,
+      displayFileName: fileName,
     );
   }
 
@@ -396,7 +451,12 @@ class ClipboardFormatProcessor {
         fileNameExtension: result.fileExtension ?? preferredExtension,
         preferredMimeType: preferredMimeType,
       );
-      final (file, mimeType, size) = await writeToClipboardCacheFile(
+      final (
+        file,
+        mimeType,
+        size,
+        originalPath,
+      ) = await writeToClipboardCacheFile(
         folder: folder,
         ext: resolvedExtension,
         fileName: fileName,
@@ -406,11 +466,12 @@ class ClipboardFormatProcessor {
       final resolvedMimeType =
           mimeType ?? preferredMimeType ?? _mimeTypeFromFormat(format);
       if (type == ClipItemType.media) {
-        return ClipItem.imageFile(
+        return ClipItem.mediaFile(
           file: file,
           mimeType: resolvedMimeType ?? "application/octet-stream",
           fileName: fileName,
           fileSize: size,
+          originalPathUri: Uri.file(originalPath ?? file.path),
         );
       }
 
@@ -419,6 +480,7 @@ class ClipboardFormatProcessor {
         mimeType: resolvedMimeType ?? "application/octet-stream",
         fileName: fileName,
         fileSize: size,
+        originalPathUri: Uri.file(originalPath ?? file.path),
       );
     } catch (e) {
       return null;
@@ -459,7 +521,12 @@ class ClipboardFormatProcessor {
 
     final ext = p.extension(file.path).substring(1);
     final fileName = p.basenameWithoutExtension(file.path);
-    final (cacheFile, mimeType, size) = await writeToClipboardCacheFile(
+    final (
+      cacheFile,
+      mimeType,
+      size,
+      originalPath,
+    ) = await writeToClipboardCacheFile(
       folder: "files",
       ext: ext,
       file: file,
@@ -472,6 +539,7 @@ class ClipboardFormatProcessor {
       mimeType: mimeType ?? "application/octet-stream",
       fileName: fileName,
       fileSize: size,
+      originalPathUri: Uri.file(originalPath ?? file.path),
     );
   }
 

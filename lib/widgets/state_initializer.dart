@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
-import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
+import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/constants/numbers/breakpoints.dart';
 import 'package:clipboard/common/logging.dart';
@@ -31,11 +32,23 @@ class _StateInitializerState extends State<StateInitializer>
   final appLinkListener = ApplinkListener();
   final shareListener = ShareListener();
   final powerSaverDebounce = Debouncer(milliseconds: 180000); // 3 minutes
+  final backgroundStateDebounce = Debouncer(milliseconds: 60000); // 1 minute
+
+  late final AppConfigCubit appConfigCubit;
   ui.FlutterView? _view;
   bool renderingDisabled = false;
+  bool _isAppLifecycleBackgrounded = false;
+  bool _isWindowBackgrounded = false;
+  bool? _lastClipboardBackgroundState;
+
+  // We consider the app backgrounded if either Flutter lifecycle is paused/
+  // inactive OR the desktop window manager reports the window in background
+  // while the app is not pinned.
+  bool get _isEffectivelyBackgrounded =>
+      !appConfigCubit.state.config.pinned &&
+      (_isAppLifecycleBackgrounded || _isWindowBackgrounded);
 
   Future<void> setupWindow() async {
-    final appConfigCubit = context.read<AppConfigCubit>();
     final windowCubit = context.read<WindowActionCubit>();
     await Future.delayed(Durations.extralong4);
     final appConfig = appConfigCubit.state.config;
@@ -54,6 +67,7 @@ class _StateInitializerState extends State<StateInitializer>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    appConfigCubit = context.read<AppConfigCubit>();
     appLinkListener.init();
     shareListener.init();
     setupWindow();
@@ -67,7 +81,6 @@ class _StateInitializerState extends State<StateInitializer>
   Future<void> _trackMobileAppLaunch() async {
     if (!mounted) return;
     try {
-      final appConfigCubit = context.read<AppConfigCubit>();
       await appConfigCubit.trackAppEntry();
     } catch (e) {
       logger.e("Error tracking app launch for review prompt. $e");
@@ -84,18 +97,27 @@ class _StateInitializerState extends State<StateInitializer>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
-    if (state == AppLifecycleState.resumed) {
-      syncAndroidBgClipboardStates();
-      disableRendering(false);
-    } else {
-      powerSaverDebounce(() => disableRendering(true));
+    switch (state) {
+      case AppLifecycleState.resumed:
+        syncAndroidBgClipboardStates();
+        disableRendering(false);
+        _isAppLifecycleBackgrounded = false;
+      case _:
+        powerSaverDebounce(() => disableRendering(true));
+        _isAppLifecycleBackgrounded = true;
     }
+    _syncClipboardBackgroundState();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _view = View.maybeOf(context);
+    final inBackground = InBackgroundState.of(context)?.inBackground ?? false;
+    if (_isWindowBackgrounded != inBackground) {
+      _isWindowBackgrounded = inBackground;
+      _syncClipboardBackgroundState();
+    }
   }
 
   @override
@@ -135,9 +157,7 @@ class _StateInitializerState extends State<StateInitializer>
 
   @override
   Widget build(BuildContext context) {
-    final windowInBackground =
-        (InBackgroundState.of(context)?.inBackground ?? false);
-    final isPowerSaverActive = windowInBackground && renderingDisabled;
+    final isPowerSaverActive = _isEffectivelyBackgrounded && renderingDisabled;
 
     if (isPowerSaverActive) return const SizedBox.shrink();
 
@@ -147,7 +167,30 @@ class _StateInitializerState extends State<StateInitializer>
       listener: (context, state) async {
         await showInAppReviewDialog(cubit: context.read<AppConfigCubit>());
       },
-      child: FadeIn(duration: Durations.medium3, child: widget.child),
+      child: widget.child,
     );
+  }
+
+  void _syncClipboardBackgroundState() {
+    if (!mounted) return;
+
+    final isBackgrounded = _isEffectivelyBackgrounded;
+
+    if (_lastClipboardBackgroundState == isBackgrounded) return;
+    _lastClipboardBackgroundState = isBackgrounded;
+
+    if (isBackgrounded) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+
+    if (isBackgrounded) {
+      backgroundStateDebounce(
+        () => context.read<ClipboardCubit>().setBackgrounded(isBackgrounded),
+      );
+      context.read<OfflinePersistenceCubit>().clearTransientState();
+    } else {
+      backgroundStateDebounce.cancel();
+      context.read<ClipboardCubit>().setBackgrounded(false);
+    }
   }
 }

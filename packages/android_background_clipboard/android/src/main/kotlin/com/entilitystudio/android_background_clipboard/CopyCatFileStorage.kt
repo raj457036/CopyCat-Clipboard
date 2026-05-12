@@ -23,7 +23,7 @@ class CopyCatFileStorage(private val context: Context) {
         storageDir = File(context.filesDir, "clipboard_cache")
         if (!storageDir.exists()) {
             storageDir.mkdirs()
-            Log.d(logTag, "Created clipboard storage directory: ${storageDir.absolutePath}")
+            debugLog(logTag) { "Created clipboard storage directory: ${storageDir.absolutePath}" }
         }
     }
 
@@ -78,9 +78,18 @@ class CopyCatFileStorage(private val context: Context) {
         val pruneCount = clipsByTimestamp.size - maxCachedClips
         clipsByTimestamp.take(pruneCount).forEach { (clipFile, _, clipId) ->
             ensureServerIdIndexLoaded()
-            serverIdIndex?.entries?.removeIf { it.value == clipId }
+            removeServerIdForClipId(clipId)
             if (!clipFile.delete()) {
                 Log.w(logTag, "Failed to prune clip file $clipId")
+            }
+        }
+    }
+
+    private fun removeServerIdForClipId(clipId: String) {
+        val iterator = serverIdIndex?.entries?.iterator() ?: return
+        while (iterator.hasNext()) {
+            if (iterator.next().value == clipId) {
+                iterator.remove()
             }
         }
     }
@@ -134,7 +143,7 @@ class CopyCatFileStorage(private val context: Context) {
             }
             pruneOldClipsLocked()
             
-            Log.d(logTag, "Wrote $clipId to disk (${text.length} bytes)")
+            debugLog(logTag) { "Wrote $clipId to disk (${text.length} bytes)" }
             return true
         } catch (e: Exception) {
             Log.e(logTag, "Error writing clip item: ${e.message}", e)
@@ -177,7 +186,7 @@ class CopyCatFileStorage(private val context: Context) {
                 serverIdIndex?.put(serverId, clipId)
             }
             
-            Log.d(logTag, "Updated $clipId with server ID $serverId")
+            debugLog(logTag) { "Updated $clipId with server ID $serverId" }
             return true
         } catch (e: Exception) {
             Log.e(logTag, "Error updating server metadata: ${e.message}", e)
@@ -190,10 +199,10 @@ class CopyCatFileStorage(private val context: Context) {
             val clipFile = File(storageDir, "$clipId.txt")
             if (clipFile.exists()) {
                 ensureServerIdIndexLoaded()
-                serverIdIndex?.entries?.removeIf { it.value == clipId }
+                removeServerIdForClipId(clipId)
                 val deleted = clipFile.delete()
                 if (deleted) {
-                    Log.d(logTag, "Deleted clip file $clipId")
+                    debugLog(logTag) { "Deleted clip file $clipId" }
                 } else {
                     Log.w(logTag, "Failed to delete clip file $clipId")
                 }
@@ -293,7 +302,7 @@ class CopyCatFileStorage(private val context: Context) {
             // Sort by timestamp (oldest first)
             clips.sortBy { it.timestamp }
             
-            Log.d(logTag, "Read ${clips.size} clips from disk")
+            debugLog(logTag) { "Read ${clips.size} clips from disk" }
             return clips
         } catch (e: Exception) {
             Log.e(logTag, "Error reading clips: ${e.message}", e)
@@ -316,7 +325,7 @@ class CopyCatFileStorage(private val context: Context) {
                 } ?: 0
                 serverIdIndex = mutableMapOf()
                 
-                Log.d(logTag, "Cleared $deleted clipboard files")
+                debugLog(logTag) { "Cleared $deleted clipboard files" }
             } catch (e: Exception) {
                 Log.e(logTag, "Error clearing storage: ${e.message}", e)
             }

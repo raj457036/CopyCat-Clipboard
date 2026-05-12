@@ -32,6 +32,13 @@ abstract class AndroidBackgroundClipboardPlatform extends PlatformInterface {
     throw UnimplementedError();
   }
 
+  Future<List<Map<Object?, Object?>>> readClipsBatch(
+    int start,
+    int end,
+  ) {
+    throw UnimplementedError();
+  }
+
   Future<bool> writeShared<T>(String key, T value, {bool secure = false}) {
     throw UnimplementedError();
   }
@@ -77,6 +84,14 @@ abstract class AndroidBackgroundClipboardPlatform extends PlatformInterface {
   }
 
   Future<void> clearStorage() async {
+    throw UnimplementedError();
+  }
+
+  Future<void> setDetectionMode(String mode) async {
+    throw UnimplementedError();
+  }
+
+  Stream<Map<String, String>> detectionStatusStream() {
     throw UnimplementedError();
   }
 }

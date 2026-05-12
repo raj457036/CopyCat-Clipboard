@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
 class CustomOutput extends LogOutput {
-  late final LogOutput _output;
+  LogOutput _output = ConsoleOutput();
 
   @override
   Future<void> init() async {
@@ -22,7 +22,7 @@ class CustomOutput extends LogOutput {
 }
 
 final logger = Logger(
-  level: kDebugMode ? Level.debug : Level.error,
+  level: kDebugMode ? Level.debug : Level.warning,
   printer: PrettyPrinter(
     methodCount: 0,
     errorMethodCount: 10,

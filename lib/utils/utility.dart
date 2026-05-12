@@ -246,6 +246,10 @@ String? cleanUpString(String? input) {
   // Remove other control characters (U+0001 to U+001F, U+007F), but allow newlines (\n) and carriage returns (\r)
   cleanedString = cleanedString.replaceAll(cleanUpStringRegex, '');
 
+  // Normalize newlines to \n to prevent issues in downstream
+  // processing and display.
+  cleanedString = cleanedString.replaceAll(RegExp('\r[\n]?'), '\n');
+
   return cleanedString;
 }
 
@@ -262,6 +266,10 @@ final isMobilePlatform = Platform.isIOS || Platform.isAndroid;
 Future<void> wait([int milliSeconds = 2000]) async {
   await Future.delayed(Duration(milliseconds: milliSeconds));
 }
+
+// A dummy function to await on when we just want to
+//yield execution to the event loop.
+void dud() {}
 
 bool get iapCatSupportedPlatform =>
     Platform.isIOS || Platform.isMacOS || Platform.isAndroid;

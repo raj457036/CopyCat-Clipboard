@@ -12,6 +12,19 @@ import android.widget.Toast
 
 
 class CopyCatSharedStorage private constructor(applicationContext: Context) {
+    companion object {
+        private const val MODE1_ACK_TEXT_KEY = "mode1AckText"
+        private const val NOTIFICATION_PAUSED_KEY = "notificationPaused"
+
+        @Volatile
+        private var instance: CopyCatSharedStorage? = null
+        fun getInstance(applicationContext: Context): CopyCatSharedStorage {
+            return instance ?: synchronized(this) {
+                instance ?: CopyCatSharedStorage(applicationContext).also { instance = it }
+            }
+        }
+    }
+
     private val appContext: Context = applicationContext
     private val logTag = "CopyCatSharedStorage"
     private val sp =
@@ -54,6 +67,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     var excludeEmail: Boolean = false
     var excludePhone: Boolean = false
     var useEncryptionNonce: Boolean = false
+    var notificationPaused: Boolean = false
+    var detectionMode: ClipboardDetectionMode = ClipboardDetectionMode.default()
+    private var mode1AckText: String? = null
+    private val detectionModeListeners = linkedSetOf<(ClipboardDetectionMode) -> Unit>()
+    private val notificationPausedListeners = linkedSetOf<(Boolean) -> Unit>()
     private var remoteClipApplier: ((String) -> Unit)? = null
 //    For Future Use
     var autoCopyOtp: Boolean = false
@@ -125,6 +143,21 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         if (key == "useEncryptionNonce") {
             useEncryptionNonce = sharedPreferences.getBoolean(key, false)
         }
+        if (key == NOTIFICATION_PAUSED_KEY) {
+            notificationPaused = sharedPreferences.getBoolean(key, false)
+            notifyNotificationPausedChanged()
+        }
+        if (key == "detectionMode") {
+            val previousMode = detectionMode
+            val modeValue = sharedPreferences.getString(key, ClipboardDetectionMode.default().value) ?: ClipboardDetectionMode.default().value
+            detectionMode = ClipboardDetectionMode.fromString(modeValue) ?: ClipboardDetectionMode.default()
+            maybeResetMode1Calibration(previousMode, detectionMode)
+            debugLog(logTag) { "Detection mode changed to: ${detectionMode.value}" }
+            notifyDetectionModeChanged()
+        }
+        if (key == MODE1_ACK_TEXT_KEY) {
+            mode1AckText = sharedPreferences.getString(key, null)?.trim()?.takeIf { it.isNotEmpty() }
+        }
         if (key == "projectKey") {
             readSecure(key)?.let {
                 syncManager.projectKey = it
@@ -149,18 +182,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             }
         }
     }
-
-
-    companion object {
-        @Volatile
-        private var instance: CopyCatSharedStorage? = null
-        fun getInstance(applicationContext: Context): CopyCatSharedStorage {
-            return instance ?: synchronized(this) {
-                instance ?: CopyCatSharedStorage(applicationContext).also { instance = it }
-            }
-        }
-    }
-
     private fun setupEncryptor(key: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
@@ -188,18 +209,18 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     }
 
     fun readSecure(key: String): String? {
-        Log.d(logTag, "Reading $key from secure storage")
+        debugLog(logTag) { "Reading $key from secure storage" }
         val encrypted = sp.getString(key, "").toString()
         if (encrypted.isNotBlank()) {
             val decoded = Base64.decode(encrypted, Base64.DEFAULT)
             return keystore.decryptData(decoded)
         }
-        Log.d(logTag, "$key not found in secure storage")
+        debugLog(logTag) { "$key not found in secure storage" }
         return null
     }
 
     fun clear() {
-        Log.d(logTag, "Clearing storage")
+        debugLog(logTag) { "Clearing storage" }
         mainHandler.removeCallbacks(reconfigureRunnable)
         mainHandler.removeCallbacks(persistEndIdRunnable)
         fileStorage.clearAll()
@@ -209,7 +230,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
     fun writeSecure(key: String, value: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Log.d(logTag, "Writing $key to secure storage")
+            debugLog(logTag) { "Writing $key to secure storage" }
             val encrypted = keystore.encryptData(value)
             val encoded = Base64.encodeToString(encrypted, Base64.DEFAULT)
             val editor = sp.edit()
@@ -219,7 +240,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     }
 
     private fun readConfig() {
-        Log.d(logTag, "Reading initial setup configs")
+        debugLog(logTag) { "Reading initial setup configs" }
         syncEnabled = sp.getBoolean("syncEnabled", false)
         listeningMode = sp.getString("listeningMode", ListeningMode.PUSH) ?: ListeningMode.PUSH
         syncSpeed = sp.getString("syncSpeed", "balanced") ?: "balanced"
@@ -236,6 +257,15 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         excludeEmail = sp.getBoolean("exclude-email", false)
         excludePhone = sp.getBoolean("exclude-phone", false)
         useEncryptionNonce = sp.getBoolean("useEncryptionNonce", false)
+        notificationPaused = sp.getBoolean(NOTIFICATION_PAUSED_KEY, false)
+        mode1AckText = sp.getString(MODE1_ACK_TEXT_KEY, null)?.trim()?.takeIf { it.isNotEmpty() }
+        
+        val modeValue = sp.getString("detectionMode", ClipboardDetectionMode.default().value) ?: ClipboardDetectionMode.default().value
+        detectionMode = ClipboardDetectionMode.fromString(modeValue) ?: ClipboardDetectionMode.default()
+        if (detectionMode == ClipboardDetectionMode.MODE_INACTIVE && notificationPaused) {
+            notificationPaused = false
+            sp.edit().putBoolean(NOTIFICATION_PAUSED_KEY, false).apply()
+        }
 
         readSecure("projectKey")?.let {
             syncManager.projectKey = it
@@ -259,7 +289,17 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     }
 
     fun write(key: String, value: Any) {
-        Log.d(logTag, "Writing $key = $value to storage")
+        debugLog(logTag) { "Writing $key = $value to storage" }
+        if (key == "detectionMode" && value is String) {
+            val previousMode = ClipboardDetectionMode.fromString(
+                sp.getString(key, detectionMode.value) ?: detectionMode.value,
+            ) ?: detectionMode
+            val nextMode = ClipboardDetectionMode.fromString(value) ?: ClipboardDetectionMode.default()
+            maybeResetMode1Calibration(previousMode, nextMode)
+            if (nextMode == ClipboardDetectionMode.MODE_INACTIVE && notificationPaused) {
+                updateNotificationPaused(false)
+            }
+        }
         val editor = sp.edit()
         when (value) {
             is String -> {
@@ -281,8 +321,78 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         editor.apply()
     }
 
+    fun addDetectionModeListener(listener: (ClipboardDetectionMode) -> Unit) {
+        detectionModeListeners.add(listener)
+    }
+
+    fun addNotificationPausedListener(listener: (Boolean) -> Unit) {
+        notificationPausedListeners.add(listener)
+    }
+
+    fun getMode1AckText(): String? = mode1AckText
+
+    fun writeMode1AckText(value: String) {
+        val normalizedValue = value.trim()
+        if (normalizedValue.isEmpty()) {
+            return
+        }
+
+        mode1AckText = normalizedValue
+        write(MODE1_ACK_TEXT_KEY, normalizedValue)
+    }
+
+    fun updateNotificationPaused(value: Boolean) {
+        if (notificationPaused == value && sp.contains(NOTIFICATION_PAUSED_KEY)) {
+            return
+        }
+
+        notificationPaused = value
+        write(NOTIFICATION_PAUSED_KEY, value)
+    }
+
+    private fun maybeResetMode1Calibration(
+        previousMode: ClipboardDetectionMode,
+        nextMode: ClipboardDetectionMode,
+    ) {
+        if (
+            previousMode == ClipboardDetectionMode.MODE_1_ACK_TEXT &&
+            nextMode == ClipboardDetectionMode.MODE_INACTIVE
+        ) {
+            clearMode1AckText()
+        }
+    }
+
+    fun clearMode1AckText() {
+        if (mode1AckText == null && !sp.contains(MODE1_ACK_TEXT_KEY)) {
+            return
+        }
+
+        mode1AckText = null
+        sp.edit().remove(MODE1_ACK_TEXT_KEY).apply()
+    }
+
+    fun removeDetectionModeListener(listener: (ClipboardDetectionMode) -> Unit) {
+        detectionModeListeners.remove(listener)
+    }
+
+    fun removeNotificationPausedListener(listener: (Boolean) -> Unit) {
+        notificationPausedListeners.remove(listener)
+    }
+
+    private fun notifyDetectionModeChanged() {
+        detectionModeListeners.toList().forEach { listener ->
+            listener(detectionMode)
+        }
+    }
+
+    private fun notifyNotificationPausedChanged() {
+        notificationPausedListeners.toList().forEach { listener ->
+            listener(notificationPaused)
+        }
+    }
+
     fun read(key: String, type: String): Any? {
-        Log.d(logTag, "Reading $key of type $type from storage")
+        debugLog(logTag) { "Reading $key of type $type from storage" }
         return when (type) {
             "string" -> sp.getString(key, "")
             "int" -> sp.getInt(key, 0)
@@ -305,8 +415,27 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     }
 
     fun readClip(key: String): CopyCatFileStorage.ClipData? {
-        Log.d(logTag, "Reading clip $key from file storage")
+        debugLog(logTag) { "Reading clip $key from file storage" }
         return fileStorage.readClipItem(key)
+    }
+
+    fun readAllClips(): List<CopyCatFileStorage.ClipData> {
+        return fileStorage.readAllClips()
+    }
+
+    fun readClipBatch(startInclusive: Int, endInclusive: Int): List<CopyCatFileStorage.ClipData> {
+        if (startInclusive > endInclusive) return emptyList()
+
+        val clips = mutableListOf<CopyCatFileStorage.ClipData>()
+        for (index in startInclusive..endInclusive) {
+            val clipId = "Clip-$index"
+            val clip = fileStorage.readClipItem(clipId)
+            if (clip != null) {
+                clips.add(clip)
+            }
+        }
+
+        return clips
     }
 
     fun writeTextClip(text: String, type: ClipType, label: String = "") {
@@ -353,7 +482,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         // Update endId in SharedPreferences
         schedulePersistEndId()
         
-        Log.d(logTag, "Wrote $nextId to file storage (${contentToPersist.length} bytes)")
+        debugLog(logTag) { "Wrote $nextId to file storage (${contentToPersist.length} bytes)" }
         
         // Sync to server if enabled
         if (syncEnabled) {
@@ -390,7 +519,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         try {
             val serverId = syncManager.writeClipboardItem(text, type, encrypted, label, iv, encMode)
             if (serverId != (-1).toLong()) {
-                Log.d(logTag, "Synced $clipId to server with ID $serverId")
+                debugLog(logTag) { "Synced $clipId to server with ID $serverId" }
                 // Update the file metadata with server ID and user ID
                 fileStorage.updateServerMetadata(clipId, serverId, syncManager.currentUserId ?: "")
                 return
@@ -416,6 +545,15 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
     fun setRemoteClipApplier(applier: ((String) -> Unit)?) {
         remoteClipApplier = applier
+    }
+
+    fun getDetectionStrategy(): ClipboardDetectionStrategy {
+        return when (detectionMode) {
+            ClipboardDetectionMode.MODE_INACTIVE -> ModeInactiveStrategy()
+            ClipboardDetectionMode.MODE_1_ACK_TEXT ->
+                Mode1AckTextStrategy(initialAckText = mode1AckText)
+            ClipboardDetectionMode.MODE_2_AGGRESSIVE -> Mode2AggressiveStrategy()
+        }
     }
 
     private fun decryptRemoteContent(clip: RemoteClipPayload): String? {

@@ -992,6 +992,20 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sync_restore__checking_backup => '正在检查远程备份...';
 
   @override
+  String get sync_restore__decrypting_title => 'Decrypting clips';
+
+  @override
+  String get sync_restore__decrypting_counting => 'Counting encrypted clips...';
+
+  @override
+  String sync_restore__decrypting_progress({
+    required int decrypted,
+    required int total,
+  }) {
+    return 'Decrypted $decrypted of $total';
+  }
+
+  @override
   String get sync_restore__workspace_restored => '工作区已恢复';
 
   @override
@@ -1783,13 +1797,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get abc__other_setting__title => '其他设置';
-
-  @override
-  String get abc__enhanced_clip_detection__title => '增强剪贴板检测';
-
-  @override
-  String get abc__enhanced_clip_detection__subtitle =>
-      '启用此选项以实现更准确的剪贴板检测。请注意，它可能无法在所有设备上正常工作。';
 
   @override
   String get abc__tile__two_way_sync__title => '2-Way Sync';

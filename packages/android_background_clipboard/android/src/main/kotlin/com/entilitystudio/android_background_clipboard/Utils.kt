@@ -14,11 +14,17 @@ import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
+import android.util.Log
 import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 
+inline fun debugLog(tag: String, message: () -> String) {
+    if (Log.isLoggable(tag, Log.DEBUG)) {
+        Log.d(tag, message())
+    }
+}
 
 class Utils {
 

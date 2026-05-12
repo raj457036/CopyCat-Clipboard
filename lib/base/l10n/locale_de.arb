@@ -85,12 +85,10 @@
   "dialog__text__e2e_key_import__note": "Importieren Sie Ihren Verschlüsselungsschlüssel unten, um auf Ihre verschlüsselten Daten auf diesem Gerät zuzugreifen.",
   "dialog__button__e2e_importing_key": "Importieren",
   "dialog__button__e2e_import_key": "Importieren",
-
   "dialog__text__inconsistent_time__title": "Warnung zur Uhrzeitsynchronisation",
   "dialog__text__inconsistent_time__content": "Inkonsistente Gerätezeit erkannt\n\nUm eine genaue Synchronisation der Zwischenablage zu gewährleisten, überprüfen und korrigieren Sie bitte die Uhrzeiteinstellungen Ihres Geräts.\n\nInkonsistente Uhrzeiteinstellungen können Synchronisationsprobleme verursachen.",
   "dialog__button__try_again": "Erneut überprüfen",
   "dialog__button__try_fix": "Versuchen Sie es",
-
   "dialog__record_keys__title": "Tastenkombination aufzeichnen",
   "dialog__record_keys__subtitle": "Geben Sie Ihre Tastenkombination über Ihre Tastatur ein und klicken Sie ",
   "dialog__delete_collection__title": "{collectionName} löschen",
@@ -102,7 +100,6 @@
     }
   },
   "dialog__delete_collection__subtitle": "Sind Sie sicher, dass Sie diese Sammlung löschen möchten?",
-
   "@@APPLY_DIALOG": "Gutschein Dialog anwenden",
   "dialog__ack__sub_updated": "Abonnement aktualisiert",
   "dialog__grant_entitlement__title": "Berechtigung gewährt",
@@ -110,7 +107,6 @@
   "dialog__grant_entitlement__subtitle_p2": "Hier klicken.",
   "dialog__grant_entitlement__enter_code": "Geben Sie den Code ein und drücken Sie Absenden",
   "dialog__grant_entitlement__apply_code": "Anwenden",
-
   "@@VIEW_BUTTONS": "Layoutansichtsschaltflächen",
   "view_button__switch_to_grid": "Wechseln zu Raster-Layout",
   "view_button__switch_to_list": "Wechseln zu Listen-Layout",
@@ -122,7 +118,6 @@
   "view_button__view_dock_top": "Oben andocken",
   "view_button__pin": "Oben anheften",
   "view_button__unpin": "Abheften",
-
   "@@SUBSCRIPTION_DIALOG": "Abonnement-Detail-Dialog",
   "sub_dialog__text__included": "Enthalten",
   "sub_dialog__f1__title": "Unbegrenzte Zwischenablage-Elemente",
@@ -145,7 +140,6 @@
   "sub_dialog__f9__subtitle": "Genießen Sie die automatische Synchronisation von Zwischenablage-Elementen alle 45 Sekunden, halten Sie Ihre Geräte immer auf dem neuesten Stand, ohne manuelles Eingreifen.",
   "sub_dialog__f10__title": "Unterstützung der End-to-End-Verschlüsselung",
   "sub_dialog__f10__subtitle": "Ende-zu-Ende-Verschlüsselung macht alles für überlegene Privatsphäre verschlüsselt.",
-
   "sub_dialog__text__pro_title": "Mit PRO ✨",
   "sub_dialog__text__pro_subtitle": "Alles in Freemium enthalten +",
   "sub_dialog__f11__title": "Bis zu 50 Sammlungen",
@@ -175,15 +169,14 @@
   "paywall_dialog__text__expired_plan": "Aktueller Plan • Abgelaufen",
   "paywall_dialog__text__trial_till": "Testversion bis {till}",
   "@paywall_dialog__text__trial_till": {
-      "placeholders": {
-          "till": {
-              "type": "DateTime",
-              "format": "yMMMd"
-          }
+    "placeholders": {
+      "till": {
+        "type": "DateTime",
+        "format": "yMMMd"
       }
+    }
   },
   "paywall_dialog__text__upgrade": "Upgrade",
-
   "@@FAB": "Schwebende Aktionsschaltfläche",
   "fab__create_collection": "Sammlung erstellen ( {remaining} verbleibend )",
   "@fab__create_collection": {
@@ -193,59 +186,50 @@
       }
     }
   },
-
   "fab__sync": "Synchronisieren",
   "fab__sync_unavailable": "Synchronisierung nicht verfügbar",
   "fab__sync_up_to_date": "Bereits auf dem neuesten Stand.",
   "fab__sync_failed": "Synchronisierung fehlgeschlagen: {message}",
   "@fab__sync_failed": {
-      "placeholders": {
-          "message": {
-              "type": "String"
-          }
+    "placeholders": {
+      "message": {
+        "type": "String"
       }
+    }
   },
-
   "@@LAYOUT": "Layout-Widgets",
   "layout__navbar__clipboard": "Zwischenablage",
   "layout__navbar__collections": "Sammlungen",
   "layout__navbar__settings": "Einstellungen",
-
   "@@WIDGETS": "Benutzerdefinierte Widgets",
   "search__tooltip__filter": "Suchfilter",
   "manage_sub__ack__promo_sub": "Sie verwenden ein Promo-Abonnement bis {till}",
   "@manage_sub__ack__promo_sub": {
-      "placeholders": {
-          "till": {
-              "type": "String"
-          }
+    "placeholders": {
+      "till": {
+        "type": "String"
       }
+    }
   },
   "manage_sub__button__text": "Abonnements verwalten",
-
   "my_account__button__tooltip": "Mein Konto",
   "badges__tooltip__experimental": "Diese Funktion ist experimentell und funktioniert möglicherweise nicht wie erwartet.",
   "badges__tooltip__pro_only": "Diese Funktion ist nur für Pro-Benutzer verfügbar.",
-
   "collection_selector__tile__no_collection": "Keine Sammlung",
   "collection_selector__button__remove_collection": "Sammlung entfernen",
-
   "dialog__logout__title": "Abmelden",
   "dialog__logout__subtitle": "⚠️ WARNUNG ⚠️\n\nDas Abmelden löscht nicht synchronisierte Änderungen in der lokalen Datenbank. Möchten Sie wirklich fortfahren?",
   "dialog__logging_out__ack": "Sie werden abgemeldet! Bitte warten...",
-
   "reset_pass__text__label": "Setzen Sie Ihr Passwort zurück",
-
   "dnd__text__drop_here": "Hier ablegen",
   "dnd__ack__error_max_drop_count": "Maximal {count} Ablageelemente sind gleichzeitig erlaubt.",
   "@dnd__ack__error_max_drop_count": {
-      "placeholders": {
-          "count": {
-              "type": "int"
-          }
+    "placeholders": {
+      "count": {
+        "type": "int"
       }
+    }
   },
-
   "@@SEARCH_FILTER_DIALOG": "Suchfilter-Dialog",
   "search_filter__text__title": "Filter",
   "search_filter__button__apply": "Anwenden",
@@ -271,7 +255,6 @@
   "search_filter__text__sort_order": "Sortierreihenfolge",
   "search_filter__sort_ord__asc": "Aufsteigend",
   "search_filter__sort_ord__desc": "Absteigend",
-
   "@@LOGIN": "Anmeldebildschirm",
   "login__local_signin__tooltip": "Keine Synchronisation. Alle Daten bleiben auf Ihrem Gerät.",
   "login__local_signin__btn__label": "Offline-Modus",
@@ -311,7 +294,6 @@
   "@@ON_BOARDING": "Einführungsbildschirm",
   "onboarding__text__welcome": "Willkommen bei",
   "onboarding__text__lets_continue": "Lass uns fortfahren",
-
   "onboarding__button__to_login": "Anmelden",
   "onboarding__snackbar__export_success": "Verschlüsselungsschlüssel erfolgreich exportiert.",
   "onboarding__dialog__skip_export__title": "✋ Sichern Sie Ihren Verschlüsselungsschlüssel",
@@ -608,7 +590,6 @@
   "custom_er__tile__title": "Kopieren aus App oder Website verhindern, wenn der Fenstertitel übereinstimmt.",
   "custom_er__text__no_title": "Keine benutzerdefinierten Titel ausgeschlossen",
   "custom_er__button__remove_title": "Diesen Titel entfernen",
-
   "@@ABOUT": "Über App-Dialog",
   "about__tile__discord": "Discord • Verbinden",
   "about__tile__youtube": "YouTube • Tutorial",
@@ -616,36 +597,25 @@
   "about__tile__github": "Github • Open Source",
   "about__tile__website": "EntilityStudio • Website",
   "about__tile__support": "Unterstützung",
-
   "@@ANDROID_BACKGROUND_CLIPBOARD": "Android Hintergrund-Clipboard",
   "abc_title": "Hintergrund-Clipboard",
   "abc__tile__subtitle": "Hören Sie den Clipboard im Hintergrund",
-
   "abc__tip__why_title": "Warum werden diese Berechtigungen benötigt?",
   "abc__tip__why_subtitle": "Diese Berechtigungen stellen sicher, dass CopyCat im Hintergrund korrekt funktioniert, kopierte Inhalte erkennt und Ihnen eine nahtlose Erfahrung ohne Unterbrechungen bietet.",
-
   "abc__tip__support_title": "Begrenzte Unterstützung",
   "abc__tip__support_subtitle": "1. Derzeit werden nur Textclips unterstützt.\n2. Einige Betriebssysteme, wie HyperOS 1, werden noch nicht unterstützt.",
-
   "abc__heading__req_perm": "Erforderliche Berechtigungen",
-
   "abc__tile__notification_title": "Benachrichtigungszugriff",
   "abc__tile__notification_subtitle": "Zeigt eine persistente Benachrichtigung an, um Sie darüber zu informieren, dass CopyCat im Hintergrund läuft, wodurch Transparenz und Datenschutz gewährleistet werden.",
-
   "abc__tile__battery_opt_title": "Batterieoptimierung",
   "abc__tile__battery_opt_subtitle": "Verhindert, dass das System CopyCat im Hintergrund schließt, und sorgt so für eine unterbrechungsfreie Erfahrung.",
-
   "abc__tile__overlay_title": "Overlay-Berechtigung",
   "abc__tile__overlay_subtitle": "Ermöglicht es CopyCat, das Clipboard zu lesen, indem ein transparentes Fenster über dem Bildschirm geöffnet und sofort wieder geschlossen wird.",
-
   "abc__tile__acc_title": "Zugriffsservice",
   "abc__tile__acc_subtitle": "Startet den Hintergrund-Listener von CopyCat, um zu erkennen, wann Sie etwas kopieren, und stellt sicher, dass der Service nach einem Neustart automatisch neu gestartet wird.",
-
   "abc__ack__ready": "Setup bereit zur Konfiguration.",
   "abc__ack__preparing": "Setup wird vorbereitet, bitte warten...",
-
   "abc__perm_alert_open_setting__button": "Einstellungen öffnen",
-
   "abc__overlay_perm_alert__title": "Overlay-Berechtigung",
   "abc__overlay_perm_alert__subtitle": "CopyCat Clipboard benötigt die 'Über andere Apps zeichnen' Berechtigung, um den Inhalt der Zwischenablage im Hintergrund zu lesen.",
   "abc__overlay_perm_alert__p1_prefix": "Diese Berechtigung wird ",
@@ -661,7 +631,6 @@
   "abc__overlay_perm_alert__p4_bold": "'CopyCat hat aus Ihrer Zwischenablage eingefügt'",
   "abc__overlay_perm_alert__p4_suffix": " wenn CopyCat Ihren Zwischenablageinhalt liest.",
   "abc__overlay_perm_alert__agree": "Durch die Erteilung dieser Berechtigung stimmen Sie der oben genannten Nutzung zu.",
-
   "abc__accessibility_perm_alert__title": "Zugriffsberechtigungsservice",
   "abc__accessibility_perm_alert__subtitle": "CopyCat Clipboard benötigt den Zugriffsservice, um im Hintergrund zu laufen und die Zwischenablage in Echtzeit zu erkennen und zu synchronisieren.",
   "abc__accessibility_perm_alert__p1_prefix": "Dieser Service wird ",
@@ -680,9 +649,5 @@
   "abc__accessibility_perm_alert__p5_bold": "werden Ende-zu-Ende verschlüsselt",
   "abc__accessibility_perm_alert__p5_suffix": " (wenn aktiviert) während der Übertragung und im Ruhezustand, um die Privatsphäre über Geräte hinweg zu gewährleisten.",
   "abc__accessibility_perm_alert__agree": "Durch das Aktivieren des Zugriffsservices erkennen Sie die oben genannten Bedingungen an und stimmen ihnen zu.",
-
-  "abc__other_setting__title": "Weitere Einstellungen",
-  "abc__enhanced_clip_detection__title": "Erweiterte Zwischenablage-Erkennung",
-  "abc__enhanced_clip_detection__subtitle": "Aktivieren Sie diese Option für eine genauere Zwischenablage-Erkennung. Beachten Sie, dass sie möglicherweise nicht auf jedem Gerät funktioniert."
-
+  "abc__other_setting__title": "Weitere Einstellungen"
 }

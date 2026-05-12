@@ -1,4 +1,3 @@
-import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/utils/utility.dart' show isMediaType;
@@ -11,24 +10,23 @@ import 'package:flutter/material.dart';
 
 class ClipPreview extends StatelessWidget {
   final ClipboardItem item;
-  final AppLayout layout;
-  const ClipPreview({super.key, required this.item, required this.layout});
+  const ClipPreview({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
     if (item.encrypted) return EncryptedClipItem(item: item);
 
     if (item.type == ClipItemType.text) {
-      return TextClipCard(item: item, layout: layout);
+      return TextClipCard(item: item);
     }
     if (item.type == ClipItemType.media || isMediaType(item)) {
-      return MediaClipCard(item: item, layout: layout);
+      return MediaClipCard(item: item);
     }
     if (item.type == ClipItemType.url) {
-      return UrlClipCard(item: item, layout: layout);
+      return UrlClipCard(item: item);
     }
     if (item.type == ClipItemType.file) {
-      return FileClipCard(item: item, layout: layout);
+      return FileClipCard(item: item);
     }
     return const SizedBox.shrink();
   }

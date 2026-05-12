@@ -263,31 +263,19 @@ class EventBridge extends StatelessWidget {
           listener: (context, state) async {
             final locales = rootNavKey.currentContext?.locale;
             switch (state) {
-              case OfflinePersistanceSaved(:final items, synced: true):
-                showDebugSnackbar("Offline Saved ( Synced ) ${items.length}");
-                broadcastBatchEvent(CrossSyncEventType.update, items);
-              case OfflinePersistanceSaved(
-                :final items,
-                :final created,
-                synced: false,
-              ):
-                {
-                  final eventType = created
-                      ? CrossSyncEventType.create
-                      : CrossSyncEventType.update;
-                  broadcastBatchEvent(eventType, items);
-                  // Push is now handled by the SyncEngine outbox.
-                }
+              case OfflinePersistanceSaved(synced: true):
+                showDebugSnackbar("Offline Saved ( Synced )");
+              case OfflinePersistanceSaved(synced: false):
+                break; // broadcast now handled directly in OfflinePersistenceCubit
               case OfflinePersistanceError(:final failure):
                 showFailureSnackbar(failure);
-              case OfflinePersistanceDeleted(:final items):
+              case OfflinePersistanceDeleted():
                 if (locales != null) {
                   showTextSnackbar(
                     locales.app__ack__deleted,
                     closePrevious: true,
                   );
                 }
-                broadcastBatchEvent(CrossSyncEventType.delete, items);
               case _:
             }
           },

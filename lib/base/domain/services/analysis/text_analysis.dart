@@ -1,3 +1,4 @@
+import 'package:clipboard/base/constants/misc.dart' show kMaxTextClipLength;
 import 'package:clipboard/base/domain/services/analysis/code_text_analysis.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 
@@ -5,7 +6,7 @@ enum ColorTextFormat { hex, rgb, hsl, hsv }
 
 class TextAnalysis {
   // Guardrail: avoid expensive format analysis on very long text payloads.
-  static const int maxAnalysisChars = 4096;
+  static const int maxAnalysisChars = kMaxTextClipLength;
 
   static final RegExp _hexColorRegex = RegExp(
     r'^#?(?:[0-9a-fA-F]{3}){1,2}$|^#(?:[0-9a-fA-F]{4}){2}$',

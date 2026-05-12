@@ -2,6 +2,8 @@ import 'dart:math' show min;
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
+import 'package:clipboard/base/constants/numbers/breakpoints.dart'
+    show Breakpoints;
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
 import 'package:clipboard/utils/monetization.dart';
@@ -31,6 +33,14 @@ extension StringExtension on String {
     if (length == 1) return toUpperCase();
     return "${this[0].toUpperCase()}${substring(1)}";
   }
+}
+
+extension BreakpointExtension on MediaQueryData {
+  bool get isMobile => Breakpoints.isMobile(size.width);
+  bool get isTablet => Breakpoints.isTablet(size.width);
+  bool get isDesktop => Breakpoints.isDesktop(size.width);
+  bool get isXLDesktop => Breakpoints.isXLDesktop(size.width);
+  bool get isXXLDesktop => Breakpoints.isXXLDesktop(size.width);
 }
 
 extension BuildContextExtension on BuildContext {

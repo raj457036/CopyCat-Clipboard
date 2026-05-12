@@ -86,38 +86,18 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
     final colors = context.colors;
     final text = context.textTheme;
 
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 520),
-        child: Padding(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
           padding: const EdgeInsets.all(padding20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const _RestoreGlyph(),
-              height20,
-              FadeIn(
-                child: Text(
-                  context.locale.sync_restore__title,
-                  textAlign: TextAlign.center,
-                  style: text.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              height8,
-              Text(
-                context.locale.sync_restore__subtitle,
-                textAlign: TextAlign.center,
-                style: text.bodyMedium?.copyWith(
-                  color: colors.onSurfaceVariant,
-                ),
-              ),
-              height24,
-              if (fetchingCounts)
-                _Preparing(colors: colors, text: text)
-              else
-                BlocConsumer<SyncStatusCubit, SyncStatusState>(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight - (padding20 * 2),
+            ),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: BlocConsumer<SyncStatusCubit, SyncStatusState>(
                   listener: (context, state) {
                     if (state case SyncingStatus(:final progress)) {
                       if (_hasMeaningfulProgress(progress)) {
@@ -126,32 +106,132 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
                     }
                   },
                   builder: (context, state) {
-                    return state.maybeWhen(
-                      syncing: (progress) => _RestorePanel(
-                        progress: progress,
-                        colors: colors,
-                        text: text,
-                      ),
-                      complete: () => _RestorePanel(
-                        progress: _lastProgress,
-                        colors: colors,
-                        text: text,
-                        complete: true,
-                        onContinue: widget.onContinue,
-                      ),
-                      failed: (failure) => _RestoreFailure(
-                        message: failure.message,
-                        onRetry: startRestoration,
-                        colors: colors,
-                        text: text,
-                      ),
-                      orElse: () => const SizedBox.shrink(),
+                    final isDecrypting = state is SyncStatusDecrypting;
+
+                    return Column(
+                      mainAxisAlignment: isDecrypting
+                          ? MainAxisAlignment.start
+                          : MainAxisAlignment.center,
+                      children: [
+                        if (isDecrypting)
+                          _CompactRestoreHeader(colors: colors, text: text)
+                        else ...[
+                          const _RestoreGlyph(),
+                          height20,
+                          FadeIn(
+                            child: Text(
+                              context.locale.sync_restore__title,
+                              textAlign: TextAlign.center,
+                              style: text.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
+                          height8,
+                          Text(
+                            context.locale.sync_restore__subtitle,
+                            textAlign: TextAlign.center,
+                            style: text.bodyMedium?.copyWith(
+                              color: colors.onSurfaceVariant,
+                            ),
+                          ),
+                          height24,
+                        ],
+                        if (fetchingCounts)
+                          _Preparing(colors: colors, text: text)
+                        else
+                          state.maybeWhen(
+                            syncing: (progress) => _RestorePanel(
+                              progress: progress,
+                              colors: colors,
+                              text: text,
+                            ),
+                            decrypting: (decrypted, total) => _DecryptingPanel(
+                              decrypted: decrypted,
+                              total: total,
+                              syncProgress: _lastProgress,
+                              colors: colors,
+                              text: text,
+                            ),
+                            complete: () => _RestorePanel(
+                              progress: _lastProgress,
+                              colors: colors,
+                              text: text,
+                              complete: true,
+                              onContinue: widget.onContinue,
+                            ),
+                            failed: (failure) => _RestoreFailure(
+                              message: failure.message,
+                              onRetry: startRestoration,
+                              colors: colors,
+                              text: text,
+                            ),
+                            orElse: () => const SizedBox.shrink(),
+                          ),
+                      ],
                     );
                   },
                 ),
-            ],
+              ),
+            ),
           ),
-        ),
+        );
+      },
+    );
+  }
+}
+
+class _CompactRestoreHeader extends StatelessWidget {
+  final ColorScheme colors;
+  final TextTheme text;
+
+  const _CompactRestoreHeader({required this.colors, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: padding16),
+      child: Row(
+        children: [
+          SizedBox.square(
+            dimension: 40,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: radius12,
+                color: colors.surfaceContainerHigh,
+                border: Border.all(color: colors.outlineVariant),
+              ),
+              child: Icon(
+                Icons.content_paste_go_rounded,
+                color: colors.primary,
+                size: 20,
+              ),
+            ),
+          ),
+          width12,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.locale.sync_restore__title,
+                  style: text.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                height2,
+                Text(
+                  context.locale.sync_restore__subtitle,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: text.bodySmall?.copyWith(
+                    color: colors.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -593,6 +673,252 @@ class _RestoreRow extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DecryptingPanel extends StatelessWidget {
+  final int decrypted;
+  final int total;
+  final Map<String, SyncProgress> syncProgress;
+  final ColorScheme colors;
+  final TextTheme text;
+
+  const _DecryptingPanel({
+    required this.decrypted,
+    required this.total,
+    required this.syncProgress,
+    required this.colors,
+    required this.text,
+  });
+
+  double? get progressValue {
+    if (total <= 0) return null;
+    return (decrypted / total).clamp(0.0, 1.0);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final locale = context.locale;
+    final collectionProgress =
+        syncProgress['collection'] ?? const SyncProgress(synced: 0, total: 0);
+    final clipProgress =
+        syncProgress['clip'] ?? const SyncProgress(synced: 0, total: 0);
+    final syncedCount = syncProgress.values.fold<int>(
+      0,
+      (count, item) => count + item.visibleSynced,
+    );
+    final syncedTotal = syncProgress.values.fold<int>(
+      0,
+      (count, item) => count + item.total,
+    );
+
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: colors.surfaceContainer,
+              borderRadius: radius16,
+              border: Border.all(color: colors.outlineVariant),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(padding20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              locale.sync_restore__decrypting_title,
+                              style: text.titleLarge?.copyWith(
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            height4,
+                            Text(
+                              total > 0
+                                  ? locale.sync_restore__decrypting_progress(
+                                      decrypted: decrypted,
+                                      total: total,
+                                    )
+                                  : locale.sync_restore__decrypting_counting,
+                              style: text.bodyMedium?.copyWith(
+                                color: colors.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      width12,
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: colors.secondaryContainer,
+                          borderRadius: radius8,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: padding10,
+                            vertical: 6,
+                          ),
+                          child: Text(
+                            total > 0
+                                ? '${((progressValue ?? 0) * 100).round()}%'
+                                : locale.sync_restore__progress_estimating,
+                            style: text.labelMedium?.copyWith(
+                              color: colors.onSecondaryContainer,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  height16,
+                  LinearProgressIndicator(
+                    value: progressValue,
+                    minHeight: 8,
+                    borderRadius: radius8,
+                    backgroundColor: colors.surfaceContainerHighest,
+                  ),
+                  height16,
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: colors.surfaceContainerHigh,
+                      borderRadius: radius12,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(padding16),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.cloud_done_rounded,
+                                size: 18,
+                                color: colors.primary,
+                              ),
+                              width10,
+                              Expanded(
+                                child: Text(
+                                  syncedTotal > 0
+                                      ? locale.sync_restore__restored_of_total(
+                                          synced: syncedCount,
+                                          total: syncedTotal,
+                                        )
+                                      : locale.sync_restore__workspace_restored,
+                                  style: text.labelLarge?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          height12,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _DecryptingStatusChip(
+                                  title: locale.sync_restore__collections_title,
+                                  value:
+                                      '${collectionProgress.visibleSynced}/${collectionProgress.total}',
+                                  complete: collectionProgress.isComplete,
+                                  colors: colors,
+                                  text: text,
+                                ),
+                              ),
+                              width12,
+                              Expanded(
+                                child: _DecryptingStatusChip(
+                                  title: locale
+                                      .sync_restore__clipboard_items_title,
+                                  value:
+                                      '${clipProgress.visibleSynced}/${clipProgress.total}',
+                                  complete: clipProgress.isComplete,
+                                  colors: colors,
+                                  text: text,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DecryptingStatusChip extends StatelessWidget {
+  final String title;
+  final String value;
+  final bool complete;
+  final ColorScheme colors;
+  final TextTheme text;
+
+  const _DecryptingStatusChip({
+    required this.title,
+    required this.value,
+    required this.complete,
+    required this.colors,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colors.surface,
+        borderRadius: radius12,
+        border: Border.all(color: colors.outlineVariant),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(padding12),
+        child: Row(
+          children: [
+            Icon(
+              complete ? Icons.check_circle_rounded : Icons.sync_rounded,
+              size: 16,
+              color: complete ? colors.primary : colors.onSurfaceVariant,
+            ),
+            width8,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: text.labelMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  height2,
+                  Text(
+                    value,
+                    style: text.labelSmall?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

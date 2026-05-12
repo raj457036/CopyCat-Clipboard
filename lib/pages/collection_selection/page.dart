@@ -19,7 +19,7 @@ class ClipCollectionSelectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: context.mq.size.width < 600,
+        automaticallyImplyLeading: context.mq.isMobile || context.mq.isTablet,
         title: Text(context.locale.select_collection__appbar__title),
         actions: const [
           DisableForLocalUser(
@@ -45,6 +45,7 @@ class ClipCollectionSelectionPage extends StatelessWidget {
                       return const NoCollectionAvailable();
                     }
                     return GridView.builder(
+                      cacheExtent: 300,
                       padding: const EdgeInsets.all(padding10),
                       gridDelegate:
                           const SliverGridDelegateWithMaxCrossAxisExtent(

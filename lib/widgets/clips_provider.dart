@@ -5,15 +5,8 @@ import 'package:clipboard/widgets/clipcard_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-typedef ClipProviderBuilder =
-    Widget Function(
-      BuildContext context,
-      List<ClipboardItem> clips,
-      bool hasMore,
-      bool loading,
-      VoidCallback loadMore,
-    );
-
+/// A provider for clips that are being displayed in the UI.
+/// This is used to avoid passing the clips down the widget tree manually.
 class ClipsProvider extends InheritedWidget {
   final List<ClipboardItem> clips;
 
@@ -29,6 +22,15 @@ class ClipsProvider extends InheritedWidget {
   }
 }
 
+typedef ClipProviderBuilder =
+    Widget Function(
+      BuildContext context,
+      List<ClipboardItem> clips,
+      bool hasMore,
+      bool loading,
+      VoidCallback loadMore,
+    );
+
 class ClipsProviderWithBuilder extends StatelessWidget {
   final ClipProviderBuilder builder;
   final bool isCollectionClips;
@@ -40,7 +42,7 @@ class ClipsProviderWithBuilder extends StatelessWidget {
   });
 
   Future<void> loadMoreCollectionClips(BuildContext context) async {
-    await context.read<CollectionClipsCubit>().search();
+    await context.read<CollectionClipsCubit>().fetch();
   }
 
   Future<void> loadMore(BuildContext context) async {
@@ -48,16 +50,13 @@ class ClipsProviderWithBuilder extends StatelessWidget {
   }
 
   Widget buildRoot(BuildContext context) {
-    return BlocSelector<
-      ClipboardCubit,
-      ClipboardState,
-      (List<ClipboardItem>, bool, bool)
-    >(
+    return BlocSelector<ClipboardCubit, ClipboardState, (int, bool, bool)>(
       selector: (state) {
-        return (state.items, state.hasMore, state.loading);
+        return (state.revision, state.hasMore, state.loading);
       },
       builder: (context, state) {
-        final (items, hasMore, loading) = state;
+        final (_, hasMore, loading) = state;
+        final items = context.read<ClipboardCubit>().items;
         return ClipsProvider(
           clips: items,
           child: builder(

@@ -20,16 +20,15 @@ class MenuItem {
   });
 }
 
-/// Returned by [Menu.of]. Use this to open the context menu or bottom-sheet.
+/// Returned by [Menu.of]. Use this to open the menu.
 class MenuHandle {
   final _MenuState _state;
   MenuHandle._(this._state);
 
-  Future<void> openOptionBottomSheet(BuildContext context) =>
-      _state._openOptionBottomSheet(context);
+  Future<void> openMenu(BuildContext context) => _state._openMenu(context);
 
   void openPopupMenu(BuildContext context, Offset globalPosition) =>
-      _state._openPopupMenu(globalPosition);
+      _state._openPopupMenu(context, globalPosition);
 }
 
 class _MenuScope extends InheritedWidget {
@@ -43,8 +42,16 @@ class _MenuScope extends InheritedWidget {
 class Menu extends StatefulWidget {
   final List<MenuItem> items;
   final Widget child;
+  final Future<void> Function()? onBeforeOpen;
+  final VoidCallback? onAfterClose;
 
-  const Menu({super.key, required this.items, required this.child});
+  const Menu({
+    super.key,
+    required this.items,
+    required this.child,
+    this.onBeforeOpen,
+    this.onAfterClose,
+  });
 
   static MenuHandle? maybeOf(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<_MenuScope>()?.handle;
@@ -76,7 +83,6 @@ class _MenuState extends State<Menu> {
     visualDensity: VisualDensity.comfortable,
   );
 
-  // Outer MenuAnchor / SubmenuButton panel: transparent shell, cards own the chrome.
   static const _panelStyle = MenuStyle(
     backgroundColor: WidgetStatePropertyAll(Colors.transparent),
     shadowColor: WidgetStatePropertyAll(Colors.transparent),
@@ -86,62 +92,16 @@ class _MenuState extends State<Menu> {
     side: WidgetStatePropertyAll(BorderSide.none),
   );
 
-  Future<void> _openOptionBottomSheet(BuildContext context) async {
-    final mq = context.mq;
-    final colors = context.colors;
-    final safeArea = mq.systemGestureInsets.bottom + padding8;
-    final grouped = _grouped(widget.items);
-
-    await showModalBottomSheet(
-      context: context,
-      scrollControlDisabledMaxHeightRatio: 0.8,
-      constraints: BoxConstraints(maxWidth: mq.size.width * 0.9),
-      useSafeArea: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: safeArea),
-        child: Material(
-          color: colors.surface,
-          borderRadius: radius16,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: mq.size.height * 0.8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SheetHandle(),
-                Flexible(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      for (final entry in grouped.entries) ...[
-                        if (entry.key != null)
-                          _BottomSheetSectionLabel(entry.key!),
-                        for (final item in entry.value)
-                          ListTile(
-                            leading: Icon(item.icon),
-                            title: Text(item.text!),
-                            onTap: () async {
-                              Navigator.pop(context);
-                              await wait(250);
-                              item.onPressed?.call();
-                            },
-                          ),
-                      ],
-                      height10,
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+  Future<void> _runBeforeOpen() async {
+    final callback = widget.onBeforeOpen;
+    if (callback == null) return;
+    try {
+      await callback();
+    } catch (_) {}
   }
 
-  void _openPopupMenu(Offset globalPosition) {
-    // Defer so the secondary-tap-up that triggered this call is fully consumed
-    // before MenuAnchor installs its tap-outside close handler.
+  void _openPopupMenu(BuildContext context, Offset globalPosition) async {
+    await _runBeforeOpen();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final box =
@@ -156,7 +116,6 @@ class _MenuState extends State<Menu> {
     final grouped = _grouped(_limitItems(widget.items));
     final colors = context.colors;
     final cardColor = colors.surfaceBright;
-
     final sections = <Widget>[];
 
     for (final entry in grouped.entries) {
@@ -240,12 +199,108 @@ class _MenuState extends State<Menu> {
     ];
   }
 
+  List<MenuItem> _flattenBottomSheetItems(
+    List<MenuItem> source, {
+    String? fallbackSection,
+  }) {
+    final flattened = <MenuItem>[];
+
+    for (final item in source) {
+      final section = item.section ?? fallbackSection;
+
+      if (item.onPressed != null || item.children.isEmpty) {
+        flattened.add(
+          MenuItem(
+            text: item.text,
+            icon: item.icon,
+            onPressed: item.onPressed,
+            section: section,
+          ),
+        );
+      }
+
+      if (item.children.isNotEmpty) {
+        flattened.addAll(
+          _flattenBottomSheetItems(
+            item.children,
+            fallbackSection: item.text ?? section,
+          ),
+        );
+      }
+    }
+
+    return flattened;
+  }
+
   Map<String?, List<MenuItem>> _grouped(List<MenuItem> source) {
     final map = <String?, List<MenuItem>>{};
     for (final item in source) {
       map.putIfAbsent(item.section, () => []).add(item);
     }
     return map;
+  }
+
+  Future<void> _openMenu(BuildContext context) async {
+    await _runBeforeOpen();
+    await WidgetsBinding.instance.endOfFrame;
+    if (!context.mounted) return;
+    final mq = context.mq;
+    final colors = context.colors;
+    final safeArea = mq.systemGestureInsets.bottom + padding8;
+    final grouped = _grouped(_flattenBottomSheetItems(widget.items));
+
+    await showModalBottomSheet(
+      context: context,
+      scrollControlDisabledMaxHeightRatio: 0.8,
+      constraints: BoxConstraints(maxWidth: mq.size.width * 0.9),
+      useSafeArea: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: safeArea),
+        child: Material(
+          color: colors.surface,
+          borderRadius: radius16,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: mq.size.height * 0.8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SheetHandle(),
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: [
+                      for (final entry in grouped.entries) ...[
+                        if (entry.key != null)
+                          _BottomSheetSectionLabel(entry.key!),
+                        for (final item in entry.value)
+                          ListTile(
+                            leading: Icon(item.icon),
+                            title: Text(item.text!),
+                            onTap: () async {
+                              Navigator.pop(context);
+                              await wait(250);
+                              item.onPressed?.call();
+                            },
+                          ),
+                      ],
+                      height10,
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    widget.onAfterClose?.call();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -256,6 +311,7 @@ class _MenuState extends State<Menu> {
         key: _menuAnchorKey,
         controller: _menuController,
         style: _panelStyle,
+        onClose: widget.onAfterClose,
         menuChildren: _buildMenuChildren(context),
         child: widget.child,
       ),

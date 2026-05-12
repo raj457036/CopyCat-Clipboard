@@ -235,6 +235,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
 
                           const aspectRatio = 16 / 7;
                           final builder = GridView.builder(
+                            cacheExtent: 300,
                             padding: isMobile
                                 ? const EdgeInsets.all(padding10)
                                 : inset12,

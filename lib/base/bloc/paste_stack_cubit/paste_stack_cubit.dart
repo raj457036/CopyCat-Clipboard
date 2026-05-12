@@ -4,9 +4,7 @@ import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
-import 'package:clipboard/utils/snackbar.dart' show showFailureSnackbar;
 import 'package:flutter/widgets.dart';
 import 'package:clipboard/utils/debounce.dart' show Debouncer;
 
@@ -151,7 +149,6 @@ class PasteStackCubit extends Cubit<PasteStackState> {
         'Paste stack overlimit: ${normalized.length} items provided,'
         ' but only ${toAdd.length} were added.',
       );
-      showFailureSnackbar(pasteStackOverlimit);
     }
 
     emit(state.copyWith(items: combined));

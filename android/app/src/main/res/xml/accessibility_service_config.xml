@@ -1,5 +1,5 @@
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accessibilityEventTypes="typeViewTextSelectionChanged|typeWindowStateChanged|typeAnnouncement|typeNotificationStateChanged"
+    android:accessibilityEventTypes="typeViewTextSelectionChanged|typeViewClicked|typeWindowStateChanged|typeAnnouncement|typeNotificationStateChanged"
     android:accessibilityFlags="flagDefault"
     android:accessibilityFeedbackType="feedbackAllMask"
     android:notificationTimeout="90"

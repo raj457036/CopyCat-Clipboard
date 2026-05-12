@@ -85,6 +85,13 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     @JsonKey(includeFromJson: false, includeToJson: false)
     @Default(false)
     bool userIntent,
+
+    /// This clip was loaded as a lightweight preview: [text] may be truncated
+    /// and [richData] is omitted. The full content must be fetched from DB
+    /// before copying or pasting to avoid data loss.
+    @JsonKey(includeFromJson: false, includeToJson: false)
+    @Default(false)
+    bool previewOnly,
   }) = _ClipboardItem;
 
   factory ClipboardItem.fromJson(Map<String, dynamic> json) =>

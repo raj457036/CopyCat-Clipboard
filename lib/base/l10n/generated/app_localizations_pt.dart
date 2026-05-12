@@ -1043,6 +1043,20 @@ class AppLocalizationsPt extends AppLocalizations {
   String get sync_restore__checking_backup => 'Verificando backup remoto...';
 
   @override
+  String get sync_restore__decrypting_title => 'Decrypting clips';
+
+  @override
+  String get sync_restore__decrypting_counting => 'Counting encrypted clips...';
+
+  @override
+  String sync_restore__decrypting_progress({
+    required int decrypted,
+    required int total,
+  }) {
+    return 'Decrypted $decrypted of $total';
+  }
+
+  @override
   String get sync_restore__workspace_restored =>
       'Espaço de trabalho restaurado';
 
@@ -1907,14 +1921,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get abc__other_setting__title => 'Outras configurações';
-
-  @override
-  String get abc__enhanced_clip_detection__title =>
-      'Detecção aprimorada da área de transferência';
-
-  @override
-  String get abc__enhanced_clip_detection__subtitle =>
-      'Ative esta opção para uma detecção mais precisa da área de transferência. Note que ela pode não funcionar em todos os dispositivos.';
 
   @override
   String get abc__tile__two_way_sync__title => '2-Way Sync';

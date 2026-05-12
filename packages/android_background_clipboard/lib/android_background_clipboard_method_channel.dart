@@ -10,6 +10,11 @@ class MethodChannelAndroidBackgroundClipboard
   @visibleForTesting
   final methodChannel = const MethodChannel('android_background_clipboard');
 
+  @visibleForTesting
+  final detectionStatusEventChannel = const EventChannel(
+    'android_background_clipboard/detection_status',
+  );
+
   @override
   Future<bool> isAccessibilityPermissionGranted() async {
     final isGranted = await methodChannel
@@ -88,6 +93,26 @@ class MethodChannelAndroidBackgroundClipboard
   }
 
   @override
+  Future<List<Map<Object?, Object?>>> readClipsBatch(
+    int start,
+    int end,
+  ) async {
+    final result = await methodChannel.invokeMethod<List<dynamic>>(
+      'readClipsBatch',
+      {
+        'start': start,
+        'end': end,
+      },
+    );
+    if (result == null) return const [];
+
+    return result
+        .whereType<Map>()
+        .map((clip) => Map<Object?, Object?>.from(clip))
+        .toList();
+  }
+
+  @override
   Future<bool> writeShared<T>(
     String key,
     T value, {
@@ -114,5 +139,29 @@ class MethodChannelAndroidBackgroundClipboard
   @override
   Future<void> clearStorage() async {
     await methodChannel.invokeMethod("clearStorage");
+  }
+
+  @override
+  Future<void> setDetectionMode(String mode) async {
+    await methodChannel.invokeMethod<void>('writeShared', {
+      'key': 'detectionMode',
+      'value': mode,
+      'secure': false,
+    });
+  }
+
+  @override
+  Stream<Map<String, String>> detectionStatusStream() {
+    return detectionStatusEventChannel.receiveBroadcastStream().map((event) {
+      if (event is Map) {
+        return event.map(
+          (key, value) => MapEntry(
+            key.toString(),
+            value?.toString() ?? '',
+          ),
+        );
+      }
+      return const <String, String>{};
+    });
   }
 }

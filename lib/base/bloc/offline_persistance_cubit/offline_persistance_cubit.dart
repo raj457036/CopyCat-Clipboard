@@ -11,10 +11,13 @@ import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/analytics.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
+import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
+import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,6 +39,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   final ApplicationMetaResolver appMetaResolver;
   final String deviceId;
   final AnalyticsRepository analyticsRepo;
+  final SyncEventBus syncEventBus;
 
   bool _listening = false;
 
@@ -49,7 +53,13 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     this.appMetaResolver,
     this.analyticsRepo,
     @Named("device_id") this.deviceId,
+    this.syncEventBus,
   ) : super(const OfflinePersistanceState.initial());
+
+  void clearTransientState() {
+    if (state is OfflinePersistanceInitial) return;
+    emit(const OfflinePersistanceState.initial());
+  }
 
   ActivityMetaPayload? _toActivityMetaPayload(ActivityInfo? activity) {
     if (activity == null) return null;
@@ -193,17 +203,33 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     return true;
   }
 
+  /// Replaces any preview-only items with their fully-loaded counterparts so
+  /// that truncated text or stripped rich data is never written to the system
+  /// clipboard.
+  Future<List<ClipboardItem>> _resolvePreviewItems(
+    List<ClipboardItem> items,
+  ) async {
+    if (items.every((e) => !e.previewOnly)) return items;
+    return Future.wait(
+      items.map((item) async {
+        if (!item.previewOnly || item.id == null) return item;
+        return (await getItem(id: item.id!)) ?? item;
+      }),
+    );
+  }
+
   Future<bool> copyToClipboard(
     List<ClipboardItem> items, {
     bool saveFile = false,
     TextPasteFormat textPasteFormat = TextPasteFormat.auto,
   }) async {
+    items = await _resolvePreviewItems(items);
     final copy = CopyToClipboard();
 
     for (final item in items) {
       switch (item.type) {
         case ClipItemType.text:
-          copy.writeRichText(
+          await copy.writeRichText(
             clipboard,
             text: item.text ?? "",
             richData: item.richData,
@@ -281,7 +307,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
             fileSize: clip.fileSize,
             blurHash: clip.blurHash,
             sourceApp: sourceApp,
-            sourceUrl: sourceUrl,
+            sourceUrl: sourceUrl ?? clip.uri?.toString(),
             sourceId: sourceId,
           );
         }
@@ -292,13 +318,13 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
           return ClipboardItem.fromFile(
             path,
             userId: userId,
-            preview: clip.text?.substring(0, 256),
+            preview: clip.text?.sub(end: 256),
             fileName: clip.fileName,
             fileMimeType: clip.fileMimeType,
             fileExtension: clip.fileExtension,
             fileSize: clip.fileSize,
             sourceApp: sourceApp,
-            sourceUrl: sourceUrl,
+            sourceUrl: sourceUrl ?? clip.uri?.toString(),
             sourceId: sourceId,
           );
         }
@@ -338,7 +364,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
           clip.fileSize != null &&
           !appConfig.canCopyFile(clip.fileSize!)) {
         logger.i("Auto copy is disabled for files over the limit.");
-        clip.cleanup();
+        unawaited(clip.cleanup());
 
         emit(
           const OfflinePersistanceState.error(
@@ -401,52 +427,65 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         .toList();
 
     if (nonPersisted.isNotEmpty) {
-      emit(OfflinePersistanceState.creatingItems(nonPersisted));
+      emit(OfflinePersistanceState.creatingItems(nonPersisted.length));
       final results = await Future.wait(
         nonPersisted.map((item) => repo.create(item)),
       );
 
       for (var result in results) {
-        emit(
-          result.fold(
-            (l) => OfflinePersistanceState.error(l),
-            (r) => OfflinePersistanceState.saved(
-              [r],
+        result.fold((l) => emit(OfflinePersistanceState.error(l)), (r) {
+          syncEventBus.emit<ClipboardItem>((
+            synced ? CrossSyncEventType.update : CrossSyncEventType.create,
+            r,
+          ));
+          emit(
+            OfflinePersistanceState.saved(
+              count: 1,
               created: true,
               synced: synced,
               updatedFields: updatedFields,
             ),
-          ),
-        );
+          );
+        });
       }
       return;
     }
 
     // If all items are already persisted, we just need to update the items.
-    emit(OfflinePersistanceState.updatingItems(persited));
+    emit(OfflinePersistanceState.updatingItems(persited.length));
     final updated = await Future.wait(
       persited.map((item) => repo.update(item)),
     );
 
     for (var result in updated) {
-      emit(
-        result.fold(
-          (l) => OfflinePersistanceState.error(l),
-          (r) => OfflinePersistanceState.saved(
-            [r],
+      result.fold((l) => emit(OfflinePersistanceState.error(l)), (r) {
+        syncEventBus.emit<ClipboardItem>((CrossSyncEventType.update, r));
+        emit(
+          OfflinePersistanceState.saved(
             synced: synced,
             updatedFields: updatedFields,
+            count: 1,
           ),
-        ),
-      );
+        );
+      });
     }
   }
 
   Future<void> delete(List<ClipboardItem> items) async {
-    emit(OfflinePersistanceState.deletingItems(items));
+    emit(OfflinePersistanceState.deletingItems(items.length));
     final items_ = items.map((item) => item.copyWith(deviceId: deviceId));
     await repo.deleteMany(items_.toList());
-    emit(OfflinePersistanceState.deletedItems(items));
+    final deleteEvents = items
+        .map<CrossSyncEvent<ClipboardItem>>(
+          (item) => (CrossSyncEventType.delete, item),
+        )
+        .toList();
+    if (deleteEvents.length == 1) {
+      syncEventBus.emit<ClipboardItem>(deleteEvents.first);
+    } else if (deleteEvents.isNotEmpty) {
+      syncEventBus.emitBatch<ClipboardItem>(deleteEvents);
+    }
+    emit(OfflinePersistanceState.deletedItems(items.length));
   }
 
   @override

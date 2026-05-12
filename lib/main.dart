@@ -26,6 +26,7 @@ import 'package:clipboard/common/bloc_config.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/routes/routes.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/scroll_behaviour.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/utils/windows/update_registry.dart';
 import 'package:clipboard/widgets/debug/gizmo_overlay.dart';
@@ -66,6 +67,9 @@ Future<void> appRunner() async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  PaintingBinding.instance.imageCache.maximumSize = 20;
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 50 << 20;
+
   if (sentryDSN != "" && !kDebugMode) {
     await SentryFlutter.init((options) {
       options.dsn = sentryDSN;
@@ -222,6 +226,7 @@ class AppContent extends StatelessWidget {
                     routerConfig: routeConfig,
                     scaffoldMessengerKey: scaffoldMessengerKey,
                     color: surfaceColor,
+                    scrollBehavior: ClampingScrollBehavior(),
                     themeMode: theme,
                     shortcuts: {
                       ...WidgetsApp.defaultShortcuts,
@@ -350,6 +355,8 @@ class MainApp extends StatelessWidget {
     if (kDebugMode) {
       return GizmoOverlay(
         enabled: false,
+        fpsGizmo: false,
+        focusGizmo: true,
         child: DevicePreview(
           enabled: false,
           tools: const [

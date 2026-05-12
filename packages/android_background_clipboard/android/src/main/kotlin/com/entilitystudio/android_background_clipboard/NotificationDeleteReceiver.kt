@@ -3,19 +3,15 @@ package com.entilitystudio.android_background_clipboard
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 
 
 class NotificationDeleteReceiver : BroadcastReceiver() {
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("NotificationBroadcast", "Notification swiped away, restarting service")
+        debugLog("NotificationBroadcast") { "Notification dismissed, toggling pause state" }
 
-        // Restart the service and show the notification again
         val serviceIntent = Intent(context, CopyCatClipboardService::class.java)
-        serviceIntent.action = "RESTART_SERVICE"
-        context.startForegroundService(serviceIntent)
+        serviceIntent.action = CopyCatClipboardService.ACTION_TOGGLE_NOTIFICATION_PAUSE
+        ContextCompat.startForegroundService(context, serviceIntent)
     }
 }

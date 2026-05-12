@@ -48,14 +48,6 @@ class SecondaryClipActionButton extends StatelessWidget {
     };
 
     if (action == null) return const SizedBox.shrink();
-    return SizedBox.square(
-      dimension: 36,
-      child: Focus(
-        canRequestFocus: false,
-        skipTraversal: true,
-        descendantsAreFocusable: false,
-        child: action,
-      ),
-    );
+    return SizedBox.square(dimension: 36, child: action);
   }
 }

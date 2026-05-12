@@ -3,7 +3,7 @@ part of 'clipboard_cubit.dart';
 @freezed
 class ClipboardState with _$ClipboardState {
   const factory ClipboardState.loaded({
-    required List<ClipboardItem> items,
+    @Default(0) int revision,
     @Default('') String query,
     @Default(true) hasMore,
     @Default(50) int limit,

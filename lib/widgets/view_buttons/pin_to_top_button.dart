@@ -24,7 +24,7 @@ class PinToTopButton extends StatelessWidget {
           onPressed: () => toggle(context),
           padding: EdgeInsets.zero,
           style: IconButton.styleFrom(shape: const RoundedRectangleBorder()),
-          color: pinned ? colors.primary : colors.outlineVariant,
+          color: pinned ? colors.error : colors.outlineVariant,
           iconSize: 20,
           icon: const Icon(Icons.push_pin_rounded),
           tooltip: pinned

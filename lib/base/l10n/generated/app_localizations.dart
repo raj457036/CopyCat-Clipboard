@@ -1971,6 +1971,27 @@ abstract class AppLocalizations {
   /// **'Checking remote backup...'**
   String get sync_restore__checking_backup;
 
+  /// No description provided for @sync_restore__decrypting_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrypting clips'**
+  String get sync_restore__decrypting_title;
+
+  /// No description provided for @sync_restore__decrypting_counting.
+  ///
+  /// In en, this message translates to:
+  /// **'Counting encrypted clips...'**
+  String get sync_restore__decrypting_counting;
+
+  /// No description provided for @sync_restore__decrypting_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrypted {decrypted} of {total}'**
+  String sync_restore__decrypting_progress({
+    required int decrypted,
+    required int total,
+  });
+
   /// No description provided for @sync_restore__workspace_restored.
   ///
   /// In en, this message translates to:
@@ -3387,18 +3408,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Other Settings'**
   String get abc__other_setting__title;
-
-  /// No description provided for @abc__enhanced_clip_detection__title.
-  ///
-  /// In en, this message translates to:
-  /// **'Enhanced Clipboard Detection'**
-  String get abc__enhanced_clip_detection__title;
-
-  /// No description provided for @abc__enhanced_clip_detection__subtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Enable this option for more accurate clipboard detection. Note that it might not work on every device.'**
-  String get abc__enhanced_clip_detection__subtitle;
 
   /// No description provided for @abc__tile__two_way_sync__title.
   ///

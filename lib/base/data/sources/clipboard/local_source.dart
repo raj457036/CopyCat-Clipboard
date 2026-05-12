@@ -130,9 +130,33 @@ class LocalClipboardSource implements ClipboardSource {
     var paginatedQuery = sortedQuery.offset(offset).limit(limit).findAll();
 
     final isarResults = await db.txn(() async => await paginatedQuery);
-    final results = isarResults.map((e) => e.toDomain()).toList();
+    final results = isarResults
+        .map((e) => _toPreviewItem(e.toDomain()))
+        .toList();
 
     return PaginatedResult(results: results, hasMore: results.length == limit);
+  }
+
+  /// Returns a memory-efficient preview of [item] for use in list views.
+  ///
+  /// For text items, [ClipboardItem.richData] is always stripped (can be
+  /// several KB of RTF/HTML) and [ClipboardItem.text] is truncated to
+  /// [_kTextPreviewLimit] characters when longer. When content is stripped the
+  /// [ClipboardItem.previewOnly] flag is set so callers know to re-fetch the
+  /// full item before copying/pasting.
+  static const _kTextPreviewLimit = 300;
+
+  ClipboardItem _toPreviewItem(ClipboardItem item) {
+    if (item.type != ClipItemType.text) return item;
+    final text = item.text;
+    final hasRichData = item.richData != null;
+    final isLongText = text != null && text.length > _kTextPreviewLimit;
+    if (!hasRichData && !isLongText) return item;
+    return item.copyWith(
+      text: isLongText ? text.substring(0, _kTextPreviewLimit) : text,
+      richData: null,
+      previewOnly: true,
+    );
   }
 
   @override

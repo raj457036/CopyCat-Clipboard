@@ -1,3 +1,4 @@
+import 'package:clipboard/di/di.dart' show sl;
 import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:clipboard/pages/preview/widgets/clip_inspector.dart';
 import 'package:clipboard/pages/preview/widgets/preview.dart';
@@ -13,7 +14,7 @@ class ClipItemPreviewVerticalView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: context.mq.size.width < 600,
+        automaticallyImplyLeading: context.mq.isMobile || context.mq.isTablet,
         centerTitle: false,
         title: Text(
           item.displayTitle ?? context.locale.preview__inspector__title,
@@ -37,6 +38,7 @@ class ClipItemPreviewVerticalView extends StatelessWidget {
               item: item,
               includePagePadding: false,
               showHeader: false,
+              currentDeviceId: sl<String>(instanceName: "device_id"),
             ),
           ],
         ),

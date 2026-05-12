@@ -5,7 +5,6 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
   clipboard_watcher
-  connectivity_plus
   emoji_picker_flutter
   flutter_platform_alert
   focus_window
@@ -14,6 +13,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   isar_community_flutter_libs
   media_kit_libs_windows_video
   media_kit_video
+  open_dir_windows
   screen_retriever_windows
   sentry_flutter
   share_plus

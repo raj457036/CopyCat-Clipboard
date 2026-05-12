@@ -1,3 +1,4 @@
+import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:clipboard/pages/preview/widgets/clip_inspector.dart';
 import 'package:clipboard/pages/preview/widgets/preview.dart';
@@ -37,7 +38,11 @@ class ClipItemPreviewHorizontalView extends StatelessWidget {
                 ),
               ),
               child: SingleChildScrollView(
-                child: ClipInspector(item: item, showHeader: false),
+                child: ClipInspector(
+                  item: item,
+                  showHeader: false,
+                  currentDeviceId: sl<String>(instanceName: "device_id"),
+                ),
               ),
             ),
           ),

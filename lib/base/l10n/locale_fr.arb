@@ -84,12 +84,10 @@
   "dialog__text__e2e_key_import__note": "Importez votre clé de chiffrement ci-dessous pour accéder à vos données chiffrées sur cet appareil.",
   "dialog__button__e2e_importing_key": "Importation",
   "dialog__button__e2e_import_key": "Importer",
-
   "dialog__text__inconsistent_time__title": "Avertissement de synchronisation temporelle",
   "dialog__text__inconsistent_time__content": "Heure de l'appareil incohérente détectée\n\nPour assurer une synchronisation précise du presse-papiers, veuillez vérifier et corriger les paramètres de l'heure de votre appareil.\n\nDes paramètres de temps incohérents peuvent entraîner des problèmes de synchronisation.",
   "dialog__button__try_again": "Vérifier à nouveau",
   "dialog__button__try_fix": "Essayer à nouveau",
-
   "dialog__record_keys__title": "Enregistrer le raccourci clavier",
   "dialog__record_keys__subtitle": "Tapez votre raccourci en utilisant votre clavier et cliquez sur ",
   "dialog__delete_collection__title": "Supprimer {collectionName}",
@@ -101,7 +99,6 @@
     }
   },
   "dialog__delete_collection__subtitle": "Êtes-vous sûr de vouloir supprimer cette collection ?",
-
   "@@APPLY_DIALOG": "Dialogue d'application de coupon",
   "dialog__ack__sub_updated": "Abonnement mis à jour",
   "dialog__grant_entitlement__title": "Droit accordé",
@@ -109,7 +106,6 @@
   "dialog__grant_entitlement__subtitle_p2": "cliquant ici.",
   "dialog__grant_entitlement__enter_code": "Saisissez le code et appuyez sur Soumettre",
   "dialog__grant_entitlement__apply_code": "Appliquer",
-
   "@@VIEW_BUTTONS": "Boutons de vue de mise en page",
   "view_button__switch_to_grid": "Passer à la disposition en grille",
   "view_button__switch_to_list": "Passer à la disposition en liste",
@@ -121,7 +117,6 @@
   "view_button__view_dock_top": "Ancrer en haut",
   "view_button__pin": "Épingler en haut",
   "view_button__unpin": "Désépingler",
-
   "@@SUBSCRIPTION_DIALOG": "Dialogue de détail de l'abonnement",
   "sub_dialog__text__included": "Inclus",
   "sub_dialog__f1__title": "Éléments de presse-papiers illimités",
@@ -144,7 +139,6 @@
   "sub_dialog__f9__subtitle": "Profitez de la synchronisation automatique des éléments de presse-papiers toutes les 45 secondes, gardant vos appareils à jour sans intervention manuelle.",
   "sub_dialog__f10__title": "Prise en charge du chiffrement de bout en bout",
   "sub_dialog__f10__subtitle": "Le chiffrement de bout en bout rend tout crypté pour une confidentialité supérieure.",
-
   "sub_dialog__text__pro_title": "Avec PRO ✨",
   "sub_dialog__text__pro_subtitle": "Tout inclus dans Gratuit +",
   "sub_dialog__f11__title": "Jusqu'à 50 collections",
@@ -174,15 +168,14 @@
   "paywall_dialog__text__expired_plan": "Plan actuel • Expiré",
   "paywall_dialog__text__trial_till": "Essai jusqu'à {till}",
   "@paywall_dialog__text__trial_till": {
-      "placeholders": {
-          "till": {
-              "type": "DateTime",
-              "format": "yMMMd"
-          }
+    "placeholders": {
+      "till": {
+        "type": "DateTime",
+        "format": "yMMMd"
       }
+    }
   },
   "paywall_dialog__text__upgrade": "Mise à niveau",
-
   "@@FAB": "Bouton d'action flottant",
   "fab__create_collection": "Créer une collection ( {remaining} restant )",
   "@fab__create_collection": {
@@ -192,59 +185,50 @@
       }
     }
   },
-
   "fab__sync": "Synchroniser",
   "fab__sync_unavailable": "Synchronisation indisponible",
   "fab__sync_up_to_date": "Déjà à jour.",
   "fab__sync_failed": "Échec de la synchronisation : {message}",
   "@fab__sync_failed": {
-      "placeholders": {
-          "message": {
-              "type": "String"
-          }
+    "placeholders": {
+      "message": {
+        "type": "String"
       }
+    }
   },
-
   "@@LAYOUT": "Widgets de mise en page",
   "layout__navbar__clipboard": "Presse-papiers",
   "layout__navbar__collections": "Collections",
   "layout__navbar__settings": "Paramètres",
-
   "@@WIDGETS": "Widgets personnalisés",
   "search__tooltip__filter": "Filtres de recherche",
   "manage_sub__ack__promo_sub": "Vous utilisez un abonnement promotionnel jusqu'à {till}",
   "@manage_sub__ack__promo_sub": {
-      "placeholders": {
-          "till": {
-              "type": "String"
-          }
+    "placeholders": {
+      "till": {
+        "type": "String"
       }
+    }
   },
   "manage_sub__button__text": "Gérer les abonnements",
-
   "my_account__button__tooltip": "Mon Compte",
   "badges__tooltip__experimental": "Cette fonctionnalité est expérimentale et peut ne pas fonctionner comme prévu.",
   "badges__tooltip__pro_only": "Cette fonctionnalité est disponible uniquement pour les utilisateurs Pro.",
-
   "collection_selector__tile__no_collection": "Aucune collection",
   "collection_selector__button__remove_collection": "Supprimer la collection",
-
   "dialog__logout__title": "Déconnexion",
   "dialog__logout__subtitle": "⚠️ AVERTISSEMENT ⚠️\n\nLa déconnexion supprimera les modifications non synchronisées dans la base de données locale. Êtes-vous sûr de vouloir continuer?",
   "dialog__logging_out__ack": "Déconnexion en cours! Veuillez patienter...",
-
   "reset_pass__text__label": "Réinitialiser votre mot de passe",
-
   "dnd__text__drop_here": "Déposez ici",
   "dnd__ack__error_max_drop_count": "Un maximum de {count} éléments déposés est autorisé en une seule fois.",
   "@dnd__ack__error_max_drop_count": {
-      "placeholders": {
-          "count": {
-              "type": "int"
-          }
+    "placeholders": {
+      "count": {
+        "type": "int"
       }
+    }
   },
-
   "@@SEARCH_FILTER_DIALOG": "Dialogue de filtre de recherche",
   "search_filter__text__title": "Filtres",
   "search_filter__button__apply": "Appliquer",
@@ -270,7 +254,6 @@
   "search_filter__text__sort_order": "Ordre de tri",
   "search_filter__sort_ord__asc": "Asc",
   "search_filter__sort_ord__desc": "Desc",
-
   "@@LOGIN": "Écran de connexion",
   "login__local_signin__tooltip": "Pas de synchronisation. Toutes les données restent sur votre appareil.",
   "login__local_signin__btn__label": "Mode Hors-ligne",
@@ -310,7 +293,6 @@
   "@@ON_BOARDING": "Écran d'accueil",
   "onboarding__text__welcome": "Bienvenue à",
   "onboarding__text__lets_continue": "Continuons",
-
   "onboarding__button__to_login": "Se connecter",
   "onboarding__snackbar__export_success": "Clé de chiffrement exportée avec succès.",
   "onboarding__dialog__skip_export__title": "✋ Sauvegardez votre clé de chiffrement",
@@ -607,7 +589,6 @@
   "custom_er__tile__title": "Empêcher la copie d'une application ou d'un site web lorsque le titre de la fenêtre correspond.",
   "custom_er__text__no_title": "Aucun titre personnalisé exclu",
   "custom_er__button__remove_title": "Retirer ce titre",
-
   "@@ABOUT": "À propos du dialogue de l'app",
   "about__tile__discord": "Discord • Connexion",
   "about__tile__youtube": "YouTube • Tutoriel",
@@ -615,36 +596,25 @@
   "about__tile__github": "Github • Open source",
   "about__tile__website": "EntilityStudio • Site web",
   "about__tile__support": "Support",
-
   "@@ANDROID_BACKGROUND_CLIPBOARD": "Presse-papiers en arrière-plan Android",
   "abc_title": "Presse-papiers en arrière-plan",
   "abc__tile__subtitle": "Écoutez le presse-papiers en arrière-plan",
-
   "abc__tip__why_title": "Pourquoi ces autorisations sont-elles nécessaires ?",
   "abc__tip__why_subtitle": "Ces autorisations garantissent que CopyCat fonctionne correctement en arrière-plan, permettant de détecter le contenu copié et de vous offrir une expérience fluide sans interruptions.",
-
   "abc__tip__support_title": "Support limité",
   "abc__tip__support_subtitle": "1. Actuellement, seuls les clips texte sont pris en charge.\n2. Certains systèmes d'exploitation, comme HyperOS 1, ne sont pas encore pris en charge.",
-
   "abc__heading__req_perm": "Autorisations requises",
-
   "abc__tile__notification_title": "Accès aux notifications",
   "abc__tile__notification_subtitle": "Affiche une notification persistante pour vous informer que CopyCat fonctionne en arrière-plan, garantissant transparence et confidentialité.",
-
   "abc__tile__battery_opt_title": "Optimisation de la batterie",
   "abc__tile__battery_opt_subtitle": "Empêche le système d'arrêter CopyCat lorsqu'il fonctionne en arrière-plan, garantissant une expérience fluide.",
-
   "abc__tile__overlay_title": "Autorisation de superposition",
   "abc__tile__overlay_subtitle": "Permet à CopyCat de lire le presse-papiers en ouvrant brièvement une fenêtre transparente au-dessus de l'écran et de la fermer immédiatement après.",
-
   "abc__tile__acc_title": "Service d'accessibilité",
   "abc__tile__acc_subtitle": "Démarre l'écouteur en arrière-plan de CopyCat pour détecter lorsque vous copiez quelque chose et assure le redémarrage automatique du service après un redémarrage.",
-
   "abc__ack__ready": "Configuration prête à être configurée.",
   "abc__ack__preparing": "Préparation de la configuration, veuillez patienter...",
-  
   "abc__perm_alert_open_setting__button": "Ouvrir les paramètres",
-
   "abc__overlay_perm_alert__title": "Permission de superposition",
   "abc__overlay_perm_alert__subtitle": "CopyCat Clipboard a besoin de la permission 'Dessiner par-dessus d'autres applications' pour lire le contenu du presse-papiers en arrière-plan.",
   "abc__overlay_perm_alert__p1_prefix": "Cette permission est ",
@@ -660,7 +630,6 @@
   "abc__overlay_perm_alert__p4_bold": "'CopyCat a collé depuis votre presse-papiers'",
   "abc__overlay_perm_alert__p4_suffix": " lorsque CopyCat lit le contenu de votre presse-papiers.",
   "abc__overlay_perm_alert__agree": "En accordant cette permission, vous acceptez l'utilisation décrite ci-dessus.",
-
   "abc__accessibility_perm_alert__title": "Permission d'accessibilité",
   "abc__accessibility_perm_alert__subtitle": "CopyCat Clipboard nécessite le Service d'Accessibilité pour fonctionner en arrière-plan et détecter et synchroniser le presse-papiers en temps réel.",
   "abc__accessibility_perm_alert__p1_prefix": "Ce service est ",
@@ -679,9 +648,5 @@
   "abc__accessibility_perm_alert__p5_bold": "sont chiffrées de bout en bout",
   "abc__accessibility_perm_alert__p5_suffix": " (si activé) en transit et au repos, garantissant la confidentialité entre les appareils.",
   "abc__accessibility_perm_alert__agree": "En activant le Service d'Accessibilité, vous reconnaissez et acceptez les termes ci-dessus.",
-
-  "abc__other_setting__title": "Autres paramètres",
-  "abc__enhanced_clip_detection__title": "Détection améliorée du presse-papiers",
-  "abc__enhanced_clip_detection__subtitle": "Activez cette option pour une détection plus précise du presse-papiers. Notez qu'elle pourrait ne pas fonctionner sur tous les appareils."
-
+  "abc__other_setting__title": "Autres paramètres"
 }

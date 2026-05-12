@@ -1046,6 +1046,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String get sync_restore__checking_backup => 'Remote-Backup wird geprüft...';
 
   @override
+  String get sync_restore__decrypting_title => 'Decrypting clips';
+
+  @override
+  String get sync_restore__decrypting_counting => 'Counting encrypted clips...';
+
+  @override
+  String sync_restore__decrypting_progress({
+    required int decrypted,
+    required int total,
+  }) {
+    return 'Decrypted $decrypted of $total';
+  }
+
+  @override
   String get sync_restore__workspace_restored =>
       'Arbeitsbereich wiederhergestellt';
 
@@ -1888,14 +1902,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get abc__other_setting__title => 'Weitere Einstellungen';
-
-  @override
-  String get abc__enhanced_clip_detection__title =>
-      'Erweiterte Zwischenablage-Erkennung';
-
-  @override
-  String get abc__enhanced_clip_detection__subtitle =>
-      'Aktivieren Sie diese Option für eine genauere Zwischenablage-Erkennung. Beachten Sie, dass sie möglicherweise nicht auf jedem Gerät funktioniert.';
 
   @override
   String get abc__tile__two_way_sync__title => '2-Way Sync';

@@ -26,7 +26,7 @@ class ClipCollectionProvider extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         return BlocProvider<CollectionClipsCubit>(
-          create: (context) => sl(param1: snapshot.data)..search(),
+          create: (context) => sl(param1: snapshot.data)..fetch(),
           child: builder(context, snapshot.data),
         );
       },

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="copycat_notification_accent">#3A3468</color>
+    <color name="copycat_notification_paused">#8A909C</color>
+</resources>

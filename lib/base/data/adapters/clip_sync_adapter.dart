@@ -15,6 +15,16 @@ import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/paginated_results.dart';
 import 'package:injectable/injectable.dart';
 
+/// This is a heuristic flag to determine if we should include fetch clips within collections during sync.
+///
+/// 1. Initially, we fetch all clips including those within collections.
+/// 2. If the offset is 0, it means its first sync after app launch, and we disable fetching clips within collection
+/// that are before the last synced timestamp.
+/// 3. if we get offset > 0, it means its a restore and we disable this heuristic and allow fetching clips within collection.
+///
+/// This is an optimization to reduce bandwidth and unnecessary processing during regular syncs.
+bool _newItemsInCollectionPossible = true;
+
 @LazySingleton(as: SyncAdapter<ClipboardItem>)
 class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   final SyncRepository _syncRepo;
@@ -24,7 +34,6 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   final ClipCollectionCubit _collectionCubit;
   final ClipCrossSyncListener _realtimeListener;
   final FileCloudService _fileCloudService;
-
   /// Direct local source access for write-back operations that must NOT
   /// trigger outbox re-enqueue (e.g., saving serverId after remote creation).
   final ClipboardSource _localSource;
@@ -62,13 +71,21 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     String? excludeDeviceId,
     DateTime? lastSynced,
   }) {
-    return _syncRepo.getLatestClipboardItems(
+    final result = _syncRepo.getLatestClipboardItems(
       limit: limit,
       offset: offset,
       excludeDeviceId: excludeDeviceId,
       lastSynced: lastSynced,
-      havingCollection: true,
+      havingCollection: _newItemsInCollectionPossible,
     );
+
+    if (offset == 0) {
+      _newItemsInCollectionPossible = false;
+    } else {
+      _newItemsInCollectionPossible = true;
+    }
+
+    return result;
   }
 
   @override
@@ -94,11 +111,8 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     await _batchSyncService.waitUntilReady();
     final collectionMapping = _collectionCubit.serverMapping;
 
-    // Note: The current batchSyncService isolate doesn't use the conflictResolver
-    // because it runs in a separate isolate and can't easily execute closures/classes
-    // passed to it. In a robust setup, we'd pass conflict logic or run it here before
-    // sending to isolate. For now, it delegates to the existing isolate logic.
-    return _batchSyncService.syncBatch(items, collectionMapping);
+    final events = await _batchSyncService.syncBatch(items, collectionMapping);
+    return events;
   }
 
   @override

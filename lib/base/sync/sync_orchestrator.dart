@@ -223,10 +223,10 @@ class SyncOrchestrator {
           _processOutboxSynchronized();
         });
       case SyncSpeed.balanced:
-        // Poll every 3 seconds
-        logger.i('[SyncOrch] Starting 3s balanced timer');
-        _outboxTimer = Timer.periodic(const Duration(seconds: $3S), (_) {
-          logger.i('[SyncOrch] 3s timer fired, triggering push...');
+        // Poll every 5 seconds
+        logger.i('[SyncOrch] Starting 5s balanced timer');
+        _outboxTimer = Timer.periodic(const Duration(seconds: $5S), (_) {
+          logger.i('[SyncOrch] 5s timer fired, triggering push...');
           _processOutboxSynchronized();
         });
     }

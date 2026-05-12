@@ -1,5 +1,4 @@
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -7,10 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
 
 class FileClipCard extends StatelessWidget {
-  final AppLayout layout;
   final ClipboardItem item;
 
-  const FileClipCard({super.key, required this.item, required this.layout});
+  const FileClipCard({super.key, required this.item});
 
   String _displayFileType() {
     final mimeType = item.fileMimeType;

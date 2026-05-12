@@ -13,7 +13,7 @@ class AndroidClipboardSettingListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.linear_scale_rounded),
+      leading: const Icon(Icons.offline_bolt),
       title: Text(context.locale.abc_title),
       subtitle: Text(context.locale.abc__tile__subtitle),
       trailing: const Icon(Icons.navigate_next),

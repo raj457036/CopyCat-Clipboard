@@ -12,6 +12,16 @@ class AndroidBackgroundClipboard {
         .readShared<T>(key, secure: secure);
   }
 
+  Future<List<Map<Object?, Object?>>> readClipsBatch(
+    int start,
+    int end,
+  ) {
+    return AndroidBackgroundClipboardPlatform.instance.readClipsBatch(
+      start,
+      end,
+    );
+  }
+
   Future<bool> writeShared<T>(String key, T value, {bool secure = false}) {
     return AndroidBackgroundClipboardPlatform.instance
         .writeShared(key, value, secure: secure);
@@ -67,5 +77,13 @@ class AndroidBackgroundClipboard {
 
   Future<void> clearStorage() async {
     return AndroidBackgroundClipboardPlatform.instance.clearStorage();
+  }
+
+  Future<void> setDetectionMode(String mode) {
+    return AndroidBackgroundClipboardPlatform.instance.setDetectionMode(mode);
+  }
+
+  Stream<Map<String, String>> detectionStatusStream() {
+    return AndroidBackgroundClipboardPlatform.instance.detectionStatusStream();
   }
 }

@@ -1,4 +1,3 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
@@ -24,7 +23,7 @@ class SyncStatusFAB extends StatelessWidget {
         return BlocBuilder<SyncStatusCubit, SyncStatusState>(
           builder: (context, state) {
             bool disabled = false;
-            IconData icon = Icons.sync_rounded;
+            IconData icon = Icons.refresh_rounded;
             bool isSyncing = false;
             String message = context.locale.fab__sync;
 
@@ -37,10 +36,13 @@ class SyncStatusFAB extends StatelessWidget {
               case SyncingStatus():
                 disabled = true;
                 isSyncing = true;
+              case SyncStatusDecrypting():
+                disabled = true;
+                isSyncing = true;
               case SyncStatusComplete():
                 disabled = false;
                 isSyncing = false;
-                icon = Icons.sync_rounded;
+                icon = Icons.cloud_done_rounded;
                 message = context.locale.fab__sync_up_to_date;
               case SyncStatusFailed(:final failure):
                 disabled = false;
@@ -55,7 +57,9 @@ class SyncStatusFAB extends StatelessWidget {
               child: FloatingActionButton.small(
                 onPressed: disabled
                     ? null
-                    : () => syncStatusCubit.syncAll(const SyncAllParams(force: true)),
+                    : () => syncStatusCubit.syncAll(
+                        const SyncAllParams(force: true),
+                      ),
                 tooltip: isDesktopPlatform
                     ? '$message • ${keyboardShortcut(key: 'R')}'
                     : message,
@@ -63,14 +67,16 @@ class SyncStatusFAB extends StatelessWidget {
                 heroTag: "sync-fab",
                 backgroundColor: colors.secondary,
                 foregroundColor: colors.onSecondary,
-                child: Spin(
-                  infinite: true,
-                  delay: Durations.short4,
-                  spins: -1,
-                  curve: Curves.ease,
-                  animate: isSyncing,
-                  child: isSyncing ? const Icon(Icons.sync_rounded) : Icon(icon),
-                ),
+                child: isSyncing
+                    ? SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: colors.onSecondary,
+                        ),
+                      )
+                    : Icon(icon),
               ),
             );
           },

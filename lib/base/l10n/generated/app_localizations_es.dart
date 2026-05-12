@@ -1049,6 +1049,20 @@ class AppLocalizationsEs extends AppLocalizations {
       'Comprobando la copia de seguridad remota...';
 
   @override
+  String get sync_restore__decrypting_title => 'Decrypting clips';
+
+  @override
+  String get sync_restore__decrypting_counting => 'Counting encrypted clips...';
+
+  @override
+  String sync_restore__decrypting_progress({
+    required int decrypted,
+    required int total,
+  }) {
+    return 'Decrypted $decrypted of $total';
+  }
+
+  @override
   String get sync_restore__workspace_restored =>
       'Espacio de trabajo restaurado';
 
@@ -1893,14 +1907,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get abc__other_setting__title => 'Otras configuraciones';
-
-  @override
-  String get abc__enhanced_clip_detection__title =>
-      'Detección mejorada del portapapeles';
-
-  @override
-  String get abc__enhanced_clip_detection__subtitle =>
-      'Habilite esta opción para una detección del portapapeles más precisa. Tenga en cuenta que podría no funcionar en todos los dispositivos.';
 
   @override
   String get abc__tile__two_way_sync__title => '2-Way Sync';

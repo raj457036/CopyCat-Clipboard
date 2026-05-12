@@ -9,6 +9,7 @@ analyzer:
     - "**/*.freezed.dart"
     - "**/generated/*.dart"
   errors:
+    avoid_renaming_method_parameters: ignore
     invalid_annotation_target: ignore
 
 linter:

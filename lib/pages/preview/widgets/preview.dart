@@ -1,5 +1,5 @@
 import 'package:clipboard/pages/preview/widgets/file_preview.dart';
-import 'package:clipboard/pages/preview/widgets/media_preview.dart';
+import 'package:clipboard/pages/preview/widgets/media/media.dart';
 import 'package:clipboard/pages/preview/widgets/text_preview.dart';
 import 'package:clipboard/pages/preview/widgets/url_preview.dart';
 import 'package:clipboard/utils/utility.dart' show isMediaType;

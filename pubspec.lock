@@ -132,10 +132,10 @@ packages:
     dependency: "direct main"
     description:
       name: bloc
-      sha256: a48653a82055a900b88cd35f92429f068c5a8057ae9b136d197b3d56c57efb81
+      sha256: e03b235924e4f509c27b5d6b2f949200e0a91149a9818b4f65eeb56662b75413
       url: "https://pub.dev"
     source: hosted
-    version: "9.2.0"
+    version: "9.2.1"
   blurhash_dart:
     dependency: "direct main"
     description:
@@ -248,6 +248,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  cacherine:
+    dependency: "direct main"
+    description:
+      name: cacherine
+      sha256: "1921d157632330de4207f689d760e05b37b0a6b29dc7e3633e14cb038ee2388f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.4"
   characters:
     dependency: transitive
     description:
@@ -713,10 +721,10 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: "08b742eef4f71c9df5af543751cd0b7f1c679c4088488f4223ecaddc1a813b79"
+      sha256: "92d8cee7c57dff0a6c409c05597b460002434eccf7424a712283225b3962d03f"
       url: "https://pub.dev"
     source: hosted
-    version: "17.2.2"
+    version: "17.2.3"
   google_identity_services_web:
     dependency: transitive
     description:
@@ -938,10 +946,10 @@ packages:
     dependency: "direct main"
     description:
       name: internet_connection_checker_plus
-      sha256: ef43530f24de6309f99802358f8a543ea1f2babc153effc84a75133751716892
+      sha256: "64d938ddd9638ceef31aa3db84191c3fada44d3c7c8a1132662feedb852f951e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.1+2"
+    version: "3.0.0"
   intl:
     dependency: "direct main"
     description:
@@ -1254,6 +1262,46 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  open_dir:
+    dependency: "direct main"
+    description:
+      name: open_dir
+      sha256: a4884b00e5e5795a9b4b3d582ac6a66e9196795ed760dbc3c63b4837c70c5901
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2+1"
+  open_dir_linux:
+    dependency: transitive
+    description:
+      name: open_dir_linux
+      sha256: "566cd9e02403971be06af35e1abc8057a4f3f98888c1226042e96a2af333b8bc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2+1"
+  open_dir_macos:
+    dependency: transitive
+    description:
+      name: open_dir_macos
+      sha256: "51fdc8c3a06c9d571b599b5901045ada23d1440b24c3052c0a66cf3ee4ac901b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
+  open_dir_platform_interface:
+    dependency: transitive
+    description:
+      name: open_dir_platform_interface
+      sha256: ca189abb02d8e3320f9b2493b6d58e3a33f393d5eb4ccbbef02e0bc0fd393872
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
+  open_dir_windows:
+    dependency: transitive
+    description:
+      name: open_dir_windows
+      sha256: ec48df32ce61adb6f6cede0330d13b0d89714d2ee2df198f32ecd520e3a5d250
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2+1"
   open_filex:
     dependency: "direct main"
     description:
@@ -1391,7 +1439,7 @@ packages:
     source: hosted
     version: "2.1.8"
   pointycastle:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: pointycastle
       sha256: "4be0097fcf3fd3e8449e53730c631200ebc7b88016acecab2b0da2f0149222fe"
@@ -2146,6 +2194,46 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  video_player:
+    dependency: "direct main"
+    description:
+      name: video_player
+      sha256: "48a7bdaa38a3d50ec10c78627abdbfad863fdf6f0d6e08c7c3c040cfd80ae36f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.11.1"
+  video_player_android:
+    dependency: transitive
+    description:
+      name: video_player_android
+      sha256: "877a6c7ba772456077d7bfd71314629b3fe2b73733ce503fc77c3314d43a0ca0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.9.5"
+  video_player_avfoundation:
+    dependency: transitive
+    description:
+      name: video_player_avfoundation
+      sha256: a39d6f28f8069564d8cc17396472f958dd9eaddf2d5c8e90aad4d793ac369bf3
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.9.6"
+  video_player_platform_interface:
+    dependency: transitive
+    description:
+      name: video_player_platform_interface
+      sha256: "16eaed5268c571c31840dc58ef8da5f0cd4db2a98490c3b8f1cf70122546c6e0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.7.0"
+  video_player_web:
+    dependency: transitive
+    description:
+      name: video_player_web
+      sha256: "9f3c00be2ef9b76a95d94ac5119fb843dca6f2c69e6c9968f6f2b6c9e7afbdeb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
   vm_service:
     dependency: transitive
     description:

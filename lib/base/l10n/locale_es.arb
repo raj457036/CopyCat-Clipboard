@@ -84,12 +84,10 @@
   "dialog__text__e2e_key_import__note": "Importa tu clave de encriptación abajo para acceder a tus datos encriptados en este dispositivo.",
   "dialog__button__e2e_importing_key": "Importando",
   "dialog__button__e2e_import_key": "Importar",
-
   "dialog__text__inconsistent_time__title": "Advertencia de Sincronización de Hora",
   "dialog__text__inconsistent_time__content": "Se Detectó Hora Inconsistente en el Dispositivo\n\nPara asegurar una sincronización precisa del portapapeles, por favor revisa y corrige la configuración de la hora de tu dispositivo.\n\nLas configuraciones de hora inconsistentes pueden causar problemas de sincronización.",
   "dialog__button__try_again": "Revisar de Nuevo",
   "dialog__button__try_fix": "Intentar Corregir",
-
   "dialog__record_keys__title": "Registrar Atajo de Teclado",
   "dialog__record_keys__subtitle": "Escribe tu atajo usando el teclado y haz clic en ",
   "dialog__delete_collection__title": "Eliminar {collectionName}",
@@ -101,7 +99,6 @@
     }
   },
   "dialog__delete_collection__subtitle": "¿Estás seguro de eliminar esta colección?",
-
   "@@APPLY_DIALOG": "Diálogo de Aplicar Cupón",
   "dialog__ack__sub_updated": "Suscripción Actualizada",
   "dialog__grant_entitlement__title": "Derecho Otorgado",
@@ -109,7 +106,6 @@
   "dialog__grant_entitlement__subtitle_p2": "haciéndo clic aquí.",
   "dialog__grant_entitlement__enter_code": "Introduce el código y presiona Enviar",
   "dialog__grant_entitlement__apply_code": "Aplicar",
-
   "@@VIEW_BUTTONS": "Botones de Vista de Diseño",
   "view_button__switch_to_grid": "Cambiar a Diseño de Cuadrícula",
   "view_button__switch_to_list": "Cambiar a Diseño de Lista",
@@ -121,7 +117,6 @@
   "view_button__view_dock_top": "Anclar Arriba",
   "view_button__pin": "Fijar arriba",
   "view_button__unpin": "Desfijar",
-
   "@@SUBSCRIPTION_DIALOG": "Diálogo de Detalle de Suscripción",
   "sub_dialog__text__included": "Incluido",
   "sub_dialog__f1__title": "Elementos Ilimitados del Portapapeles",
@@ -144,7 +139,6 @@
   "sub_dialog__f9__subtitle": "Disfruta de la sincronización automática de elementos del portapapeles cada 45 segundos, manteniendo tus dispositivos actualizados sin intervención manual.",
   "sub_dialog__f10__title": "Soporte para Encriptación de Extremo a Extremo",
   "sub_dialog__f10__subtitle": "E2EE hará todo encriptado para una privacidad superior.",
-
   "sub_dialog__text__pro_title": "Con PRO ✨",
   "sub_dialog__text__pro_subtitle": "Todo incluido en Gratis +",
   "sub_dialog__f11__title": "Hasta 50 Colecciones",
@@ -174,15 +168,14 @@
   "paywall_dialog__text__expired_plan": "Plan Actual • Expirado",
   "paywall_dialog__text__trial_till": "Prueba hasta {till}",
   "@paywall_dialog__text__trial_till": {
-      "placeholders": {
-          "till": {
-              "type": "DateTime",
-              "format": "yMMMd"
-          }
+    "placeholders": {
+      "till": {
+        "type": "DateTime",
+        "format": "yMMMd"
       }
+    }
   },
   "paywall_dialog__text__upgrade": "Mejorar",
-
   "@@FAB": "Botón de Acción Flotante",
   "fab__create_collection": "Crear Colección ( {remaining} Restante )",
   "@fab__create_collection": {
@@ -192,59 +185,50 @@
       }
     }
   },
-
   "fab__sync": "Sincronizar",
   "fab__sync_unavailable": "Sincronización No Disponible",
   "fab__sync_up_to_date": "Ya está actualizado.",
   "fab__sync_failed": "Sincronización fallida: {message}",
   "@fab__sync_failed": {
-      "placeholders": {
-          "message": {
-              "type": "String"
-          }
+    "placeholders": {
+      "message": {
+        "type": "String"
       }
+    }
   },
-
   "@@LAYOUT": "Widgets de Diseño",
   "layout__navbar__clipboard": "Portapapeles",
   "layout__navbar__collections": "Colecciones",
   "layout__navbar__settings": "Configuraciones",
-
   "@@WIDGETS": "Widgets Personalizados",
   "search__tooltip__filter": "Filtros de búsqueda",
   "manage_sub__ack__promo_sub": "Estás usando una suscripción promocional hasta {till}",
   "@manage_sub__ack__promo_sub": {
-      "placeholders": {
-          "till": {
-              "type": "String"
-          }
+    "placeholders": {
+      "till": {
+        "type": "String"
       }
+    }
   },
   "manage_sub__button__text": "Gestionar Suscripciones",
-
   "my_account__button__tooltip": "Mi Cuenta",
   "badges__tooltip__experimental": "Esta característica es experimental y puede no funcionar como se espera.",
   "badges__tooltip__pro_only": "Esta característica está disponible solo para usuarios Pro.",
-
   "collection_selector__tile__no_collection": "Sin Colección",
   "collection_selector__button__remove_collection": "Eliminar Colección",
-
   "dialog__logout__title": "Cerrar Sesión",
   "dialog__logout__subtitle": "⚠️ ADVERTENCIA ⚠️\n\nCerrar sesión eliminará los cambios no sincronizados en la base de datos local. ¿Estás seguro de que quieres continuar?",
   "dialog__logging_out__ack": "¡Cerrando sesión! Por favor espera...",
-
   "reset_pass__text__label": "Restablece tu contraseña",
-
   "dnd__text__drop_here": "Suelta Aquí",
   "dnd__ack__error_max_drop_count": "Se permite un máximo de {count} elementos a la vez.",
   "@dnd__ack__error_max_drop_count": {
-      "placeholders": {
-          "count": {
-              "type": "int"
-          }
+    "placeholders": {
+      "count": {
+        "type": "int"
       }
+    }
   },
-
   "@@SEARCH_FILTER_DIALOG": "Diálogo de filtro de búsqueda",
   "search_filter__text__title": "Filtros",
   "search_filter__button__apply": "Aplicar",
@@ -270,7 +254,6 @@
   "search_filter__text__sort_order": "Orden de Clasificación",
   "search_filter__sort_ord__asc": "Ascendente",
   "search_filter__sort_ord__desc": "Descendente",
-
   "@@LOGIN": "Pantalla de Inicio de Sesión",
   "login__local_signin__tooltip": "Sin sincronización. Todos los datos permanecen en tu dispositivo.",
   "login__local_signin__btn__label": "Modo Offline",
@@ -310,7 +293,6 @@
   "@@ON_BOARDING": "Pantalla de Bienvenida",
   "onboarding__text__welcome": "Bienvenido a",
   "onboarding__text__lets_continue": "Continuemos",
-  
   "onboarding__button__to_login": "Iniciar sesión",
   "onboarding__snackbar__export_success": "Clave de encriptación exportada con éxito.",
   "onboarding__dialog__skip_export__title": "✋ Guarda una Copia de Seguridad de tu Clave de Encriptación",
@@ -607,7 +589,6 @@
   "custom_er__tile__title": "Evitar copiar de aplicación o sitio web cuando el título de la ventana coincide.",
   "custom_er__text__no_title": "No se han excluido título(s) personalizados",
   "custom_er__button__remove_title": "Eliminar este título",
-
   "@@ABOUT": "Acerca del diálogo de la app",
   "about__tile__discord": "Discord • Conectar",
   "about__tile__youtube": "YouTube • Tutorial",
@@ -615,36 +596,25 @@
   "about__tile__github": "Github • Código abierto",
   "about__tile__website": "EntilityStudio • Sitio web",
   "about__tile__support": "Soporte",
-
   "@@ANDROID_BACKGROUND_CLIPBOARD": "Portapapeles en segundo plano de Android",
   "abc_title": "Portapapeles en segundo plano",
   "abc__tile__subtitle": "Escucha el portapapeles en segundo plano",
-
   "abc__tip__why_title": "¿Por qué se necesitan estos permisos?",
   "abc__tip__why_subtitle": "Estos permisos aseguran que CopyCat funcione correctamente en segundo plano, permitiéndole detectar el contenido copiado y brindarle una experiencia fluida sin interrupciones.",
-
   "abc__tip__support_title": "Soporte limitado",
   "abc__tip__support_subtitle": "1. Actualmente, solo se admiten clips de texto.\n2. Algunos sistemas operativos, como HyperOS 1, aún no son compatibles.",
-
   "abc__heading__req_perm": "Permisos requeridos",
-
   "abc__tile__notification_title": "Acceso a notificaciones",
   "abc__tile__notification_subtitle": "Muestra una notificación persistente para informarle que CopyCat está funcionando en segundo plano, garantizando transparencia y privacidad.",
-
   "abc__tile__battery_opt_title": "Optimización de batería",
   "abc__tile__battery_opt_subtitle": "Evita que el sistema apague CopyCat mientras funciona en segundo plano, asegurando una experiencia fluida.",
-
   "abc__tile__overlay_title": "Permiso de superposición",
   "abc__tile__overlay_subtitle": "Permite que CopyCat lea el portapapeles abriendo brevemente una ventana transparente sobre la pantalla y cerrándola inmediatamente después.",
-
   "abc__tile__acc_title": "Servicio de accesibilidad",
   "abc__tile__acc_subtitle": "Inicia el oyente en segundo plano de CopyCat para detectar cuando copias algo y asegura que el servicio se reinicie automáticamente después de un reinicio.",
-
   "abc__ack__ready": "Configuración lista para ser configurada.",
   "abc__ack__preparing": "Preparando configuración, por favor espere...",
-
   "abc__perm_alert_open_setting__button": "Abrir configuración",
-
   "abc__overlay_perm_alert__title": "Permiso de superposición",
   "abc__overlay_perm_alert__subtitle": "CopyCat Clipboard necesita el permiso 'Dibujar sobre otras aplicaciones' para leer el contenido del portapapeles en segundo plano.",
   "abc__overlay_perm_alert__p1_prefix": "Este permiso se ",
@@ -660,7 +630,6 @@
   "abc__overlay_perm_alert__p4_bold": "'CopyCat pegó desde tu portapapeles'",
   "abc__overlay_perm_alert__p4_suffix": " cuando CopyCat lee el contenido de tu portapapeles.",
   "abc__overlay_perm_alert__agree": "Al otorgar este permiso, aceptas el uso descrito anteriormente.",
-
   "abc__accessibility_perm_alert__title": "Permiso de accesibilidad",
   "abc__accessibility_perm_alert__subtitle": "CopyCat Clipboard requiere el Servicio de Accesibilidad para funcionar en segundo plano y detectar y sincronizar el portapapeles en tiempo real.",
   "abc__accessibility_perm_alert__p1_prefix": "Este servicio se ",
@@ -679,9 +648,5 @@
   "abc__accessibility_perm_alert__p5_bold": "están cifrados de extremo a extremo",
   "abc__accessibility_perm_alert__p5_suffix": " (si está habilitado) en tránsito y en reposo, garantizando la privacidad entre dispositivos.",
   "abc__accessibility_perm_alert__agree": "Al habilitar el Servicio de Accesibilidad, reconoces y aceptas los términos anteriores.",
-
-  "abc__other_setting__title": "Otras configuraciones",
-  "abc__enhanced_clip_detection__title": "Detección mejorada del portapapeles",
-  "abc__enhanced_clip_detection__subtitle": "Habilite esta opción para una detección del portapapeles más precisa. Tenga en cuenta que podría no funcionar en todos los dispositivos."
-
+  "abc__other_setting__title": "Otras configuraciones"
 }

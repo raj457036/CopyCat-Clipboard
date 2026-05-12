@@ -3,6 +3,7 @@ import 'dart:async' show StreamSubscription;
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
+import 'package:clipboard/base/data/services/post_sync_decryption_service.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/failure.dart';
@@ -32,12 +33,18 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
   final MonetizationCubit monetizationCubit;
   final SyncOrchestrator orchestrator;
   final SyncEventBus eventBus;
+  final PostSyncDecryptionService decryptionService;
   StreamSubscription? _eventSub;
   final Set<String> _busyEngines = {};
   final Map<String, DateTime> _lastNotifiedAt = {};
   bool _isManualSyncing = false;
 
-  SyncStatusCubit(this.orchestrator, this.eventBus, this.monetizationCubit)
+  SyncStatusCubit(
+    this.orchestrator,
+    this.eventBus,
+    this.monetizationCubit,
+    this.decryptionService,
+  )
     : super(const SyncStatusState.unknown()) {
     _subscribeToEvents();
   }
@@ -47,7 +54,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
 
   /// Determines the pull offset for fresh pulls based on subscription status.
   int get pullOffset => _activeSubscription?.syncHours != null
-      ? _activeSubscription!.syncInterval * 60 * 60
+      ? _activeSubscription!.syncHours * 60 * 60
       : 24 * 60 * 60; // Default to 24 hours for non-subscribers
 
   void initializeProgress(SyncProgressInitParams params) {
@@ -126,7 +133,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
         if (_busyEngines.isEmpty &&
             !_isManualSyncing &&
             state is SyncingStatus) {
-          emit(const SyncStatusState.complete());
+          _runPostSyncDecryption();
         }
       });
     }
@@ -145,7 +152,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
         pullOffset: pullOffset,
       );
       if (success) {
-        emit(const SyncStatusState.complete());
+        await _runPostSyncDecryption();
       } else {
         emit(
           const SyncStatusState.failed(
@@ -170,6 +177,24 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
 
   void start() => orchestrator.start();
   void stop() => orchestrator.stop();
+
+  /// Runs a per-item decryption pass over all locally stored encrypted clips,
+  /// then emits [SyncStatusState.complete]. Safe to call when the encryption
+  /// worker is inactive — it will find zero encrypted items (or skip them) and
+  /// proceed straight to [complete].
+  Future<void> _runPostSyncDecryption() async {
+    if (isClosed) return;
+    await decryptionService.decryptAll(
+      onProgress: (decrypted, total) {
+        if (!isClosed) {
+          emit(
+            SyncStatusState.decrypting(decrypted: decrypted, total: total),
+          );
+        }
+      },
+    );
+    if (!isClosed) emit(const SyncStatusState.complete());
+  }
 
   @override
   Future<void> close() {

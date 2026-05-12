@@ -1,7 +1,6 @@
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -25,10 +24,9 @@ class TextPreviewBody extends StatelessWidget {
 }
 
 class TextClipCard extends StatelessWidget {
-  final AppLayout layout;
   final ClipboardItem item;
 
-  const TextClipCard({super.key, required this.layout, required this.item});
+  const TextClipCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {

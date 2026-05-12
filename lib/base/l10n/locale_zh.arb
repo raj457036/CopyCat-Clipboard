@@ -88,7 +88,6 @@
   "dialog__text__inconsistent_time__content": "检测到设备时间不一致\n\n为了确保准确的剪贴板同步，请检查并更正您的设备时间设置。\n\n时间设置不一致可能会导致同步问题。",
   "dialog__button__try_again": "再次检查",
   "dialog__button__try_fix": "尝试自动修复",
-
   "dialog__record_keys__title": "记录键盘快捷键",
   "dialog__record_keys__subtitle": "使用键盘输入您的快捷键并点击 ",
   "dialog__delete_collection__title": "删除 {collectionName}",
@@ -294,7 +293,6 @@
   "@@ON_BOARDING": "入门界面",
   "onboarding__text__welcome": "欢迎来到",
   "onboarding__text__lets_continue": "让我们继续",
-
   "onboarding__button__to_login": "登录",
   "onboarding__snackbar__export_success": "加密密钥成功导出。",
   "onboarding__dialog__skip_export__title": "✋ 备份您的加密密钥",
@@ -591,7 +589,6 @@
   "custom_er__tile__title": "当窗口标题匹配时禁止从应用或网站复制。",
   "custom_er__text__no_title": "尚无自定义排除标题",
   "custom_er__button__remove_title": "移除此标题",
-
   "@@ABOUT": "关于应用对话框",
   "about__tile__discord": "Discord • 连接",
   "about__tile__youtube": "YouTube • 教程",
@@ -599,36 +596,25 @@
   "about__tile__github": "Github • 开源",
   "about__tile__website": "EntilityStudio • 网站",
   "about__tile__support": "支持",
-
   "@@ANDROID_BACKGROUND_CLIPBOARD": "Android后台剪贴板",
   "abc_title": "后台剪贴板",
   "abc__tile__subtitle": "在后台监听剪贴板",
-
   "abc__tip__why_title": "为什么需要这些权限？",
   "abc__tip__why_subtitle": "这些权限确保CopyCat在后台正常运行，能够检测到复制的内容，为您提供无缝体验，避免中断。",
-
   "abc__tip__support_title": "有限支持",
   "abc__tip__support_subtitle": "1. 当前仅支持文本剪辑。\n2. 一些操作系统，如HyperOS 1，尚不支持。",
-
   "abc__heading__req_perm": "所需权限",
-
   "abc__tile__notification_title": "通知访问",
   "abc__tile__notification_subtitle": "显示一个持久通知，告知您CopyCat正在后台运行，确保透明度和隐私。",
-
   "abc__tile__battery_opt_title": "电池优化",
   "abc__tile__battery_opt_subtitle": "防止系统在后台运行时关闭CopyCat，确保顺畅体验。",
-
   "abc__tile__overlay_title": "叠加权限",
   "abc__tile__overlay_subtitle": "允许CopyCat通过在屏幕上打开一个透明窗口并立即关闭，来读取剪贴板。",
-
   "abc__tile__acc_title": "辅助功能服务",
   "abc__tile__acc_subtitle": "启动CopyCat后台监听器，检测您复制的内容，并确保在重启后自动重新启动该服务。",
-
   "abc__ack__ready": "设置准备好配置。",
   "abc__ack__preparing": "正在准备设置，请稍候...",
-
   "abc__perm_alert_open_setting__button": "打开设置",
-
   "abc__overlay_perm_alert__title": "悬浮窗权限",
   "abc__overlay_perm_alert__subtitle": "CopyCat Clipboard 需要“在其他应用上层显示”权限以在后台读取剪贴板内容。",
   "abc__overlay_perm_alert__p1_prefix": "此权限 ",
@@ -644,7 +630,6 @@
   "abc__overlay_perm_alert__p4_bold": "“CopyCat 从您的剪贴板粘贴”",
   "abc__overlay_perm_alert__p4_suffix": " 当 CopyCat 读取您的剪贴板内容时。",
   "abc__overlay_perm_alert__agree": "授予此权限即表示您同意上述用途。",
-
   "abc__accessibility_perm_alert__title": "无障碍权限",
   "abc__accessibility_perm_alert__subtitle": "CopyCat Clipboard 需要无障碍服务以在后台运行，实现实时剪贴板检测和同步。",
   "abc__accessibility_perm_alert__p1_prefix": "此服务 ",
@@ -663,8 +648,5 @@
   "abc__accessibility_perm_alert__p5_bold": "端到端加密",
   "abc__accessibility_perm_alert__p5_suffix": "（如果启用）在传输和存储过程中，确保跨设备的隐私。",
   "abc__accessibility_perm_alert__agree": "启用无障碍服务即表示您承认并同意上述条款。",
-
-  "abc__other_setting__title": "其他设置",
-  "abc__enhanced_clip_detection__title": "增强剪贴板检测",
-  "abc__enhanced_clip_detection__subtitle": "启用此选项以实现更准确的剪贴板检测。请注意，它可能无法在所有设备上正常工作。"
+  "abc__other_setting__title": "其他设置"
 }
