@@ -193,9 +193,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get app__ack__deleted => 'Eliminado';
 
   @override
-  String get app__ack__deleting => 'Eliminando';
-
-  @override
   String get app__ack__internet_connected => 'Internet Conectado';
 
   @override

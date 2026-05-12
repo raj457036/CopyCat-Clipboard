@@ -193,9 +193,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get app__ack__deleted => 'Supprimé';
 
   @override
-  String get app__ack__deleting => 'Suppression';
-
-  @override
   String get app__ack__internet_connected => 'Internet connecté';
 
   @override

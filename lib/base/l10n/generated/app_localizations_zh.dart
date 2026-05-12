@@ -192,9 +192,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app__ack__deleted => '已删除';
 
   @override
-  String get app__ack__deleting => '删除中';
-
-  @override
   String get app__ack__internet_connected => '互联网已连接';
 
   @override

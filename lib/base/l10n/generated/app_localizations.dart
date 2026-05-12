@@ -471,12 +471,6 @@ abstract class AppLocalizations {
   /// **'Deleted'**
   String get app__ack__deleted;
 
-  /// No description provided for @app__ack__deleting.
-  ///
-  /// In en, this message translates to:
-  /// **'Deleting'**
-  String get app__ack__deleting;
-
   /// No description provided for @app__ack__internet_connected.
   ///
   /// In en, this message translates to:
