@@ -14,8 +14,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   injectable: ^2.7.1
-  flutter_bloc: ^9.0.0
-  bloc: ^9.2.0
+  flutter_bloc: ^9.1.1
+  bloc: ^9.2.1
   freezed_annotation: ^2.4.4
   path: ^1.9.1
   path_provider: ^2.1.5
