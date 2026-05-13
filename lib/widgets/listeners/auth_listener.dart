@@ -1,9 +1,7 @@
 import 'package:clipboard/base/background/encryption_worker.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
-import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
-import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
@@ -105,11 +103,6 @@ class AuthListener extends StatelessWidget {
           case LocalAuthenticatedAuthState():
             // MARK: - Offline Authentication Success
             appRouter.goNamed(RouteConstants.home);
-            await Future.wait([
-              context.read<AppConfigCubit>().load(),
-              context.read<ClipCollectionCubit>().fetch(),
-              context.read<OfflinePersistenceCubit>().startListeners(),
-            ]);
         }
       },
       child: child,

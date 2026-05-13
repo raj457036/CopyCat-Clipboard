@@ -33,6 +33,7 @@ class _SplashPageState extends State<SplashPage> {
           context.goNamed(RouteConstants.home);
         }
       },
+      localAuthenticated: () => context.goNamed(RouteConstants.home),
       orElse: () => context.goNamed(RouteConstants.login),
     );
   }

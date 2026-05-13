@@ -22,12 +22,15 @@ class CopyCatClipboardLoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final decorationTheme = context.theme.inputDecorationTheme.copyWith(
+      border: const OutlineInputBorder(borderRadius: radius16),
+      isDense: context.mq.isMobile,
+    );
+
     return InputDecorationTheme(
-      data: InputDecorationThemeData(
-        border: const OutlineInputBorder(borderRadius: radius8),
-        isDense: context.mq.isMobile,
-      ),
+      data: decorationTheme,
       child: su_auth.SupaEmailAuth(
+        autofocus: true,
         resetPasswordRedirectTo:
             "https://clipboard-419514.web.app/reset-password",
         onSignUpComplete: (su_auth.AuthResponse response) {

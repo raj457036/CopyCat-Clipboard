@@ -1,10 +1,11 @@
+import 'package:animate_do/animate_do.dart' show BounceInUp;
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
-import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/strings/asset_constants.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
+import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
 import 'package:clipboard/base/domain/model/localization.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage, NotificationType;
@@ -12,6 +13,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/pages/login/widgets/local_signin_button.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/forms/login_form.dart';
 import 'package:clipboard/widgets/locale_dropdown_button.dart';
 import 'package:flutter/gestures.dart';
@@ -21,6 +23,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});
+
+  static const _mobileHorizontalPadding = 20.0;
+  static const _desktopHorizontalPadding = 28.0;
+  static const _mobileVerticalPadding = 20.0;
+  static const _desktopVerticalPadding = 24.0;
 
   Future<void> launchPrivacyPolicyPage() async {
     await launchUrl(
@@ -34,166 +41,275 @@ class LoginForm extends StatelessWidget {
     );
   }
 
+  ThemeData _buildAuthTheme(BuildContext context) {
+    final colors = context.colors;
+    return context.theme.copyWith(
+      inputDecorationTheme: context.theme.inputDecorationTheme.copyWith(
+        filled: true,
+        fillColor: colors.surfaceContainerHighest.withValues(alpha: 0.72),
+        border: const OutlineInputBorder(borderRadius: radius12),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: radius12,
+          borderSide: BorderSide(color: colors.outlineVariant),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: radius12,
+          borderSide: BorderSide(color: colors.primary, width: 1.5),
+        ),
+      ),
+    );
+  }
+
+  AuthUserFormLocalization _buildAuthLocalization(BuildContext context) {
+    return AuthUserFormLocalization(
+      displayNameLabel: context.locale.login__form__input__name,
+      enterEmail: context.locale.login__form__input__email,
+      validEmailError: context.locale.login__form__input__error_email,
+      enterPassword: context.locale.login__form__input__password,
+      passwordLengthError:
+          context.locale.login__form__input__error_password_length,
+      signIn: context.locale.login__form__button__signin,
+      signUp: context.locale.login__form__button__signup,
+      forgotPassword: context.locale.login__form__button__forgot_password,
+      dontHaveAccount: context.locale.login__form__text__signup,
+      haveAccount: context.locale.login__form__text__old_user,
+      sendPasswordReset: context.locale.login__form__text__reset_password,
+      passwordResetSent: context.locale.login__form__text__reset_ack,
+      backToSignIn: context.locale.login__form__button__back,
+      unexpectedError: context.locale.app__unknown_error,
+    );
+  }
+
+  Future<void> _onAuthComplete(
+    BuildContext context,
+    AuthUser user,
+    String accessToken, {
+    required bool isSignUp,
+  }) async {
+    final appConfigCubit = context.read<AppConfigCubit>();
+    final authCubit = context.read<AuthCubit>();
+    await appConfigCubit.changeOnBoardStatus(false);
+    authCubit.authenticated(user, accessToken);
+
+    if (isSignUp) {
+      authCubit.analyticsRepo.logSignup(
+        signUpMethod: "Email",
+        parameters: {"userId": user.userId, "email": user.email},
+      );
+      return;
+    }
+
+    authCubit.analyticsRepo.logSignin(
+      loginMethod: "Email",
+      parameters: {"userId": user.userId, "email": user.email},
+    );
+  }
+
+  void _onAuthError(BuildContext context, Object? error) {
+    final cubit = context.read<AuthCubit>();
+    final failure = Failure.fromException(error);
+    cubit.unauthenticated(failure);
+    InAppNotificationService.i.notify(
+      NotificationMessage(
+        id: "login_failed",
+        body: failure.message,
+        type: NotificationType.error,
+      ),
+    );
+  }
+
+  EdgeInsets _contentPadding(bool isMobile) {
+    final horizontal = isMobile
+        ? _mobileHorizontalPadding
+        : _desktopHorizontalPadding;
+    final vertical = isMobile
+        ? _mobileVerticalPadding
+        : _desktopVerticalPadding;
+    return EdgeInsets.fromLTRB(horizontal, vertical, horizontal, vertical);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final textTheme = context.textTheme;
     final colors = context.colors;
     final isMobile = context.mq.isMobile;
+    final cardRadius = BorderRadius.circular(isMobilePlatform ? 28 : 8);
+    final authTheme = _buildAuthTheme(context);
+    final localization = _buildAuthLocalization(context);
 
-    return Stack(
-      clipBehavior: Clip.none,
+    return Card(
+      elevation: 6,
+      margin: EdgeInsets.zero,
+      color: colors.surface.withValues(alpha: context.isDarkMode ? 0.9 : 0.94),
+      shape: RoundedRectangleBorder(borderRadius: cardRadius),
+      child: SingleChildScrollView(
+        padding: _contentPadding(isMobile),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const _LoginHeader(),
+            height32,
+            Theme(
+              data: authTheme,
+              child: CopyCatClipboardLoginForm(
+                onSignUpComplete: (user, accessToken) =>
+                    _onAuthComplete(context, user, accessToken, isSignUp: true),
+                onSignInComplete: (user, accessToken) => _onAuthComplete(
+                  context,
+                  user,
+                  accessToken,
+                  isSignUp: false,
+                ),
+                onError: (error) => _onAuthError(context, error),
+                localization: localization,
+              ),
+            ),
+            Text(
+              "· ─────── ·𖥸· ─────── ·",
+              style: context.textTheme.titleMedium?.copyWith(
+                color: colors.secondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            height20,
+            const LocalSigninButton(),
+            height20,
+            _TermsAndLocaleSection(
+              isMobile: isMobile,
+              onPrivacyPolicyTap: launchPrivacyPolicyPage,
+              onTermsTap: launchTermsOfServicePage,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LoginHeader extends StatelessWidget {
+  const _LoginHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final textTheme = context.textTheme;
+    final onSurfaceVariant = colors.onSurfaceVariant;
+
+    return Row(
       children: [
-        if (!isMobile)
-          const Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Image(
-              image: AssetImage(AssetConstants.catPeekUpSideDownImage),
-              height: 140,
-            ),
-          ),
-        Positioned.fill(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.only(
-              left: padding16,
-              right: padding16,
-              top: 180,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  context.locale.app__name,
-                  style: textTheme.headlineLarge?.copyWith(
-                    fontVariations: fontVarW600,
-                  ),
-                  textAlign: TextAlign.center,
+        ClipRRect(
+          borderRadius: BorderRadius.circular(100),
+          child: CircleAvatar(
+            radius: 34,
+            backgroundColor: colors.primaryContainer,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: BounceInUp(
+                child: const Image(
+                  image: AssetImage(AssetConstants.catPeekImage),
+                  height: 55,
                 ),
-                height12,
-                Text(
-                  context.locale.app__slogan,
-                  style: textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-                height24,
-                const LocalSigninButton(),
-                height16,
-                Text(
-                  "· ─────── ·𖥸· ─────── ·",
-                  style: textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-                height16,
-                SizedBox(
-                  width: 350,
-                  child: CopyCatClipboardLoginForm(
-                    onSignUpComplete: (user, accessToken) async {
-                      final appConfigCubit = context.read<AppConfigCubit>();
-                      final authCubit = context.read<AuthCubit>();
-                      await appConfigCubit.changeOnBoardStatus(false);
-                      authCubit.authenticated(user, accessToken);
-                      authCubit.analyticsRepo.logSignup(
-                        signUpMethod: "Email",
-                        parameters: {
-                          "userId": user.userId,
-                          "email": user.email,
-                        },
-                      );
-                    },
-                    onSignInComplete: (user, accessToken) async {
-                      final appConfigCubit = context.read<AppConfigCubit>();
-                      final authCubit = context.read<AuthCubit>();
-                      await appConfigCubit.changeOnBoardStatus(false);
-                      authCubit.authenticated(user, accessToken);
-                      authCubit.analyticsRepo.logSignin(
-                        loginMethod: "Email",
-                        parameters: {
-                          "userId": user.userId,
-                          "email": user.email,
-                        },
-                      );
-                    },
-                    onError: (error) {
-                      final cubit = context.read<AuthCubit>();
-                      final failure = Failure.fromException(error);
-                      cubit.unauthenticated(failure);
-                      InAppNotificationService.i.notify(
-                        NotificationMessage(
-                          id: "login_failed",
-                          body: failure.message,
-                          type: NotificationType.error,
-                        ),
-                      );
-                    },
-                    localization: AuthUserFormLocalization(
-                      displayNameLabel: context.locale.login__form__input__name,
-                      enterEmail: context.locale.login__form__input__email,
-                      validEmailError:
-                          context.locale.login__form__input__error_email,
-                      enterPassword:
-                          context.locale.login__form__input__password,
-                      passwordLengthError: context
-                          .locale
-                          .login__form__input__error_password_length,
-                      signIn: context.locale.login__form__button__signin,
-                      signUp: context.locale.login__form__button__signup,
-                      forgotPassword:
-                          context.locale.login__form__button__forgot_password,
-                      dontHaveAccount: context.locale.login__form__text__signup,
-                      haveAccount: context.locale.login__form__text__old_user,
-                      sendPasswordReset:
-                          context.locale.login__form__text__reset_password,
-                      passwordResetSent:
-                          context.locale.login__form__text__reset_ack,
-                      backToSignIn: context.locale.login__form__button__back,
-                      unexpectedError: context.locale.app__unknown_error,
-                    ),
-                  ),
-                ),
-
-                // const Spacer(),
-                const LocaleDropdownButton(),
-                height10,
-                Text.rich(
-                  TextSpan(
-                    text: context.locale.login__form__text_tnc_p1,
-                    children: [
-                      TextSpan(
-                        text: context.locale.login__form__text_tnc_p2,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: colors.primary,
-                          decoration: TextDecoration.underline,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = launchPrivacyPolicyPage,
-                      ),
-                      TextSpan(text: context.locale.login__form__text_tnc_p3),
-                      TextSpan(
-                        text: context.locale.login__form__text_tnc_p4,
-                        style: textTheme.bodyMedium?.copyWith(
-                          color: colors.primary,
-                          decoration: TextDecoration.underline,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = launchTermsOfServicePage,
-                      ),
-                    ],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                // height12,
-                if (isMobile)
-                  const Image(
-                    image: AssetImage(AssetConstants.catPeekUpSideDownImage),
-                    height: 50,
-                  ),
-              ],
+              ),
             ),
           ),
         ),
+        width12,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(context.locale.app__name, style: textTheme.titleLarge),
+              Text(
+                context.locale.app__slogan,
+                style: textTheme.bodySmall?.copyWith(color: onSurfaceVariant),
+              ),
+            ],
+          ),
+        ),
       ],
+    );
+  }
+}
+
+class _TermsAndLocaleSection extends StatelessWidget {
+  final bool isMobile;
+  final VoidCallback onPrivacyPolicyTap;
+  final VoidCallback onTermsTap;
+
+  const _TermsAndLocaleSection({
+    required this.isMobile,
+    required this.onPrivacyPolicyTap,
+    required this.onTermsTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final termsText = _TermsText(
+      onPrivacyPolicyTap: onPrivacyPolicyTap,
+      onTermsTap: onTermsTap,
+    );
+
+    if (isMobile) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [const LocaleDropdownButton(), height12, termsText],
+      );
+    }
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: termsText),
+        width16,
+        const LocaleDropdownButton(),
+      ],
+    );
+  }
+}
+
+class _TermsText extends StatelessWidget {
+  final VoidCallback onPrivacyPolicyTap;
+  final VoidCallback onTermsTap;
+
+  const _TermsText({
+    required this.onPrivacyPolicyTap,
+    required this.onTermsTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final textTheme = context.textTheme;
+    final onSurfaceVariant = colors.onSurfaceVariant;
+
+    return Text.rich(
+      TextSpan(
+        style: textTheme.bodySmall?.copyWith(
+          color: onSurfaceVariant,
+          height: 1.55,
+        ),
+        text: context.locale.login__form__text_tnc_p1,
+        children: [
+          TextSpan(
+            text: context.locale.login__form__text_tnc_p2,
+            style: textTheme.bodySmall?.copyWith(
+              color: colors.primary,
+              decoration: TextDecoration.underline,
+              decorationColor: colors.primary,
+            ),
+            recognizer: TapGestureRecognizer()..onTap = onPrivacyPolicyTap,
+          ),
+          TextSpan(text: context.locale.login__form__text_tnc_p3),
+          TextSpan(
+            text: context.locale.login__form__text_tnc_p4,
+            style: textTheme.bodySmall?.copyWith(
+              color: colors.primary,
+              decoration: TextDecoration.underline,
+              decorationColor: colors.primary,
+            ),
+            recognizer: TapGestureRecognizer()..onTap = onTermsTap,
+          ),
+        ],
+      ),
     );
   }
 }
