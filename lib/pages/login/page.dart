@@ -15,6 +15,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+String _loginArtworkAssetPath(BuildContext context) {
+  final isDarkMode = context.theme.brightness == Brightness.dark;
+
+  return isDarkMode
+      ? AssetConstants.catInValleyWideDark
+      : AssetConstants.catInValleyWide;
+}
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -24,12 +32,12 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   static const _switchDuration = Duration(milliseconds: 420);
-  static const _mobileInset = 16.0;
   static const _desktopInset = 24.0;
   static const _mobileMaxWidth = 560.0;
   static const _desktopMaxWidth = 430.0;
 
   bool _showModeSelection = true;
+  final ScrollController _mobileFormScrollController = ScrollController();
 
   void _continueToSignIn() {
     if (!mounted) return;
@@ -64,9 +72,38 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
+  void dispose() {
+    _mobileFormScrollController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildContentSwitcher({required bool isSmallDevice}) {
+    return AnimatedSwitcher(
+      duration: _switchDuration,
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      transitionBuilder: _transitionBuilder,
+      child: _showModeSelection
+          ? _LoginModeSelectionCard(
+              key: const ValueKey('mode-selection'),
+              onOfflineSelected: _continueOffline,
+              onSignInSelected: _continueToSignIn,
+              onPrivacyPolicyTap: _launchPrivacyPolicyPage,
+              onTermsTap: _launchTermsOfServicePage,
+            )
+          : LoginForm(
+              key: const ValueKey('login-form'),
+              useInternalScrollView: !isSmallDevice,
+            ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final mq = context.mq;
-    final isMobile = mq.isMobile || mq.orientation == Orientation.portrait;
+    final isSmallDevice = mq.isMobile;
+    final content = _buildContentSwitcher(isSmallDevice: isSmallDevice);
+
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) async {
         switch (state) {
@@ -84,51 +121,38 @@ class _LoginPageState extends State<LoginPage> {
         }
       },
       child: Scaffold(
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            _LoginBackground(isMobile: isMobile),
-            _LoginSurfaceContainer(
-              isMobile: isMobile,
-              maxHeight: mq.size.height - (isMobile ? 36 : 72),
-              inset: isMobile ? _mobileInset : _desktopInset,
-              maxWidth: isMobile ? _mobileMaxWidth : _desktopMaxWidth,
-              child: AnimatedSwitcher(
-                duration: _switchDuration,
-                switchInCurve: Curves.easeOutCubic,
-                switchOutCurve: Curves.easeInCubic,
-                transitionBuilder: _transitionBuilder,
-                child: _showModeSelection
-                    ? _LoginModeSelectionCard(
-                        key: const ValueKey('mode-selection'),
-                        onOfflineSelected: _continueOffline,
-                        onSignInSelected: _continueToSignIn,
-                        onPrivacyPolicyTap: _launchPrivacyPolicyPage,
-                        onTermsTap: _launchTermsOfServicePage,
-                      )
-                    : const LoginForm(key: ValueKey('login-form')),
+        body: isSmallDevice
+            ? _MobileLoginLayout(
+                maxWidth: _mobileMaxWidth,
+                scrollController: _mobileFormScrollController,
+                child: content,
+              )
+            : Stack(
+                fit: StackFit.expand,
+                children: [
+                  const _LoginBackground(),
+                  _LoginSurfaceContainer(
+                    isMobile: false,
+                    maxHeight: mq.size.height - 72,
+                    inset: _desktopInset,
+                    maxWidth: _desktopMaxWidth,
+                    child: content,
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
 }
 
 class _LoginBackground extends StatelessWidget {
-  final bool isMobile;
-
   static const _themeSwapDuration = Duration(milliseconds: 320);
 
-  const _LoginBackground({required this.isMobile});
+  const _LoginBackground();
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = context.theme.brightness == Brightness.dark;
-    final assetPath = isDarkMode
-        ? AssetConstants.catInValleyWideDark
-        : AssetConstants.catInValleyWide;
+    final assetPath = _loginArtworkAssetPath(context);
 
     return AnimatedSwitcher(
       duration: _themeSwapDuration,
@@ -144,11 +168,146 @@ class _LoginBackground extends StatelessWidget {
         key: ValueKey(assetPath),
         image: AssetImage(assetPath),
         fit: BoxFit.cover,
-        alignment: isMobile
-            ? Alignment.bottomCenter
-            : const Alignment(0.3, 0.02),
+        alignment: const Alignment(0.3, 0.02),
         gaplessPlayback: true,
       ),
+    );
+  }
+}
+
+class _MobileLoginLayout extends StatelessWidget {
+  static const _horizontalInset = 16.0;
+  static const _bottomInset = 16.0;
+  static const _contentOverlap = 52.0;
+  static const _heroMinHeight = 208.0;
+  static const _heroMaxHeight = 320.0;
+  static const _heroMinHeightWithKeyboard = 120.0;
+  static const _heroMaxHeightWithKeyboard = 180.0;
+
+  final double maxWidth;
+  final ScrollController scrollController;
+  final Widget child;
+
+  const _MobileLoginLayout({
+    required this.maxWidth,
+    required this.scrollController,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final hasKeyboard = MediaQuery.viewInsetsOf(context).bottom > 0;
+
+    return ColoredBox(
+      color: colors.surface,
+      child: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final heroHeight =
+                (constraints.maxHeight * (hasKeyboard ? 0.24 : 0.38))
+                    .clamp(
+                      hasKeyboard ? _heroMinHeightWithKeyboard : _heroMinHeight,
+                      hasKeyboard ? _heroMaxHeightWithKeyboard : _heroMaxHeight,
+                    )
+                    .toDouble();
+            final contentTopPadding = (heroHeight - _contentOverlap)
+                .clamp(0.0, heroHeight)
+                .toDouble();
+
+            return Stack(
+              children: [
+                Positioned.fill(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: heroHeight,
+                        child: const _MobileLoginHero(),
+                      ),
+                      const Expanded(child: SizedBox()),
+                    ],
+                  ),
+                ),
+                Positioned.fill(
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: const EdgeInsets.fromLTRB(
+                      _horizontalInset,
+                      0,
+                      _horizontalInset,
+                      _bottomInset,
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(height: contentTopPadding),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: maxWidth),
+                            child: child,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _MobileLoginHero extends StatelessWidget {
+  static const _themeSwapDuration = Duration(milliseconds: 320);
+
+  const _MobileLoginHero();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final assetPath = _loginArtworkAssetPath(context);
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        AnimatedSwitcher(
+          duration: _themeSwapDuration,
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeInCubic,
+          layoutBuilder: (currentChild, previousChildren) => Stack(
+            fit: StackFit.expand,
+            children: [...previousChildren, ?currentChild],
+          ),
+          transitionBuilder: (child, animation) =>
+              FadeTransition(opacity: animation, child: child),
+          child: Image(
+            key: ValueKey(assetPath),
+            image: AssetImage(assetPath),
+            fit: BoxFit.cover,
+            alignment: Alignment.bottomCenter,
+            gaplessPlayback: true,
+          ),
+        ),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                colors.surface.withValues(alpha: 0),
+                colors.surface.withValues(alpha: 0.14),
+                colors.surface,
+              ],
+              stops: const [0.0, 0.72, 1.0],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -206,86 +365,95 @@ class _LoginModeSelectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final textTheme = context.textTheme;
+    final isMobile = context.mq.isMobile;
+
+    final content = Stack(
+      clipBehavior: Clip.hardEdge,
+      children: [
+        Positioned(
+          top: isMobile ? 13 : 0,
+          left: isMobile ? 15 : 24,
+          child: Image(
+            image: isMobile
+                ? const AssetImage(AssetConstants.catPeekImage)
+                : const AssetImage(AssetConstants.catPeekUpSideDownImage),
+            height: 68,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 64, 24, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              height24,
+              Text('Welcome to', style: textTheme.headlineSmall),
+              Text(
+                context.locale.app__name,
+                style: textTheme.displaySmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
+                ),
+              ),
+              height12,
+              Text(
+                context.locale.app__slogan,
+                style: textTheme.bodyLarge?.copyWith(
+                  color: colors.onSurfaceVariant,
+                  height: 1.3,
+                ),
+              ),
+              height24,
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: onSignInSelected,
+                  icon: const Icon(Icons.login_rounded),
+                  label: Text(context.locale.login__form__button__signin),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(44),
+                    backgroundColor: colors.primary,
+                    foregroundColor: colors.onPrimary,
+                  ),
+                ),
+              ),
+              height12,
+              Tooltip(
+                message: context.locale.login__local_signin__tooltip,
+                child: ElevatedButton.icon(
+                  onPressed: onOfflineSelected,
+                  icon: const Icon(Icons.cloud_off_rounded),
+                  label: Text(context.locale.login__local_signin__btn__label),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(44),
+                    backgroundColor: colors.secondaryContainer,
+                    foregroundColor: colors.onSecondaryContainer,
+                  ),
+                ),
+              ),
+              height20,
+              const Center(child: LocaleDropdownButton()),
+              height12,
+              _ModeSelectionTermsText(
+                onPrivacyPolicyTap: onPrivacyPolicyTap,
+                onTermsTap: onTermsTap,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
+    if (isMobile) {
+      return content;
+    }
 
     return Card.filled(
-      elevation: 6,
+      elevation: isMobile ? 0 : 6,
       margin: EdgeInsets.zero,
       shape: const RoundedRectangleBorder(borderRadius: radius26),
       color: colors.surface.withValues(alpha: .96),
-      child: Stack(
-        clipBehavior: Clip.hardEdge,
-        children: [
-          const Positioned(
-            top: 0,
-            left: 24,
-            child: Image(
-              image: AssetImage(AssetConstants.catPeekUpSideDownImage),
-              height: 68,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 64, 24, 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                height24,
-                Text('Welcome to', style: textTheme.headlineSmall),
-                Text(
-                  context.locale.app__name,
-                  style: textTheme.displaySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    height: 1.2,
-                  ),
-                ),
-                height12,
-                Text(
-                  context.locale.app__slogan,
-                  style: textTheme.bodyLarge?.copyWith(
-                    color: colors.onSurfaceVariant,
-                    height: 1.3,
-                  ),
-                ),
-                height24,
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: onSignInSelected,
-                    icon: const Icon(Icons.login_rounded),
-                    label: Text(context.locale.login__form__button__signin),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(44),
-                      backgroundColor: colors.primary,
-                      foregroundColor: colors.onPrimary,
-                    ),
-                  ),
-                ),
-                height12,
-                Tooltip(
-                  message: context.locale.login__local_signin__tooltip,
-                  child: ElevatedButton.icon(
-                    onPressed: onOfflineSelected,
-                    icon: const Icon(Icons.cloud_off_rounded),
-                    label: Text(context.locale.login__local_signin__btn__label),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(44),
-                      backgroundColor: colors.secondaryContainer,
-                      foregroundColor: colors.onSecondaryContainer,
-                    ),
-                  ),
-                ),
-                height20,
-                const Center(child: LocaleDropdownButton()),
-                height12,
-                _ModeSelectionTermsText(
-                  onPrivacyPolicyTap: onPrivacyPolicyTap,
-                  onTermsTap: onTermsTap,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      child: content,
     );
   }
 }

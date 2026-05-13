@@ -14,7 +14,6 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/pages/login/widgets/local_signin_button.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/forms/login_form.dart';
 import 'package:clipboard/widgets/locale_dropdown_button.dart';
 import 'package:flutter/gestures.dart';
@@ -23,7 +22,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LoginForm extends StatelessWidget {
-  const LoginForm({super.key});
+  final ScrollController? scrollController;
+  final bool useInternalScrollView;
+
+  const LoginForm({
+    super.key,
+    this.scrollController,
+    this.useInternalScrollView = true,
+  });
 
   static const _mobileHorizontalPadding = 20.0;
   static const _desktopHorizontalPadding = 28.0;
@@ -131,52 +137,57 @@ class LoginForm extends StatelessWidget {
     final isMobile = context.mq.isMobile;
     final authTheme = _buildAuthTheme(context);
     final localization = _buildAuthLocalization(context);
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const _LoginHeader(),
+        height32,
+        Theme(
+          data: authTheme,
+          child: CopyCatClipboardLoginForm(
+            onSignUpComplete: (user, accessToken) =>
+                _onAuthComplete(context, user, accessToken, isSignUp: true),
+            onSignInComplete: (user, accessToken) =>
+                _onAuthComplete(context, user, accessToken, isSignUp: false),
+            onError: (error) => _onAuthError(context, error),
+            localization: localization,
+          ),
+        ),
+        Text(
+          "· ─────── ·𖥸· ─────── ·",
+          style: context.textTheme.titleMedium?.copyWith(
+            color: colors.secondary,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        height20,
+        const LocalSigninButton(),
+        height20,
+        _TermsAndLocaleSection(
+          isMobile: isMobile,
+          onPrivacyPolicyTap: launchPrivacyPolicyPage,
+          onTermsTap: launchTermsOfServicePage,
+        ),
+      ],
+    );
+    final body = useInternalScrollView
+        ? SingleChildScrollView(
+            controller: scrollController,
+            padding: _contentPadding(isMobile),
+            child: content,
+          )
+        : Padding(padding: _contentPadding(isMobile), child: content);
+
+    if (isMobile) {
+      return body;
+    }
 
     return Card(
       elevation: 6,
       margin: EdgeInsets.zero,
       color: colors.surface.withValues(alpha: .96),
       shape: const RoundedRectangleBorder(borderRadius: radius26),
-      child: SingleChildScrollView(
-        padding: _contentPadding(isMobile),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const _LoginHeader(),
-            height32,
-            Theme(
-              data: authTheme,
-              child: CopyCatClipboardLoginForm(
-                onSignUpComplete: (user, accessToken) =>
-                    _onAuthComplete(context, user, accessToken, isSignUp: true),
-                onSignInComplete: (user, accessToken) => _onAuthComplete(
-                  context,
-                  user,
-                  accessToken,
-                  isSignUp: false,
-                ),
-                onError: (error) => _onAuthError(context, error),
-                localization: localization,
-              ),
-            ),
-            Text(
-              "· ─────── ·𖥸· ─────── ·",
-              style: context.textTheme.titleMedium?.copyWith(
-                color: colors.secondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            height20,
-            const LocalSigninButton(),
-            height20,
-            _TermsAndLocaleSection(
-              isMobile: isMobile,
-              onPrivacyPolicyTap: launchPrivacyPolicyPage,
-              onTermsTap: launchTermsOfServicePage,
-            ),
-          ],
-        ),
-      ),
+      child: body,
     );
   }
 }
