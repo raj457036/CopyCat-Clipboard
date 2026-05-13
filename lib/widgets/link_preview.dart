@@ -94,12 +94,17 @@ class LinkPreview extends StatelessWidget {
           final body = Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: padding2,
             children: [
               if (provider != null)
                 Expanded(child: LinkPreviewImage(provider: provider)),
               if (meta.title != null && meta.title!.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.all(padding6),
+                  padding: const EdgeInsets.only(
+                    left: padding6,
+                    right: padding6,
+                    top: padding6,
+                  ),
                   child: Text(
                     meta.title!,
                     overflow: TextOverflow.ellipsis,
@@ -109,7 +114,11 @@ class LinkPreview extends StatelessWidget {
                 ),
               if (meta.desc != null && meta.desc!.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.all(padding6),
+                  padding: const EdgeInsets.only(
+                    left: padding6,
+                    right: padding6,
+                    bottom: padding6,
+                  ),
                   child: Text(
                     meta.desc!,
                     overflow: TextOverflow.ellipsis,

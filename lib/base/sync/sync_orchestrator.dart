@@ -12,7 +12,7 @@ import 'package:clipboard/base/domain/services/sync_adapter.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/domain/model/sync/sync_config.dart';
 import 'package:clipboard/base/sync/sync_engine.dart';
-import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/common/logging.dart' show AppLogger;
 import 'package:injectable/injectable.dart';
 import 'package:synchronized/extension.dart';
 
@@ -25,6 +25,7 @@ import 'package:synchronized/extension.dart';
 /// - Adapting outbox processing speed based on sync mode (realtime vs balanced)
 @singleton
 class SyncOrchestrator {
+  static const _logger = AppLogger.scoped('SyncOrchestrator');
   final Map<String, SyncEngine> _engines = {};
   final SyncOutboxRepository _outboxRepo;
   Timer? _outboxTimer;
@@ -89,8 +90,9 @@ class SyncOrchestrator {
     void visit(String entityType) {
       if (visited.contains(entityType)) return;
       if (visiting.contains(entityType)) {
-        logger.e(
-          "Circular dependency detected in sync adapters for: $entityType",
+        _logger.e(
+          () =>
+              "Circular dependency detected in sync adapters for: $entityType",
         );
         return;
       }
@@ -132,8 +134,9 @@ class SyncOrchestrator {
         pullOffset: engine.config.freshPullOffsetEnabled ? pullOffset : null,
       );
       if (result == SyncResult.failed) {
-        logger.w(
-          "Sync failed for ${engine.adapter.entityType}. Stopping cascade.",
+        _logger.w(
+          () =>
+              "Sync failed for ${engine.adapter.entityType}. Stopping cascade.",
         );
         return false;
       }
@@ -153,13 +156,11 @@ class SyncOrchestrator {
   /// Process the outbox with [synchronized] to ensure only one push
   /// operation runs at a time, preventing race conditions.
   Future<void> _processOutboxSynchronized() async {
-    logger.i('[SyncOrch] _processOutboxSynchronized triggered');
+    _logger.d('_processOutboxSynchronized triggered');
     await synchronized(() async {
-      logger.i(
-        '[SyncOrch] synchronized lock acquired, calling processOutboxes()',
-      );
+      _logger.d('synchronized lock acquired, calling processOutboxes()');
       await processOutboxes();
-      logger.i('[SyncOrch] processOutboxes() completed');
+      _logger.d('processOutboxes() completed');
     });
   }
 
@@ -169,7 +170,7 @@ class SyncOrchestrator {
   ///   for instant push on every new entry.
   /// - [SyncSpeed.balanced]: Polls the outbox every [AppConfig.pollingIntervalSeconds] seconds.
   void start({SyncSpeed syncSpeed = SyncSpeed.balanced}) {
-    logger.i('[SyncOrch] start() called with syncSpeed=$syncSpeed');
+    _logger.d(() => 'start() called with syncSpeed=$syncSpeed');
     _startOutboxProcessor(syncSpeed);
     _startPolling();
   }
@@ -205,7 +206,7 @@ class SyncOrchestrator {
   }
 
   void _startOutboxProcessor(SyncSpeed syncSpeed) {
-    logger.i('[SyncOrch] _startOutboxProcessor: mode=$syncSpeed');
+    _logger.d(() => '_startOutboxProcessor: mode=$syncSpeed');
     // Cancel existing processors
     _outboxTimer?.cancel();
     _outboxTimer = null;
@@ -215,18 +216,16 @@ class SyncOrchestrator {
     switch (syncSpeed) {
       case SyncSpeed.realtime:
         // Push instantly on every new outbox entry
-        logger.i('[SyncOrch] Subscribing to outbox stream for realtime push');
+        _logger.d('Subscribing to outbox stream for realtime push');
         _outboxStreamSub = _outboxRepo.onNewEntry.listen((_) {
-          logger.i(
-            '[SyncOrch] Stream notification received! Triggering push...',
-          );
+          _logger.d('Stream notification received! Triggering push...');
           _processOutboxSynchronized();
         });
       case SyncSpeed.balanced:
         // Poll every 5 seconds
-        logger.i('[SyncOrch] Starting 5s balanced timer');
+        _logger.d('Starting 5s balanced timer');
         _outboxTimer = Timer.periodic(const Duration(seconds: $5S), (_) {
-          logger.i('[SyncOrch] 5s timer fired, triggering push...');
+          _logger.d('5s timer fired, triggering push...');
           _processOutboxSynchronized();
         });
     }

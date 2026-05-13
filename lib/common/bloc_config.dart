@@ -2,22 +2,24 @@ import 'package:bloc/bloc.dart';
 import 'package:clipboard/common/logging.dart';
 
 class CustomBlocObserver extends BlocObserver {
+  static const _logger = AppLogger.scoped('Bloc');
+
   @override
   void onCreate(BlocBase bloc) {
     super.onCreate(bloc);
-    logger.i('onCreate -- ${bloc.runtimeType}');
+    _logger.i(() => 'onCreate -- ${bloc.runtimeType}');
   }
 
   @override
   void onEvent(Bloc bloc, Object? event) {
     super.onEvent(bloc, event);
-    logger.i("onEvent -- $event");
+    _logger.i(() => "onEvent -- $event");
   }
 
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    logger.e(
-      "onError -- ${bloc.runtimeType}, $error",
+    _logger.e(
+      () => "onError -- ${bloc.runtimeType}, $error",
       error: error,
       stackTrace: stackTrace,
     );
@@ -27,14 +29,15 @@ class CustomBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
-    // final changeLog =
-    //     "onChange -- ${change.currentState.runtimeType} → ${change.nextState.runtimeType}";
-    // logger.i(changeLog);
+    _logger.d(
+      () =>
+          'onChange(${bloc.runtimeType}) -- ${change.currentState} → ${change.nextState}',
+    );
   }
 
   @override
   void onClose(BlocBase bloc) {
     super.onClose(bloc);
-    logger.i('onClose -- ${bloc.runtimeType}');
+    _logger.i(() => 'onClose -- ${bloc.runtimeType}');
   }
 }

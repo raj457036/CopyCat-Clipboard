@@ -145,7 +145,7 @@ class GoogleDriveService implements DriveService {
       );
 
       item = item.copyWith(driveFileId: result.id);
-      logger.i("File uploaded successfully!");
+      logger.d("File uploaded successfully!");
       return Right(item);
     } catch (e) {
       logger.e(e, error: e);

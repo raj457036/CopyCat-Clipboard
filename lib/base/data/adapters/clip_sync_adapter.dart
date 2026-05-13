@@ -27,6 +27,7 @@ bool _newItemsInCollectionPossible = true;
 
 @LazySingleton(as: SyncAdapter<ClipboardItem>)
 class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
+  static const _logger = AppLogger.scoped('ClipSyncAdapter');
   final SyncRepository _syncRepo;
   final ClipboardRepository _clipRepo;
   final ClipboardRepository _remoteRepo;
@@ -34,6 +35,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   final ClipCollectionCubit _collectionCubit;
   final ClipCrossSyncListener _realtimeListener;
   final FileCloudService _fileCloudService;
+
   /// Direct local source access for write-back operations that must NOT
   /// trigger outbox re-enqueue (e.g., saving serverId after remote creation).
   final ClipboardSource _localSource;
@@ -134,12 +136,13 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
 
   @override
   FailureOr<ClipboardItem> pushToRemote(ClipboardItem item) async {
-    logger.i(
-      '[ClipSync] pushToRemote: id=${item.id} userId=${item.userId} serverId=${item.serverId} type=${item.type}',
+    _logger.d(
+      () =>
+          'pushToRemote: id=${item.id} userId=${item.userId} serverId=${item.serverId} type=${item.type}',
     );
     if (item.userId == kLocalUserId) {
       // Local-only entries should never be pushed to Supabase.
-      logger.w('[ClipSync] SKIPPED: userId is kLocalUserId ($kLocalUserId)');
+      _logger.d(() => 'SKIPPED: userId is kLocalUserId ($kLocalUserId)');
       return Right(item);
     }
 
@@ -148,8 +151,8 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     if (item.id != null) {
       final fresh = await getLocalById(item.id!);
       if (fresh != null) {
-        logger.i(
-          '[ClipSync] Re-read: serverId=${fresh.serverId} userId=${fresh.userId}',
+        _logger.d(
+          () => 'Re-read: serverId=${fresh.serverId} userId=${fresh.userId}',
         );
         item = fresh;
       }
@@ -157,16 +160,17 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
 
     // Handle file/media upload via the FileUploadService
     if (item.needsFileUpload) {
-      logger.i('[ClipSync] File upload needed. Calling FileUploadService...');
+      _logger.d(() => 'File upload needed. Calling FileUploadService...');
       final uploadResult = await _fileCloudService.upload(item);
       return uploadResult.fold(
         (failure) {
-          logger.e('[ClipSync] File upload FAILED: ${failure.message}');
+          _logger.e(() => 'File upload FAILED: ${failure.message}');
           return Left(failure);
         },
         (uploadedItem) async {
-          logger.i(
-            '[ClipSync] File upload SUCCESS. driveFileId=${uploadedItem.driveFileId}',
+          _logger.i(
+            () =>
+                'File upload SUCCESS. driveFileId=${uploadedItem.driveFileId}',
           );
           item = uploadedItem;
           return await _createOrUpdateRemote(item);
@@ -179,25 +183,26 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
 
   FailureOr<ClipboardItem> _createOrUpdateRemote(ClipboardItem item) async {
     if (item.serverId == null) {
-      logger.i('[ClipSync] Creating on server (no serverId yet)...');
+      _logger.d(() => 'Creating on server (no serverId yet)...');
       final result = await _remoteRepo.create(item);
       // Once created remotely, save the new serverId to local DB directly
       // via _localSource (NOT _clipRepo) to avoid re-enqueuing outbox entries.
       return result.fold(
         (l) {
-          logger.e('[ClipSync] Server create FAILED: ${l.message}');
+          _logger.e(() => 'Server create FAILED: ${l.message}');
           return Left(l);
         },
         (r) async {
-          logger.i(
-            '[ClipSync] Server create SUCCESS. serverId=${r.serverId}. Saving to local...',
+          _logger.d(
+            () =>
+                'Server create SUCCESS. serverId=${r.serverId}. Saving to local...',
           );
           await _localSource.update(r);
           return Right(r);
         },
       );
     } else {
-      logger.i('[ClipSync] Updating on server (serverId=${item.serverId})...');
+      _logger.i(() => 'Updating on server (serverId=${item.serverId})...');
       return await _remoteRepo.update(item);
     }
   }
@@ -207,7 +212,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
       await _localSource.delete(item, soft: false);
       await item.cleanUp();
     } catch (e) {
-      logger.e('[ClipSync] Failed to delete local item: $e');
+      _logger.e(() => 'Failed to delete local item: $e');
     }
   }
 
@@ -224,8 +229,8 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
       return fileDeleteResult.fold(
         (failure) => _handleFileDeleteFailure(failure),
         (deletedItem) {
-          logger.i(
-            '[ClipSync] File delete SUCCESS. driveFileId=${deletedItem.driveFileId}',
+          _logger.d(
+            () => 'File delete SUCCESS. driveFileId=${deletedItem.driveFileId}',
           );
           return _deleteFromServerAndLocal(item, deletedItem);
         },
@@ -249,7 +254,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   }
 
   Either<Failure, bool> _handleFileDeleteFailure(Failure failure) {
-    logger.e('[ClipSync] File delete FAILED: ${failure.message}');
+    _logger.i(() => 'File delete FAILED: ${failure.message}');
     return Left(failure);
   }
 
@@ -275,13 +280,14 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     Failure failure,
   ) async {
     try {
-      logger.e(
-        '[ClipSync] Server delete FAILED: ${failure.message}, Recovering local item.',
+      _logger.e(
+        () =>
+            'Server delete FAILED: ${failure.message}, Recovering local item.',
       );
       await _localSource.update(deletedItem.copyWith(deletedAt: null));
     } catch (e) {
-      logger.e(
-        '[ClipSync] Failed to recover local item after server delete failure: $e',
+      _logger.e(
+        () => 'Failed to recover local item after server delete failure: $e',
       );
     }
   }

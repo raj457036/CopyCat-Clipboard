@@ -28,6 +28,7 @@ export 'package:clipboard/base/data/services/clipboard/read_strategy.dart';
 
 @singleton
 class ClipboardService with ClipboardListener {
+  static const _logger = AppLogger.scoped('Clipboard Service');
   bool _writing = false;
   bool _started = false;
   int _captureSuppressionDepth = 0;
@@ -79,7 +80,7 @@ class ClipboardService with ClipboardListener {
 
   void setRichDataEnabled(bool enabled) {
     _richDataEnabled = enabled;
-    logger.i("Rich data capture \${enabled ? 'enabled' : 'disabled'}");
+    _logger.d(() => "Rich data capture ${enabled ? 'enabled' : 'disabled'}");
   }
 
   bool get richDataEnabled => _richDataEnabled;
@@ -139,17 +140,17 @@ class ClipboardService with ClipboardListener {
     bool manual = false,
     preventDuplicate = false,
   }) async {
-    logger.i("Reading clipboard");
+    _logger.d("Reading clipboard");
     await Future.delayed(Durations.short2);
     final reader = await getReader();
 
     if (reader == null) {
-      logger.e("Clipboard is not available!");
+      _logger.e("Clipboard is not available!");
       return null;
     }
 
     if (reader.items.isEmpty) {
-      logger.w("No item in clipboard");
+      _logger.w("No item in clipboard");
       return null;
     }
 
@@ -159,7 +160,7 @@ class ClipboardService with ClipboardListener {
     );
 
     if (readerSet.isEmpty) {
-      logger.w("No supported clipboard item format found");
+      _logger.i(() => "No supported clipboard item format found");
       return null;
     }
 
@@ -251,7 +252,7 @@ class CopyToClipboard {
       });
       return true;
     } catch (e) {
-      logger.e(e);
+      logger.e(() => "[CopyToClipboard] Failed to write to clipboard - $e");
       return false;
     }
   }
@@ -305,9 +306,10 @@ class CopyToClipboard {
     }
 
     if (format == null) {
-      logger.w(
-        "Couldn't determine mime type for file \${file.path} "
-        "with mime type \$mimeType",
+      logger.i(
+        () =>
+            "[CopyToClipboard] Couldn't determine mime type for file ${file.path} "
+            "with mime type $mimeType",
       );
       return false;
     }

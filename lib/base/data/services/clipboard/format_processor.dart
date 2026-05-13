@@ -568,13 +568,11 @@ class ClipboardFormatProcessor {
 
     if (uri != null) {
       if (isDuplicate(type: ClipItemType.url, uri: uri.uri, save: true)) {
-        logger.w("Duplicate Uri Clip Found!");
         return ClipItem.duplicate();
       }
       return await getUrl(reader, uri);
     }
 
-    logger.i("Uri couldn't be parsed, trying with text.");
     return await _getPlainText(reader);
   }
 
@@ -594,7 +592,7 @@ class ClipboardFormatProcessor {
         return await _getGenericFile(reader, format);
       }
 
-      logger.i("Unsupported clipboard format: $format");
+      logger.w(() => "[FormatProcessor] Unsupported clipboard format: $format");
       return null;
     } finally {
       this.preventDuplicate = false;

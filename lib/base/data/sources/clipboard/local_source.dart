@@ -14,6 +14,8 @@ import 'package:isar_community/isar.dart';
 @Named("local")
 @LazySingleton(as: ClipboardSource)
 class LocalClipboardSource implements ClipboardSource {
+  static const _logger = AppLogger.scoped('Local Clipboard Source');
+
   final Isar db;
   final String deviceId;
 
@@ -173,7 +175,7 @@ class LocalClipboardSource implements ClipboardSource {
     if (item.id == null) return false;
 
     if (soft) {
-      logger.i("[LocalClipboardSource] Soft deleting item with id ${item.id}");
+      _logger.i(() => "Soft deleting item with id ${item.id}");
       await update(item.copyWith(deletedAt: systemTime()));
       return true;
     }
@@ -188,7 +190,7 @@ class LocalClipboardSource implements ClipboardSource {
     bool soft = true,
   }) async {
     if (soft) {
-      logger.i("[LocalClipboardSource] Soft deleting ${items.length} items");
+      _logger.i(() => "Soft deleting ${items.length} items");
       await Future.wait(
         items.map((item) {
           return update(item.copyWith(deletedAt: systemTime()));
@@ -216,8 +218,8 @@ class LocalClipboardSource implements ClipboardSource {
       final clipsWithLocalCache = await q.localPathIsNotNull().findAll();
 
       // Delete cached media
-      logger.i(
-        "[LocalClipboardSource] Deleting ${clipsWithLocalCache.length} cached media files",
+      _logger.i(
+        () => "Deleting ${clipsWithLocalCache.length} cached media files",
       );
       for (var isarItem in clipsWithLocalCache) {
         await isarItem.toDomain().cleanUp();

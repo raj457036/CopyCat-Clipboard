@@ -342,14 +342,14 @@ extension GetItInjectableX on _i174.GetIt {
         remote: gh<_i422.SubscriptionSource>(instanceName: 'remote'),
       ),
     );
-    gh.lazySingleton<_i489.ClipboardCubit>(
+    gh.factory<_i489.ClipboardCubit>(
       () => _i489.ClipboardCubit(
         gh<_i292.SyncEventBus>(),
         gh<_i230.ClipboardRepository>(instanceName: 'local'),
         gh<_i542.AppConfigCubit>(),
       ),
     );
-    gh.lazySingleton<_i521.DriveSetupCubit>(
+    gh.factory<_i521.DriveSetupCubit>(
       () => _i521.DriveSetupCubit(
         gh<_i460.DriveCredentialRepository>(),
         gh<_i543.DriveService>(instanceName: 'google_drive'),
@@ -403,7 +403,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i230.ClipboardRepository>(instanceName: 'remote'),
       ),
     );
-    gh.lazySingleton<_i620.ClipCollectionCubit>(
+    gh.factory<_i620.ClipCollectionCubit>(
       () => _i620.ClipCollectionCubit(
         gh<_i292.SyncEventBus>(),
         gh<_i29.AuthCubit>(),

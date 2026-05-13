@@ -228,22 +228,25 @@ class SyncEngine<T extends Syncable> {
   /// Processes local changes waiting in the outbox.
   Future<void> processOutbox() async {
     final entries = await outboxRepo.getPending();
-    logger.i(
-      '[SyncEngine:${adapter.entityType}] processOutbox: ${entries.length} pending entries total',
+    logger.d(
+      () =>
+          '[SyncEngine:${adapter.entityType}] processOutbox: ${entries.length} pending entries total',
     );
     final relevant = entries
         .where((e) => e.entityType == adapter.entityType)
         .toList();
-    logger.i(
-      '[SyncEngine:${adapter.entityType}] Relevant entries: ${relevant.length}',
+    logger.d(
+      () =>
+          '[SyncEngine:${adapter.entityType}] Relevant entries: ${relevant.length}',
     );
     if (relevant.isEmpty) return;
 
     eventBus.emitEngineStatus(adapter.entityType, true);
     try {
       for (final entry in relevant) {
-        logger.i(
-          '[SyncEngine:${adapter.entityType}] Processing entry id=${entry.id} localId=${entry.localId} action=${entry.action}',
+        logger.d(
+          () =>
+              '[SyncEngine:${adapter.entityType}] Processing entry id=${entry.id} localId=${entry.localId} action=${entry.action}',
         );
         await _processOutboxEntry(entry);
       }
@@ -254,13 +257,15 @@ class SyncEngine<T extends Syncable> {
 
   Future<void> _processOutboxEntry(SyncOutboxEntry entry) async {
     final item = await adapter.getLocalById(entry.localId);
-    logger.i(
-      '[SyncEngine:${adapter.entityType}] getLocalById(${entry.localId}) => ${item != null ? "found (serverId=${(item as dynamic).serverId}, userId=${(item as dynamic).userId})" : "NULL"}',
+    logger.d(
+      () =>
+          '[SyncEngine:${adapter.entityType}] getLocalById(${entry.localId}) => ${item != null ? "found (serverId=${(item as dynamic).serverId}, userId=${(item as dynamic).userId})" : "NULL"}',
     );
     if (item == null && entry.action != SyncOutboxAction.delete) {
       // Local item missing, nothing to sync.
       logger.w(
-        '[SyncEngine:${adapter.entityType}] Item missing locally, marking completed',
+        () =>
+            '[SyncEngine:${adapter.entityType}] Item missing locally, marking completed',
       );
       await outboxRepo.markCompleted(entry.id!);
       return;
@@ -287,7 +292,9 @@ class SyncEngine<T extends Syncable> {
           );
           break;
         }
-        logger.i('[SyncEngine:${adapter.entityType}] Calling pushToRemote...');
+        logger.d(
+          () => '[SyncEngine:${adapter.entityType}] Calling pushToRemote...',
+        );
         resultEither = await adapter.pushToRemote(item);
       case SyncOutboxAction.delete:
         // NOTE: We know the item is soft deleted locally at this point.
@@ -311,13 +318,15 @@ class SyncEngine<T extends Syncable> {
           }
         }
         logger.e(
-          '[SyncEngine:${adapter.entityType}] Push FAILED: ${failure.message} (${failure.code})',
+          () =>
+              '[SyncEngine:${adapter.entityType}] Push FAILED: ${failure.message} (${failure.code})',
         );
         await _handleOutboxFailure(entry, failure);
       },
       (result) async {
-        logger.i(
-          '[SyncEngine:${adapter.entityType}] Push SUCCESS for entry id=${entry.id}. Marking completed.',
+        logger.d(
+          () =>
+              '[SyncEngine:${adapter.entityType}] Push SUCCESS for entry id=${entry.id}. Marking completed.',
         );
         await outboxRepo.markCompleted(entry.id!);
         // Broadcast update to UI so serverId/lastSynced are reflected
@@ -326,8 +335,9 @@ class SyncEngine<T extends Syncable> {
             result,
             inProgress: false,
           );
-          logger.i(
-            '[SyncEngine:${adapter.entityType}] Emitting update event to UI',
+          logger.d(
+            () =>
+                '[SyncEngine:${adapter.entityType}] Emitting update event to UI',
           );
           if (completed != null) {
             eventBus.emit<T>((CrossSyncEventType.update, completed));
@@ -342,7 +352,8 @@ class SyncEngine<T extends Syncable> {
     Failure failure,
   ) async {
     logger.w(
-      "Failed to sync outbox entry ${entry.id} (${adapter.entityType}): $failure",
+      () =>
+          "Failed to sync outbox entry ${entry.id} (${adapter.entityType}): $failure",
     );
 
     if (entry.id != null) {

@@ -356,7 +356,6 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       if (!manualPaste &&
           clip.fileSize != null &&
           !appConfig.canCopyFile(clip.fileSize!)) {
-        logger.i("Auto copy is disabled for files over the limit.");
         unawaited(clip.cleanup());
 
         emit(

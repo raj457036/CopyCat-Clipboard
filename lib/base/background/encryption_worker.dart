@@ -3,7 +3,7 @@ import 'dart:convert' as convert;
 import 'dart:isolate' show TransferableTypedData;
 import 'dart:math' show Random, min;
 
-import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/common/logging.dart' show AppLogger;
 import 'package:clipboard/utils/utility.dart' show dud;
 import 'package:easy_worker/easy_worker.dart';
 import 'package:flutter/foundation.dart';
@@ -38,8 +38,6 @@ const int _cfbBlockBytes = 8;
 const int _cryptoChunkSize = 64 * 1024;
 final Uint8List _emptyBytes = Uint8List(0);
 final Random _secureRandom = Random.secure();
-
-final _cfbBlockCipher = CFBBlockCipher(AESEngine(), _cfbBlockBytes);
 
 Uint8List? _workerKeyBytes;
 Uint8List? _workerDefaultIVBytes;
@@ -109,7 +107,6 @@ Future<void> _encryptorEntryPoint(
       code: null,
     ));
   } on EncryptionException catch (error) {
-    logger.e("[EncryptionWorker] Encryption failed: ${error.message}");
     send((
       success: false,
       content: null,
@@ -117,7 +114,6 @@ Future<void> _encryptorEntryPoint(
       code: error.code,
     ));
   } on DecryptionException catch (error) {
-    logger.e("[EncryptionWorker] Decryption failed: ${error.message}");
     send((
       success: false,
       content: null,
@@ -126,7 +122,6 @@ Future<void> _encryptorEntryPoint(
     ));
   } catch (error) {
     final message = error.toString();
-    logger.e("[EncryptionWorker] Unexpected worker failure: $message");
     send((
       success: false,
       content: null,
@@ -207,19 +202,21 @@ Future<Uint8List> _processCFB(
     throw EncryptionException("CFB requires a 16-byte IV", code: "invalid-iv");
   }
 
-  _cfbBlockCipher.reset();
-  _cfbBlockCipher.init(
+  final blockCipher = CFBBlockCipher(AESEngine(), _cfbBlockBytes);
+
+  blockCipher.reset();
+  blockCipher.init(
     encrypt,
     ParametersWithIV<KeyParameter>(KeyParameter(keyBytes), ivBytes),
   );
 
   final output = Uint8List(input.length);
-  final bs = _cfbBlockCipher.blockSize;
+  final bs = blockCipher.blockSize;
 
   try {
     var offset = 0;
     while (offset + bs <= input.length) {
-      _cfbBlockCipher.processBlock(input, offset, output, offset);
+      blockCipher.processBlock(input, offset, output, offset);
       offset += bs;
 
       if ((offset & 0xFFFF) == 0) {
@@ -236,7 +233,7 @@ Future<Uint8List> _processCFB(
 
       tmpIn.setRange(0, remaining, input, offset);
 
-      _cfbBlockCipher.processBlock(tmpIn, 0, tmpOut, 0);
+      blockCipher.processBlock(tmpIn, 0, tmpOut, 0);
 
       output.setRange(offset, input.length, tmpOut);
     }
@@ -298,7 +295,7 @@ Uint8List _processGCM(
     outputOffset += cipher.doFinal(output, outputOffset);
     return Uint8List.sublistView(output, 0, outputOffset);
   } on InvalidCipherTextException catch (error) {
-    throw DecryptionException(error.toString(), code: "auth-failed");
+    throw DecryptionException(error.toString(), code: "invalid-ciphertext");
   }
 }
 
@@ -345,6 +342,7 @@ int activeTasks = 0;
 
 class EncryptionWorker {
   static const Duration _workerTimeout = Duration(minutes: 2);
+  static const _logger = AppLogger.scoped("Encryption Worker");
 
   Completer<void>? _completer;
   final Map<String, Completer<EncryptionResponse>> _tasks =
@@ -440,7 +438,7 @@ class EncryptionWorker {
       _isRunning = true;
       _completer?.complete();
     } catch (error, stackTrace) {
-      logger.e("[EncryptionWorker] Failed to start: ${error.toString()}");
+      _logger.e("Failed to start: ${error.toString()}");
       _completer?.completeError(error, stackTrace);
       dispose();
       rethrow;
@@ -462,7 +460,7 @@ class EncryptionWorker {
     String? mode,
   }) async {
     activeTasks++;
-    logger.w("🟠 [EncryptionWorker] Active tasks: $activeTasks");
+    _logger.w("🟠 Active tasks: $activeTasks");
     String? taskId;
     try {
       final encryptor = _encryptor;
@@ -509,9 +507,7 @@ class EncryptionWorker {
 
       return response.content!;
     } on TimeoutException {
-      logger.e(
-        "[EncryptionWorker] Worker timed out while handling ${action.name}",
-      );
+      _logger.e("Worker timed out while handling ${action.name}");
       await _restartAfterTimeout();
       throw _exceptionForAction(
         action,
@@ -637,7 +633,7 @@ class EncryptionWorker {
   Future<void> _restartAfterFailure() async {
     final currentSecret = secret;
     if (currentSecret == null) return;
-    logger.w("🔵 [EncryptionWorker] Restarting worker due to failure");
+    _logger.w("🔵 Restarting worker due to failure");
     dispose();
     await start(currentSecret);
   }

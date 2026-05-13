@@ -7,6 +7,7 @@ import 'package:injectable/injectable.dart';
 @lazySingleton
 class PostSyncDecryptionService {
   static const _batchSize = 50;
+  static const _logger = AppLogger.scoped('PostSyncDecryptionService');
 
   final ClipboardSource _localSource;
 
@@ -37,18 +38,30 @@ class PostSyncDecryptionService {
       for (final item in page.results) {
         // Skip very large text payloads to avoid long blocking decrypt work.
         if ((item.text?.length ?? 0) > kMaxTextClipLength) {
+          _logger.d(
+            () =>
+                "Skipping decryption for id=${item.serverId} due to large text length (${item.text?.length})",
+          );
           decrypted++;
           onProgress?.call(decrypted, total);
           continue;
         }
 
-        final dec = await item.decrypt();
-        if (!dec.encrypted) {
-          try {
-            await _localSource.update(dec);
-          } catch (e) {
-            logger.w('[PostSyncDecrypt] save failed for id=${item.id}: $e');
+        try {
+          final dec = await item.decrypt();
+          if (!dec.encrypted) {
+            try {
+              await _localSource.update(dec);
+            } catch (e) {
+              _logger.e(() => 'Save failed for id=${item.serverId}: $e');
+            }
           }
+        } catch (e, st) {
+          _logger.e(
+            () => 'Decrypt failed for id=${item.serverId}: $e',
+            error: e,
+            stackTrace: st,
+          );
         }
         decrypted++;
         onProgress?.call(decrypted, total);

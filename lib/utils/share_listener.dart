@@ -29,7 +29,7 @@ class ShareListener {
     initPlatformState();
     subscription = handler.sharedMediaStream.listen(
       (SharedMedia media) async {
-        logger.i("Received shared media: $media");
+        logger.i(() => "Received shared media: $media");
 
         try {
           await putMediaToClipboard(media);
@@ -64,7 +64,7 @@ class ShareListener {
   Future<void> initPlatformState() async {
     final media = await handler.getInitialSharedMedia();
     if (media != null) {
-      logger.i("Received initial shared media!");
+      logger.d(() => "Received initial shared media!");
       await putMediaToClipboard(media);
       await handler.resetInitialSharedMedia();
     }

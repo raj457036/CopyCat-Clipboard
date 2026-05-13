@@ -12,7 +12,7 @@ import 'package:injectable/injectable.dart';
 part 'drive_setup_cubit.freezed.dart';
 part 'drive_setup_state.dart';
 
-@lazySingleton
+@Injectable(cache: true)
 class DriveSetupCubit extends Cubit<DriveSetupState> {
   Completer? readyState;
   final DriveService _drive;

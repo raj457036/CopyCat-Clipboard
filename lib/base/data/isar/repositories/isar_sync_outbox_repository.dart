@@ -12,6 +12,7 @@ import 'package:clipboard/base/constants/strings/strings.dart';
 
 @LazySingleton(as: SyncOutboxRepository)
 class IsarSyncOutboxRepository implements SyncOutboxRepository {
+  static const _logger = AppLogger.scoped('Sync Outbox');
   Isar get _db => Isar.getInstance(dbName)!;
   IsarCollection<IsarSyncOutboxEntry> get _collection =>
       _db.collection<IsarSyncOutboxEntry>();
@@ -27,22 +28,21 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
 
   @override
   Future<void> enqueue(SyncOutboxEntry entry) async {
-    logger.i(
-      '[Outbox] Enqueuing: ${entry.entityType} localId=${entry.localId} action=${entry.action}',
+    _logger.d(
+      () =>
+          'Enqueuing: ${entry.entityType} localId=${entry.localId} action=${entry.action}',
     );
 
     _collector.add(entry);
-    logger.i(
-      '[Outbox] Added to collector. Collector size: ${_collector.length}',
-    );
+    _logger.d(() => 'Added to collector. Collector size: ${_collector.length}');
     _collectorDebouncer(_flushCollector);
   }
 
   Future<void> _flushCollector() async {
     if (_collector.isEmpty) return;
 
-    logger.i(
-      '[Outbox] Flushing collector with ${_collector.length} entries to Isar',
+    _logger.d(
+      () => 'Flushing collector with ${_collector.length} entries to Isar',
     );
     final entriesToAdd = List<SyncOutboxEntry>.from(_collector);
     _collector.clear();
@@ -55,9 +55,8 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
       await _collection.putAll(isarEntries);
     });
 
-    logger.i('[Outbox] Flushed ${isarEntries.length} entries to Isar');
-
-    logger.i('[Outbox] Enqueued. Notifying stream listeners...');
+    _logger.d(() => 'Flushed ${isarEntries.length} entries to Isar');
+    _logger.d(() => 'Enqueued. Notifying stream listeners...');
     _newEntryController.add(null);
   }
 

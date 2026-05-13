@@ -180,19 +180,19 @@ class WindowFocusManagerState extends State<WindowFocusManager>
     try {
       await appConfigCubit.trackAppEntry();
     } catch (e) {
-      logger.e("Error tracking app entry for review prompt. $e");
+      logger.e(() => "Error tracking app entry for review prompt. $e");
     }
   }
 
   Future<void> onResized() async {
-    final pasteStack = context.read<PasteStackCubit>();
-    if (pasteStack.state.active) {
+    final pasteStack = context.read<PasteStackCubit?>();
+    if (pasteStack?.state.active ?? false) {
       return;
     }
 
     final appConfig = context.read<AppConfigCubit>();
     final size = await windowManager.getSize();
-    logger.i("Resized: $size");
+    logger.i(() => "Window Resized: $size");
 
     appConfig.changeWindowSize(width: size.width, height: size.height);
   }

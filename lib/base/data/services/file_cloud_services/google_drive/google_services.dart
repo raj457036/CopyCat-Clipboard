@@ -84,7 +84,7 @@ class GoogleAuthClient with http.BaseClient {
       currentBytes = currentLength;
     }
     progress?.add((currentBytes, totalBytes));
-    logger.i('Transfered: $currentBytes / $totalBytes bytes');
+    logger.d(() => 'Transfered: $currentBytes / $totalBytes bytes');
 
     return response;
   }

@@ -16,7 +16,7 @@ class ShellPage extends StatelessWidget {
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, result) {
-        logger.i("DID POP: $didPop");
+        logger.i(() => "[Shell Route] DID POP: $didPop");
       },
       child: FocusScope(autofocus: true, child: child_),
     );

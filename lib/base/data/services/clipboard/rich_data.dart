@@ -136,9 +136,10 @@ class RichTextDataHandler {
 
       final entrySize = utf8.encode(value).length;
       if (entrySize > kRichClipboardDataMaxBytes) {
-        logger.i(
-          "Rich payload for $mime dropped: size $entrySize exceeds "
-          "max $kRichClipboardDataMaxBytes bytes",
+        logger.d(
+          () =>
+              "[RichDataPayload] Rich payload for $mime dropped: size $entrySize exceeds "
+              "max $kRichClipboardDataMaxBytes bytes",
         );
         continue;
       }
