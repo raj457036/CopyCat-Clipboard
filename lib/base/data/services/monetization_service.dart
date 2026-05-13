@@ -1,3 +1,4 @@
+import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/common/logging.dart' show logger;
 import 'package:clipboard/utils/common_extension.dart';
@@ -8,17 +9,20 @@ import 'package:universal_io/io.dart';
 
 mixin MonetizationService {
   bool _setupDone = false;
+  bool _listenersSetup = false;
   Function(Subscription subscription)? onSubscriptionAvailable;
 
   void setupListeners() {
-    if (iapCatSupportedPlatform) {
+    if (iapCatSupportedPlatform && !_listenersSetup) {
       Purchases.addCustomerInfoUpdateListener(onCustomerInfoUpdate);
+      _listenersSetup = true;
     }
   }
 
   void stopListeners() {
-    if (iapCatSupportedPlatform) {
+    if (iapCatSupportedPlatform && _listenersSetup) {
       Purchases.removeCustomerInfoUpdateListener(onCustomerInfoUpdate);
+      _listenersSetup = false;
     }
     onSubscriptionAvailable = null;
   }
@@ -33,13 +37,11 @@ mixin MonetizationService {
 
     PurchasesConfiguration? configuration;
     if (Platform.isAndroid) {
-      const androidPubKey = String.fromEnvironment(
-        "REVENUECAT_ANDROID_PUB_KEY",
-      );
-      configuration = PurchasesConfiguration(androidPubKey)..appUserID = userId;
+      configuration = PurchasesConfiguration(revenueCatAndroidPublicKey)
+        ..appUserID = userId;
     } else if (Platform.isIOS || Platform.isMacOS) {
-      const applePubKey = String.fromEnvironment("REVENUECAT_APPLE_PUB_KEY");
-      configuration = PurchasesConfiguration(applePubKey)..appUserID = userId;
+      configuration = PurchasesConfiguration(revenueCatApplePublicKey)
+        ..appUserID = userId;
     }
     if (configuration != null) {
       await Purchases.configure(configuration);

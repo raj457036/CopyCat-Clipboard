@@ -18,7 +18,6 @@ class MonetizationCubit extends Cubit<MonetizationState>
   MonetizationCubit({required this.repo})
     : super(const MonetizationState.unknown()) {
     onSubscriptionAvailable = onSubscriptionChange;
-    setupListeners();
   }
 
   @override
@@ -44,6 +43,7 @@ class MonetizationCubit extends Cubit<MonetizationState>
   }
 
   Future<void> login(String userId) async {
+    setupListeners();
     final done = await setUser(userId);
     if (!done) {
       final result = await repo.get(userId: userId);

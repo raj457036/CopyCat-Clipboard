@@ -59,6 +59,12 @@ class AuthCubit extends Cubit<AuthState> {
       return true;
     }
 
+    final hasCachedSession = currentUser != null || accessToken != null;
+    if (!hasCachedSession) {
+      unauthenticated(authFailure);
+      return false;
+    }
+
     await repo.refreshSession();
     if (repo.currentUser != null) {
       await authenticated(repo.currentUser!, repo.accessToken!);

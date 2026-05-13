@@ -11,4 +11,6 @@ class AssetConstants {
   static const String catPeekImage = "$_images/cat_peek.png";
   static const String catInValley = "$_images/cat_in_valley.jpeg";
   static const String catInValleyWide = "$_images/cat_in_valley_wide.png";
+  static const String catInValleyWideDark =
+      "$_images/cat_in_valley_wide_dark.png";
 }

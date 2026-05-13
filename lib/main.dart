@@ -69,7 +69,7 @@ Future<void> main() async {
       options.tracesSampleRate = kDebugMode ? 0 : 0.05;
     }, appRunner: appRunner);
   } else {
-    appRunner();
+    await appRunner();
   }
 }
 

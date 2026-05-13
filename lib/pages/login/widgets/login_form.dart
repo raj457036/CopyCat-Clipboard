@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart' show BounceInUp;
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/constants/strings/asset_constants.dart';
+import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
@@ -30,15 +31,11 @@ class LoginForm extends StatelessWidget {
   static const _desktopVerticalPadding = 24.0;
 
   Future<void> launchPrivacyPolicyPage() async {
-    await launchUrl(
-      Uri.parse(const String.fromEnvironment("PRIVACY_POLICY_URL")),
-    );
+    await launchUrl(Uri.parse(privacyPolicyUrl));
   }
 
   Future<void> launchTermsOfServicePage() async {
-    await launchUrl(
-      Uri.parse(const String.fromEnvironment("TERMS_CONDITIONS_URL")),
-    );
+    await launchUrl(Uri.parse(termsConditionsUrl));
   }
 
   ThemeData _buildAuthTheme(BuildContext context) {
@@ -132,15 +129,14 @@ class LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final isMobile = context.mq.isMobile;
-    final cardRadius = BorderRadius.circular(isMobilePlatform ? 28 : 8);
     final authTheme = _buildAuthTheme(context);
     final localization = _buildAuthLocalization(context);
 
     return Card(
       elevation: 6,
       margin: EdgeInsets.zero,
-      color: colors.surface.withValues(alpha: context.isDarkMode ? 0.9 : 0.94),
-      shape: RoundedRectangleBorder(borderRadius: cardRadius),
+      color: colors.surface.withValues(alpha: .96),
+      shape: const RoundedRectangleBorder(borderRadius: radius26),
       child: SingleChildScrollView(
         padding: _contentPadding(isMobile),
         child: Column(

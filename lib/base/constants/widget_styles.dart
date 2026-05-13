@@ -69,7 +69,7 @@ const dockedTBMaxHeight = 280.0;
 const dockedTBMinHeight = 260.0;
 
 const initialWindowSize = Size(initialWindowWidth, initialWindowHeight);
-const minimumWindowSize = Size.square(408);
+const minimumWindowSize = Size(410, 480);
 
 const gridItemBorderWidth = 1.0;
 const gridMaxExtent = 260.0;

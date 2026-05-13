@@ -1,5 +1,7 @@
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/constants/strings/asset_constants.dart';
+import 'package:clipboard/base/constants/strings/strings.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
@@ -42,15 +44,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _launchPrivacyPolicyPage() async {
-    await launchUrl(
-      Uri.parse(const String.fromEnvironment("PRIVACY_POLICY_URL")),
-    );
+    await launchUrl(Uri.parse(privacyPolicyUrl));
   }
 
   Future<void> _launchTermsOfServicePage() async {
-    await launchUrl(
-      Uri.parse(const String.fromEnvironment("TERMS_CONDITIONS_URL")),
-    );
+    await launchUrl(Uri.parse(termsConditionsUrl));
   }
 
   Widget _transitionBuilder(Widget child, Animation<double> animation) {
@@ -121,14 +119,36 @@ class _LoginPageState extends State<LoginPage> {
 class _LoginBackground extends StatelessWidget {
   final bool isMobile;
 
+  static const _themeSwapDuration = Duration(milliseconds: 320);
+
   const _LoginBackground({required this.isMobile});
 
   @override
   Widget build(BuildContext context) {
-    return Image(
-      image: const AssetImage(AssetConstants.catInValleyWide),
-      fit: BoxFit.cover,
-      alignment: isMobile ? Alignment.bottomCenter : const Alignment(0.3, 0.02),
+    final isDarkMode = context.theme.brightness == Brightness.dark;
+    final assetPath = isDarkMode
+        ? AssetConstants.catInValleyWideDark
+        : AssetConstants.catInValleyWide;
+
+    return AnimatedSwitcher(
+      duration: _themeSwapDuration,
+      switchInCurve: Curves.easeOutCubic,
+      switchOutCurve: Curves.easeInCubic,
+      layoutBuilder: (currentChild, previousChildren) => Stack(
+        fit: StackFit.expand,
+        children: [...previousChildren, ?currentChild],
+      ),
+      transitionBuilder: (child, animation) =>
+          FadeTransition(opacity: animation, child: child),
+      child: Image(
+        key: ValueKey(assetPath),
+        image: AssetImage(assetPath),
+        fit: BoxFit.cover,
+        alignment: isMobile
+            ? Alignment.bottomCenter
+            : const Alignment(0.3, 0.02),
+        gaplessPlayback: true,
+      ),
     );
   }
 }
@@ -187,10 +207,11 @@ class _LoginModeSelectionCard extends StatelessWidget {
     final colors = context.colors;
     final textTheme = context.textTheme;
 
-    return Card(
+    return Card.filled(
       elevation: 6,
       margin: EdgeInsets.zero,
-      color: colors.surface.withValues(alpha: context.isDarkMode ? 0.9 : 0.94),
+      shape: const RoundedRectangleBorder(borderRadius: radius26),
+      color: colors.surface.withValues(alpha: .96),
       child: Stack(
         clipBehavior: Clip.hardEdge,
         children: [
@@ -199,7 +220,7 @@ class _LoginModeSelectionCard extends StatelessWidget {
             left: 24,
             child: Image(
               image: AssetImage(AssetConstants.catPeekUpSideDownImage),
-              height: 56,
+              height: 68,
             ),
           ),
           Padding(
@@ -208,40 +229,54 @@ class _LoginModeSelectionCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Welcome to CopyCat', style: textTheme.headlineSmall),
-                const SizedBox(height: 8),
+                height24,
+                Text('Welcome to', style: textTheme.headlineSmall),
                 Text(
-                  'Start offline for private local usage, or sign in to unlock sync across devices.',
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colors.onSurfaceVariant,
+                  context.locale.app__name,
+                  style: textTheme.displaySmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    height: 1.2,
                   ),
                 ),
-                const SizedBox(height: 20),
+                height12,
+                Text(
+                  context.locale.app__slogan,
+                  style: textTheme.bodyLarge?.copyWith(
+                    color: colors.onSurfaceVariant,
+                    height: 1.3,
+                  ),
+                ),
+                height24,
                 SizedBox(
                   width: double.infinity,
-                  child: FilledButton.icon(
+                  child: ElevatedButton.icon(
                     onPressed: onSignInSelected,
                     icon: const Icon(Icons.login_rounded),
                     label: Text(context.locale.login__form__button__signin),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: Tooltip(
-                    message: context.locale.login__local_signin__tooltip,
-                    child: FilledButton.tonalIcon(
-                      onPressed: onOfflineSelected,
-                      icon: const Icon(Icons.cloud_off_rounded),
-                      label: Text(
-                        context.locale.login__local_signin__btn__label,
-                      ),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      backgroundColor: colors.primary,
+                      foregroundColor: colors.onPrimary,
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                const LocaleDropdownButton(),
-                const SizedBox(height: 14),
+                height12,
+                Tooltip(
+                  message: context.locale.login__local_signin__tooltip,
+                  child: ElevatedButton.icon(
+                    onPressed: onOfflineSelected,
+                    icon: const Icon(Icons.cloud_off_rounded),
+                    label: Text(context.locale.login__local_signin__btn__label),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(44),
+                      backgroundColor: colors.secondaryContainer,
+                      foregroundColor: colors.onSecondaryContainer,
+                    ),
+                  ),
+                ),
+                height20,
+                const Center(child: LocaleDropdownButton()),
+                height12,
                 _ModeSelectionTermsText(
                   onPrivacyPolicyTap: onPrivacyPolicyTap,
                   onTermsTap: onTermsTap,

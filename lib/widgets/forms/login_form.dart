@@ -27,49 +27,59 @@ class CopyCatClipboardLoginForm extends StatelessWidget {
       isDense: context.mq.isMobile,
     );
 
-    return InputDecorationTheme(
-      data: decorationTheme,
-      child: su_auth.SupaEmailAuth(
-        autofocus: true,
-        resetPasswordRedirectTo:
-            "https://clipboard-419514.web.app/reset-password",
-        onSignUpComplete: (su_auth.AuthResponse response) {
-          if (response.session != null && response.user != null) {
-            final user = response.user!.toAuthUser();
-            onSignUpComplete(user, response.session!.accessToken);
-          }
-        },
-        onSignInComplete: (su_auth.AuthResponse response) {
-          if (response.session != null && response.user != null) {
-            final user = response.user!.toAuthUser();
-            onSignInComplete(user, response.session!.accessToken);
-          }
-        },
-        onError: (error) {
-          onError(error);
-        },
-        metadataFields: [
-          su_auth.MetaDataField(
-            label: localization.displayNameLabel,
-            key: "display_name",
-            prefixIcon: const Icon(Icons.person_rounded),
-            validator: ValidationBuilder().minLength(2).build(),
+    return ElevatedButtonTheme(
+      data: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.all(padding16),
+          backgroundColor: context.colors.primary,
+          foregroundColor: context.colors.onPrimary,
+          enabledMouseCursor: SystemMouseCursors.click,
+        ),
+      ),
+      child: InputDecorationTheme(
+        data: decorationTheme,
+        child: su_auth.SupaEmailAuth(
+          autofocus: true,
+          resetPasswordRedirectTo:
+              "https://clipboard-419514.web.app/reset-password",
+          onSignUpComplete: (su_auth.AuthResponse response) {
+            if (response.session != null && response.user != null) {
+              final user = response.user!.toAuthUser();
+              onSignUpComplete(user, response.session!.accessToken);
+            }
+          },
+          onSignInComplete: (su_auth.AuthResponse response) {
+            if (response.session != null && response.user != null) {
+              final user = response.user!.toAuthUser();
+              onSignInComplete(user, response.session!.accessToken);
+            }
+          },
+          onError: (error) {
+            onError(error);
+          },
+          metadataFields: [
+            su_auth.MetaDataField(
+              label: localization.displayNameLabel,
+              key: "display_name",
+              prefixIcon: const Icon(Icons.person_rounded),
+              validator: ValidationBuilder().minLength(2).build(),
+            ),
+          ],
+          localization: su_auth.SupaEmailAuthLocalization(
+            enterEmail: localization.enterEmail,
+            validEmailError: localization.validEmailError,
+            enterPassword: localization.enterPassword,
+            passwordLengthError: localization.passwordLengthError,
+            signIn: localization.signIn,
+            signUp: localization.signUp,
+            forgotPassword: localization.forgotPassword,
+            dontHaveAccount: localization.dontHaveAccount,
+            haveAccount: localization.haveAccount,
+            sendPasswordReset: localization.sendPasswordReset,
+            passwordResetSent: localization.passwordResetSent,
+            backToSignIn: localization.backToSignIn,
+            unexpectedError: localization.unexpectedError,
           ),
-        ],
-        localization: su_auth.SupaEmailAuthLocalization(
-          enterEmail: localization.enterEmail,
-          validEmailError: localization.validEmailError,
-          enterPassword: localization.enterPassword,
-          passwordLengthError: localization.passwordLengthError,
-          signIn: localization.signIn,
-          signUp: localization.signUp,
-          forgotPassword: localization.forgotPassword,
-          dontHaveAccount: localization.dontHaveAccount,
-          haveAccount: localization.haveAccount,
-          sendPasswordReset: localization.sendPasswordReset,
-          passwordResetSent: localization.passwordResetSent,
-          backToSignIn: localization.backToSignIn,
-          unexpectedError: localization.unexpectedError,
         ),
       ),
     );

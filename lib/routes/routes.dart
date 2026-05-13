@@ -2,6 +2,7 @@ import "dart:async";
 
 import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import "package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart";
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
@@ -74,6 +75,7 @@ final appRouter = GoRouter(
     ),
     ShellRoute(
       builder: (context, state, child) {
+        final isLocalAuth = context.read<AuthCubit>().isLocalAuth;
         return MultiBlocProvider(
           providers: [
             BlocProvider<MonetizationCubit>(create: (context) => sl()),
@@ -85,7 +87,13 @@ final appRouter = GoRouter(
               ),
             ),
             BlocProvider<SyncStatusCubit>(
-              create: (context) => sl()..syncAll(const SyncAllParams()),
+              create: (context) {
+                final cubit = sl<SyncStatusCubit>();
+                if (!isLocalAuth) {
+                  unawaited(cubit.syncAll(const SyncAllParams()));
+                }
+                return cubit;
+              },
             ),
             BlocProvider<OfflinePersistenceCubit>(
               create: (context) => sl()..startListeners(),
@@ -95,7 +103,15 @@ final appRouter = GoRouter(
             BlocProvider<ClipCollectionCubit>(
               create: (context) => sl()..fetch(),
             ),
-            BlocProvider<DriveSetupCubit>(create: (context) => sl()..fetch()),
+            BlocProvider<DriveSetupCubit>(
+              create: (context) {
+                final cubit = sl<DriveSetupCubit>();
+                if (!isLocalAuth) {
+                  unawaited(cubit.fetch());
+                }
+                return cubit;
+              },
+            ),
             BlocProvider<EventBusCubit>(create: (context) => sl()),
             BlocProvider<SelectedClipsCubit>(create: (context) => sl()),
             BlocProvider<ClipboardCubit>(

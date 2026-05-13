@@ -50,6 +50,13 @@ const keyboardShortcutDemoVideo = String.fromEnvironment(
 
 const googleOAuthClientID = String.fromEnvironment("GOOGLE_OAUTH_CLIENT_ID");
 
+const revenueCatAndroidPublicKey = String.fromEnvironment(
+  "REVENUECAT_ANDROID_PUB_KEY",
+);
+const revenueCatApplePublicKey = String.fromEnvironment(
+  "REVENUECAT_APPLE_PUB_KEY",
+);
+
 const iosAppStoreId = String.fromEnvironment("IOS_APP_STORE_ID");
 const microsoftStoreId = String.fromEnvironment("MICROSOFT_STORE_ID");
 
@@ -62,3 +69,6 @@ const dbPathEnvKey = "COPYCAT_DB_ROOT";
 
 /// Font family for code/monospaced text
 const jetBrainsMonoFont = "JetBrainsMono";
+
+const privacyPolicyUrl = String.fromEnvironment("PRIVACY_POLICY_URL");
+const termsConditionsUrl = String.fromEnvironment("TERMS_CONDITIONS_URL");
