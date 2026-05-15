@@ -6,11 +6,14 @@ import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationContent, NotificationMessage, NotificationType;
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
+import 'package:clipboard/base/domain/model/sync_status/syncstatus.dart';
+import 'package:clipboard/base/domain/repositories/restoration_status.dart';
 import 'package:clipboard/base/data/services/post_sync_decryption_service.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/common/logging.dart' show logger;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -37,6 +40,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
   final SyncOrchestrator orchestrator;
   final SyncEventBus eventBus;
   final PostSyncDecryptionService decryptionService;
+  final RestorationStatusRepository restorationStatusRepository;
   StreamSubscription? _eventSub;
   final Set<String> _busyEngines = {};
   final Map<String, DateTime> _lastNotifiedAt = {};
@@ -47,6 +51,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     this.eventBus,
     this.monetizationCubit,
     this.decryptionService,
+    this.restorationStatusRepository,
   ) : super(const SyncStatusState.unknown()) {
     _subscribeToEvents();
   }
@@ -193,14 +198,30 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
   /// worker is inactive — it will find zero encrypted items (or skip them) and
   /// proceed straight to [complete].
   Future<void> _runPostSyncDecryption() async {
-    if (isClosed || !decryptionService.canDecrypt) return;
-    await decryptionService.decryptAll(
-      onProgress: (decrypted, total) {
-        if (!isClosed) {
-          emit(SyncStatusState.decrypting(decrypted: decrypted, total: total));
-        }
-      },
-    );
+    if (isClosed) return;
+
+    // Decrypt if service is available
+    if (decryptionService.canDecrypt) {
+      await decryptionService.decryptAll(
+        onProgress: (decrypted, total) {
+          if (!isClosed) {
+            emit(
+              SyncStatusState.decrypting(decrypted: decrypted, total: total),
+            );
+          }
+        },
+      );
+    }
+
+    // Persist sync completion regardless of decryption status
+    try {
+      await restorationStatusRepository.setStatus(
+        SyncStatus(lastSyncPoint: DateTime.now(), restorationPending: false),
+      );
+    } catch (e) {
+      logger.e(() => 'Failed to persist sync status: $e');
+    }
+
     if (!isClosed) emit(const SyncStatusState.complete());
   }
 

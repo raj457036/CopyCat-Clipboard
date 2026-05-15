@@ -488,6 +488,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i292.SyncEventBus>(),
         gh<_i246.MonetizationCubit>(),
         gh<_i579.PostSyncDecryptionService>(),
+        gh<_i1069.RestorationStatusRepository>(),
       ),
     );
     return this;

@@ -236,11 +236,11 @@ class _$SyncConfigImpl implements _SyncConfig {
     this.pollingIntervalSeconds = 45,
     this.minManualDelaySeconds = 5,
     this.manualDelaySeconds = 15,
-    this.pullBatchSize = 250,
-    this.collectionBatchSize = 250,
-    this.deleteBatchSize = 250,
+    this.pullBatchSize = 100,
+    this.collectionBatchSize = 100,
+    this.deleteBatchSize = 100,
     this.interBatchDelayMs = 350,
-    this.reconnectDelaySeconds = 10,
+    this.reconnectDelaySeconds = 5,
     this.freshPullOffsetEnabled = false,
   });
 

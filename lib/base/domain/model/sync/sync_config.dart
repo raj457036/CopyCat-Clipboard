@@ -16,19 +16,19 @@ class SyncConfig with _$SyncConfig {
     @Default(15) int manualDelaySeconds,
 
     /// Size of batch for fetching normal items.
-    @Default(250) int pullBatchSize,
+    @Default(100) int pullBatchSize,
 
     /// Size of batch for fetching collections.
-    @Default(250) int collectionBatchSize,
+    @Default(100) int collectionBatchSize,
 
     /// Size of batch for fetching deleted items.
-    @Default(250) int deleteBatchSize,
+    @Default(100) int deleteBatchSize,
 
     /// Delay between processing successive sync pages.
     @Default(350) int interBatchDelayMs,
 
     /// Delay before attempting to reconnect to realtime stream after a drop.
-    @Default(10) int reconnectDelaySeconds,
+    @Default(5) int reconnectDelaySeconds,
 
     /// Whether fresh pull offset is enabled.
     @Default(false) bool freshPullOffsetEnabled,

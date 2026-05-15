@@ -167,7 +167,7 @@ class SyncOrchestrator {
         );
         return false;
       }
-      await wait();
+      await wait(1000);
     }
 
     return true;
