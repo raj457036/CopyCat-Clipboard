@@ -5,9 +5,9 @@ import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import "package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart";
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
-import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
 import "package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart";
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
+import 'package:clipboard/base/bloc/file_cloud_cubit/file_cloud_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import "package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart";
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
@@ -43,7 +43,6 @@ import "package:clipboard/pages/settings/pages/custom_exclusion_rule/custom_excl
 import "package:clipboard/pages/settings/pages/decrypt_clips.dart";
 import "package:clipboard/pages/settings/pages/exclusion_rules.dart";
 import "package:clipboard/pages/splash_page.dart";
-import "package:clipboard/widgets/event_bridge.dart";
 import "package:clipboard/widgets/listeners/monetization_listener.dart";
 import "package:clipboard/widgets/page_route/dynamic_page_route.dart";
 import "package:flutter/foundation.dart";
@@ -75,7 +74,12 @@ final appRouter = GoRouter(
     ),
     ShellRoute(
       builder: (context, state, child) {
-        final isLocalAuth = context.read<AuthCubit>().isLocalAuth;
+        final authState = context.read<AuthCubit>().state;
+        final isLocalAuth = authState is LocalAuthenticatedAuthState;
+        final shouldRunInitialSync = switch (authState) {
+          AuthenticatedAuthState(:final onBoarded) => onBoarded,
+          _ => false,
+        };
         return MultiBlocProvider(
           providers: [
             BlocProvider<MonetizationCubit>(create: (context) => sl()),
@@ -89,7 +93,7 @@ final appRouter = GoRouter(
             BlocProvider<SyncStatusCubit>(
               create: (context) {
                 final cubit = sl<SyncStatusCubit>();
-                if (!isLocalAuth) {
+                if (!isLocalAuth && shouldRunInitialSync) {
                   unawaited(cubit.syncAll(const SyncAllParams()));
                 }
                 return cubit;
@@ -99,7 +103,7 @@ final appRouter = GoRouter(
               create: (context) => sl()..startListeners(),
               lazy: false,
             ),
-            BlocProvider<CloudPersistanceCubit>(create: (context) => sl()),
+            BlocProvider<FileCloudCubit>(create: (context) => sl()),
             BlocProvider<ClipCollectionCubit>(
               create: (context) => sl()..fetch(),
             ),
@@ -124,10 +128,7 @@ final appRouter = GoRouter(
                 create: (context) => sl()..syncStates(),
               ),
           ],
-          child: EventBridge(
-            eventBus: sl(),
-            child: MonetizationListener(appConfigCubit: sl(), child: child),
-          ),
+          child: MonetizationListener(appConfigCubit: sl(), child: child),
         );
       },
       routes: [

@@ -4,7 +4,6 @@ import 'package:clipboard/pages/preview/view/horizontal.dart';
 import 'package:clipboard/pages/preview/view/vertical.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
-import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/di/di.dart';
@@ -27,7 +26,6 @@ class ClipboardItemPreviewState extends State<ClipboardItemPreviewPage> {
   late ClipboardItem item;
   late final OfflinePersistenceCubit offlinePersistenceCubit;
   StreamSubscription<SyncEvent>? _syncSub;
-  bool _isDownloading = false;
 
   @override
   void initState() {
@@ -76,12 +74,6 @@ class ClipboardItemPreviewState extends State<ClipboardItemPreviewPage> {
     });
   }
 
-  void _setDownloading(bool downloading) {
-    setState(() {
-      _isDownloading = downloading;
-    });
-  }
-
   bool _isSameItem(ClipboardItem? other) {
     if (other == null) return false;
     // Match by local id first, then by server id if available
@@ -96,39 +88,12 @@ class ClipboardItemPreviewState extends State<ClipboardItemPreviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    final displayItem = _isDownloading
-        ? item.copyWith(downloading: true)
-        : item;
-
-    return BlocListener<CloudPersistanceCubit, CloudPersistanceState>(
-      listener: (context, state) {
-        state.maybeMap(
-          downloadingFile: (s) {
-            if (_isSameItem(s.item)) {
-              _setDownloading(true);
-            }
-          },
-          saved: (s) {
-            if (_isSameItem(s.item)) {
-              _setDownloading(false);
-              updateItem(s.item);
-            }
-          },
-          error: (s) {
-            if (_isSameItem(s.item)) {
-              _setDownloading(false);
-            }
-          },
-          orElse: () {},
-        );
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return constraints.maxWidth > 600
+            ? ClipItemPreviewHorizontalView(item: item)
+            : ClipItemPreviewVerticalView(item: item);
       },
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return constraints.maxWidth > 600
-              ? ClipItemPreviewHorizontalView(item: displayItem)
-              : ClipItemPreviewVerticalView(item: displayItem);
-        },
-      ),
     );
   }
 }

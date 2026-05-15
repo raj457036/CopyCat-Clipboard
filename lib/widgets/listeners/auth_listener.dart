@@ -38,7 +38,7 @@ class AuthListener extends StatelessWidget {
     if (enc1Decrypt == null) return;
     await encryptionWorker.start(enc1Decrypt);
     encryptionWorker.setEncryption(appConfig.autoEncrypt);
-    encryptionWorker.setDecryption(appConfig.autoEncrypt);
+    encryptionWorker.setDecryption(true);
   }
 
   Future<void> resetAll(BuildContext context) async {
@@ -76,16 +76,18 @@ class AuthListener extends StatelessWidget {
           case AuthenticatedAuthState(:final user, :final onBoarded):
             {
               // MARK: - Post Login Initialization
+              final MonetizationCubit monetizationCubit = sl();
+              final AppConfigCubit appConfigCubit = sl();
+              final config = appConfigCubit.state.config;
+
+              await monetizationCubit.login(user.userId);
+              await initEncryptionWorker(config, state);
+
               if (!onBoarded) {
                 appRouter.goNamed(RouteConstants.onboard);
                 return;
               }
 
-              final MonetizationCubit monetizationCubit = sl();
-              final AppConfigCubit appConfigCubit = sl();
-              final config = appConfigCubit.state.config;
-              await monetizationCubit.login(user.userId);
-              await initEncryptionWorker(config, state);
               syncOrchestrator.start(syncSpeed: config.syncSpeed);
               appRouter.goNamed(RouteConstants.home);
             }

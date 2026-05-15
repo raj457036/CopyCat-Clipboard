@@ -18,7 +18,7 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
   final DriveService _drive;
   final DriveCredentialRepository repo;
 
-  Timer? timer;
+  Timer? _refreshTimer;
 
   DriveSetupCubit(this.repo, @Named("google_drive") this._drive)
     : super(const DriveSetupState.unknown());
@@ -51,20 +51,14 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
     }
   }
 
-  Future<void> startResetTimer() async {
-    timer = Timer(
-      const Duration(seconds: 10),
-      () => emit(
-        const DriveSetupState.setupError(
-          failure: Failure(message: "timeout", code: "gd-timeout"),
-        ),
-      ),
-    );
-  }
-
-  Future<void> stopResetTimer() async {
-    timer?.cancel();
-    timer = null;
+  Future<void> _doRestoreIn(int seconds) async {
+    _refreshTimer?.cancel();
+    seconds = seconds - 300; // Refresh 5 minutes before expiry
+    if (seconds <= 0) {
+      refreshAccess();
+      return;
+    }
+    _refreshTimer = Timer(Duration(seconds: seconds), refreshAccess);
   }
 
   Future<String?> get accessToken async {
@@ -107,7 +101,8 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
           return false;
         } else {
           emit(DriveSetupState.setupDone(token: result));
-
+          _drive.accessToken = result.accessToken;
+          _doRestoreIn(result.expiresIn); // Refresh 5 minutes before expiry
           return true;
         }
       } else {
@@ -125,7 +120,6 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
     final result = await repo.launchConsentPage();
     emit(
       result.fold((l) => DriveSetupState.setupError(failure: l), (r) {
-        startResetTimer();
         return const DriveSetupState.unknown(waiting: true);
       }),
     );
@@ -148,7 +142,6 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
       emit(DriveSetupState.verifyingCode(code: code, scopes: scopes));
 
       final result = await repo.setupDrive(code);
-      stopResetTimer();
       final newState = result.fold(
         (l) => DriveSetupState.setupError(failure: l),
         (r) => DriveSetupState.setupDone(token: r),

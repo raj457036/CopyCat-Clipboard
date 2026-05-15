@@ -107,8 +107,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   Future<void> startListeners() async {
     if (_listening) return;
     // Always sync capture mode from current config before listening.
-    // This guarantees rich data capture follows the toggle even when
-    // EventBridge listener has not fired yet for this app session.
+    // This guarantees rich data capture follows the toggle from app startup.
     clipboard.setRichDataEnabled(appConfig.state.config.richDataCapture);
     clipboard.start(onCaptureClipboard);
     copySub = clipboard.onCopy?.listen(onClips);

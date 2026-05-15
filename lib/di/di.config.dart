@@ -20,14 +20,14 @@ import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.
     as _i620;
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart'
     as _i489;
-import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart'
-    as _i283;
 import 'package:clipboard/base/bloc/collection_clips_cubit/collection_clips_cubit.dart'
     as _i46;
 import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart'
     as _i521;
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart'
     as _i588;
+import 'package:clipboard/base/bloc/file_cloud_cubit/file_cloud_cubit.dart'
+    as _i618;
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart'
     as _i246;
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart'
@@ -342,6 +342,12 @@ extension GetItInjectableX on _i174.GetIt {
         remote: gh<_i422.SubscriptionSource>(instanceName: 'remote'),
       ),
     );
+    gh.lazySingleton<_i112.FileCloudService>(
+      () => _i858.GoogleDriveFileCloudService(
+        gh<_i543.DriveService>(instanceName: 'google_drive'),
+        gh<_i542.AppConfigCubit>(),
+      ),
+    );
     gh.factory<_i489.ClipboardCubit>(
       () => _i489.ClipboardCubit(
         gh<_i292.SyncEventBus>(),
@@ -381,12 +387,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<String>(instanceName: 'device_id'),
       ),
     );
-    gh.lazySingleton<_i112.FileCloudService>(
-      () => _i858.GoogleDriveFileCloudService(
-        gh<_i521.DriveSetupCubit>(),
-        gh<_i542.AppConfigCubit>(),
-      ),
-    );
     gh.lazySingleton<_i554.PasteStackCubit>(
       () => _i554.PasteStackCubit(
         gh<_i542.AppConfigCubit>(),
@@ -394,13 +394,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i246.MonetizationCubit>(),
       ),
     );
-    gh.lazySingleton<_i283.CloudPersistanceCubit>(
-      () => _i283.CloudPersistanceCubit(
-        gh<_i29.AuthCubit>(),
-        gh<_i521.DriveSetupCubit>(),
-        gh<_i542.AppConfigCubit>(),
-        gh<String>(instanceName: 'device_id'),
-        gh<_i230.ClipboardRepository>(instanceName: 'remote'),
+    gh.factory<_i618.FileCloudCubit>(
+      () => _i618.FileCloudCubit(
+        gh<_i112.FileCloudService>(),
+        gh<_i23.ClipboardSource>(instanceName: 'local'),
+        gh<_i292.SyncEventBus>(),
       ),
     );
     gh.factory<_i620.ClipCollectionCubit>(

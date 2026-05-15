@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/bloc/cloud_persistance_cubit/cloud_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/file_cloud_cubit/file_cloud_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
@@ -190,7 +190,7 @@ Future<void> decryptItem(BuildContext context, ClipboardItem item) async {
 
 Future<void> downloadFile(BuildContext context, ClipboardItem item) async {
   final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
-  ctx.read<CloudPersistanceCubit>().download(item);
+  ctx.read<FileCloudCubit>().download(item);
 }
 
 Future<void> launchUrl(ClipboardItem item) async {

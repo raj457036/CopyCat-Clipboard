@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
+import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_services.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/services/file_cloud_service.dart';
 import 'package:clipboard/common/failure.dart';
@@ -16,13 +16,16 @@ import 'package:injectable/injectable.dart';
 /// can be added by implementing the [FileCloudService] interface.
 @LazySingleton(as: FileCloudService)
 class GoogleDriveFileCloudService implements FileCloudService {
-  final DriveSetupCubit _driveCubit;
+  final DriveService _drive;
   final AppConfigCubit _appConfig;
 
-  GoogleDriveFileCloudService(this._driveCubit, this._appConfig);
+  GoogleDriveFileCloudService(
+    @Named("google_drive") this._drive,
+    this._appConfig,
+  );
 
   @override
-  Future<bool> get isAvailable async => (await _driveCubit.drive) != null;
+  Future<bool> get isAvailable async => _drive.accessToken != null;
 
   @override
   FailureOr<ClipboardItem> upload(
@@ -47,15 +50,14 @@ class GoogleDriveFileCloudService implements FileCloudService {
       );
     }
 
-    final drive = await _driveCubit.drive;
-    if (drive == null) {
+    if (!await isAvailable) {
       return const Left(
         Failure(message: "Drive not available", code: "drive-failure"),
       );
     }
 
     final results = await Future.wait([
-      drive.upload(item),
+      _drive.upload(item),
       _getBlurHashIfNeeded(item),
     ]);
 
@@ -92,14 +94,13 @@ class GoogleDriveFileCloudService implements FileCloudService {
 
   @override
   FailureOr<ClipboardItem> delete(ClipboardItem item) async {
-    final drive = await _driveCubit.drive;
-    if (drive == null) {
+    if (!await isAvailable) {
       return const Left(
         Failure(message: "Drive not available", code: "drive-failure"),
       );
     }
 
-    final isSuccess = await drive.delete(item);
+    final isSuccess = await _drive.delete(item);
 
     if (!isSuccess) {
       return const Left(
@@ -117,15 +118,14 @@ class GoogleDriveFileCloudService implements FileCloudService {
     ClipboardItem item, {
     Stream<TransferProgress>? progress,
   }) async {
-    final drive = await _driveCubit.drive;
-    if (drive == null) {
+    if (!await isAvailable) {
       return const Left(
         Failure(message: "Drive not available", code: "drive-failure"),
       );
     }
 
     try {
-      return await drive.download(item);
+      return await _drive.download(item);
     } catch (e) {
       return const Left(
         Failure(
