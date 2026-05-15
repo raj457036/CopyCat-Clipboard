@@ -20,7 +20,12 @@ mixin _$AuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function(AuthUser user, String accessToken, bool onBoarded)
+    required TResult Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )
     authenticated,
     required TResult Function() localAuthenticated,
     required TResult Function() authenticating,
@@ -29,7 +34,12 @@ mixin _$AuthState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function(AuthUser user, String accessToken, bool onBoarded)?
+    TResult? Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )?
     authenticated,
     TResult? Function()? localAuthenticated,
     TResult? Function()? authenticating,
@@ -38,7 +48,12 @@ mixin _$AuthState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function(AuthUser user, String accessToken, bool onBoarded)?
+    TResult Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )?
     authenticated,
     TResult Function()? localAuthenticated,
     TResult Function()? authenticating,
@@ -137,7 +152,12 @@ class _$UnknownAuthStateImpl implements UnknownAuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function(AuthUser user, String accessToken, bool onBoarded)
+    required TResult Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )
     authenticated,
     required TResult Function() localAuthenticated,
     required TResult Function() authenticating,
@@ -150,7 +170,12 @@ class _$UnknownAuthStateImpl implements UnknownAuthState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function(AuthUser user, String accessToken, bool onBoarded)?
+    TResult? Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )?
     authenticated,
     TResult? Function()? localAuthenticated,
     TResult? Function()? authenticating,
@@ -163,7 +188,12 @@ class _$UnknownAuthStateImpl implements UnknownAuthState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function(AuthUser user, String accessToken, bool onBoarded)?
+    TResult Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )?
     authenticated,
     TResult Function()? localAuthenticated,
     TResult Function()? authenticating,
@@ -229,7 +259,12 @@ abstract class _$$AuthenticatedAuthStateImplCopyWith<$Res> {
     $Res Function(_$AuthenticatedAuthStateImpl) then,
   ) = __$$AuthenticatedAuthStateImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({AuthUser user, String accessToken, bool onBoarded});
+  $Res call({
+    AuthUser user,
+    String accessToken,
+    bool isOnboardingCompleted,
+    bool isEncryptionKeySetup,
+  });
 
   $AuthUserCopyWith<$Res> get user;
 }
@@ -250,7 +285,8 @@ class __$$AuthenticatedAuthStateImplCopyWithImpl<$Res>
   $Res call({
     Object? user = null,
     Object? accessToken = null,
-    Object? onBoarded = null,
+    Object? isOnboardingCompleted = null,
+    Object? isEncryptionKeySetup = null,
   }) {
     return _then(
       _$AuthenticatedAuthStateImpl(
@@ -262,9 +298,13 @@ class __$$AuthenticatedAuthStateImplCopyWithImpl<$Res>
             ? _value.accessToken
             : accessToken // ignore: cast_nullable_to_non_nullable
                   as String,
-        onBoarded: null == onBoarded
-            ? _value.onBoarded
-            : onBoarded // ignore: cast_nullable_to_non_nullable
+        isOnboardingCompleted: null == isOnboardingCompleted
+            ? _value.isOnboardingCompleted
+            : isOnboardingCompleted // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        isEncryptionKeySetup: null == isEncryptionKeySetup
+            ? _value.isEncryptionKeySetup
+            : isEncryptionKeySetup // ignore: cast_nullable_to_non_nullable
                   as bool,
       ),
     );
@@ -287,7 +327,8 @@ class _$AuthenticatedAuthStateImpl implements AuthenticatedAuthState {
   const _$AuthenticatedAuthStateImpl({
     required this.user,
     required this.accessToken,
-    required this.onBoarded,
+    required this.isOnboardingCompleted,
+    required this.isEncryptionKeySetup,
   });
 
   @override
@@ -295,11 +336,13 @@ class _$AuthenticatedAuthStateImpl implements AuthenticatedAuthState {
   @override
   final String accessToken;
   @override
-  final bool onBoarded;
+  final bool isOnboardingCompleted;
+  @override
+  final bool isEncryptionKeySetup;
 
   @override
   String toString() {
-    return 'AuthState.authenticated(user: $user, accessToken: $accessToken, onBoarded: $onBoarded)';
+    return 'AuthState.authenticated(user: $user, accessToken: $accessToken, isOnboardingCompleted: $isOnboardingCompleted, isEncryptionKeySetup: $isEncryptionKeySetup)';
   }
 
   @override
@@ -310,12 +353,20 @@ class _$AuthenticatedAuthStateImpl implements AuthenticatedAuthState {
             (identical(other.user, user) || other.user == user) &&
             (identical(other.accessToken, accessToken) ||
                 other.accessToken == accessToken) &&
-            (identical(other.onBoarded, onBoarded) ||
-                other.onBoarded == onBoarded));
+            (identical(other.isOnboardingCompleted, isOnboardingCompleted) ||
+                other.isOnboardingCompleted == isOnboardingCompleted) &&
+            (identical(other.isEncryptionKeySetup, isEncryptionKeySetup) ||
+                other.isEncryptionKeySetup == isEncryptionKeySetup));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, user, accessToken, onBoarded);
+  int get hashCode => Object.hash(
+    runtimeType,
+    user,
+    accessToken,
+    isOnboardingCompleted,
+    isEncryptionKeySetup,
+  );
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
@@ -333,33 +384,58 @@ class _$AuthenticatedAuthStateImpl implements AuthenticatedAuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function(AuthUser user, String accessToken, bool onBoarded)
+    required TResult Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )
     authenticated,
     required TResult Function() localAuthenticated,
     required TResult Function() authenticating,
     required TResult Function(Failure? failure) unauthenticated,
   }) {
-    return authenticated(user, accessToken, onBoarded);
+    return authenticated(
+      user,
+      accessToken,
+      isOnboardingCompleted,
+      isEncryptionKeySetup,
+    );
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function(AuthUser user, String accessToken, bool onBoarded)?
+    TResult? Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )?
     authenticated,
     TResult? Function()? localAuthenticated,
     TResult? Function()? authenticating,
     TResult? Function(Failure? failure)? unauthenticated,
   }) {
-    return authenticated?.call(user, accessToken, onBoarded);
+    return authenticated?.call(
+      user,
+      accessToken,
+      isOnboardingCompleted,
+      isEncryptionKeySetup,
+    );
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function(AuthUser user, String accessToken, bool onBoarded)?
+    TResult Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )?
     authenticated,
     TResult Function()? localAuthenticated,
     TResult Function()? authenticating,
@@ -367,7 +443,12 @@ class _$AuthenticatedAuthStateImpl implements AuthenticatedAuthState {
     required TResult orElse(),
   }) {
     if (authenticated != null) {
-      return authenticated(user, accessToken, onBoarded);
+      return authenticated(
+        user,
+        accessToken,
+        isOnboardingCompleted,
+        isEncryptionKeySetup,
+      );
     }
     return orElse();
   }
@@ -418,12 +499,14 @@ abstract class AuthenticatedAuthState implements AuthState {
   const factory AuthenticatedAuthState({
     required final AuthUser user,
     required final String accessToken,
-    required final bool onBoarded,
+    required final bool isOnboardingCompleted,
+    required final bool isEncryptionKeySetup,
   }) = _$AuthenticatedAuthStateImpl;
 
   AuthUser get user;
   String get accessToken;
-  bool get onBoarded;
+  bool get isOnboardingCompleted;
+  bool get isEncryptionKeySetup;
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
@@ -477,7 +560,12 @@ class _$LocalAuthenticatedAuthStateImpl implements LocalAuthenticatedAuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function(AuthUser user, String accessToken, bool onBoarded)
+    required TResult Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )
     authenticated,
     required TResult Function() localAuthenticated,
     required TResult Function() authenticating,
@@ -490,7 +578,12 @@ class _$LocalAuthenticatedAuthStateImpl implements LocalAuthenticatedAuthState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function(AuthUser user, String accessToken, bool onBoarded)?
+    TResult? Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )?
     authenticated,
     TResult? Function()? localAuthenticated,
     TResult? Function()? authenticating,
@@ -503,7 +596,12 @@ class _$LocalAuthenticatedAuthStateImpl implements LocalAuthenticatedAuthState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function(AuthUser user, String accessToken, bool onBoarded)?
+    TResult Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )?
     authenticated,
     TResult Function()? localAuthenticated,
     TResult Function()? authenticating,
@@ -608,7 +706,12 @@ class _$AuthenticatingAuthStateImpl implements AuthenticatingAuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function(AuthUser user, String accessToken, bool onBoarded)
+    required TResult Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )
     authenticated,
     required TResult Function() localAuthenticated,
     required TResult Function() authenticating,
@@ -621,7 +724,12 @@ class _$AuthenticatingAuthStateImpl implements AuthenticatingAuthState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function(AuthUser user, String accessToken, bool onBoarded)?
+    TResult? Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )?
     authenticated,
     TResult? Function()? localAuthenticated,
     TResult? Function()? authenticating,
@@ -634,7 +742,12 @@ class _$AuthenticatingAuthStateImpl implements AuthenticatingAuthState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function(AuthUser user, String accessToken, bool onBoarded)?
+    TResult Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )?
     authenticated,
     TResult Function()? localAuthenticated,
     TResult Function()? authenticating,
@@ -767,7 +880,12 @@ class _$UnauthenticatedAuthStateImpl implements UnauthenticatedAuthState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() unknown,
-    required TResult Function(AuthUser user, String accessToken, bool onBoarded)
+    required TResult Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )
     authenticated,
     required TResult Function() localAuthenticated,
     required TResult Function() authenticating,
@@ -780,7 +898,12 @@ class _$UnauthenticatedAuthStateImpl implements UnauthenticatedAuthState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
-    TResult? Function(AuthUser user, String accessToken, bool onBoarded)?
+    TResult? Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )?
     authenticated,
     TResult? Function()? localAuthenticated,
     TResult? Function()? authenticating,
@@ -793,7 +916,12 @@ class _$UnauthenticatedAuthStateImpl implements UnauthenticatedAuthState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
-    TResult Function(AuthUser user, String accessToken, bool onBoarded)?
+    TResult Function(
+      AuthUser user,
+      String accessToken,
+      bool isOnboardingCompleted,
+      bool isEncryptionKeySetup,
+    )?
     authenticated,
     TResult Function()? localAuthenticated,
     TResult Function()? authenticating,

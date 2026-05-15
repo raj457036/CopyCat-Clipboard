@@ -32,6 +32,11 @@ class SyncEngine<T extends Syncable> {
   final SyncConfig config;
   final ConflictResolver<T> conflictResolver;
   final String deviceId;
+  final String namespace;
+
+  /// Engine identity that must be synced before this one.
+  /// e.g., clips depend on collections.
+  final List<String> dependsOn;
 
   Timer? _pollingTimer;
   bool _busy = false;
@@ -47,7 +52,12 @@ class SyncEngine<T extends Syncable> {
     required this.config,
     required this.conflictResolver,
     required this.deviceId,
+    required this.namespace,
+    this.dependsOn = const [],
   });
+
+  /// Unique identifier for this engine.
+  String get identity => "${adapter.entityType}:$namespace";
 
   // PULL (Server → Local)
 
@@ -81,12 +91,16 @@ class SyncEngine<T extends Syncable> {
       }
       final excludeDeviceId = freshPull ? null : deviceId;
 
-      // 1. Sync Deleted Items
-      final deleteResult = await _pullDeleted(
-        lastSynced,
-        excludeDeviceId: excludeDeviceId,
-      );
-      if (deleteResult == SyncResult.failed) return SyncResult.failed;
+      // During Restoration, we don't need to pull deleted records
+      // because the local database is already wiped clean.
+      if (!freshPull) {
+        // 1. Sync Deleted Items
+        final deleteResult = await _pullDeleted(
+          lastSynced,
+          excludeDeviceId: excludeDeviceId,
+        );
+        if (deleteResult == SyncResult.failed) return SyncResult.failed;
+      }
 
       // 2. Sync Created/Updated Items
       final changesResult = await _pullChanges(
@@ -189,6 +203,8 @@ class SyncEngine<T extends Syncable> {
               SyncProgressParams(
                 entityType: adapter.entityType,
                 syncedCount: offset,
+                fetchCount: paginated.results.length,
+                totalCount: paginated.totalCount,
               ),
             );
             return true;
@@ -207,6 +223,8 @@ class SyncEngine<T extends Syncable> {
             SyncProgressParams(
               entityType: adapter.entityType,
               syncedCount: offset,
+              fetchCount: paginated.results.length,
+              totalCount: paginated.totalCount,
             ),
           );
 

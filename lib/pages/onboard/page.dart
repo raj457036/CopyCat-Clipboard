@@ -38,7 +38,7 @@ class _OnBoardPageState extends State<OnBoardPage> {
 
   void finishOnboarding() {
     context.read<AppConfigCubit>().changeOnBoardStatus(true);
-    context.read<AuthCubit>().oboardingComplete();
+    context.read<AuthCubit>().setOnboardingCompleted();
   }
 
   @override

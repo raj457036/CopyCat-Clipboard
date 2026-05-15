@@ -14,10 +14,6 @@ abstract class SyncAdapter<T extends Syncable> {
   /// Unique name for this entity type (e.g., 'clip', 'collection').
   String get entityType;
 
-  /// Entity types that must be synced before this one.
-  /// e.g., clips depend on collections.
-  List<String> get dependsOn => const [];
-
   // ─── Fetching state ───────────────────────────────
 
   /// Find latest synced item timestamp for cursor reconstruction.

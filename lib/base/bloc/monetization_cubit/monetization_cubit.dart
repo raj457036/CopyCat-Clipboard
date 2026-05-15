@@ -15,6 +15,8 @@ class MonetizationCubit extends Cubit<MonetizationState>
     with MonetizationService {
   final SubscriptionRepository repo;
 
+  bool _isListenersSetUp = false;
+
   MonetizationCubit({required this.repo})
     : super(const MonetizationState.unknown()) {
     onSubscriptionAvailable = onSubscriptionChange;
@@ -43,6 +45,7 @@ class MonetizationCubit extends Cubit<MonetizationState>
   }
 
   Future<void> login(String userId) async {
+    if (_isListenersSetUp) return;
     setupListeners();
     final done = await setUser(userId);
     if (!done) {
@@ -52,9 +55,13 @@ class MonetizationCubit extends Cubit<MonetizationState>
         onSubscriptionChange(subscription);
       });
     }
+    _isListenersSetUp = true;
   }
 
   Future<void> logout() async {
+    if (!_isListenersSetUp) return;
     emit(const MonetizationState.unknown());
+    stopListeners();
+    _isListenersSetUp = false;
   }
 }

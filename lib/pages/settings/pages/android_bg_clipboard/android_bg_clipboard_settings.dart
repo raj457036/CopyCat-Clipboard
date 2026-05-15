@@ -84,7 +84,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     appConfigCubit = context.read();
 
     context.read<AuthCubit>().state.whenOrNull(
-      authenticated: (user, _, _) {
+      authenticated: (user, _, _, _) {
         enc1Key = user.enc1;
       },
     );

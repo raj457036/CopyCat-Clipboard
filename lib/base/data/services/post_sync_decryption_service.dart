@@ -1,3 +1,4 @@
+import 'package:clipboard/base/background/encryption_worker.dart';
 import 'package:clipboard/base/constants/misc.dart' show kMaxTextClipLength;
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/common/logging.dart';
@@ -12,6 +13,9 @@ class PostSyncDecryptionService {
   final ClipboardSource _localSource;
 
   PostSyncDecryptionService(@Named("local") this._localSource);
+
+  /// Check if the encryption worker is ready for decryption tasks.
+  bool get canDecrypt => EncryptionWorker.instance.isDecryptionActive;
 
   /// Decrypts all locally stored encrypted clips, batch by batch.
   ///

@@ -26,8 +26,8 @@ class _SplashPageState extends State<SplashPage> {
     if (!mounted) return;
 
     authCubit.state.maybeWhen(
-      authenticated: (user, accessToken, onBoarded) {
-        if (!onBoarded) {
+      authenticated: (user, accessToken, isOnboardingCompleted, _) {
+        if (!isOnboardingCompleted) {
           context.goNamed(RouteConstants.onboard);
         } else {
           context.goNamed(RouteConstants.home);

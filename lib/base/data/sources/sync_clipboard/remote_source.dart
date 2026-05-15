@@ -10,8 +10,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 @Named("remote")
 @LazySingleton(as: SyncClipboardSource)
 class SyncClipboardSourceImpl implements SyncClipboardSource {
-  final SupabaseClient client;
+  static const _logger = AppLogger.scoped('SyncClipboardSource');
 
+  final SupabaseClient client;
   final String clipboardItemsTable = "clipboard_items";
   final String clipCollectionsTable = "clip_collections";
 
@@ -19,28 +20,14 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
 
   PostgrestClient get db => client.rest;
 
-  @override
-  Future<PaginatedResult<ClipboardItem>> getLatestClipboardItems({
+  Future<PaginatedResult<ClipboardItem>> _getLatestClipboardItems({
     int limit = 100,
     int offset = 0,
     String? excludeDeviceId,
     DateTime? lastSynced,
-    bool havingCollection = false,
+    required PostgrestFilterBuilder<List<Map<String, dynamic>>> query,
   }) async {
-    var query = db
-        .from(clipboardItemsTable)
-        .select()
-        .filter("deletedAt", "is", null);
-
-    if (havingCollection) {
-      final or_ = <String>[];
-      or_.add('collectionId.not.is.null');
-      if (lastSynced != null) {
-        final isoTimestamp = lastSynced.toIso8601String();
-        or_.add('modified.gt."$isoTimestamp"');
-      }
-      query = query.or(or_.join(','));
-    } else if (lastSynced != null) {
+    if (lastSynced != null) {
       final isoDate = lastSynced.toUtc().toIso8601String();
       query = query.gt("modified", isoDate);
     }
@@ -53,9 +40,57 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
         .map(ClipboardItem.fromJson)
         .toList();
 
-    logger.d("[SyncClipboardSource] Fetched ${docs.length} clipboard items.");
+    _logger.d(() => "Fetched ${docs.length} clipboard items.");
 
     return PaginatedResult(results: docs, hasMore: docs.length >= limit);
+  }
+
+  @override
+  Future<PaginatedResult<ClipboardItem>> getLatestClipboardItems({
+    int limit = 100,
+    int offset = 0,
+    String? excludeDeviceId,
+    DateTime? lastSynced,
+  }) async {
+    var query = db
+        .from(clipboardItemsTable)
+        .select()
+        .filter("collectionId", "is", null)
+        .filter("deletedAt", "is", null);
+
+    _logger.d(() => "Fetching latest clipboard items with no collections.");
+
+    return await _getLatestClipboardItems(
+      limit: limit,
+      offset: offset,
+      excludeDeviceId: excludeDeviceId,
+      lastSynced: lastSynced,
+      query: query,
+    );
+  }
+
+  @override
+  Future<PaginatedResult<ClipboardItem>> getLatestCollectionClipboardItems({
+    int limit = 100,
+    int offset = 0,
+    String? excludeDeviceId,
+    DateTime? lastSynced,
+  }) async {
+    var query = db
+        .from(clipboardItemsTable)
+        .select()
+        .not("collectionId", "is", null)
+        .filter("deletedAt", "is", null);
+
+    _logger.d(() => "Fetching latest clipboard items with collections.");
+
+    return await _getLatestClipboardItems(
+      limit: limit,
+      offset: offset,
+      excludeDeviceId: excludeDeviceId,
+      lastSynced: lastSynced,
+      query: query,
+    );
   }
 
   @override
@@ -85,9 +120,7 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
         .map((e) => ClipCollection.fromJson(e))
         .map((e) => e.copyWith(lastSynced: systemTime()))
         .toList();
-    logger.d(
-      "[SyncClipboardSource] Fetched ${collections.length} clip collections.",
-    );
+    _logger.d(() => "Fetched ${collections.length} clip collections.");
     return PaginatedResult(
       results: collections,
       hasMore: collections.length >= limit,
@@ -113,6 +146,7 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
     }
     final docs = await query.order("modified").range(offset, offset + limit);
     final deletedClips = docs.map((e) => ClipboardItem.fromJson(e)).toList();
+    _logger.d(() => "Fetched ${deletedClips.length} deleted clipboard items.");
     return PaginatedResult(
       results: deletedClips,
       hasMore: deletedClips.length >= limit,
@@ -144,6 +178,9 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
     final deletedCollections = docs
         .map((e) => ClipCollection.fromJson(e))
         .toList();
+    _logger.d(
+      () => "Fetched ${deletedCollections.length} deleted clip collections.",
+    );
     return PaginatedResult(
       results: deletedCollections,
       hasMore: deletedCollections.length >= limit,

@@ -41,6 +41,8 @@ import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart'
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart'
     as _i657;
 import 'package:clipboard/base/data/adapters/clip_sync_adapter.dart' as _i8;
+import 'package:clipboard/base/data/adapters/collection_clip_sync_adapter.dart'
+    as _i272;
 import 'package:clipboard/base/data/adapters/collection_sync_adapter.dart'
     as _i220;
 import 'package:clipboard/base/data/isar/repositories/isar_sync_cursor_repository.dart'
@@ -379,6 +381,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i246.MonetizationCubit>(
       () => _i246.MonetizationCubit(repo: gh<_i956.SubscriptionRepository>()),
     );
+    gh.lazySingleton<_i589.SyncAdapter<_i1066.ClipboardItem>>(
+      () => _i8.ClipSyncAdapter(
+        gh<_i61.SyncRepository>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i230.ClipboardRepository>(instanceName: 'remote'),
+        gh<_i616.ClipBatchSyncService>(),
+        gh<_i543.ClipCrossSyncListener>(),
+        gh<_i112.FileCloudService>(),
+        gh<_i23.ClipboardSource>(instanceName: 'local'),
+      ),
+      instanceName: 'non_collection_clips',
+    );
     gh.factory<_i643.AndroidBgClipboardCubit>(
       () => _i643.AndroidBgClipboardCubit(
         gh<_i565.AndroidBackgroundClipboard>(),
@@ -418,6 +432,19 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i543.CollectionCrossSyncListener>(),
       ),
     );
+    gh.lazySingleton<_i589.SyncAdapter<_i1066.ClipboardItem>>(
+      () => _i272.CollectionClipSyncAdapter(
+        gh<_i61.SyncRepository>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i230.ClipboardRepository>(instanceName: 'remote'),
+        gh<_i616.ClipBatchSyncService>(),
+        gh<_i620.ClipCollectionCubit>(),
+        gh<_i543.ClipCrossSyncListener>(),
+        gh<_i112.FileCloudService>(),
+        gh<_i23.ClipboardSource>(instanceName: 'local'),
+      ),
+      instanceName: 'collection_clips',
+    );
     gh.factory<_i706.OfflinePersistenceCubit>(
       () => _i706.OfflinePersistenceCubit(
         gh<_i29.AuthCubit>(),
@@ -431,18 +458,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i292.SyncEventBus>(),
       ),
     );
-    gh.lazySingleton<_i589.SyncAdapter<_i1066.ClipboardItem>>(
-      () => _i8.ClipSyncAdapter(
-        gh<_i61.SyncRepository>(),
-        gh<_i230.ClipboardRepository>(instanceName: 'local'),
-        gh<_i230.ClipboardRepository>(instanceName: 'remote'),
-        gh<_i616.ClipBatchSyncService>(),
-        gh<_i620.ClipCollectionCubit>(),
-        gh<_i543.ClipCrossSyncListener>(),
-        gh<_i112.FileCloudService>(),
-        gh<_i23.ClipboardSource>(instanceName: 'local'),
-      ),
-    );
     gh.singleton<_i227.QuickPasteService>(
       () => _i227.QuickPasteService(
         gh<_i542.AppConfigCubit>(),
@@ -454,7 +469,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i443.SyncOrchestrator>(
       () => _i443.SyncOrchestrator(
-        gh<_i589.SyncAdapter<_i1066.ClipboardItem>>(),
+        gh<_i589.SyncAdapter<_i1066.ClipboardItem>>(
+          instanceName: 'non_collection_clips',
+        ),
+        gh<_i589.SyncAdapter<_i1066.ClipboardItem>>(
+          instanceName: 'collection_clips',
+        ),
         gh<_i589.SyncAdapter<_i687.ClipCollection>>(),
         gh<_i834.SyncCursorRepository>(),
         gh<_i770.SyncOutboxRepository>(),

@@ -13,6 +13,7 @@ import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/domain/model/sync/sync_config.dart';
 import 'package:clipboard/base/sync/sync_engine.dart';
 import 'package:clipboard/common/logging.dart' show AppLogger;
+import 'package:clipboard/utils/utility.dart';
 import 'package:injectable/injectable.dart';
 import 'package:synchronized/extension.dart';
 
@@ -31,8 +32,13 @@ class SyncOrchestrator {
   Timer? _outboxTimer;
   StreamSubscription? _outboxStreamSub;
 
+  bool _isRunning = false;
+
+  bool get isRunning => _isRunning;
+
   SyncOrchestrator(
-    SyncAdapter<ClipboardItem> clipAdapter,
+    @Named("non_collection_clips") SyncAdapter<ClipboardItem> clipAdapter,
+    @Named("collection_clips") SyncAdapter<ClipboardItem> collectionClipAdapter,
     SyncAdapter<ClipCollection> collectionAdapter,
     SyncCursorRepository cursorRepo,
     this._outboxRepo,
@@ -45,25 +51,40 @@ class SyncOrchestrator {
       _outboxRepo,
       eventBus,
       deviceId,
-      const SyncConfig(freshPullOffsetEnabled: true),
+      config: const SyncConfig(freshPullOffsetEnabled: true),
+      namespace: "clip",
     );
-    _bootstrapEngine(
+
+    final collectionEngine = _bootstrapEngine(
       collectionAdapter,
       cursorRepo,
       _outboxRepo,
       eventBus,
       deviceId,
+      namespace: "collection",
+    );
+
+    _bootstrapEngine(
+      collectionClipAdapter,
+      cursorRepo,
+      _outboxRepo,
+      eventBus,
+      deviceId,
+      namespace: "collection-clip",
+      dependsOn: [collectionEngine.identity],
     );
   }
 
-  void _bootstrapEngine<T extends Syncable>(
+  SyncEngine<T> _bootstrapEngine<T extends Syncable>(
     SyncAdapter<T> adapter,
     SyncCursorRepository cursorRepo,
     SyncOutboxRepository outboxRepo,
     SyncEventBus eventBus,
-    String deviceId, [
+    String deviceId, {
     SyncConfig config = const SyncConfig(),
-  ]) {
+    String namespace = '',
+    List<String> dependsOn = const [],
+  }) {
     final engine = SyncEngine<T>(
       adapter: adapter,
       cursorRepo: cursorRepo,
@@ -72,13 +93,16 @@ class SyncOrchestrator {
       config: config,
       conflictResolver: LastModifiedWinsResolver<T>(),
       deviceId: deviceId,
+      namespace: namespace,
+      dependsOn: dependsOn,
     );
     register(engine);
+    return engine;
   }
 
   /// Register an engine.
   void register<T extends Syncable>(SyncEngine<T> engine) {
-    _engines[engine.adapter.entityType] = engine;
+    _engines[engine.identity] = engine;
   }
 
   /// Resolve dependency order of engines.
@@ -87,32 +111,32 @@ class SyncOrchestrator {
     final visited = <String>{};
     final visiting = <String>{};
 
-    void visit(String entityType) {
-      if (visited.contains(entityType)) return;
-      if (visiting.contains(entityType)) {
+    void visit(String engineId) {
+      if (visited.contains(engineId)) return;
+      if (visiting.contains(engineId)) {
         _logger.e(
           () =>
-              "Circular dependency detected in sync adapters for: $entityType",
+              "Circular dependency detected in sync adapters for engine: $engineId",
         );
         return;
       }
 
-      visiting.add(entityType);
+      visiting.add(engineId);
 
-      final engine = _engines[entityType];
+      final engine = _engines[engineId];
       if (engine != null) {
-        for (final dep in engine.adapter.dependsOn) {
+        for (final dep in engine.dependsOn) {
           visit(dep);
         }
         sorted.add(engine);
       }
 
-      visiting.remove(entityType);
-      visited.add(entityType);
+      visiting.remove(engineId);
+      visited.add(engineId);
     }
 
-    for (final entityType in _engines.keys) {
-      visit(entityType);
+    for (final engine in _engines.values) {
+      visit(engine.identity);
     }
 
     return sorted;
@@ -127,11 +151,14 @@ class SyncOrchestrator {
     final sortedEngines = _getSortedEngines();
 
     for (final engine in sortedEngines) {
-      await engine.processOutbox();
+      if (isRunning) await engine.processOutbox();
+      final pullOffset_ = engine.config.freshPullOffsetEnabled
+          ? pullOffset
+          : null;
       final result = await engine.pull(
         force: force,
         freshPull: freshPull,
-        pullOffset: engine.config.freshPullOffsetEnabled ? pullOffset : null,
+        pullOffset: pullOffset_,
       );
       if (result == SyncResult.failed) {
         _logger.w(
@@ -140,6 +167,7 @@ class SyncOrchestrator {
         );
         return false;
       }
+      await wait();
     }
 
     return true;
@@ -173,6 +201,7 @@ class SyncOrchestrator {
     _logger.d(() => 'start() called with syncSpeed=$syncSpeed');
     _startOutboxProcessor(syncSpeed);
     _startPolling();
+    _isRunning = true;
   }
 
   /// Update the outbox processing mode without restarting polling/realtime pull.
@@ -191,6 +220,7 @@ class SyncOrchestrator {
       engine.stopPolling();
       engine.stopRealtime();
     }
+    _isRunning = false;
   }
 
   void startRealtime() {

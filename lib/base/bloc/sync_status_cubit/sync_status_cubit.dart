@@ -79,7 +79,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
         final existing = currentProgress[p.entityType];
 
         currentProgress[p.entityType] = SyncProgress(
-          synced: p.syncedCount,
+          synced: p.fetchCount + (existing?.synced ?? 0),
           total: p.totalCount ?? existing?.total ?? 0,
         );
 
@@ -188,15 +188,12 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     }
   }
 
-  void start() => orchestrator.start();
-  void stop() => orchestrator.stop();
-
   /// Runs a per-item decryption pass over all locally stored encrypted clips,
   /// then emits [SyncStatusState.complete]. Safe to call when the encryption
   /// worker is inactive — it will find zero encrypted items (or skip them) and
   /// proceed straight to [complete].
   Future<void> _runPostSyncDecryption() async {
-    if (isClosed) return;
+    if (isClosed || !decryptionService.canDecrypt) return;
     await decryptionService.decryptAll(
       onProgress: (decrypted, total) {
         if (!isClosed) {

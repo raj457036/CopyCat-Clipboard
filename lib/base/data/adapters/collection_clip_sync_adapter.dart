@@ -1,3 +1,4 @@
+import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
@@ -14,14 +15,15 @@ import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/paginated_results.dart';
 import 'package:injectable/injectable.dart';
 
-@Named("non_collection_clips")
+@Named("collection_clips")
 @LazySingleton(as: SyncAdapter<ClipboardItem>)
-class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
-  static const _logger = AppLogger.scoped('ClipSyncAdapter');
+class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
+  static const _logger = AppLogger.scoped('CollectionClipSyncAdapter');
   final SyncRepository _syncRepo;
   final ClipboardRepository _clipRepo;
   final ClipboardRepository _remoteRepo;
   final ClipBatchSyncService _batchSyncService;
+  final ClipCollectionCubit _collectionCubit;
   final ClipCrossSyncListener _realtimeListener;
   final FileCloudService _fileCloudService;
 
@@ -29,11 +31,12 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   /// trigger outbox re-enqueue (e.g., saving serverId after remote creation).
   final ClipboardSource _localSource;
 
-  ClipSyncAdapter(
+  CollectionClipSyncAdapter(
     this._syncRepo,
     @Named("local") this._clipRepo,
     @Named("remote") this._remoteRepo,
     this._batchSyncService,
+    this._collectionCubit,
     this._realtimeListener,
     this._fileCloudService,
     @Named("local") this._localSource,
@@ -58,7 +61,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     String? excludeDeviceId,
     DateTime? lastSynced,
   }) {
-    final result = _syncRepo.getLatestClipboardItems(
+    final result = _syncRepo.getLatestCollectionClipboardItems(
       limit: limit,
       offset: offset,
       excludeDeviceId: excludeDeviceId,
@@ -74,13 +77,10 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     required int offset,
     String? excludeDeviceId,
     DateTime? lastSynced,
-  }) {
-    return _syncRepo.getDeletedClipboardItems(
-      limit: limit,
-      offset: offset,
-      excludeDeviceId: excludeDeviceId,
-      lastSynced: lastSynced,
-    );
+  }) async {
+    // NO-OP
+    // Since clip sync adapter will be handling this.
+    return Right(PaginatedResult.empty());
   }
 
   @override
@@ -89,7 +89,9 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     required ConflictResolver<ClipboardItem> conflictResolver,
   }) async {
     await _batchSyncService.waitUntilReady();
-    final events = await _batchSyncService.syncBatch(items, {});
+    final collectionMapping = _collectionCubit.serverMapping;
+
+    final events = await _batchSyncService.syncBatch(items, collectionMapping);
     return events;
   }
 

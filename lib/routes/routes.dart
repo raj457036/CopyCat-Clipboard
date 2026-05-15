@@ -76,10 +76,10 @@ final appRouter = GoRouter(
       builder: (context, state, child) {
         final authState = context.read<AuthCubit>().state;
         final isLocalAuth = authState is LocalAuthenticatedAuthState;
-        final shouldRunInitialSync = switch (authState) {
-          AuthenticatedAuthState(:final onBoarded) => onBoarded,
-          _ => false,
-        };
+        // final shouldRunInitialSync = switch (authState) {
+        //   AuthenticatedAuthState(:final onBoarded) => onBoarded,
+        //   _ => false,
+        // };
         return MultiBlocProvider(
           providers: [
             BlocProvider<MonetizationCubit>(create: (context) => sl()),
@@ -93,9 +93,9 @@ final appRouter = GoRouter(
             BlocProvider<SyncStatusCubit>(
               create: (context) {
                 final cubit = sl<SyncStatusCubit>();
-                if (!isLocalAuth && shouldRunInitialSync) {
-                  unawaited(cubit.syncAll(const SyncAllParams()));
-                }
+                // if (!isLocalAuth && shouldRunInitialSync) {
+                //   unawaited(cubit.syncAll(const SyncAllParams()));
+                // }
                 return cubit;
               },
             ),

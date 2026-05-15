@@ -121,20 +121,29 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> authenticated(AuthUser user, String accessToken) async {
     analyticsRepo.setAnalyticUser(user);
 
-    final onboardingComplete = appConfigCubit.state.config.onBoardComplete;
+    final isOnboardingCompleted = appConfigCubit.state.config.onBoardComplete;
+    final isEncryptionKeySetup = appConfigCubit.state.config.enc2Key != null;
     emit(
       AuthState.authenticated(
         user: user,
         accessToken: accessToken,
-        onBoarded: onboardingComplete,
+        isOnboardingCompleted: isOnboardingCompleted,
+        isEncryptionKeySetup: isEncryptionKeySetup,
       ),
     );
   }
 
-  Future<void> oboardingComplete() async {
+  Future<void> setOnboardingCompleted() async {
     final currentState = state;
     if (currentState is AuthenticatedAuthState) {
-      emit(currentState.copyWith(onBoarded: true));
+      emit(currentState.copyWith(isOnboardingCompleted: true));
+    }
+  }
+
+  Future<void> encryptionKeySetupCompleted() async {
+    final currentState = state;
+    if (currentState is AuthenticatedAuthState) {
+      emit(currentState.copyWith(isEncryptionKeySetup: true));
     }
   }
 

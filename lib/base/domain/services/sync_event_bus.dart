@@ -17,13 +17,22 @@ class TypedSyncBatchEvent<T extends Syncable> implements SyncEvent {
 }
 
 class SyncProgressParams {
+  /// The entity type this progress update is for.
   final String entityType;
+
+  /// Total number of items synced so far for the current sync session.
   final int syncedCount;
+
+  /// Number of items fetched in the latest batch.
+  final int fetchCount;
+
+  /// Total number of items to be synced, if known.
   final int? totalCount;
 
   const SyncProgressParams({
     required this.entityType,
     required this.syncedCount,
+    required this.fetchCount,
     this.totalCount,
   });
 }

@@ -44,18 +44,6 @@ class AuthListener extends StatelessWidget {
   Future<void> resetAll(BuildContext context) async {
     EncryptionWorker.instance.dispose();
     final dbService = sl<DatabaseService>();
-    // context.read<OfflinePersistenceCubit>().stopListeners();
-    // context.read<DriveSetupCubit>().reset();
-    // sl<SyncOrchestrator>().stop();
-    // if (Platform.isAndroid) context.read<AndroidBgClipboardCubit?>()?.reset();
-    // context.read<MonetizationCubit>().logout();
-    // context.read<ClipCollectionCubit>().reset();
-    // context.read<ClipboardCubit>().reset();
-    // if (isDesktopPlatform) {
-    //   context.read<WindowActionCubit>()
-    //     ..setWindowdView()
-    //     ..show();
-    // }
     clearPersistedRootDir();
     await dbService.clearAll();
 
@@ -73,7 +61,11 @@ class AuthListener extends StatelessWidget {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) async {
         switch (state) {
-          case AuthenticatedAuthState(:final user, :final onBoarded):
+          case AuthenticatedAuthState(
+            :final user,
+            :final isOnboardingCompleted,
+            :final isEncryptionKeySetup,
+          ):
             {
               // MARK: - Post Login Initialization
               final MonetizationCubit monetizationCubit = sl();
@@ -81,9 +73,12 @@ class AuthListener extends StatelessWidget {
               final config = appConfigCubit.state.config;
 
               await monetizationCubit.login(user.userId);
-              await initEncryptionWorker(config, state);
 
-              if (!onBoarded) {
+              if (isEncryptionKeySetup) {
+                await initEncryptionWorker(config, state);
+              }
+
+              if (!isOnboardingCompleted) {
                 appRouter.goNamed(RouteConstants.onboard);
                 return;
               }
@@ -98,10 +93,12 @@ class AuthListener extends StatelessWidget {
             await context.windowAction?.show();
             appRouter.goNamed(RouteConstants.login);
             EncryptionWorker.instance.dispose();
+            syncOrchestrator.stop();
           case UnknownAuthState() || AuthenticatingAuthState():
             InAppNotificationService.i.dismissAll();
             await context.windowAction?.show();
             appRouter.goNamed(RouteConstants.login);
+            syncOrchestrator.stop();
           case LocalAuthenticatedAuthState():
             // MARK: - Offline Authentication Success
             appRouter.goNamed(RouteConstants.home);

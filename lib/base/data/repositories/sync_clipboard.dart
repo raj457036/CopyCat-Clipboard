@@ -19,7 +19,6 @@ class SyncRepositoryImpl implements SyncRepository {
     int offset = 0,
     String? excludeDeviceId,
     DateTime? lastSynced,
-    bool havingCollection = false,
   }) async {
     try {
       final result = await source.getLatestClipboardItems(
@@ -27,7 +26,27 @@ class SyncRepositoryImpl implements SyncRepository {
         offset: offset,
         excludeDeviceId: excludeDeviceId,
         lastSynced: lastSynced,
-        havingCollection: havingCollection,
+      );
+
+      return Right(result);
+    } catch (e) {
+      return Left(Failure.fromException(e));
+    }
+  }
+
+  @override
+  FailureOr<PaginatedResult<ClipboardItem>> getLatestCollectionClipboardItems({
+    int limit = 100,
+    int offset = 0,
+    String? excludeDeviceId,
+    DateTime? lastSynced,
+  }) async {
+    try {
+      final result = await source.getLatestCollectionClipboardItems(
+        limit: limit,
+        offset: offset,
+        excludeDeviceId: excludeDeviceId,
+        lastSynced: lastSynced,
       );
 
       return Right(result);

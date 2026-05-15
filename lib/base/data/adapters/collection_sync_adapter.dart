@@ -32,9 +32,6 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
   String get entityType => 'collection';
 
   @override
-  List<String> get dependsOn => const [];
-
-  @override
   CrossSyncListener<ClipCollection>? get realtimeListener => _realtimeListener;
 
   @override
@@ -49,6 +46,7 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
     required int offset,
     String? excludeDeviceId,
     DateTime? lastSynced,
+    bool freshPull = false,
   }) {
     return _syncRepo.getLatestClipCollections(
       limit: limit,

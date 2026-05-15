@@ -149,7 +149,7 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
       builder: (context, enc2Key) {
         return BlocSelector<AuthCubit, AuthState, AuthUser?>(
           selector: (state) {
-            return state.whenOrNull(authenticated: (user, _, _) => user);
+            return state.whenOrNull(authenticated: (user, _, _, _) => user);
           },
           builder: (context, user) {
             if (user == null) return const SizedBox.shrink();

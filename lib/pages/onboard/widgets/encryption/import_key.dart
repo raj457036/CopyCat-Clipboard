@@ -116,6 +116,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
     try {
       await appConfigCubit.setE2EEKey(importedKey);
       await appConfigCubit.toggleAutoEncrypt(true);
+      await authCubit.encryptionKeySetupCompleted();
       widget.onImportSuccess();
     } catch (e) {
       InAppNotificationService.i.notify(
