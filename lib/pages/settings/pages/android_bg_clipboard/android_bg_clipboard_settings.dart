@@ -8,7 +8,7 @@ import 'package:clipboard/base/constants/numbers/duration.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationType;
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/di/di.dart';
@@ -281,7 +281,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
       NotificationMessage(
         id: "bg_setup",
         body: context.locale.abc__ack__preparing,
-        type: NotificationType.loading,
       ),
     );
     setState(() {
@@ -338,7 +337,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
         NotificationMessage(
           id: "bg_setup_success",
           body: context.locale.abc__ack__ready,
-          type: NotificationType.success,
         ),
       );
     } catch (e) {
@@ -387,7 +385,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
           body: normalizedMode == 'inactive'
               ? context.locale.abc__ack__detection_mode_cleared
               : context.locale.abc__ack__detection_mode_updated,
-          type: NotificationType.success,
         ),
       );
     } catch (e) {
@@ -406,7 +403,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
           body: context.locale.abc__ack__detection_mode_update_failed(
             message: e.toString(),
           ),
-          type: NotificationType.error,
         ),
       );
     }

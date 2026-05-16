@@ -153,6 +153,7 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
   }
 
   Future<DriveAccessToken?> refreshAccess() async {
+    if (isClosed) return null;
     emit(const DriveSetupState.refreshingToken());
     final result = await repo.refreshAccessToken();
     result.fold(

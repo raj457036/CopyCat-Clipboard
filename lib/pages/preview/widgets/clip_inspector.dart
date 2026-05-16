@@ -5,7 +5,7 @@ import 'package:clipboard/base/data/services/notification_service.dart'
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationType;
+    show NotificationMessage;
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
@@ -191,7 +191,6 @@ class _ClipInspectorState extends State<ClipInspector> {
       NotificationMessage(
         id: "clip_inspector_saved",
         body: context.locale.preview__inspector__saved,
-        type: NotificationType.success,
       ),
     );
   }

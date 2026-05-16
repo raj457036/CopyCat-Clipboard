@@ -1,6 +1,4 @@
-import 'package:clipboard/base/enums/notification.dart';
-import 'package:flutter/widgets.dart';
-export 'package:clipboard/base/enums/notification.dart';
+import 'package:flutter/material.dart';
 
 const _emptyMessage = '';
 
@@ -12,6 +10,8 @@ class NotificationContent {
   final String body;
 
   NotificationContent({this.title, required this.body});
+
+  String get render => title != null ? "$title\n$body" : body;
 }
 
 /// A model representing a notification message,
@@ -19,15 +19,15 @@ class NotificationContent {
 class NotificationMessage extends NotificationContent {
   final String? id;
 
-  final NotificationType type;
-  final NotificationPriority priority;
+  final SnackBarAction? action;
+  final VoidCallback? onClose;
 
   NotificationMessage({
     this.id,
     super.title,
     required super.body,
-    this.type = NotificationType.info,
-    this.priority = NotificationPriority.medium,
+    this.action,
+    this.onClose,
   });
 
   /// A model representing a notification message that is built using a
@@ -36,15 +36,8 @@ class NotificationMessage extends NotificationContent {
   factory NotificationMessage.builder({
     required NotificationContentBuilder builder,
     String? id,
-    NotificationType type = NotificationType.info,
-    NotificationPriority priority = NotificationPriority.medium,
   }) {
-    return BuildNotificationMessage(
-      id: id,
-      builder: builder,
-      type: type,
-      priority: priority,
-    );
+    return BuildNotificationMessage(id: id, builder: builder);
   }
 
   NotificationContent get content =>
@@ -57,10 +50,6 @@ class NotificationMessage extends NotificationContent {
 class BuildNotificationMessage extends NotificationMessage {
   final NotificationContentBuilder builder;
 
-  BuildNotificationMessage({
-    super.id,
-    required this.builder,
-    super.type,
-    super.priority,
-  }) : super(body: _emptyMessage);
+  BuildNotificationMessage({super.id, required this.builder})
+    : super(body: _emptyMessage);
 }

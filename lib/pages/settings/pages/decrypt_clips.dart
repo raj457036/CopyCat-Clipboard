@@ -5,7 +5,7 @@ import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationType;
+    show NotificationMessage;
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
@@ -46,11 +46,7 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
           .fetchEncryptedCount();
       countResult.fold(
         (l) => InAppNotificationService.i.notify(
-          NotificationMessage(
-            id: "decrypt_clips_error",
-            body: l.message,
-            type: NotificationType.error,
-          ),
+          NotificationMessage(id: "decrypt_clips_error", body: l.message),
         ),
         (r) {
           totalEncrypted = r;
@@ -77,11 +73,7 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
       await result.fold(
         (l) async {
           InAppNotificationService.i.notify(
-            NotificationMessage(
-              id: "decrypt_clips_error",
-              body: l.message,
-              type: NotificationType.error,
-            ),
+            NotificationMessage(id: "decrypt_clips_error", body: l.message),
           );
           hasMore = false;
           totalEncrypted = -1;
@@ -103,7 +95,6 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
                   NotificationMessage(
                     id: "decrypt_clips_error",
                     body: Failure.fromException(e).message,
-                    type: NotificationType.error,
                   ),
                 );
                 hasMore = false;

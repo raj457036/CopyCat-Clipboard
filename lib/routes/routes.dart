@@ -6,7 +6,6 @@ import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import "package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart";
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import "package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart";
-import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/bloc/file_cloud_cubit/file_cloud_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import "package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart";

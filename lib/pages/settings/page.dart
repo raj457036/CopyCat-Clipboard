@@ -48,7 +48,7 @@ class SettingsPage extends StatelessWidget {
                   TabBar(
                     isScrollable: true,
                     tabAlignment: TabAlignment.start,
-                    onTap: print,
+                    onTap: (_) {},
                     tabs: [
                       Tab(text: context.locale.settings__tab__1),
                       Tab(text: context.locale.settings__tab__2),

@@ -3,7 +3,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationContent, NotificationType;
+    show NotificationMessage, NotificationContent;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/gestures.dart';
@@ -66,7 +66,6 @@ class _ApplyCouponDialogState extends State<ApplyCouponDialog> {
           builder: (context) => NotificationContent(
             body: context.locale.dialog__ack__sub_updated,
           ),
-          type: NotificationType.success,
         ),
       );
 

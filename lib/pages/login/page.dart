@@ -5,7 +5,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationType;
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/pages/login/widgets/login_form.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -110,11 +110,7 @@ class _LoginPageState extends State<LoginPage> {
           case UnauthenticatedAuthState(:final failure):
             if (failure == null) return;
             InAppNotificationService.i.notify(
-              NotificationMessage(
-                id: "login_failed",
-                body: failure.message,
-                type: NotificationType.error,
-              ),
+              NotificationMessage(id: "login_failed", body: failure.message),
             );
 
           default:

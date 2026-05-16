@@ -8,7 +8,7 @@ import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationType;
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/widgets/dialogs/inconsistent_timing.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +89,6 @@ class _NetworkObserverState extends State<NetworkObserver> {
           NotificationMessage(
             id: "internet_connected",
             body: context.locale.app__ack__internet_connected,
-            type: NotificationType.success,
           ),
         );
       }
@@ -99,7 +98,6 @@ class _NetworkObserverState extends State<NetworkObserver> {
         NotificationMessage(
           id: "internet_disconnected",
           body: context.locale.app__ack__internet_disconnected,
-          type: NotificationType.warning,
         ),
       );
     }

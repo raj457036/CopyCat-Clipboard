@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationType;
+    show NotificationMessage;
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/domain/services/file_cloud_service.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
@@ -136,7 +136,6 @@ class FileCloudCubit extends Cubit<FileCloudState> {
       NotificationMessage(
         id: 'file_cloud_download_error',
         body: failure.message,
-        type: NotificationType.error,
       ),
     );
   }

@@ -4,7 +4,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationType;
+    show NotificationMessage;
 import 'package:clipboard/base/domain/model/sync_status/syncstatus.dart';
 import 'package:clipboard/base/domain/repositories/clip_collection.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
@@ -74,7 +74,6 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
           NotificationMessage(
             id: "sync_restore_step_collection_error",
             body: l.toString(),
-            type: NotificationType.error,
           ),
         ),
         (r) => colTotal = r,
@@ -84,7 +83,6 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
           NotificationMessage(
             id: "sync_restore_step_clip_error",
             body: l.toString(),
-            type: NotificationType.error,
           ),
         ),
         (r) => clipTotal = r,

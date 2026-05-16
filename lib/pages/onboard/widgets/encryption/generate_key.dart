@@ -6,7 +6,7 @@ import 'package:clipboard/base/data/services/encryption.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationType;
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/pages/onboard/widgets/locale_and_logout.dart';
@@ -76,7 +76,6 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
         NotificationMessage(
           id: "save_key_failed",
           body: Failure.fromException(e).message,
-          type: NotificationType.error,
         ),
       );
     } finally {

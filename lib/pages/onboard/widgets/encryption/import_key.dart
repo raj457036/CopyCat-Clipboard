@@ -7,7 +7,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationType;
+    show NotificationMessage;
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
@@ -85,7 +85,6 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
           NotificationMessage(
             id: "invalid_key",
             body: locale.onboarding__snackbar__invalid_key,
-            type: NotificationType.error,
           ),
         );
         return;
@@ -95,7 +94,6 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
         NotificationMessage(
           id: "import_key_failed",
           body: Failure.fromException(e).message,
-          type: NotificationType.error,
         ),
       );
     } finally {
@@ -123,7 +121,6 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
         NotificationMessage(
           id: "save_key_failed",
           body: Failure.fromException(e).message,
-          type: NotificationType.error,
         ),
       );
     } finally {
@@ -167,7 +164,6 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
           NotificationMessage(
             id: "reset_key_failed",
             body: Failure.fromException(l).message,
-            type: NotificationType.error,
           ),
         ),
         (_) async {
@@ -176,7 +172,6 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
             NotificationMessage(
               id: "reset_key_success",
               body: locale.onboarding__snackbar__reset_key__success,
-              type: NotificationType.success,
             ),
           );
         },

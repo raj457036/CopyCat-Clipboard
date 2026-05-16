@@ -8,7 +8,7 @@ import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationType;
+    show NotificationMessage;
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/routes/routes.dart' show appRouter, rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart';
@@ -74,7 +74,6 @@ class ApplinkListener {
           NotificationMessage(
             id: "auth_code_validation_error",
             body: failure.message,
-            type: NotificationType.error,
           ),
         );
       }

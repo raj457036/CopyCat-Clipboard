@@ -5,7 +5,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationType;
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -71,7 +71,6 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
           NotificationMessage(
             id: "export_success",
             body: locale.onboarding__snackbar__export_success,
-            type: NotificationType.success,
           ),
         );
       }
@@ -80,7 +79,6 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
         NotificationMessage(
           id: "export_failed",
           body: Failure.fromException(e).message,
-          type: NotificationType.error,
         ),
       );
     } finally {

@@ -1,6 +1,6 @@
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationType;
+    show NotificationMessage;
 import 'package:clipboard/common/failure.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -91,7 +91,6 @@ class _MeidaKitVideoPlayerState extends State<MeidaKitVideoPlayer> {
         NotificationMessage(
           id: "video_player_error",
           body: Failure.fromException(e).message,
-          type: NotificationType.error,
         ),
       );
     } finally {

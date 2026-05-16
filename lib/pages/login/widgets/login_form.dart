@@ -9,7 +9,7 @@ import 'package:clipboard/base/data/services/notification_service.dart'
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
 import 'package:clipboard/base/domain/model/localization.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage, NotificationType;
+    show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/pages/login/widgets/local_signin_button.dart';
@@ -113,11 +113,7 @@ class LoginForm extends StatelessWidget {
     final failure = Failure.fromException(error);
     cubit.unauthenticated(failure);
     InAppNotificationService.i.notify(
-      NotificationMessage(
-        id: "login_failed",
-        body: failure.message,
-        type: NotificationType.error,
-      ),
+      NotificationMessage(id: "login_failed", body: failure.message),
     );
   }
 

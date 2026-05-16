@@ -1,5 +1,6 @@
 import 'package:clipboard/base/constants/numbers/breakpoints.dart'
     show Breakpoints;
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart'
@@ -40,9 +41,10 @@ class InAppNotificationService {
   EdgeInsets? _getSnackBarMargin() {
     final mq = _context.mq;
     const double snackBarWidth = 480.0;
-    final double horizontalMargin = (mq.size.width - snackBarWidth) / 2;
     if (!Breakpoints.isMobile(mq.size.width)) {
-      return EdgeInsets.symmetric(horizontal: horizontalMargin, vertical: 8.0);
+      // Desktop
+      final double horizontalMargin = (mq.size.width - snackBarWidth) / 2;
+      return EdgeInsets.symmetric(horizontal: horizontalMargin, vertical: 16.0);
     }
     return null;
   }
@@ -63,6 +65,30 @@ class InAppNotificationService {
     notification.controller.close();
   }
 
+  SnackBar _buildSnackBar(NotificationMessage message) {
+    late final NotificationContent messageContent;
+    final SnackBarBehavior behavior = isMobilePlatform
+        ? SnackBarBehavior.fixed
+        : SnackBarBehavior.floating;
+
+    if (message is BuildNotificationMessage) {
+      messageContent = message.builder(_context);
+    } else {
+      messageContent = message.content;
+    }
+
+    final Widget snackbarContent = Text(messageContent.render);
+
+    return SnackBar(
+      content: snackbarContent,
+      showCloseIcon: isDesktopPlatform,
+      behavior: behavior,
+      margin: _getSnackBarMargin(),
+      shape: const RoundedRectangleBorder(borderRadius: radius16),
+      action: message.action,
+    );
+  }
+
   /// Displays a notification message to the user using a SnackBar.
   /// If a notification with the same ID is already active, it will be replaced.
   void notify(NotificationMessage message) {
@@ -70,30 +96,14 @@ class InAppNotificationService {
       return;
     }
 
-    late final NotificationContent content;
-
-    if (message is BuildNotificationMessage) {
-      content = message.builder(_context);
-    } else {
-      content = message.content;
-    }
-
-    final colors = _context.colors;
-
-    final snackbar = SnackBar(
-      content: Text(content.body),
-      backgroundColor: colors.primary,
-      behavior: isMobilePlatform
-          ? SnackBarBehavior.fixed
-          : SnackBarBehavior.floating,
-      margin: _getSnackBarMargin(),
-    );
+    final snackbar = _buildSnackBar(message);
 
     final controller = _scaffoldMessenger.showSnackBar(snackbar);
     final activeNotification = ActiveNotification(message, controller);
     _activeNotifications.add(activeNotification);
 
     controller.closed.then((reason) {
+      activeNotification.message.onClose?.call();
       _activeNotifications.remove(activeNotification);
     });
   }

@@ -72,7 +72,7 @@ class _ClipMenuProviderState extends State<ClipMenuProvider> {
           section: 'Clip Actions',
           onPressed: () => downloadFile(context, item),
         ),
-      if (item.inCache && context.canPaste)
+      if (item.inCache)
         MenuItem(
           icon: Icons.copy,
           text: context.mlocale.copyButtonLabel.title,

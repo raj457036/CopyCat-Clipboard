@@ -9,7 +9,6 @@ import 'package:clipboard/base/domain/model/notification_message.dart'
 import 'package:clipboard/base/domain/sources/clip_collection.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
-import 'package:clipboard/base/enums/notification.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -103,7 +102,6 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
           body: context.locale.backup_restore__snackbar__saved(
             outputPath: result.outputPath,
           ),
-          type: NotificationType.success,
         ),
       );
     } catch (e) {
@@ -113,7 +111,6 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
           body: context.locale.backup_restore__snackbar__create_failed(
             message: '$e',
           ),
-          type: NotificationType.error,
         ),
       );
     } finally {
@@ -171,7 +168,6 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
             clips: summary.clipsRestored,
             collections: summary.collectionsRestored,
           ),
-          type: NotificationType.success,
         ),
       );
     } catch (e) {
@@ -181,7 +177,6 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
           body: context.locale.backup_restore__snackbar__restore_failed(
             message: '$e',
           ),
-          type: NotificationType.error,
         ),
       );
     } finally {
@@ -217,7 +212,6 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
           NotificationMessage(
             id: "backup_options_error",
             body: locale.backup_restore__error__select_clip_type,
-            type: NotificationType.error,
           ),
         );
         return;
@@ -227,7 +221,6 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
           NotificationMessage(
             id: "backup_options_error",
             body: locale.backup_restore__error__from_after_to,
-            type: NotificationType.error,
           ),
         );
         return;
