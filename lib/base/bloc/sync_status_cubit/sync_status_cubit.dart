@@ -2,6 +2,8 @@ import 'dart:async' show StreamSubscription;
 
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/constants/numbers/duration.dart';
+import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationContent, NotificationMessage;
@@ -14,6 +16,9 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart' show logger;
+import 'package:clipboard/utils/utility.dart';
+import 'package:duration/duration.dart';
+import 'package:duration/locale.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -45,6 +50,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
   final Set<String> _busyEngines = {};
   final Map<String, DateTime> _lastNotifiedAt = {};
   bool _isManualSyncing = false;
+  DateTime? _lastManualSyncAt;
 
   SyncStatusCubit(
     this.orchestrator,
@@ -58,6 +64,10 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
 
   Subscription? get _activeSubscription =>
       monetizationCubit.state.when(unknown: () => null, active: (sub) => sub);
+
+  Duration get _manualSyncCooldown => Duration(
+    seconds: _activeSubscription?.syncInterval ?? defaultBestEffortSyncInterval,
+  );
 
   /// Determines the pull offset for fresh pulls based on subscription status.
   int get pullOffset => _activeSubscription?.syncHours != null
@@ -157,6 +167,18 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
   }
 
   Future<void> syncAll(SyncAllParams params) async {
+    if (_isOnManualCooldown(params)) {
+      final cooldown = _manualSyncCooldown;
+      final elapsed = systemTime().difference(_lastManualSyncAt!);
+      final remaining = cooldown - elapsed;
+      _notifyManualSyncCooldown(remaining);
+      return;
+    }
+
+    if (params.force && !params.freshPull) {
+      _lastManualSyncAt = systemTime();
+    }
+
     _isManualSyncing = true;
     if (state is! SyncingStatus) {
       emit(const SyncStatusState.syncing());
@@ -190,6 +212,35 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
       _isManualSyncing = false;
       _checkCompletion();
     }
+  }
+
+  bool _isOnManualCooldown(SyncAllParams params) {
+    if (!params.force || params.freshPull) return false;
+    final lastSyncAt = _lastManualSyncAt;
+    if (lastSyncAt == null) return false;
+
+    final elapsed = systemTime().difference(lastSyncAt);
+    return elapsed < _manualSyncCooldown;
+  }
+
+  void _notifyManualSyncCooldown(Duration remaining) {
+    InAppNotificationService.i.notify(
+      NotificationMessage.builder(
+        id: 'manual_sync_cooldown',
+        builder: (context) {
+          final remainingText = remaining.pretty(
+            abbreviated: true,
+            locale:
+                DurationLocale.fromLanguageCode(context.locale.localeName) ??
+                const EnglishDurationLocale(),
+          );
+          return NotificationContent(
+            body:
+                'Sync is on cooldown. Please wait $remainingText before syncing again.',
+          );
+        },
+      ),
+    );
   }
 
   /// Runs a per-item decryption pass over all locally stored encrypted clips,

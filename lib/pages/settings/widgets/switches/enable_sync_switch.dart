@@ -1,5 +1,8 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
+import 'package:clipboard/base/constants/numbers/duration.dart';
+import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/di/di.dart';
@@ -15,9 +18,15 @@ class EnableSyncSwitch extends StatelessWidget {
     appConfigCubit.changeSync(enabled);
 
     final syncOrchestrator = sl<SyncOrchestrator>();
+    final syncInterval =
+        context.read<MonetizationCubit>().active?.syncInterval ??
+        defaultBestEffortSyncInterval;
 
     if (enabled) {
-      syncOrchestrator.start(syncSpeed: appConfigCubit.state.config.syncSpeed);
+      syncOrchestrator.start(
+        syncSpeed: appConfigCubit.state.config.syncSpeed,
+        intervalSeconds: syncInterval,
+      );
       context.read<SyncStatusCubit>().syncAll(const SyncAllParams());
     } else {
       syncOrchestrator.stop();

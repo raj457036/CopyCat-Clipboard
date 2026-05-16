@@ -197,10 +197,10 @@ class SyncOrchestrator {
   /// - [SyncSpeed.realtime]: Subscribes to the outbox notification stream
   ///   for instant push on every new entry.
   /// - [SyncSpeed.balanced]: Polls the outbox every [AppConfig.pollingIntervalSeconds] seconds.
-  void start({SyncSpeed syncSpeed = SyncSpeed.balanced}) {
+  void start({SyncSpeed syncSpeed = SyncSpeed.balanced, int? intervalSeconds}) {
     _logger.d(() => 'start() called with syncSpeed=$syncSpeed');
-    _startOutboxProcessor(syncSpeed);
-    _startPolling();
+    _startOutboxProcessor(syncSpeed, intervalSeconds: intervalSeconds);
+    _startPolling(intervalSeconds: intervalSeconds);
     if (syncSpeed == SyncSpeed.realtime) {
       startRealtime();
     }
@@ -232,13 +232,13 @@ class SyncOrchestrator {
     }
   }
 
-  void _startPolling() {
+  void _startPolling({int? intervalSeconds}) {
     for (final engine in _engines.values) {
-      engine.startPolling();
+      engine.startPolling(intervalSeconds: intervalSeconds);
     }
   }
 
-  void _startOutboxProcessor(SyncSpeed syncSpeed) {
+  void _startOutboxProcessor(SyncSpeed syncSpeed, {int? intervalSeconds}) {
     _logger.d(() => '_startOutboxProcessor: mode=$syncSpeed');
     // Cancel existing processors
     _outboxTimer?.cancel();
@@ -255,10 +255,12 @@ class SyncOrchestrator {
           _processOutboxSynchronized();
         });
       case SyncSpeed.balanced:
-        // Poll every 5 seconds
-        _logger.d('Starting 5s balanced timer');
-        _outboxTimer = Timer.periodic(const Duration(seconds: $5S), (_) {
-          _logger.d('5s timer fired, triggering push...');
+        final balancedInterval = intervalSeconds ?? $5S;
+        _logger.d(() => 'Starting ${balancedInterval}s balanced timer');
+        _outboxTimer = Timer.periodic(Duration(seconds: balancedInterval), (_) {
+          _logger.d(
+            () => '${balancedInterval}s timer fired, triggering push...',
+          );
           _processOutboxSynchronized();
         });
     }

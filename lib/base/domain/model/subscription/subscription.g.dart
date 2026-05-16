@@ -32,7 +32,8 @@ _$SubscriptionImpl _$$SubscriptionImplFromJson(Map<String, dynamic> json) =>
       theming: json['theming'] as bool? ?? false,
       syncHours: (json['syncHr'] as num?)?.toInt() ?? defaultSyncHourOffset,
       ads: json['ads'] as bool? ?? true,
-      syncInterval: (json['syncInt'] as num?)?.toInt() ?? $45S,
+      syncInterval:
+          (json['syncInt'] as num?)?.toInt() ?? defaultBestEffortSyncInterval,
       edit: json['edit'] as bool? ?? false,
       activeTill: _$JsonConverterFromJson<String, DateTime>(
         json['activeTill'],

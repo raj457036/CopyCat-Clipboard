@@ -5,7 +5,8 @@ import 'package:clipboard/base/constants/numbers/values.dart'
         defaultSyncHourOffset,
         defaultMaxItemPerCollection,
         defaultCollectionCount,
-        defaultNoOfSyncedDevices;
+        defaultNoOfSyncedDevices,
+        defaultBestEffortSyncInterval;
 import 'package:clipboard/base/domain/model/base.dart';
 import 'package:clipboard/base/domain/model/json_converters/datetime_converters.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -35,7 +36,9 @@ class Subscription with _$Subscription, Identifiable {
     @Default(false) bool theming,
     @JsonKey(name: "syncHr") @Default(defaultSyncHourOffset) int syncHours,
     @Default(true) bool ads,
-    @JsonKey(name: "syncInt") @Default($45S) int syncInterval,
+    @JsonKey(name: "syncInt")
+    @Default(defaultBestEffortSyncInterval)
+    int syncInterval,
     @Default(false) bool edit,
     @DateTimeConverter() DateTime? activeTill,
     @JsonKey(name: "devices")

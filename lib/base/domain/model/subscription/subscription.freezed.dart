@@ -464,7 +464,7 @@ class _$SubscriptionImpl extends _Subscription {
     this.theming = false,
     @JsonKey(name: "syncHr") this.syncHours = defaultSyncHourOffset,
     this.ads = true,
-    @JsonKey(name: "syncInt") this.syncInterval = $45S,
+    @JsonKey(name: "syncInt") this.syncInterval = defaultBestEffortSyncInterval,
     this.edit = false,
     @DateTimeConverter() this.activeTill,
     @JsonKey(name: "devices") this.maxSyncDevices = defaultNoOfSyncedDevices,

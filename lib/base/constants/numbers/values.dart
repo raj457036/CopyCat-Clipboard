@@ -1,3 +1,5 @@
+import 'package:clipboard/base/constants/numbers/duration.dart';
+
 const kMaxDropItemCount = 5;
 
 // Configs
@@ -16,3 +18,5 @@ const defaultSyncHourOffset = 24;
 
 /// Default maximum number of items per collection
 const defaultMaxItemPerCollection = 50;
+
+const defaultBestEffortSyncInterval = 15 * $60S; // 15 mins
