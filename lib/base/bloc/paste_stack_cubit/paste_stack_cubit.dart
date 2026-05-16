@@ -30,7 +30,7 @@ class PasteStackState {
   }
 }
 
-@lazySingleton
+@Injectable(cache: true)
 class PasteStackCubit extends Cubit<PasteStackState> {
   static const Size stackWindowSize = Size(320, 720);
 

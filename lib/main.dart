@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
+import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
@@ -246,6 +248,8 @@ class MainApp extends StatelessWidget {
         BlocProvider<AuthCubit>(create: (context) => sl()),
         BlocProvider<AppConfigCubit>(create: (context) => sl()..load()),
         BlocProvider<WindowActionCubit>(create: (context) => sl()),
+        BlocProvider<EventBusCubit>(create: (context) => sl()),
+        BlocProvider<MonetizationCubit>(create: (context) => sl()),
       ],
       child: isMobilePlatform
           ? GestureDetector(

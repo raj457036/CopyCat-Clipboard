@@ -22,10 +22,11 @@ import 'package:go_router/go_router.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-Future<void> _maybeShowReviewPrompt(BuildContext ctx) async {
-  if (!ctx.mounted) return;
+Future<void> _maybeShowReviewPrompt() async {
+  final context = rootNavigationKey.currentContext;
+  if (context == null) return;
   try {
-    final appConfigCubit = ctx.read<AppConfigCubit>();
+    final appConfigCubit = context.read<AppConfigCubit>();
     await appConfigCubit.trackCopyPasteSuccess();
   } catch (e) {
     logger.e("Error tracking copy/paste success for review prompt: $e");
@@ -50,7 +51,7 @@ Future<void> multiCopyToClipboard(
           type: NotificationType.success,
         ),
       );
-      _maybeShowReviewPrompt(ctx);
+      unawaited(_maybeShowReviewPrompt());
     }
   } catch (e) {
     InAppNotificationService.i.notify(
@@ -85,7 +86,7 @@ Future<void> copyToClipboard(
           type: NotificationType.success,
         ),
       );
-      _maybeShowReviewPrompt(ctx);
+      unawaited(_maybeShowReviewPrompt());
     }
   } catch (e) {
     // showTextSnackbar(
@@ -224,8 +225,10 @@ Future<void> launchEmail(ClipboardItem item) async {
 
 Future<void> pasteOnLastWindow(BuildContext context, ClipboardItem item) async {
   final focusManager = WindowFocusManager.of(context);
-  await _maybeShowReviewPrompt(context);
+  await copyToClipboard(context, item, noAck: true);
   await focusManager?.toggleAndPaste(item);
+  if (!context.mounted) return;
+  unawaited(_maybeShowReviewPrompt());
 }
 
 List<ClipboardItem> selectedClips(BuildContext context) {

@@ -67,7 +67,6 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   }
 
   Future<void> toggleAndPaste(ClipboardItem item) async {
-    await copyToClipboard(context, item, noAck: true);
     final unfocused = await toggleWindow();
     await Future.delayed(Durations.short1);
     if (unfocused == true) {

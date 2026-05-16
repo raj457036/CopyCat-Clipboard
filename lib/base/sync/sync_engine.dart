@@ -228,7 +228,7 @@ class SyncEngine<T extends Syncable> {
             ),
           );
 
-          // If we stopped mid-batch, we'd persist the cursor here with the offset
+          // NOTE(raj): If we stopped mid-batch, we'd persist the cursor here with the offset
           // But currently we process sequentially.
 
           return true;

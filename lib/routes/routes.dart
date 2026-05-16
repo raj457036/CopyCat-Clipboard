@@ -76,13 +76,13 @@ final appRouter = GoRouter(
       builder: (context, state, child) {
         final authState = context.read<AuthCubit>().state;
         final isLocalAuth = authState is LocalAuthenticatedAuthState;
-        // final shouldRunInitialSync = switch (authState) {
-        //   AuthenticatedAuthState(:final onBoarded) => onBoarded,
-        //   _ => false,
-        // };
+        final shouldRunInitialSync = switch (authState) {
+          AuthenticatedAuthState(:final isOnboardingCompleted) =>
+            isOnboardingCompleted,
+          _ => false,
+        };
         return MultiBlocProvider(
           providers: [
-            BlocProvider<MonetizationCubit>(create: (context) => sl()),
             BlocProvider<PasteStackCubit>(
               create: (context) => PasteStackCubit(
                 context.read<AppConfigCubit>(),
@@ -93,19 +93,33 @@ final appRouter = GoRouter(
             BlocProvider<SyncStatusCubit>(
               create: (context) {
                 final cubit = sl<SyncStatusCubit>();
-                // if (!isLocalAuth && shouldRunInitialSync) {
-                //   unawaited(cubit.syncAll(const SyncAllParams()));
-                // }
+                if (!isLocalAuth && shouldRunInitialSync) {
+                  unawaited(cubit.syncAll(const SyncAllParams()));
+                }
                 return cubit;
               },
             ),
             BlocProvider<OfflinePersistenceCubit>(
-              create: (context) => sl()..startListeners(),
+              create: (context) {
+                final cubit = sl<OfflinePersistenceCubit>();
+                if (shouldRunInitialSync || isLocalAuth) {
+                  unawaited(cubit.startListeners());
+                }
+                return cubit;
+              },
               lazy: false,
             ),
-            BlocProvider<FileCloudCubit>(create: (context) => sl()),
+            BlocProvider<FileCloudCubit>(
+              create: (context) => sl<FileCloudCubit>(),
+            ),
             BlocProvider<ClipCollectionCubit>(
-              create: (context) => sl()..fetch(),
+              create: (context) {
+                final cubit = sl<ClipCollectionCubit>();
+                if (shouldRunInitialSync || isLocalAuth) {
+                  unawaited(cubit.fetch());
+                }
+                return cubit;
+              },
             ),
             BlocProvider<DriveSetupCubit>(
               create: (context) {
@@ -116,16 +130,29 @@ final appRouter = GoRouter(
                 return cubit;
               },
             ),
-            BlocProvider<EventBusCubit>(create: (context) => sl()),
-            BlocProvider<SelectedClipsCubit>(create: (context) => sl()),
+
+            BlocProvider<SelectedClipsCubit>(
+              create: (context) => sl<SelectedClipsCubit>(),
+            ),
             BlocProvider<ClipboardCubit>(
-              lazy: false,
-              create: (context) => sl()..fetch(),
+              create: (context) {
+                final cubit = sl<ClipboardCubit>();
+                if (shouldRunInitialSync || isLocalAuth) {
+                  unawaited(cubit.fetch());
+                }
+                return cubit;
+              },
             ),
             if (Platform.isAndroid)
               BlocProvider<AndroidBgClipboardCubit>(
                 lazy: false,
-                create: (context) => sl()..syncStates(),
+                create: (context) {
+                  final cubit = sl<AndroidBgClipboardCubit>();
+                  if (shouldRunInitialSync || isLocalAuth) {
+                    unawaited(cubit.syncStates());
+                  }
+                  return cubit;
+                },
               ),
           ],
           child: MonetizationListener(appConfigCubit: sl(), child: child),
