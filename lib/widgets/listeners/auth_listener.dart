@@ -2,6 +2,8 @@ import 'package:clipboard/base/background/encryption_worker.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/constants/numbers/duration.dart';
+import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
@@ -83,7 +85,13 @@ class AuthListener extends StatelessWidget {
                 return;
               }
 
-              syncOrchestrator.start(syncSpeed: config.syncSpeed);
+              final cadence =
+                  monetizationCubit.active?.syncInterval ??
+                  defaultBestEffortSyncInterval;
+              syncOrchestrator.start(
+                syncSpeed: config.syncSpeed,
+                intervalSeconds: cadence,
+              );
               appRouter.goNamed(RouteConstants.home);
             }
           case UnauthenticatedAuthState(:final failure):

@@ -40,7 +40,7 @@ class InAppNotificationService {
 
   EdgeInsets? _getSnackBarMargin() {
     final mq = _context.mq;
-    const double snackBarWidth = 480.0;
+    const double snackBarWidth = 580.0;
     if (!Breakpoints.isMobile(mq.size.width)) {
       // Desktop
       final double horizontalMargin = (mq.size.width - snackBarWidth) / 2;

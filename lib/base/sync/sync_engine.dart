@@ -388,12 +388,10 @@ class SyncEngine<T extends Syncable> {
 
   // ─── POLLING & REALTIME ──────────────────────────────────────────────────
 
-  void startPolling() {
+  void startPolling({int? intervalSeconds}) {
     stopPolling();
-    _pollingTimer = Timer.periodic(
-      Duration(seconds: config.pollingIntervalSeconds),
-      (_) => pull(),
-    );
+    final cadence = intervalSeconds ?? config.pollingIntervalSeconds;
+    _pollingTimer = Timer.periodic(Duration(seconds: cadence), (_) => pull());
   }
 
   void stopPolling() {

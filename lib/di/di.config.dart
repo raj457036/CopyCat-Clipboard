@@ -401,7 +401,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<String>(instanceName: 'device_id'),
       ),
     );
-    gh.lazySingleton<_i554.PasteStackCubit>(
+    gh.factory<_i554.PasteStackCubit>(
       () => _i554.PasteStackCubit(
         gh<_i542.AppConfigCubit>(),
         gh<_i657.WindowActionCubit>(),
