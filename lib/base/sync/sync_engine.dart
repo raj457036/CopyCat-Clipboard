@@ -425,6 +425,7 @@ class SyncEngine<T extends Syncable> {
 
   Future<void> _onRealtimeEvent(CrossSyncEvent<T> event) async {
     try {
+      logger.d(() => "Received realtime event: $event");
       final (type, item) = event;
 
       if (type == CrossSyncEventType.delete) {

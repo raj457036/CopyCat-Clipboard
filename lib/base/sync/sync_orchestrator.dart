@@ -201,6 +201,9 @@ class SyncOrchestrator {
     _logger.d(() => 'start() called with syncSpeed=$syncSpeed');
     _startOutboxProcessor(syncSpeed);
     _startPolling();
+    if (syncSpeed == SyncSpeed.realtime) {
+      startRealtime();
+    }
     _isRunning = true;
   }
 
