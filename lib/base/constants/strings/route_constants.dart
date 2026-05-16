@@ -20,4 +20,5 @@ class RouteConstants {
   static const String createClipNote = "create-clip-note";
   static const String pasteStack = "paste-stack";
   static const String backupRestore = "backup-restore";
+  static const String deviceManagement = "device-management";
 }
