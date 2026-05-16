@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:clipboard/base/background/encryption_worker.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
-import 'package:clipboard/base/constants/numbers/duration.dart';
-import 'package:clipboard/base/constants/numbers/values.dart';
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
@@ -58,45 +59,40 @@ class AuthListener extends StatelessWidget {
     );
   }
 
+  Future<void> _handleAuthenticatedState(AuthenticatedAuthState state) async {
+    final AppConfigCubit appConfigCubit = sl();
+    final UserDevicesCubit userDevicesCubit = sl();
+    final config = appConfigCubit.state.config;
+
+    final monetizationCubit = sl<MonetizationCubit>();
+    await monetizationCubit.login(state.user.userId);
+
+    if (state.isEncryptionKeySetup) {
+      await initEncryptionWorker(config, state);
+    }
+
+    if (!state.isOnboardingCompleted) {
+      appRouter.goNamed(RouteConstants.onboard);
+      return;
+    }
+
+    unawaited(userDevicesCubit.registerCurrentDevice());
+    appRouter.goNamed(RouteConstants.home);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) async {
         switch (state) {
-          case AuthenticatedAuthState(
-            :final user,
-            :final isOnboardingCompleted,
-            :final isEncryptionKeySetup,
-          ):
+          case AuthenticatedAuthState():
             {
-              // MARK: - Post Login Initialization
-              final MonetizationCubit monetizationCubit = sl();
-              final AppConfigCubit appConfigCubit = sl();
-              final config = appConfigCubit.state.config;
-
-              await monetizationCubit.login(user.userId);
-
-              if (isEncryptionKeySetup) {
-                await initEncryptionWorker(config, state);
-              }
-
-              if (!isOnboardingCompleted) {
-                appRouter.goNamed(RouteConstants.onboard);
-                return;
-              }
-
-              final cadence =
-                  monetizationCubit.active?.syncInterval ??
-                  defaultBestEffortSyncInterval;
-              syncOrchestrator.start(
-                syncSpeed: config.syncSpeed,
-                intervalSeconds: cadence,
-              );
-              appRouter.goNamed(RouteConstants.home);
+              await _handleAuthenticatedState(state);
             }
           case UnauthenticatedAuthState(:final failure):
             // MARK: - Post Logout Cleanup
             if (failure == null) resetAll(context);
+            sl<UserDevicesCubit>().clear();
             context.read<AppConfigCubit>().reset();
             await context.windowAction?.show();
             appRouter.goNamed(RouteConstants.login);
@@ -104,6 +100,7 @@ class AuthListener extends StatelessWidget {
             syncOrchestrator.stop();
           case UnknownAuthState() || AuthenticatingAuthState():
             InAppNotificationService.i.dismissAll();
+            sl<UserDevicesCubit>().clear();
             await context.windowAction?.show();
             appRouter.goNamed(RouteConstants.login);
             syncOrchestrator.stop();

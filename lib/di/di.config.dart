@@ -38,6 +38,8 @@ import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.da
     as _i653;
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart'
     as _i891;
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart'
+    as _i805;
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart'
     as _i657;
 import 'package:clipboard/base/data/adapters/clip_sync_adapter.dart' as _i8;
@@ -65,6 +67,7 @@ import 'package:clipboard/base/data/repositories/restoration_status.dart'
     as _i970;
 import 'package:clipboard/base/data/repositories/subscription.dart' as _i623;
 import 'package:clipboard/base/data/repositories/sync_clipboard.dart' as _i223;
+import 'package:clipboard/base/data/repositories/user_devices.dart' as _i843;
 import 'package:clipboard/base/data/services/application_meta_resolver.dart'
     as _i375;
 import 'package:clipboard/base/data/services/clipboard_service.dart' as _i63;
@@ -96,6 +99,8 @@ import 'package:clipboard/base/data/sources/subscription/remote_source.dart'
     as _i35;
 import 'package:clipboard/base/data/sources/sync_clipboard/remote_source.dart'
     as _i425;
+import 'package:clipboard/base/data/sources/user_devices/remote_source.dart'
+    as _i752;
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart'
     as _i687;
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart'
@@ -117,6 +122,7 @@ import 'package:clipboard/base/domain/repositories/subscription.dart' as _i956;
 import 'package:clipboard/base/domain/repositories/sync_clipboard.dart' as _i61;
 import 'package:clipboard/base/domain/repositories/sync_cursor.dart' as _i834;
 import 'package:clipboard/base/domain/repositories/sync_outbox.dart' as _i770;
+import 'package:clipboard/base/domain/repositories/user_devices.dart' as _i462;
 import 'package:clipboard/base/domain/services/application_meta_resolver.dart'
     as _i533;
 import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart'
@@ -136,6 +142,7 @@ import 'package:clipboard/base/domain/sources/clipboard.dart' as _i23;
 import 'package:clipboard/base/domain/sources/restoration_status.dart' as _i922;
 import 'package:clipboard/base/domain/sources/subscription.dart' as _i422;
 import 'package:clipboard/base/domain/sources/sync_clipboard.dart' as _i782;
+import 'package:clipboard/base/domain/sources/user_devices.dart' as _i543;
 import 'package:clipboard/base/sync/sync_orchestrator.dart' as _i443;
 import 'package:clipboard/di/modules.dart' as _i234;
 import 'package:focus_window/focus_window.dart' as _i291;
@@ -301,6 +308,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i952.InAppReviewService>(),
       ),
     );
+    gh.lazySingleton<_i543.UserDevicesSource>(
+      () => _i752.RemoteUserDevicesSource(gh<_i454.SupabaseClient>()),
+      instanceName: 'remote',
+    );
     gh.lazySingleton<_i23.ClipboardSource>(
       () => _i411.RemoteClipboardSource(gh<_i454.SupabaseClient>()),
       instanceName: 'remote',
@@ -380,6 +391,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i246.MonetizationCubit>(
       () => _i246.MonetizationCubit(repo: gh<_i956.SubscriptionRepository>()),
+    );
+    gh.lazySingleton<_i462.UserDevicesRepository>(
+      () => _i843.UserDevicesRepositoryImpl(
+        gh<_i543.UserDevicesSource>(instanceName: 'remote'),
+        gh<_i454.SupabaseClient>(),
+      ),
     );
     gh.lazySingleton<_i589.SyncAdapter<_i1066.ClipboardItem>>(
       () => _i8.ClipSyncAdapter(
@@ -480,6 +497,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i770.SyncOutboxRepository>(),
         gh<_i292.SyncEventBus>(),
         gh<String>(instanceName: 'device_id'),
+      ),
+    );
+    gh.lazySingleton<_i805.UserDevicesCubit>(
+      () => _i805.UserDevicesCubit(
+        repo: gh<_i462.UserDevicesRepository>(),
+        packageInfo: gh<_i655.PackageInfo>(),
+        deviceId: gh<String>(instanceName: 'device_id'),
+        syncOrchestrator: gh<_i443.SyncOrchestrator>(),
+        appConfigCubit: gh<_i542.AppConfigCubit>(),
+        monetizationCubit: gh<_i246.MonetizationCubit>(),
       ),
     );
     gh.factory<_i891.SyncStatusCubit>(

@@ -1,45 +1,16 @@
-import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
-import 'package:clipboard/base/constants/strings/route_constants.dart';
+import 'dart:async';
+
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart' show AuthCubit;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
-class SplashPage extends StatefulWidget {
+class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
 
   @override
-  State<SplashPage> createState() => _SplashPageState();
-}
-
-class _SplashPageState extends State<SplashPage> {
-  @override
-  void initState() {
-    super.initState();
-    checkAuth();
-  }
-
-  Future<void> checkAuth() async {
-    final authCubit = context.read<AuthCubit>();
-    await authCubit.checkForAuthentication();
-
-    if (!mounted) return;
-
-    authCubit.state.maybeWhen(
-      authenticated: (user, accessToken, isOnboardingCompleted, _) {
-        if (!isOnboardingCompleted) {
-          context.goNamed(RouteConstants.onboard);
-        } else {
-          context.goNamed(RouteConstants.home);
-        }
-      },
-      localAuthenticated: () => context.goNamed(RouteConstants.home),
-      orElse: () => context.goNamed(RouteConstants.login),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
+    unawaited(context.read<AuthCubit>().checkForAuthentication());
     return Scaffold(
       body: Center(
         child: Column(

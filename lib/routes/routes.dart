@@ -38,6 +38,7 @@ import "package:clipboard/pages/reset_password/page.dart";
 import "package:clipboard/pages/settings/page.dart";
 import "package:clipboard/pages/settings/pages/android_bg_clipboard/android_bg_clipboard_settings.dart";
 import "package:clipboard/pages/settings/pages/backup_restore/page.dart";
+import "package:clipboard/pages/settings/pages/device_management/page.dart";
 import "package:clipboard/pages/settings/pages/custom_exclusion_rule/custom_exclusion_rule.dart";
 import "package:clipboard/pages/settings/pages/decrypt_clips.dart";
 import "package:clipboard/pages/settings/pages/exclusion_rules.dart";
@@ -325,6 +326,13 @@ final appRouter = GoRouter(
                   path: 'backup-restore',
                   builder: (context, state) {
                     return BackupRestorePage(key: state.pageKey);
+                  },
+                ),
+                GoRoute(
+                  name: RouteConstants.deviceManagement,
+                  path: 'device-management',
+                  builder: (context, state) {
+                    return DeviceManagementPage(key: state.pageKey);
                   },
                 ),
               ],
