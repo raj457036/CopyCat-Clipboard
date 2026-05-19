@@ -29,7 +29,7 @@ import "package:universal_io/io.dart";
 part 'offline_persistance_cubit.freezed.dart';
 part 'offline_persistance_state.dart';
 
-@Injectable(cache: true)
+@lazySingleton
 class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   final AuthCubit auth;
   final ClipboardRepository repo;

@@ -36,7 +36,7 @@ class SyncProgressInitParams {
   const SyncProgressInitParams(this.totalCounts);
 }
 
-@injectable
+@lazySingleton
 class SyncStatusCubit extends Cubit<SyncStatusState> {
   static const _notificationDedupeWindow = Duration(seconds: 3);
 

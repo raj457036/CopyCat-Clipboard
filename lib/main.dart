@@ -4,6 +4,9 @@ import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
@@ -250,6 +253,9 @@ class MainApp extends StatelessWidget {
         BlocProvider<WindowActionCubit>(create: (context) => sl()),
         BlocProvider<EventBusCubit>(create: (context) => sl()),
         BlocProvider<MonetizationCubit>(create: (context) => sl()),
+        BlocProvider<OfflinePersistenceCubit>(create: (context) => sl()),
+        BlocProvider<SyncStatusCubit>(create: (context) => sl()),
+        BlocProvider<UserDevicesCubit>(create: (context) => sl()),
       ],
       child: isMobilePlatform
           ? GestureDetector(

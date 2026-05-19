@@ -4,6 +4,8 @@ import 'package:clipboard/base/background/encryption_worker.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
@@ -61,7 +63,6 @@ class AuthListener extends StatelessWidget {
 
   Future<void> _handleAuthenticatedState(AuthenticatedAuthState state) async {
     final AppConfigCubit appConfigCubit = sl();
-    final UserDevicesCubit userDevicesCubit = sl();
     final config = appConfigCubit.state.config;
 
     final monetizationCubit = sl<MonetizationCubit>();
@@ -76,7 +77,9 @@ class AuthListener extends StatelessWidget {
       return;
     }
 
-    unawaited(userDevicesCubit.registerCurrentDevice());
+    unawaited(sl<OfflinePersistenceCubit>().startListeners());
+    unawaited(sl<SyncStatusCubit>().syncAll(const SyncAllParams()));
+    unawaited(sl<UserDevicesCubit>().registerCurrentDevice());
     appRouter.goNamed(RouteConstants.home);
   }
 
@@ -86,9 +89,7 @@ class AuthListener extends StatelessWidget {
       listener: (context, state) async {
         switch (state) {
           case AuthenticatedAuthState():
-            {
-              await _handleAuthenticatedState(state);
-            }
+            await _handleAuthenticatedState(state);
           case UnauthenticatedAuthState(:final failure):
             // MARK: - Post Logout Cleanup
             if (failure == null) resetAll(context);
@@ -106,6 +107,7 @@ class AuthListener extends StatelessWidget {
             syncOrchestrator.stop();
           case LocalAuthenticatedAuthState():
             // MARK: - Offline Authentication Success
+            unawaited(sl<OfflinePersistenceCubit>().startListeners());
             appRouter.goNamed(RouteConstants.home);
         }
       },
