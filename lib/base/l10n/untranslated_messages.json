@@ -185,7 +185,8 @@
     "settings__tile__review__subtitle",
     "collections__read_only__banner",
     "collections__read_only__toast",
-    "collections__read_only__upgrade_action"
+    "collections__read_only__upgrade_action",
+    "collections__locked_section__label"
   ],
 
   "es": [
@@ -374,7 +375,8 @@
     "settings__tile__review__subtitle",
     "collections__read_only__banner",
     "collections__read_only__toast",
-    "collections__read_only__upgrade_action"
+    "collections__read_only__upgrade_action",
+    "collections__locked_section__label"
   ],
 
   "fr": [
@@ -563,7 +565,8 @@
     "settings__tile__review__subtitle",
     "collections__read_only__banner",
     "collections__read_only__toast",
-    "collections__read_only__upgrade_action"
+    "collections__read_only__upgrade_action",
+    "collections__locked_section__label"
   ],
 
   "pt": [
@@ -752,7 +755,8 @@
     "settings__tile__review__subtitle",
     "collections__read_only__banner",
     "collections__read_only__toast",
-    "collections__read_only__upgrade_action"
+    "collections__read_only__upgrade_action",
+    "collections__locked_section__label"
   ],
 
   "zh": [
@@ -941,6 +945,7 @@
     "settings__tile__review__subtitle",
     "collections__read_only__banner",
     "collections__read_only__toast",
-    "collections__read_only__upgrade_action"
+    "collections__read_only__upgrade_action",
+    "collections__locked_section__label"
   ]
 }

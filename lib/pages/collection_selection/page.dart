@@ -1,18 +1,10 @@
-import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
-import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/data/services/notification_service.dart';
-import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/pages/collection_selection/widgets/collection_selection_grid.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/utility.dart';
-import 'package:clipboard/widgets/clip_collection_grid_item.dart';
 import 'package:clipboard/widgets/fabs/create_collection.dart';
 import 'package:clipboard/widgets/local_user.dart';
-import 'package:clipboard/widgets/no_collection.dart';
 import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class ClipCollectionSelectionPage extends StatelessWidget {
   final int? selectedCollectionId;
@@ -24,72 +16,15 @@ class ClipCollectionSelectionPage extends StatelessWidget {
       appBar: AppBar(
         automaticallyImplyLeading: context.mq.isMobile || context.mq.isTablet,
         title: Text(context.locale.select_collection__appbar__title),
-        actions: const [
-          DisableForLocalUser(
-            ifLocal: CreateCollectionButton(isFab: false, localMode: true),
-            child: CreateCollectionButton(isFab: false),
-          ),
-          width10,
-        ],
+      ),
+      floatingActionButton: const DisableForLocalUser(
+        ifLocal: CreateCollectionButton(localMode: true),
+        child: CreateCollectionButton(),
       ),
       body: ScaffoldBody(
         child: SafeArea(
-          child: BlocBuilder<ClipCollectionCubit, ClipCollectionState>(
-            builder: (context, state) {
-              switch (state) {
-                case ClipCollectionLoaded(loading: true):
-                  return const Center(child: CircularProgressIndicator());
-                case ClipCollectionLoaded(:final failure, :final collections):
-                  {
-                    if (failure != null) {
-                      return Center(child: Text(failure.message));
-                    }
-                    if (collections.isEmpty) {
-                      return const NoCollectionAvailable();
-                    }
-                    return GridView.builder(
-                      cacheExtent: 300,
-                      padding: const EdgeInsets.all(padding10),
-                      gridDelegate:
-                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 380,
-                            childAspectRatio: 16 / 9,
-                            mainAxisExtent: 100,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-                          ),
-                      itemCount: collections.length,
-                      itemBuilder: (context, index) {
-                        final collection = collections[index];
-                        final isReadOnly = state.isReadOnly(collection);
-
-                        return ClipCollectionGridItem(
-                          collection: collection,
-                          autoFocus:
-                              collection.id == selectedCollectionId ||
-                              (index == 0 && isDesktopPlatform),
-                          selectionOnly: true,
-                          isReadOnly: isReadOnly,
-                          onTap: isReadOnly
-                              ? () {
-                                  InAppNotificationService.i.notify(
-                                    NotificationMessage.builder(
-                                      builder: (context) => NotificationContent(
-                                        body: context
-                                            .locale
-                                            .collections__read_only__toast,
-                                      ),
-                                      id: 'upgrade-collection-${collection.id}',
-                                    ),
-                                  );
-                                }
-                              : () => context.pop(collection),
-                        );
-                      },
-                    );
-                  }
-              }
-            },
+          child: CollectionSelectionGrid(
+            selectedCollectionId: selectedCollectionId,
           ),
         ),
       ),

@@ -103,7 +103,14 @@ class ClipCollectionGridItem extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(collection.emoji, style: textTheme.displaySmall),
+                  if (isReadOnly)
+                    Icon(
+                      Icons.lock_outline_rounded,
+                      size: 36,
+                      color: colors.outline,
+                    )
+                  else
+                    Text(collection.emoji, style: textTheme.displaySmall),
                   width16,
                   Expanded(
                     child: Column(
@@ -135,15 +142,6 @@ class ClipCollectionGridItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (isReadOnly)
-                    Tooltip(
-                      message: 'Read-only on current plan',
-                      child: Icon(
-                        Icons.lock_outline_rounded,
-                        size: 16,
-                        color: colors.outline,
-                      ),
-                    ),
                 ],
               ),
             ),

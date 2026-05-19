@@ -1,6 +1,8 @@
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -85,10 +87,14 @@ class _ClipCollectionCreateEditFormState
     if (mounted) {
       if (error != null) {
         setState(() => _isSaving = false);
-        if (context.mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(error.message)));
+        if (!context.mounted) return;
+        {
+          InAppNotificationService.i.notify(
+            NotificationMessage.builder(
+              builder: (context) => NotificationContent(body: error.message),
+              id: 'collection-upsert-error',
+            ),
+          );
         }
       } else {
         if (context.mounted) {
