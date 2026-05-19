@@ -1,3 +1,4 @@
+import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/collection_clips_cubit/collection_clips_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
@@ -9,6 +10,7 @@ import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/clip_view_builders/builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_collection_indicator_scope.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
+import 'package:clipboard/widgets/collection_upgrade_action.dart';
 import 'package:clipboard/widgets/keyboard_shortcuts/seq_selection_listener.dart';
 import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:flutter/material.dart';
@@ -34,49 +36,85 @@ class CollectionDetailPage extends StatelessWidget {
       );
     }
 
-    return ClipCollectionIndicatorScope(
-      enabled: false,
-      child: SeqSelectionListener(
-        child: Scaffold(
-          appBar: SelectionAppbar(
-            defaultChild: AppBar(
-              title: Text(title),
-              centerTitle: false,
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  tooltip: context.locale.app__edit,
-                  onPressed: editCollection,
+    return BlocSelector<ClipCollectionCubit, ClipCollectionState, bool>(
+      selector: (state) =>
+          state.mapOrNull(loaded: (s) => s.isReadOnly(collection)) ?? false,
+      builder: (context, isReadOnly) {
+        return ClipCollectionIndicatorScope(
+          enabled: false,
+          child: SeqSelectionListener(
+            child: Scaffold(
+              appBar: SelectionAppbar(
+                defaultChild: AppBar(
+                  title: Text(title),
+                  centerTitle: false,
+                  actions: [
+                    if (!isReadOnly)
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        tooltip: context.locale.app__edit,
+                        onPressed: editCollection,
+                      ),
+                    width10,
+                  ],
                 ),
-                width10,
-              ],
+              ),
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (isReadOnly)
+                    MaterialBanner(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: padding16,
+                        vertical: 8,
+                      ),
+                      leading: const Icon(Icons.lock_outline_rounded),
+                      content: Text(
+                        context.locale.collections__read_only__banner,
+                      ),
+                      actions: const [CollectionUpgradeAction()],
+                    ),
+                  Expanded(
+                    child: ScaffoldBody(
+                      margin: const EdgeInsets.only(
+                        right: padding12,
+                        left: padding12,
+                      ),
+                      child: AppLayoutBuilder(
+                        builder: (context, layoutView, _) {
+                          return CanPasteBuilder(
+                            builder: (context, _) {
+                              return ClipsProviderWithBuilder(
+                                isCollectionClips: true,
+                                builder:
+                                    (
+                                      context,
+                                      clips,
+                                      hasMore,
+                                      loading,
+                                      loadMore,
+                                    ) {
+                                      return ClipsBuilder(
+                                        items: clips,
+                                        hasMore: hasMore,
+                                        loading: loading,
+                                        loadMore: loadMore,
+                                        layoutView: layoutView,
+                                      );
+                                    },
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          body: ScaffoldBody(
-            margin: const EdgeInsets.only(right: padding12, left: padding12),
-            child: AppLayoutBuilder(
-              builder: (context, layoutView, _) {
-                return CanPasteBuilder(
-                  builder: (context, _) {
-                    return ClipsProviderWithBuilder(
-                      isCollectionClips: true,
-                      builder: (context, clips, hasMore, loading, loadMore) {
-                        return ClipsBuilder(
-                          items: clips,
-                          hasMore: hasMore,
-                          loading: loading,
-                          loadMore: loadMore,
-                          layoutView: layoutView,
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

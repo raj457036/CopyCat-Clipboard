@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/file_cloud_cubit/file_cloud_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
@@ -352,7 +353,10 @@ Future<void> changeCollection(
     queryParameters: {"id": selectedCollectionId.toString()},
   );
 
-  if (collection != null) {
+  if (collection != null && ctx.mounted) {
+    final collectionCubit = ctx.read<ClipCollectionCubit>();
+    if (collectionCubit.isReadOnly(collection)) return;
+
     final updatedItems = items
         .map(
           (item) => item.copyWith(

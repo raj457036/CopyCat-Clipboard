@@ -4113,6 +4113,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Leave a review on the App Store'**
   String get settings__tile__review__subtitle;
+
+  /// No description provided for @collections__read_only__banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Read-only on your current plan. Upgrade to edit this collection.'**
+  String get collections__read_only__banner;
+
+  /// No description provided for @collections__read_only__toast.
+  ///
+  /// In en, this message translates to:
+  /// **'This collection is read-only on your current plan. Upgrade to edit all collections.'**
+  String get collections__read_only__toast;
+
+  /// No description provided for @collections__read_only__upgrade_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade'**
+  String get collections__read_only__upgrade_action;
 }
 
 class _AppLocalizationsDelegate

@@ -15,12 +15,14 @@ class ClipCollectionGridItem extends StatelessWidget {
   final bool autoFocus;
   final VoidCallback? onTap;
   final bool selectionOnly;
+  final bool isReadOnly;
 
   const ClipCollectionGridItem({
     super.key,
     this.autoFocus = false,
     this.onTap,
     this.selectionOnly = false,
+    this.isReadOnly = false,
     required this.collection,
   });
 
@@ -66,7 +68,7 @@ class ClipCollectionGridItem extends StatelessWidget {
     final collectionTile = StatefulBuilder(
       builder: (context, setState) {
         return Card.outlined(
-          color: colors.surface,
+          color: isReadOnly ? colors.surfaceContainerLowest : colors.surface,
           margin: EdgeInsets.zero,
           shape: selected ? selectedShape : null,
           child: InkWell(
@@ -75,7 +77,9 @@ class ClipCollectionGridItem extends StatelessWidget {
             onSecondaryTapUp: selectionOnly
                 ? null
                 : (detail) {
-                    Menu.of(context).openPopupMenu(context, detail.globalPosition);
+                    Menu.of(
+                      context,
+                    ).openPopupMenu(context, detail.globalPosition);
                   },
             onFocusChange: (isFocused) {
               setState(() => selected = isFocused);
@@ -131,6 +135,15 @@ class ClipCollectionGridItem extends StatelessWidget {
                       ],
                     ),
                   ),
+                  if (isReadOnly)
+                    Tooltip(
+                      message: 'Read-only on current plan',
+                      child: Icon(
+                        Icons.lock_outline_rounded,
+                        size: 16,
+                        color: colors.outline,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -143,11 +156,12 @@ class ClipCollectionGridItem extends StatelessWidget {
 
     return Menu(
       items: [
-        MenuItem(
-          icon: Icons.edit,
-          text: context.locale.app__edit,
-          onPressed: () => edit(context),
-        ),
+        if (!isReadOnly)
+          MenuItem(
+            icon: Icons.edit,
+            text: context.locale.app__edit,
+            onPressed: () => edit(context),
+          ),
         MenuItem(
           icon: Icons.delete,
           text: context.locale.app__delete,

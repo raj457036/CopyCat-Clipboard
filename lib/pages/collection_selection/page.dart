@@ -1,5 +1,7 @@
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -10,6 +12,7 @@ import 'package:clipboard/widgets/no_collection.dart';
 import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ClipCollectionSelectionPage extends StatelessWidget {
   final int? selectedCollectionId;
@@ -58,6 +61,7 @@ class ClipCollectionSelectionPage extends StatelessWidget {
                       itemCount: collections.length,
                       itemBuilder: (context, index) {
                         final collection = collections[index];
+                        final isReadOnly = state.isReadOnly(collection);
 
                         return ClipCollectionGridItem(
                           collection: collection,
@@ -65,7 +69,21 @@ class ClipCollectionSelectionPage extends StatelessWidget {
                               collection.id == selectedCollectionId ||
                               (index == 0 && isDesktopPlatform),
                           selectionOnly: true,
-                          onTap: () => Navigator.pop(context, collection),
+                          isReadOnly: isReadOnly,
+                          onTap: isReadOnly
+                              ? () {
+                                  InAppNotificationService.i.notify(
+                                    NotificationMessage.builder(
+                                      builder: (context) => NotificationContent(
+                                        body: context
+                                            .locale
+                                            .collections__read_only__toast,
+                                      ),
+                                      id: 'upgrade-collection-${collection.id}',
+                                    ),
+                                  );
+                                }
+                              : () => context.pop(collection),
                         );
                       },
                     );

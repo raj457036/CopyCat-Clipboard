@@ -438,6 +438,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i29.AuthCubit>(),
         gh<_i276.ClipCollectionRepository>(),
         gh<String>(instanceName: 'device_id'),
+        gh<_i246.MonetizationCubit>(),
       ),
     );
     gh.lazySingleton<_i589.SyncAdapter<_i687.ClipCollection>>(
