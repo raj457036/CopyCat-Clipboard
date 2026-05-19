@@ -15,7 +15,7 @@ class ClipCollectionCreateEditPage extends StatelessWidget {
         : context.locale.collections__appbar__title__edit;
 
     return Scaffold(
-      appBar: AppBar(title: FittedBox(child: Text(title))),
+      appBar: AppBar(title: Text(title)),
       body: SingleChildScrollView(
         child: ClipCollectionCreateEditForm(collection: collection),
       ),

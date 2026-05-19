@@ -82,8 +82,8 @@ dependencies:
   emoji_picker_flutter:
     git:
       url: https://github.com/raj457036/emoji_picker_flutter.git
-  purchases_flutter: ^10.0.1
-  purchases_ui_flutter: ^10.0.1
+  purchases_flutter: ^10.1.0
+  purchases_ui_flutter: ^10.1.0
   supabase_flutter: ^2.12.4
   supabase_auth_ui: ^0.5.5
   super_clipboard: ^0.9.1

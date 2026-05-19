@@ -1,7 +1,7 @@
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/pages/home/widgets/paste_stack_body.dart';
+import 'package:clipboard/pages/paste_stack/widgets/paste_stack_body.dart';
 import 'package:clipboard/utils/common_extension.dart'
     show BuildContextExtension;
 import 'package:clipboard/widgets/can_paste_builder.dart';
@@ -31,7 +31,15 @@ class PasteStackPage extends StatelessWidget {
             title: Text(context.locale.paste_stack__title(count: count)),
             centerTitle: false,
             titleTextStyle: context.textTheme.titleMedium,
-            toolbarHeight: 38,
+            toolbarHeight: 48,
+            bottom: const PreferredSize(
+              preferredSize: Size.fromHeight(40),
+              child: MaterialBanner(
+                content: Text("You have a limit of 10 item max."),
+                actions: [TextButton(onPressed: null, child: Text("Upgrade"))],
+                minActionBarHeight: 40,
+              ),
+            ),
             actions: [
               IconButton(
                 onPressed: () => reverseStack(context),

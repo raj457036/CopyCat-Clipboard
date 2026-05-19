@@ -600,6 +600,24 @@ abstract class AppLocalizations {
   /// **'Inconsistent Device Time Detected\n\nTo ensure accurate clipboard syncing, please check and correct your device\'s time settings.\n\nInconsistent time settings may cause synchronization issues.'**
   String get dialog__text__inconsistent_time__content;
 
+  /// No description provided for @dialog__text__inconsistent_time__still_off.
+  ///
+  /// In en, this message translates to:
+  /// **'Clock is still out of sync. Please update your system time manually.'**
+  String get dialog__text__inconsistent_time__still_off;
+
+  /// No description provided for @dialog__text__inconsistent_time__ntp_unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach time server. Please check your internet connection and sync your clock manually.'**
+  String get dialog__text__inconsistent_time__ntp_unreachable;
+
+  /// No description provided for @dialog__text__inconsistent_time__check_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Time check failed. Please update your system clock manually.'**
+  String get dialog__text__inconsistent_time__check_failed;
+
   /// No description provided for @dialog__button__try_again.
   ///
   /// In en, this message translates to:

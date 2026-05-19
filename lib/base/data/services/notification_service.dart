@@ -19,14 +19,6 @@ class ActiveNotification with EquatableMixin {
   List<Object?> get props => [message.id];
 }
 
-class NotificationRouteObserver extends NavigatorObserver {
-  @override
-  void didPop(Route route, Route? previousRoute) {
-    super.didPop(route, previousRoute);
-    InAppNotificationService.i.dismissAll();
-  }
-}
-
 class InAppNotificationService {
   final List<ActiveNotification> _activeNotifications = [];
 

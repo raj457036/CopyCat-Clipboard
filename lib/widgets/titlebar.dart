@@ -9,7 +9,6 @@ import 'package:clipboard/widgets/drag_to_move_area_2.dart';
 import 'package:clipboard/widgets/view_buttons/app_layout_button.dart';
 import 'package:clipboard/widgets/view_buttons/app_view_button.dart';
 import 'package:clipboard/widgets/view_buttons/navigate_to_home.dart';
-import 'package:clipboard/widgets/view_buttons/paste_stack_toggle_button.dart';
 import 'package:clipboard/widgets/view_buttons/pin_to_top_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,7 +60,7 @@ class TitlebarView extends StatelessWidget {
   final bool hideTabToggle;
   final bool hideLayoutToggle;
   final bool hideViewToggle;
-  final bool hidePasteStackToggle;
+  final bool hidePinToggle;
 
   const TitlebarView({
     super.key,
@@ -69,7 +68,7 @@ class TitlebarView extends StatelessWidget {
     this.hideTabToggle = false,
     this.hideLayoutToggle = false,
     this.hideViewToggle = false,
-    this.hidePasteStackToggle = false,
+    this.hidePinToggle = false,
   });
 
   @override
@@ -110,10 +109,8 @@ class TitlebarView extends StatelessWidget {
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         children: [
-                          const PinToTopButton(),
+                          if (!hidePinToggle) const PinToTopButton(),
                           width2,
-                          if (!hidePasteStackToggle)
-                            const PasteStackToggleButton(),
                           width2,
                           if (!hideLayoutToggle) const AppLayoutToggleButton(),
                           width2,

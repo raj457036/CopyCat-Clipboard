@@ -1,11 +1,10 @@
 import "dart:async";
+import 'dart:convert';
 
 import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import "package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart";
-import "package:clipboard/base/data/services/notification_service.dart"
-    show NotificationRouteObserver;
 import "package:clipboard/base/domain/model/clip_collection/clipcollection.dart";
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import "package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart";
@@ -37,7 +36,7 @@ import "package:clipboard/pages/login/page.dart";
 import "package:clipboard/pages/not_found_page.dart";
 import "package:clipboard/pages/onboard/page.dart";
 import "package:clipboard/pages/paste_stack/page.dart";
-import "package:clipboard/pages/paste_stack/paste_stack_coordinator.dart";
+import "package:clipboard/pages/paste_stack/widgets/paste_stack_coordinator.dart";
 import "package:clipboard/pages/preview/page.dart";
 import "package:clipboard/pages/reset_password/page.dart";
 import "package:clipboard/pages/settings/page.dart";
@@ -58,10 +57,48 @@ import 'package:universal_io/io.dart';
 
 final GlobalKey<NavigatorState> rootNavigationKey = GlobalKey<NavigatorState>();
 
+/// Codec that registers [RoutePayload] with GoRouter so it is not dropped
+/// during serialization. The payload data is transient (in-memory only) so
+/// only the type tag is round-tripped; the data itself is not preserved across
+/// process restarts.
+class _RouteExtraCodec extends Codec<Object?, Object?> {
+  const _RouteExtraCodec();
+
+  @override
+  Converter<Object?, Object?> get encoder => const _RouteExtraEncoder();
+
+  @override
+  Converter<Object?, Object?> get decoder => const _RouteExtraDecoder();
+}
+
+class _RouteExtraEncoder extends Converter<Object?, Object?> {
+  const _RouteExtraEncoder();
+
+  @override
+  Object? convert(Object? input) {
+    if (input is RoutePayload) {
+      return <String, dynamic>{'__type': 'RoutePayload'};
+    }
+    return input;
+  }
+}
+
+class _RouteExtraDecoder extends Converter<Object?, Object?> {
+  const _RouteExtraDecoder();
+
+  @override
+  Object? convert(Object? input) {
+    if (input is Map && input['__type'] == 'RoutePayload') {
+      return RoutePayload();
+    }
+    return input;
+  }
+}
+
 final appRouter = GoRouter(
-  observers: [NotificationRouteObserver()],
   debugLogDiagnostics: kDebugMode,
   navigatorKey: rootNavigationKey,
+  extraCodec: const _RouteExtraCodec(),
   // initialLocation: "/",
   errorBuilder: (context, state) {
     return const NotFoundPage();
@@ -89,13 +126,6 @@ final appRouter = GoRouter(
         };
         return MultiBlocProvider(
           providers: [
-            BlocProvider<PasteStackCubit>(
-              create: (context) => PasteStackCubit(
-                context.read<AppConfigCubit>(),
-                context.read<WindowActionCubit>(),
-                context.read<MonetizationCubit>(),
-              ),
-            ),
             BlocProvider<SyncStatusCubit>(
               create: (context) {
                 final cubit = sl<SyncStatusCubit>();
@@ -199,7 +229,7 @@ final appRouter = GoRouter(
         ),
         ShellRoute(
           builder: (context, state, child) {
-            return ShellPage(child: child);
+            return ShellPage(key: state.pageKey, child: child);
           },
           routes: [
             GoRoute(
@@ -221,12 +251,25 @@ final appRouter = GoRouter(
 
                 return NoTransitionPage(
                   key: state.pageKey,
-                  child: PasteStackCoordinator(
-                    initialItems: items,
-                    builder: (context, state) {
-                      final count = state.items.length;
-                      return PasteStackPage(count: count);
-                    },
+                  child: BlocProvider<PasteStackCubit>(
+                    create: (context) => PasteStackCubit(
+                      context.read<AppConfigCubit>(),
+                      context.read<WindowActionCubit>(),
+                      context.read<MonetizationCubit>(),
+                      context.read<OfflinePersistenceCubit>(),
+                    ),
+
+                    child: Builder(
+                      builder: (context) {
+                        return PasteStackCoordinator(
+                          initialItems: items,
+                          builder: (context, state) {
+                            final count = state.items.length;
+                            return PasteStackPage(count: count);
+                          },
+                        );
+                      },
+                    ),
                   ),
                 );
               },

@@ -1,7 +1,6 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
-import 'package:clipboard/base/constants/numbers/duration.dart';
 import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';

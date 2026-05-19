@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/routes/routes.dart' show appRouter, rootNavigationKey;
+import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,16 +28,18 @@ class PasteStackCoordinator extends StatefulWidget {
 
 class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
   late final HotKey pasteHotKey;
-  bool isRegistered = false;
   late final PasteStackCubit pasteStack;
+  late final OfflinePersistenceCubit offlinePersistence;
+
+  bool isRegistered = false;
 
   @override
   void initState() {
     super.initState();
     pasteStack = context.read<PasteStackCubit>();
-    pasteStack
-      ..activate()
-      ..pushItems(widget.initialItems ?? const []);
+    offlinePersistence = context.read<OfflinePersistenceCubit>();
+    unawaited(pasteStack.activate());
+    pasteStack.pushItems(widget.initialItems ?? const []);
     pasteHotKey = HotKey(
       key: PhysicalKeyboardKey.keyV,
       modifiers: Platform.isMacOS
@@ -44,43 +48,50 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
       scope: HotKeyScope.system,
     );
 
-    if (pasteStack.state.active && pasteStack.state.count > 0) {
-      registerPasteHotKey();
-    }
+    registerPasteHotKey();
   }
 
   Future<void> registerPasteHotKey() async {
     if (!Platform.isMacOS && !Platform.isWindows && !Platform.isLinux) return;
     if (isRegistered) return;
+
     await hotKeyManager.register(
       pasteHotKey,
-      keyDownHandler: (_) async => onPasteHotKey(),
+      keyDownHandler: (_) => runWhileHotKeyUnregistered(onPasteHotKey),
     );
     isRegistered = true;
   }
 
   Future<void> unregisterPasteHotKey() async {
-    if (!isRegistered) return;
     await hotKeyManager.unregister(pasteHotKey);
     isRegistered = false;
   }
 
+  Future<void> runWhileHotKeyUnregistered(
+    Future<void> Function() action,
+  ) async {
+    await unregisterPasteHotKey();
+    await action();
+    if (pasteStack.state.items.isEmpty) return;
+    await registerPasteHotKey();
+  }
+
   Future<void> onPasteHotKey() async {
     final context = rootNavigationKey.currentContext;
+
     if (context == null || !mounted) return;
-
-    final offlinePersistence = context.read<OfflinePersistenceCubit>();
-    final windowAction = context.read<WindowActionCubit>();
     final focusManager = WindowFocusManager.of(context);
-
-    await unregisterPasteHotKey();
+    final windowAction = context.read<WindowActionCubit>();
 
     final item = pasteStack.state.currentItem;
 
     if (item == null) return;
     if (focusManager == null) return;
 
-    final copied = await offlinePersistence.copyToClipboard([item]);
+    final copied = await focusManager.widget.clipboardService
+        .runWithCaptureSuppressed(
+          () => offlinePersistence.copyToClipboard([item]),
+        );
     if (!copied) return;
 
     final isAppFocused = windowAction.isFocused;
@@ -90,10 +101,6 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
     }
     await focusManager.pasteOnFocusedWindow();
     pasteStack.completeCurrentPaste();
-
-    if (pasteStack.state.items.isNotEmpty) {
-      await registerPasteHotKey();
-    }
   }
 
   @override
@@ -106,18 +113,9 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PasteStackCubit, PasteStackState>(
-      listenWhen: (previous, current) =>
-          previous.active != current.active || previous.count < current.count,
+      listenWhen: (previous, current) => current.count > previous.count,
       listener: (context, state) async {
-        if (state.active) {
-          if (state.count > 0) {
-            await registerPasteHotKey();
-            return;
-          }
-        } else {
-          appRouter.pop();
-        }
-        await unregisterPasteHotKey();
+        await registerPasteHotKey();
       },
       buildWhen: (previous, current) => previous.count != current.count,
       builder: widget.builder,

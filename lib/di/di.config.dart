@@ -418,11 +418,25 @@ extension GetItInjectableX on _i174.GetIt {
         gh<String>(instanceName: 'device_id'),
       ),
     );
-    gh.factory<_i554.PasteStackCubit>(
-      () => _i554.PasteStackCubit(
+    gh.factory<_i706.OfflinePersistenceCubit>(
+      () => _i706.OfflinePersistenceCubit(
+        gh<_i29.AuthCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i63.ClipboardService>(),
         gh<_i542.AppConfigCubit>(),
-        gh<_i657.WindowActionCubit>(),
-        gh<_i246.MonetizationCubit>(),
+        gh<_i533.ApplicationMetaResolver>(),
+        gh<_i707.AnalyticsRepository>(),
+        gh<String>(instanceName: 'device_id'),
+        gh<_i292.SyncEventBus>(),
+      ),
+    );
+    gh.singleton<_i227.QuickPasteService>(
+      () => _i227.QuickPasteService(
+        gh<_i542.AppConfigCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i706.OfflinePersistenceCubit>(),
+        gh<_i533.ApplicationMetaResolver>(),
+        gh<_i291.FocusWindow>(),
       ),
     );
     gh.factory<_i618.FileCloudCubit>(
@@ -463,26 +477,12 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'collection_clips',
     );
-    gh.factory<_i706.OfflinePersistenceCubit>(
-      () => _i706.OfflinePersistenceCubit(
-        gh<_i29.AuthCubit>(),
-        gh<_i230.ClipboardRepository>(instanceName: 'local'),
-        gh<_i63.ClipboardService>(),
-        gh<_i554.PasteStackCubit>(),
+    gh.factory<_i554.PasteStackCubit>(
+      () => _i554.PasteStackCubit(
         gh<_i542.AppConfigCubit>(),
-        gh<_i533.ApplicationMetaResolver>(),
-        gh<_i707.AnalyticsRepository>(),
-        gh<String>(instanceName: 'device_id'),
-        gh<_i292.SyncEventBus>(),
-      ),
-    );
-    gh.singleton<_i227.QuickPasteService>(
-      () => _i227.QuickPasteService(
-        gh<_i542.AppConfigCubit>(),
-        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i657.WindowActionCubit>(),
+        gh<_i246.MonetizationCubit>(),
         gh<_i706.OfflinePersistenceCubit>(),
-        gh<_i533.ApplicationMetaResolver>(),
-        gh<_i291.FocusWindow>(),
       ),
     );
     gh.singleton<_i443.SyncOrchestrator>(

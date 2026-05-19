@@ -11,6 +11,7 @@ class SearchFilterState {
   final Set<TextCategory>? textCategories;
   final ClipboardSortKey? sortBy;
   final SortOrder? sortOrder;
+  final int? collectionId;
 
   const SearchFilterState({
     this.from,
@@ -19,6 +20,7 @@ class SearchFilterState {
     this.textCategories,
     this.sortBy,
     this.sortOrder,
+    this.collectionId,
   });
 
   bool matchedByFilter(ClipboardItem item) {
@@ -31,6 +33,9 @@ class SearchFilterState {
         !textCategories!.contains(item.textCategory)) {
       return false;
     }
+    if (collectionId != null && item.collectionId != collectionId) {
+      return false;
+    }
 
     return true;
   }
@@ -39,7 +44,8 @@ class SearchFilterState {
       from != null ||
       to != null ||
       typeIncludes != null ||
-      textCategories != null;
+      textCategories != null ||
+      collectionId != null;
 
   /// Number of active (non-sort) filter dimensions applied.
   int get activeFilterCount {
@@ -61,7 +67,8 @@ class SearchFilterState {
         setEquals(other.typeIncludes, typeIncludes) &&
         setEquals(other.textCategories, textCategories) &&
         other.sortBy == sortBy &&
-        other.sortOrder == sortOrder;
+        other.sortOrder == sortOrder &&
+        other.collectionId == collectionId;
   }
 
   @override
@@ -71,6 +78,7 @@ class SearchFilterState {
         typeIncludes.hashCode ^
         textCategories.hashCode ^
         sortBy.hashCode ^
-        sortOrder.hashCode;
+        sortOrder.hashCode ^
+        collectionId.hashCode;
   }
 }

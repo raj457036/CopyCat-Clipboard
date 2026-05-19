@@ -35,11 +35,12 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   final ClipboardRepository repo;
   final ClipboardService clipboard;
   final AppConfigCubit appConfig;
-  final PasteStackCubit pasteStack;
   final ApplicationMetaResolver appMetaResolver;
   final String deviceId;
   final AnalyticsRepository analyticsRepo;
   final SyncEventBus syncEventBus;
+  final StreamController<ClipboardItem> _newClipboardItem =
+      StreamController<ClipboardItem>.broadcast();
 
   bool _listening = false;
 
@@ -49,13 +50,14 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     this.auth,
     @Named("local") this.repo,
     this.clipboard,
-    this.pasteStack,
     this.appConfig,
     this.appMetaResolver,
     this.analyticsRepo,
     @Named("device_id") this.deviceId,
     this.syncEventBus,
   ) : super(const OfflinePersistanceState.initial());
+
+  Stream<ClipboardItem> get newClipboardItemStream => _newClipboardItem.stream;
 
   void clearTransientState() {
     if (state is OfflinePersistanceInitial) return;
@@ -388,7 +390,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         await persist([userItem]);
         continue;
       }
-      pasteStack.pushItems([item]);
+      _newClipboardItem.add(item);
       await persist([item]);
     }
   }

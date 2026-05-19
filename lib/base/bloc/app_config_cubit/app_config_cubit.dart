@@ -63,7 +63,9 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
     }
   }
 
-  Future<bool> syncClocks() async {
+  /// Returns `true` if the clock is synced, `false` if the clock is detectably
+  /// off, or `null` if all NTP servers were unreachable (can't determine).
+  Future<bool?> syncClocks() async {
     try {
       final timeServers = [
         'time.google.com',
@@ -81,7 +83,9 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
                 timeServers.length,
               )]; // Randomly select a time server
 
-          currentInternetTime = await NTP.now(lookUpAddress: timeServer);
+          currentInternetTime = await NTP
+              .now(lookUpAddress: timeServer)
+              .timeout(const Duration(seconds: 6));
           final now_ = DateTime.now();
           systemToInternetTimeOffset = currentInternetTime!.difference(now_);
 
@@ -91,7 +95,7 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
           );
         },
         retryIf: (e) => e is SocketException || e is TimeoutException,
-        maxAttempts: 5,
+        maxAttempts: 3,
         onRetry: (e) => logger.w('Retrying NTP fetch due to $e'),
       );
 
@@ -112,8 +116,10 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
       }
       return true;
     } catch (e) {
-      logger.e(e);
-      return false;
+      // NTP servers were unreachable — cannot determine clock accuracy.
+      // Do not mark the clock as unsynced; return null so callers skip the dialog.
+      logger.w('NTP unreachable, skipping clock check: $e');
+      return null;
     }
   }
 

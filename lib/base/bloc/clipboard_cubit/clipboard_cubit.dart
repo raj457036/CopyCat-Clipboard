@@ -75,6 +75,23 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   Future<void> applyFilters(SearchFilterState filters) =>
       fetch(filterState: filters, fromTop: true);
 
+  /// Filter clips to those belonging to the given collection, or show all if null.
+  Future<void> filterByCollection(int? id) {
+    final current = state.filterState;
+    return fetch(
+      filterState: SearchFilterState(
+        from: current.from,
+        to: current.to,
+        typeIncludes: current.typeIncludes,
+        textCategories: current.textCategories,
+        sortBy: current.sortBy,
+        sortOrder: current.sortOrder,
+        collectionId: id,
+      ),
+      fromTop: true,
+    );
+  }
+
   /// Clear both the query and all active filters.
   Future<void> clearSearch() => fetch(
     query: '',
@@ -251,6 +268,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
         to: state.filterState.to,
         order: state.filterState.sortOrder ?? SortOrder.desc,
         sortBy: state.filterState.sortBy,
+        collectionId: state.filterState.collectionId,
       );
 
       emit(

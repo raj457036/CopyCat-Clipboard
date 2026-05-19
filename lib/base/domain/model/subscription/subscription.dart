@@ -1,4 +1,3 @@
-import 'package:clipboard/base/constants/numbers/duration.dart';
 import 'package:clipboard/base/constants/numbers/values.dart'
     show
         defaultPasteStackLimit,

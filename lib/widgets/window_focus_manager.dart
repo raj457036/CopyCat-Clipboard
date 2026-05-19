@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
+import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/common/logging.dart';
@@ -184,10 +185,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   }
 
   Future<void> onResized() async {
-    final pasteStack = context.read<PasteStackCubit?>();
-    if (pasteStack?.state.active ?? false) {
-      return;
-    }
+    if (context.location == RouteConstants.pasteStack) return;
 
     final appConfig = context.read<AppConfigCubit>();
     final size = await windowManager.getSize();
@@ -207,6 +205,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   Future<void> onWindowBlur() async {
     _setWindowInBackground(true);
     if (!appConfigCubit.isPinned) {
+      if (context.location == RouteConstants.pasteStack) return;
       context.windowAction?.hide();
     }
   }

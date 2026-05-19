@@ -163,8 +163,8 @@ class _ClipCollectionCreateEditFormState
                 if (value == null || value.trim().isEmpty) {
                   return 'Name is required';
                 }
-                if (value.length > 100) {
-                  return 'Name must be less than 100 characters';
+                if (value.length > 30) {
+                  return 'Name must be less than 30 characters';
                 }
 
                 // Check for duplicates (only for different collections)
@@ -185,6 +185,7 @@ class _ClipCollectionCreateEditFormState
               },
               autofocus: true,
               textInputAction: TextInputAction.next,
+              maxLength: 30,
             ),
             height12,
             TextFormField(

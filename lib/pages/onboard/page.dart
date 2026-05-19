@@ -46,7 +46,6 @@ class _OnBoardPageState extends State<OnBoardPage> {
     return TitlebarView(
       hideLayoutToggle: true,
       hideTabToggle: true,
-      hidePasteStackToggle: true,
       child: Scaffold(
         body: SafeArea(
           child: Padding(

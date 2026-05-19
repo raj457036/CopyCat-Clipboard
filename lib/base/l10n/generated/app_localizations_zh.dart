@@ -271,6 +271,18 @@ class AppLocalizationsZh extends AppLocalizations {
       '检测到设备时间不一致\n\n为了确保准确的剪贴板同步，请检查并更正您的设备时间设置。\n\n时间设置不一致可能会导致同步问题。';
 
   @override
+  String get dialog__text__inconsistent_time__still_off =>
+      'Clock is still out of sync. Please update your system time manually.';
+
+  @override
+  String get dialog__text__inconsistent_time__ntp_unreachable =>
+      'Could not reach time server. Please check your internet connection and sync your clock manually.';
+
+  @override
+  String get dialog__text__inconsistent_time__check_failed =>
+      'Time check failed. Please update your system clock manually.';
+
+  @override
   String get dialog__button__try_again => '再次检查';
 
   @override

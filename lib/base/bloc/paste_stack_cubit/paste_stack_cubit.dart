@@ -1,32 +1,35 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/common/logging.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:clipboard/utils/debounce.dart' show Debouncer;
 import 'package:injectable/injectable.dart';
 
 @immutable
-class PasteStackState {
-  final bool active;
+class PasteStackState extends Equatable {
   final List<ClipboardItem> items;
 
-  const PasteStackState({required this.active, required this.items});
+  const PasteStackState({required this.items});
 
-  const PasteStackState.inactive() : this(active: false, items: const []);
+  const PasteStackState.inactive() : this(items: const []);
+
+  @override
+  List<Object?> get props => [count];
 
   ClipboardItem? get currentItem => items.firstOrNull;
   ClipboardItem? get nextItem => items.length > 1 ? items[1] : null;
   int get count => items.length;
 
-  PasteStackState copyWith({bool? active, List<ClipboardItem>? items}) {
-    return PasteStackState(
-      active: active ?? this.active,
-      items: items ?? this.items,
-    );
+  PasteStackState copyWith({List<ClipboardItem>? items}) {
+    return PasteStackState(items: items ?? this.items);
   }
 }
 
@@ -38,15 +41,22 @@ class PasteStackCubit extends Cubit<PasteStackState> {
   final AppConfigCubit appConfig;
   final WindowActionCubit windowAction;
   final MonetizationCubit monetizationCubit;
+  final OfflinePersistenceCubit offlinePersistenceCubit;
 
   AppView? _previousView;
   Size? _previousWindowSize;
-  bool _previousPinnedState = false;
 
-  PasteStackCubit(this.appConfig, this.windowAction, this.monetizationCubit)
-    : super(const PasteStackState.inactive());
+  StreamSubscription? _offlinePersistenceSub;
 
-  bool get isActive => state.active;
+  PasteStackCubit(
+    this.appConfig,
+    this.windowAction,
+    this.monetizationCubit,
+    this.offlinePersistenceCubit,
+  ) : super(const PasteStackState.inactive()) {
+    _offlinePersistenceSub = offlinePersistenceCubit.newClipboardItemStream
+        .listen((item) => pushItems([item]));
+  }
 
   int get maxItemCountAllowed => monetizationCubit.state.when(
     unknown: () => 10,
@@ -72,13 +82,11 @@ class PasteStackCubit extends Cubit<PasteStackState> {
 
   Future<void> activate() async {
     _snapshotCurrentState();
-    emit(const PasteStackState(active: true, items: []));
-
+    emit(const PasteStackState(items: []));
     if (_previousView == AppView.windowed) {
       await windowAction.changeView(AppView.windowed, stackWindowSize);
     }
-
-    await appConfig.setPinned(true);
+    await windowAction.alwaysOnTop(true);
     await windowAction.blur();
   }
 
@@ -86,13 +94,11 @@ class PasteStackCubit extends Cubit<PasteStackState> {
     final config = appConfig.state.config;
     _previousView ??= config.view;
     _previousWindowSize ??= config.windowSize;
-    _previousPinnedState = config.pinned;
   }
 
   Future<void> deactivate() async {
     final view = _previousView;
     final size = _previousWindowSize;
-    final pinned = _previousPinnedState;
 
     _clearSnapshot();
 
@@ -104,24 +110,8 @@ class PasteStackCubit extends Cubit<PasteStackState> {
       await windowAction.focus();
     }
 
-    await appConfig.setPinned(pinned);
-  }
-
-  /// Deactivates the paste stack without restoring focus to the clipboard app.
-  /// Use this after a paste-all operation where the user intends to stay in
-  /// the target application.
-  Future<void> deactivateSilent() async {
-    final view = _previousView;
-    final size = _previousWindowSize;
-    final pinned = _previousPinnedState;
-
-    _clearSnapshot();
-
-    if (view == AppView.windowed) {
-      await windowAction.changeView(view!, size);
-    }
-
-    await appConfig.setPinned(pinned);
+    final isPinned = appConfig.state.config.pinned;
+    await windowAction.alwaysOnTop(isPinned);
   }
 
   void _clearSnapshot() {
@@ -133,7 +123,7 @@ class PasteStackCubit extends Cubit<PasteStackState> {
   /// Pushes new items to the paste stack. If the stack exceeds the maximum allowed
   /// items, the excess items will be discarded and not added to the stack.
   void pushItems(List<ClipboardItem> items) {
-    if (!state.active || items.isEmpty) return;
+    if (items.isEmpty) return;
 
     final normalized = normalizeItems(items);
     if (normalized.isEmpty) return;
@@ -157,7 +147,13 @@ class PasteStackCubit extends Cubit<PasteStackState> {
   }
 
   void completeCurrentPaste() {
-    if (!state.active || state.items.isEmpty) return;
+    if (state.items.isEmpty) return;
     emit(state.copyWith(items: state.items.skip(1).toList(growable: false)));
+  }
+
+  @override
+  Future<void> close() {
+    _offlinePersistenceSub?.cancel();
+    return super.close();
   }
 }
