@@ -272,9 +272,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i899.RemoteClipCollectionSource(gh<_i454.SupabaseClient>()),
       instanceName: 'remote',
     );
-    gh.lazySingleton<_i579.AuthRepository>(
-      () => _i346.AuthRepositoryImpl(client: gh<_i454.SupabaseClient>()),
-    );
     gh.lazySingleton<_i533.ApplicationMetaResolver>(
       () => _i375.ApplicationMetaResolverImpl(
         gh<_i110.ApplicationMetaRepository>(),
@@ -282,11 +279,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i636.AppDirectoryRepository>(),
       ),
     );
+    gh.lazySingleton<_i422.SubscriptionSource>(
+      () => _i35.RemoteSubscriptionSource(client: gh<_i454.SupabaseClient>()),
+      instanceName: 'remote',
+    );
     gh.lazySingleton<_i543.CollectionCrossSyncListener>(
       () => _i95.SBCollectionCrossSyncListener(
         gh<_i454.SupabaseClient>(),
         gh<String>(instanceName: 'device_id'),
       ),
+    );
+    gh.lazySingleton<_i579.AuthRepository>(
+      () => _i346.AuthRepositoryImpl(client: gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i670.ClipCollectionSource>(
       () => _i173.LocalClipCollectionSource(
@@ -297,10 +301,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i460.DriveCredentialRepository>(
       () => _i477.DriveCredentialRepositoryImpl(gh<_i454.SupabaseClient>()),
-    );
-    gh.lazySingleton<_i422.SubscriptionSource>(
-      () => _i35.RemoteSubscriptionSource(client: gh<_i454.SupabaseClient>()),
-      instanceName: 'remote',
     );
     gh.singleton<_i542.AppConfigCubit>(
       () => _i542.AppConfigCubit(
@@ -418,7 +418,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<String>(instanceName: 'device_id'),
       ),
     );
-    gh.factory<_i706.OfflinePersistenceCubit>(
+    gh.lazySingleton<_i706.OfflinePersistenceCubit>(
       () => _i706.OfflinePersistenceCubit(
         gh<_i29.AuthCubit>(),
         gh<_i230.ClipboardRepository>(instanceName: 'local'),
@@ -510,7 +510,7 @@ extension GetItInjectableX on _i174.GetIt {
         monetizationCubit: gh<_i246.MonetizationCubit>(),
       ),
     );
-    gh.factory<_i891.SyncStatusCubit>(
+    gh.lazySingleton<_i891.SyncStatusCubit>(
       () => _i891.SyncStatusCubit(
         gh<_i443.SyncOrchestrator>(),
         gh<_i292.SyncEventBus>(),

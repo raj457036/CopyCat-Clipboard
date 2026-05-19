@@ -126,25 +126,6 @@ final appRouter = GoRouter(
         };
         return MultiBlocProvider(
           providers: [
-            BlocProvider<SyncStatusCubit>(
-              create: (context) {
-                final cubit = sl<SyncStatusCubit>();
-                if (!isLocalAuth && shouldRunInitialSync) {
-                  unawaited(cubit.syncAll(const SyncAllParams()));
-                }
-                return cubit;
-              },
-            ),
-            BlocProvider<OfflinePersistenceCubit>(
-              create: (context) {
-                final cubit = sl<OfflinePersistenceCubit>();
-                if (shouldRunInitialSync || isLocalAuth) {
-                  unawaited(cubit.startListeners());
-                }
-                return cubit;
-              },
-              lazy: false,
-            ),
             BlocProvider<FileCloudCubit>(
               create: (context) => sl<FileCloudCubit>(),
             ),
