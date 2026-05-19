@@ -1,5 +1,7 @@
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
@@ -84,11 +86,15 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
   }
 
   void _submit() {
-    final locale = context.locale;
     final waitMs = int.tryParse(waitMsController.text.trim());
     if (waitMs == null || waitMs < 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(locale.multi_paste__validation__wait_positive)),
+      InAppNotificationService.i.notify(
+        NotificationMessage.builder(
+          builder: (context) => NotificationContent(
+            body: context.locale.multi_paste__validation__wait_positive,
+          ),
+          id: 'multi-paste-validation-wait',
+        ),
       );
       return;
     }
@@ -96,10 +102,12 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
     if (mergeConsecutiveText &&
         separatorPreset == _SeparatorPreset.custom &&
         customSeparatorController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            locale.multi_paste__validation__custom_separator_required,
+      InAppNotificationService.i.notify(
+        NotificationMessage.builder(
+          builder: (context) => NotificationContent(
+            body: context
+                .locale
+                .multi_paste__validation__custom_separator_required,
           ),
         ),
       );

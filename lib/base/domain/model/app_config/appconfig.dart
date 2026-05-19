@@ -130,9 +130,14 @@ class AppConfig with _$AppConfig, Identifiable {
 
   String? decryptEnc2(String? enc1) {
     if (enc2Key == null || enc1 == null) return null;
-    final encMngr = EncryptionManager(enc2Key!);
-    final enc1Decrypt = encMngr.decrypt(enc1);
-    return enc1Decrypt;
+    try {
+      final encMngr = EncryptionManager(enc2Key!);
+      final enc1Decrypt = encMngr.decrypt(enc1);
+      return enc1Decrypt;
+    } catch (e) {
+      // If decryption fails, return null. This can happen if the key is invalid or the data is corrupted.
+      return null;
+    }
   }
 
   HotKey? get getToggleHotkey =>

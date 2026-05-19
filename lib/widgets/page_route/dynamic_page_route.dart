@@ -8,25 +8,28 @@ import 'package:go_router/go_router.dart';
 
 enum NonMobilePresentation { dialog, endSheet }
 
+/// A [Page] that renders [pageChild] as a full-screen page on narrow (mobile)
+/// screens and [dialogChild] inside a dialog or end-sheet on wide screens.
 class DynamicPage<T> extends CustomTransitionPage<T> {
+  final Widget pageChild;
+  final Widget? dialogChild;
   final Offset? anchorPoint;
   final bool useSafeArea;
   final CapturedThemes? themes;
   final bool fullScreenDialog;
-  final bool isBottomSheet;
   final bool childOfTitlebar;
   final NonMobilePresentation nonMobilePresentation;
   final double? nonMobileSheetWidth;
   final bool closeOnSpace;
 
   DynamicPage({
-    required super.child,
+    required this.pageChild,
+    this.dialogChild,
     this.anchorPoint,
     this.useSafeArea = true,
     this.fullScreenDialog = false,
-    this.isBottomSheet = false,
     this.childOfTitlebar = true,
-    this.nonMobilePresentation = NonMobilePresentation.dialog,
+    this.nonMobilePresentation = NonMobilePresentation.endSheet,
     this.nonMobileSheetWidth,
     this.closeOnSpace = false,
     this.themes,
@@ -34,82 +37,54 @@ class DynamicPage<T> extends CustomTransitionPage<T> {
     super.name,
     super.arguments,
     super.restorationId,
-  }) : assert(
-         !isBottomSheet || !fullScreenDialog,
-         'Cannot have both bottom sheet and full screen dialog',
-       ),
-       super(
+  }) : super(
+         child: pageChild,
          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
              ScaleTransition(scale: animation, child: child),
          barrierColor: Colors.black54,
          barrierDismissible: true,
        );
 
+  Widget _wrap(Widget child) =>
+      closeOnSpace ? _SpaceToCloseWrapper(child: child) : child;
+
   @override
   Route<T> createRoute(BuildContext context) {
-    final mq = context.mq;
-    final width = mq.size.width;
-    final wrappedChild = closeOnSpace
-        ? _SpaceToCloseWrapper(child: child)
-        : child;
+    final width = context.mq.size.width;
 
     if (Breakpoints.isMobile(width)) {
-      if (isBottomSheet) {
-        return ModalBottomSheetRoute<T>(
-          settings: this,
-          isScrollControlled: false,
-          showDragHandle: true,
-          constraints: BoxConstraints(maxWidth: width * 0.9),
-          backgroundColor: Colors.transparent,
-          builder: (context) {
-            final bottom = MediaQuery.of(context).viewInsets.bottom;
-            return Padding(
-              padding: EdgeInsets.only(bottom: bottom),
-              child: childOfTitlebar
-                  ? TitlebarView(child: wrappedChild)
-                  : wrappedChild,
-            );
-          },
-        );
-      }
+      final wrapped = _wrap(pageChild);
       return MaterialPageRoute<T>(
         settings: this,
         builder: (context) =>
-            childOfTitlebar ? TitlebarView(child: wrappedChild) : wrappedChild,
+            childOfTitlebar ? TitlebarView(child: wrapped) : wrapped,
         fullscreenDialog: fullScreenDialog,
         maintainState: true,
         barrierDismissible: barrierDismissible,
       );
     }
 
+    final effectiveDialogChild = _wrap(dialogChild ?? pageChild);
+
     if (nonMobilePresentation == NonMobilePresentation.endSheet) {
       final sheetWidth =
-          nonMobileSheetWidth ?? (width * 0.52).clamp(440.0, 760.0).toDouble();
+          nonMobileSheetWidth ?? (width * 0.8).clamp(440.0, 860.0).toDouble();
 
       return _EndSheetDialogRoute<T>(
         context: context,
         settings: this,
-        builder: (context) {
-          final sheetChild = wrappedChild;
-
-          return Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-              child: SizedBox(
-                width: sheetWidth,
-                height: double.infinity,
-                child: ClipRRect(
-                  borderRadius: radius12,
-                  child: Material(
-                    color: Theme.of(context).colorScheme.surface,
-                    child: ScaffoldMessenger(child: sheetChild),
-                  ),
-                ),
-              ),
+        builder: (context) => Align(
+          alignment: Alignment.centerRight,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: sheetWidth),
+            child: Dialog(
+              insetPadding: EdgeInsets.zero,
+              shape: const RoundedRectangleBorder(),
+              clipBehavior: Clip.hardEdge,
+              child: effectiveDialogChild,
             ),
-          );
-        },
+          ),
+        ),
         anchorPoint: anchorPoint,
         barrierColor: barrierColor,
         barrierDismissible: barrierDismissible,
@@ -123,9 +98,11 @@ class DynamicPage<T> extends CustomTransitionPage<T> {
       context: context,
       settings: this,
       builder: (context) => Dialog(
+        shape: const RoundedRectangleBorder(borderRadius: radius12),
+        clipBehavior: Clip.hardEdge,
         child: ConstrainedBox(
           constraints: BoxConstraints.loose(const Size(924, 580)),
-          child: ClipRRect(borderRadius: radius12, child: wrappedChild),
+          child: effectiveDialogChild,
         ),
       ),
       anchorPoint: anchorPoint,

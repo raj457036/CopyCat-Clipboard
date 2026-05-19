@@ -2323,4 +2323,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get collections__read_only__upgrade_action => 'Upgrade';
+
+  @override
+  String get collections__locked_section__label => 'Locked';
 }

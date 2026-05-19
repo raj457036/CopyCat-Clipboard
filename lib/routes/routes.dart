@@ -4,6 +4,9 @@ import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipbo
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import "package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart";
+import "package:clipboard/base/data/services/notification_service.dart"
+    show NotificationRouteObserver;
+import "package:clipboard/base/domain/model/clip_collection/clipcollection.dart";
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import "package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart";
 import 'package:clipboard/base/bloc/file_cloud_cubit/file_cloud_cubit.dart';
@@ -20,8 +23,10 @@ import "package:clipboard/base/domain/model/route_payload.dart";
 import "package:clipboard/di/di.dart";
 import "package:clipboard/pages/account/page.dart";
 import "package:clipboard/pages/collection_selection/page.dart";
+import "package:clipboard/pages/collection_selection/widgets/collection_selection_dialog_content.dart";
 import "package:clipboard/pages/collections/page.dart";
 import "package:clipboard/pages/collections/pages/create_edit/page.dart";
+import "package:clipboard/pages/collections/pages/create_edit/widgets/create_edit_dialog_content.dart";
 import "package:clipboard/pages/collections/pages/details/clip_collection_provider.dart";
 import "package:clipboard/pages/collections/pages/details/page.dart";
 import "package:clipboard/pages/create_clip_note/page.dart";
@@ -54,13 +59,14 @@ import 'package:universal_io/io.dart';
 final GlobalKey<NavigatorState> rootNavigationKey = GlobalKey<NavigatorState>();
 
 final appRouter = GoRouter(
-  // observers: observers,
+  observers: [NotificationRouteObserver()],
   debugLogDiagnostics: kDebugMode,
   navigatorKey: rootNavigationKey,
   // initialLocation: "/",
   errorBuilder: (context, state) {
     return const NotFoundPage();
   },
+
   routes: [
     GoRoute(
       name: RouteConstants.splash,
@@ -179,7 +185,7 @@ final appRouter = GoRouter(
               fullScreenDialog: false,
               nonMobilePresentation: NonMobilePresentation.endSheet,
               closeOnSpace: true,
-              child: FutureBuilder(
+              pageChild: FutureBuilder(
                 future: item,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (!snapshot.hasData) {
@@ -352,7 +358,7 @@ final appRouter = GoRouter(
               fullScreenDialog: false,
               nonMobilePresentation: NonMobilePresentation.endSheet,
               closeOnSpace: true,
-              child: item != null
+              pageChild: item != null
                   ? FutureBuilder(
                       future: item,
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -379,7 +385,10 @@ final appRouter = GoRouter(
               fullScreenDialog: false,
               nonMobilePresentation: NonMobilePresentation.endSheet,
               closeOnSpace: true,
-              child: ClipCollectionSelectionPage(selectedCollectionId: id),
+              pageChild: ClipCollectionSelectionPage(selectedCollectionId: id),
+              dialogChild: CollectionSelectionDialogContent(
+                selectedCollectionId: id,
+              ),
             );
           },
         ),
@@ -388,29 +397,34 @@ final appRouter = GoRouter(
           path: '/write-collection/:id',
           pageBuilder: (context, state) {
             final id = state.pathParameters["id"] ?? "new";
-            final collection = id == "new"
+            final collectionFuture = id == "new"
                 ? null
                 : context.read<ClipCollectionCubit>().get(int.parse(id));
+
+            Widget fromFuture(Widget Function(ClipCollection?) build) {
+              if (collectionFuture == null) return build(null);
+              return FutureBuilder<ClipCollection?>(
+                future: collectionFuture,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  return build(snapshot.data);
+                },
+              );
+            }
+
             return DynamicPage(
               key: state.pageKey,
               fullScreenDialog: false,
               nonMobilePresentation: NonMobilePresentation.endSheet,
               closeOnSpace: true,
-              child: collection == null
-                  ? const ClipCollectionCreateEditPage()
-                  : FutureBuilder(
-                      future: collection,
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (!snapshot.hasData) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        return ClipCollectionCreateEditPage(
-                          collection: snapshot.data,
-                        );
-                      },
-                    ),
+              pageChild: fromFuture(
+                (c) => ClipCollectionCreateEditPage(collection: c),
+              ),
+              dialogChild: fromFuture(
+                (c) => ClipCollectionCreateEditDialogContent(collection: c),
+              ),
             );
           },
         ),

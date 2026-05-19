@@ -1,6 +1,8 @@
 import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_state.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/base/domain/model/sync/user_device_access.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/settings/pages/device_management/widgets/device_grid_card.dart';
@@ -60,16 +62,25 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
     final success = await _userDevicesCubit.revokeDevice(device.deviceId);
     if (!success) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to remove sync access.')),
+      InAppNotificationService.i.notify(
+        NotificationMessage.builder(
+          builder: (context) =>
+              NotificationContent(body: 'Failed to remove sync access.'),
+          id: 'revoke-device-${device.deviceId}-failure',
+        ),
       );
       return;
     }
 
     if (!mounted) return;
     _refresh();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Removed ${device.deviceId} from sync devices.')),
+    InAppNotificationService.i.notify(
+      NotificationMessage.builder(
+        builder: (context) => NotificationContent(
+          body: 'Removed ${device.deviceId} from sync devices.',
+        ),
+        id: 'revoke-device-${device.deviceId}-success',
+      ),
     );
   }
 

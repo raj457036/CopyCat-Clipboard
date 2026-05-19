@@ -4131,6 +4131,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Upgrade'**
   String get collections__read_only__upgrade_action;
+
+  /// No description provided for @collections__locked_section__label.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get collections__locked_section__label;
 }
 
 class _AppLocalizationsDelegate
