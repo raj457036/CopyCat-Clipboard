@@ -63,7 +63,7 @@ class _NetworkObserverState extends State<NetworkObserver> {
 
   Future<void> syncClocks() async {
     final synced = await appConfigCubit.syncClocks();
-    if (synced) return;
+    if (synced != false) return;
 
     const InconsistentTiming().open();
   }

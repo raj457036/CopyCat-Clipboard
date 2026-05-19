@@ -1506,18 +1506,18 @@ packages:
     dependency: "direct main"
     description:
       name: purchases_flutter
-      sha256: "40723bd949d58a005e3e3eeb0739d3ad664ad478e3e29697692e0d657f103c6e"
+      sha256: "4867880502526a9fcede5b8233288824791d7d6e350f5455f731d527d52accdc"
       url: "https://pub.dev"
     source: hosted
-    version: "10.0.1"
+    version: "10.1.0"
   purchases_ui_flutter:
     dependency: "direct main"
     description:
       name: purchases_ui_flutter
-      sha256: "53350c889a8f35dba6e0090469a0e92bd7a0181bedeb84f3daff82bd59041edd"
+      sha256: "38f45e9236e2109152ea9b0e073b6bfa693488ce24188d8bf5906ccd9bcea0ef"
       url: "https://pub.dev"
     source: hosted
-    version: "10.0.1"
+    version: "10.1.0"
   quick_paste_popup:
     dependency: "direct main"
     description:

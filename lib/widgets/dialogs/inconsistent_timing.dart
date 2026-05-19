@@ -1,6 +1,9 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
@@ -77,15 +80,42 @@ class _InconsistentTimingState extends State<InconsistentTiming> {
       final cubit = context.read<AppConfigCubit>();
       final result = await cubit.syncClocks();
 
-      if (result == true && context.mounted) {
-        context.pop();
+      if (result == true) {
+        if (context.mounted) {
+          context.pop();
+        }
         _visible = false;
         return true;
       }
+
+      final body = result == null
+          ? context.mounted
+                ? context
+                      .locale
+                      .dialog__text__inconsistent_time__ntp_unreachable
+                : "Could not reach time server. Please sync your clock manually."
+          : context.mounted
+          ? context.locale.dialog__text__inconsistent_time__still_off
+          : "Clock is still out of sync. Please update your system time.";
+      InAppNotificationService.i.notify(
+        NotificationMessage(id: "clock-recheck", body: body),
+      );
+    } catch (e, st) {
+      logger.e(() => "checkAgain: syncClocks failed", error: e, stackTrace: st);
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: "clock-recheck-error",
+          body: context.mounted
+              ? context.locale.dialog__text__inconsistent_time__check_failed
+              : "Failed to check time sync. Please update your system clock manually.",
+        ),
+      );
     } finally {
-      setState(() {
-        checking = false;
-      });
+      if (mounted) {
+        setState(() {
+          checking = false;
+        });
+      }
     }
     return false;
   }

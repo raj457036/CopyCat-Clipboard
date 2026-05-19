@@ -279,6 +279,18 @@ class AppLocalizationsEs extends AppLocalizations {
       'Se Detectó Hora Inconsistente en el Dispositivo\n\nPara asegurar una sincronización precisa del portapapeles, por favor revisa y corrige la configuración de la hora de tu dispositivo.\n\nLas configuraciones de hora inconsistentes pueden causar problemas de sincronización.';
 
   @override
+  String get dialog__text__inconsistent_time__still_off =>
+      'Clock is still out of sync. Please update your system time manually.';
+
+  @override
+  String get dialog__text__inconsistent_time__ntp_unreachable =>
+      'Could not reach time server. Please check your internet connection and sync your clock manually.';
+
+  @override
+  String get dialog__text__inconsistent_time__check_failed =>
+      'Time check failed. Please update your system clock manually.';
+
+  @override
   String get dialog__button__try_again => 'Revisar de Nuevo';
 
   @override

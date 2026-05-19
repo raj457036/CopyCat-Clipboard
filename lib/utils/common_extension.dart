@@ -6,6 +6,7 @@ import 'package:clipboard/base/constants/numbers/breakpoints.dart'
     show Breakpoints;
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
+import 'package:clipboard/routes/routes.dart';
 import 'package:clipboard/utils/monetization.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,7 @@ extension BuildContextExtension on BuildContext {
       isDesktopPlatform ? read<WindowActionCubit?>() : null;
   bool get isDarkMode => theme.brightness == Brightness.dark;
   String get location {
-    return GoRouter.of(this).location();
+    return appRouter.location();
   }
 
   /// checks if the current platform supports smart paste and

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -73,9 +74,10 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     });
   }
 
-  Future<void> onTop(bool isAlwaysOnTop) async {
+  Future<void> alwaysOnTop(bool isAlwaysOnTop) async {
     if (!isDesktopPlatform) return;
     await windowManager.setAlwaysOnTop(isAlwaysOnTop);
+    logger.d(() => "Setting Window always on Top: $isAlwaysOnTop");
   }
 
   Future<void> focus() async {

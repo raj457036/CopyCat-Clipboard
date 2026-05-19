@@ -276,6 +276,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Inconsistent Device Time Detected\n\nTo ensure accurate clipboard syncing, please check and correct your device\'s time settings.\n\nInconsistent time settings may cause synchronization issues.';
 
   @override
+  String get dialog__text__inconsistent_time__still_off =>
+      'Clock is still out of sync. Please update your system time manually.';
+
+  @override
+  String get dialog__text__inconsistent_time__ntp_unreachable =>
+      'Could not reach time server. Please check your internet connection and sync your clock manually.';
+
+  @override
+  String get dialog__text__inconsistent_time__check_failed =>
+      'Time check failed. Please update your system clock manually.';
+
+  @override
   String get dialog__button__try_again => 'Check Again';
 
   @override

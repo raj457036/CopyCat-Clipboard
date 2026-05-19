@@ -40,38 +40,40 @@ class ClipCardBodyContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final item = ClipItemScope.of(context);
     final textTheme = context.textTheme;
-    final child = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const ClipCardOptionsHeader(),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+    final child = liteMode
+        ? ClipPreview(item: item)
+        : Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (item.displayTitle != null && !item.encrypted)
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: padding8,
-                    right: padding8,
-                    top: padding2,
-                    bottom: padding8,
-                  ),
-                  child: Text(
-                    item.displayTitle!,
-                    style: textTheme.titleSmall?.copyWith(
-                      fontVariations: fontVarW700,
-                    ),
-                    maxLines: 1,
-                  ),
+              const ClipCardOptionsHeader(),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (item.displayTitle != null && !item.encrypted)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: padding8,
+                          right: padding8,
+                          top: padding2,
+                          bottom: padding8,
+                        ),
+                        child: Text(
+                          item.displayTitle!,
+                          style: textTheme.titleSmall?.copyWith(
+                            fontVariations: fontVarW700,
+                          ),
+                          maxLines: 1,
+                        ),
+                      ),
+                    Expanded(child: ClipPreview(item: item)),
+                  ],
                 ),
-              Expanded(child: ClipPreview(item: item)),
+              ),
+              const _SyncStatusFooter(),
             ],
-          ),
-        ),
-        if (!liteMode) const _SyncStatusFooter(),
-      ],
-    );
+          );
 
     // NOTE: drag and drop doesn't work in android for now
     final selected = context.select(

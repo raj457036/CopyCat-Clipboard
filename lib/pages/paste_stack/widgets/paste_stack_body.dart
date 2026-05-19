@@ -14,6 +14,7 @@ class PasteStackBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const maxHeight = 150.0;
+    context.read<PasteStackCubit>();
     return BlocBuilder<PasteStackCubit, PasteStackState>(
       builder: (context, state) {
         final items = state.items;
