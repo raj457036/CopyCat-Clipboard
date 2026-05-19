@@ -23,7 +23,10 @@ mixin _$ClipCollectionState {
   int get limit => throw _privateConstructorUsedError;
   int get offset => throw _privateConstructorUsedError;
   bool get loading => throw _privateConstructorUsedError;
-  bool get syncing => throw _privateConstructorUsedError;
+  bool get syncing =>
+      throw _privateConstructorUsedError; // Number of collections the user's current plan allows to be active/editable.
+  // Collections at index >= activeLimit are read-only.
+  int get activeLimit => throw _privateConstructorUsedError;
   Failure? get failure => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
@@ -35,6 +38,7 @@ mixin _$ClipCollectionState {
       int offset,
       bool loading,
       bool syncing,
+      int activeLimit,
       Failure? failure,
     )
     loaded,
@@ -49,6 +53,7 @@ mixin _$ClipCollectionState {
       int offset,
       bool loading,
       bool syncing,
+      int activeLimit,
       Failure? failure,
     )?
     loaded,
@@ -63,6 +68,7 @@ mixin _$ClipCollectionState {
       int offset,
       bool loading,
       bool syncing,
+      int activeLimit,
       Failure? failure,
     )?
     loaded,
@@ -104,6 +110,7 @@ abstract class $ClipCollectionStateCopyWith<$Res> {
     int offset,
     bool loading,
     bool syncing,
+    int activeLimit,
     Failure? failure,
   });
 }
@@ -130,6 +137,7 @@ class _$ClipCollectionStateCopyWithImpl<$Res, $Val extends ClipCollectionState>
     Object? offset = null,
     Object? loading = null,
     Object? syncing = null,
+    Object? activeLimit = null,
     Object? failure = freezed,
   }) {
     return _then(
@@ -162,6 +170,10 @@ class _$ClipCollectionStateCopyWithImpl<$Res, $Val extends ClipCollectionState>
                 ? _value.syncing
                 : syncing // ignore: cast_nullable_to_non_nullable
                       as bool,
+            activeLimit: null == activeLimit
+                ? _value.activeLimit
+                : activeLimit // ignore: cast_nullable_to_non_nullable
+                      as int,
             failure: freezed == failure
                 ? _value.failure
                 : failure // ignore: cast_nullable_to_non_nullable
@@ -189,6 +201,7 @@ abstract class _$$ClipCollectionLoadedImplCopyWith<$Res>
     int offset,
     bool loading,
     bool syncing,
+    int activeLimit,
     Failure? failure,
   });
 }
@@ -214,6 +227,7 @@ class __$$ClipCollectionLoadedImplCopyWithImpl<$Res>
     Object? offset = null,
     Object? loading = null,
     Object? syncing = null,
+    Object? activeLimit = null,
     Object? failure = freezed,
   }) {
     return _then(
@@ -246,6 +260,10 @@ class __$$ClipCollectionLoadedImplCopyWithImpl<$Res>
             ? _value.syncing
             : syncing // ignore: cast_nullable_to_non_nullable
                   as bool,
+        activeLimit: null == activeLimit
+            ? _value.activeLimit
+            : activeLimit // ignore: cast_nullable_to_non_nullable
+                  as int,
         failure: freezed == failure
             ? _value.failure
             : failure // ignore: cast_nullable_to_non_nullable
@@ -266,6 +284,7 @@ class _$ClipCollectionLoadedImpl implements ClipCollectionLoaded {
     this.offset = 0,
     this.loading = true,
     this.syncing = false,
+    this.activeLimit = defaultCollectionCount,
     this.failure,
   }) : _collections = collections;
 
@@ -295,12 +314,17 @@ class _$ClipCollectionLoadedImpl implements ClipCollectionLoaded {
   @override
   @JsonKey()
   final bool syncing;
+  // Number of collections the user's current plan allows to be active/editable.
+  // Collections at index >= activeLimit are read-only.
+  @override
+  @JsonKey()
+  final int activeLimit;
   @override
   final Failure? failure;
 
   @override
   String toString() {
-    return 'ClipCollectionState.loaded(collections: $collections, hasMore: $hasMore, isLoading: $isLoading, limit: $limit, offset: $offset, loading: $loading, syncing: $syncing, failure: $failure)';
+    return 'ClipCollectionState.loaded(collections: $collections, hasMore: $hasMore, isLoading: $isLoading, limit: $limit, offset: $offset, loading: $loading, syncing: $syncing, activeLimit: $activeLimit, failure: $failure)';
   }
 
   @override
@@ -319,6 +343,8 @@ class _$ClipCollectionLoadedImpl implements ClipCollectionLoaded {
             (identical(other.offset, offset) || other.offset == offset) &&
             (identical(other.loading, loading) || other.loading == loading) &&
             (identical(other.syncing, syncing) || other.syncing == syncing) &&
+            (identical(other.activeLimit, activeLimit) ||
+                other.activeLimit == activeLimit) &&
             (identical(other.failure, failure) || other.failure == failure));
   }
 
@@ -332,6 +358,7 @@ class _$ClipCollectionLoadedImpl implements ClipCollectionLoaded {
     offset,
     loading,
     syncing,
+    activeLimit,
     failure,
   );
 
@@ -358,6 +385,7 @@ class _$ClipCollectionLoadedImpl implements ClipCollectionLoaded {
       int offset,
       bool loading,
       bool syncing,
+      int activeLimit,
       Failure? failure,
     )
     loaded,
@@ -370,6 +398,7 @@ class _$ClipCollectionLoadedImpl implements ClipCollectionLoaded {
       offset,
       loading,
       syncing,
+      activeLimit,
       failure,
     );
   }
@@ -385,6 +414,7 @@ class _$ClipCollectionLoadedImpl implements ClipCollectionLoaded {
       int offset,
       bool loading,
       bool syncing,
+      int activeLimit,
       Failure? failure,
     )?
     loaded,
@@ -397,6 +427,7 @@ class _$ClipCollectionLoadedImpl implements ClipCollectionLoaded {
       offset,
       loading,
       syncing,
+      activeLimit,
       failure,
     );
   }
@@ -412,6 +443,7 @@ class _$ClipCollectionLoadedImpl implements ClipCollectionLoaded {
       int offset,
       bool loading,
       bool syncing,
+      int activeLimit,
       Failure? failure,
     )?
     loaded,
@@ -426,6 +458,7 @@ class _$ClipCollectionLoadedImpl implements ClipCollectionLoaded {
         offset,
         loading,
         syncing,
+        activeLimit,
         failure,
       );
     }
@@ -470,6 +503,7 @@ abstract class ClipCollectionLoaded implements ClipCollectionState {
     final int offset,
     final bool loading,
     final bool syncing,
+    final int activeLimit,
     final Failure? failure,
   }) = _$ClipCollectionLoadedImpl;
 
@@ -486,7 +520,10 @@ abstract class ClipCollectionLoaded implements ClipCollectionState {
   @override
   bool get loading;
   @override
-  bool get syncing;
+  bool get syncing; // Number of collections the user's current plan allows to be active/editable.
+  // Collections at index >= activeLimit are read-only.
+  @override
+  int get activeLimit;
   @override
   Failure? get failure;
 

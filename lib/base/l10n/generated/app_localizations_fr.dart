@@ -2330,4 +2330,15 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get settings__tile__review__subtitle =>
       'Leave a review on the App Store';
+
+  @override
+  String get collections__read_only__banner =>
+      'Read-only on your current plan. Upgrade to edit this collection.';
+
+  @override
+  String get collections__read_only__toast =>
+      'This collection is read-only on your current plan. Upgrade to edit all collections.';
+
+  @override
+  String get collections__read_only__upgrade_action => 'Upgrade';
 }

@@ -250,9 +250,11 @@ class _CollectionsPageState extends State<CollectionsPage> {
                                 ),
                             itemBuilder: (BuildContext context, int index) {
                               final collection = filtered[index];
+                              final isReadOnly = state.isReadOnly(collection);
                               return ClipCollectionGridItem(
                                 autoFocus: isDesktopPlatform && index == 0,
                                 collection: collection,
+                                isReadOnly: isReadOnly,
                               );
                             },
                           );

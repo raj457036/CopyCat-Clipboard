@@ -182,7 +182,10 @@
     "review__dialog__remind_later",
     "review__dialog__rate_now",
     "settings__tile__review__title",
-    "settings__tile__review__subtitle"
+    "settings__tile__review__subtitle",
+    "collections__read_only__banner",
+    "collections__read_only__toast",
+    "collections__read_only__upgrade_action"
   ],
 
   "es": [
@@ -368,7 +371,10 @@
     "review__dialog__remind_later",
     "review__dialog__rate_now",
     "settings__tile__review__title",
-    "settings__tile__review__subtitle"
+    "settings__tile__review__subtitle",
+    "collections__read_only__banner",
+    "collections__read_only__toast",
+    "collections__read_only__upgrade_action"
   ],
 
   "fr": [
@@ -554,7 +560,10 @@
     "review__dialog__remind_later",
     "review__dialog__rate_now",
     "settings__tile__review__title",
-    "settings__tile__review__subtitle"
+    "settings__tile__review__subtitle",
+    "collections__read_only__banner",
+    "collections__read_only__toast",
+    "collections__read_only__upgrade_action"
   ],
 
   "pt": [
@@ -740,7 +749,10 @@
     "review__dialog__remind_later",
     "review__dialog__rate_now",
     "settings__tile__review__title",
-    "settings__tile__review__subtitle"
+    "settings__tile__review__subtitle",
+    "collections__read_only__banner",
+    "collections__read_only__toast",
+    "collections__read_only__upgrade_action"
   ],
 
   "zh": [
@@ -926,6 +938,9 @@
     "review__dialog__remind_later",
     "review__dialog__rate_now",
     "settings__tile__review__title",
-    "settings__tile__review__subtitle"
+    "settings__tile__review__subtitle",
+    "collections__read_only__banner",
+    "collections__read_only__toast",
+    "collections__read_only__upgrade_action"
   ]
 }

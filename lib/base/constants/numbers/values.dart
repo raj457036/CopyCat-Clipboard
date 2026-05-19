@@ -8,7 +8,7 @@ const kMaxDropItemCount = 5;
 const defaultNoOfSyncedDevices = 2;
 
 /// Default no. of collections allowed to be active at a time
-const defaultCollectionCount = 3;
+const defaultCollectionCount = 2;
 
 /// Default number of items allowed in an active paste stack
 const defaultPasteStackLimit = 10;

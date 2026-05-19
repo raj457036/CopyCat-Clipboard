@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
@@ -22,14 +24,28 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
   final AuthCubit auth;
   final ClipCollectionRepository repo;
   final String deviceId;
+  final MonetizationCubit monetizationCubit;
   late StreamSubscription eventBusSubscription;
+  late StreamSubscription<MonetizationState> _monetizationSub;
+
+  /// Resolves the active collection limit from a [MonetizationState].
+  static int _limitFromMonetization(MonetizationState monetizationState) =>
+      monetizationState.whenOrNull(active: (sub) => sub.collections) ??
+      defaultCollectionCount;
 
   ClipCollectionCubit(
     this.syncEventBus,
     this.auth,
     this.repo,
     @Named("device_id") this.deviceId,
-  ) : super(const ClipCollectionState.loaded(collections: [])) {
+    this.monetizationCubit,
+  ) : super(
+        ClipCollectionState.loaded(
+          collections: [],
+          activeLimit: _limitFromMonetization(monetizationCubit.state),
+        ),
+      ) {
+    _monetizationSub = monetizationCubit.stream.listen(_applyPlanLimit);
     eventBusSubscription = syncEventBus.where<ClipCollection>().listen((event) {
       if (event is TypedSyncEvent<ClipCollection>) {
         onSyncEvent(event.event);
@@ -118,8 +134,26 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
     }
   }
 
+  // MARK: - Plan limit
+
+  void _applyPlanLimit(MonetizationState monetizationState) {
+    emit(
+      state.copyWith(activeLimit: _limitFromMonetization(monetizationState)),
+    );
+  }
+
+  /// Returns true when [collection] is beyond the plan's active-collection
+  /// limit, meaning it is read-only on the current plan.
+  bool isReadOnly(ClipCollection collection) =>
+      state.mapOrNull(loaded: (s) => s.isReadOnly(collection)) ?? false;
+
   Future<void> reset() async {
-    emit(const ClipCollectionState.loaded(collections: []));
+    emit(
+      ClipCollectionState.loaded(
+        collections: [],
+        activeLimit: _limitFromMonetization(monetizationCubit.state),
+      ),
+    );
   }
 
   Future<ClipCollection?> get(int id) async {
@@ -231,6 +265,7 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
 
   @override
   Future<void> close() {
+    _monetizationSub.cancel();
     eventBusSubscription.cancel();
     return super.close();
   }
