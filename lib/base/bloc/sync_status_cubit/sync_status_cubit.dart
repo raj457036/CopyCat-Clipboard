@@ -15,7 +15,6 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart' show logger;
-import 'package:clipboard/utils/monetization.dart';
 import 'package:clipboard/utils/subscription_actions.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:duration/duration.dart';

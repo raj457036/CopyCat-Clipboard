@@ -14,7 +14,6 @@ import "package:clipboard/base/bloc/offline_persistance_cubit/offline_persistanc
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart'
     show SelectedClipsCubit;
-import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import "package:clipboard/base/constants/strings/route_constants.dart";
 import "package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart";
