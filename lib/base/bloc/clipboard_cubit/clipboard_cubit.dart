@@ -174,12 +174,6 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     }
   }
 
-  void reset() {
-    _isFetching = false;
-    _items.clear();
-    emit(const ClipboardState.loaded(loading: false));
-  }
-
   void put(ClipboardItem item, {bool isNew = false}) {
     if (isNew) {
       _items.insert(0, item);

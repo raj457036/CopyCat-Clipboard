@@ -147,8 +147,4 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       isSyncing = false;
     }
   }
-
-  Future<void> reset() async {
-    await plugin.clearStorage();
-  }
 }

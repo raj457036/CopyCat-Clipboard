@@ -14,25 +14,24 @@ abstract class SyncAdapter<T extends Syncable> {
   /// Unique name for this entity type (e.g., 'clip', 'collection').
   String get entityType;
 
-  // ─── Fetching state ───────────────────────────────
+  // Fetching state
 
   /// Find latest synced item timestamp for cursor reconstruction.
   Future<DateTime?> getLatestSyncTimestamp();
 
-  // ─── Pull (Server → Local) ─────────────────────────
+  // Pull (Server → Local)
 
-  /// Fetch changed items from server since [lastSynced].
+  /// Fetch changed items from server since [lastModified] (keyset cursor).
   FailureOr<PaginatedResult<T>> fetchRemoteChanges({
     required int limit,
-    required int offset,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   });
 
-  /// Fetch deleted items from server since [lastSynced].
+  /// Fetch deleted items from server since [lastSynced], paged by [lastModified] cursor.
   FailureOr<PaginatedResult<T>> fetchRemoteDeleted({
     required int limit,
-    required int offset,
+    DateTime? lastModified,
     String? excludeDeviceId,
     DateTime? lastSynced,
   });
@@ -48,7 +47,7 @@ abstract class SyncAdapter<T extends Syncable> {
   /// Delete items locally.
   Future<List<T>> deleteLocally(List<T> items);
 
-  // ─── Push (Local → Server) ─────────────────────────
+  // Push (Local → Server)
 
   /// Get a local item by ID (for outbox processing).
   Future<T?> getLocalById(int localId);
@@ -70,7 +69,7 @@ abstract class SyncAdapter<T extends Syncable> {
     return item;
   }
 
-  // ─── Realtime ──────────────────────────────────────
+  // Realtime
 
   /// Optional realtime listener for this entity type.
   CrossSyncListener<T>? get realtimeListener => null;

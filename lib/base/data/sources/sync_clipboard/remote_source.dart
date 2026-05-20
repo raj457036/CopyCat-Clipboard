@@ -20,23 +20,29 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
 
   PostgrestClient get db => client.rest;
 
+  String get _userId {
+    final id = client.auth.currentUser?.id;
+    if (id == null) {
+      throw StateError('SyncClipboardSource used while unauthenticated');
+    }
+    return id;
+  }
+
   Future<PaginatedResult<ClipboardItem>> _getLatestClipboardItems({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
     required PostgrestFilterBuilder<List<Map<String, dynamic>>> query,
   }) async {
-    if (lastSynced != null) {
-      final isoDate = lastSynced.toUtc().toIso8601String();
-      query = query.gt("modified", isoDate);
+    if (lastModified != null) {
+      query = query.gt("modified", lastModified.toUtc().toIso8601String());
     }
 
     if (excludeDeviceId != null && excludeDeviceId != "") {
       query = query.neq("deviceId", excludeDeviceId);
     }
 
-    final docs = (await query.order("modified").range(offset, offset + limit))
+    final docs = (await query.order("modified", ascending: true).limit(limit))
         .map(ClipboardItem.fromJson)
         .toList();
 
@@ -48,13 +54,13 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
   @override
   Future<PaginatedResult<ClipboardItem>> getLatestClipboardItems({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   }) async {
     var query = db
         .from(clipboardItemsTable)
         .select()
+        .eq("userId", _userId)
         .filter("collectionId", "is", null)
         .filter("deletedAt", "is", null);
 
@@ -62,9 +68,8 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
 
     return await _getLatestClipboardItems(
       limit: limit,
-      offset: offset,
+      lastModified: lastModified,
       excludeDeviceId: excludeDeviceId,
-      lastSynced: lastSynced,
       query: query,
     );
   }
@@ -72,13 +77,13 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
   @override
   Future<PaginatedResult<ClipboardItem>> getLatestCollectionClipboardItems({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   }) async {
     var query = db
         .from(clipboardItemsTable)
         .select()
+        .eq("userId", _userId)
         .not("collectionId", "is", null)
         .filter("deletedAt", "is", null);
 
@@ -86,9 +91,8 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
 
     return await _getLatestClipboardItems(
       limit: limit,
-      offset: offset,
+      lastModified: lastModified,
       excludeDeviceId: excludeDeviceId,
-      lastSynced: lastSynced,
       query: query,
     );
   }
@@ -96,26 +100,22 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
   @override
   Future<PaginatedResult<ClipCollection>> getLatestClipCollections({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   }) async {
     var query = db
         .from(clipCollectionsTable)
         .select()
+        .eq("userId", _userId)
         .filter("deletedAt", "is", null);
 
-    if (lastSynced != null) {
-      final isoDate = lastSynced
-          .subtract(const Duration(seconds: 5))
-          .toUtc()
-          .toIso8601String();
-      query = query.gt("modified", isoDate);
+    if (lastModified != null) {
+      query = query.gt("modified", lastModified.toUtc().toIso8601String());
     }
     if (excludeDeviceId != null && excludeDeviceId != "") {
       query = query.neq("deviceId", excludeDeviceId);
     }
-    final docs = await query.order("modified").range(offset, offset + limit);
+    final docs = await query.order("modified", ascending: true).limit(limit);
     final collections = docs
         .map((e) => ClipCollection.fromJson(e))
         .map((e) => e.copyWith(lastSynced: systemTime()))
@@ -130,7 +130,7 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
   @override
   Future<PaginatedResult<ClipboardItem>> getDeletedClipboardItems({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
     DateTime? lastSynced,
   }) async {
@@ -139,12 +139,19 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
         .subtract(const Duration(seconds: 5))
         .toUtc()
         .toIso8601String();
-    var query = db.from(clipboardItemsTable).select().gte("deletedAt", isoDate);
+    var query = db
+        .from(clipboardItemsTable)
+        .select()
+        .eq("userId", _userId)
+        .gte("deletedAt", isoDate);
 
+    if (lastModified != null) {
+      query = query.gt("modified", lastModified.toUtc().toIso8601String());
+    }
     if (excludeDeviceId != null && excludeDeviceId != "") {
       query = query.neq("deviceId", excludeDeviceId);
     }
-    final docs = await query.order("modified").range(offset, offset + limit);
+    final docs = await query.order("modified", ascending: true).limit(limit);
     final deletedClips = docs.map((e) => ClipboardItem.fromJson(e)).toList();
     _logger.d(() => "Fetched ${deletedClips.length} deleted clipboard items.");
     return PaginatedResult(
@@ -156,7 +163,7 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
   @override
   Future<PaginatedResult<ClipCollection>> getDeletedClipCollections({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
     DateTime? lastSynced,
   }) async {
@@ -169,12 +176,16 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
     var query = db
         .from(clipCollectionsTable)
         .select()
+        .eq("userId", _userId)
         .gte("deletedAt", isoDate);
 
+    if (lastModified != null) {
+      query = query.gt("modified", lastModified.toUtc().toIso8601String());
+    }
     if (excludeDeviceId != null && excludeDeviceId != "") {
       query = query.neq("deviceId", excludeDeviceId);
     }
-    final docs = await query.order("modified").range(offset, offset + limit);
+    final docs = await query.order("modified", ascending: true).limit(limit);
     final deletedCollections = docs
         .map((e) => ClipCollection.fromJson(e))
         .toList();

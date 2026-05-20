@@ -6,31 +6,28 @@ abstract class SyncClipboardSource {
   /// Fetches collections
   Future<PaginatedResult<ClipCollection>> getLatestClipCollections({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   });
 
   /// Fetches clipboard items without collection.
   Future<PaginatedResult<ClipboardItem>> getLatestClipboardItems({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   });
 
   /// Fetches clipboard items that belong to collections.
   Future<PaginatedResult<ClipboardItem>> getLatestCollectionClipboardItems({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   });
 
   /// Fetches deleted collections.
   Future<PaginatedResult<ClipCollection>> getDeletedClipCollections({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
     DateTime? lastSynced,
   });
@@ -38,7 +35,7 @@ abstract class SyncClipboardSource {
   /// Fetches deleted clipboard items.
   Future<PaginatedResult<ClipboardItem>> getDeletedClipboardItems({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
     DateTime? lastSynced,
   });

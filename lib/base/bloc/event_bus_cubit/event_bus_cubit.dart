@@ -12,12 +12,6 @@ part 'event_bus_state.dart';
 class EventBusCubit extends Cubit<EventBusState> {
   EventBusCubit() : super(const EventBusState.empty());
 
-  void reset() {
-    if (state is! _Empty) {
-      emit(const EventBusState.empty());
-    }
-  }
-
   void keyboard(String event) =>
       emit(EventBusState.keyboard(KeyboardShortcutEvent(name: event)));
   void indexPaste(int index) => emit(EventBusState.indexPaste(index));

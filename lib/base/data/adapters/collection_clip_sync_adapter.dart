@@ -57,15 +57,13 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   @override
   FailureOr<PaginatedResult<ClipboardItem>> fetchRemoteChanges({
     required int limit,
-    required int offset,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   }) {
     final result = _syncRepo.getLatestCollectionClipboardItems(
       limit: limit,
-      offset: offset,
+      lastModified: lastModified,
       excludeDeviceId: excludeDeviceId,
-      lastSynced: lastSynced,
     );
 
     return result;
@@ -74,7 +72,7 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   @override
   FailureOr<PaginatedResult<ClipboardItem>> fetchRemoteDeleted({
     required int limit,
-    required int offset,
+    DateTime? lastModified,
     String? excludeDeviceId,
     DateTime? lastSynced,
   }) async {

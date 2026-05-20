@@ -16,13 +16,13 @@ class SyncConfig with _$SyncConfig {
     @Default(15) int manualDelaySeconds,
 
     /// Size of batch for fetching normal items.
-    @Default(100) int pullBatchSize,
+    @Default(50) int pullBatchSize,
 
     /// Size of batch for fetching collections.
-    @Default(100) int collectionBatchSize,
+    @Default(50) int collectionBatchSize,
 
     /// Size of batch for fetching deleted items.
-    @Default(100) int deleteBatchSize,
+    @Default(50) int deleteBatchSize,
 
     /// Delay between processing successive sync pages.
     @Default(350) int interBatchDelayMs,

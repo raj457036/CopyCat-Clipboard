@@ -6,35 +6,32 @@ import 'package:clipboard/common/paginated_results.dart';
 abstract class SyncRepository {
   FailureOr<PaginatedResult<ClipCollection>> getLatestClipCollections({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   });
 
   FailureOr<PaginatedResult<ClipboardItem>> getLatestClipboardItems({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   });
 
   FailureOr<PaginatedResult<ClipboardItem>> getLatestCollectionClipboardItems({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   });
 
   FailureOr<PaginatedResult<ClipCollection>> getDeletedClipCollections({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
     DateTime? lastSynced,
   });
 
   FailureOr<PaginatedResult<ClipboardItem>> getDeletedClipboardItems({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
     DateTime? lastSynced,
   });

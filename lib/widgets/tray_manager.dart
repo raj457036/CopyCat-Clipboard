@@ -114,7 +114,6 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
   Future<void> onTrayIconMouseDown() async {
     final focusWindow = WindowFocusManager.of(context);
     await focusWindow?.toggleWindow();
-    trayManager.popUpContextMenu();
   }
 
   @override
