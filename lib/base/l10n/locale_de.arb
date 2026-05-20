@@ -30,6 +30,7 @@
   "app__uploading": "Hochladen...",
   "app__syncing": "Synchronisieren...",
   "app__sync": "Synchronisieren",
+  "app__queued": "In Warteschlange",
   "app__local": "Lokal",
   "app__send_message": "Nachricht senden",
   "app__send_email": "E-Mail senden",

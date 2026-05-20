@@ -19,7 +19,6 @@ import 'package:clipboard/widgets/clip_item/clip_card/hover_state_builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_preview.dart';
 import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
 import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
-import 'package:clipboard/widgets/clip_item/paste_chip_slide_in.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:clipboard/widgets/drag_drop/drag_item.dart';
 import 'package:clipboard/widgets/keyboard_shortcuts/space_enter_listener.dart';
@@ -212,13 +211,6 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       borderRadius: radius12,
     );
 
-    final cardContent = HoverScopeProvider(
-      builder: (context, hovered) => PasteChipSlideIn(
-        showPasteChip: hovered && canPaste,
-        child: const ClipCardBodyContent(),
-      ),
-    );
-
     return SpaceEnterListener(
       onSpace: (context) => widget.selectionActive
           ? toggleSelect(context)
@@ -253,7 +245,9 @@ class _ClipCardBodyState extends State<ClipCardBody> {
               : null,
           onFocusChange: onFocusChange,
           autofocus: widget.focused,
-          child: cardContent,
+          child: HoverScopeProvider(
+            builder: (context, hovered) => const ClipCardBodyContent(),
+          ),
         ),
       ),
     );

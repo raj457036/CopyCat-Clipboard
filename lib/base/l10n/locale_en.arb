@@ -31,6 +31,7 @@
   "app__uploading": "Uploading...",
   "app__syncing": "Syncing...",
   "app__sync": "Sync",
+  "app__queued": "Queued",
   "app__local": "Local",
   "app__utc": "UTC",
   "app__send_message": "Send Message",

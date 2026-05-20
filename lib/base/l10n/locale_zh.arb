@@ -30,6 +30,7 @@
   "app__uploading": "上传中...",
   "app__syncing": "同步中...",
   "app__sync": "同步",
+  "app__queued": "排队中",
   "app__local": "本地",
   "app__send_message": "发送消息",
   "app__send_email": "发送邮件",

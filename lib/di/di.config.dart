@@ -258,13 +258,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<String>(instanceName: 'device_id'),
       ),
     );
-    gh.lazySingleton<_i23.ClipboardSource>(
-      () => _i730.LocalClipboardSource(
-        gh<_i214.Isar>(),
-        gh<String>(instanceName: 'device_id'),
-      ),
-      instanceName: 'local',
-    );
     gh.lazySingleton<_i636.AppDirectoryRepository>(
       () => _i715.AppDirectoryRepositoryImpl(gh<_i454.SupabaseClient>()),
     );
@@ -291,6 +284,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i579.AuthRepository>(
       () => _i346.AuthRepositoryImpl(client: gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i23.ClipboardSource>(
+      () => _i730.LocalClipboardSource(
+        gh<_i214.Isar>(),
+        gh<String>(instanceName: 'device_id'),
+        gh<_i770.SyncOutboxRepository>(),
+      ),
+      instanceName: 'local',
     );
     gh.lazySingleton<_i670.ClipCollectionSource>(
       () => _i173.LocalClipCollectionSource(

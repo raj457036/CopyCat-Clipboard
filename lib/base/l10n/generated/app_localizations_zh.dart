@@ -78,6 +78,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app__sync => '同步';
 
   @override
+  String get app__queued => '排队中';
+
+  @override
   String get app__local => '本地';
 
   @override

@@ -23,6 +23,32 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
   );
   final _collector = <SyncOutboxEntry>[];
 
+  /// In-memory index of pending local entity IDs for O(1) [isLocalIdQueued] lookup.
+  final Set<int> _pendingLocalIds = {};
+
+  /// Maps Isar outbox-entry IDs → local entity IDs so [markCompleted] can
+  /// remove the right entry from [_pendingLocalIds] without an extra DB read.
+  final Map<int, int> _idToLocalId = {};
+
+  bool _initialized = false;
+
+  /// Populates [_pendingLocalIds] and [_idToLocalId] from Isar synchronously
+  /// (safe on the main isolate after the DB is open) plus any collector items
+  /// that haven't been flushed yet. Called at most once.
+  void _ensureInitialized() {
+    if (_initialized) return;
+    _initialized = true;
+    final existing = _collection.where().findAllSync();
+    for (final e in existing) {
+      _pendingLocalIds.add(e.localId);
+      _idToLocalId[e.id] = e.localId;
+    }
+    // Items sitting in the collector are pending but not yet in Isar.
+    for (final e in _collector) {
+      _pendingLocalIds.add(e.localId);
+    }
+  }
+
   @override
   Stream<void> get onNewEntry => _newEntryController.stream;
 
@@ -34,6 +60,7 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
     );
 
     _collector.add(entry);
+    _pendingLocalIds.add(entry.localId); // track immediately, before flush
     _logger.d(() => 'Added to collector. Collector size: ${_collector.length}');
     _collectorDebouncer(_flushCollector);
   }
@@ -55,6 +82,11 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
       await _collection.putAll(isarEntries);
     });
 
+    // After putAll the isarEntries have their auto-incremented IDs assigned.
+    for (final e in isarEntries) {
+      _idToLocalId[e.id] = e.localId;
+    }
+
     _logger.d(() => 'Flushed ${isarEntries.length} entries to Isar');
     _logger.d(() => 'Enqueued. Notifying stream listeners...');
     _newEntryController.add(null);
@@ -72,6 +104,8 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
 
   @override
   Future<void> markCompleted(int id) async {
+    final localId = _idToLocalId.remove(id);
+    if (localId != null) _pendingLocalIds.remove(localId);
     await _db.writeTxn(() async {
       await _collection.delete(id);
     });
@@ -79,6 +113,8 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
 
   @override
   Future<void> removeByEntity(String entityType, int localId) async {
+    _pendingLocalIds.remove(localId);
+    _idToLocalId.removeWhere((_, v) => v == localId);
     await _db.writeTxn(() async {
       await _collection
           .filter()
@@ -91,8 +127,17 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
 
   @override
   Future<void> clearAll() async {
+    _pendingLocalIds.clear();
+    _idToLocalId.clear();
+    _initialized = false;
     await _db.writeTxn(() async {
       await _collection.clear();
     });
+  }
+
+  @override
+  bool isLocalIdQueued(int localId) {
+    _ensureInitialized();
+    return _pendingLocalIds.contains(localId);
   }
 }

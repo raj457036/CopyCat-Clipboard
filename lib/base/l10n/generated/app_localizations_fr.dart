@@ -79,6 +79,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get app__sync => 'Synchroniser';
 
   @override
+  String get app__queued => 'En attente';
+
+  @override
   String get app__local => 'Local';
 
   @override

@@ -79,6 +79,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get app__sync => 'Sincronizar';
 
   @override
+  String get app__queued => 'Na fila';
+
+  @override
   String get app__local => 'Local';
 
   @override

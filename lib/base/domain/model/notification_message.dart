@@ -8,8 +8,9 @@ typedef NotificationContentBuilder =
 class NotificationContent {
   final String? title;
   final String body;
+  final SnackBarAction? action;
 
-  NotificationContent({this.title, required this.body});
+  NotificationContent({this.title, required this.body, this.action});
 
   String get render => title != null ? "$title\n$body" : body;
 }
@@ -18,15 +19,13 @@ class NotificationContent {
 /// which can be displayed to the user.
 class NotificationMessage extends NotificationContent {
   final String? id;
-
-  final SnackBarAction? action;
   final VoidCallback? onClose;
 
   NotificationMessage({
     this.id,
     super.title,
     required super.body,
-    this.action,
+    super.action,
     this.onClose,
   });
 
@@ -36,12 +35,19 @@ class NotificationMessage extends NotificationContent {
   factory NotificationMessage.builder({
     required NotificationContentBuilder builder,
     String? id,
+    SnackBarAction? action,
+    VoidCallback? onClose,
   }) {
-    return BuildNotificationMessage(id: id, builder: builder);
+    return BuildNotificationMessage(
+      id: id,
+      builder: builder,
+      action: action,
+      onClose: onClose,
+    );
   }
 
   NotificationContent get content =>
-      NotificationContent(title: title, body: body);
+      NotificationContent(title: title, body: body, action: action);
 }
 
 /// A special type of [NotificationMessage] that uses a builder function
@@ -50,6 +56,10 @@ class NotificationMessage extends NotificationContent {
 class BuildNotificationMessage extends NotificationMessage {
   final NotificationContentBuilder builder;
 
-  BuildNotificationMessage({super.id, required this.builder})
-    : super(body: _emptyMessage);
+  BuildNotificationMessage({
+    super.id,
+    required this.builder,
+    super.action,
+    super.onClose,
+  }) : super(body: _emptyMessage);
 }

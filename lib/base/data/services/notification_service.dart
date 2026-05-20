@@ -85,7 +85,7 @@ class InAppNotificationService {
       behavior: behavior,
       margin: _getSnackBarMargin(),
       shape: const RoundedRectangleBorder(borderRadius: radius16),
-      action: message.action,
+      action: message.action ?? messageContent.action,
     );
   }
 

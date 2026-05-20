@@ -30,6 +30,7 @@
   "app__uploading": "Subiendo...",
   "app__syncing": "Sincronizando...",
   "app__sync": "Sincronizar",
+  "app__queued": "En cola",
   "app__local": "Local",
   "app__send_message": "Enviar Mensaje",
   "app__send_email": "Enviar Correo Electrónico",

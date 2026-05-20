@@ -1,4 +1,6 @@
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/dialogs/subscription_info.dart';
 import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/widgets/subscription/subscription_builder.dart';
@@ -6,7 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ActivePlanButton extends StatelessWidget {
-  const ActivePlanButton({super.key});
+  final bool plain;
+  const ActivePlanButton({super.key, this.plain = false});
 
   Future<void> action(
     BuildContext context, {
@@ -23,16 +26,34 @@ class ActivePlanButton extends StatelessWidget {
     return DisableForLocalUser(
       child: SubscriptionBuilder(
         builder: (context, subscription) {
-          String label = subscription?.planName ?? "Free";
-          return Focus(
-            skipTraversal: true,
-            descendantsAreFocusable: false,
-            child: ElevatedButton.icon(
+          String label = context.locale.paywall_dialog__text__upgrade;
+
+          if (subscription != null && !subscription.isFree) {
+            label = subscription.planName;
+          }
+
+          Widget button;
+          if (plain) {
+            button = TextButton(
+              onPressed: () => action(context),
+              child: Text(label),
+            );
+          } else {
+            button = ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: context.colors.primary,
+                foregroundColor: context.colors.onPrimary,
+              ),
               onPressed: () => action(context),
               onLongPress: () => action(context, entitlementGrantMode: true),
               icon: const Icon(Icons.loyalty_rounded),
               label: Text(label),
-            ),
+            );
+          }
+          return Focus(
+            skipTraversal: true,
+            descendantsAreFocusable: false,
+            child: button,
           );
         },
       ),

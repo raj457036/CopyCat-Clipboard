@@ -92,6 +92,12 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     @JsonKey(includeFromJson: false, includeToJson: false)
     @Default(false)
     bool previewOnly,
+
+    /// Whether this clip currently has a pending entry in the sync outbox.
+    /// Populated by the data layer; not persisted.
+    @JsonKey(includeFromJson: false, includeToJson: false)
+    @Default(false)
+    bool isQueued,
   }) = _ClipboardItem;
 
   factory ClipboardItem.fromJson(Map<String, dynamic> json) =>

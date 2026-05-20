@@ -2,6 +2,7 @@
 
 import 'package:clipboard/base/data/isar/adapters/isar_clipboard_item.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/repositories/sync_outbox.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/sort.dart';
@@ -18,8 +19,9 @@ class LocalClipboardSource implements ClipboardSource {
 
   final Isar db;
   final String deviceId;
+  final SyncOutboxRepository outbox;
 
-  LocalClipboardSource(this.db, @Named('device_id') this.deviceId);
+  LocalClipboardSource(this.db, @Named('device_id') this.deviceId, this.outbox);
 
   IsarCollection<IsarClipboardItem> get _collection =>
       db.collection<IsarClipboardItem>();
@@ -132,9 +134,12 @@ class LocalClipboardSource implements ClipboardSource {
     var paginatedQuery = sortedQuery.offset(offset).limit(limit).findAll();
 
     final isarResults = await db.txn(() async => await paginatedQuery);
-    final results = isarResults
-        .map((e) => _toPreviewItem(e.toDomain()))
-        .toList();
+    final results = isarResults.map((e) {
+      final item = _toPreviewItem(e.toDomain());
+      return item.id != null && outbox.isLocalIdQueued(item.id!)
+          ? item.copyWith(isQueued: true)
+          : item;
+    }).toList();
 
     return PaginatedResult(results: results, hasMore: results.length == limit);
   }

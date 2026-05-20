@@ -22,4 +22,8 @@ abstract class SyncOutboxRepository {
 
   /// Clear all entries from the outbox (e.g. on logout).
   Future<void> clearAll();
+
+  /// Returns true if the given local entity ID has a pending outbox entry.
+  /// O(1) — backed by an in-memory set maintained alongside all mutations.
+  bool isLocalIdQueued(int localId);
 }
