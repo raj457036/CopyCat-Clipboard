@@ -51,6 +51,16 @@ ThemeData buildAppTheme({
       backButtonIconBuilder: (BuildContext context) =>
           const Icon(Icons.arrow_back),
     ),
+
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: ZoomPageTransitionsBuilder(),
+        TargetPlatform.iOS: ZoomPageTransitionsBuilder(),
+        TargetPlatform.macOS: ZoomPageTransitionsBuilder(),
+        TargetPlatform.windows: ZoomPageTransitionsBuilder(),
+        TargetPlatform.linux: ZoomPageTransitionsBuilder(),
+      },
+    ),
   );
 
   return theme.copyWith(textTheme: robotoFlexTextTheme(theme.textTheme));

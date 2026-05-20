@@ -39,6 +39,7 @@ class SyncEngine<T extends Syncable> {
   final List<String> dependsOn;
 
   Timer? _pollingTimer;
+  int? _pollingIntervalSeconds; // saved so realtime fallback can restore it
   bool _busy = false;
   bool _isRealtimeSubscribed = false;
   StreamSubscription? _statusSub;
@@ -79,11 +80,19 @@ class SyncEngine<T extends Syncable> {
       final cursor = await cursorRepo.get(adapter.entityType);
       final DateTime? lastSynced;
       if (freshPull) {
-        if (pullOffset == 0 || pullOffset == null) {
-          // If pulling fresh with 0 offset, we will fetch from the beginning of time.
-          lastSynced = DateTime.fromMillisecondsSinceEpoch(0);
+        final freshStart = (pullOffset == null || pullOffset == 0)
+            ? DateTime.fromMillisecondsSinceEpoch(0)
+            : systemTime().subtract(Duration(seconds: pullOffset));
+        // If a checkpoint cursor exists ahead of freshStart, resume from it
+        // instead of restarting from the beginning. This allows "Try Again"
+        // after a timeout to pick up where it left off.
+        final checkpoint = cursor?.lastSyncedAt;
+        if (pullOffset != null &&
+            checkpoint != null &&
+            checkpoint.isAfter(freshStart)) {
+          lastSynced = checkpoint;
         } else {
-          lastSynced = systemTime().subtract(Duration(seconds: pullOffset));
+          lastSynced = freshStart;
         }
       } else {
         lastSynced =
@@ -105,7 +114,6 @@ class SyncEngine<T extends Syncable> {
       // 2. Sync Created/Updated Items
       final changesResult = await _pullChanges(
         lastSynced,
-        freshPull ? 0 : (cursor?.lastOffset ?? 0),
         excludeDeviceId: excludeDeviceId,
       );
       if (changesResult == SyncResult.failed) return SyncResult.failed;
@@ -134,12 +142,12 @@ class SyncEngine<T extends Syncable> {
     String? excludeDeviceId,
   }) async {
     bool hasMore = true;
-    int offset = 0;
+    DateTime? lastModified;
 
     while (hasMore) {
       final result = await adapter.fetchRemoteDeleted(
         limit: config.deleteBatchSize,
-        offset: offset,
+        lastModified: lastModified,
         excludeDeviceId: excludeDeviceId,
         lastSynced: lastSynced,
       );
@@ -151,7 +159,9 @@ class SyncEngine<T extends Syncable> {
         },
         (paginated) async {
           hasMore = paginated.hasMore;
-          offset += paginated.results.length;
+          if (paginated.results.isNotEmpty) {
+            lastModified = paginated.results.last.modified;
+          }
 
           if (paginated.results.isEmpty) return true;
 
@@ -174,20 +184,43 @@ class SyncEngine<T extends Syncable> {
   }
 
   Future<SyncResult> _pullChanges(
-    DateTime? lastSynced,
-    int initialOffset, {
+    DateTime? lastSynced, {
     String? excludeDeviceId,
   }) async {
     bool hasMore = true;
-    int offset = initialOffset;
+    DateTime? lastModified = lastSynced;
+    int syncedCount = 0;
+    // Adaptive batch size: shrinks on timeout, grows on consecutive successes.
+    int batchLimit = config.pullBatchSize;
+    final maxBatchSize = config.pullBatchSize * 6;
 
     while (hasMore) {
-      final result = await adapter.fetchRemoteChanges(
-        limit: config.pullBatchSize,
-        offset: offset,
+      // Retry the same batch up to 3 times on transient server-side timeouts.
+      // Each retry halves the batch limit so shorter queries are less likely
+      // to hit the statement timeout.
+      var result = await adapter.fetchRemoteChanges(
+        limit: batchLimit,
+        lastModified: lastModified,
         excludeDeviceId: excludeDeviceId,
-        lastSynced: lastSynced,
       );
+      for (int attempt = 2; attempt <= 4; attempt++) {
+        final isTimeout = result.fold(
+          (f) => f.message.contains('statement timeout'),
+          (_) => false,
+        );
+        if (!isTimeout) break;
+        batchLimit = (batchLimit / 2).round().clamp(1, maxBatchSize);
+        logger.w(
+          () =>
+              '[SyncEngine:${adapter.entityType}] batch timeout, attempt $attempt/4 — retrying with limit=$batchLimit',
+        );
+        await wait(attempt * 1000);
+        result = await adapter.fetchRemoteChanges(
+          limit: batchLimit,
+          lastModified: lastModified,
+          excludeDeviceId: excludeDeviceId,
+        );
+      }
 
       final success = await result.fold(
         (failure) async {
@@ -196,13 +229,27 @@ class SyncEngine<T extends Syncable> {
         },
         (paginated) async {
           hasMore = paginated.hasMore;
-          offset += paginated.results.length;
+          syncedCount += paginated.results.length;
+          if (paginated.results.isNotEmpty) {
+            lastModified = paginated.results.last.modified;
+            // Grow batch size on success (up to maxBatchSize) so fast
+            // connections naturally fetch more per round-trip over time.
+            batchLimit = (batchLimit * 2).clamp(1, maxBatchSize);
+            // Save a checkpoint so "Try Again" can resume from this offset
+            // rather than restarting from the beginning.
+            await cursorRepo.upsert(
+              SyncCursor(
+                entityType: adapter.entityType,
+                lastSyncedAt: lastModified!,
+              ),
+            );
+          }
 
           if (paginated.results.isEmpty) {
             eventBus.emitProgress(
               SyncProgressParams(
                 entityType: adapter.entityType,
-                syncedCount: offset,
+                syncedCount: syncedCount,
                 fetchCount: paginated.results.length,
                 totalCount: paginated.totalCount,
               ),
@@ -222,14 +269,11 @@ class SyncEngine<T extends Syncable> {
           eventBus.emitProgress(
             SyncProgressParams(
               entityType: adapter.entityType,
-              syncedCount: offset,
+              syncedCount: syncedCount,
               fetchCount: paginated.results.length,
               totalCount: paginated.totalCount,
             ),
           );
-
-          // NOTE(raj): If we stopped mid-batch, we'd persist the cursor here with the offset
-          // But currently we process sequentially.
 
           return true;
         },
@@ -241,7 +285,7 @@ class SyncEngine<T extends Syncable> {
     return SyncResult.success;
   }
 
-  // ─── PUSH (Local → Server via Outbox) ────────────────────────────────────
+  // PUSH (Local → Server via Outbox)
 
   /// Processes local changes waiting in the outbox.
   Future<void> processOutbox() async {
@@ -386,11 +430,14 @@ class SyncEngine<T extends Syncable> {
     }
   }
 
-  // ─── POLLING & REALTIME ──────────────────────────────────────────────────
+  // POLLING & REALTIME
 
   void startPolling({int? intervalSeconds}) {
     stopPolling();
     final cadence = intervalSeconds ?? config.pollingIntervalSeconds;
+    _pollingIntervalSeconds = cadence;
+    // Don't start the timer if realtime is currently connected.
+    if (_isRealtimeSubscribed) return;
     _pollingTimer = Timer.periodic(Duration(seconds: cadence), (_) => pull());
   }
 
@@ -412,12 +459,22 @@ class SyncEngine<T extends Syncable> {
 
   void _onRealtimeStatusChange(CrossSyncStatusEvent event) {
     final status = event.$1;
-    if (status == CrossSyncListenerStatus.disconnected ||
-        status == CrossSyncListenerStatus.error) {
-      Future.delayed(
-        Duration(seconds: config.reconnectDelaySeconds),
-        () => adapter.realtimeListener?.reconnect(),
-      );
+    switch (status) {
+      case CrossSyncListenerStatus.connected:
+        // Realtime is live — polling would be redundant.
+        stopPolling();
+      case CrossSyncListenerStatus.disconnected:
+      case CrossSyncListenerStatus.error:
+        // Fall back to polling while waiting for realtime to reconnect.
+        if (_pollingIntervalSeconds != null) {
+          startPolling(intervalSeconds: _pollingIntervalSeconds);
+        }
+        Future.delayed(
+          Duration(seconds: config.reconnectDelaySeconds),
+          () => adapter.realtimeListener?.reconnect(),
+        );
+      default:
+        break;
     }
   }
 
@@ -464,5 +521,9 @@ class SyncEngine<T extends Syncable> {
     _eventSub?.cancel();
     adapter.realtimeListener?.stop();
     _isRealtimeSubscribed = false;
+    // Restore polling now that realtime is gone.
+    if (_pollingIntervalSeconds != null) {
+      startPolling(intervalSeconds: _pollingIntervalSeconds);
+    }
   }
 }

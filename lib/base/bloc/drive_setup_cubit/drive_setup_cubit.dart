@@ -73,11 +73,6 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
     return token?.accessToken;
   }
 
-  void reset() {
-    emit(const DriveSetupState.unknown());
-    _readyNow();
-  }
-
   Future<bool> fetch() async {
     try {
       emit(const DriveSetupState.fetching());

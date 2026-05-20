@@ -107,7 +107,7 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
         title: const Text('Manage Sync Devices'),
       ),
       body: ScaffoldBody(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        margin: const EdgeInsets.symmetric(horizontal: 16),
         child: Align(
           alignment: Alignment.centerLeft,
           child: ConstrainedBox(

@@ -43,29 +43,26 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
   @override
   FailureOr<PaginatedResult<ClipCollection>> fetchRemoteChanges({
     required int limit,
-    required int offset,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
-    bool freshPull = false,
   }) {
     return _syncRepo.getLatestClipCollections(
       limit: limit,
-      offset: offset,
+      lastModified: lastModified,
       excludeDeviceId: excludeDeviceId,
-      lastSynced: lastSynced,
     );
   }
 
   @override
   FailureOr<PaginatedResult<ClipCollection>> fetchRemoteDeleted({
     required int limit,
-    required int offset,
+    DateTime? lastModified,
     String? excludeDeviceId,
     DateTime? lastSynced,
   }) {
     return _syncRepo.getDeletedClipCollections(
       limit: limit,
-      offset: offset,
+      lastModified: lastModified,
       excludeDeviceId: excludeDeviceId,
       lastSynced: lastSynced,
     );
@@ -79,14 +76,25 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
     final collectionMapping = _collectionCubit.serverMapping;
     final syncEvents = <CollectionCrossSyncEvent>[];
 
-    // Convert to local IDs where possible
+    // Convert to local IDs where possible.
+    // Fast path: check the in-memory cubit mapping.
+    // Fallback: query the DB by serverId to avoid duplicate inserts when the
+    // cubit is fresh (e.g. first launch, concurrent sync, app restart).
     for (var i = 0; i < items.length; i++) {
       final serverId = items[i].serverId;
-      final localId = collectionMapping[serverId];
+      final localId = serverId != null ? collectionMapping[serverId] : null;
       if (localId != null) {
         items[i] = items[i].copyWith(id: localId);
-        // Note: conflictResolver could be used here if we fetched the existing items
         syncEvents.add((CrossSyncEventType.update, items[i]));
+      } else if (serverId != null) {
+        final existing = await _collectionRepo.get(serverId: serverId);
+        final existingId = existing.fold((l) => null, (r) => r?.id);
+        if (existingId != null) {
+          items[i] = items[i].copyWith(id: existingId);
+          syncEvents.add((CrossSyncEventType.update, items[i]));
+        } else {
+          syncEvents.add((CrossSyncEventType.create, items[i]));
+        }
       } else {
         syncEvents.add((CrossSyncEventType.create, items[i]));
       }

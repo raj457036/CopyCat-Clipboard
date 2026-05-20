@@ -817,8 +817,8 @@
       }
     }
   },
-  "tray__menu__resume_copycat": "▶️ Resume CopyCat",
-  "tray__menu__pause_copycat": "⏸️ Pause CopyCat",
+  "tray__menu__resume_copycat": "Resume",
+  "tray__menu__pause_copycat": "Pause",
   "tray__dialog__quit__subtitle": "Are you sure you want to quit?",
   "splash__checking_authentication": "Checking for authentication...",
   "paste_stack__title": "Paste Stack • {count}",

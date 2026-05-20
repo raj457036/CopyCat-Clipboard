@@ -1993,10 +1993,10 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get tray__menu__resume_copycat => '▶️ Resume CopyCat';
+  String get tray__menu__resume_copycat => 'Resume';
 
   @override
-  String get tray__menu__pause_copycat => '⏸️ Pause CopyCat';
+  String get tray__menu__pause_copycat => 'Pause';
 
   @override
   String get tray__dialog__quit__subtitle => 'Are you sure you want to quit?';
