@@ -48,10 +48,7 @@ class AuthListener extends StatelessWidget {
 
   Future<void> resetAll(BuildContext context) async {
     EncryptionWorker.instance.dispose();
-    final dbService = sl<DatabaseService>();
-    clearPersistedRootDir();
-    await dbService.clearAll();
-
+    InAppNotificationService.i.dismissAll();
     InAppNotificationService.i.notify(
       NotificationMessage.builder(
         id: "logout_success",
@@ -59,6 +56,13 @@ class AuthListener extends StatelessWidget {
             NotificationContent(body: context.locale.app__ack__logout_success),
       ),
     );
+
+    await clearPersistedRootDir();
+    await sl<DatabaseService>().clearAll();
+    sl<OfflinePersistenceCubit>().stopListeners();
+    sl<UserDevicesCubit>().clear();
+    sl<AppConfigCubit>().reset();
+    syncOrchestrator.stop();
   }
 
   Future<void> _handleAuthenticatedState(AuthenticatedAuthState state) async {
@@ -90,21 +94,12 @@ class AuthListener extends StatelessWidget {
         switch (state) {
           case AuthenticatedAuthState():
             await _handleAuthenticatedState(state);
-          case UnauthenticatedAuthState(:final failure):
-            // MARK: - Post Logout Cleanup
-            if (failure == null) resetAll(context);
-            sl<UserDevicesCubit>().clear();
-            context.read<AppConfigCubit>().reset();
+          case UnauthenticatedAuthState() ||
+              UnknownAuthState() ||
+              AuthenticatingAuthState():
+            resetAll(context);
             await context.windowAction?.show();
             appRouter.goNamed(RouteConstants.login);
-            EncryptionWorker.instance.dispose();
-            syncOrchestrator.stop();
-          case UnknownAuthState() || AuthenticatingAuthState():
-            InAppNotificationService.i.dismissAll();
-            sl<UserDevicesCubit>().clear();
-            await context.windowAction?.show();
-            appRouter.goNamed(RouteConstants.login);
-            syncOrchestrator.stop();
           case LocalAuthenticatedAuthState():
             // MARK: - Offline Authentication Success
             unawaited(sl<OfflinePersistenceCubit>().startListeners());

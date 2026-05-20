@@ -59,13 +59,17 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
     try {
       final statRes = await widget.restorationStatusRepository.getStatus();
       statRes.fold((l) => null, (r) => syncStatus = r);
-      final lastSync =
-          syncStatus?.lastSyncPoint ??
-          systemTime().subtract(Duration(seconds: syncCubit.pullOffset));
+
+      // clip:clip engine always syncs from (now - pullOffset) during freshPull,
+      // regardless of lastSyncPoint. Use the same window for the count so the
+      // progress total matches what will actually be fetched (24h free / 30d pro).
+      final clipCountSince = systemTime().subtract(
+        Duration(seconds: syncCubit.pullOffset),
+      );
 
       final results = await Future.wait([
         widget.collectionRepository.getCount(local: false),
-        widget.clipboardRepository.getClipCounts(lastSync),
+        widget.clipboardRepository.getClipCounts(clipCountSince),
       ]);
 
       int colTotal = 0, clipTotal = 0;

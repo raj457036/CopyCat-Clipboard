@@ -3511,13 +3511,13 @@ abstract class AppLocalizations {
   /// No description provided for @tray__menu__resume_copycat.
   ///
   /// In en, this message translates to:
-  /// **'▶️ Resume CopyCat'**
+  /// **'Resume'**
   String get tray__menu__resume_copycat;
 
   /// No description provided for @tray__menu__pause_copycat.
   ///
   /// In en, this message translates to:
-  /// **'⏸️ Pause CopyCat'**
+  /// **'Pause'**
   String get tray__menu__pause_copycat;
 
   /// No description provided for @tray__dialog__quit__subtitle.

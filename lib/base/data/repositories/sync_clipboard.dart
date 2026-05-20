@@ -16,16 +16,14 @@ class SyncRepositoryImpl implements SyncRepository {
   @override
   FailureOr<PaginatedResult<ClipboardItem>> getLatestClipboardItems({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   }) async {
     try {
       final result = await source.getLatestClipboardItems(
         limit: limit,
-        offset: offset,
+        lastModified: lastModified,
         excludeDeviceId: excludeDeviceId,
-        lastSynced: lastSynced,
       );
 
       return Right(result);
@@ -37,16 +35,14 @@ class SyncRepositoryImpl implements SyncRepository {
   @override
   FailureOr<PaginatedResult<ClipboardItem>> getLatestCollectionClipboardItems({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   }) async {
     try {
       final result = await source.getLatestCollectionClipboardItems(
         limit: limit,
-        offset: offset,
+        lastModified: lastModified,
         excludeDeviceId: excludeDeviceId,
-        lastSynced: lastSynced,
       );
 
       return Right(result);
@@ -58,16 +54,14 @@ class SyncRepositoryImpl implements SyncRepository {
   @override
   FailureOr<PaginatedResult<ClipCollection>> getLatestClipCollections({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
-    DateTime? lastSynced,
   }) async {
     try {
       final result = await source.getLatestClipCollections(
         limit: limit,
-        offset: offset,
+        lastModified: lastModified,
         excludeDeviceId: excludeDeviceId,
-        lastSynced: lastSynced,
       );
       return Right(result);
     } catch (e) {
@@ -78,14 +72,14 @@ class SyncRepositoryImpl implements SyncRepository {
   @override
   FailureOr<PaginatedResult<ClipboardItem>> getDeletedClipboardItems({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
     DateTime? lastSynced,
   }) async {
     try {
       final result = await source.getDeletedClipboardItems(
         limit: limit,
-        offset: offset,
+        lastModified: lastModified,
         excludeDeviceId: excludeDeviceId,
         lastSynced: lastSynced,
       );
@@ -98,14 +92,14 @@ class SyncRepositoryImpl implements SyncRepository {
   @override
   FailureOr<PaginatedResult<ClipCollection>> getDeletedClipCollections({
     int limit = 100,
-    int offset = 0,
+    DateTime? lastModified,
     String? excludeDeviceId,
     DateTime? lastSynced,
   }) async {
     try {
       final result = await source.getDeletedClipCollections(
         limit: limit,
-        offset: offset,
+        lastModified: lastModified,
         excludeDeviceId: excludeDeviceId,
         lastSynced: lastSynced,
       );

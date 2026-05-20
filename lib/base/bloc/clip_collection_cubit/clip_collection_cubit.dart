@@ -147,15 +147,6 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
   bool isReadOnly(ClipCollection collection) =>
       state.mapOrNull(loaded: (s) => s.isReadOnly(collection)) ?? false;
 
-  Future<void> reset() async {
-    emit(
-      ClipCollectionState.loaded(
-        collections: [],
-        activeLimit: _limitFromMonetization(monetizationCubit.state),
-      ),
-    );
-  }
-
   Future<ClipCollection?> get(int id) async {
     ClipCollection? collection = state.mapOrNull(
       loaded: (loaded) => loaded.collections.findFirst((e) => e.id == id),
