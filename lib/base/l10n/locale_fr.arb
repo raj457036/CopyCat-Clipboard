@@ -30,6 +30,7 @@
   "app__uploading": "Téléversement...",
   "app__syncing": "Synchronisation...",
   "app__sync": "Synchroniser",
+  "app__queued": "En attente",
   "app__local": "Local",
   "app__send_message": "Envoyer un message",
   "app__send_email": "Envoyer un e-mail",

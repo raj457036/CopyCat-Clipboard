@@ -243,6 +243,12 @@ abstract class AppLocalizations {
   /// **'Sync'**
   String get app__sync;
 
+  /// No description provided for @app__queued.
+  ///
+  /// In en, this message translates to:
+  /// **'Queued'**
+  String get app__queued;
+
   /// No description provided for @app__local.
   ///
   /// In en, this message translates to:

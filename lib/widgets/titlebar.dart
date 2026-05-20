@@ -27,6 +27,8 @@ class ResizeHandleForDockView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (view == AppView.windowed) return child;
+    // macOS handles window edge resizing natively;
+    if (Platform.isMacOS) return child;
     ResizeEdge? edge = switch (view) {
       AppView.leftDocked => ResizeEdge.right,
       AppView.topDocked => ResizeEdge.bottom,
@@ -35,7 +37,6 @@ class ResizeHandleForDockView extends StatelessWidget {
       _ => null,
     };
     return DragToResizeArea(
-      // resizeEdgeColor: Colors.red,
       enableResizeEdges: edge != null ? [edge] : null,
       child: child,
     );

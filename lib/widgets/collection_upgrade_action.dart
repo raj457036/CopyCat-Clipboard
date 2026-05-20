@@ -1,4 +1,4 @@
-import 'package:clipboard/utils/monetization.dart';
+import 'package:clipboard/utils/subscription_actions.dart';
 import 'package:flutter/material.dart';
 
 /// A [TextButton] that opens the paywall, used inside collection read-only
@@ -8,6 +8,9 @@ class CollectionUpgradeAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const TextButton(onPressed: presentPaywall, child: Text('Upgrade'));
+    return const TextButton(
+      onPressed: showUpgradePlanDialog,
+      child: Text('Upgrade'),
+    );
   }
 }

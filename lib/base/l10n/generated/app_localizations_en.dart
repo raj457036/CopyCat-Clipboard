@@ -79,6 +79,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app__sync => 'Sync';
 
   @override
+  String get app__queued => 'Queued';
+
+  @override
   String get app__local => 'Local';
 
   @override

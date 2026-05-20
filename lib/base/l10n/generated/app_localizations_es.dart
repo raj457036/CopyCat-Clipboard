@@ -79,6 +79,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get app__sync => 'Sincronizar';
 
   @override
+  String get app__queued => 'En cola';
+
+  @override
   String get app__local => 'Local';
 
   @override

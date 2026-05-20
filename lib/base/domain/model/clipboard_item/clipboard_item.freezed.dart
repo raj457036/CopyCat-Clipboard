@@ -94,6 +94,11 @@ mixin _$ClipboardItem {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get previewOnly => throw _privateConstructorUsedError;
 
+  /// Whether this clip currently has a pending entry in the sync outbox.
+  /// Populated by the data layer; not persisted.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool get isQueued => throw _privateConstructorUsedError;
+
   /// Serializes this ClipboardItem to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
@@ -155,6 +160,7 @@ abstract class $ClipboardItemCopyWith<$Res> {
     @JsonKey(includeFromJson: false, includeToJson: false) Failure? failure,
     @JsonKey(includeFromJson: false, includeToJson: false) bool userIntent,
     @JsonKey(includeFromJson: false, includeToJson: false) bool previewOnly,
+    @JsonKey(includeFromJson: false, includeToJson: false) bool isQueued,
   });
 }
 
@@ -214,6 +220,7 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
     Object? failure = freezed,
     Object? userIntent = null,
     Object? previewOnly = null,
+    Object? isQueued = null,
   }) {
     return _then(
       _value.copyWith(
@@ -381,6 +388,10 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
                 ? _value.previewOnly
                 : previewOnly // ignore: cast_nullable_to_non_nullable
                       as bool,
+            isQueued: null == isQueued
+                ? _value.isQueued
+                : isQueued // ignore: cast_nullable_to_non_nullable
+                      as bool,
           )
           as $Val,
     );
@@ -440,6 +451,7 @@ abstract class _$$ClipboardItemImplCopyWith<$Res>
     @JsonKey(includeFromJson: false, includeToJson: false) Failure? failure,
     @JsonKey(includeFromJson: false, includeToJson: false) bool userIntent,
     @JsonKey(includeFromJson: false, includeToJson: false) bool previewOnly,
+    @JsonKey(includeFromJson: false, includeToJson: false) bool isQueued,
   });
 }
 
@@ -498,6 +510,7 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
     Object? failure = freezed,
     Object? userIntent = null,
     Object? previewOnly = null,
+    Object? isQueued = null,
   }) {
     return _then(
       _$ClipboardItemImpl(
@@ -665,6 +678,10 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
             ? _value.previewOnly
             : previewOnly // ignore: cast_nullable_to_non_nullable
                   as bool,
+        isQueued: null == isQueued
+            ? _value.isQueued
+            : isQueued // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -721,6 +738,8 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     this.userIntent = false,
     @JsonKey(includeFromJson: false, includeToJson: false)
     this.previewOnly = false,
+    @JsonKey(includeFromJson: false, includeToJson: false)
+    this.isQueued = false,
   }) : super._();
 
   factory _$ClipboardItemImpl.fromJson(Map<String, dynamic> json) =>
@@ -849,9 +868,15 @@ class _$ClipboardItemImpl extends _ClipboardItem {
   @JsonKey(includeFromJson: false, includeToJson: false)
   final bool previewOnly;
 
+  /// Whether this clip currently has a pending entry in the sync outbox.
+  /// Populated by the data layer; not persisted.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final bool isQueued;
+
   @override
   String toString() {
-    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, encrypted: $encrypted, iv: $iv, encMode: $encMode, text: $text, richData: $richData, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, sourceId: $sourceId, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent, previewOnly: $previewOnly)';
+    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, encrypted: $encrypted, iv: $iv, encMode: $encMode, text: $text, richData: $richData, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, sourceId: $sourceId, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent, previewOnly: $previewOnly, isQueued: $isQueued)';
   }
 
   @override
@@ -929,7 +954,9 @@ class _$ClipboardItemImpl extends _ClipboardItem {
             (identical(other.userIntent, userIntent) ||
                 other.userIntent == userIntent) &&
             (identical(other.previewOnly, previewOnly) ||
-                other.previewOnly == previewOnly));
+                other.previewOnly == previewOnly) &&
+            (identical(other.isQueued, isQueued) ||
+                other.isQueued == isQueued));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -977,6 +1004,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     failure,
     userIntent,
     previewOnly,
+    isQueued,
   ]);
 
   /// Create a copy of ClipboardItem
@@ -1049,6 +1077,7 @@ abstract class _ClipboardItem extends ClipboardItem {
     final bool userIntent,
     @JsonKey(includeFromJson: false, includeToJson: false)
     final bool previewOnly,
+    @JsonKey(includeFromJson: false, includeToJson: false) final bool isQueued,
   }) = _$ClipboardItemImpl;
   _ClipboardItem._() : super._();
 
@@ -1166,6 +1195,12 @@ abstract class _ClipboardItem extends ClipboardItem {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get previewOnly;
+
+  /// Whether this clip currently has a pending entry in the sync outbox.
+  /// Populated by the data layer; not persisted.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool get isQueued;
 
   /// Create a copy of ClipboardItem
   /// with the given fields replaced by the non-null parameter values.

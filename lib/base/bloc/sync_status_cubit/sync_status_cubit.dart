@@ -15,9 +15,12 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart' show logger;
+import 'package:clipboard/utils/monetization.dart';
+import 'package:clipboard/utils/subscription_actions.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:duration/duration.dart';
 import 'package:duration/locale.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -236,6 +239,10 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
           return NotificationContent(
             body:
                 'Sync is on cooldown. Please wait $remainingText before syncing again.',
+            action: SnackBarAction(
+              label: context.locale.paywall_dialog__text__upgrade,
+              onPressed: showUpgradePlanDialog,
+            ),
           );
         },
       ),

@@ -192,7 +192,7 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
           ),
         );
       }
-      return Right(result);
+      return Right(result.copyWith(isQueued: result.id != null));
     } catch (e) {
       return Left(Failure.fromException(e));
     }
@@ -247,7 +247,7 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
           ),
         );
       }
-      return Right(result);
+      return Right(result.copyWith(isQueued: result.id != null));
     } catch (e) {
       return Left(Failure.fromException(e));
     }
