@@ -33,12 +33,19 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private var listeningMode: String = ListeningMode.PUSH
     private var syncSpeed: String = "balanced"
     private var syncIntervalSeconds: Int = 45
+    private var lanSyncEnabled: Boolean = false
+    private var lanAutoWrite: Boolean = false
     private lateinit var deviceId: String
     private var endId: Int = -1
     private var syncManager: CopyCatSyncManager = CopyCatSyncManager(
         appContext,
         onRemoteClipUpsert = ::ingestRemoteClip,
         onRemoteClipDelete = ::deleteRemoteClip,
+    )
+    private var lanSyncManager: CopyCatLanSyncManager = CopyCatLanSyncManager(
+        appContext,
+        onLanClipReceived = ::ingestLanClip,
+        markCaptured = ::markCapturedByOriginId,
     )
     private var encryptor: CopyCatEncryptor? = null
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -119,7 +126,14 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             listeningMode =
                 sharedPreferences.getString(key, ListeningMode.PUSH) ?: ListeningMode.PUSH
             syncManager.listeningMode = listeningMode
+            // Android uses existing listeningMode for LAN auto-write
+            lanSyncManager.autoWrite = (listeningMode == ListeningMode.SYNC)
             scheduleReconfigureConnections()
+        }
+        if (key == "lanInstantSync") {
+            lanSyncEnabled = sharedPreferences.getBoolean(key, false)
+            lanSyncManager.lanSyncEnabled = lanSyncEnabled
+            lanSyncManager.reconfigure()
         }
         if (key == "syncSpeed") {
             syncSpeed = sharedPreferences.getString(key, "balanced") ?: "balanced"
@@ -173,6 +187,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         if (key == "deviceId") {
             deviceId = sharedPreferences.getString("deviceId", "").toString()
             syncManager.deviceId = deviceId
+            lanSyncManager.deviceId = deviceId
             scheduleReconfigureConnections()
         }
 
@@ -204,6 +219,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     fun start() {
         readConfig()
         syncManager.start()
+        lanSyncManager.start()
         sp.registerOnSharedPreferenceChangeListener(listener)
         Log.i(logTag, "Storage started")
     }
@@ -282,6 +298,13 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         syncManager.listeningMode = listeningMode
         syncManager.syncSpeed = syncSpeed
         syncManager.syncIntervalSeconds = syncIntervalSeconds
+
+        lanSyncEnabled = sp.getBoolean("lanInstantSync", false)
+        lanSyncManager.lanSyncEnabled = lanSyncEnabled
+        lanSyncManager.deviceId = deviceId
+        // userId is available after token is loaded; set it lazily in ingestLanClip too
+        lanSyncManager.userId = syncManager.currentUserId ?: ""
+        lanSyncManager.autoWrite = (listeningMode == ListeningMode.SYNC)
     }
     
     private fun getNextId(): String {
@@ -484,6 +507,17 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         
         debugLog(logTag) { "Wrote $nextId to file storage (${contentToPersist.length} bytes)" }
         
+        // Broadcast to LAN peers
+        lanSyncManager.broadcastTextClip(
+            originId = nextId, // reuse clipId as originId for bg-captured clips
+            type = type,
+            content = contentToPersist,
+            label = label,
+            encrypted = encrypted,
+            iv = iv,
+            encMode = encMode,
+        )
+
         // Sync to server if enabled
         if (syncEnabled) {
             writeTextClipToServer(contentToPersist, type, nextId, encrypted, label, iv, encMode)
@@ -534,6 +568,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         flushPersistEndId()
         mainHandler.removeCallbacks(reconfigureRunnable)
         syncManager.stop()
+        lanSyncManager.stop()
         sp.unregisterOnSharedPreferenceChangeListener(listener)
         
         // Clear references to help GC
@@ -614,5 +649,44 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private fun deleteRemoteClip(serverId: Long) {
         Log.i(logTag, "deleteRemoteClip serverId=$serverId")
         fileStorage.deleteClipByServerId(serverId)
+    }
+
+    /** Called by [CopyCatLanSyncManager] when a clip arrives from a LAN peer. */
+    private fun ingestLanClip(payload: LanClipPayload) {
+        if (!serviceEnabled) return
+
+        // Lazily sync userId into CopyCatLanSyncManager once the token is loaded.
+        val uid = syncManager.currentUserId ?: ""
+        if (lanSyncManager.userId.isBlank() && uid.isNotBlank()) {
+            lanSyncManager.userId = uid
+        }
+
+        Log.i(logTag, "ingestLanClip originId=${payload.originId} type=${payload.type}")
+
+        val nextId = getNextId()
+        endId += 1
+        schedulePersistEndId()
+
+        fileStorage.writeClipItem(
+            clipId = nextId,
+            text = payload.content,
+            type = payload.type,
+            label = payload.label,
+            encrypted = payload.encrypted,
+            iv = payload.iv,
+            encMode = payload.encMode,
+            timestamp = payload.timestamp,
+            originId = payload.originId,
+        )
+    }
+
+    /**
+     * Suppresses re-capture of a clip that LAN sync just wrote to the clipboard.
+     * The [originId] is stored so the detection strategy can skip the next
+     * matching clipboard read.
+     */
+    private fun markCapturedByOriginId(originId: String) {
+        // Store in SharedPreferences so detection strategies can check it.
+        sp.edit().putString("lan_last_written_origin", originId).apply()
     }
 }

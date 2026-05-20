@@ -27,6 +27,9 @@ import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:ntp/ntp.dart';
 import 'package:retry/retry.dart';
 import 'package:universal_io/io.dart';
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/data/services/lan_sync_service.dart';
+import 'package:clipboard/di/di.dart';
 
 part 'app_config_cubit.freezed.dart';
 part 'app_config_state.dart';
@@ -179,7 +182,19 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
       },
     );
     initializeExclusionChecker();
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      _initLanSyncService(next.config);
+    }
     return next;
+  }
+
+  void _initLanSyncService(AppConfig config) {
+    final lanSync = sl<LanSyncService>();
+    lanSync.lanSyncEnabled = config.lanInstantSync;
+    lanSync.lanAutoWrite = config.lanAutoWrite;
+    lanSync.deviceId = sl<String>(instanceName: "device_id");
+    lanSync.userId = sl<AuthCubit>().userId ?? '';
+    unawaited(lanSync.reconfigure());
   }
 
   bool get isCopyingPaused =>
@@ -460,5 +475,19 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
       return false;
     }
     return true;
+  }
+
+  Future<void> toggleLanInstantSync(bool value) async {
+    final newConfig = state.config.copyWith(lanInstantSync: value);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+    sl<LanSyncService>().reconfigure(enabled: value);
+  }
+
+  Future<void> toggleLanAutoWrite(bool value) async {
+    final newConfig = state.config.copyWith(lanAutoWrite: value);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+    sl<LanSyncService>().reconfigure(autoWrite: value);
   }
 }

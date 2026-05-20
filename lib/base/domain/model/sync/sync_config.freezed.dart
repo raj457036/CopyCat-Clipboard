@@ -236,7 +236,7 @@ class _$SyncConfigImpl implements _SyncConfig {
     this.pollingIntervalSeconds = 45,
     this.minManualDelaySeconds = 5,
     this.manualDelaySeconds = 15,
-    this.pullBatchSize = 100,
+    this.pullBatchSize = 500,
     this.collectionBatchSize = 100,
     this.deleteBatchSize = 100,
     this.interBatchDelayMs = 350,

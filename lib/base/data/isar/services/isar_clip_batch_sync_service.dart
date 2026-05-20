@@ -22,7 +22,7 @@ void _syncInBackground(_Payload record, Sender send) async {
 
   var (items, collectionMap) = record;
 
-  // Phase 1: one batch read, outside the write lock.
+  // Phase 1a: batch read by serverId.
   final serverIds = items
       .map((e) => e.serverId)
       .whereType<int>()
@@ -35,7 +35,25 @@ void _syncInBackground(_Payload record, Sender send) async {
             .anyOf(serverIds, (q, id) => q.serverIdEqualTo(id))
             .findAllSync();
 
-  // Phase 2: in-memory lookup map.
+  // Phase 1b: batch read by originId for items that won't match by serverId.
+  // This catches clips that arrived via LAN sync before the Supabase delivery.
+  final originIds = items
+      .where((e) => e.serverId == null && e.originId != null)
+      .map((e) => e.originId!)
+      .toList(growable: false);
+
+  final existingByOriginId = <String, IsarClipboardItem>{};
+  if (originIds.isNotEmpty) {
+    final byOriginId = collection
+        .filter()
+        .anyOf(originIds, (q, id) => q.originIdEqualTo(id))
+        .findAllSync();
+    for (final e in byOriginId) {
+      if (e.originId != null) existingByOriginId[e.originId!] = e;
+    }
+  }
+
+  // Phase 2: in-memory lookup maps.
   final existingByServerId = <int, IsarClipboardItem>{
     for (final e in existingItems)
       if (e.serverId != null) e.serverId!: e,
@@ -48,9 +66,11 @@ void _syncInBackground(_Payload record, Sender send) async {
   for (var index = 0; index < items.length; index++) {
     var item = items[index];
     final collectionId = collectionMap[item.serverCollectionId];
+
+    // Prefer serverId match; fall back to originId for LAN-pre-received clips.
     final found = item.serverId != null
         ? existingByServerId[item.serverId]
-        : null;
+        : (item.originId != null ? existingByOriginId[item.originId] : null);
 
     if (found == null) {
       item = item.copyWith(collectionId: collectionId, lastSynced: now);

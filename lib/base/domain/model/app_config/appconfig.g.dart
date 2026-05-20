@@ -57,6 +57,8 @@ _$AppConfigImpl _$$AppConfigImplFromJson(
   androidBgListener: json['androidBgListener'] as bool? ?? false,
   duplicatePrevention: json['duplicatePrevention'] as bool? ?? false,
   richDataCapture: json['richDataCapture'] as bool? ?? false,
+  lanInstantSync: json['lanInstantSync'] as bool? ?? false,
+  lanAutoWrite: json['lanAutoWrite'] as bool? ?? false,
   onBoardComplete: json['onBoardComplete'] as bool? ?? true,
   reviewQualifyingEventCount:
       (json['reviewQualifyingEventCount'] as num?)?.toInt() ?? 0,
@@ -99,6 +101,8 @@ Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
       'androidBgListener': instance.androidBgListener,
       'duplicatePrevention': instance.duplicatePrevention,
       'richDataCapture': instance.richDataCapture,
+      'lanInstantSync': instance.lanInstantSync,
+      'lanAutoWrite': instance.lanAutoWrite,
       'onBoardComplete': instance.onBoardComplete,
       'reviewQualifyingEventCount': instance.reviewQualifyingEventCount,
       'lastReviewPromptDate': instance.lastReviewPromptDate?.toIso8601String(),

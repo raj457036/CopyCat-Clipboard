@@ -11,7 +11,9 @@ import 'package:clipboard/base/domain/repositories/analytics.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
+import 'package:clipboard/base/data/services/lan_sync_service.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
+import 'package:clipboard/di/di.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/failure.dart';
@@ -431,6 +433,12 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
             synced ? CrossSyncEventType.update : CrossSyncEventType.create,
             r,
           ));
+          if (!synced &&
+              appConfig.state.config.lanInstantSync &&
+              !Platform.isAndroid &&
+              !Platform.isIOS) {
+            unawaited(sl<LanSyncService>().broadcastClip(r));
+          }
           emit(
             OfflinePersistanceState.saved(
               count: 1,

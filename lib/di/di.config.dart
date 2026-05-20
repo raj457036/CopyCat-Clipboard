@@ -80,6 +80,7 @@ import 'package:clipboard/base/data/services/file_cloud_services/google_drive/go
     as _i543;
 import 'package:clipboard/base/data/services/in_app_review_service.dart'
     as _i930;
+import 'package:clipboard/base/data/services/lan_sync_service.dart' as _i809;
 import 'package:clipboard/base/data/services/post_sync_decryption_service.dart'
     as _i579;
 import 'package:clipboard/base/data/services/quick_paste_service.dart' as _i227;
@@ -239,6 +240,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.deviceId(gh<_i829.TinyStorage>()),
       instanceName: 'device_id',
       preResolve: true,
+    );
+    gh.lazySingleton<_i809.LanSyncService>(
+      () => _i809.LanSyncService(gh<_i616.ClipBatchSyncService>()),
     );
     await gh.singletonAsync<_i454.SupabaseClient>(
       () => registerModule.client(

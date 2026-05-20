@@ -77,7 +77,10 @@ mixin _$AppConfig {
   bool get enablePasteStack => throw _privateConstructorUsedError;
   bool get androidBgListener => throw _privateConstructorUsedError;
   bool get duplicatePrevention => throw _privateConstructorUsedError;
-  bool get richDataCapture => throw _privateConstructorUsedError; // on boarding
+  bool get richDataCapture =>
+      throw _privateConstructorUsedError; // LAN Instant Sync
+  bool get lanInstantSync => throw _privateConstructorUsedError;
+  bool get lanAutoWrite => throw _privateConstructorUsedError; // on boarding
   bool get onBoardComplete =>
       throw _privateConstructorUsedError; // On logout/unauth this will be set to true
   // In-App Review tracking
@@ -141,6 +144,8 @@ abstract class $AppConfigCopyWith<$Res> {
     bool androidBgListener,
     bool duplicatePrevention,
     bool richDataCapture,
+    bool lanInstantSync,
+    bool lanAutoWrite,
     bool onBoardComplete,
     int reviewQualifyingEventCount,
     DateTime? lastReviewPromptDate,
@@ -201,6 +206,8 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? androidBgListener = null,
     Object? duplicatePrevention = null,
     Object? richDataCapture = null,
+    Object? lanInstantSync = null,
+    Object? lanAutoWrite = null,
     Object? onBoardComplete = null,
     Object? reviewQualifyingEventCount = null,
     Object? lastReviewPromptDate = freezed,
@@ -342,6 +349,14 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
                 ? _value.richDataCapture
                 : richDataCapture // ignore: cast_nullable_to_non_nullable
                       as bool,
+            lanInstantSync: null == lanInstantSync
+                ? _value.lanInstantSync
+                : lanInstantSync // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            lanAutoWrite: null == lanAutoWrite
+                ? _value.lanAutoWrite
+                : lanAutoWrite // ignore: cast_nullable_to_non_nullable
+                      as bool,
             onBoardComplete: null == onBoardComplete
                 ? _value.onBoardComplete
                 : onBoardComplete // ignore: cast_nullable_to_non_nullable
@@ -430,6 +445,8 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     bool androidBgListener,
     bool duplicatePrevention,
     bool richDataCapture,
+    bool lanInstantSync,
+    bool lanAutoWrite,
     bool onBoardComplete,
     int reviewQualifyingEventCount,
     DateTime? lastReviewPromptDate,
@@ -490,6 +507,8 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? androidBgListener = null,
     Object? duplicatePrevention = null,
     Object? richDataCapture = null,
+    Object? lanInstantSync = null,
+    Object? lanAutoWrite = null,
     Object? onBoardComplete = null,
     Object? reviewQualifyingEventCount = null,
     Object? lastReviewPromptDate = freezed,
@@ -631,6 +650,14 @@ class __$$AppConfigImplCopyWithImpl<$Res>
             ? _value.richDataCapture
             : richDataCapture // ignore: cast_nullable_to_non_nullable
                   as bool,
+        lanInstantSync: null == lanInstantSync
+            ? _value.lanInstantSync
+            : lanInstantSync // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        lanAutoWrite: null == lanAutoWrite
+            ? _value.lanAutoWrite
+            : lanAutoWrite // ignore: cast_nullable_to_non_nullable
+                  as bool,
         onBoardComplete: null == onBoardComplete
             ? _value.onBoardComplete
             : onBoardComplete // ignore: cast_nullable_to_non_nullable
@@ -697,6 +724,8 @@ class _$AppConfigImpl extends _AppConfig {
     this.androidBgListener = false,
     this.duplicatePrevention = false,
     this.richDataCapture = false,
+    this.lanInstantSync = false,
+    this.lanAutoWrite = false,
     this.onBoardComplete = true,
     this.reviewQualifyingEventCount = 0,
     this.lastReviewPromptDate,
@@ -829,6 +858,13 @@ class _$AppConfigImpl extends _AppConfig {
   @override
   @JsonKey()
   final bool richDataCapture;
+  // LAN Instant Sync
+  @override
+  @JsonKey()
+  final bool lanInstantSync;
+  @override
+  @JsonKey()
+  final bool lanAutoWrite;
   // on boarding
   @override
   @JsonKey()
@@ -854,7 +890,7 @@ class _$AppConfigImpl extends _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, richDataCapture: $richDataCapture, onBoardComplete: $onBoardComplete, reviewQualifyingEventCount: $reviewQualifyingEventCount, lastReviewPromptDate: $lastReviewPromptDate, reviewNeverAsk: $reviewNeverAsk, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
+    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, richDataCapture: $richDataCapture, lanInstantSync: $lanInstantSync, lanAutoWrite: $lanAutoWrite, onBoardComplete: $onBoardComplete, reviewQualifyingEventCount: $reviewQualifyingEventCount, lastReviewPromptDate: $lastReviewPromptDate, reviewNeverAsk: $reviewNeverAsk, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
   }
 
   @override
@@ -921,6 +957,10 @@ class _$AppConfigImpl extends _AppConfig {
                 other.duplicatePrevention == duplicatePrevention) &&
             (identical(other.richDataCapture, richDataCapture) ||
                 other.richDataCapture == richDataCapture) &&
+            (identical(other.lanInstantSync, lanInstantSync) ||
+                other.lanInstantSync == lanInstantSync) &&
+            (identical(other.lanAutoWrite, lanAutoWrite) ||
+                other.lanAutoWrite == lanAutoWrite) &&
             (identical(other.onBoardComplete, onBoardComplete) ||
                 other.onBoardComplete == onBoardComplete) &&
             (identical(
@@ -976,6 +1016,8 @@ class _$AppConfigImpl extends _AppConfig {
     androidBgListener,
     duplicatePrevention,
     richDataCapture,
+    lanInstantSync,
+    lanAutoWrite,
     onBoardComplete,
     reviewQualifyingEventCount,
     lastReviewPromptDate,
@@ -1034,6 +1076,8 @@ abstract class _AppConfig extends AppConfig {
     final bool androidBgListener,
     final bool duplicatePrevention,
     final bool richDataCapture,
+    final bool lanInstantSync,
+    final bool lanAutoWrite,
     final bool onBoardComplete,
     final int reviewQualifyingEventCount,
     final DateTime? lastReviewPromptDate,
@@ -1132,7 +1176,11 @@ abstract class _AppConfig extends AppConfig {
   @override
   bool get duplicatePrevention;
   @override
-  bool get richDataCapture; // on boarding
+  bool get richDataCapture; // LAN Instant Sync
+  @override
+  bool get lanInstantSync;
+  @override
+  bool get lanAutoWrite; // on boarding
   @override
   bool get onBoardComplete; // On logout/unauth this will be set to true
   // In-App Review tracking

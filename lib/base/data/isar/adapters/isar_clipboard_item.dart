@@ -61,6 +61,10 @@ class IsarClipboardItem {
   int copiedCount = 0;
   DateTime? lastCopied;
 
+  /// Short 8-char alphanumeric dedup key for LAN sync.
+  @Index()
+  String? originId;
+
   ClipboardItem toDomain() => ClipboardItem(
     id: isarId == Isar.autoIncrement ? null : isarId,
     serverId: serverId,
@@ -96,6 +100,7 @@ class IsarClipboardItem {
     localOnly: localOnly,
     copiedCount: copiedCount,
     lastCopied: lastCopied,
+    originId: originId,
   );
 
   static IsarClipboardItem fromDomain(ClipboardItem item) => IsarClipboardItem()
@@ -132,5 +137,6 @@ class IsarClipboardItem {
     ..collectionId = item.collectionId
     ..localOnly = item.localOnly
     ..copiedCount = item.copiedCount
-    ..lastCopied = item.lastCopied;
+    ..lastCopied = item.lastCopied
+    ..originId = item.originId;
 }

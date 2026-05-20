@@ -99,6 +99,12 @@ mixin _$ClipboardItem {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get isQueued => throw _privateConstructorUsedError;
 
+  /// Short 8-char alphanumeric ID assigned at creation on the originating
+  /// device. Used to deduplicate clips arriving via both LAN and Supabase.
+  /// Persisted locally and round-tripped through the server.
+  @JsonKey(name: "origin_id")
+  String? get originId => throw _privateConstructorUsedError;
+
   /// Serializes this ClipboardItem to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
@@ -161,6 +167,7 @@ abstract class $ClipboardItemCopyWith<$Res> {
     @JsonKey(includeFromJson: false, includeToJson: false) bool userIntent,
     @JsonKey(includeFromJson: false, includeToJson: false) bool previewOnly,
     @JsonKey(includeFromJson: false, includeToJson: false) bool isQueued,
+    @JsonKey(name: "origin_id") String? originId,
   });
 }
 
@@ -221,6 +228,7 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
     Object? userIntent = null,
     Object? previewOnly = null,
     Object? isQueued = null,
+    Object? originId = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -392,6 +400,10 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
                 ? _value.isQueued
                 : isQueued // ignore: cast_nullable_to_non_nullable
                       as bool,
+            originId: freezed == originId
+                ? _value.originId
+                : originId // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -452,6 +464,7 @@ abstract class _$$ClipboardItemImplCopyWith<$Res>
     @JsonKey(includeFromJson: false, includeToJson: false) bool userIntent,
     @JsonKey(includeFromJson: false, includeToJson: false) bool previewOnly,
     @JsonKey(includeFromJson: false, includeToJson: false) bool isQueued,
+    @JsonKey(name: "origin_id") String? originId,
   });
 }
 
@@ -511,6 +524,7 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
     Object? userIntent = null,
     Object? previewOnly = null,
     Object? isQueued = null,
+    Object? originId = freezed,
   }) {
     return _then(
       _$ClipboardItemImpl(
@@ -682,6 +696,10 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
             ? _value.isQueued
             : isQueued // ignore: cast_nullable_to_non_nullable
                   as bool,
+        originId: freezed == originId
+            ? _value.originId
+            : originId // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -740,6 +758,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     this.previewOnly = false,
     @JsonKey(includeFromJson: false, includeToJson: false)
     this.isQueued = false,
+    @JsonKey(name: "origin_id") this.originId,
   }) : super._();
 
   factory _$ClipboardItemImpl.fromJson(Map<String, dynamic> json) =>
@@ -874,9 +893,16 @@ class _$ClipboardItemImpl extends _ClipboardItem {
   @JsonKey(includeFromJson: false, includeToJson: false)
   final bool isQueued;
 
+  /// Short 8-char alphanumeric ID assigned at creation on the originating
+  /// device. Used to deduplicate clips arriving via both LAN and Supabase.
+  /// Persisted locally and round-tripped through the server.
+  @override
+  @JsonKey(name: "origin_id")
+  final String? originId;
+
   @override
   String toString() {
-    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, encrypted: $encrypted, iv: $iv, encMode: $encMode, text: $text, richData: $richData, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, sourceId: $sourceId, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent, previewOnly: $previewOnly, isQueued: $isQueued)';
+    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, encrypted: $encrypted, iv: $iv, encMode: $encMode, text: $text, richData: $richData, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, sourceId: $sourceId, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent, previewOnly: $previewOnly, isQueued: $isQueued, originId: $originId)';
   }
 
   @override
@@ -956,7 +982,9 @@ class _$ClipboardItemImpl extends _ClipboardItem {
             (identical(other.previewOnly, previewOnly) ||
                 other.previewOnly == previewOnly) &&
             (identical(other.isQueued, isQueued) ||
-                other.isQueued == isQueued));
+                other.isQueued == isQueued) &&
+            (identical(other.originId, originId) ||
+                other.originId == originId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1005,6 +1033,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     userIntent,
     previewOnly,
     isQueued,
+    originId,
   ]);
 
   /// Create a copy of ClipboardItem
@@ -1078,6 +1107,7 @@ abstract class _ClipboardItem extends ClipboardItem {
     @JsonKey(includeFromJson: false, includeToJson: false)
     final bool previewOnly,
     @JsonKey(includeFromJson: false, includeToJson: false) final bool isQueued,
+    @JsonKey(name: "origin_id") final String? originId,
   }) = _$ClipboardItemImpl;
   _ClipboardItem._() : super._();
 
@@ -1201,6 +1231,13 @@ abstract class _ClipboardItem extends ClipboardItem {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get isQueued;
+
+  /// Short 8-char alphanumeric ID assigned at creation on the originating
+  /// device. Used to deduplicate clips arriving via both LAN and Supabase.
+  /// Persisted locally and round-tripped through the server.
+  @override
+  @JsonKey(name: "origin_id")
+  String? get originId;
 
   /// Create a copy of ClipboardItem
   /// with the given fields replaced by the non-null parameter values.

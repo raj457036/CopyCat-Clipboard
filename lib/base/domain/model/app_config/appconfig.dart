@@ -92,6 +92,10 @@ class AppConfig with _$AppConfig, Identifiable {
     @Default(false) bool duplicatePrevention,
     @Default(false) bool richDataCapture,
 
+    // LAN Instant Sync
+    @Default(false) bool lanInstantSync,
+    @Default(false) bool lanAutoWrite,
+
     // on boarding
     @Default(true)
     bool onBoardComplete, // On logout/unauth this will be set to true

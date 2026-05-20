@@ -46,6 +46,7 @@ _$ClipboardItemImpl _$$ClipboardItemImplFromJson(Map<String, dynamic> json) =>
         json['lastCopied'],
         const DateTimeConverter().fromJson,
       ),
+      originId: json['origin_id'] as String?,
     );
 
 Map<String, dynamic> _$$ClipboardItemImplToJson(_$ClipboardItemImpl instance) =>
@@ -84,6 +85,7 @@ Map<String, dynamic> _$$ClipboardItemImplToJson(_$ClipboardItemImpl instance) =>
         instance.lastCopied,
         const DateTimeConverter().toJson,
       ),
+      'origin_id': instance.originId,
     };
 
 const _$ClipItemTypeEnumMap = {

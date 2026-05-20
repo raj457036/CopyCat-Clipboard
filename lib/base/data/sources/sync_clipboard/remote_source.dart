@@ -20,6 +20,8 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
 
   PostgrestClient get db => client.rest;
 
+  String get userId => client.auth.currentUser?.id ?? "";
+
   Future<PaginatedResult<ClipboardItem>> _getLatestClipboardItems({
     int limit = 100,
     int offset = 0,
@@ -55,6 +57,7 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
     var query = db
         .from(clipboardItemsTable)
         .select()
+        .filter("userId", "eq", userId)
         .filter("collectionId", "is", null)
         .filter("deletedAt", "is", null);
 
@@ -80,7 +83,8 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
         .from(clipboardItemsTable)
         .select()
         .not("collectionId", "is", null)
-        .filter("deletedAt", "is", null);
+        .filter("deletedAt", "is", null)
+        .filter("userId", "eq", userId);
 
     _logger.d(() => "Fetching latest clipboard items with collections.");
 
@@ -103,7 +107,8 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
     var query = db
         .from(clipCollectionsTable)
         .select()
-        .filter("deletedAt", "is", null);
+        .filter("deletedAt", "is", null)
+        .filter("userId", "eq", userId);
 
     if (lastSynced != null) {
       final isoDate = lastSynced
@@ -139,7 +144,11 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
         .subtract(const Duration(seconds: 5))
         .toUtc()
         .toIso8601String();
-    var query = db.from(clipboardItemsTable).select().gte("deletedAt", isoDate);
+    var query = db
+        .from(clipboardItemsTable)
+        .select()
+        .gte("deletedAt", isoDate)
+        .filter("userId", "eq", userId);
 
     if (excludeDeviceId != null && excludeDeviceId != "") {
       query = query.neq("deviceId", excludeDeviceId);
@@ -169,7 +178,8 @@ class SyncClipboardSourceImpl implements SyncClipboardSource {
     var query = db
         .from(clipCollectionsTable)
         .select()
-        .gte("deletedAt", isoDate);
+        .gte("deletedAt", isoDate)
+        .filter("userId", "eq", userId);
 
     if (excludeDeviceId != null && excludeDeviceId != "") {
       query = query.neq("deviceId", excludeDeviceId);
