@@ -98,7 +98,7 @@ class _StateInitializerState extends State<StateInitializer>
     super.didChangeAppLifecycleState(state);
 
     switch (state) {
-      case AppLifecycleState.resumed:
+      case AppLifecycleState.resumed || AppLifecycleState.inactive:
         syncAndroidBgClipboardStates();
         disableRendering(false);
         _isAppLifecycleBackgrounded = false;

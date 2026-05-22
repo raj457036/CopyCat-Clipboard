@@ -14,7 +14,7 @@ class ClipItemPreviewVerticalView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: context.mq.isMobile || context.mq.isTablet,
+        automaticallyImplyLeading: context.isMobile || context.isTablet,
         centerTitle: false,
         title: Text(
           item.displayTitle ?? context.locale.preview__inspector__title,

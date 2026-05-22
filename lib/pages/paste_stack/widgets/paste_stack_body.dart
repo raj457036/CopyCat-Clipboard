@@ -21,7 +21,7 @@ class PasteStackBody extends StatelessWidget {
         return ClipsProvider(
           clips: items,
           child: ReorderableListView.builder(
-            padding: context.mq.isMobile
+            padding: context.isMobile
                 ? const EdgeInsets.all(padding8)
                 : inset12,
             itemCount: items.length,

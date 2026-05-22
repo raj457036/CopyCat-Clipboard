@@ -14,7 +14,7 @@ class ClipCollectionSelectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: context.mq.isMobile || context.mq.isTablet,
+        automaticallyImplyLeading: context.isMobile || context.isTablet,
         title: Text(context.locale.select_collection__appbar__title),
       ),
       floatingActionButton: const DisableForLocalUser(
