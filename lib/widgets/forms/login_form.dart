@@ -24,7 +24,7 @@ class CopyCatClipboardLoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     final decorationTheme = context.theme.inputDecorationTheme.copyWith(
       border: const OutlineInputBorder(borderRadius: radius16),
-      isDense: context.mq.isMobile,
+      isDense: context.isMobile,
     );
 
     return ElevatedButtonTheme(

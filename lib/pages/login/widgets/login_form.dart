@@ -130,7 +130,7 @@ class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final isMobile = context.mq.isMobile;
+    final isMobile = context.isMobile;
     final authTheme = _buildAuthTheme(context);
     final localization = _buildAuthLocalization(context);
     final content = Column(

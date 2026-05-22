@@ -36,12 +36,12 @@ extension StringExtension on String {
   }
 }
 
-extension BreakpointExtension on MediaQueryData {
-  bool get isMobile => Breakpoints.isMobile(size.width);
-  bool get isTablet => Breakpoints.isTablet(size.width);
-  bool get isDesktop => Breakpoints.isDesktop(size.width);
-  bool get isXLDesktop => Breakpoints.isXLDesktop(size.width);
-  bool get isXXLDesktop => Breakpoints.isXXLDesktop(size.width);
+extension BreakpointExtension on BuildContext {
+  bool get isMobile => Breakpoints.isMobile(screenSize.width);
+  bool get isTablet => Breakpoints.isTablet(screenSize.width);
+  bool get isDesktop => Breakpoints.isDesktop(screenSize.width);
+  bool get isXLDesktop => Breakpoints.isXLDesktop(screenSize.width);
+  bool get isXXLDesktop => Breakpoints.isXXLDesktop(screenSize.width);
 }
 
 extension BuildContextExtension on BuildContext {
@@ -49,6 +49,7 @@ extension BuildContextExtension on BuildContext {
   ColorScheme get colors => theme.colorScheme;
   TextTheme get textTheme => theme.textTheme;
   MediaQueryData get mq => MediaQuery.of(this);
+  Size get screenSize => MediaQuery.sizeOf(this);
   WindowActionCubit? get windowAction =>
       isDesktopPlatform ? read<WindowActionCubit?>() : null;
   bool get isDarkMode => theme.brightness == Brightness.dark;

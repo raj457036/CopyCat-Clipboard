@@ -32,6 +32,7 @@ import "package:clipboard/pages/create_clip_note/page.dart";
 import "package:clipboard/pages/drive_setup/page.dart";
 import "package:clipboard/pages/home/page.dart";
 import "package:clipboard/pages/layout/shell_layout_page.dart";
+import "package:clipboard/pages/login/login_form_page.dart";
 import "package:clipboard/pages/login/page.dart";
 import "package:clipboard/pages/not_found_page.dart";
 import "package:clipboard/pages/onboard/page.dart";
@@ -114,6 +115,11 @@ final appRouter = GoRouter(
       name: RouteConstants.login,
       path: '/login',
       builder: (context, state) => LoginPage(key: state.pageKey),
+    ),
+    GoRoute(
+      name: RouteConstants.loginForm,
+      path: '/login/form',
+      builder: (context, state) => LoginFormPage(key: state.pageKey),
     ),
     ShellRoute(
       builder: (context, state, child) {
