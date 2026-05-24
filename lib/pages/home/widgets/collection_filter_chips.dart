@@ -6,7 +6,6 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/monetization.dart';
 import 'package:clipboard/utils/subscription_actions.dart';
 import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
@@ -40,16 +39,14 @@ class CollectionFilterChips extends StatelessWidget {
                 final canCreate = limit > collections.length;
 
                 return SizedBox(
-                  height: 48,
+                  height: 64,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.only(
-                      left: padding16,
-                      top: padding12,
-                    ),
+                    padding: const EdgeInsets.all(padding8),
                     itemCount: collections.length + 1,
-                    separatorBuilder: (_, index) =>
-                        index == 0 ? const VerticalDivider() : width8,
+                    separatorBuilder: (_, index) => index == 0
+                        ? const VerticalDivider(indent: 6, endIndent: 6)
+                        : width8,
                     itemBuilder: (context, index) {
                       if (index == 0) {
                         return _CreateCollectionChip(canCreate: canCreate);

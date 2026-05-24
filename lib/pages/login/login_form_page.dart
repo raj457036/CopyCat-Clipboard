@@ -5,7 +5,6 @@ import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage;
 import 'package:clipboard/pages/login/widgets/login_form.dart';
 import 'package:clipboard/pages/login/widgets/login_page_scaffold.dart';
-import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

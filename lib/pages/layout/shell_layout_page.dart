@@ -1,5 +1,4 @@
 import 'package:clipboard/base/constants/strings/route_constants.dart';
-import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';

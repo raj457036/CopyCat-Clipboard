@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
+import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
@@ -14,7 +14,6 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/in_background_state.dart';
 import 'package:clipboard/widgets/multi_paste/multi_paste_transformer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:focus_window/focus_window.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:synchronized/extension.dart';
@@ -178,7 +177,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
 
   Future<void> _maybeTrackWindowForeground() async {
     try {
-      await appConfigCubit.trackAppEntry();
+      await sl<ReviewPromptCubit>().trackAppEntry();
     } catch (e) {
       logger.e(() => "Error tracking app entry for review prompt. $e");
     }
@@ -187,7 +186,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   Future<void> onResized() async {
     if (context.location == RouteConstants.pasteStack) return;
 
-    final appConfig = context.read<AppConfigCubit>();
+    final appConfig = sl<AppConfigCubit>();
     final size = await windowManager.getSize();
     logger.i(() => "Window Resized: $size");
 
@@ -204,7 +203,8 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   @override
   Future<void> onWindowBlur() async {
     _setWindowInBackground(true);
-    if (!appConfigCubit.isPinned) {
+    final appConfig = sl<AppConfigCubit>();
+    if (!appConfig.isPinned) {
       if (context.location == RouteConstants.pasteStack) return;
       context.windowAction?.hide();
     }
@@ -215,7 +215,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
     super.initState();
     windowManager.addListener(this);
     windowManager.setPreventClose(true);
-    appConfigCubit = context.read();
+    appConfigCubit = sl<AppConfigCubit>();
   }
 
   @override

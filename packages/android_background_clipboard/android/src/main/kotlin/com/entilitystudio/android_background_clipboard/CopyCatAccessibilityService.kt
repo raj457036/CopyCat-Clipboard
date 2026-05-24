@@ -73,6 +73,15 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
     private fun isCapturePaused(): Boolean = clipboardService?.copycatStorage?.notificationPaused == true
 
+    private fun normalizeSourcePackage(rawPackageName: String?): String {
+        val pkg = rawPackageName?.trim().orEmpty()
+        if (pkg.isEmpty()) return ""
+        return when (pkg) {
+            "android", "com.android.systemui", packageName -> ""
+            else -> pkg
+        }
+    }
+
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
             debugLog(logTag) { "OnServiceConnected $name" }
@@ -125,10 +134,16 @@ class CopyCatAccessibilityService : AccessibilityService() {
             debugLog(logTag) { "Screen is OFF, skipping onCopyEvent" }
             return
         }
+        val normalizedPackageName = normalizeSourcePackage(packageName)
+        val resolvedPackageName = if (normalizedPackageName.isNotEmpty()) {
+            normalizedPackageName
+        } else {
+            currentlyActiveApp
+        }
         withAccessibilityOverlayFocus {
             clipboardService?.performClipboardReadFromClipData(
                 clipboardManager.primaryClip,
-                packageName,
+                resolvedPackageName,
             )
         }
     }
@@ -374,12 +389,10 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
         initializeDetectionStrategy()
 
-        // Update currently active app for context
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            event.packageName?.let {
-                if (it != "com.android.systemui")
-                    currentlyActiveApp = it.toString()
-            }
+        // Keep the latest meaningful app package from any event as context.
+        val normalizedPackage = normalizeSourcePackage(event.packageName?.toString())
+        if (normalizedPackage.isNotEmpty()) {
+            currentlyActiveApp = normalizedPackage
         }
 
         // Delegate to detection strategy

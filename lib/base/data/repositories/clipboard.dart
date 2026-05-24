@@ -173,6 +173,8 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
 @Named("local")
 @LazySingleton(as: ClipboardRepository)
 class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
+  static const _copyCountSyncThreshold = 10;
+
   final ClipboardSource local;
   final SyncOutboxRepository outbox;
 
@@ -182,6 +184,7 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
   FailureOr<ClipboardItem> create(ClipboardItem item) async {
     try {
       final result = await local.create(item);
+      var queued = false;
       if (result.id != null) {
         await outbox.enqueue(
           SyncOutboxEntry(
@@ -191,8 +194,9 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
             createdAt: systemTime(),
           ),
         );
+        queued = true;
       }
-      return Right(result.copyWith(isQueued: result.id != null));
+      return Right(result.copyWith(isQueued: queued));
     } catch (e) {
       return Left(Failure.fromException(e));
     }
@@ -236,8 +240,16 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
   @override
   FailureOr<ClipboardItem> update(ClipboardItem item) async {
     try {
+      ClipboardItem? previous;
+      if (item.id != null) {
+        previous = await local.get(id: item.id);
+      }
+
       final result = await local.update(item);
-      if (result.id != null) {
+      var queued = false;
+
+      if (result.id != null &&
+          _shouldEnqueueUpdate(previous, result, forceSync: item.userIntent)) {
         await outbox.enqueue(
           SyncOutboxEntry(
             entityType: SyncEntityType.clip,
@@ -246,11 +258,63 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
             createdAt: systemTime(),
           ),
         );
+        queued = true;
       }
-      return Right(result.copyWith(isQueued: result.id != null));
+      return Right(result.copyWith(isQueued: queued));
     } catch (e) {
       return Left(Failure.fromException(e));
     }
+  }
+
+  bool _shouldEnqueueUpdate(
+    ClipboardItem? previous,
+    ClipboardItem next, {
+    bool forceSync = false,
+  }) {
+    if (forceSync) return true;
+    if (previous == null) return true;
+
+    if (_isSyncRelevantUpdate(previous, next)) return true;
+
+    if (_didCrossCopySyncThreshold(previous, next)) return true;
+
+    return false;
+  }
+
+  bool _didCrossCopySyncThreshold(ClipboardItem previous, ClipboardItem next) {
+    final statsChanged =
+        previous.copiedCount != next.copiedCount ||
+        previous.lastCopied != next.lastCopied;
+    if (!statsChanged) return false;
+
+    final prevBucket = previous.copiedCount ~/ _copyCountSyncThreshold;
+    final nextBucket = next.copiedCount ~/ _copyCountSyncThreshold;
+    return next.copiedCount > 0 && nextBucket > prevBucket;
+  }
+
+  bool _isSyncRelevantUpdate(ClipboardItem previous, ClipboardItem next) {
+    return previous.serverId != next.serverId ||
+        previous.modified != next.modified ||
+        previous.deletedAt != next.deletedAt ||
+        previous.text != next.text ||
+        previous.richData != next.richData ||
+        previous.url != next.url ||
+        previous.title != next.title ||
+        previous.description != next.description ||
+        previous.textCategory != next.textCategory ||
+        previous.fileName != next.fileName ||
+        previous.fileMimeType != next.fileMimeType ||
+        previous.fileExtension != next.fileExtension ||
+        previous.driveFileId != next.driveFileId ||
+        previous.fileSize != next.fileSize ||
+        previous.imgBlurHash != next.imgBlurHash ||
+        previous.sourceUrl != next.sourceUrl ||
+        previous.sourceApp != next.sourceApp ||
+        previous.sourceId != next.sourceId ||
+        previous.serverCollectionId != next.serverCollectionId ||
+        previous.collectionId != next.collectionId ||
+        previous.localOnly != next.localOnly ||
+        previous.originId != next.originId;
   }
 
   @override

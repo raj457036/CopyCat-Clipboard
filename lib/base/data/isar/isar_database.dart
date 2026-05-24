@@ -10,8 +10,8 @@ import 'package:flutter/foundation.dart';
 import 'package:isar_community/isar.dart';
 
 /// Opens the Isar database with all adapter schemas registered.
-Future<Isar> openIsarDatabase(String path, String name) async {
-  return Isar.open(
+Future<void> openIsarDatabase(String path, String name) async {
+  await Isar.open(
     [
       IsarClipboardItemSchema,
       IsarApplicationMetaSchema,

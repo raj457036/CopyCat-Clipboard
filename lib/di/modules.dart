@@ -64,7 +64,8 @@ abstract class RegisterModule {
   Future<Isar> get db async {
     String? dbPath = Platform.environment[dbPathEnvKey];
     dbPath = dbPath ?? (await getApplicationDocumentsDirectory()).path;
-    return openIsarDatabase(dbPath, dbName);
+    await openIsarDatabase(dbPath, dbName);
+    return Isar.getInstance(dbName)!;
   }
 
   @LazySingleton()

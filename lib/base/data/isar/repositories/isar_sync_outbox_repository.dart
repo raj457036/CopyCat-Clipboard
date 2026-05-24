@@ -71,25 +71,112 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
     _logger.d(
       () => 'Flushing collector with ${_collector.length} entries to Isar',
     );
-    final entriesToAdd = List<SyncOutboxEntry>.from(_collector);
+    final entriesToAdd = _collapseEntries(_collector);
     _collector.clear();
 
-    final isarEntries = entriesToAdd
-        .map((e) => IsarSyncOutboxEntry.fromDomain(e))
-        .toList();
+    var persistedCount = 0;
 
     await _db.writeTxn(() async {
-      await _collection.putAll(isarEntries);
+      for (final incoming in entriesToAdd) {
+        final existing = await _collection
+            .filter()
+            .entityTypeEqualTo(incoming.entityType)
+            .and()
+            .localIdEqualTo(incoming.localId)
+            .findAll();
+
+        SyncOutboxEntry? merged = incoming;
+        for (final old in existing) {
+          if (merged == null) break;
+          merged = _mergeEntries(old.toDomain(), merged);
+          _idToLocalId.remove(old.id);
+        }
+
+        if (existing.isNotEmpty) {
+          await _collection.deleteAll(existing.map((e) => e.id).toList());
+        }
+
+        if (merged == null) {
+          _pendingLocalIds.remove(incoming.localId);
+          continue;
+        }
+
+        final isarEntry = IsarSyncOutboxEntry.fromDomain(merged);
+        final id = await _collection.put(isarEntry);
+        _idToLocalId[id] = merged.localId;
+        _pendingLocalIds.add(merged.localId);
+        persistedCount++;
+      }
     });
 
-    // After putAll the isarEntries have their auto-incremented IDs assigned.
-    for (final e in isarEntries) {
-      _idToLocalId[e.id] = e.localId;
+    _logger.d(() => 'Flushed $persistedCount entries to Isar');
+    if (persistedCount > 0) {
+      _logger.d(() => 'Enqueued. Notifying stream listeners...');
+      _newEntryController.add(null);
+    }
+  }
+
+  List<SyncOutboxEntry> _collapseEntries(List<SyncOutboxEntry> entries) {
+    final merged = <String, SyncOutboxEntry>{};
+
+    for (final entry in entries) {
+      final key = '${entry.entityType}:${entry.localId}';
+      final existing = merged[key];
+      if (existing == null) {
+        merged[key] = entry;
+        continue;
+      }
+
+      final next = _mergeEntries(existing, entry);
+      if (next == null) {
+        merged.remove(key);
+      } else {
+        merged[key] = next;
+      }
     }
 
-    _logger.d(() => 'Flushed ${isarEntries.length} entries to Isar');
-    _logger.d(() => 'Enqueued. Notifying stream listeners...');
-    _newEntryController.add(null);
+    return merged.values.toList(growable: false);
+  }
+
+  SyncOutboxEntry? _mergeEntries(
+    SyncOutboxEntry existing,
+    SyncOutboxEntry incoming,
+  ) {
+    if (existing.action == SyncOutboxAction.create &&
+        incoming.action == SyncOutboxAction.delete) {
+      return null; // Net no-op.
+    }
+
+    if (existing.action == SyncOutboxAction.create &&
+        incoming.action == SyncOutboxAction.update) {
+      return existing; // Keep create with oldest createdAt.
+    }
+
+    if (existing.action == SyncOutboxAction.update &&
+        incoming.action == SyncOutboxAction.update) {
+      return incoming.copyWith(createdAt: existing.createdAt);
+    }
+
+    if (existing.action == SyncOutboxAction.update &&
+        incoming.action == SyncOutboxAction.delete) {
+      return incoming.copyWith(createdAt: existing.createdAt);
+    }
+
+    if (existing.action == SyncOutboxAction.delete &&
+        incoming.action == SyncOutboxAction.create) {
+      // Treat as update on same local row after undelete-style mutation.
+      return incoming.copyWith(
+        action: SyncOutboxAction.update,
+        createdAt: existing.createdAt,
+      );
+    }
+
+    if (existing.action == SyncOutboxAction.delete &&
+        incoming.action == SyncOutboxAction.update) {
+      return incoming.copyWith(createdAt: existing.createdAt);
+    }
+
+    return incoming.copyWith(createdAt: existing.createdAt);
   }
 
   @override

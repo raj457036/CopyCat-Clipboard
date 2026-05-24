@@ -28,6 +28,7 @@ class SyncStatusState with _$SyncStatusState {
     @Default(0) int decrypted,
     @Default(0) int total,
   }) = SyncStatusDecrypting;
-  const factory SyncStatusState.complete() = SyncStatusComplete;
+  const factory SyncStatusState.complete({@Default(false) bool hasUpdates}) =
+      SyncStatusComplete;
   const factory SyncStatusState.failed(Failure failure) = SyncStatusFailed;
 }

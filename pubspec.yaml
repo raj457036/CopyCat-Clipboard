@@ -92,6 +92,7 @@ dependencies:
   cacherine: ^1.1.4
   clipboard_watcher: ^0.3.0
   crypto: ^3.0.7
+  mdns_dart: ^2.2.1
   ntp: ^2.0.0
   tiny_storage: ^2.0.2
   share_plus: ^10.1.4

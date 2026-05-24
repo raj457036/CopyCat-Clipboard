@@ -86,4 +86,10 @@ class AndroidBackgroundClipboard {
   Stream<Map<String, String>> detectionStatusStream() {
     return AndroidBackgroundClipboardPlatform.instance.detectionStatusStream();
   }
+
+  /// Streams NSD-discovered LAN peers from the Android background service.
+  /// Each peer map contains `deviceId`, `host`, and `port` (as String).
+  Stream<List<Map<String, dynamic>>> lanPeersStream() {
+    return AndroidBackgroundClipboardPlatform.instance.lanPeersStream();
+  }
 }

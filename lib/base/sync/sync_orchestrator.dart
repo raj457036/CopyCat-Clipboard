@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:clipboard/base/constants/numbers/duration.dart';
+import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/syncable.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
@@ -16,6 +16,7 @@ import 'package:clipboard/common/logging.dart' show AppLogger;
 import 'package:clipboard/utils/utility.dart';
 import 'package:injectable/injectable.dart';
 import 'package:synchronized/extension.dart';
+import 'package:synchronized/synchronized.dart' show Lock;
 
 /// Manages all registered [SyncEngine]s and coordinates the sync lifecycle.
 ///
@@ -183,9 +184,18 @@ class SyncOrchestrator {
 
   /// Process the outbox with [synchronized] to ensure only one push
   /// operation runs at a time, preventing race conditions.
+  final Lock _outboxLock = Lock();
+
+  void _teardownEngines() {
+    for (final engine in _engines.values) {
+      engine.stopPolling();
+      engine.stopRealtime();
+    }
+  }
+
   Future<void> _processOutboxSynchronized() async {
     _logger.d('_processOutboxSynchronized triggered');
-    await synchronized(() async {
+    await _outboxLock.synchronized(() async {
       _logger.d('synchronized lock acquired, calling processOutboxes()');
       await processOutboxes();
       _logger.d('processOutboxes() completed');
@@ -199,17 +209,15 @@ class SyncOrchestrator {
   /// - [SyncSpeed.balanced]: Polls the outbox every [AppConfig.pollingIntervalSeconds] seconds.
   void start({SyncSpeed syncSpeed = SyncSpeed.balanced, int? intervalSeconds}) {
     _logger.d(() => 'start() called with syncSpeed=$syncSpeed');
+    _teardownEngines();
     _startOutboxProcessor(syncSpeed, intervalSeconds: intervalSeconds);
-    _startPolling(intervalSeconds: intervalSeconds);
-    if (syncSpeed == SyncSpeed.realtime) {
-      startRealtime();
+    switch (syncSpeed) {
+      case SyncSpeed.realtime:
+        _startRealtime();
+      case SyncSpeed.balanced:
+        _startPolling(intervalSeconds: intervalSeconds);
     }
     _isRunning = true;
-  }
-
-  /// Update the outbox processing mode without restarting polling/realtime pull.
-  void updateSyncMode(SyncSpeed syncSpeed) {
-    _startOutboxProcessor(syncSpeed);
   }
 
   /// Stop all scheduled tasks and realtime subscriptions.
@@ -219,14 +227,11 @@ class SyncOrchestrator {
     _outboxStreamSub?.cancel();
     _outboxStreamSub = null;
 
-    for (final engine in _engines.values) {
-      engine.stopPolling();
-      engine.stopRealtime();
-    }
+    _teardownEngines();
     _isRunning = false;
   }
 
-  void startRealtime() {
+  void _startRealtime() {
     for (final engine in _engines.values) {
       engine.startRealtime();
     }
@@ -255,7 +260,8 @@ class SyncOrchestrator {
           _processOutboxSynchronized();
         });
       case SyncSpeed.balanced:
-        final balancedInterval = intervalSeconds ?? $5S;
+        final balancedInterval =
+            intervalSeconds ?? defaultBestEffortSyncInterval;
         _logger.d(() => 'Starting ${balancedInterval}s balanced timer');
         _outboxTimer = Timer.periodic(Duration(seconds: balancedInterval), (_) {
           _logger.d(

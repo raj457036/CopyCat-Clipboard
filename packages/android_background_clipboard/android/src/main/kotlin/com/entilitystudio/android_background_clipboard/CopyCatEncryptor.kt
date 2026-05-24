@@ -62,7 +62,7 @@ class CopyCatEncryptor(key: String, iv: String) {
     }
 
     private fun encryptCfb(data: String): EncryptionResult {
-        val cipher = Cipher.getInstance("AES/CFB64/PKCS5Padding")
+        val cipher = Cipher.getInstance("AES/CFB64/NoPadding")
         val ivParameterSpec = IvParameterSpec(defaultIvBytes)
         cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, ivParameterSpec)
         val encryptedBytes = cipher.doFinal(data.toByteArray(Charsets.UTF_8))
@@ -91,7 +91,7 @@ class CopyCatEncryptor(key: String, iv: String) {
         } catch (_: Exception) {
             defaultIvBytes
         }
-        val cipher = Cipher.getInstance("AES/CFB64/PKCS5Padding")
+        val cipher = Cipher.getInstance("AES/CFB64/NoPadding")
         val ivParameterSpec = IvParameterSpec(ivBytes)
         cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, ivParameterSpec)
         val encryptedBytes = base64Decoder.decode(encryptedData)

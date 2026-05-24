@@ -1,6 +1,5 @@
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/common/logging.dart';
-import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/domain/services/file_cloud_service.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
@@ -13,6 +12,7 @@ import 'package:clipboard/base/domain/services/conflict_resolver.dart';
 import 'package:clipboard/base/domain/services/sync_adapter.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/paginated_results.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:injectable/injectable.dart';
 
 @Named("collection_clips")
@@ -24,7 +24,6 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   final ClipboardRepository _remoteRepo;
   final ClipBatchSyncService _batchSyncService;
   final ClipCollectionCubit _collectionCubit;
-  final ClipCrossSyncListener _realtimeListener;
   final FileCloudService _fileCloudService;
 
   /// Direct local source access for write-back operations that must NOT
@@ -37,7 +36,6 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     @Named("remote") this._remoteRepo,
     this._batchSyncService,
     this._collectionCubit,
-    this._realtimeListener,
     this._fileCloudService,
     @Named("local") this._localSource,
   );
@@ -45,8 +43,9 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   @override
   String get entityType => 'clip';
 
+  // Clip Sync will be handling realtime updates for all kind of clips.
   @override
-  CrossSyncListener<ClipboardItem>? get realtimeListener => _realtimeListener;
+  CrossSyncListener<ClipboardItem>? get realtimeListener => null;
 
   @override
   Future<DateTime?> getLatestSyncTimestamp() async {
@@ -116,11 +115,6 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
       () =>
           'pushToRemote: id=${item.id} userId=${item.userId} serverId=${item.serverId} type=${item.type}',
     );
-    if (item.userId == kLocalUserId) {
-      // Local-only entries should never be pushed to Supabase.
-      _logger.d(() => 'SKIPPED: userId is kLocalUserId ($kLocalUserId)');
-      return Right(item);
-    }
 
     // Re-read from DB to get latest state (serverId may have been set
     // by another sync path, preventing double-creation).
@@ -183,6 +177,27 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     }
   }
 
+  @override
+  Future<ClipboardItem?> persistSyncResult(
+    ClipboardItem item, {
+    DateTime? syncedAt,
+  }) async {
+    final saved = item.copyWith(
+      lastSynced: syncedAt ?? systemTime(),
+      isQueued: false,
+      uploading: false,
+      downloading: false,
+      failure: null,
+    );
+
+    try {
+      return await _localSource.update(saved);
+    } catch (e) {
+      _logger.w(() => 'Failed to persist sync result locally: $e');
+      return saved;
+    }
+  }
+
   Future<void> _removeFromLocal(ClipboardItem item) async {
     try {
       await _localSource.delete(item, soft: false);
@@ -194,11 +209,6 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
 
   @override
   FailureOr<bool> deleteFromRemote(ClipboardItem item) async {
-    if (item.userId == kLocalUserId) {
-      await _removeFromLocal(item);
-      return const Right(true);
-    }
-
     if (item.driveFileId != null) {
       final fileDeleteResult = await _fileCloudService.delete(item);
 
@@ -217,6 +227,24 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   }
 
   @override
+  FailureOr<bool> deleteBatchFromRemote(List<ClipboardItem> items) async {
+    if (items.isEmpty) return const Right(true);
+
+    final remoteDelete = await _remoteRepo.deleteMany(items);
+    final failed = remoteDelete.fold((failure) => failure, (_) => null);
+    if (failed != null) {
+      _logger.e(() => 'Batch server delete FAILED: ${failed.message}');
+      return Left(failed);
+    }
+
+    for (final item in items) {
+      await _removeFromLocal(item);
+    }
+
+    return const Right(true);
+  }
+
+  @override
   Future<ClipboardItem?> markSyncInProgress(
     ClipboardItem item, {
     required bool inProgress,
@@ -226,6 +254,7 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
       uploading: inProgress,
       uploadProgress: inProgress ? item.uploadProgress : null,
       failure: failure,
+      isQueued: inProgress ? item.isQueued : false,
     );
   }
 

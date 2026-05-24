@@ -6,7 +6,7 @@ import 'package:clipboard/widgets/badges.dart';
 import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:universal_io/io.dart';
+import 'package:universal_io/io.dart' show Platform;
 
 class DragAndDropSwitchTile extends StatelessWidget {
   const DragAndDropSwitchTile({super.key});

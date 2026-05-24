@@ -1,5 +1,4 @@
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
-import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/domain/sources/clip_collection.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
@@ -128,11 +127,6 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
 
   @override
   FailureOr<ClipCollection> pushToRemote(ClipCollection item) async {
-    if (item.userId == kLocalUserId) {
-      // Local-only entries should never be pushed to Supabase.
-      return Right(item);
-    }
-
     try {
       if (item.serverId == null) {
         final result = await _remoteSource.create(item);
@@ -150,12 +144,28 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
 
   @override
   FailureOr<bool> deleteFromRemote(ClipCollection item) async {
-    if (item.userId == kLocalUserId) {
-      return const Right(true);
-    }
-
     try {
       await _remoteSource.delete(item);
+      return const Right(true);
+    } catch (e) {
+      return Left(Failure.fromException(e));
+    }
+  }
+
+  @override
+  Future<ClipCollection?> persistSyncResult(
+    ClipCollection item, {
+    DateTime? syncedAt,
+  }) async {
+    return item.copyWith(lastSynced: syncedAt ?? DateTime.now());
+  }
+
+  @override
+  FailureOr<bool> deleteBatchFromRemote(List<ClipCollection> items) async {
+    if (items.isEmpty) return const Right(true);
+
+    try {
+      await _remoteSource.deleteMany(items);
       return const Right(true);
     } catch (e) {
       return Left(Failure.fromException(e));

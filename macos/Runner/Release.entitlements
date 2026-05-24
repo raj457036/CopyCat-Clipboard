@@ -10,6 +10,8 @@
 		<true />
 		<key>com.apple.security.network.client</key>
 		<true />
+		<key>com.apple.security.network.server</key>
+		<true />
 		<key>com.apple.security.temporary-exception.apple-events</key>
 		<array>
 			<string>com.google.Chrome</string>

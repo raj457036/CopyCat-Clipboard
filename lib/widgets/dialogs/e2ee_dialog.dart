@@ -43,12 +43,14 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
   bool invalidImportedKey = false;
   String? secret;
 
+  late AuthCubit authCubit;
   late AppConfigCubit appConfigCubit;
 
   @override
   void initState() {
     super.initState();
     appConfigCubit = context.read<AppConfigCubit>();
+    authCubit = context.read<AuthCubit>();
   }
 
   Future<void> importEnc2Key(String keyId) async {
@@ -79,8 +81,37 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
         return;
       }
 
+      /** 
+    if (appConfig.enc2Key == null) return;
+
+    final encryptionWorker = EncryptionWorker.instance;
+    await encryptionWorker.waitUntilReady();
+
+    final enc1 = authState.user.enc1;
+    final enc1Decrypt = appConfig.decryptEnc2(enc1);
+    if (enc1Decrypt == null) return;
+    await encryptionWorker.start(enc1Decrypt);
+    encryptionWorker.setEncryption(appConfig.autoEncrypt);
+    encryptionWorker.setDecryption(true);
+       */
+
       if (importedKeyId == keyId && key != null) {
         await appConfigCubit.setE2EEKey(key);
+
+        final appConfig = appConfigCubit.state.config;
+        final enc1 = authCubit.state.maybeWhen(
+          authenticated: (user, _, _, _) => user.enc1,
+          orElse: () => null,
+        );
+
+        final enc1Decrypt = appConfig.decryptEnc2(enc1);
+        if (enc1Decrypt == null) {
+          setState(() => invalidImportedKey = true);
+          return;
+        }
+        EncryptionWorker.instance.dispose();
+        await EncryptionWorker.instance.start(enc1Decrypt);
+        EncryptionWorker.instance.setEncryption(true);
         await appConfigCubit.toggleAutoEncrypt(true);
       } else {
         setState(() => invalidImportedKey = true);

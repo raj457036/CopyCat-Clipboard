@@ -4,7 +4,6 @@ import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
-import 'package:clipboard/base/constants/numbers/duration.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
@@ -15,11 +14,9 @@ import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/settings/pages/android_bg_clipboard/accessibility_service_notice.dart';
 import 'package:clipboard/pages/settings/pages/android_bg_clipboard/detection_status_card.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
-import 'package:clipboard/widgets/subscription/subscription_builder.dart';
+import 'package:clipboard/pages/settings/widgets/switches/auto_write_on_receive_switch.dart';
+import 'package:clipboard/pages/settings/widgets/switches/lan_instant_sync_switch.dart';
 import 'package:clipboard/widgets/settings_menu_dropdown.dart';
-import 'package:clipboard/base/domain/model/subscription/subscription.dart';
-import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
-import 'package:clipboard/widgets/badges.dart';
 import 'package:clipboard/utils/color_extension.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -247,33 +244,9 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     await widget.bgService.openAccessibilityService();
   }
 
-  bool _syncMode = false;
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final config = appConfigCubit.state.config;
-    setState(() {
-      _syncMode = config.androidBgListener;
-    });
-  }
-
-  Future<void> _onSyncModeChanged(
-    bool value,
-    Subscription? subscription,
-  ) async {
-    final allowSync =
-        subscription != null &&
-        subscription.syncInterval < 10 &&
-        appConfigCubit.state.config.syncSpeed == SyncSpeed.realtime;
-    final newValue = value && allowSync;
-    setState(() {
-      _syncMode = newValue;
-    });
-    await widget.bgService.writeShared(
-      "listeningMode",
-      newValue ? "sync" : "push",
-    );
   }
 
   Future<void> setupConfiguration() async {
@@ -301,8 +274,8 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
       }
       await widget.bgService.writeShared("syncEnabled", true);
       await widget.bgService.writeShared(
-        "listeningMode",
-        _syncMode ? "sync" : "push",
+        "autoWriteOnReceive",
+        appConfigCubit.state.config.autoWriteOnReceive,
       );
       await widget.bgService.writeShared("syncSpeed", syncSpeed);
       await widget.bgService.writeShared("syncInterval", syncInterval);
@@ -414,125 +387,98 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     final textTheme = context.textTheme;
     final colors = context.colors;
     final canChooseMode = accessibility && !writingConfig;
-    Widget child = const Center(child: CircularProgressIndicator());
+    final checked = const Icon(Icons.check).msp;
+    final unchecked = const Icon(Icons.close).msp;
 
-    if (!loading) {
-      final checked = const Icon(Icons.check).msp;
-      final unchecked = const Icon(Icons.close).msp;
-
-      child = ListView(
-        children: [
-          TipTile(
-            title: context.locale.abc__tip__why_title,
-            tip: context.locale.abc__tip__why_subtitle,
+    final child = ListView(
+      children: [
+        TipTile(
+          title: context.locale.abc__tip__why_title,
+          tip: context.locale.abc__tip__why_subtitle,
+        ),
+        TipTile(
+          icon: const Icon(Icons.warning, color: Colors.amber),
+          bg: Colors.red.darker(50, isLight),
+          title: context.locale.abc__tip__support_title,
+          tip: context.locale.abc__tip__support_subtitle,
+        ),
+        height5,
+        SettingHeader(name: context.locale.abc__heading__req_perm),
+        SwitchListTile(
+          title: Text(context.locale.abc__tile__notification_title),
+          subtitle: Text(context.locale.abc__tile__notification_subtitle),
+          value: notification,
+          enableFeedback: true,
+          thumbIcon: notification ? checked : unchecked,
+          onChanged: writingConfig ? null : (_) => openNotificationSetting(),
+        ),
+        SwitchListTile(
+          title: Text(context.locale.abc__tile__battery_opt_title),
+          subtitle: Text(context.locale.abc__tile__battery_opt_subtitle),
+          value: batteryOptimization,
+          enableFeedback: true,
+          thumbIcon: batteryOptimization ? checked : unchecked,
+          onChanged: writingConfig || !notification
+              ? null
+              : (_) => openBatteryOptimizationSetting(),
+        ),
+        SwitchListTile(
+          title: Text(context.locale.abc__tile__acc_title),
+          subtitle: Text(context.locale.abc__tile__acc_subtitle),
+          value: accessibility,
+          enableFeedback: true,
+          thumbIcon: accessibility ? checked : unchecked,
+          onChanged: writingConfig || !notification || !batteryOptimization
+              ? null
+              : (_) => openAccessibilitySetting(),
+        ),
+        height5,
+        ListTile(
+          title: const Text("Detection Mode"),
+          subtitle: Text(
+            accessibility
+                ? "Choose how CopyCat detects copy actions in other apps. "
+                      "CopyCat stays inactive until you pick a mode."
+                : "Enable accessibility service first, then choose a detection mode.",
+            style: textTheme.bodyMedium?.copyWith(color: colors.outline),
           ),
-          TipTile(
-            icon: const Icon(Icons.warning, color: Colors.amber),
-            bg: Colors.red.darker(50, isLight),
-            title: context.locale.abc__tip__support_title,
-            tip: context.locale.abc__tip__support_subtitle,
-          ),
-          height5,
-          SettingHeader(name: context.locale.abc__heading__req_perm),
-          SwitchListTile(
-            title: Text(context.locale.abc__tile__notification_title),
-            subtitle: Text(context.locale.abc__tile__notification_subtitle),
-            value: notification,
-            enableFeedback: true,
-            thumbIcon: notification ? checked : unchecked,
-            onChanged: writingConfig ? null : (_) => openNotificationSetting(),
-          ),
-          SwitchListTile(
-            title: Text(context.locale.abc__tile__battery_opt_title),
-            subtitle: Text(context.locale.abc__tile__battery_opt_subtitle),
-            value: batteryOptimization,
-            enableFeedback: true,
-            thumbIcon: batteryOptimization ? checked : unchecked,
-            onChanged: writingConfig || !notification
-                ? null
-                : (_) => openBatteryOptimizationSetting(),
-          ),
-          SwitchListTile(
-            title: Text(context.locale.abc__tile__acc_title),
-            subtitle: Text(context.locale.abc__tile__acc_subtitle),
-            value: accessibility,
-            enableFeedback: true,
-            thumbIcon: accessibility ? checked : unchecked,
-            onChanged: writingConfig || !notification || !batteryOptimization
-                ? null
-                : (_) => openAccessibilitySetting(),
-          ),
-          height5,
-          ListTile(
-            title: const Text("Detection Mode"),
-            subtitle: Text(
-              accessibility
-                  ? "Choose how CopyCat detects copy actions in other apps. "
-                        "CopyCat stays inactive until you pick a mode."
-                  : "Enable accessibility service first, then choose a detection mode.",
-              style: textTheme.bodyMedium?.copyWith(color: colors.outline),
-            ),
-            trailing: SettingsMenuDropdown<String>(
-              value: _normalizeDetectionMode(_selectedMode),
-              maxWidth: 220,
-              items: _detectionModes
-                  .map(
-                    (mode) => SettingsDropdownItem(
-                      value: mode.$1,
-                      enabled: accessibility || mode.$1 == 'inactive',
-                    ),
-                  )
-                  .toList(),
-              itemBuilder: (context, value) {
-                final label = _detectionModes
-                    .firstWhere((mode) => mode.$1 == value)
-                    .$2;
-                return (leading: null, child: Text(label), trailing: null);
-              },
-              onSelected: canChooseMode ? _onModeChanged : null,
-            ),
-          ),
-          height5,
-          DetectionStatusCard(
-            state: _detectionStatusState,
-            outcome: _detectionStatusOutcome,
-          ),
-          height5,
-          HasAccessToFeature(
-            hasAccess: (subscription) => subscription.syncInterval < $10S,
-            builder: (context, hasAccess, subscription) {
-              final realtimeSyncEnabled =
-                  appConfigCubit.state.config.syncSpeed == SyncSpeed.realtime;
-
-              realtimeSyncEnabled;
-              return SwitchListTile(
-                value: _syncMode && hasAccess,
-                thumbIcon: _syncMode && hasAccess ? checked : unchecked,
-                onChanged: writingConfig
-                    ? null
-                    : (val) => _onSyncModeChanged(val, subscription),
-                title: Row(
-                  spacing: padding8,
-                  children: [
-                    Text(context.locale.abc__tile__two_way_sync__title),
-                    const ProBadge(),
-                  ],
-                ),
-                subtitle: Text(
-                  context.locale.abc__tile__two_way_sync__subtitle(
-                    warning: !realtimeSyncEnabled
-                        ? context
-                              .locale
-                              .abc__tile__two_way_sync__realtime_required
-                        : '',
+          trailing: SettingsMenuDropdown<String>(
+            value: _normalizeDetectionMode(_selectedMode),
+            maxWidth: 220,
+            items: _detectionModes
+                .map(
+                  (mode) => SettingsDropdownItem(
+                    value: mode.$1,
+                    enabled: accessibility || mode.$1 == 'inactive',
                   ),
-                ),
-              );
+                )
+                .toList(),
+            itemBuilder: (context, value) {
+              final label = _detectionModes
+                  .firstWhere((mode) => mode.$1 == value)
+                  .$2;
+              return (leading: null, child: Text(label), trailing: null);
             },
+            onSelected: canChooseMode ? _onModeChanged : null,
           ),
-        ],
-      );
-    }
+        ),
+        height5,
+        DetectionStatusCard(
+          state: _detectionStatusState,
+          outcome: _detectionStatusOutcome,
+        ),
+        height5,
+        AutoWriteOnReceiveSwitchTile(
+          enabled: !writingConfig && isRunning && accessibility,
+          onChanged: (val) async {
+            await widget.bgService.writeShared("autoWriteOnReceive", val);
+          },
+        ),
+        height5,
+        const SettingHeader(name: 'Network'),
+        LanInstantSyncSwitchTile(serviceActive: isRunning && accessibility),
+      ],
+    );
 
     return PopScope(
       canPop: !writingConfig,
@@ -542,7 +488,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
           scrolledUnderElevation: 0.0,
           backgroundColor: context.colors.surface,
         ),
-        body: child,
+        body: loading ? IgnorePointer(child: child) : child,
       ),
     );
   }

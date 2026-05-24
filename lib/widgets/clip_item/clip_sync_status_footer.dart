@@ -31,7 +31,13 @@ class ClipSyncStatusFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!item.hasUnsyncedChanges || item.driveFileId != null) {
+    final hasSyncState =
+        item.isQueued ||
+        item.isSyncing ||
+        item.failure != null ||
+        item.serverId == null;
+
+    if (!hasSyncState || item.driveFileId != null) {
       return const SizedBox.shrink();
     }
 

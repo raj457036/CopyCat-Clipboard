@@ -79,7 +79,11 @@ class ClipsBuilder extends StatelessWidget {
   Widget buildGridView(List<ClipboardItem> selectedClips) {
     return GridView.builder(
       cacheExtent: 300,
-      padding: const EdgeInsets.all(padding8),
+      padding: const EdgeInsets.only(
+        left: padding4,
+        right: padding4,
+        bottom: padding8,
+      ),
       scrollDirection: scrollDirection,
       gridDelegate: delegate,
       itemCount: items.length,

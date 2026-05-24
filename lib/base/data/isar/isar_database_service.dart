@@ -14,7 +14,7 @@ class IsarDatabaseService implements DatabaseService {
 
   @override
   Future<void> clearAll() async {
-    await _db.writeTxn(() => _db.clear());
+    await _db.writeTxn(_db.clear);
   }
 
   @override

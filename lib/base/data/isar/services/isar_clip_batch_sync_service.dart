@@ -18,27 +18,36 @@ typedef _Payload = (List<ClipboardItem>, Map<int, int>);
 /// transaction. DB operations: 1 batch read + 1 batch write.
 void _syncInBackground(_Payload record, Sender send) async {
   final Isar db = Isar.getInstance(dbName)!;
-  final collection = db.collection<IsarClipboardItem>();
+  final isarCollection = db.collection<IsarClipboardItem>();
 
   var (items, collectionMap) = record;
 
-  // Phase 1: one batch read, outside the write lock.
+  // Phase 1a: batch read by serverId.
   final serverIds = items
       .map((e) => e.serverId)
       .whereType<int>()
       .toList(growable: false);
 
+  final originIds = items
+      .map((e) => e.originId)
+      .whereType<String>()
+      .toList(growable: false);
+
   final existingItems = serverIds.isEmpty
       ? <IsarClipboardItem>[]
-      : collection
+      : await isarCollection
             .filter()
             .anyOf(serverIds, (q, id) => q.serverIdEqualTo(id))
-            .findAllSync();
+            .or()
+            .anyOf(originIds, (q, id) => q.originIdEqualTo(id))
+            .findAll();
 
-  // Phase 2: in-memory lookup map.
-  final existingByServerId = <int, IsarClipboardItem>{
+  final existingById = <String, IsarClipboardItem>{
     for (final e in existingItems)
-      if (e.serverId != null) e.serverId!: e,
+      if (e.serverId != null)
+        e.serverId!.toString(): e
+      else if (e.originId != null)
+        e.originId!: e,
   };
 
   final events = <ClipCrossSyncEvent>[];
@@ -48,9 +57,15 @@ void _syncInBackground(_Payload record, Sender send) async {
   for (var index = 0; index < items.length; index++) {
     var item = items[index];
     final collectionId = collectionMap[item.serverCollectionId];
-    final found = item.serverId != null
-        ? existingByServerId[item.serverId]
-        : null;
+    IsarClipboardItem? found;
+
+    if (item.serverId != null &&
+        existingById.containsKey(item.serverId!.toString())) {
+      found = existingById[item.serverId!.toString()];
+    } else if (item.originId != null &&
+        existingById.containsKey(item.originId!)) {
+      found = existingById[item.originId!];
+    }
 
     if (found == null) {
       item = item.copyWith(collectionId: collectionId, lastSynced: now);
@@ -66,9 +81,18 @@ void _syncInBackground(_Payload record, Sender send) async {
         lastSynced: now,
         localPath: found.localPath,
         collectionId: collectionId,
+        sourceApp: found.sourceApp ?? item.sourceApp,
+        sourceId: found.sourceId ?? item.sourceId,
       );
     } else {
-      item = found.toDomain().copyWith(lastSynced: now);
+      // Local copy wins on content; still carry over sync metadata so the
+      // record stays linked to Supabase (serverId must never be lost).
+      item = found.toDomain().copyWith(
+        lastSynced: now,
+        serverId: found.serverId ?? item.serverId,
+        sourceApp: found.sourceApp ?? item.sourceApp,
+        sourceId: found.sourceId ?? item.sourceId,
+      );
     }
 
     items[index] = item;
@@ -80,7 +104,7 @@ void _syncInBackground(_Payload record, Sender send) async {
     final isarItems = items
         .map(IsarClipboardItem.fromDomain)
         .toList(growable: false);
-    final ids = collection.putAllSync(isarItems);
+    final ids = isarCollection.putAllSync(isarItems);
     for (int i = 0; i < events.length; i++) {
       events[i] = (events[i].$1, events[i].$2.copyWith(id: ids[i]));
     }
@@ -107,7 +131,7 @@ class IsarClipBatchSyncService implements ClipBatchSyncService {
         }
         String? dbPath = Platform.environment[dbPathEnvKey];
         dbPath = dbPath ?? (await getApplicationDocumentsDirectory()).path;
-        Isar.openSync(
+        await Isar.open(
           [IsarClipboardItemSchema],
           directory: dbPath,
           relaxedDurability: true,
@@ -126,7 +150,10 @@ class IsarClipBatchSyncService implements ClipBatchSyncService {
   Future<List<ClipCrossSyncEvent>> syncBatch(
     List<ClipboardItem> items,
     Map<int, int> collectionMapping,
-  ) {
+  ) async {
+    // final decryptedItems = await Future.wait(
+    //   items.map((item) => item.decrypt()),
+    // );
     return _worker.compute((items, collectionMapping));
   }
 }

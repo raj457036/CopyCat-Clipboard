@@ -6,6 +6,7 @@ import 'dart:math' show Random, min;
 import 'package:clipboard/common/logging.dart' show AppLogger;
 import 'package:clipboard/utils/utility.dart' show dud;
 import 'package:easy_worker/easy_worker.dart';
+import 'package:encrypt/encrypt.dart' as enc;
 import 'package:flutter/foundation.dart';
 import 'package:pointycastle/export.dart';
 import 'package:synchronized/synchronized.dart' show Lock;
@@ -202,6 +203,16 @@ Future<Uint8List> _processCFB(
     throw EncryptionException("CFB requires a 16-byte IV", code: "invalid-iv");
   }
 
+  if (encrypt) {
+    final encrypter = enc.Encrypter(
+      enc.AES(enc.Key(Uint8List.fromList(keyBytes)), mode: enc.AESMode.cfb64),
+    );
+    final iv = enc.IV(Uint8List.fromList(ivBytes));
+    final plainText = convert.utf8.decode(input);
+    final encrypted = encrypter.encrypt(plainText, iv: iv);
+    return Uint8List.fromList(convert.base64.decode(encrypted.base64));
+  }
+
   final blockCipher = CFBBlockCipher(AESEngine(), _cfbBlockBytes);
 
   blockCipher.reset();
@@ -338,8 +349,6 @@ class EncryptionException implements Exception {
   String toString() => "EncryptionException($code): $message";
 }
 
-int activeTasks = 0;
-
 class EncryptionWorker {
   static const Duration _workerTimeout = Duration(minutes: 2);
   static const _logger = AppLogger.scoped("Encryption Worker");
@@ -459,8 +468,7 @@ class EncryptionWorker {
     String? customIV,
     String? mode,
   }) async {
-    activeTasks++;
-    _logger.w("🟠 Active tasks: $activeTasks");
+    _logger.w(() => "Submitting task for action ${action.name}");
     String? taskId;
     try {
       final encryptor = _encryptor;
@@ -518,7 +526,6 @@ class EncryptionWorker {
       if (taskId != null) {
         _tasks.remove(taskId);
       }
-      activeTasks--;
     }
   }
 

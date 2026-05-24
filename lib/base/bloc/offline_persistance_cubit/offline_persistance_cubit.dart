@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
-import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/domain/model/application_meta/activity_meta_payload.dart';
@@ -11,7 +10,9 @@ import 'package:clipboard/base/domain/repositories/analytics.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
+import 'package:clipboard/base/data/services/lan_sync_service.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
+import 'package:clipboard/di/di.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/failure.dart';
@@ -45,6 +46,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   bool _listening = false;
 
   StreamSubscription<List<ClipItem?>>? copySub;
+  StreamSubscription<SyncEvent>? _remoteSyncSub;
 
   OfflinePersistenceCubit(
     this.auth,
@@ -113,6 +115,14 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     clipboard.setRichDataEnabled(appConfig.state.config.richDataCapture);
     clipboard.start(onCaptureClipboard);
     copySub = clipboard.onCopy?.listen(onClips);
+    _remoteSyncSub = syncEventBus.where<ClipboardItem>().listen((event) {
+      if (event is TypedSyncEvent<ClipboardItem>) {
+        _onRemoteClipEvent(event.event);
+      } else if (event is TypedSyncBatchEvent<ClipboardItem> &&
+          event.events.length == 1) {
+        _onRemoteClipEvent(event.events.first);
+      }
+    });
     _listening = true;
   }
 
@@ -346,6 +356,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
 
     for (final clip in clips) {
       if (clip == null) continue;
+
       if (exclusionChecker != null && clip.isTextSubType) {
         final content = clip.text ?? clip.uri?.toString();
         if (content != null &&
@@ -420,7 +431,6 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         .toList();
 
     if (nonPersisted.isNotEmpty) {
-      emit(OfflinePersistanceState.creatingItems(nonPersisted.length));
       final results = await Future.wait(
         nonPersisted.map((item) => repo.create(item)),
       );
@@ -431,6 +441,12 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
             synced ? CrossSyncEventType.update : CrossSyncEventType.create,
             r,
           ));
+          if (!synced &&
+              appConfig.state.config.lanInstantSync &&
+              !Platform.isAndroid &&
+              !Platform.isIOS) {
+            unawaited(sl<LanSyncService>().broadcastClip(r));
+          }
           emit(
             OfflinePersistanceState.saved(
               count: 1,
@@ -445,7 +461,6 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     }
 
     // If all items are already persisted, we just need to update the items.
-    emit(OfflinePersistanceState.updatingItems(persited.length));
     final updated = await Future.wait(
       persited.map((item) => repo.update(item)),
     );
@@ -465,7 +480,6 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   }
 
   Future<void> delete(List<ClipboardItem> items) async {
-    emit(OfflinePersistanceState.deletingItems(items.length));
     final items_ = items.map((item) => item.copyWith(deviceId: deviceId));
     await repo.deleteMany(items_.toList());
     final deleteEvents = items
@@ -478,7 +492,6 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     } else if (deleteEvents.isNotEmpty) {
       syncEventBus.emitBatch<ClipboardItem>(deleteEvents);
     }
-    emit(OfflinePersistanceState.deletedItems(items.length));
   }
 
   void stopListeners() {
@@ -486,7 +499,53 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     clipboard.dispose();
     copySub?.cancel();
     copySub = null;
+    _remoteSyncSub?.cancel();
+    _remoteSyncSub = null;
     _listening = false;
+  }
+
+  /// Called for every clip event emitted to [syncEventBus].
+  /// When [autoWriteOnReceive] is enabled and the clip came from another
+  /// device, write it straight to the OS clipboard (desktop only).
+  void _onRemoteClipEvent(CrossSyncEvent<ClipboardItem> event) {
+    if (Platform.isAndroid || Platform.isIOS) return;
+    if (!appConfig.state.config.autoWriteOnReceive) return;
+
+    final (type, item) = event;
+    // Only act on newly created remote clips, not local captures or updates.
+    if (type != CrossSyncEventType.create) return;
+    if (item.deviceId == deviceId) return; // local capture
+
+    // Only text / url — file/media need a local path which may not exist yet.
+    if (item.type != ClipItemType.text && item.type != ClipItemType.url) return;
+    if (item.encrypted) return; // can't write ciphertext to clipboard
+    unawaited(_autoWriteToClipboard(item));
+  }
+
+  Future<void> _autoWriteToClipboard(ClipboardItem item) async {
+    final content = item.type == ClipItemType.text
+        ? (item.text ?? '')
+        : (item.url ?? '');
+    if (content.isEmpty) return;
+    try {
+      final copy = CopyToClipboard();
+      switch (item.type) {
+        case ClipItemType.text:
+          await copy.writeRichText(
+            clipboard,
+            text: item.text ?? '',
+            richData: item.richData,
+          );
+        case ClipItemType.url:
+          copy.writeUrl(Uri.tryParse(item.url ?? ''));
+        default:
+          return;
+      }
+      await copy.commit(clipboard);
+      logger.i('autoWriteOnReceive: wrote ${item.type} clip to OS clipboard');
+    } catch (e) {
+      logger.e('autoWriteOnReceive: failed to write to OS clipboard: $e');
+    }
   }
 
   @override

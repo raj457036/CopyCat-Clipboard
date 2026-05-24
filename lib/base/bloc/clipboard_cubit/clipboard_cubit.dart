@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:bloc/bloc.dart';
+import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/model/search_filter_state.dart';
@@ -11,7 +12,7 @@ import 'package:clipboard/base/domain/sources/clipboard.dart'
     show ClipboardSortKey;
 import 'package:clipboard/base/enums/sort.dart';
 import 'package:clipboard/common/failure.dart';
-import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/debounce.dart' show Debouncer;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:injectable/injectable.dart';
@@ -24,9 +25,11 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   final SyncEventBus syncEventBus;
   final ClipboardRepository repo;
   final AppConfigCubit _appConfigCubit;
-  late StreamSubscription eventBusSubscription;
+  final SyncStatusCubit _syncStatusCubit;
+  late StreamSubscription eventBusSubscription, syncStatusSubscription;
   bool _isFetching = false;
   final List<ClipboardItem> _items = [];
+  final _refreshDebouncer = Debouncer(milliseconds: 500);
 
   List<ClipboardItem> get items => UnmodifiableListView(_items);
 
@@ -34,6 +37,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     this.syncEventBus,
     @Named("local") this.repo,
     this._appConfigCubit,
+    this._syncStatusCubit,
   ) : super(
         ClipboardState.loaded(
           filterState: SearchFilterState(
@@ -49,6 +53,9 @@ class ClipboardCubit extends Cubit<ClipboardState> {
         onBatchSyncEvent(event.events);
       }
     });
+    syncStatusSubscription = _syncStatusCubit.stream
+        .where((state) => state is SyncStatusComplete && state.hasUpdates)
+        .listen((state) => refresh());
   }
 
   void setBackgrounded(bool isBackgrounded) {
@@ -63,7 +70,10 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   }
 
   /// Refresh the current list of clipboard items.
-  void refresh() {
+  void refresh() => _refreshDebouncer(_refresh);
+
+  /// Refresh the current list of clipboard items.
+  void _refresh() {
     if (state.loading) return;
     fetch(fromTop: true);
   }
@@ -145,10 +155,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
         final replacement = updateMap[current.id];
         if (replacement != null) _items[i] = replacement;
       }
-      final sorted = _applySort(_items);
-      _items
-        ..clear()
-        ..addAll(sorted);
+      _applySort(_items);
       emit(state.copyWith(revision: state.revision + 1));
     }
   }
@@ -175,27 +182,25 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   }
 
   void put(ClipboardItem item, {bool isNew = false}) {
+    if (state.filterState.collectionId != item.collectionId) return;
+
     if (isNew) {
       _items.insert(0, item);
     } else {
-      final updated = _items.replaceWhere((it) => it.id == item.id, item);
-      _items
-        ..clear()
-        ..addAll(updated);
+      final updated = _items.indexWhere((it) => it.id == item.id);
+      if (updated != -1) {
+        _items[updated] = item;
+      }
     }
-    final sortedItems = _applySort(_items);
-    _items
-      ..clear()
-      ..addAll(sortedItems);
+    _applySort(_items);
     emit(state.copyWith(revision: state.revision + 1));
   }
 
-  List<ClipboardItem> _applySort(List<ClipboardItem> items) {
-    final sorted = List<ClipboardItem>.from(items);
+  void _applySort(List<ClipboardItem> items) {
     final sortBy = state.filterState.sortBy ?? ClipboardSortKey.modified;
     final order = state.filterState.sortOrder ?? SortOrder.desc;
 
-    sorted.sort((a, b) {
+    items.sort((a, b) {
       int comparison;
       switch (sortBy) {
         case ClipboardSortKey.created:
@@ -211,7 +216,6 @@ class ClipboardCubit extends Cubit<ClipboardState> {
       }
       return order == SortOrder.desc ? -comparison : comparison;
     });
-    return sorted;
   }
 
   bool fetchIfInitBatch() {
@@ -305,12 +309,12 @@ class ClipboardCubit extends Cubit<ClipboardState> {
       return isLocallyDeleted || isRemotelyDeleted;
     });
 
-    final isDeleted = _items.length < before;
-    if (!isDeleted) return;
+    final isDeleted = before - _items.length;
+    if (isDeleted == 0) return;
 
     emit(
       state.copyWith(
-        offset: state.offset > 0 ? state.offset - 1 : 0,
+        offset: state.offset > 0 ? state.offset - isDeleted : 0,
         revision: state.revision + 1,
       ),
     );
@@ -319,6 +323,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   @override
   Future<void> close() {
     eventBusSubscription.cancel();
+    syncStatusSubscription.cancel();
     return super.close();
   }
 }

@@ -5,6 +5,7 @@ import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart';
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
@@ -65,8 +66,17 @@ class AuthListener extends StatelessWidget {
     syncOrchestrator.stop();
   }
 
-  Future<void> _handleAuthenticatedState(AuthenticatedAuthState state) async {
+  Future<void> _handleAuthenticatedState(
+    BuildContext context,
+    AuthenticatedAuthState state,
+  ) async {
     final AppConfigCubit appConfigCubit = sl();
+    final reviewPromptCubit = context.read<ReviewPromptCubit>();
+
+    if (!appConfigCubit.loaded.isCompleted) {
+      await appConfigCubit.loaded.future;
+    }
+
     final config = appConfigCubit.state.config;
 
     final monetizationCubit = sl<MonetizationCubit>();
@@ -77,9 +87,12 @@ class AuthListener extends StatelessWidget {
     }
 
     if (!state.isOnboardingCompleted) {
+      reviewPromptCubit.setEnabled(false);
       appRouter.goNamed(RouteConstants.onboard);
       return;
     }
+
+    reviewPromptCubit.setEnabled(true);
 
     unawaited(sl<OfflinePersistenceCubit>().startListeners());
     unawaited(sl<SyncStatusCubit>().syncAll(const SyncAllParams()));
@@ -93,15 +106,26 @@ class AuthListener extends StatelessWidget {
       listener: (context, state) async {
         switch (state) {
           case AuthenticatedAuthState():
-            await _handleAuthenticatedState(state);
-          case UnauthenticatedAuthState() ||
-              UnknownAuthState() ||
-              AuthenticatingAuthState():
-            resetAll(context);
+            await _handleAuthenticatedState(context, state);
+          case UnauthenticatedAuthState(:final failure):
+            context.read<ReviewPromptCubit>().setEnabled(false);
+            if (failure != null) {
+              InAppNotificationService.i.notify(
+                NotificationMessage(
+                  id: "logout_failure",
+                  body: failure.message,
+                ),
+              );
+              return;
+            }
+            unawaited(resetAll(context));
             await context.windowAction?.show();
             appRouter.goNamed(RouteConstants.login);
           case LocalAuthenticatedAuthState():
             // MARK: - Offline Authentication Success
+            final appConfigCubit = sl<AppConfigCubit>();
+            final isOnboarded = appConfigCubit.state.config.onBoardComplete;
+            context.read<ReviewPromptCubit>().setEnabled(isOnboarded);
             unawaited(sl<OfflinePersistenceCubit>().startListeners());
             appRouter.goNamed(RouteConstants.home);
         }

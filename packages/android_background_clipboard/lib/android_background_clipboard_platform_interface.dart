@@ -94,4 +94,13 @@ abstract class AndroidBackgroundClipboardPlatform extends PlatformInterface {
   Stream<Map<String, String>> detectionStatusStream() {
     throw UnimplementedError();
   }
+
+  /// Streams the list of NSD-discovered LAN peers from the Android background
+  /// service. Each peer is a map with keys: `deviceId`, `host`, `port`.
+  ///
+  /// LAN Instant Sync feature — remove this method (and its implementations)
+  /// to disable peer-list streaming.
+  Stream<List<Map<String, dynamic>>> lanPeersStream() {
+    throw UnimplementedError();
+  }
 }

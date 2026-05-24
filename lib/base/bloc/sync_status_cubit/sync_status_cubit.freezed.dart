@@ -22,7 +22,7 @@ mixin _$SyncStatusState {
     required TResult Function() unknown,
     required TResult Function(Map<String, SyncProgress> progress) syncing,
     required TResult Function(int decrypted, int total) decrypting,
-    required TResult Function() complete,
+    required TResult Function(bool hasUpdates) complete,
     required TResult Function(Failure failure) failed,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -30,7 +30,7 @@ mixin _$SyncStatusState {
     TResult? Function()? unknown,
     TResult? Function(Map<String, SyncProgress> progress)? syncing,
     TResult? Function(int decrypted, int total)? decrypting,
-    TResult? Function()? complete,
+    TResult? Function(bool hasUpdates)? complete,
     TResult? Function(Failure failure)? failed,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -38,7 +38,7 @@ mixin _$SyncStatusState {
     TResult Function()? unknown,
     TResult Function(Map<String, SyncProgress> progress)? syncing,
     TResult Function(int decrypted, int total)? decrypting,
-    TResult Function()? complete,
+    TResult Function(bool hasUpdates)? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
@@ -137,7 +137,7 @@ class _$SyncStatusUnknownImpl implements SyncStatusUnknown {
     required TResult Function() unknown,
     required TResult Function(Map<String, SyncProgress> progress) syncing,
     required TResult Function(int decrypted, int total) decrypting,
-    required TResult Function() complete,
+    required TResult Function(bool hasUpdates) complete,
     required TResult Function(Failure failure) failed,
   }) {
     return unknown();
@@ -149,7 +149,7 @@ class _$SyncStatusUnknownImpl implements SyncStatusUnknown {
     TResult? Function()? unknown,
     TResult? Function(Map<String, SyncProgress> progress)? syncing,
     TResult? Function(int decrypted, int total)? decrypting,
-    TResult? Function()? complete,
+    TResult? Function(bool hasUpdates)? complete,
     TResult? Function(Failure failure)? failed,
   }) {
     return unknown?.call();
@@ -161,7 +161,7 @@ class _$SyncStatusUnknownImpl implements SyncStatusUnknown {
     TResult Function()? unknown,
     TResult Function(Map<String, SyncProgress> progress)? syncing,
     TResult Function(int decrypted, int total)? decrypting,
-    TResult Function()? complete,
+    TResult Function(bool hasUpdates)? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
   }) {
@@ -298,7 +298,7 @@ class _$SyncingStatusImpl implements SyncingStatus {
     required TResult Function() unknown,
     required TResult Function(Map<String, SyncProgress> progress) syncing,
     required TResult Function(int decrypted, int total) decrypting,
-    required TResult Function() complete,
+    required TResult Function(bool hasUpdates) complete,
     required TResult Function(Failure failure) failed,
   }) {
     return syncing(progress);
@@ -310,7 +310,7 @@ class _$SyncingStatusImpl implements SyncingStatus {
     TResult? Function()? unknown,
     TResult? Function(Map<String, SyncProgress> progress)? syncing,
     TResult? Function(int decrypted, int total)? decrypting,
-    TResult? Function()? complete,
+    TResult? Function(bool hasUpdates)? complete,
     TResult? Function(Failure failure)? failed,
   }) {
     return syncing?.call(progress);
@@ -322,7 +322,7 @@ class _$SyncingStatusImpl implements SyncingStatus {
     TResult Function()? unknown,
     TResult Function(Map<String, SyncProgress> progress)? syncing,
     TResult Function(int decrypted, int total)? decrypting,
-    TResult Function()? complete,
+    TResult Function(bool hasUpdates)? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
   }) {
@@ -473,7 +473,7 @@ class _$SyncStatusDecryptingImpl implements SyncStatusDecrypting {
     required TResult Function() unknown,
     required TResult Function(Map<String, SyncProgress> progress) syncing,
     required TResult Function(int decrypted, int total) decrypting,
-    required TResult Function() complete,
+    required TResult Function(bool hasUpdates) complete,
     required TResult Function(Failure failure) failed,
   }) {
     return decrypting(decrypted, total);
@@ -485,7 +485,7 @@ class _$SyncStatusDecryptingImpl implements SyncStatusDecrypting {
     TResult? Function()? unknown,
     TResult? Function(Map<String, SyncProgress> progress)? syncing,
     TResult? Function(int decrypted, int total)? decrypting,
-    TResult? Function()? complete,
+    TResult? Function(bool hasUpdates)? complete,
     TResult? Function(Failure failure)? failed,
   }) {
     return decrypting?.call(decrypted, total);
@@ -497,7 +497,7 @@ class _$SyncStatusDecryptingImpl implements SyncStatusDecrypting {
     TResult Function()? unknown,
     TResult Function(Map<String, SyncProgress> progress)? syncing,
     TResult Function(int decrypted, int total)? decrypting,
-    TResult Function()? complete,
+    TResult Function(bool hasUpdates)? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
   }) {
@@ -568,6 +568,8 @@ abstract class _$$SyncStatusCompleteImplCopyWith<$Res> {
     _$SyncStatusCompleteImpl value,
     $Res Function(_$SyncStatusCompleteImpl) then,
   ) = __$$SyncStatusCompleteImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({bool hasUpdates});
 }
 
 /// @nodoc
@@ -581,26 +583,56 @@ class __$$SyncStatusCompleteImplCopyWithImpl<$Res>
 
   /// Create a copy of SyncStatusState
   /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? hasUpdates = null}) {
+    return _then(
+      _$SyncStatusCompleteImpl(
+        hasUpdates: null == hasUpdates
+            ? _value.hasUpdates
+            : hasUpdates // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
+  }
 }
 
 /// @nodoc
 
 class _$SyncStatusCompleteImpl implements SyncStatusComplete {
-  const _$SyncStatusCompleteImpl();
+  const _$SyncStatusCompleteImpl({this.hasUpdates = false});
+
+  @override
+  @JsonKey()
+  final bool hasUpdates;
 
   @override
   String toString() {
-    return 'SyncStatusState.complete()';
+    return 'SyncStatusState.complete(hasUpdates: $hasUpdates)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$SyncStatusCompleteImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$SyncStatusCompleteImpl &&
+            (identical(other.hasUpdates, hasUpdates) ||
+                other.hasUpdates == hasUpdates));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, hasUpdates);
+
+  /// Create a copy of SyncStatusState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SyncStatusCompleteImplCopyWith<_$SyncStatusCompleteImpl> get copyWith =>
+      __$$SyncStatusCompleteImplCopyWithImpl<_$SyncStatusCompleteImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -608,10 +640,10 @@ class _$SyncStatusCompleteImpl implements SyncStatusComplete {
     required TResult Function() unknown,
     required TResult Function(Map<String, SyncProgress> progress) syncing,
     required TResult Function(int decrypted, int total) decrypting,
-    required TResult Function() complete,
+    required TResult Function(bool hasUpdates) complete,
     required TResult Function(Failure failure) failed,
   }) {
-    return complete();
+    return complete(hasUpdates);
   }
 
   @override
@@ -620,10 +652,10 @@ class _$SyncStatusCompleteImpl implements SyncStatusComplete {
     TResult? Function()? unknown,
     TResult? Function(Map<String, SyncProgress> progress)? syncing,
     TResult? Function(int decrypted, int total)? decrypting,
-    TResult? Function()? complete,
+    TResult? Function(bool hasUpdates)? complete,
     TResult? Function(Failure failure)? failed,
   }) {
-    return complete?.call();
+    return complete?.call(hasUpdates);
   }
 
   @override
@@ -632,12 +664,12 @@ class _$SyncStatusCompleteImpl implements SyncStatusComplete {
     TResult Function()? unknown,
     TResult Function(Map<String, SyncProgress> progress)? syncing,
     TResult Function(int decrypted, int total)? decrypting,
-    TResult Function()? complete,
+    TResult Function(bool hasUpdates)? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
   }) {
     if (complete != null) {
-      return complete();
+      return complete(hasUpdates);
     }
     return orElse();
   }
@@ -684,7 +716,16 @@ class _$SyncStatusCompleteImpl implements SyncStatusComplete {
 }
 
 abstract class SyncStatusComplete implements SyncStatusState {
-  const factory SyncStatusComplete() = _$SyncStatusCompleteImpl;
+  const factory SyncStatusComplete({final bool hasUpdates}) =
+      _$SyncStatusCompleteImpl;
+
+  bool get hasUpdates;
+
+  /// Create a copy of SyncStatusState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SyncStatusCompleteImplCopyWith<_$SyncStatusCompleteImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -763,7 +804,7 @@ class _$SyncStatusFailedImpl implements SyncStatusFailed {
     required TResult Function() unknown,
     required TResult Function(Map<String, SyncProgress> progress) syncing,
     required TResult Function(int decrypted, int total) decrypting,
-    required TResult Function() complete,
+    required TResult Function(bool hasUpdates) complete,
     required TResult Function(Failure failure) failed,
   }) {
     return failed(failure);
@@ -775,7 +816,7 @@ class _$SyncStatusFailedImpl implements SyncStatusFailed {
     TResult? Function()? unknown,
     TResult? Function(Map<String, SyncProgress> progress)? syncing,
     TResult? Function(int decrypted, int total)? decrypting,
-    TResult? Function()? complete,
+    TResult? Function(bool hasUpdates)? complete,
     TResult? Function(Failure failure)? failed,
   }) {
     return failed?.call(failure);
@@ -787,7 +828,7 @@ class _$SyncStatusFailedImpl implements SyncStatusFailed {
     TResult Function()? unknown,
     TResult Function(Map<String, SyncProgress> progress)? syncing,
     TResult Function(int decrypted, int total)? decrypting,
-    TResult Function()? complete,
+    TResult Function(bool hasUpdates)? complete,
     TResult Function(Failure failure)? failed,
     required TResult orElse(),
   }) {

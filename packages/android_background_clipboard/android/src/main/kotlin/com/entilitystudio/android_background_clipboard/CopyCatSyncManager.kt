@@ -80,6 +80,7 @@ class CopyCatSyncManager(
     var listeningMode: String = ListeningMode.PUSH
     var syncSpeed: String = "balanced"
     var syncIntervalSeconds: Int = 45
+    var autoWriteOnReceive: Boolean = false
 
     private var token = "{}"
     private var accessToken: String? = null
@@ -144,7 +145,7 @@ class CopyCatSyncManager(
     private val realtimeEnabled: Boolean
         get() =
             syncEnabled &&
-                listeningMode == ListeningMode.SYNC &&
+                autoWriteOnReceive &&
                 syncSpeed == "realtime" &&
                 syncIntervalSeconds < 10 &&
                 isScreenOn
@@ -446,6 +447,9 @@ class CopyCatSyncManager(
             when (eventType) {
                 "INSERT", "UPDATE" -> {
                     val record = data.optJSONObject("record") ?: return
+                    debugLog(logTag) {
+                        "[CC] [debug] Received realtime event: ($eventType, $record)"
+                    }
                     processRemoteRecord(record)
                 }
                 "DELETE" -> {
@@ -517,6 +521,9 @@ class CopyCatSyncManager(
         label: String? = null,
         iv: String? = null,
         encMode: String? = null,
+        originId: String? = null,
+        sourceId: String? = null,
+        sourceApp: String? = null,
     ): Long {
         Log.i(logTag, "Writing to remote clipboard")
         if (userId == null || !isReady) {
@@ -536,6 +543,8 @@ class CopyCatSyncManager(
             Log.i(logTag, "Successfully refreshed the token")
         }
         val url = "$url/rest/v1/clipboard_items"
+        val normalizedSourceId = sourceId?.trim()?.ifEmpty { null }
+        val normalizedSourceApp = sourceApp?.trim()?.ifEmpty { null }
         val payload = mutableMapOf<String, Any?>(
             "title" to label,
             "description" to label,
@@ -544,6 +553,9 @@ class CopyCatSyncManager(
             "os" to "android",
             "deviceId" to deviceId,
             "encrypted" to encrypted,
+            "origin_id" to originId,
+            "sourceId" to normalizedSourceId,
+            "sourceApp" to normalizedSourceApp,
         )
 
         if (encrypted) {
@@ -581,6 +593,10 @@ class CopyCatSyncManager(
         }
 
         val jsonPayload = JSONObject(payload).toString()
+        Log.i(
+            logTag,
+            "Remote payload metadata: type=${type.name} sourceId=$normalizedSourceId sourceApp=$normalizedSourceApp originId=$originId",
+        )
         val requestBody = jsonPayload.toRequestBody(contentType.toMediaTypeOrNull())
 
         val request = Request.Builder()
@@ -596,16 +612,27 @@ class CopyCatSyncManager(
             // Use the 'use' block to automatically close the response after usage
             client.newCall(request).execute().use { response ->
                 if (response.code == 201) {
+                    Log.i(
+                        logTag,
+                        "Remote write accepted (201). sourceId=$normalizedSourceId sourceApp=$normalizedSourceApp",
+                    )
                     val location = response.header("location") ?: return -1
                     val match = regex.find(location) ?: return -1
                     match.value.toLong()
                 } else {
-                    Log.w(logTag, "Failed to write clipboard item. Response code: ${response.code}")
+                    val responseBody = response.body?.string()?.takeIf { it.isNotBlank() }
+                    Log.w(
+                        logTag,
+                        "Failed to write clipboard item. code=${response.code} sourceId=$normalizedSourceId sourceApp=$normalizedSourceApp body=${responseBody ?: "<empty>"}",
+                    )
                     -1
                 }
             }
         } catch (e: Exception) {
-            Log.e(logTag, "Error writing clipboard item: ${e.message}")
+            Log.e(
+                logTag,
+                "Error writing clipboard item for sourceId=$normalizedSourceId sourceApp=$normalizedSourceApp: ${e.message}",
+            )
             -1
         }
     }
