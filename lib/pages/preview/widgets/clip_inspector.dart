@@ -606,95 +606,88 @@ class _ClipInspectorState extends State<ClipInspector> {
 
   @override
   Widget build(BuildContext context) {
-    final padding = widget.includePagePadding
-        ? const EdgeInsets.all(padding16)
-        : EdgeInsets.zero;
     final contentRows = _buildContentRows();
 
     return Form(
       key: formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      child: Padding(
-        padding: padding,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (widget.showHeader) ...[
-              _InspectorHeader(title: _titleText, subtitle: _summaryText),
-              height12,
-            ],
-            Wrap(spacing: 8, runSpacing: 8, children: _buildStatusChips()),
-            height16,
-            _InspectorSection(
-              title: context.locale.preview__inspector__section__actions,
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                alignment: WrapAlignment.spaceBetween,
-                children: _buildActionButtons(),
-              ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (widget.showHeader) ...[
+            _InspectorHeader(title: _titleText, subtitle: _summaryText),
+            height12,
+          ],
+          Wrap(spacing: 8, runSpacing: 8, children: _buildStatusChips()),
+          height16,
+          _InspectorSection(
+            title: context.locale.preview__inspector__section__actions,
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.start,
+              children: _buildActionButtons(),
             ),
+          ),
+          height16,
+          _InspectorSection(
+            title: context.locale.preview__inspector__section__details,
+            child: Column(children: _buildDetailRows()),
+          ),
+          if (contentRows.isNotEmpty) ...[
             height16,
             _InspectorSection(
-              title: context.locale.preview__inspector__section__details,
-              child: Column(children: _buildDetailRows()),
-            ),
-            if (contentRows.isNotEmpty) ...[
-              height16,
-              _InspectorSection(
-                title: context.locale.preview__inspector__section__content,
-                child: Column(children: contentRows),
-              ),
-            ],
-            height16,
-            _InspectorSection(
-              title: context.locale.preview__inspector__section__organize,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: context.locale.preview__form__input__title,
-                    ),
-                    controller: titleController,
-                    validator: ValidationBuilder(
-                      optional: true,
-                    ).maxLength(100).build(),
-                  ),
-                  height12,
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText:
-                          context.locale.preview__form__input__description,
-                    ),
-                    minLines: 2,
-                    maxLines: 5,
-                    controller: descriptionController,
-                    validator: ValidationBuilder(
-                      optional: true,
-                    ).maxLength(255).build(),
-                  ),
-                  height12,
-                  ClipCollectionSelectorTile(
-                    onChange: _setCollection,
-                    collectionId: collectionId?.$1,
-                  ),
-                  height12,
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: FilledButton.icon(
-                      onPressed: _hasChanges ? _saveMetadata : null,
-                      icon: const Icon(Icons.save_outlined),
-                      label: Text(
-                        context.locale.preview__inspector__save_changes,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              title: context.locale.preview__inspector__section__content,
+              child: Column(children: contentRows),
             ),
           ],
-        ),
+          height16,
+          _InspectorSection(
+            title: context.locale.preview__inspector__section__organize,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: context.locale.preview__form__input__title,
+                  ),
+                  controller: titleController,
+                  validator: ValidationBuilder(
+                    optional: true,
+                  ).maxLength(100).build(),
+                ),
+                height12,
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: context.locale.preview__form__input__description,
+                  ),
+                  minLines: 2,
+                  maxLines: 5,
+                  controller: descriptionController,
+                  validator: ValidationBuilder(
+                    optional: true,
+                  ).maxLength(255).build(),
+                ),
+                height12,
+                ClipCollectionSelectorTile(
+                  onChange: _setCollection,
+                  collectionId: collectionId?.$1,
+                ),
+                height12,
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: FilledButton.icon(
+                    onPressed: _hasChanges ? _saveMetadata : null,
+                    icon: const Icon(Icons.save_outlined),
+                    label: Text(
+                      context.locale.preview__inspector__save_changes,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -830,7 +823,6 @@ class _InspectorSourceAppRow extends StatelessWidget {
                   padding: const EdgeInsets.only(right: padding8),
                   radius: 14,
                 ),
-
                 Expanded(
                   child: SelectableText(sourceApp, style: textTheme.bodyMedium),
                 ),

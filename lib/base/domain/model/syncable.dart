@@ -27,6 +27,12 @@ abstract mixin class Syncable implements Identifiable {
   Syncable copyWithSyncMetadata({int? id, DateTime? lastSynced});
 
   /// Returns true if this entity has unsynced local changes.
+  ///
+  /// We are taking a lenient approach here to account for potential clock skew and
+  /// minor timestamp discrepancies. If the modified time is significantly newer
+  /// than the last synced time, we consider it as having unsynced changes.
   bool get hasUnsyncedChanges =>
-      serverId == null || lastSynced == null || modified.isAfter(lastSynced!);
+      serverId == null ||
+      lastSynced == null ||
+      modified.difference(lastSynced!).inMilliseconds > 150;
 }

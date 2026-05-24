@@ -4,6 +4,7 @@ import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/file_cloud_cubit/file_cloud_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
@@ -27,8 +28,8 @@ Future<void> _maybeShowReviewPrompt() async {
   final context = rootNavigationKey.currentContext;
   if (context == null) return;
   try {
-    final appConfigCubit = context.read<AppConfigCubit>();
-    await appConfigCubit.trackCopyPasteSuccess();
+    final reviewPromptCubit = context.read<ReviewPromptCubit>();
+    await reviewPromptCubit.trackCopyPasteSuccess();
   } catch (e) {
     logger.e("Error tracking copy/paste success for review prompt: $e");
   }

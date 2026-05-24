@@ -1,3 +1,5 @@
+import 'dart:math' show Random;
+
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/data/services/encryption.dart';
 import 'package:clipboard/base/domain/model/base.dart';
@@ -98,10 +100,25 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     @JsonKey(includeFromJson: false, includeToJson: false)
     @Default(false)
     bool isQueued,
+
+    /// Short 8-char alphanumeric ID assigned at creation on the originating
+    /// device. Used to deduplicate clips arriving via both LAN and Supabase.
+    /// Persisted locally and round-tripped through the server.
+    @JsonKey(name: "origin_id") String? originId,
   }) = _ClipboardItem;
 
   factory ClipboardItem.fromJson(Map<String, dynamic> json) =>
       _$ClipboardItemFromJson(json);
+
+  /// Generates a short 8-char alphanumeric ID for LAN-sync deduplication.
+  static String generateOriginId() {
+    const chars =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    final random = Random.secure();
+    return String.fromCharCodes(
+      List.generate(8, (_) => chars.codeUnitAt(random.nextInt(chars.length))),
+    );
+  }
 
   factory ClipboardItem.fromText(
     String text, {
@@ -124,6 +141,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
       sourceApp: sourceApp,
       sourceId: sourceId,
       textCategory: category,
+      originId: generateOriginId(),
     );
   }
 
@@ -154,6 +172,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
       sourceUrl: sourceUrl,
       sourceApp: sourceApp,
       sourceId: sourceId,
+      originId: generateOriginId(),
     );
   }
 
@@ -187,6 +206,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
       sourceUrl: sourceUrl,
       sourceApp: sourceApp,
       sourceId: sourceId,
+      originId: generateOriginId(),
     );
   }
 
@@ -212,6 +232,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
       sourceUrl: sourceUrl,
       sourceApp: sourceApp,
       sourceId: sourceId,
+      originId: generateOriginId(),
     );
   }
 

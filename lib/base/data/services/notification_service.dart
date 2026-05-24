@@ -4,7 +4,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart'
-    show BuildContextExtension, ListExtension;
+    show BreakpointExtension, BuildContextExtension, ListExtension;
 import 'package:clipboard/utils/utility.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +67,8 @@ class InAppNotificationService {
 
   SnackBar _buildSnackBar(NotificationMessage message) {
     late final NotificationContent messageContent;
-    final SnackBarBehavior behavior = isMobilePlatform
+    final flat = isMobilePlatform || _context.isMobile;
+    final SnackBarBehavior behavior = flat
         ? SnackBarBehavior.fixed
         : SnackBarBehavior.floating;
 
@@ -84,7 +85,7 @@ class InAppNotificationService {
       showCloseIcon: isDesktopPlatform,
       behavior: behavior,
       margin: _getSnackBarMargin(),
-      shape: const RoundedRectangleBorder(borderRadius: radius16),
+      shape: flat ? null : const RoundedRectangleBorder(borderRadius: radius16),
       action: message.action ?? messageContent.action,
     );
   }

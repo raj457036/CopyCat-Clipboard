@@ -3,11 +3,18 @@ import 'dart:ui' as ui;
 
 import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
+import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart';
+import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
+import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/constants/numbers/breakpoints.dart';
+import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/applink_listener.dart';
 import 'package:clipboard/utils/debounce.dart';
 import 'package:clipboard/utils/share_listener.dart';
@@ -35,11 +42,17 @@ class _StateInitializerState extends State<StateInitializer>
   final backgroundStateDebounce = Debouncer(milliseconds: 60000); // 1 minute
 
   late final AppConfigCubit appConfigCubit;
+  late final AuthCubit authCubit;
+  late final MonetizationCubit monetizationCubit;
+  late final SyncStatusCubit syncStatusCubit;
+  late final SyncOrchestrator syncOrchestrator;
+  late final ReviewPromptCubit reviewPromptCubit;
   ui.FlutterView? _view;
   bool renderingDisabled = false;
   bool _isAppLifecycleBackgrounded = false;
   bool _isWindowBackgrounded = false;
   bool? _lastClipboardBackgroundState;
+  bool _resumeSyncInProgress = false;
 
   // We consider the app backgrounded if either Flutter lifecycle is paused/
   // inactive OR the desktop window manager reports the window in background
@@ -68,6 +81,11 @@ class _StateInitializerState extends State<StateInitializer>
     WidgetsBinding.instance.addObserver(this);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     appConfigCubit = context.read<AppConfigCubit>();
+    authCubit = context.read<AuthCubit>();
+    monetizationCubit = context.read<MonetizationCubit>();
+    syncStatusCubit = context.read<SyncStatusCubit>();
+    syncOrchestrator = sl<SyncOrchestrator>();
+    reviewPromptCubit = context.read<ReviewPromptCubit>();
     appLinkListener.init();
     shareListener.init();
     setupWindow();
@@ -81,7 +99,7 @@ class _StateInitializerState extends State<StateInitializer>
   Future<void> _trackMobileAppLaunch() async {
     if (!mounted) return;
     try {
-      await appConfigCubit.trackAppEntry();
+      await reviewPromptCubit.trackAppEntry();
     } catch (e) {
       logger.e("Error tracking app launch for review prompt. $e");
     }
@@ -102,11 +120,58 @@ class _StateInitializerState extends State<StateInitializer>
         syncAndroidBgClipboardStates();
         disableRendering(false);
         _isAppLifecycleBackgrounded = false;
+        if (state == AppLifecycleState.resumed) {
+          unawaited(_runResumeSyncCatchUp());
+        }
       case _:
         powerSaverDebounce(() => disableRendering(true));
         _isAppLifecycleBackgrounded = true;
     }
     _syncClipboardBackgroundState();
+  }
+
+  bool _isSyncEligibleAuthState() {
+    final authState = authCubit.state;
+    return switch (authState) {
+      AuthenticatedAuthState(:final isOnboardingCompleted) =>
+        isOnboardingCompleted,
+      LocalAuthenticatedAuthState() =>
+        appConfigCubit.state.config.onBoardComplete,
+      _ => false,
+    };
+  }
+
+  Future<void> _runResumeSyncCatchUp() async {
+    if (!mounted || _resumeSyncInProgress) return;
+    if (!Platform.isAndroid) return;
+    if (!appConfigCubit.isSyncEnabled || !_isSyncEligibleAuthState()) return;
+
+    final intervalSeconds =
+        monetizationCubit.active?.syncInterval ?? defaultBestEffortSyncInterval;
+
+    _resumeSyncInProgress = true;
+    final wasRunning = syncOrchestrator.isRunning;
+    final syncSpeed = appConfigCubit.state.config.syncSpeed;
+
+    try {
+      if (wasRunning) {
+        syncOrchestrator.stop();
+      }
+
+      await syncStatusCubit.syncAll(const SyncAllParams(force: true));
+    } catch (e) {
+      logger.e("Resume catch-up sync failed: $e");
+    } finally {
+      if (wasRunning &&
+          appConfigCubit.isSyncEnabled &&
+          _isSyncEligibleAuthState()) {
+        syncOrchestrator.start(
+          syncSpeed: syncSpeed,
+          intervalSeconds: intervalSeconds,
+        );
+      }
+      _resumeSyncInProgress = false;
+    }
   }
 
   @override
@@ -161,11 +226,10 @@ class _StateInitializerState extends State<StateInitializer>
 
     if (isPowerSaverActive) return const SizedBox.shrink();
 
-    return BlocListener<AppConfigCubit, AppConfigState>(
-      listenWhen: (previous, current) =>
-          previous.reviewPromptSignal != current.reviewPromptSignal,
+    return BlocListener<ReviewPromptCubit, int>(
+      listenWhen: (previous, current) => previous != current,
       listener: (context, state) async {
-        await showInAppReviewDialog(cubit: context.read<AppConfigCubit>());
+        await showInAppReviewDialog(cubit: context.read<ReviewPromptCubit>());
       },
       child: widget.child,
     );

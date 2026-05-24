@@ -176,7 +176,7 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
                               colors: colors,
                               text: text,
                             ),
-                            complete: () => _RestorePanel(
+                            complete: (_) => _RestorePanel(
                               progress: _lastProgress,
                               colors: colors,
                               text: text,

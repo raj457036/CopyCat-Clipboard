@@ -4,6 +4,7 @@ import 'package:clipboard/pages/settings/widgets/dropdowns/dont_copy_over_dropdo
 import 'package:clipboard/pages/settings/widgets/switches/pause_till_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/startup_launch_switch.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/widgets/locale_dropdown.dart';
@@ -16,7 +17,7 @@ class GeneralSettings extends StatelessWidget {
   const GeneralSettings({super.key});
 
   Future<void> _onRateTap(BuildContext context) async {
-    final cubit = context.read<AppConfigCubit>();
+    final cubit = context.read<ReviewPromptCubit>();
     await cubit.requestReview();
   }
 

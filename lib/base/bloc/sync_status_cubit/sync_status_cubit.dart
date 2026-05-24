@@ -15,7 +15,6 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart' show logger;
-import 'package:clipboard/utils/monetization.dart';
 import 'package:clipboard/utils/subscription_actions.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:duration/duration.dart';
@@ -23,6 +22,7 @@ import 'package:duration/locale.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:synchronized/synchronized.dart';
 
 part 'sync_status_cubit.freezed.dart';
 part 'sync_status_state.dart';
@@ -53,6 +53,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
   final Map<String, DateTime> _lastNotifiedAt = {};
   bool _isManualSyncing = false;
   DateTime? _lastManualSyncAt;
+  final Lock _syncLock = Lock();
 
   SyncStatusCubit(
     this.orchestrator,
@@ -85,36 +86,36 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
 
   void _subscribeToEvents() {
     _eventSub?.cancel();
-    _eventSub = eventBus.stream.listen((event) {
-      if (event is SyncProgressEvent) {
-        final currentProgress = state.maybeWhen(
-          syncing: (progress) => Map<String, SyncProgress>.from(progress),
-          orElse: () => <String, SyncProgress>{},
-        );
+    _eventSub = eventBus.stream.listen((event) async {
+      await _syncLock.synchronized(() async {
+        if (event is SyncProgressEvent) {
+          final currentProgress = state.maybeWhen(
+            syncing: (progress) => Map<String, SyncProgress>.from(progress),
+            orElse: () => <String, SyncProgress>{},
+          );
 
-        final p = event.params;
-        final existing = currentProgress[p.entityType];
+          final p = event.params;
+          final existing = currentProgress[p.entityType];
 
-        currentProgress[p.entityType] = SyncProgress(
-          synced: p.fetchCount + (existing?.synced ?? 0),
-          total: p.totalCount ?? existing?.total ?? 0,
-        );
+          currentProgress[p.entityType] = SyncProgress(
+            synced: p.fetchCount + (existing?.synced ?? 0),
+            total: p.totalCount ?? existing?.total ?? 0,
+          );
 
-        emit(SyncStatusState.syncing(progress: currentProgress));
-        _checkCompletion();
-      } else if (event is SyncEngineStatusUpdateEvent) {
-        if (event.isBusy) {
-          _busyEngines.add(event.entityType);
-          if (state is! SyncingStatus) {
+          emit(SyncStatusState.syncing(progress: currentProgress));
+          await _checkCompletion();
+        } else if (event is SyncEngineStatusUpdateEvent) {
+          if (event.isBusy) {
+            _busyEngines.add(event.entityType);
             emit(const SyncStatusState.syncing());
+          } else {
+            _busyEngines.remove(event.entityType);
+            await _checkCompletion();
           }
-        } else {
-          _busyEngines.remove(event.entityType);
-          _checkCompletion();
+        } else if (event is SyncOutboxFailureEvent) {
+          _notifyOutboxFailure(event);
         }
-      } else if (event is SyncOutboxFailureEvent) {
-        _notifyOutboxFailure(event);
-      }
+      });
     });
   }
 
@@ -154,17 +155,16 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     return failure;
   }
 
-  void _checkCompletion() {
+  Future<void> _checkCompletion() async {
     if (_busyEngines.isEmpty && !_isManualSyncing) {
       // Small delay to handle transitions between engines or tasks
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (isClosed) return;
-        if (_busyEngines.isEmpty &&
-            !_isManualSyncing &&
-            state is SyncingStatus) {
-          _runPostSyncDecryption();
-        }
-      });
+      await Future.delayed(Durations.short2);
+      if (_busyEngines.isNotEmpty &&
+          _isManualSyncing &&
+          state is! SyncingStatus) {
+        return;
+      }
+      await _runPostSyncDecryption();
     }
   }
 
@@ -212,7 +212,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
       );
     } finally {
       _isManualSyncing = false;
-      _checkCompletion();
+      await _checkCompletion();
     }
   }
 
@@ -254,17 +254,15 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
   /// worker is inactive — it will find zero encrypted items (or skip them) and
   /// proceed straight to [complete].
   Future<void> _runPostSyncDecryption() async {
-    if (isClosed) return;
-
     // Decrypt if service is available
+    bool hasUxUpdates = false;
+
     if (decryptionService.canDecrypt) {
       await decryptionService.decryptAll(
         onProgress: (decrypted, total) {
-          if (!isClosed) {
-            emit(
-              SyncStatusState.decrypting(decrypted: decrypted, total: total),
-            );
-          }
+          emit(SyncStatusState.decrypting(decrypted: decrypted, total: total));
+
+          hasUxUpdates = decrypted == total && total > 0;
         },
       );
     }
@@ -272,13 +270,13 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     // Persist sync completion regardless of decryption status
     try {
       await restorationStatusRepository.setStatus(
-        SyncStatus(lastSyncPoint: DateTime.now(), restorationPending: false),
+        SyncStatus(lastSyncPoint: systemTime(), restorationPending: false),
       );
     } catch (e) {
       logger.e(() => 'Failed to persist sync status: $e');
     }
 
-    if (!isClosed) emit(const SyncStatusState.complete());
+    emit(SyncStatusState.complete(hasUpdates: hasUxUpdates));
   }
 
   @override

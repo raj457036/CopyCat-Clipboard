@@ -26,6 +26,15 @@ inline fun debugLog(tag: String, message: () -> String) {
     }
 }
 
+/** Generates a cryptographically random 8-char alphanumeric ID, matching Mac's originId format. */
+fun generateOriginId(): String {
+    val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    val sb = StringBuilder(8)
+    val rng = java.security.SecureRandom()
+    repeat(8) { sb.append(chars[rng.nextInt(chars.length)]) }
+    return sb.toString()
+}
+
 class Utils {
 
     companion object {

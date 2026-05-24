@@ -5,6 +5,7 @@ import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart';
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
@@ -254,6 +255,7 @@ class MainApp extends StatelessWidget {
         BlocProvider<EventBusCubit>(create: (context) => sl()),
         BlocProvider<MonetizationCubit>(create: (context) => sl()),
         BlocProvider<OfflinePersistenceCubit>(create: (context) => sl()),
+        BlocProvider<ReviewPromptCubit>(create: (context) => sl()),
         BlocProvider<SyncStatusCubit>(create: (context) => sl()),
         BlocProvider<UserDevicesCubit>(create: (context) => sl()),
       ],

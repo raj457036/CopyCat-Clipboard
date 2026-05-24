@@ -1,4 +1,5 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/constants/numbers/duration.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
@@ -17,20 +18,30 @@ class SyncModeDropdown extends StatelessWidget {
 
   void _setSyncMode(BuildContext context, SyncSpeed speed) {
     final appConfigCubit = context.read<AppConfigCubit>();
+    final monetizationCubit = context.read<MonetizationCubit>();
     appConfigCubit.changeSyncMode(speed);
 
     // NOTE(raj): This condition is always false since the dropdown is
     // disabled when sync is not enabled. This is just a reminder to
     // not change the ochestrator's state when sync is disabled.
-    if (appConfigCubit.state.config.enableSync) return;
+    if (!appConfigCubit.state.config.enableSync) return;
 
     final syncSpeed = appConfigCubit.state.config.syncSpeed;
+    final syncInterval = monetizationCubit.state.whenOrNull(
+      active: (s) => s.syncInterval,
+    );
 
     switch (syncSpeed) {
       case SyncSpeed.realtime:
-        sl<SyncOrchestrator>().startRealtime();
+        sl<SyncOrchestrator>().start(
+          syncSpeed: SyncSpeed.realtime,
+          intervalSeconds: syncInterval,
+        );
       case SyncSpeed.balanced:
-      // polling only handled by start()
+        sl<SyncOrchestrator>().start(
+          syncSpeed: SyncSpeed.balanced,
+          intervalSeconds: syncInterval,
+        );
     }
   }
 

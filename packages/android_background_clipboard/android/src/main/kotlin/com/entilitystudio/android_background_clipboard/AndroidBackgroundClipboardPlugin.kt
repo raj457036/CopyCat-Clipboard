@@ -5,7 +5,6 @@ import android.app.Application
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -24,16 +23,20 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
     /// when the Flutter Engine is detached from the Activity
     private lateinit var channel: MethodChannel
     private lateinit var statusChannel: EventChannel
+    private lateinit var peersChannel: EventChannel       // LAN peer discovery stream
     private lateinit var applicationContext: Context
     private var applicationActivity: Activity? = null
     private lateinit var storage: CopyCatSharedStorage
     private var application: Application? = null
     private val detectionStatusReporter = DetectionStatusReporter.getInstance()
     private var detectionStatusListener: ((Map<String, String>) -> Unit)? = null
+    private var lanPeersStreamHandler: LanPeersStreamHandler? = null
+    private var isEngineAttached: Boolean = false
 
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         debugLog("CopyCat Service") { "onAttachedToEngine" }
+        isEngineAttached = true
         Utils.isActivityOnTop = true
         channel =
             MethodChannel(flutterPluginBinding.binaryMessenger, "android_background_clipboard")
@@ -41,8 +44,14 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
             flutterPluginBinding.binaryMessenger,
             "android_background_clipboard/detection_status",
         )
+        peersChannel = EventChannel(
+            flutterPluginBinding.binaryMessenger,
+            "android_background_clipboard/lan_peers",
+        )
+        lanPeersStreamHandler = LanPeersStreamHandler()
         channel.setMethodCallHandler(this)
         statusChannel.setStreamHandler(this)
+        peersChannel.setStreamHandler(lanPeersStreamHandler)
         applicationContext = flutterPluginBinding.applicationContext
         storage = CopyCatSharedStorage.getInstance(applicationContext)
 
@@ -178,9 +187,13 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         debugLog("CopyCat Service") { "onDetachedFromEngine" }
+        isEngineAttached = false
         clearDetectionStatusListener()
+        lanPeersStreamHandler?.dispose()
+        lanPeersStreamHandler = null
         channel.setMethodCallHandler(null)
         statusChannel.setStreamHandler(null)
+        peersChannel.setStreamHandler(null)
         Utils.isActivityOnTop = false
         application?.unregisterActivityLifecycleCallbacks(this)
     }
@@ -189,8 +202,16 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
         clearDetectionStatusListener()
         if (events == null) return
 
-        val listener: (Map<String, String>) -> Unit = { payload ->
-            events.success(payload)
+        val listener: (Map<String, String>) -> Unit = listener@{ payload ->
+            if (!isEngineAttached) return@listener
+            try {
+                events.success(payload)
+            } catch (e: Exception) {
+                debugLog("CopyCat Service") {
+                    "Failed to emit detection status event after engine detach: ${e.message}"
+                }
+                clearDetectionStatusListener()
+            }
         }
         detectionStatusListener = listener
         detectionStatusReporter.addListener(listener)
@@ -259,6 +280,46 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
         applicationActivity = null
         debugLog("ActivityLifecycle") {
             "onActivityDestroyed: ${activity.localClassName}, isActivityOnTop set to false"
+        }
+    }
+
+    /**
+     * EventChannel.StreamHandler for the `android_background_clipboard/lan_peers` channel.
+     *
+     *      Bridges [LanPeerReporter] updates to Flutter.
+     *          The explicitly calls [dispose] during engine detach to ensure listener cleanup
+     *          even if Flutter stream cancellation does not arrive during hot restart.
+     */
+    private inner class LanPeersStreamHandler : EventChannel.StreamHandler {
+        private val reporter = LanPeerReporter.getInstance()
+        private var listener: ((List<Map<String, String>>) -> Unit)? = null
+
+        override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+            // Cancel any previous subscription first (safety guard against double-listen)
+            listener?.let { reporter.removeListener(it) }
+            if (events == null) return
+            val l: (List<Map<String, String>>) -> Unit = l@{ payload ->
+                if (!isEngineAttached) return@l
+                try {
+                    events.success(payload)
+                } catch (e: Exception) {
+                    debugLog("CopyCat Service") {
+                        "Failed to emit LAN peer event after engine detach: ${e.message}"
+                    }
+                    dispose()
+                }
+            }
+            listener = l
+            reporter.addListener(l)
+        }
+
+        override fun onCancel(arguments: Any?) {
+            dispose()
+        }
+
+        fun dispose() {
+            listener?.let { reporter.removeListener(it) }
+            listener = null
         }
     }
 }

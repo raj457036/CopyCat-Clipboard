@@ -3,6 +3,7 @@ import 'package:clipboard/base/domain/services/conflict_resolver.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/paginated_results.dart';
+import 'package:dartz/dartz.dart';
 
 /// Per-entity adapter that the generic SyncEngine uses to sync a specific model.
 ///
@@ -55,8 +56,29 @@ abstract class SyncAdapter<T extends Syncable> {
   /// Push a single item to the server (create or update).
   FailureOr<T> pushToRemote(T item);
 
+  /// Persist sync metadata locally after a successful push.
+  ///
+  /// Default implementation is a no-op.
+  Future<T?> persistSyncResult(T item, {DateTime? syncedAt}) async {
+    return item;
+  }
+
   /// Delete a single item from the server.
   FailureOr<bool> deleteFromRemote(T item);
+
+  /// Delete multiple items from the server in one operation when supported.
+  ///
+  /// Default implementation falls back to one-by-one deletion.
+  FailureOr<bool> deleteBatchFromRemote(List<T> items) async {
+    for (final item in items) {
+      final result = await deleteFromRemote(item);
+      final ok = result.fold((_) => false, (value) => value);
+      if (!ok) {
+        return result;
+      }
+    }
+    return const Right(true);
+  }
 
   /// Allows adapters to expose transient per-item sync state for UI.
   ///

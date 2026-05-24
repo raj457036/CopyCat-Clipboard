@@ -39,6 +39,7 @@ class SyncEngine<T extends Syncable> {
   final List<String> dependsOn;
 
   Timer? _pollingTimer;
+  Timer? _reconnectTimer;
   int? _pollingIntervalSeconds; // saved so realtime fallback can restore it
   bool _busy = false;
   bool _isRealtimeSubscribed = false;
@@ -305,15 +306,69 @@ class SyncEngine<T extends Syncable> {
 
     eventBus.emitEngineStatus(adapter.entityType, true);
     try {
-      for (final entry in relevant) {
+      var index = 0;
+      while (index < relevant.length) {
+        final entry = relevant[index];
         logger.d(
           () =>
               '[SyncEngine:${adapter.entityType}] Processing entry id=${entry.id} localId=${entry.localId} action=${entry.action}',
         );
+
+        if (entry.action == SyncOutboxAction.delete) {
+          final deleteBatch = <SyncOutboxEntry>[entry];
+          var nextIndex = index + 1;
+          while (nextIndex < relevant.length &&
+              relevant[nextIndex].action == SyncOutboxAction.delete) {
+            deleteBatch.add(relevant[nextIndex]);
+            nextIndex++;
+          }
+          await _processDeleteBatch(deleteBatch);
+          index = nextIndex;
+          continue;
+        }
+
         await _processOutboxEntry(entry);
+        index++;
       }
     } finally {
       eventBus.emitEngineStatus(adapter.entityType, false);
+    }
+  }
+
+  Future<void> _processDeleteBatch(List<SyncOutboxEntry> entries) async {
+    if (entries.isEmpty) return;
+
+    final resolvable = <(SyncOutboxEntry, T)>[];
+
+    for (final entry in entries) {
+      final item = await adapter.getLocalById(entry.localId);
+      if (item == null) {
+        if (entry.id != null) {
+          await outboxRepo.markCompleted(entry.id!);
+        }
+        continue;
+      }
+      resolvable.add((entry, item));
+    }
+
+    if (resolvable.isEmpty) return;
+
+    final items = resolvable.map((e) => e.$2).toList(growable: false);
+    final result = await adapter.deleteBatchFromRemote(items);
+
+    final success = result.fold((_) => false, (ok) => ok);
+    if (!success) {
+      // Preserve existing behavior by falling back to single-entry processing.
+      for (final entry in entries) {
+        await _processOutboxEntry(entry);
+      }
+      return;
+    }
+
+    for (final entry in entries) {
+      if (entry.id != null) {
+        await outboxRepo.markCompleted(entry.id!);
+      }
     }
   }
 
@@ -393,8 +448,12 @@ class SyncEngine<T extends Syncable> {
         await outboxRepo.markCompleted(entry.id!);
         // Broadcast update to UI so serverId/lastSynced are reflected
         if (result is T) {
-          final completed = await adapter.markSyncInProgress(
+          final persisted = await adapter.persistSyncResult(
             result,
+            syncedAt: systemTime(),
+          );
+          final completed = await adapter.markSyncInProgress(
+            persisted ?? result,
             inProgress: false,
           );
           logger.d(
@@ -437,7 +496,7 @@ class SyncEngine<T extends Syncable> {
     final cadence = intervalSeconds ?? config.pollingIntervalSeconds;
     _pollingIntervalSeconds = cadence;
     // Don't start the timer if realtime is currently connected.
-    if (_isRealtimeSubscribed) return;
+    if (_isRealtimeSubscribed || _pollingTimer != null) return;
     _pollingTimer = Timer.periodic(Duration(seconds: cadence), (_) => pull());
   }
 
@@ -447,8 +506,15 @@ class SyncEngine<T extends Syncable> {
   }
 
   void startRealtime() {
+    logger.d(
+      () => "Attempting to start realtime listener for ${adapter.entityType}",
+    );
     final listener = adapter.realtimeListener;
     if (_isRealtimeSubscribed || listener == null) return;
+
+    stopPolling();
+    _reconnectTimer?.cancel();
+    _reconnectTimer = null;
 
     _statusSub = listener.onStatusChange.listen(_onRealtimeStatusChange);
     _eventSub = listener.onChangeEvent.listen(_onRealtimeEvent);
@@ -461,21 +527,32 @@ class SyncEngine<T extends Syncable> {
     final status = event.$1;
     switch (status) {
       case CrossSyncListenerStatus.connected:
-        // Realtime is live — polling would be redundant.
+        _reconnectTimer?.cancel();
+        _reconnectTimer = null;
         stopPolling();
+        return;
       case CrossSyncListenerStatus.disconnected:
       case CrossSyncListenerStatus.error:
-        // Fall back to polling while waiting for realtime to reconnect.
+        logger.i(
+          () =>
+              "Realtime listener for ${adapter.entityType} disconnected with status: $status",
+        );
         if (_pollingIntervalSeconds != null) {
           startPolling(intervalSeconds: _pollingIntervalSeconds);
         }
-        Future.delayed(
-          Duration(seconds: config.reconnectDelaySeconds),
-          () => adapter.realtimeListener?.reconnect(),
-        );
+        _scheduleReconnect();
+        return;
       default:
-        break;
+        return;
     }
+  }
+
+  void _scheduleReconnect() {
+    _reconnectTimer?.cancel();
+    _reconnectTimer = Timer(
+      Duration(seconds: config.reconnectDelaySeconds),
+      () => adapter.realtimeListener?.reconnect(),
+    );
   }
 
   Future<void> _onRealtimeEvent(CrossSyncEvent<T> event) async {
@@ -505,25 +582,14 @@ class SyncEngine<T extends Syncable> {
         stackTrace: stack,
       );
     }
-
-    _triggerThrottledPull();
-  }
-
-  Timer? _throttleTimer;
-  void _triggerThrottledPull() {
-    _throttleTimer?.cancel();
-    _throttleTimer = Timer(const Duration(seconds: 2), () => pull());
   }
 
   void stopRealtime() {
-    _throttleTimer?.cancel();
+    _reconnectTimer?.cancel();
+    _reconnectTimer = null;
     _statusSub?.cancel();
     _eventSub?.cancel();
     adapter.realtimeListener?.stop();
     _isRealtimeSubscribed = false;
-    // Restore polling now that realtime is gone.
-    if (_pollingIntervalSeconds != null) {
-      startPolling(intervalSeconds: _pollingIntervalSeconds);
-    }
   }
 }

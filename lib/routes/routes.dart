@@ -14,7 +14,6 @@ import "package:clipboard/base/bloc/offline_persistance_cubit/offline_persistanc
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart'
     show SelectedClipsCubit;
-import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import "package:clipboard/base/constants/strings/route_constants.dart";
 import "package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart";
@@ -47,6 +46,7 @@ import "package:clipboard/pages/settings/pages/device_management/page.dart";
 import "package:clipboard/pages/settings/pages/custom_exclusion_rule/custom_exclusion_rule.dart";
 import "package:clipboard/pages/settings/pages/decrypt_clips.dart";
 import "package:clipboard/pages/settings/pages/exclusion_rules.dart";
+import "package:clipboard/pages/settings/pages/lan_mesh/lan_mesh_page.dart";
 import "package:clipboard/pages/splash_page.dart";
 import "package:clipboard/widgets/listeners/monetization_listener.dart";
 import "package:clipboard/widgets/page_route/dynamic_page_route.dart";
@@ -178,7 +178,10 @@ final appRouter = GoRouter(
                 },
               ),
           ],
-          child: MonetizationListener(appConfigCubit: sl(), child: child),
+          child: MonetizationListener(
+            appConfigCubit: context.read(),
+            child: child,
+          ),
         );
       },
       routes: [
@@ -370,6 +373,11 @@ final appRouter = GoRouter(
                   builder: (context, state) {
                     return DeviceManagementPage(key: state.pageKey);
                   },
+                ),
+                GoRoute(
+                  name: RouteConstants.lanMesh,
+                  path: 'lan-mesh',
+                  builder: (context, state) => LanMeshPage(key: state.pageKey),
                 ),
               ],
             ),

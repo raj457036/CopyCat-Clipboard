@@ -15,6 +15,11 @@ class MethodChannelAndroidBackgroundClipboard
     'android_background_clipboard/detection_status',
   );
 
+  @visibleForTesting
+  final lanPeersEventChannel = const EventChannel(
+    'android_background_clipboard/lan_peers',
+  );
+
   @override
   Future<bool> isAccessibilityPermissionGranted() async {
     final isGranted = await methodChannel
@@ -162,6 +167,15 @@ class MethodChannelAndroidBackgroundClipboard
         );
       }
       return const <String, String>{};
+    });
+  }
+
+  @override
+  Stream<List<Map<String, dynamic>>> lanPeersStream() {
+    return lanPeersEventChannel.receiveBroadcastStream().map((event) {
+      return (event as List)
+          .map((e) => Map<String, dynamic>.from(e as Map))
+          .toList();
     });
   }
 }

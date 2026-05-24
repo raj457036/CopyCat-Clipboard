@@ -67,16 +67,22 @@ class SyncStatusFAB extends StatelessWidget {
                 heroTag: "sync-fab",
                 backgroundColor: colors.secondary,
                 foregroundColor: colors.onSecondary,
-                child: isSyncing
-                    ? SizedBox(
-                        width: 18,
-                        height: 18,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: colors.onSecondary,
-                        ),
-                      )
-                    : Icon(icon),
+                child: AnimatedSwitcher(
+                  duration: Durations.medium1,
+                  switchInCurve: Curves.easeIn,
+                  switchOutCurve: Curves.easeOut,
+                  child: isSyncing
+                      ? SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: colors.onSecondary,
+                            strokeCap: StrokeCap.round,
+                          ),
+                        )
+                      : Icon(icon),
+                ),
               ),
             );
           },

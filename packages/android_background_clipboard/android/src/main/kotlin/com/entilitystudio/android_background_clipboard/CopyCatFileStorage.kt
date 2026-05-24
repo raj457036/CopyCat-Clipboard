@@ -95,7 +95,7 @@ class CopyCatFileStorage(private val context: Context) {
     }
     
     /**
-     * Write a clipboard item to disk (not memory!)
+     * Write a clipboard item to disk
      * Format:
      * Line 0: id
      * Line 1: type
@@ -106,8 +106,11 @@ class CopyCatFileStorage(private val context: Context) {
      * Line 6: encrypted (true/false)
      * Line 7: iv (base64, empty when not applicable)
      * Line 8: encMode (CFB/GCM, empty when not applicable)
-     * Line 9: ---|---|---
-     * Line 10+: clip content
+     * Line 9: originId (8-char base62, empty for old-format clips)
+    * Line 10: sourceId/packageName (empty when unknown)
+    * Line 11: sourceApp/appName (empty when unknown)
+    * Line 12: ---|---|---
+    * Line 13+: clip content
      */
     fun writeClipItem(
         clipId: String,
@@ -120,6 +123,9 @@ class CopyCatFileStorage(private val context: Context) {
         serverId: Long = -1,
         userId: String = "",
         timestamp: Long = System.currentTimeMillis(),
+        originId: String = "",
+        sourceId: String = "",
+        sourceApp: String = "",
     ): Boolean = lock.write {
         try {
             val clipFile = File(storageDir, "$clipId.txt")
@@ -133,6 +139,9 @@ class CopyCatFileStorage(private val context: Context) {
                 writer.write("$encrypted\n")
                 writer.write("${iv ?: ""}\n")
                 writer.write("${encMode ?: ""}\n")
+                writer.write("$originId\n")
+                writer.write("$sourceId\n")
+                writer.write("$sourceApp\n")
                 writer.write("---|---|---\n")
                 writer.write(text)
             }
@@ -269,6 +278,10 @@ class CopyCatFileStorage(private val context: Context) {
             }
             val iv = if (hasEncryptionMetadata) lines[7].ifBlank { null } else null
             val encMode = if (hasEncryptionMetadata) lines[8].ifBlank { null } else null
+            // Line 9 is originId in new format (separator was at 9 in old format)
+            val originId = if (separatorIndex >= 10) lines[9].ifBlank { null } else null
+            val sourceId = if (separatorIndex >= 11) lines[10].ifBlank { null } else null
+            val sourceApp = if (separatorIndex >= 12) lines[11].ifBlank { null } else null
             
             val text = if (separatorIndex != -1 && separatorIndex < lines.size - 1) {
                 lines.subList(separatorIndex + 1, lines.size).joinToString("\n")
@@ -276,7 +289,21 @@ class CopyCatFileStorage(private val context: Context) {
                 ""
             }
             
-            return ClipData(id, text, type, label, timestamp, serverId, userId, encrypted, iv, encMode)
+            return ClipData(
+                id,
+                text,
+                type,
+                label,
+                timestamp,
+                serverId,
+                userId,
+                encrypted,
+                iv,
+                encMode,
+                originId,
+                sourceId,
+                sourceApp,
+            )
         } catch (e: Exception) {
             Log.e(logTag, "Error reading clip $clipId: ${e.message}")
             return null
@@ -364,6 +391,9 @@ class CopyCatFileStorage(private val context: Context) {
         val encrypted: Boolean = false,
         val iv: String? = null,
         val encMode: String? = null,
+        val originId: String? = null,
+        val sourceId: String? = null,
+        val sourceApp: String? = null,
     ) {
         fun toMap(): Map<String, Any?> {
             return mapOf(
@@ -377,6 +407,9 @@ class CopyCatFileStorage(private val context: Context) {
                 "encrypted" to encrypted,
                 "iv" to iv,
                 "encMode" to encMode,
+                "originId" to originId,
+                "sourceId" to sourceId,
+                "sourceApp" to sourceApp,
             )
         }
     }

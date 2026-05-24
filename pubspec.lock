@@ -1118,6 +1118,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.13.0"
+  mdns_dart:
+    dependency: "direct main"
+    description:
+      name: mdns_dart
+      sha256: "65d9112c22afd67571bb5e04fa775e621ec2b67374faf79093de8f715d0a26c3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.1"
   media_kit:
     dependency: "direct main"
     description:

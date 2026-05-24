@@ -56,6 +56,8 @@ class IsarAppConfig {
   int reviewQualifyingEventCount = 0;
   DateTime? lastReviewPromptDate;
   bool reviewNeverAsk = false;
+  bool lanInstantSync = false;
+  bool autoWriteOnReceive = false;
 
   static int _sanitizeCounter(int value) => value < 0 ? 0 : value;
 
@@ -96,6 +98,8 @@ class IsarAppConfig {
     reviewQualifyingEventCount: _sanitizeCounter(reviewQualifyingEventCount),
     lastReviewPromptDate: lastReviewPromptDate,
     reviewNeverAsk: reviewNeverAsk,
+    lanInstantSync: lanInstantSync,
+    autoWriteOnReceive: autoWriteOnReceive,
   );
 
   static IsarAppConfig fromDomain(AppConfig config) => IsarAppConfig()
@@ -138,5 +142,7 @@ class IsarAppConfig {
       config.reviewQualifyingEventCount,
     )
     ..lastReviewPromptDate = config.lastReviewPromptDate
-    ..reviewNeverAsk = config.reviewNeverAsk;
+    ..reviewNeverAsk = config.reviewNeverAsk
+    ..lanInstantSync = config.lanInstantSync
+    ..autoWriteOnReceive = config.autoWriteOnReceive;
 }

@@ -83,6 +83,8 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
     final encrypted = clip["encrypted"] == true;
     final iv = clip["iv"] as String?;
     final encMode = clip["encMode"] as String?;
+    final sourceId = (clip["sourceId"] as String?)?.trim();
+    final sourceApp = (clip["sourceApp"] as String?)?.trim();
     return ClipboardItem(
       created: timestamp,
       modified: timestamp,
@@ -96,6 +98,8 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       url: clipType == ClipItemType.url ? clipText : null,
       title: desc,
       description: desc,
+      sourceId: sourceId?.isEmpty == true ? null : sourceId,
+      sourceApp: sourceApp?.isEmpty == true ? null : sourceApp,
       serverId: serverId == -1 ? null : serverId,
       lastSynced: systemTime(),
       deviceId: deviceId,

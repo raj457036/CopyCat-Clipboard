@@ -263,7 +263,7 @@ class _FilterDialogState extends State<FilterDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ── Date range ───────────────────────────────────────────────
+              // MARK: - Date Range
               _sectionLabel(context, locale.search_filter__text__from),
               Row(
                 spacing: 8,
@@ -309,7 +309,7 @@ class _FilterDialogState extends State<FilterDialog> {
 
               const SizedBox(height: 20),
 
-              // ── Content type ─────────────────────────────────────────────
+              // MARK: - Content Type
               _sectionLabel(context, locale.search_filter__text__including),
               Wrap(
                 spacing: 8,
@@ -342,7 +342,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 ],
               ),
 
-              // ── Text categories (conditional) ─────────────────────────
+              // MARK: - Text Categories (Conditional)
               AnimatedSize(
                 duration: Durations.short4,
                 curve: Curves.easeInOut,
@@ -427,7 +427,7 @@ class _FilterDialogState extends State<FilterDialog> {
               Divider(color: colors.outlineVariant),
               const SizedBox(height: 12),
 
-              // ── Sort ─────────────────────────────────────────────────────
+              // MARK: - Sort
               _sectionLabel(context, locale.search_filter__text__sort_by),
               DropdownMenu<ClipboardSortKey>(
                 width: 360,

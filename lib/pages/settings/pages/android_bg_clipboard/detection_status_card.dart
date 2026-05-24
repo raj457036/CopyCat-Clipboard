@@ -1,5 +1,4 @@
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/utils/color_extension.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -51,15 +50,6 @@ class DetectionStatusCard extends StatelessWidget {
     };
   }
 
-  Color _accent(BuildContext context) {
-    final colors = context.colors;
-    return switch (state) {
-      'calibrating' => Colors.amber,
-      'stopped' => colors.error,
-      _ => colors.primary,
-    };
-  }
-
   IconData _icon() {
     return switch (state) {
       'inactive' => Icons.radio_button_unchecked_rounded,
@@ -75,55 +65,51 @@ class DetectionStatusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final textTheme = context.textTheme;
-    final isLight = context.theme.brightness == Brightness.light;
-    final accent = _accent(context);
     final outcomeText = _outcomeText();
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: padding12),
-      padding: const EdgeInsets.all(padding16),
-      decoration: BoxDecoration(
-        borderRadius: radius16,
-        color: accent.darker(12, isLight),
-        border: Border.all(color: accent.withValues(alpha: 0.35)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(_icon(), color: accent),
-              width10,
-              Expanded(
-                child: Text(
-                  _title(),
-                  style: textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
+    return Card.filled(
+      margin: const EdgeInsets.symmetric(horizontal: padding16),
+      shape: const RoundedRectangleBorder(borderRadius: radius16),
+      child: Padding(
+        padding: const EdgeInsets.all(padding16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(_icon(), color: colors.primary),
+                width10,
+                Expanded(
+                  child: Text(
+                    _title(),
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
+              ],
+            ),
+            height8,
+            Text(
+              _subtitle(),
+              style: textTheme.bodyMedium?.copyWith(color: colors.outline),
+            ),
+            if (outcomeText != null) ...[
+              height12,
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: padding10,
+                  vertical: padding8,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: radius12,
+                  color: colors.surface.withValues(alpha: 0.65),
+                ),
+                child: Text(outcomeText, style: textTheme.labelLarge),
               ),
             ],
-          ),
-          height8,
-          Text(
-            _subtitle(),
-            style: textTheme.bodyMedium?.copyWith(color: colors.outline),
-          ),
-          if (outcomeText != null) ...[
-            height12,
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: padding10,
-                vertical: padding8,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: radius12,
-                color: colors.surface.withValues(alpha: 0.65),
-              ),
-              child: Text(outcomeText, style: textTheme.labelLarge),
-            ),
           ],
-        ],
+        ),
       ),
     );
   }

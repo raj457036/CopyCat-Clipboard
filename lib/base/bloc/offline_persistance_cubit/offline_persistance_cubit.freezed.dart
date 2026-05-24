@@ -20,10 +20,6 @@ mixin _$OfflinePersistanceState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(int count) creatingItems,
-    required TResult Function(int count) updatingItems,
-    required TResult Function(int count) deletingItems,
-    required TResult Function(int count) deletedItems,
     required TResult Function(
       int count,
       bool created,
@@ -36,10 +32,6 @@ mixin _$OfflinePersistanceState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(int count)? creatingItems,
-    TResult? Function(int count)? updatingItems,
-    TResult? Function(int count)? deletingItems,
-    TResult? Function(int count)? deletedItems,
     TResult? Function(
       int count,
       bool created,
@@ -52,10 +44,6 @@ mixin _$OfflinePersistanceState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(int count)? creatingItems,
-    TResult Function(int count)? updatingItems,
-    TResult Function(int count)? deletingItems,
-    TResult Function(int count)? deletedItems,
     TResult Function(
       int count,
       bool created,
@@ -69,30 +57,18 @@ mixin _$OfflinePersistanceState {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OfflinePersistanceInitial value) initial,
-    required TResult Function(OfflinePersistanceCreating value) creatingItems,
-    required TResult Function(OfflinePersistanceUpdating value) updatingItems,
-    required TResult Function(OfflinePersistanceDeleting value) deletingItems,
-    required TResult Function(OfflinePersistanceDeleted value) deletedItems,
     required TResult Function(OfflinePersistanceSaved value) saved,
     required TResult Function(OfflinePersistanceError value) error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OfflinePersistanceInitial value)? initial,
-    TResult? Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult? Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult? Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult? Function(OfflinePersistanceDeleted value)? deletedItems,
     TResult? Function(OfflinePersistanceSaved value)? saved,
     TResult? Function(OfflinePersistanceError value)? error,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OfflinePersistanceInitial value)? initial,
-    TResult Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult Function(OfflinePersistanceDeleted value)? deletedItems,
     TResult Function(OfflinePersistanceSaved value)? saved,
     TResult Function(OfflinePersistanceError value)? error,
     required TResult orElse(),
@@ -173,10 +149,6 @@ class _$OfflinePersistanceInitialImpl implements OfflinePersistanceInitial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(int count) creatingItems,
-    required TResult Function(int count) updatingItems,
-    required TResult Function(int count) deletingItems,
-    required TResult Function(int count) deletedItems,
     required TResult Function(
       int count,
       bool created,
@@ -193,10 +165,6 @@ class _$OfflinePersistanceInitialImpl implements OfflinePersistanceInitial {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(int count)? creatingItems,
-    TResult? Function(int count)? updatingItems,
-    TResult? Function(int count)? deletingItems,
-    TResult? Function(int count)? deletedItems,
     TResult? Function(
       int count,
       bool created,
@@ -213,10 +181,6 @@ class _$OfflinePersistanceInitialImpl implements OfflinePersistanceInitial {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(int count)? creatingItems,
-    TResult Function(int count)? updatingItems,
-    TResult Function(int count)? deletingItems,
-    TResult Function(int count)? deletedItems,
     TResult Function(
       int count,
       bool created,
@@ -237,10 +201,6 @@ class _$OfflinePersistanceInitialImpl implements OfflinePersistanceInitial {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OfflinePersistanceInitial value) initial,
-    required TResult Function(OfflinePersistanceCreating value) creatingItems,
-    required TResult Function(OfflinePersistanceUpdating value) updatingItems,
-    required TResult Function(OfflinePersistanceDeleting value) deletingItems,
-    required TResult Function(OfflinePersistanceDeleted value) deletedItems,
     required TResult Function(OfflinePersistanceSaved value) saved,
     required TResult Function(OfflinePersistanceError value) error,
   }) {
@@ -251,10 +211,6 @@ class _$OfflinePersistanceInitialImpl implements OfflinePersistanceInitial {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OfflinePersistanceInitial value)? initial,
-    TResult? Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult? Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult? Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult? Function(OfflinePersistanceDeleted value)? deletedItems,
     TResult? Function(OfflinePersistanceSaved value)? saved,
     TResult? Function(OfflinePersistanceError value)? error,
   }) {
@@ -265,10 +221,6 @@ class _$OfflinePersistanceInitialImpl implements OfflinePersistanceInitial {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OfflinePersistanceInitial value)? initial,
-    TResult Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult Function(OfflinePersistanceDeleted value)? deletedItems,
     TResult Function(OfflinePersistanceSaved value)? saved,
     TResult Function(OfflinePersistanceError value)? error,
     required TResult orElse(),
@@ -282,798 +234,6 @@ class _$OfflinePersistanceInitialImpl implements OfflinePersistanceInitial {
 
 abstract class OfflinePersistanceInitial implements OfflinePersistanceState {
   const factory OfflinePersistanceInitial() = _$OfflinePersistanceInitialImpl;
-}
-
-/// @nodoc
-abstract class _$$OfflinePersistanceCreatingImplCopyWith<$Res> {
-  factory _$$OfflinePersistanceCreatingImplCopyWith(
-    _$OfflinePersistanceCreatingImpl value,
-    $Res Function(_$OfflinePersistanceCreatingImpl) then,
-  ) = __$$OfflinePersistanceCreatingImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({int count});
-}
-
-/// @nodoc
-class __$$OfflinePersistanceCreatingImplCopyWithImpl<$Res>
-    extends
-        _$OfflinePersistanceStateCopyWithImpl<
-          $Res,
-          _$OfflinePersistanceCreatingImpl
-        >
-    implements _$$OfflinePersistanceCreatingImplCopyWith<$Res> {
-  __$$OfflinePersistanceCreatingImplCopyWithImpl(
-    _$OfflinePersistanceCreatingImpl _value,
-    $Res Function(_$OfflinePersistanceCreatingImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of OfflinePersistanceState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? count = null}) {
-    return _then(
-      _$OfflinePersistanceCreatingImpl(
-        null == count
-            ? _value.count
-            : count // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _$OfflinePersistanceCreatingImpl implements OfflinePersistanceCreating {
-  const _$OfflinePersistanceCreatingImpl(this.count);
-
-  @override
-  final int count;
-
-  @override
-  String toString() {
-    return 'OfflinePersistanceState.creatingItems(count: $count)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$OfflinePersistanceCreatingImpl &&
-            (identical(other.count, count) || other.count == count));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, count);
-
-  /// Create a copy of OfflinePersistanceState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$OfflinePersistanceCreatingImplCopyWith<_$OfflinePersistanceCreatingImpl>
-  get copyWith =>
-      __$$OfflinePersistanceCreatingImplCopyWithImpl<
-        _$OfflinePersistanceCreatingImpl
-      >(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function(int count) creatingItems,
-    required TResult Function(int count) updatingItems,
-    required TResult Function(int count) deletingItems,
-    required TResult Function(int count) deletedItems,
-    required TResult Function(
-      int count,
-      bool created,
-      bool synced,
-      List<String>? updatedFields,
-    )
-    saved,
-    required TResult Function(Failure failure, ClipboardItem? item) error,
-  }) {
-    return creatingItems(count);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function(int count)? creatingItems,
-    TResult? Function(int count)? updatingItems,
-    TResult? Function(int count)? deletingItems,
-    TResult? Function(int count)? deletedItems,
-    TResult? Function(
-      int count,
-      bool created,
-      bool synced,
-      List<String>? updatedFields,
-    )?
-    saved,
-    TResult? Function(Failure failure, ClipboardItem? item)? error,
-  }) {
-    return creatingItems?.call(count);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function(int count)? creatingItems,
-    TResult Function(int count)? updatingItems,
-    TResult Function(int count)? deletingItems,
-    TResult Function(int count)? deletedItems,
-    TResult Function(
-      int count,
-      bool created,
-      bool synced,
-      List<String>? updatedFields,
-    )?
-    saved,
-    TResult Function(Failure failure, ClipboardItem? item)? error,
-    required TResult orElse(),
-  }) {
-    if (creatingItems != null) {
-      return creatingItems(count);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(OfflinePersistanceInitial value) initial,
-    required TResult Function(OfflinePersistanceCreating value) creatingItems,
-    required TResult Function(OfflinePersistanceUpdating value) updatingItems,
-    required TResult Function(OfflinePersistanceDeleting value) deletingItems,
-    required TResult Function(OfflinePersistanceDeleted value) deletedItems,
-    required TResult Function(OfflinePersistanceSaved value) saved,
-    required TResult Function(OfflinePersistanceError value) error,
-  }) {
-    return creatingItems(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(OfflinePersistanceInitial value)? initial,
-    TResult? Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult? Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult? Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult? Function(OfflinePersistanceDeleted value)? deletedItems,
-    TResult? Function(OfflinePersistanceSaved value)? saved,
-    TResult? Function(OfflinePersistanceError value)? error,
-  }) {
-    return creatingItems?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(OfflinePersistanceInitial value)? initial,
-    TResult Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult Function(OfflinePersistanceDeleted value)? deletedItems,
-    TResult Function(OfflinePersistanceSaved value)? saved,
-    TResult Function(OfflinePersistanceError value)? error,
-    required TResult orElse(),
-  }) {
-    if (creatingItems != null) {
-      return creatingItems(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class OfflinePersistanceCreating implements OfflinePersistanceState {
-  const factory OfflinePersistanceCreating(final int count) =
-      _$OfflinePersistanceCreatingImpl;
-
-  int get count;
-
-  /// Create a copy of OfflinePersistanceState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$OfflinePersistanceCreatingImplCopyWith<_$OfflinePersistanceCreatingImpl>
-  get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$OfflinePersistanceUpdatingImplCopyWith<$Res> {
-  factory _$$OfflinePersistanceUpdatingImplCopyWith(
-    _$OfflinePersistanceUpdatingImpl value,
-    $Res Function(_$OfflinePersistanceUpdatingImpl) then,
-  ) = __$$OfflinePersistanceUpdatingImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({int count});
-}
-
-/// @nodoc
-class __$$OfflinePersistanceUpdatingImplCopyWithImpl<$Res>
-    extends
-        _$OfflinePersistanceStateCopyWithImpl<
-          $Res,
-          _$OfflinePersistanceUpdatingImpl
-        >
-    implements _$$OfflinePersistanceUpdatingImplCopyWith<$Res> {
-  __$$OfflinePersistanceUpdatingImplCopyWithImpl(
-    _$OfflinePersistanceUpdatingImpl _value,
-    $Res Function(_$OfflinePersistanceUpdatingImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of OfflinePersistanceState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? count = null}) {
-    return _then(
-      _$OfflinePersistanceUpdatingImpl(
-        null == count
-            ? _value.count
-            : count // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _$OfflinePersistanceUpdatingImpl implements OfflinePersistanceUpdating {
-  const _$OfflinePersistanceUpdatingImpl(this.count);
-
-  @override
-  final int count;
-
-  @override
-  String toString() {
-    return 'OfflinePersistanceState.updatingItems(count: $count)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$OfflinePersistanceUpdatingImpl &&
-            (identical(other.count, count) || other.count == count));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, count);
-
-  /// Create a copy of OfflinePersistanceState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$OfflinePersistanceUpdatingImplCopyWith<_$OfflinePersistanceUpdatingImpl>
-  get copyWith =>
-      __$$OfflinePersistanceUpdatingImplCopyWithImpl<
-        _$OfflinePersistanceUpdatingImpl
-      >(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function(int count) creatingItems,
-    required TResult Function(int count) updatingItems,
-    required TResult Function(int count) deletingItems,
-    required TResult Function(int count) deletedItems,
-    required TResult Function(
-      int count,
-      bool created,
-      bool synced,
-      List<String>? updatedFields,
-    )
-    saved,
-    required TResult Function(Failure failure, ClipboardItem? item) error,
-  }) {
-    return updatingItems(count);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function(int count)? creatingItems,
-    TResult? Function(int count)? updatingItems,
-    TResult? Function(int count)? deletingItems,
-    TResult? Function(int count)? deletedItems,
-    TResult? Function(
-      int count,
-      bool created,
-      bool synced,
-      List<String>? updatedFields,
-    )?
-    saved,
-    TResult? Function(Failure failure, ClipboardItem? item)? error,
-  }) {
-    return updatingItems?.call(count);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function(int count)? creatingItems,
-    TResult Function(int count)? updatingItems,
-    TResult Function(int count)? deletingItems,
-    TResult Function(int count)? deletedItems,
-    TResult Function(
-      int count,
-      bool created,
-      bool synced,
-      List<String>? updatedFields,
-    )?
-    saved,
-    TResult Function(Failure failure, ClipboardItem? item)? error,
-    required TResult orElse(),
-  }) {
-    if (updatingItems != null) {
-      return updatingItems(count);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(OfflinePersistanceInitial value) initial,
-    required TResult Function(OfflinePersistanceCreating value) creatingItems,
-    required TResult Function(OfflinePersistanceUpdating value) updatingItems,
-    required TResult Function(OfflinePersistanceDeleting value) deletingItems,
-    required TResult Function(OfflinePersistanceDeleted value) deletedItems,
-    required TResult Function(OfflinePersistanceSaved value) saved,
-    required TResult Function(OfflinePersistanceError value) error,
-  }) {
-    return updatingItems(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(OfflinePersistanceInitial value)? initial,
-    TResult? Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult? Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult? Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult? Function(OfflinePersistanceDeleted value)? deletedItems,
-    TResult? Function(OfflinePersistanceSaved value)? saved,
-    TResult? Function(OfflinePersistanceError value)? error,
-  }) {
-    return updatingItems?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(OfflinePersistanceInitial value)? initial,
-    TResult Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult Function(OfflinePersistanceDeleted value)? deletedItems,
-    TResult Function(OfflinePersistanceSaved value)? saved,
-    TResult Function(OfflinePersistanceError value)? error,
-    required TResult orElse(),
-  }) {
-    if (updatingItems != null) {
-      return updatingItems(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class OfflinePersistanceUpdating implements OfflinePersistanceState {
-  const factory OfflinePersistanceUpdating(final int count) =
-      _$OfflinePersistanceUpdatingImpl;
-
-  int get count;
-
-  /// Create a copy of OfflinePersistanceState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$OfflinePersistanceUpdatingImplCopyWith<_$OfflinePersistanceUpdatingImpl>
-  get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$OfflinePersistanceDeletingImplCopyWith<$Res> {
-  factory _$$OfflinePersistanceDeletingImplCopyWith(
-    _$OfflinePersistanceDeletingImpl value,
-    $Res Function(_$OfflinePersistanceDeletingImpl) then,
-  ) = __$$OfflinePersistanceDeletingImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({int count});
-}
-
-/// @nodoc
-class __$$OfflinePersistanceDeletingImplCopyWithImpl<$Res>
-    extends
-        _$OfflinePersistanceStateCopyWithImpl<
-          $Res,
-          _$OfflinePersistanceDeletingImpl
-        >
-    implements _$$OfflinePersistanceDeletingImplCopyWith<$Res> {
-  __$$OfflinePersistanceDeletingImplCopyWithImpl(
-    _$OfflinePersistanceDeletingImpl _value,
-    $Res Function(_$OfflinePersistanceDeletingImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of OfflinePersistanceState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? count = null}) {
-    return _then(
-      _$OfflinePersistanceDeletingImpl(
-        null == count
-            ? _value.count
-            : count // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _$OfflinePersistanceDeletingImpl implements OfflinePersistanceDeleting {
-  const _$OfflinePersistanceDeletingImpl(this.count);
-
-  @override
-  final int count;
-
-  @override
-  String toString() {
-    return 'OfflinePersistanceState.deletingItems(count: $count)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$OfflinePersistanceDeletingImpl &&
-            (identical(other.count, count) || other.count == count));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, count);
-
-  /// Create a copy of OfflinePersistanceState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$OfflinePersistanceDeletingImplCopyWith<_$OfflinePersistanceDeletingImpl>
-  get copyWith =>
-      __$$OfflinePersistanceDeletingImplCopyWithImpl<
-        _$OfflinePersistanceDeletingImpl
-      >(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function(int count) creatingItems,
-    required TResult Function(int count) updatingItems,
-    required TResult Function(int count) deletingItems,
-    required TResult Function(int count) deletedItems,
-    required TResult Function(
-      int count,
-      bool created,
-      bool synced,
-      List<String>? updatedFields,
-    )
-    saved,
-    required TResult Function(Failure failure, ClipboardItem? item) error,
-  }) {
-    return deletingItems(count);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function(int count)? creatingItems,
-    TResult? Function(int count)? updatingItems,
-    TResult? Function(int count)? deletingItems,
-    TResult? Function(int count)? deletedItems,
-    TResult? Function(
-      int count,
-      bool created,
-      bool synced,
-      List<String>? updatedFields,
-    )?
-    saved,
-    TResult? Function(Failure failure, ClipboardItem? item)? error,
-  }) {
-    return deletingItems?.call(count);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function(int count)? creatingItems,
-    TResult Function(int count)? updatingItems,
-    TResult Function(int count)? deletingItems,
-    TResult Function(int count)? deletedItems,
-    TResult Function(
-      int count,
-      bool created,
-      bool synced,
-      List<String>? updatedFields,
-    )?
-    saved,
-    TResult Function(Failure failure, ClipboardItem? item)? error,
-    required TResult orElse(),
-  }) {
-    if (deletingItems != null) {
-      return deletingItems(count);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(OfflinePersistanceInitial value) initial,
-    required TResult Function(OfflinePersistanceCreating value) creatingItems,
-    required TResult Function(OfflinePersistanceUpdating value) updatingItems,
-    required TResult Function(OfflinePersistanceDeleting value) deletingItems,
-    required TResult Function(OfflinePersistanceDeleted value) deletedItems,
-    required TResult Function(OfflinePersistanceSaved value) saved,
-    required TResult Function(OfflinePersistanceError value) error,
-  }) {
-    return deletingItems(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(OfflinePersistanceInitial value)? initial,
-    TResult? Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult? Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult? Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult? Function(OfflinePersistanceDeleted value)? deletedItems,
-    TResult? Function(OfflinePersistanceSaved value)? saved,
-    TResult? Function(OfflinePersistanceError value)? error,
-  }) {
-    return deletingItems?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(OfflinePersistanceInitial value)? initial,
-    TResult Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult Function(OfflinePersistanceDeleted value)? deletedItems,
-    TResult Function(OfflinePersistanceSaved value)? saved,
-    TResult Function(OfflinePersistanceError value)? error,
-    required TResult orElse(),
-  }) {
-    if (deletingItems != null) {
-      return deletingItems(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class OfflinePersistanceDeleting implements OfflinePersistanceState {
-  const factory OfflinePersistanceDeleting(final int count) =
-      _$OfflinePersistanceDeletingImpl;
-
-  int get count;
-
-  /// Create a copy of OfflinePersistanceState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$OfflinePersistanceDeletingImplCopyWith<_$OfflinePersistanceDeletingImpl>
-  get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$OfflinePersistanceDeletedImplCopyWith<$Res> {
-  factory _$$OfflinePersistanceDeletedImplCopyWith(
-    _$OfflinePersistanceDeletedImpl value,
-    $Res Function(_$OfflinePersistanceDeletedImpl) then,
-  ) = __$$OfflinePersistanceDeletedImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({int count});
-}
-
-/// @nodoc
-class __$$OfflinePersistanceDeletedImplCopyWithImpl<$Res>
-    extends
-        _$OfflinePersistanceStateCopyWithImpl<
-          $Res,
-          _$OfflinePersistanceDeletedImpl
-        >
-    implements _$$OfflinePersistanceDeletedImplCopyWith<$Res> {
-  __$$OfflinePersistanceDeletedImplCopyWithImpl(
-    _$OfflinePersistanceDeletedImpl _value,
-    $Res Function(_$OfflinePersistanceDeletedImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of OfflinePersistanceState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? count = null}) {
-    return _then(
-      _$OfflinePersistanceDeletedImpl(
-        null == count
-            ? _value.count
-            : count // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _$OfflinePersistanceDeletedImpl implements OfflinePersistanceDeleted {
-  const _$OfflinePersistanceDeletedImpl(this.count);
-
-  @override
-  final int count;
-
-  @override
-  String toString() {
-    return 'OfflinePersistanceState.deletedItems(count: $count)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$OfflinePersistanceDeletedImpl &&
-            (identical(other.count, count) || other.count == count));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, count);
-
-  /// Create a copy of OfflinePersistanceState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$OfflinePersistanceDeletedImplCopyWith<_$OfflinePersistanceDeletedImpl>
-  get copyWith =>
-      __$$OfflinePersistanceDeletedImplCopyWithImpl<
-        _$OfflinePersistanceDeletedImpl
-      >(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function(int count) creatingItems,
-    required TResult Function(int count) updatingItems,
-    required TResult Function(int count) deletingItems,
-    required TResult Function(int count) deletedItems,
-    required TResult Function(
-      int count,
-      bool created,
-      bool synced,
-      List<String>? updatedFields,
-    )
-    saved,
-    required TResult Function(Failure failure, ClipboardItem? item) error,
-  }) {
-    return deletedItems(count);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function(int count)? creatingItems,
-    TResult? Function(int count)? updatingItems,
-    TResult? Function(int count)? deletingItems,
-    TResult? Function(int count)? deletedItems,
-    TResult? Function(
-      int count,
-      bool created,
-      bool synced,
-      List<String>? updatedFields,
-    )?
-    saved,
-    TResult? Function(Failure failure, ClipboardItem? item)? error,
-  }) {
-    return deletedItems?.call(count);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function(int count)? creatingItems,
-    TResult Function(int count)? updatingItems,
-    TResult Function(int count)? deletingItems,
-    TResult Function(int count)? deletedItems,
-    TResult Function(
-      int count,
-      bool created,
-      bool synced,
-      List<String>? updatedFields,
-    )?
-    saved,
-    TResult Function(Failure failure, ClipboardItem? item)? error,
-    required TResult orElse(),
-  }) {
-    if (deletedItems != null) {
-      return deletedItems(count);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(OfflinePersistanceInitial value) initial,
-    required TResult Function(OfflinePersistanceCreating value) creatingItems,
-    required TResult Function(OfflinePersistanceUpdating value) updatingItems,
-    required TResult Function(OfflinePersistanceDeleting value) deletingItems,
-    required TResult Function(OfflinePersistanceDeleted value) deletedItems,
-    required TResult Function(OfflinePersistanceSaved value) saved,
-    required TResult Function(OfflinePersistanceError value) error,
-  }) {
-    return deletedItems(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(OfflinePersistanceInitial value)? initial,
-    TResult? Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult? Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult? Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult? Function(OfflinePersistanceDeleted value)? deletedItems,
-    TResult? Function(OfflinePersistanceSaved value)? saved,
-    TResult? Function(OfflinePersistanceError value)? error,
-  }) {
-    return deletedItems?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(OfflinePersistanceInitial value)? initial,
-    TResult Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult Function(OfflinePersistanceDeleted value)? deletedItems,
-    TResult Function(OfflinePersistanceSaved value)? saved,
-    TResult Function(OfflinePersistanceError value)? error,
-    required TResult orElse(),
-  }) {
-    if (deletedItems != null) {
-      return deletedItems(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class OfflinePersistanceDeleted implements OfflinePersistanceState {
-  const factory OfflinePersistanceDeleted(final int count) =
-      _$OfflinePersistanceDeletedImpl;
-
-  int get count;
-
-  /// Create a copy of OfflinePersistanceState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$OfflinePersistanceDeletedImplCopyWith<_$OfflinePersistanceDeletedImpl>
-  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -1209,10 +369,6 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(int count) creatingItems,
-    required TResult Function(int count) updatingItems,
-    required TResult Function(int count) deletingItems,
-    required TResult Function(int count) deletedItems,
     required TResult Function(
       int count,
       bool created,
@@ -1229,10 +385,6 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(int count)? creatingItems,
-    TResult? Function(int count)? updatingItems,
-    TResult? Function(int count)? deletingItems,
-    TResult? Function(int count)? deletedItems,
     TResult? Function(
       int count,
       bool created,
@@ -1249,10 +401,6 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(int count)? creatingItems,
-    TResult Function(int count)? updatingItems,
-    TResult Function(int count)? deletingItems,
-    TResult Function(int count)? deletedItems,
     TResult Function(
       int count,
       bool created,
@@ -1273,10 +421,6 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OfflinePersistanceInitial value) initial,
-    required TResult Function(OfflinePersistanceCreating value) creatingItems,
-    required TResult Function(OfflinePersistanceUpdating value) updatingItems,
-    required TResult Function(OfflinePersistanceDeleting value) deletingItems,
-    required TResult Function(OfflinePersistanceDeleted value) deletedItems,
     required TResult Function(OfflinePersistanceSaved value) saved,
     required TResult Function(OfflinePersistanceError value) error,
   }) {
@@ -1287,10 +431,6 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OfflinePersistanceInitial value)? initial,
-    TResult? Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult? Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult? Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult? Function(OfflinePersistanceDeleted value)? deletedItems,
     TResult? Function(OfflinePersistanceSaved value)? saved,
     TResult? Function(OfflinePersistanceError value)? error,
   }) {
@@ -1301,10 +441,6 @@ class _$OfflinePersistanceSavedImpl implements OfflinePersistanceSaved {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OfflinePersistanceInitial value)? initial,
-    TResult Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult Function(OfflinePersistanceDeleted value)? deletedItems,
     TResult Function(OfflinePersistanceSaved value)? saved,
     TResult Function(OfflinePersistanceError value)? error,
     required TResult orElse(),
@@ -1437,10 +573,6 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(int count) creatingItems,
-    required TResult Function(int count) updatingItems,
-    required TResult Function(int count) deletingItems,
-    required TResult Function(int count) deletedItems,
     required TResult Function(
       int count,
       bool created,
@@ -1457,10 +589,6 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(int count)? creatingItems,
-    TResult? Function(int count)? updatingItems,
-    TResult? Function(int count)? deletingItems,
-    TResult? Function(int count)? deletedItems,
     TResult? Function(
       int count,
       bool created,
@@ -1477,10 +605,6 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(int count)? creatingItems,
-    TResult Function(int count)? updatingItems,
-    TResult Function(int count)? deletingItems,
-    TResult Function(int count)? deletedItems,
     TResult Function(
       int count,
       bool created,
@@ -1501,10 +625,6 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(OfflinePersistanceInitial value) initial,
-    required TResult Function(OfflinePersistanceCreating value) creatingItems,
-    required TResult Function(OfflinePersistanceUpdating value) updatingItems,
-    required TResult Function(OfflinePersistanceDeleting value) deletingItems,
-    required TResult Function(OfflinePersistanceDeleted value) deletedItems,
     required TResult Function(OfflinePersistanceSaved value) saved,
     required TResult Function(OfflinePersistanceError value) error,
   }) {
@@ -1515,10 +635,6 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(OfflinePersistanceInitial value)? initial,
-    TResult? Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult? Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult? Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult? Function(OfflinePersistanceDeleted value)? deletedItems,
     TResult? Function(OfflinePersistanceSaved value)? saved,
     TResult? Function(OfflinePersistanceError value)? error,
   }) {
@@ -1529,10 +645,6 @@ class _$OfflinePersistanceErrorImpl implements OfflinePersistanceError {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(OfflinePersistanceInitial value)? initial,
-    TResult Function(OfflinePersistanceCreating value)? creatingItems,
-    TResult Function(OfflinePersistanceUpdating value)? updatingItems,
-    TResult Function(OfflinePersistanceDeleting value)? deletingItems,
-    TResult Function(OfflinePersistanceDeleted value)? deletedItems,
     TResult Function(OfflinePersistanceSaved value)? saved,
     TResult Function(OfflinePersistanceError value)? error,
     required TResult orElse(),

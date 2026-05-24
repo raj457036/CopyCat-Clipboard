@@ -18,31 +18,28 @@ class ClipItemPreviewHorizontalView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            flex: 11,
+            flex: 5,
             child: Padding(
               padding: const EdgeInsets.all(padding16),
               child: ClipPreviewConfig(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(circleRadius12),
-                ),
+                shape: const RoundedRectangleBorder(borderRadius: radius8),
                 child: ClipPreview(item: item),
               ),
             ),
           ),
           Expanded(
-            flex: 9,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border(
-                  left: BorderSide(color: context.colors.outlineVariant),
-                ),
+            flex: 3,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.only(
+                top: padding16,
+                bottom: padding16,
+                right: padding16,
               ),
-              child: SingleChildScrollView(
-                child: ClipInspector(
-                  item: item,
-                  showHeader: false,
-                  currentDeviceId: sl<String>(instanceName: "device_id"),
-                ),
+              child: ClipInspector(
+                item: item,
+                includePagePadding: false,
+                showHeader: false,
+                currentDeviceId: sl<String>(instanceName: "device_id"),
               ),
             ),
           ),

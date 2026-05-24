@@ -2,16 +2,12 @@ import 'dart:async';
 import 'dart:convert' show jsonEncode;
 import 'dart:math';
 
-import 'package:flutter/services.dart' show PlatformException;
-
 import 'package:bloc/bloc.dart';
-import 'package:clipboard/base/constants/review_config.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_checker.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_rules.dart';
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/repositories/app_config.dart';
-import 'package:clipboard/base/domain/services/in_app_review_service.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -27,24 +23,26 @@ import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:ntp/ntp.dart';
 import 'package:retry/retry.dart';
 import 'package:universal_io/io.dart';
+import 'package:android_background_clipboard/android_background_clipboard.dart';
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/data/services/lan_sync_service.dart';
+import 'package:clipboard/di/di.dart';
 
 part 'app_config_cubit.freezed.dart';
 part 'app_config_state.dart';
-part 'app_config_review_mixin.dart';
 
 ExclusionChecker? exclusionChecker;
 DateTime? currentInternetTime;
 
 @singleton
-class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
+class AppConfigCubit extends Cubit<AppConfigState> {
   ActivityInfo? lastActivity;
-  @override
   final AppConfigRepository repo;
-  @override
-  final InAppReviewService reviewService;
   final FocusWindow focusWindow = FocusWindow();
 
-  AppConfigCubit(this.repo, this.reviewService)
+  final Completer<void> loaded = Completer();
+
+  AppConfigCubit(this.repo)
     : super(AppConfigState.loaded(isLoading: true, config: AppConfig())) {
     load();
   }
@@ -179,7 +177,32 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
       },
     );
     initializeExclusionChecker();
+    if (Platform.isAndroid) {
+      _syncLanConfigToAndroid(next.config);
+    } else if (!Platform.isIOS) {
+      _initLanSyncService(next.config);
+    }
+
+    if (!loaded.isCompleted) {
+      loaded.complete();
+    }
     return next;
+  }
+
+  void _initLanSyncService(AppConfig config) {
+    final lanSync = sl<LanSyncService>();
+    lanSync.lanSyncEnabled = config.lanInstantSync;
+    lanSync.deviceId = sl<String>(instanceName: "device_id");
+    lanSync.userId = sl<AuthCubit>().userId ?? '';
+    unawaited(lanSync.reconfigure());
+  }
+
+  /// Writes LAN config to Android SharedPreferences so the background service
+  /// can read it via its [OnSharedPreferenceChangeListener].
+  void _syncLanConfigToAndroid(AppConfig config) {
+    final plugin = sl<AndroidBackgroundClipboard>();
+    plugin.writeShared('lanInstantSync', config.lanInstantSync);
+    plugin.writeShared('autoWriteOnReceive', config.autoWriteOnReceive);
   }
 
   bool get isCopyingPaused =>
@@ -460,5 +483,26 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigReviewMixin {
       return false;
     }
     return true;
+  }
+
+  Future<void> toggleLanInstantSync(bool value) async {
+    final newConfig = state.config.copyWith(lanInstantSync: value);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+    if (Platform.isAndroid) {
+      sl<AndroidBackgroundClipboard>().writeShared('lanInstantSync', value);
+    } else {
+      sl<LanSyncService>().reconfigure(enabled: value);
+    }
+  }
+
+  Future<void> toggleAutoWriteOnReceive(bool value) async {
+    final newConfig = state.config.copyWith(autoWriteOnReceive: value);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+    if (Platform.isAndroid) {
+      sl<AndroidBackgroundClipboard>().writeShared('autoWriteOnReceive', value);
+    }
+    // Desktop: OfflinePersistenceCubit reads appConfig.state directly — no push needed.
   }
 }
