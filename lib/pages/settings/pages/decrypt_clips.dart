@@ -122,6 +122,97 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
     context.pop();
   }
 
+  Widget _buildStatusContent(
+    BuildContext context,
+    TextTheme textTheme,
+    Widget cancelButton,
+  ) {
+    if (loading) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [const CircularProgressIndicator(), height10, cancelButton],
+      );
+    }
+
+    if (decryptedCount == totalEncrypted) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            context.locale.settings__text__decrypted__note,
+            textAlign: TextAlign.center,
+            style: textTheme.titleMedium,
+          ),
+          height10,
+          FilledButton(
+            onPressed: context.pop,
+            child: Text(context.mlocale.continueButtonLabel.title),
+          ),
+        ],
+      );
+    }
+
+    if (totalEncrypted < 0) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(context.locale.app__unknown_error),
+          height10,
+          OverflowBar(
+            alignment: MainAxisAlignment.center,
+            spacing: 8,
+            children: [
+              ElevatedButton(
+                onPressed: start,
+                child: Text(context.locale.app__try_again),
+              ),
+              cancelButton,
+            ],
+          ),
+        ],
+      );
+    }
+
+    if (totalEncrypted > 0) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            context.locale.settings__decrypt__count(count: totalEncrypted),
+            textAlign: TextAlign.center,
+            style: textTheme.titleMedium,
+          ),
+          height10,
+          SizedBox(
+            width: 250,
+            child: LinearProgressIndicator(
+              borderRadius: BorderRadius.circular(10),
+              value: decryptedCount / totalEncrypted,
+            ),
+          ),
+          height10,
+          Text(
+            context.locale.settings__decrypt__progress(
+              decrypted: decryptedCount,
+              total: totalEncrypted,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          height10,
+          cancelButton,
+          height10,
+          Text(
+            context.locale.settings__decrypt__warning,
+            textAlign: TextAlign.center,
+            style: textTheme.bodySmall?.copyWith(color: Colors.deepOrange),
+          ),
+        ],
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
@@ -146,84 +237,7 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
                   style: textTheme.headlineMedium,
                 ),
                 height16,
-                Column(
-                  children: [
-                    if (loading) ...[
-                      const CircularProgressIndicator(),
-                      cancelButton,
-                    ] else if (decryptedCount == totalEncrypted)
-                      Column(
-                        children: [
-                          Text(
-                            context.locale.settings__text__decrypted__note,
-                            textAlign: TextAlign.center,
-                            style: textTheme.titleMedium,
-                          ),
-                          height10,
-                          FilledButton(
-                            onPressed: context.pop,
-                            child: Text(
-                              context.mlocale.continueButtonLabel.title,
-                            ),
-                          ),
-                        ],
-                      )
-                    else if (totalEncrypted < 0)
-                      Column(
-                        children: [
-                          Text(context.locale.app__unknown_error),
-                          height10,
-                          OverflowBar(
-                            children: [
-                              ElevatedButton(
-                                onPressed: start,
-                                child: Text(context.locale.app__try_again),
-                              ),
-                              cancelButton,
-                            ],
-                          ),
-                        ],
-                      )
-                    else if (totalEncrypted > 0)
-                      Column(
-                        children: [
-                          Text(
-                            context.locale.settings__decrypt__count(
-                              count: totalEncrypted,
-                            ),
-                            textAlign: TextAlign.center,
-                            style: textTheme.titleMedium,
-                          ),
-                          height10,
-                          SizedBox(
-                            width: 250,
-                            child: LinearProgressIndicator(
-                              borderRadius: BorderRadius.circular(10),
-                              value: decryptedCount / totalEncrypted,
-                            ),
-                          ),
-                          height10,
-                          Text(
-                            context.locale.settings__decrypt__progress(
-                              decrypted: decryptedCount,
-                              total: totalEncrypted,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          height10,
-                          cancelButton,
-                          height10,
-                          Text(
-                            context.locale.settings__decrypt__warning,
-                            textAlign: TextAlign.center,
-                            style: textTheme.bodySmall?.copyWith(
-                              color: Colors.deepOrange,
-                            ),
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
+                _buildStatusContent(context, textTheme, cancelButton),
               ],
             ),
           ),

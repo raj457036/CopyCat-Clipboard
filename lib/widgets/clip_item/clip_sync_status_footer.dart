@@ -101,11 +101,7 @@ class _SyncingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Focus(
-      canRequestFocus: false,
-      skipTraversal: true,
-      descendantsAreFocusable: false,
-      descendantsAreTraversable: false,
+    return ExcludeFocus(
       child: ElevatedButton(
         onPressed: isSyncing ? null : onPressed,
         style: ElevatedButton.styleFrom(

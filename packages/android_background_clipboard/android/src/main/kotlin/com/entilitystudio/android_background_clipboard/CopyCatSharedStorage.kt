@@ -13,6 +13,7 @@ import android.widget.Toast
 
 class CopyCatSharedStorage private constructor(applicationContext: Context) {
     companion object {
+        private const val DEFAULT_DONT_COPY_OVER_BYTES = 10 * 1024 * 1024
         private const val MODE1_ACK_TEXT_KEY = "mode1AckText"
         private const val NOTIFICATION_PAUSED_KEY = "notificationPaused"
 
@@ -35,6 +36,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private var syncIntervalSeconds: Int = 45
     private var lanSyncEnabled: Boolean = false
     private var autoWriteOnReceive: Boolean = false
+    private var dontCopyOverBytes: Int = DEFAULT_DONT_COPY_OVER_BYTES
     private lateinit var deviceId: String
     private var endId: Int = -1
     private var syncManager: CopyCatSyncManager = CopyCatSyncManager(
@@ -96,6 +98,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         mainHandler.postDelayed(persistEndIdRunnable, 300)
     }
 
+    private fun commitEndId(nextEndId: Int) {
+        endId = nextEndId
+        schedulePersistEndId()
+    }
+
     private fun flushPersistEndId() {
         mainHandler.removeCallbacks(persistEndIdRunnable)
         sp.edit().putInt("endId", endId).apply()
@@ -138,6 +145,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             lanSyncManager.autoWriteOnReceive = autoWriteOnReceive
             syncManager.autoWriteOnReceive = autoWriteOnReceive
             scheduleReconfigureConnections()
+        }
+        if (key == "dontCopyOver") {
+            dontCopyOverBytes = sharedPreferences.getInt(key, DEFAULT_DONT_COPY_OVER_BYTES)
+            lanSyncManager.maxAutoCopyBytes = dontCopyOverBytes
+            debugLog(logTag) { "dontCopyOver updated to $dontCopyOverBytes bytes" }
         }
         if (key == "syncSpeed") {
             syncSpeed = sharedPreferences.getString(key, "balanced") ?: "balanced"
@@ -223,6 +235,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     fun start() {
         readConfig()
         syncManager.start()
+        // syncManager.start() loads auth token/userId; re-apply to LAN auth key
+        // before accepting incoming LAN clips.
+        lanSyncManager.userId = syncManager.currentUserId ?: ""
         lanSyncManager.start()
         sp.registerOnSharedPreferenceChangeListener(listener)
         Log.i(logTag, "Storage started")
@@ -312,6 +327,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         autoWriteOnReceive = sp.getBoolean("autoWriteOnReceive", false)
         lanSyncManager.autoWriteOnReceive = autoWriteOnReceive
         syncManager.autoWriteOnReceive = autoWriteOnReceive
+
+        dontCopyOverBytes = sp.getInt("dontCopyOver", DEFAULT_DONT_COPY_OVER_BYTES)
+        lanSyncManager.maxAutoCopyBytes = dontCopyOverBytes
     }
     
     private fun getNextId(): String {
@@ -497,7 +515,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         
         // Get next clip ID (e.g., "Clip-1") for local file storage.
         val nextId = getNextId()
-        endId += 1  // Update endId for next usage
         // Globally unique 8-char ID for LAN/Supabase dedup — separate from the file storage ID.
         val originId = generateOriginId()
         
@@ -518,9 +535,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             Log.e(logTag, "Failed to write clip to file storage")
             return
         }
-        
-        // Update endId in SharedPreferences
-        schedulePersistEndId()
+        commitEndId(endId + 1)
         
         debugLog(logTag) { "Wrote $nextId to file storage (${contentToPersist.length} bytes)" }
         
@@ -538,6 +553,8 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             encrypted = encrypted,
             iv = iv,
             encMode = encMode,
+            sourceId = sourceId,
+            sourceApp = sourceApp,
         )
 
         // Sync to server if enabled
@@ -610,6 +627,72 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         }
     }
 
+    /**
+     * Saves [data] to a cache file, persists a file-type clip entry to file
+     * storage, and broadcasts the binary to LAN peers.  Call this when the
+     * Android clipboard service captures a media/file item from the OS
+     * clipboard so it is visible in the CopyCat history and synced over LAN.
+     */
+    fun writeBinaryClip(
+        data: ByteArray,
+        mimeType: String,
+        ext: String,
+        fileName: String,
+        sourceId: String = "",
+        sourceApp: String? = null,
+    ) {
+        if (!serviceEnabled) return
+
+        val originId = generateOriginId()
+
+        // Persist bytes to a per-clip cache file so localPath survives across
+        // app restarts (the file is small enough that cache eviction is rare).
+        val cacheDir = java.io.File(appContext.cacheDir, "media_clips").also { it.mkdirs() }
+        val cacheFile = java.io.File(cacheDir, "$originId.$ext")
+        try {
+            cacheFile.writeBytes(data)
+        } catch (e: Exception) {
+            Log.e(logTag, "writeBinaryClip: failed to write cache file — ${e.message}")
+            return
+        }
+
+        val nextId = getNextId()
+
+        val success = fileStorage.writeClipItem(
+            clipId = nextId,
+            text = cacheFile.absolutePath,
+            type = ClipType.FileUrl,
+            label = fileName,
+            encrypted = false,
+            originId = originId,
+            sourceId = sourceId,
+            sourceApp = sourceApp ?: "",
+        )
+        if (!success) {
+            Log.e(logTag, "writeBinaryClip: failed to persist to file storage")
+            return
+        }
+        commitEndId(endId + 1)
+
+        // Lazily sync userId
+        if (lanSyncManager.userId.isBlank()) {
+            val uid = syncManager.currentUserId ?: ""
+            if (uid.isNotBlank()) lanSyncManager.userId = uid
+        }
+        lanSyncManager.broadcastBinaryClip(
+            originId = originId,
+            type = ClipType.FileUrl,
+            data = data,
+            mimeType = mimeType,
+            ext = ext,
+            fileName = fileName,
+            sourceId = sourceId,
+            sourceApp = sourceApp,
+        )
+
+        debugLog(logTag) { "writeBinaryClip: persisted $nextId and broadcast $mimeType clip (${ data.size } bytes)" }
+    }
+
     fun clean() {
         flushPersistEndId()
         mainHandler.removeCallbacks(reconfigureRunnable)
@@ -659,10 +742,27 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private fun ingestRemoteClip(clip: RemoteClipPayload) {
         if (!serviceEnabled || !syncEnabled) return
 
+        if (clip.type == ClipType.FileUrl) {
+            // Binary clips should arrive through LAN binary sync, not the text
+            // realtime channel. Skip to avoid persisting invalid text payloads.
+            Log.i(logTag, "Skipping remote file/media upsert serverId=${clip.serverId}")
+            return
+        }
+
         Log.i(
             logTag,
             "ingestRemoteClip serverId=${clip.serverId} type=${clip.type} encrypted=${clip.encrypted} hasApplier=${remoteClipApplier != null}"
         )
+
+        // If a LAN clip with the same originId was already persisted, skip to
+        // avoid a duplicate entry in history. The serverId lookup handles the
+        // normal case where this device itself triggered the remote upsert.
+        val existingByOriginId = clip.originId?.takeIf { it.isNotBlank() }
+            ?.let { fileStorage.findClipIdByOriginId(it) }
+        if (existingByOriginId != null) {
+            Log.d(logTag, "Skipping duplicate remote clip originId=${clip.originId} serverId=${clip.serverId} existingClipId=$existingByOriginId")
+            return
+        }
 
         val existingClipId = fileStorage.findClipIdByServerId(clip.serverId)
         val clipId = if (existingClipId != null) {
@@ -712,20 +812,48 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         }
 
         val nextId = getNextId()
-        endId += 1
-        schedulePersistEndId()
 
-        fileStorage.writeClipItem(
-            clipId = nextId,
-            text = payload.content,
-            type = payload.type,
-            label = payload.label,
-            encrypted = payload.encrypted,
-            iv = payload.iv,
-            encMode = payload.encMode,
-            timestamp = payload.timestamp,
-            originId = payload.originId,
-        )
+        val writeOutcome = if (payload.localFilePath != null) {
+            // File / media clip: store the cached file path as the text field so
+            // the Flutter layer can resolve it to a ClipboardItem with localPath.
+            fileStorage.writeClipItemIfOriginMissing(
+                clipId = nextId,
+                text = payload.localFilePath,
+                type = payload.type,
+                label = payload.fileName ?: payload.label,
+                encrypted = false,
+                iv = null,
+                encMode = null,
+                timestamp = payload.timestamp,
+                originId = payload.originId,
+                sourceId = payload.sourceId ?: "",
+                sourceApp = payload.sourceApp ?: "",
+            )
+        } else {
+            fileStorage.writeClipItemIfOriginMissing(
+                clipId = nextId,
+                text = payload.content,
+                type = payload.type,
+                label = payload.label,
+                encrypted = payload.encrypted,
+                iv = payload.iv,
+                encMode = payload.encMode,
+                timestamp = payload.timestamp,
+                originId = payload.originId,
+                sourceId = payload.sourceId ?: "",
+                sourceApp = payload.sourceApp ?: "",
+            )
+        }
+
+        when (writeOutcome) {
+            is CopyCatFileStorage.ClipWriteOutcome.Written -> commitEndId(endId + 1)
+            is CopyCatFileStorage.ClipWriteOutcome.Duplicate -> debugLog(logTag) {
+                "Skipping duplicate LAN clip originId=${payload.originId} existingClipId=${writeOutcome.clipId}"
+            }
+            is CopyCatFileStorage.ClipWriteOutcome.Failed -> {
+                Log.e(logTag, "Failed to persist LAN clip originId=${payload.originId}")
+            }
+        }
     }
 
     /**

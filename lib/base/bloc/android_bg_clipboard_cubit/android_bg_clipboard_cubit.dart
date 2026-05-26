@@ -64,7 +64,7 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       "Url" => ClipItemType.url,
       "Email" => ClipItemType.text,
       "Phone" => ClipItemType.text,
-      "FileUrl" => ClipItemType.file, // TODO(raj): add support for files
+      "FileUrl" => ClipItemType.file,
       _ => ClipItemType.text,
     };
     final TextCategory? textCategory = switch (clip["type"]) {
@@ -72,7 +72,11 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       "Phone" => TextCategory.phone,
       _ => null,
     };
-    final desc = clip["label"] as String?;
+    final rawDesc = (clip["label"] as String?)?.trim();
+    final desc =
+        (rawDesc == null || rawDesc.isEmpty || rawDesc.toLowerCase() == 'null')
+        ? null
+        : rawDesc;
     final serverIdRaw = clip["serverId"];
     final serverId = serverIdRaw is num ? serverIdRaw.toInt() : -1;
     final timestampRaw = clip["timestamp"];
@@ -85,17 +89,59 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
     final encMode = clip["encMode"] as String?;
     final sourceId = (clip["sourceId"] as String?)?.trim();
     final sourceApp = (clip["sourceApp"] as String?)?.trim();
+    final originId = clip["originId"] as String?;
+
+    // For file/media types the "text" field carries the local file path stored
+    // by the Android background service when a LAN binary clip was received.
+    final isFileClip = clipType == ClipItemType.file;
+    final localPath = isFileClip ? clipText : null;
+
+    // Infer MIME type and upgrade to media type from the cached file extension.
+    // The Android file storage format does not persist fileMimeType, so we
+    // derive it from the extension written by writeBinaryClip() / handleBinaryClip().
+    String? fileMimeType;
+    ClipItemType resolvedType = clipType;
+    if (isFileClip && localPath != null) {
+      final ext = localPath.split('.').last.toLowerCase();
+      const imageExts = {
+        'jpg',
+        'jpeg',
+        'png',
+        'gif',
+        'webp',
+        'bmp',
+        'heic',
+        'heif',
+        'svg',
+      };
+      const videoExts = {'mp4', 'mov', 'avi', 'mkv', 'm4v', 'webm', '3gp'};
+      if (imageExts.contains(ext)) {
+        fileMimeType = ext == 'jpg'
+            ? 'image/jpeg'
+            : ext == 'heif'
+            ? 'image/heic'
+            : 'image/$ext';
+        resolvedType = ClipItemType.media;
+      } else if (videoExts.contains(ext)) {
+        fileMimeType = ext == 'mov' ? 'video/quicktime' : 'video/$ext';
+        resolvedType = ClipItemType.media;
+      }
+    }
+
     return ClipboardItem(
       created: timestamp,
       modified: timestamp,
-      type: clipType,
+      type: resolvedType,
       os: PlatformOS.android,
       encrypted: encrypted,
       iv: iv,
       encMode: encMode,
       textCategory: textCategory,
-      text: clipType == ClipItemType.text ? clipText : null,
-      url: clipType == ClipItemType.url ? clipText : null,
+      text: resolvedType == ClipItemType.text ? clipText : null,
+      url: resolvedType == ClipItemType.url ? clipText : null,
+      localPath: localPath,
+      fileName: isFileClip ? desc : null,
+      fileMimeType: fileMimeType,
       title: desc,
       description: desc,
       sourceId: sourceId?.isEmpty == true ? null : sourceId,
@@ -103,6 +149,7 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       serverId: serverId == -1 ? null : serverId,
       lastSynced: systemTime(),
       deviceId: deviceId,
+      originId: originId?.isEmpty == true ? null : originId,
     );
   }
 
@@ -128,6 +175,15 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
 
           final clipKey = clip['id'] as String?;
           if (clipKey == null || clipKey.isEmpty) continue;
+
+          final rawType = (clip['type'] as String?)?.trim();
+          final rawText = (clip['text'] as String?)?.trim();
+          // Legacy malformed URI captures may be stored as Text="null".
+          // These should never be restored into app history.
+          if (rawType == 'Text' && rawText?.toLowerCase() == 'null') {
+            deleteKeys.add(clipKey);
+            continue;
+          }
 
           seenKeys.add(clipKey);
           final clipItem = parseClip(clip);

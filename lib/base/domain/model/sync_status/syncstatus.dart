@@ -10,9 +10,9 @@ class SyncStatus with _$SyncStatus, Identifiable {
   factory SyncStatus({
     @JsonKey(includeToJson: false, includeFromJson: false) int? id,
     DateTime?
-    lastSyncPoint, // . . . -\>* . . |<- it stores the last sync end point in time.
+    lastSyncPoint, // . . . ->* . . |<- it stores the last sync end point in time.
     DateTime?
-    lastSyncStartPoint, // . . . →| . . *<- it stores the last sync start point in time.
+    lastSyncStartPoint, // . . . ->| . . *<- it stores the last sync start point in time.
     int? lastKnownSyncCount,
     int? lastKnownTotalCount,
     @Default(true) bool restorationPending,

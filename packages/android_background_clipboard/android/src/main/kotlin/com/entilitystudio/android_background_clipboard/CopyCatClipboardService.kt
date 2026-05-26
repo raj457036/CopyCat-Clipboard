@@ -36,6 +36,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import android.provider.OpenableColumns
+import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
 enum class ClipAction {
@@ -227,14 +229,65 @@ class CopyCatClipboardService : Service() {
     ): ClipAction {
         return when (uri.scheme) {
             "content" -> {
-                // Media or File!
+                // Skip URIs we wrote ourselves via the LAN binary receiver
+                // the clip is already persisted via onLanClipReceived().
+                if (uri.authority == "${applicationContext.packageName}.fileProvider") {
+                    debugLog(logTag) { "Skipping self-written FileProvider URI" }
+                    return ClipAction.Pending
+                }
+
+                val mimeType = contentResolver.getType(uri) ?: "application/octet-stream"
+                val isMedia = mimeType.startsWith("image/") ||
+                    mimeType.startsWith("video/") ||
+                    mimeType.startsWith("audio/")
+                if (!isMedia) return ClipAction.Pending
+
+                val fingerprint = buildClipFingerprint(uri.toString(), ClipType.FileUrl)
+                if (isDuplicateBurst(fingerprint)) {
+                    debugLog(logTag) { "Detected duplicate image URI" }
+                    return ClipAction.Duplicate
+                }
+
                 try {
-                    contentResolver.openInputStream(uri)?.use { _ ->
-                        // Process the stream if needed
+                    val maxBytes = 50 * 1024 * 1024
+                    val buffer = ByteArrayOutputStream()
+                    var tooLarge = false
+                    contentResolver.openInputStream(uri)?.use { stream ->
+                        val buf = ByteArray(8192)
+                        var totalRead = 0
+                        var read: Int
+                        while (stream.read(buf).also { read = it } != -1) {
+                            totalRead += read
+                            if (totalRead > maxBytes) { tooLarge = true; break }
+                            buffer.write(buf, 0, read)
+                        }
+                    } ?: return ClipAction.Pending
+
+                    if (tooLarge) {
+                        debugLog(logTag) { "Image too large for LAN sync (>50 MB), skipping" }
+                        return ClipAction.Pending
                     }
+
+                    val bytes = buffer.toByteArray()
+                    val ext = mimeType.substringAfterLast('/').substringBefore(';')
+                        .ifBlank { "bin" }
+                    val resolvedName = getDisplayNameFromUri(uri)
+                        ?: label?.takeIf { it.isNotBlank() }
+                        ?: "media.$ext"
+
+                    markCaptured(fingerprint)
+                    copycatStorage.writeBinaryClip(
+                        data = bytes,
+                        mimeType = mimeType,
+                        ext = ext,
+                        fileName = resolvedName,
+                        sourceId = sourcePackageName,
+                        sourceApp = sourceAppName,
+                    )
+                    disableDuplicateAnnouncement = false
                     ClipAction.Success
                 } catch (e: Exception) {
-                    Log.e(logTag, "Failed to read URI clip: ${e.message}")
+                    Log.e(logTag, "Failed to read URI media clip: ${e.message}")
                     ClipAction.Failed
                 }
             }
@@ -248,6 +301,23 @@ class CopyCatClipboardService : Service() {
                     sourceAppName = sourceAppName,
                 )
             }
+        }
+    }
+
+    private fun getDisplayNameFromUri(uri: Uri): String? {
+        return try {
+            contentResolver.query(
+                uri,
+                arrayOf(OpenableColumns.DISPLAY_NAME),
+                null, null, null,
+            )?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val col = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (col >= 0) cursor.getString(col) else null
+                } else null
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 
@@ -343,6 +413,13 @@ class CopyCatClipboardService : Service() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     debugLog(logTag) { "Description Extras: ${clipData.description?.extras}" }
                 }
+                val hasNonTextMime = run {
+                    val desc = clipData.description ?: return@run false
+                    (0 until desc.mimeTypeCount).any { idx ->
+                        val mt = desc.getMimeType(idx)?.trim()?.lowercase().orEmpty()
+                        mt.isNotEmpty() && !mt.startsWith("text/")
+                    }
+                }
                 val item = clipData.getItemAt(0)
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -366,18 +443,6 @@ class CopyCatClipboardService : Service() {
 
                 if (actionStatus != ClipAction.Excluded) {
                     if (actionStatus != ClipAction.Success)
-                        item.text?.let {
-                            debugLog(logTag) { "Clipboard Text: ${redactForLog(it.toString())}" }
-                            actionStatus = writeTextToCopyCatClipboard(
-                                text = it.toString(),
-                                type = ClipType.Text,
-                                label = clipLabel,
-                                sourcePackageName = normalizedSourcePackage,
-                                sourceAppName = sourceAppName,
-                            )
-                        }
-
-                    if (actionStatus != ClipAction.Success)
                         item.uri?.let {
                             debugLog(logTag) { "Clipboard URI: $it" }
                             actionStatus = readUriClip(
@@ -386,6 +451,26 @@ class CopyCatClipboardService : Service() {
                                 sourcePackageName = normalizedSourcePackage,
                                 sourceAppName = sourceAppName,
                             )
+                        }
+
+                    if (actionStatus != ClipAction.Success)
+                        item.text?.let {
+                            val textValue = it.toString()
+                            val hasUri = item.uri != null
+
+                            val isLiteralNull = textValue.trim().equals("null", ignoreCase = true)
+                            if ((hasUri || hasNonTextMime) && isLiteralNull) {
+                                debugLog(logTag) { "Skipping literal null text for URI or non-text MIME clip" }
+                            } else {
+                                debugLog(logTag) { "Clipboard Text: ${redactForLog(textValue)}" }
+                                actionStatus = writeTextToCopyCatClipboard(
+                                    text = textValue,
+                                    type = ClipType.Text,
+                                    label = clipLabel,
+                                    sourcePackageName = normalizedSourcePackage,
+                                    sourceAppName = sourceAppName,
+                                )
+                            }
                         }
                 }
             }

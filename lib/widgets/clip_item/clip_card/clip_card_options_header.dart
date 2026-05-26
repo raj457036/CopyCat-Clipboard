@@ -21,10 +21,7 @@ class ClipCardOptionsHeader extends StatelessWidget {
     );
     final hovered = HoverScope.of(context);
 
-    return Focus(
-      canRequestFocus: false,
-      skipTraversal: true,
-      descendantsAreFocusable: false,
+    return ExcludeFocus(
       child: SizedBox(
         height: 36,
         child: Row(

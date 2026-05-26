@@ -3,6 +3,8 @@ package com.entilitystudio.android_background_clipboard
 import android.content.ClipData as AndroidClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.util.Log
@@ -13,12 +15,18 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.Socket
+import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executors
+import java.util.concurrent.RejectedExecutionException
+import java.util.concurrent.RejectedExecutionHandler
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.ThreadPoolExecutor
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
@@ -33,6 +41,13 @@ data class LanClipPayload(
     val encrypted: Boolean,
     val iv: String?,
     val encMode: String?,
+    // File / media fields — null for text/url clips.
+    val localFilePath: String? = null,
+    val fileMimeType: String? = null,
+    val fileExtension: String? = null,
+    val fileName: String? = null,
+    val sourceId: String? = null,
+    val sourceApp: String? = null,
 )
 
 private data class PeerAddress(val host: String, val port: Int)
@@ -43,8 +58,8 @@ private data class PeerAddress(val host: String, val port: Int)
  * – Runs a bare [ServerSocket] on a daemon thread.
  * – Registers and discovers `_copycat._tcp` via [NsdManager].
  * – Authenticates with HMAC-SHA256(body + timestamp, userId).
- * – Text/URL clips → [onLanClipReceived] for persistent storage.
- * – Media/file clips (when auto-write is enabled) → written to cacheDir and
+ * – Text/URL clips -> [onLanClipReceived] for persistent storage.
+ * – Media/file clips (when auto-write is enabled) -> written to cacheDir and
  *   placed directly on the Android clipboard via [ClipboardManager].
  */
 class CopyCatLanSyncManager(
@@ -56,8 +71,14 @@ class CopyCatLanSyncManager(
         private const val SERVICE_TYPE = "_copycat._tcp."
         private const val LOG_TAG = "CopyCatLanSyncManager"
         private const val REPLAY_WINDOW_MS = 10_000L
+        private const val MAX_HEADER_LINE_BYTES = 8 * 1024
+        private const val MAX_BODY_BYTES = 100 * 1024 * 1024
         private const val HMAC_ALGO = "HmacSHA256"
         private const val LAN_RECV_DIR = "lan_recv"
+        private const val STREAM_BUFFER_BYTES = 64 * 1024
+        private const val DISCOVERY_REFRESH_EMPTY_MS = 15_000L
+        private const val DISCOVERY_REFRESH_STABLE_MS = 60_000L
+        private const val DISCOVERY_POST_REGISTER_DELAY_MS = 1_200L
     }
 
     // MARK: - Mutable Config
@@ -65,6 +86,7 @@ class CopyCatLanSyncManager(
     var deviceId: String = ""
     var userId: String = ""
     var autoWriteOnReceive: Boolean = false
+    var maxAutoCopyBytes: Int = 10 * 1024 * 1024
 
     // MARK: - Runtime State
     private var serverSocket: ServerSocket? = null
@@ -79,6 +101,15 @@ class CopyCatLanSyncManager(
     // conflict-renames a re-registered service (e.g. "copycat-X (2)").
     private val serviceNameToDeviceId = ConcurrentHashMap<String, String>()
     private var started = false
+    private var connectionExecutor: ThreadPoolExecutor? = null
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val discoveryRefreshRunnable = object : Runnable {
+        override fun run() {
+            if (!started) return
+            refreshDiscovery("periodic")
+            scheduleDiscoveryRefresh()
+        }
+    }
 
     private val httpClient = OkHttpClient.Builder()
         .connectTimeout(3, TimeUnit.SECONDS)
@@ -94,16 +125,20 @@ class CopyCatLanSyncManager(
         startServer()
         registerNsd()
         discoverPeers()
+        scheduleDiscoveryRefresh()
         Log.i(LOG_TAG, "LAN sync started on port $serverPort")
     }
 
     fun stop() {
         if (!started) return
         started = false
+        mainHandler.removeCallbacks(discoveryRefreshRunnable)
         stopDiscovery()
         unregisterNsd()
         serverThread?.interrupt()
         serverSocket?.close()
+        connectionExecutor?.shutdownNow()
+        connectionExecutor = null
         serverSocket = null
         peers.clear()
         serviceNameToDeviceId.clear()
@@ -125,6 +160,26 @@ class CopyCatLanSyncManager(
         val ss = ServerSocket(0) // OS assigns an ephemeral port
         serverSocket = ss
         serverPort = ss.localPort
+        connectionExecutor = ThreadPoolExecutor(
+            2,
+            4,
+            30L,
+            TimeUnit.SECONDS,
+            ArrayBlockingQueue(8),
+            Executors.defaultThreadFactory(),
+            RejectedExecutionHandler { runnable, _ ->
+                val task = runnable as? ConnectionTask
+                if (task != null) {
+                    try {
+                        task.socket.close()
+                    } catch (_: Exception) {
+                    }
+                    Log.w(LOG_TAG, "LAN receive queue full; rejecting connection")
+                }
+            },
+        ).apply {
+            allowCoreThreadTimeOut(true)
+        }
 
         serverThread = Thread({
             Log.d(LOG_TAG, "Server listening on port $serverPort")
@@ -134,9 +189,13 @@ class CopyCatLanSyncManager(
                 } catch (_: IOException) {
                     break // socket closed → stop
                 }
-                Thread({ handleConnection(clientSocket) }, "lan-recv-worker").also {
-                    it.isDaemon = true
-                    it.start()
+                try {
+                    connectionExecutor?.execute(ConnectionTask(clientSocket))
+                } catch (_: RejectedExecutionException) {
+                    try {
+                        clientSocket.close()
+                    } catch (_: Exception) {
+                    }
                 }
             }
             Log.d(LOG_TAG, "Server thread exiting")
@@ -146,12 +205,19 @@ class CopyCatLanSyncManager(
         }
     }
 
+    private inner class ConnectionTask(val socket: Socket) : Runnable {
+        override fun run() {
+            handleConnection(socket)
+        }
+    }
+
     private fun handleConnection(socket: Socket) {
         try {
             socket.use { s ->
-                val input = s.getInputStream().bufferedReader()
+                s.soTimeout = 5_000
+                val rawInput = s.getInputStream()
                 // Minimal HTTP/1.1 request parsing
-                val requestLine = input.readLine() ?: return
+                val requestLine = readAsciiLine(rawInput) ?: return
                 // Respond to health-check pings from desktop peers.
                 if (requestLine.startsWith("GET /ping")) {
                     s.getOutputStream().write("HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n".toByteArray())
@@ -161,7 +227,7 @@ class CopyCatLanSyncManager(
 
                 val headers = mutableMapOf<String, String>()
                 while (true) {
-                    val line = input.readLine() ?: break
+                    val line = readAsciiLine(rawInput) ?: break
                     if (line.isEmpty()) break
                     val colon = line.indexOf(':')
                     if (colon > 0) {
@@ -177,23 +243,18 @@ class CopyCatLanSyncManager(
                 val typeStr = headers["x-cc-type"] ?: return
                 val hmacHeader = headers["x-cc-hmac"] ?: return
                 val contentLength = headers["content-length"]?.toIntOrNull() ?: return
-
-                val bodyBytes = ByteArray(contentLength)
-                var offset = 0
-                val rawStream = s.getInputStream()
-                while (offset < contentLength) {
-                    val read = rawStream.read(bodyBytes, offset, contentLength - offset)
-                    if (read == -1) break
-                    offset += read
-                }
-
-                if (!verifyHmac(bodyBytes, hmacHeader)) {
-                    Log.w(LOG_TAG, "HMAC verification failed from $fromDeviceId")
+                if (contentLength !in 1..MAX_BODY_BYTES) {
+                    Log.w(LOG_TAG, "Rejecting clip with invalid body size: $contentLength")
                     return
                 }
 
-                val clipType = ClipType.entries.firstOrNull {
-                    it.name.lowercase() == typeStr.lowercase()
+                // Dart peers send "media" or "file" (ClipItemType names); map
+                // these to ClipType.FileUrl which triggers the binary handler.
+                val clipType: ClipType? = when (typeStr.lowercase()) {
+                    "media", "file" -> ClipType.FileUrl
+                    else -> ClipType.entries.firstOrNull {
+                        it.name.lowercase() == typeStr.lowercase()
+                    }
                 }
                 if (clipType == null) {
                     Log.w(LOG_TAG, "Unknown clip type: $typeStr")
@@ -201,14 +262,29 @@ class CopyCatLanSyncManager(
                 }
 
                 when (clipType) {
-                    ClipType.Text, ClipType.Url, ClipType.Email, ClipType.Phone -> handleTextClip(
-                        bodyBytes, fromDeviceId, originId, clipType
-                    )
+                    ClipType.Text, ClipType.Url, ClipType.Email, ClipType.Phone -> {
+                        val bodyBytes = readBodyBytes(rawInput, contentLength, originId) ?: return
+                        if (!verifyHmac(bodyBytes, hmacHeader)) {
+                            Log.w(LOG_TAG, "HMAC verification failed from $fromDeviceId")
+                            return
+                        }
+                        handleTextClip(bodyBytes, fromDeviceId, originId, clipType)
+                    }
                     ClipType.FileUrl -> handleBinaryClip(
-                        bodyBytes, fromDeviceId, originId, clipType,
-                        headers["content-type"] ?: "application/octet-stream",
-                        headers["x-cc-ext"] ?: "bin",
-                        headers["x-cc-name"] ?: originId,
+                        rawInput,
+                        contentLength,
+                        hmacHeader,
+                        fromDeviceId,
+                        originId,
+                        clipType,
+                        // Accept X-CC-MIME (Dart) or Content-Type (Android peer)
+                        sanitizeMimeType(
+                            headers["x-cc-mime"] ?: headers["content-type"]
+                        ),
+                        sanitizeExt(headers["x-cc-ext"]),
+                        sanitizeFileName(headers["x-cc-name"], originId),
+                        headers["x-cc-source-id"],
+                        headers["x-cc-source-app"],
                     )
                 }
 
@@ -218,6 +294,44 @@ class CopyCatLanSyncManager(
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Error handling connection: ${e.message}")
         }
+    }
+
+    private fun readBodyBytes(
+        input: java.io.InputStream,
+        contentLength: Int,
+        originId: String,
+    ): ByteArray? {
+        val bodyBytes = ByteArray(contentLength)
+        var offset = 0
+        while (offset < contentLength) {
+            val read = input.read(bodyBytes, offset, contentLength - offset)
+            if (read == -1) break
+            offset += read
+        }
+
+        if (offset != contentLength) {
+            Log.w(LOG_TAG, "Short body for $originId: expected=$contentLength got=$offset")
+            return null
+        }
+
+        return bodyBytes
+    }
+
+    private fun readAsciiLine(input: java.io.InputStream): String? {
+        val sb = StringBuilder()
+        while (true) {
+            val b = input.read()
+            if (b == -1) {
+                return if (sb.isEmpty()) null else sb.toString()
+            }
+            if (sb.length >= MAX_HEADER_LINE_BYTES) {
+                Log.w(LOG_TAG, "Rejecting oversized HTTP header line")
+                return null
+            }
+            if (b == '\n'.code) break
+            if (b != '\r'.code) sb.append(b.toChar())
+        }
+        return sb.toString()
     }
 
     private fun handleTextClip(
@@ -249,45 +363,103 @@ class CopyCatLanSyncManager(
             encrypted = json.optBoolean("encrypted", false),
             iv = json.optString("iv").takeIf { it.isNotEmpty() },
             encMode = json.optString("encMode").takeIf { it.isNotEmpty() },
+            sourceId = json.optString("sourceId").takeIf { it.isNotEmpty() },
+            sourceApp = json.optString("sourceApp").takeIf { it.isNotEmpty() },
         )
 
         onLanClipReceived(payload)
 
         if (autoWriteOnReceive && payload.content.isNotBlank()) {
+            markCaptured(originId)
             writeTextToClipboard(payload.content, payload.label)
         }
     }
 
     private fun handleBinaryClip(
-        body: ByteArray,
+        input: java.io.InputStream,
+        contentLength: Int,
+        expectedHmac: String,
         fromDeviceId: String,
         originId: String,
         type: ClipType,
         mimeType: String,
         ext: String,
         fileName: String,
+        sourceId: String?,
+        sourceApp: String?,
     ) {
-        if (!autoWriteOnReceive) return
         try {
             val recvDir = File(appContext.cacheDir, LAN_RECV_DIR).also { it.mkdirs() }
             val tempFile = File(recvDir, "$originId.$ext")
-            tempFile.writeBytes(body)
+            val mac = Mac.getInstance(HMAC_ALGO).apply {
+                init(SecretKeySpec(userId.toByteArray(Charsets.UTF_8), HMAC_ALGO))
+            }
+            val buffer = ByteArray(STREAM_BUFFER_BYTES)
+            var remaining = contentLength
 
-            val uri = FileProvider.getUriForFile(
-                appContext,
-                "${appContext.packageName}.fileprovider",
-                tempFile,
+            FileOutputStream(tempFile).use { output ->
+                while (remaining > 0) {
+                    val bytesToRead = minOf(buffer.size, remaining)
+                    val read = input.read(buffer, 0, bytesToRead)
+                    if (read == -1) {
+                        Log.w(LOG_TAG, "Short streamed body for $originId: expected=$contentLength got=${contentLength - remaining}")
+                        tempFile.delete()
+                        return
+                    }
+                    output.write(buffer, 0, read)
+                    mac.update(buffer, 0, read)
+                    remaining -= read
+                }
+                output.flush()
+            }
+
+            val actualHmac = mac.doFinal().joinToString("") { "%02x".format(it) }
+            if (!actualHmac.equals(expectedHmac, ignoreCase = true)) {
+                Log.w(LOG_TAG, "HMAC verification failed from $fromDeviceId")
+                tempFile.delete()
+                return
+            }
+
+            // Always persist to the CopyCat database via the host callback so
+            // the clip appears in history even when autoWriteOnReceive is off.
+            val payload = LanClipPayload(
+                originId = originId,
+                fromDeviceId = fromDeviceId,
+                type = type,
+                content = "",
+                label = fileName,
+                timestamp = System.currentTimeMillis(),
+                encrypted = false,
+                iv = null,
+                encMode = null,
+                localFilePath = tempFile.absolutePath,
+                fileMimeType = mimeType,
+                fileExtension = ext,
+                fileName = fileName,
+                sourceId = sourceId,
+                sourceApp = sourceApp,
             )
+            onLanClipReceived(payload)
 
-            val clipData = AndroidClipData.newUri(appContext.contentResolver, fileName, uri)
-            val cm = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-
-            // Suppress re-capture of this write
-            markCaptured(originId)
-            cm.setPrimaryClip(clipData)
-            Log.d(LOG_TAG, "Binary clip ($mimeType) written to clipboard from $fromDeviceId")
+            // Optionally also place the file on the OS clipboard.
+            if (autoWriteOnReceive) {
+                if (contentLength > maxAutoCopyBytes) {
+                    Log.i(LOG_TAG, "Binary clip exceeds auto-copy limit ($maxAutoCopyBytes bytes), skipping clipboard write")
+                    return
+                }
+                val uri = FileProvider.getUriForFile(
+                    appContext,
+                    "${appContext.packageName}.fileProvider",
+                    tempFile,
+                )
+                val clipData = AndroidClipData.newUri(appContext.contentResolver, fileName, uri)
+                val cm = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                markCaptured(originId)
+                cm.setPrimaryClip(clipData)
+            }
+            Log.d(LOG_TAG, "Binary clip ($mimeType) received from $fromDeviceId — persisted${if (autoWriteOnReceive) " + clipboard" else ""}")
         } catch (e: Exception) {
-            Log.e(LOG_TAG, "Failed to write binary clip: ${e.message}")
+            Log.e(LOG_TAG, "Failed to handle binary clip: ${e.message}")
         }
     }
 
@@ -299,6 +471,26 @@ class CopyCatLanSyncManager(
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to write text to clipboard: ${e.message}")
         }
+    }
+
+    private fun sanitizeMimeType(raw: String?): String {
+        val value = raw?.trim().orEmpty()
+        if (value.isEmpty() || value.equals("null", ignoreCase = true)) {
+            return "application/octet-stream"
+        }
+        return value
+    }
+
+    private fun sanitizeExt(raw: String?): String {
+        val value = raw?.trim()?.lowercase().orEmpty()
+        if (value.isEmpty() || value == "." || value == "null") return "bin"
+        return value.removePrefix(".")
+    }
+
+    private fun sanitizeFileName(raw: String?, originId: String): String {
+        val value = raw?.trim().orEmpty()
+        if (value.isEmpty() || value.equals("null", ignoreCase = true)) return originId
+        return value
     }
 
     // MARK: - NSD Registration
@@ -317,6 +509,12 @@ class CopyCatLanSyncManager(
         val listener = object : NsdManager.RegistrationListener {
             override fun onServiceRegistered(info: NsdServiceInfo) {
                 Log.d(LOG_TAG, "NSD registered: ${info.serviceName} port=$serverPort")
+                // Re-start discovery shortly after registration to recover from
+                // stale NSD sessions where peers are not surfaced until a full
+                // off/on toggle.
+                mainHandler.postDelayed({
+                    if (started) refreshDiscovery("post-register")
+                }, DISCOVERY_POST_REGISTER_DELAY_MS)
             }
             override fun onRegistrationFailed(info: NsdServiceInfo, errorCode: Int) {
                 Log.w(LOG_TAG, "NSD registration failed: $errorCode")
@@ -352,9 +550,21 @@ class CopyCatLanSyncManager(
             }
             override fun onStartDiscoveryFailed(serviceType: String, errorCode: Int) {
                 Log.w(LOG_TAG, "NSD discovery start failed: $errorCode")
+                if (started) {
+                    mainHandler.postDelayed(
+                        { if (started) refreshDiscovery("start-failed:$errorCode") },
+                        DISCOVERY_POST_REGISTER_DELAY_MS,
+                    )
+                }
             }
             override fun onStopDiscoveryFailed(serviceType: String, errorCode: Int) {
                 Log.w(LOG_TAG, "NSD discovery stop failed: $errorCode")
+                if (started) {
+                    mainHandler.postDelayed(
+                        { if (started) refreshDiscovery("stop-failed:$errorCode") },
+                        DISCOVERY_POST_REGISTER_DELAY_MS,
+                    )
+                }
             }
             override fun onServiceFound(info: NsdServiceInfo) {
                 if (info.serviceType != SERVICE_TYPE) return
@@ -374,12 +584,30 @@ class CopyCatLanSyncManager(
                     if (peers.remove(did) != null) {
                         LanPeerReporter.getInstance().removePeer(did)
                         Log.d(LOG_TAG, "Peer lost: $did")
+                        scheduleDiscoveryRefresh()
                     }
                 }
             }
         }
         discoveryListener = listener
         nsd.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, listener)
+    }
+
+    private fun scheduleDiscoveryRefresh() {
+        mainHandler.removeCallbacks(discoveryRefreshRunnable)
+        val delayMs = if (peers.isEmpty()) {
+            DISCOVERY_REFRESH_EMPTY_MS
+        } else {
+            DISCOVERY_REFRESH_STABLE_MS
+        }
+        mainHandler.postDelayed(discoveryRefreshRunnable, delayMs)
+    }
+
+    private fun refreshDiscovery(reason: String) {
+        if (!started) return
+        stopDiscovery()
+        discoverPeers()
+        Log.d(LOG_TAG, "NSD discovery refreshed ($reason)")
     }
 
     private fun stopDiscovery() {
@@ -410,6 +638,7 @@ class CopyCatLanSyncManager(
                 serviceNameToDeviceId[info.serviceName] = did
                 peers[did] = PeerAddress(host, info.port)
                 LanPeerReporter.getInstance().addPeer(did, host, info.port)
+                scheduleDiscoveryRefresh()
                 Log.d(LOG_TAG, "Peer resolved: $did @ $host:${info.port}")
                 // Announce our own HTTP server address to the peer immediately
                 // so it can broadcast clips back to us without waiting for its
@@ -458,6 +687,8 @@ class CopyCatLanSyncManager(
         encrypted: Boolean = false,
         iv: String? = null,
         encMode: String? = null,
+        sourceId: String? = null,
+        sourceApp: String? = null,
     ) {
         if (!started || peers.isEmpty() || userId.isBlank()) return
 
@@ -469,13 +700,15 @@ class CopyCatLanSyncManager(
             put("encrypted", encrypted)
             if (iv != null) put("iv", iv)
             if (encMode != null) put("encMode", encMode)
+            if (!sourceId.isNullOrBlank()) put("sourceId", sourceId)
+            if (!sourceApp.isNullOrBlank()) put("sourceApp", sourceApp)
         }
         val bodyBytes = bodyJson.toString().toByteArray(Charsets.UTF_8)
         val hmac = computeHmac(bodyBytes)
 
         peers.values.forEach { peer ->
             sendToPeer(peer, originId, type.name.lowercase(), bodyBytes, hmac,
-                "application/json", null, null)
+                "application/json", null, null, sourceId, sourceApp)
         }
     }
 
@@ -489,11 +722,24 @@ class CopyCatLanSyncManager(
         mimeType: String,
         ext: String,
         fileName: String,
+        sourceId: String? = null,
+        sourceApp: String? = null,
     ) {
         if (!started || peers.isEmpty() || userId.isBlank()) return
         val hmac = computeHmac(data)
         peers.values.forEach { peer ->
-            sendToPeer(peer, originId, type.name.lowercase(), data, hmac, mimeType, ext, fileName)
+            sendToPeer(
+                peer,
+                originId,
+                type.name.lowercase(),
+                data,
+                hmac,
+                mimeType,
+                ext,
+                fileName,
+                sourceId,
+                sourceApp,
+            )
         }
     }
 
@@ -506,6 +752,8 @@ class CopyCatLanSyncManager(
         contentType: String,
         ext: String?,
         fileName: String?,
+        sourceId: String?,
+        sourceApp: String?,
     ) {
         try {
             val requestBuilder = Request.Builder()
@@ -517,6 +765,12 @@ class CopyCatLanSyncManager(
                 .addHeader("X-CC-PORT", serverPort.toString())
             if (ext != null) requestBuilder.addHeader("X-CC-EXT", ext)
             if (fileName != null) requestBuilder.addHeader("X-CC-NAME", fileName)
+            if (!sourceId.isNullOrBlank()) {
+                requestBuilder.addHeader("X-CC-SOURCE-ID", sourceId)
+            }
+            if (!sourceApp.isNullOrBlank()) {
+                requestBuilder.addHeader("X-CC-SOURCE-APP", sourceApp)
+            }
 
             val request = requestBuilder
                 .post(body.toRequestBody(contentType.toMediaTypeOrNull()))
@@ -544,6 +798,6 @@ class CopyCatLanSyncManager(
 
     private fun verifyHmac(body: ByteArray, expected: String): Boolean {
         if (userId.isBlank()) return false
-        return computeHmac(body) == expected
+        return computeHmac(body).equals(expected, ignoreCase = true)
     }
 }

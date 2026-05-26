@@ -34,12 +34,13 @@ class InAppNotificationService {
 
   ScaffoldMessengerState get _scaffoldMessenger =>
       scaffoldMessengerKey.currentState!;
-  BuildContext get _context => rootNavigationKey.currentContext!;
+  BuildContext? get _context => rootNavigationKey.currentContext;
 
   /// MARK: - NotificationService Implementation
 
   EdgeInsets? _getSnackBarMargin() {
-    final mq = _context.mq;
+    if (_context == null) return null;
+    final mq = _context!.mq;
     const double snackBarWidth = 580.0;
     if (!Breakpoints.isMobile(mq.size.width)) {
       // Desktop
@@ -67,13 +68,13 @@ class InAppNotificationService {
 
   SnackBar _buildSnackBar(NotificationMessage message) {
     late final NotificationContent messageContent;
-    final flat = isMobilePlatform || _context.isMobile;
+    final flat = isMobilePlatform || _context?.isMobile == true;
     final SnackBarBehavior behavior = flat
         ? SnackBarBehavior.fixed
         : SnackBarBehavior.floating;
 
     if (message is BuildNotificationMessage) {
-      messageContent = message.builder(_context);
+      messageContent = message.builder(_context!);
     } else {
       messageContent = message.content;
     }
@@ -93,7 +94,8 @@ class InAppNotificationService {
   /// Displays a notification message to the user using a SnackBar.
   /// If a notification with the same ID is already active, it will be replaced.
   void notify(NotificationMessage message) {
-    if (_activeNotifications.any((active) => active.message.id == message.id)) {
+    if (_activeNotifications.any((active) => active.message.id == message.id) ||
+        _context == null) {
       return;
     }
 

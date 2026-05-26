@@ -33,7 +33,7 @@ class FileClipCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
     final label =
-        "${_displayFileType()} • ${formatBytes(item.fileSize!)} • ${item.fileName?.sub(end: 30) ?? "No Name"}";
+        "${_displayFileType()} • ${formatBytes(item.fileSize ?? 1024)} • ${item.fileName?.sub(end: 30) ?? "No Name"}";
 
     return SizedBox.expand(
       child: Padding(

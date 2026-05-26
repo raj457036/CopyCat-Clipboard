@@ -25,11 +25,7 @@ class NavLayoutNavrail extends StatelessWidget {
     final unselectedlabelStyle = textTheme.labelMedium?.copyWith(
       fontVariations: fontVarW500,
     );
-    return Focus(
-      canRequestFocus: false,
-      skipTraversal: true,
-      descendantsAreFocusable: false,
-      descendantsAreTraversable: false,
+    return ExcludeFocus(
       child: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(

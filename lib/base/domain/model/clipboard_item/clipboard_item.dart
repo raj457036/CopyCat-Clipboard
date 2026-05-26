@@ -1,5 +1,3 @@
-import 'dart:math' show Random;
-
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/data/services/encryption.dart';
 import 'package:clipboard/base/domain/model/base.dart';
@@ -11,6 +9,7 @@ import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:nanoid2/nanoid2.dart';
 import 'package:path/path.dart' as p;
 import "package:universal_io/io.dart";
 
@@ -101,8 +100,8 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     @Default(false)
     bool isQueued,
 
-    /// Short 8-char alphanumeric ID assigned at creation on the originating
-    /// device. Used to deduplicate clips arriving via both LAN and Supabase.
+    /// Short ID assigned at creation on the originating
+    /// device. Used to deduplicate clips arriving from different sources.
     /// Persisted locally and round-tripped through the server.
     @JsonKey(name: "origin_id") String? originId,
   }) = _ClipboardItem;
@@ -110,15 +109,8 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
   factory ClipboardItem.fromJson(Map<String, dynamic> json) =>
       _$ClipboardItemFromJson(json);
 
-  /// Generates a short 8-char alphanumeric ID for LAN-sync deduplication.
-  static String generateOriginId() {
-    const chars =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    final random = Random.secure();
-    return String.fromCharCodes(
-      List.generate(8, (_) => chars.codeUnitAt(random.nextInt(chars.length))),
-    );
-  }
+  /// Generates a short package-backed ID for LAN-sync deduplication.
+  static String generateOriginId() => nanoid(length: 11);
 
   factory ClipboardItem.fromText(
     String text, {

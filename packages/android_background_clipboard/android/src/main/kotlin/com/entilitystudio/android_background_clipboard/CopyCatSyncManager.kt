@@ -38,6 +38,7 @@ data class RemoteClipPayload(
     val encMode: String? = null,
     val userId: String? = null,
     val modifiedAt: Long = System.currentTimeMillis(),
+    val originId: String? = null,
 )
 
 object ListeningMode {
@@ -478,8 +479,20 @@ class CopyCatSyncManager(
         val serverId = record.optLong("id", -1L)
         if (serverId <= 0) return
 
-        val typeRaw = record.optString("type", "text")
-        val textCategory = record.optString("textCategory", "")
+        val typeRaw = nullableString(record.optString("type", "text"))?.lowercase() ?: "text"
+        val textCategory = nullableString(record.optString("textCategory", ""))?.lowercase() ?: ""
+        val originId = nullableString(record.optString("origin_id", null))
+
+        // Non-text clips (media/file) are handled by LAN binary sync. Ignore
+        // realtime upserts here to avoid creating text placeholder entries.
+        if (typeRaw == "media" || typeRaw == "file") {
+            Log.i(
+                logTag,
+                "Remote upsert ignored serverId=$serverId typeRaw=$typeRaw originId=$originId reason=non-text"
+            )
+            return
+        }
+
         val clipType = when {
             typeRaw == "url" -> ClipType.Url
             textCategory == "email" -> ClipType.Email
@@ -487,12 +500,18 @@ class CopyCatSyncManager(
             else -> ClipType.Text
         }
 
-        val content = if (clipType == ClipType.Url) {
-            record.optString("url", "")
-        } else {
-            record.optString("text", "")
+        val content = when (clipType) {
+            ClipType.Url -> nullableString(record.optString("url", null)) ?: ""
+            else -> nullableString(record.optString("text", null)) ?: ""
         }
-        if (content.isBlank()) return
+
+        if (content.isBlank()) {
+            Log.i(
+                logTag,
+                "Remote upsert skipped serverId=$serverId typeRaw=$typeRaw mappedType=$clipType reason=blank-content"
+            )
+            return
+        }
 
         val payload = RemoteClipPayload(
             serverId = serverId,
@@ -504,11 +523,12 @@ class CopyCatSyncManager(
             encMode = nullableString(record.optString("enc_mode", null)),
             userId = nullableString(record.optString("userId", null)),
             modifiedAt = parseIsoToMillis(record.optString("modified")),
+            originId = originId,
         )
 
         Log.i(
             logTag,
-            "Remote upsert parsed serverId=$serverId type=$clipType encrypted=${payload.encrypted} encMode=${payload.encMode}"
+            "Remote upsert parsed serverId=$serverId typeRaw=$typeRaw type=$clipType encrypted=${payload.encrypted} encMode=${payload.encMode} contentLen=${payload.content.length}"
         )
 
         onRemoteClipUpsert(payload)

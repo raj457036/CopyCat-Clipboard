@@ -26,7 +26,7 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
   /// In-memory index of pending local entity IDs for O(1) [isLocalIdQueued] lookup.
   final Set<int> _pendingLocalIds = {};
 
-  /// Maps Isar outbox-entry IDs → local entity IDs so [markCompleted] can
+  /// Maps Isar outbox-entry IDs -> local entity IDs so [markCompleted] can
   /// remove the right entry from [_pendingLocalIds] without an extra DB read.
   final Map<int, int> _idToLocalId = {};
 

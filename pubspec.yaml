@@ -94,6 +94,7 @@ dependencies:
   crypto: ^3.0.7
   mdns_dart: ^2.2.1
   ntp: ^2.0.0
+  nanoid2: ^2.0.1
   tiny_storage: ^2.0.2
   share_plus: ^10.1.4
   device_info_plus: ^11.5.0

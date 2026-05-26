@@ -76,7 +76,7 @@ final blurHashWorker = EasyCompute<(Uint8List?, String?), (String, String)>(
 );
 
 // LRU cache: avoids re-decoding the same blurHash every time a card
-// re-enters the viewport. Capped at 100 entries (~3–4 KB each → ~400 KB max).
+// re-enters the viewport. Capped at 100 entries (~3–4 KB each -> ~400 KB max).
 final _decodeCache = SimpleLRUCache<String, Uint8List>(100);
 
 Future<String?> getBlurHash(String path) async {
