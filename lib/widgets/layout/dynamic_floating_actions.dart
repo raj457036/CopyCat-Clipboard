@@ -20,12 +20,7 @@ class DynamicFloatingActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (activeIndex == 0) {
-      final actions = [
-        if (showCopyCatLogo) const CopyCatLogo(),
-        const PasteFAB(),
-        height8,
-        const SyncStatusFAB(),
-      ];
+      final actions = [const PasteFAB(), height8, const SyncStatusFAB()];
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: reversed ? actions.reversed.toList() : actions,
@@ -33,7 +28,6 @@ class DynamicFloatingActions extends StatelessWidget {
     }
     if (activeIndex == 1) {
       final actions = [
-        if (showCopyCatLogo) const CopyCatLogo(),
         const DisableForLocalUser(
           ifLocal: CreateCollectionButton(localMode: true),
           child: CreateCollectionButton(),

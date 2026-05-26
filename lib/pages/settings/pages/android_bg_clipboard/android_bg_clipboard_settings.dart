@@ -277,6 +277,10 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
         "autoWriteOnReceive",
         appConfigCubit.state.config.autoWriteOnReceive,
       );
+      await widget.bgService.writeShared(
+        "dontCopyOver",
+        appConfigCubit.state.config.dontCopyOver,
+      );
       await widget.bgService.writeShared("syncSpeed", syncSpeed);
       await widget.bgService.writeShared("syncInterval", syncInterval);
       await widget.bgService.writeShared("deviceId", widget.deviceId);

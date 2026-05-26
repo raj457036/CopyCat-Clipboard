@@ -17,6 +17,7 @@ class CopyCatFileStorage(private val context: Context) {
     private val storageDir: File
     private val lock = ReentrantReadWriteLock()
     private var serverIdIndex: MutableMap<Long, String>? = null
+    private var originIdIndex: MutableMap<String, String>? = null
     
     init {
         // Create storage directory in app's private storage
@@ -46,6 +47,28 @@ class CopyCatFileStorage(private val context: Context) {
         }
 
         serverIdIndex = index
+    }
+
+    private fun ensureOriginIdIndexLoaded() {
+        if (originIdIndex != null) return
+
+        val index = mutableMapOf<String, String>()
+        val clipFiles = storageDir.listFiles { file ->
+            file.name.startsWith("Clip-") && file.name.endsWith(".txt")
+        } ?: emptyArray()
+
+        for (clipFile in clipFiles) {
+            val clipId = clipFile.nameWithoutExtension
+            val lines = clipFile.readLines()
+            val separatorIndex = lines.indexOfFirst { it == "---|---|---" }
+            if (separatorIndex < 10) continue
+            val originId = lines[9].trim()
+            if (originId.isNotEmpty()) {
+                index[originId] = clipId
+            }
+        }
+
+        originIdIndex = index
     }
 
     fun getMaxClipIndex(): Int = lock.read {
@@ -78,7 +101,9 @@ class CopyCatFileStorage(private val context: Context) {
         val pruneCount = clipsByTimestamp.size - maxCachedClips
         clipsByTimestamp.take(pruneCount).forEach { (clipFile, _, clipId) ->
             ensureServerIdIndexLoaded()
+            ensureOriginIdIndexLoaded()
             removeServerIdForClipId(clipId)
+            removeOriginIdForClipId(clipId)
             if (!clipFile.delete()) {
                 Log.w(logTag, "Failed to prune clip file $clipId")
             }
@@ -87,6 +112,15 @@ class CopyCatFileStorage(private val context: Context) {
 
     private fun removeServerIdForClipId(clipId: String) {
         val iterator = serverIdIndex?.entries?.iterator() ?: return
+        while (iterator.hasNext()) {
+            if (iterator.next().value == clipId) {
+                iterator.remove()
+            }
+        }
+    }
+
+    private fun removeOriginIdForClipId(clipId: String) {
+        val iterator = originIdIndex?.entries?.iterator() ?: return
         while (iterator.hasNext()) {
             if (iterator.next().value == clipId) {
                 iterator.remove()
@@ -106,7 +140,7 @@ class CopyCatFileStorage(private val context: Context) {
      * Line 6: encrypted (true/false)
      * Line 7: iv (base64, empty when not applicable)
      * Line 8: encMode (CFB/GCM, empty when not applicable)
-     * Line 9: originId (8-char base62, empty for old-format clips)
+    * Line 9: originId (base62, empty for old-format clips)
     * Line 10: sourceId/packageName (empty when unknown)
     * Line 11: sourceApp/appName (empty when unknown)
     * Line 12: ---|---|---
@@ -128,36 +162,119 @@ class CopyCatFileStorage(private val context: Context) {
         sourceApp: String = "",
     ): Boolean = lock.write {
         try {
-            val clipFile = File(storageDir, "$clipId.txt")
-            clipFile.bufferedWriter().use { writer ->
-                writer.write("$clipId\n")
-                writer.write("$type\n")
-                writer.write("$label\n")
-                writer.write("$timestamp\n")
-                writer.write("$serverId\n")
-                writer.write("$userId\n")
-                writer.write("$encrypted\n")
-                writer.write("${iv ?: ""}\n")
-                writer.write("${encMode ?: ""}\n")
-                writer.write("$originId\n")
-                writer.write("$sourceId\n")
-                writer.write("$sourceApp\n")
-                writer.write("---|---|---\n")
-                writer.write(text)
-            }
-
-            ensureServerIdIndexLoaded()
-            if (serverId > 0) {
-                serverIdIndex?.put(serverId, clipId)
-            }
-            pruneOldClipsLocked()
-            
+            writeClipItemLocked(
+                clipId = clipId,
+                text = text,
+                type = type,
+                label = label,
+                encrypted = encrypted,
+                iv = iv,
+                encMode = encMode,
+                serverId = serverId,
+                userId = userId,
+                timestamp = timestamp,
+                originId = originId,
+                sourceId = sourceId,
+                sourceApp = sourceApp,
+            )
             debugLog(logTag) { "Wrote $clipId to disk (${text.length} bytes)" }
             return true
         } catch (e: Exception) {
             Log.e(logTag, "Error writing clip item: ${e.message}", e)
             return false
         }
+    }
+
+    fun writeClipItemIfOriginMissing(
+        clipId: String,
+        text: String,
+        type: ClipType,
+        label: String = "",
+        encrypted: Boolean = false,
+        iv: String? = null,
+        encMode: String? = null,
+        serverId: Long = -1,
+        userId: String = "",
+        timestamp: Long = System.currentTimeMillis(),
+        originId: String = "",
+        sourceId: String = "",
+        sourceApp: String = "",
+    ): ClipWriteOutcome = lock.write {
+        try {
+            val normalizedOriginId = originId.trim()
+            ensureOriginIdIndexLoaded()
+            if (normalizedOriginId.isNotEmpty()) {
+                val existingClipId = originIdIndex?.get(normalizedOriginId)
+                if (existingClipId != null) {
+                    return ClipWriteOutcome.Duplicate(existingClipId)
+                }
+            }
+
+            writeClipItemLocked(
+                clipId = clipId,
+                text = text,
+                type = type,
+                label = label,
+                encrypted = encrypted,
+                iv = iv,
+                encMode = encMode,
+                serverId = serverId,
+                userId = userId,
+                timestamp = timestamp,
+                originId = normalizedOriginId,
+                sourceId = sourceId,
+                sourceApp = sourceApp,
+            )
+            debugLog(logTag) { "Wrote $clipId to disk (${text.length} bytes)" }
+            ClipWriteOutcome.Written(clipId)
+        } catch (e: Exception) {
+            Log.e(logTag, "Error writing clip item: ${e.message}", e)
+            ClipWriteOutcome.Failed
+        }
+    }
+
+    private fun writeClipItemLocked(
+        clipId: String,
+        text: String,
+        type: ClipType,
+        label: String,
+        encrypted: Boolean,
+        iv: String?,
+        encMode: String?,
+        serverId: Long,
+        userId: String,
+        timestamp: Long,
+        originId: String,
+        sourceId: String,
+        sourceApp: String,
+    ) {
+        val clipFile = File(storageDir, "$clipId.txt")
+        clipFile.bufferedWriter().use { writer ->
+            writer.write("$clipId\n")
+            writer.write("$type\n")
+            writer.write("$label\n")
+            writer.write("$timestamp\n")
+            writer.write("$serverId\n")
+            writer.write("$userId\n")
+            writer.write("$encrypted\n")
+            writer.write("${iv ?: ""}\n")
+            writer.write("${encMode ?: ""}\n")
+            writer.write("$originId\n")
+            writer.write("$sourceId\n")
+            writer.write("$sourceApp\n")
+            writer.write("---|---|---\n")
+            writer.write(text)
+        }
+
+        ensureServerIdIndexLoaded()
+        ensureOriginIdIndexLoaded()
+        if (serverId > 0) {
+            serverIdIndex?.put(serverId, clipId)
+        }
+        if (originId.isNotBlank()) {
+            originIdIndex?.put(originId, clipId)
+        }
+        pruneOldClipsLocked()
     }
     
     /**
@@ -180,6 +297,7 @@ class CopyCatFileStorage(private val context: Context) {
             }
             
             val oldServerId = lines[4].toLongOrNull() ?: -1L
+            val oldOriginId = lines.getOrNull(9)?.trim()?.takeIf { it.isNotEmpty() }
             // Update serverId (line 4) and userId (line 5)
             lines[4] = serverId.toString()
             lines[5] = userId
@@ -188,11 +306,15 @@ class CopyCatFileStorage(private val context: Context) {
             clipFile.writeText(lines.joinToString("\n"))
 
             ensureServerIdIndexLoaded()
+            ensureOriginIdIndexLoaded()
             if (oldServerId > 0 && oldServerId != serverId) {
                 serverIdIndex?.remove(oldServerId)
             }
             if (serverId > 0) {
                 serverIdIndex?.put(serverId, clipId)
+            }
+            if (oldOriginId != null) {
+                originIdIndex?.put(oldOriginId, clipId)
             }
             
             debugLog(logTag) { "Updated $clipId with server ID $serverId" }
@@ -208,7 +330,9 @@ class CopyCatFileStorage(private val context: Context) {
             val clipFile = File(storageDir, "$clipId.txt")
             if (clipFile.exists()) {
                 ensureServerIdIndexLoaded()
+                ensureOriginIdIndexLoaded()
                 removeServerIdForClipId(clipId)
+                removeOriginIdForClipId(clipId)
                 val deleted = clipFile.delete()
                 if (deleted) {
                     debugLog(logTag) { "Deleted clip file $clipId" }
@@ -232,6 +356,17 @@ class CopyCatFileStorage(private val context: Context) {
             return serverIdIndex?.get(serverId)
         } catch (e: Exception) {
             Log.e(logTag, "Error finding clip by server ID $serverId: ${e.message}")
+            return null
+        }
+    }
+
+    fun findClipIdByOriginId(originId: String): String? = lock.read {
+        try {
+            if (originId.isBlank()) return null
+            ensureOriginIdIndexLoaded()
+            return originIdIndex?.get(originId.trim())
+        } catch (e: Exception) {
+            Log.e(logTag, "Error finding clip by originId $originId: ${e.message}")
             return null
         }
     }
@@ -351,6 +486,7 @@ class CopyCatFileStorage(private val context: Context) {
                     }
                 } ?: 0
                 serverIdIndex = mutableMapOf()
+                originIdIndex = mutableMapOf()
                 
                 debugLog(logTag) { "Cleared $deleted clipboard files" }
             } catch (e: Exception) {
@@ -420,5 +556,11 @@ class CopyCatFileStorage(private val context: Context) {
         val totalBytes: Long
     ) {
         val totalMB: Float get() = totalBytes / (1024f * 1024f)
+    }
+
+    sealed class ClipWriteOutcome {
+        data class Written(val clipId: String) : ClipWriteOutcome()
+        data class Duplicate(val clipId: String) : ClipWriteOutcome()
+        data object Failed : ClipWriteOutcome()
     }
 }

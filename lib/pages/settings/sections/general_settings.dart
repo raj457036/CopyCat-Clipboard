@@ -7,11 +7,13 @@ import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/locale_dropdown.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+import 'package:universal_io/io.dart';
 
 class GeneralSettings extends StatelessWidget {
   const GeneralSettings({super.key});
@@ -33,9 +35,10 @@ class GeneralSettings extends StatelessWidget {
           height16,
           const LocaleDropdownTile(),
           height10,
-          const DontAutoCopyOverDropdown(),
-          const PauseTillSwitch(),
-          const StartUpLaunchSwitch(),
+          if (!Platform.isIOS) const DontAutoCopyOverDropdown(),
+          if (isDesktopPlatform) const PauseTillSwitch(),
+          if (isDesktopPlatform) const StartUpLaunchSwitch(),
+          const Divider(),
           ListTile(
             leading: const Icon(Icons.backup_rounded),
             title: Text(locale.settings__tile__backup_restore__title),

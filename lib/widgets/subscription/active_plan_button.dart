@@ -50,11 +50,7 @@ class ActivePlanButton extends StatelessWidget {
               label: Text(label),
             );
           }
-          return Focus(
-            skipTraversal: true,
-            descendantsAreFocusable: false,
-            child: button,
-          );
+          return ExcludeFocus(child: button);
         },
       ),
     );

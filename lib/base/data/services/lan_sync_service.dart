@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as io;
 
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import 'package:mdns_dart/mdns_dart.dart';
@@ -22,8 +23,23 @@ const _kServiceType = '_copycat._tcp';
 /// Maximum age of a clip's timestamp before we reject it as a replay.
 const _kReplayWindowMs = 10000;
 
+/// Maximum age of a binary clip's timestamp — larger to allow for big-file transfer time.
+const _kBinaryReplayWindowMs = 60000;
+
+/// Maximum file size (bytes) that LAN sync will send or accept (100 MB).
+const _kMaxLanFileSizeBytes = 100 * 1024 * 1024;
+
 /// How often all known peers are re-pinged to update reachability.
 const _kPingInterval = Duration(seconds: 20);
+
+/// How often mDNS discovery is re-run to recover removed/stale peers.
+const _kDiscoveryInterval = Duration(seconds: 60);
+
+/// Minimum gap between two discovery attempts.
+const _kDiscoveryCooldown = Duration(seconds: 10);
+
+/// Fast retry cadence used while no peers have been discovered yet.
+const _kDiscoveryWarmupInterval = Duration(seconds: 8);
 
 /// Desktop (macOS / Windows / Linux) LAN instant-sync service.
 ///
@@ -48,6 +64,10 @@ class LanSyncService {
   int _serverPort = 0;
   MDNSServer? _mdnsServer;
   Timer? _pingTimer;
+  Timer? _discoveryTimer;
+  Timer? _discoveryWarmupTimer;
+  bool _discoveryInFlight = false;
+  DateTime? _lastDiscoveryAt;
   final Map<String, LanPeer> _peers = {};
   final Map<String, int> _peerFailures = {};
   bool _started = false;
@@ -88,15 +108,19 @@ class LanSyncService {
       await _startMdns();
     } catch (e) {
       logger.w(
-        'LanSyncService: mDNS failed (non-fatal, reverse learning still active): $e',
+        () =>
+            'LanSyncService: mDNS failed (non-fatal, reverse learning still active): $e',
       );
     }
 
-    // Periodic reachability check only — new peers are learned via reverse
-    // discovery (/ping announcement + X-CC-PORT on /clip), so there is no
-    // need to re-scan mDNS every cycle.
+    // Periodic reachability checks + periodic mDNS refresh.
     _pingTimer = Timer.periodic(_kPingInterval, (_) => _pingAllPeers());
-    logger.i('LanSyncService started on port $_serverPort');
+    _discoveryTimer = Timer.periodic(
+      _kDiscoveryInterval,
+      (_) => unawaited(_discoverPeersThrottled()),
+    );
+    _startDiscoveryWarmup();
+    logger.i(() => 'LanSyncService started on port $_serverPort');
   }
 
   Future<void> stop() async {
@@ -106,12 +130,16 @@ class LanSyncService {
     _httpServer = null;
     _pingTimer?.cancel();
     _pingTimer = null;
+    _discoveryTimer?.cancel();
+    _discoveryTimer = null;
+    _discoveryWarmupTimer?.cancel();
+    _discoveryWarmupTimer = null;
     await _mdnsServer?.stop();
     _mdnsServer = null;
     _peers.clear();
     _peerFailures.clear();
     _peersController.add([]);
-    logger.i('LanSyncService stopped');
+    logger.i(() => 'LanSyncService stopped');
   }
 
   Future<void> reconfigure({bool? enabled}) async {
@@ -143,13 +171,16 @@ class LanSyncService {
     } else {
       final failures = (_peerFailures[did] ?? 0) + 1;
       _peerFailures[did] = failures;
-      if (failures >= 3) {
+      if (failures >= 10) {
         _peers.remove(did);
         _peerFailures.remove(did);
         unawaited(_savePeers());
         logger.i(
-          'LAN: removed unresponsive peer $did after $failures failures',
+          () => 'LAN: removed unresponsive peer $did after $failures failures',
         );
+        // Trigger a fast mDNS refresh so transient removals can recover
+        // without requiring app restart or reverse traffic.
+        unawaited(_discoverPeersThrottled(force: true));
       } else {
         _peers[did] = peer.withReachable(false);
       }
@@ -158,16 +189,17 @@ class LanSyncService {
   }
 
   Future<bool> _checkReachable(String host, int port) async {
+    final client = io.HttpClient();
     try {
-      final client = io.HttpClient();
       client.connectionTimeout = const Duration(seconds: 2);
       final req = await client.getUrl(Uri.parse('http://$host:$port/ping'));
       final resp = await req.close();
       await resp.drain<void>();
-      client.close();
       return resp.statusCode == io.HttpStatus.ok;
     } catch (_) {
       return false;
+    } finally {
+      client.close(force: true);
     }
   }
   // MARK: - HTTP Server
@@ -178,7 +210,7 @@ class LanSyncService {
     _httpServer!.listen(
       _handleRequest,
       onError: (e) {
-        logger.w('LAN HTTP server error: $e');
+        logger.w(() => 'LAN HTTP server error: $e');
       },
     );
   }
@@ -197,7 +229,9 @@ class LanSyncService {
           _peers[annDid] = LanPeer(annDid, host, annPort, reachable: true);
           _peersController.add(currentPeers);
           unawaited(_savePeers());
-          logger.i('LAN: learned peer $annDid at $host:$annPort via /ping');
+          logger.i(
+            () => 'LAN: learned peer $annDid at $host:$annPort via /ping',
+          );
         }
       }
       request.response
@@ -232,37 +266,14 @@ class LanSyncService {
       return;
     }
 
-    final bodyBytes = await request.fold<List<int>>(
-      [],
-      (buf, chunk) => buf..addAll(chunk),
+    final contentLength = int.tryParse(
+      request.headers.value('content-length') ?? '',
     );
-
-    if (!_verifyHmac(bodyBytes, hmacHeader)) {
-      logger.w('LAN: HMAC verification failed from $fromDeviceId');
+    if (contentLength == null || contentLength <= 0) {
       request.response
-        ..statusCode = io.HttpStatus.unauthorized
+        ..statusCode = io.HttpStatus.badRequest
         ..close();
       return;
-    }
-
-    // Reverse peer learning: the sender includes its own HTTP server port so
-    // we can send clips back without waiting for our own mDNS discovery cycle.
-    final inboundPort = int.tryParse(request.headers.value('x-cc-port') ?? '');
-    if (inboundPort != null) {
-      final host = request.connectionInfo?.remoteAddress.address ?? '';
-      if (host.isNotEmpty) {
-        _peers[fromDeviceId] = LanPeer(
-          fromDeviceId,
-          host,
-          inboundPort,
-          reachable: true,
-        );
-        _peersController.add(currentPeers);
-        unawaited(_savePeers());
-        logger.i(
-          'LAN: learned peer $fromDeviceId at $host:$inboundPort from /clip',
-        );
-      }
     }
 
     final clipType = _parseClipType(typeStr);
@@ -272,18 +283,134 @@ class LanSyncService {
         ..close();
       return;
     }
+    if (clipType == ClipItemType.media || clipType == ClipItemType.file) {
+      final fileExt = request.headers.value('x-cc-ext');
+      final fileName = request.headers.value('x-cc-name');
+      // Accept X-CC-MIME (sent by Dart peers) or Content-Type (sent by Android).
+      final fileMimeType =
+          request.headers.value('x-cc-mime') ??
+          request.headers.contentType?.mimeType;
+      final tsMs = int.tryParse(request.headers.value('x-cc-ts') ?? '');
+      final createdMs = int.tryParse(
+        request.headers.value('x-cc-created') ?? '',
+      );
+      final modifiedMs = int.tryParse(
+        request.headers.value('x-cc-modified') ?? '',
+      );
+      final osStr = request.headers.value('x-cc-os');
+      if (tsMs != null &&
+          DateTime.now().millisecondsSinceEpoch - tsMs >
+              _kBinaryReplayWindowMs) {
+        logger.w(
+          () => 'LAN: Binary replay detected from $fromDeviceId, dropping',
+        );
+        request.response
+          ..statusCode = io.HttpStatus.unauthorized
+          ..close();
+        return;
+      }
 
-    request.response
-      ..statusCode = io.HttpStatus.ok
-      ..close();
+      final savedFile = await _saveIncomingBinaryClip(
+        request: request,
+        contentLength: contentLength,
+        originId: originId,
+        expectedHmac: hmacHeader,
+      );
+      if (savedFile == null) {
+        request.response
+          ..statusCode = io.HttpStatus.unauthorized
+          ..close();
+        return;
+      }
 
-    // Handle clip asynchronously after responding
-    _processIncomingClip(
-      bodyBytes: bodyBytes,
-      fromDeviceId: fromDeviceId,
-      originId: originId,
-      type: clipType,
-    );
+      // Reverse peer learning: the sender includes its own HTTP server port so
+      // we can send clips back without waiting for our own mDNS discovery cycle.
+      final inboundPort = int.tryParse(
+        request.headers.value('x-cc-port') ?? '',
+      );
+      if (inboundPort != null) {
+        final host = request.connectionInfo?.remoteAddress.address ?? '';
+        if (host.isNotEmpty) {
+          _peers[fromDeviceId] = LanPeer(
+            fromDeviceId,
+            host,
+            inboundPort,
+            reachable: true,
+          );
+          _peersController.add(currentPeers);
+          unawaited(_savePeers());
+          logger.i(
+            () =>
+                'LAN: learned peer $fromDeviceId at $host:$inboundPort from /clip',
+          );
+        }
+      }
+
+      request.response
+        ..statusCode = io.HttpStatus.ok
+        ..close();
+
+      _processIncomingBinaryClip(
+        file: savedFile,
+        fromDeviceId: fromDeviceId,
+        originId: originId,
+        type: clipType,
+        tsMs: tsMs,
+        fileExt: fileExt,
+        fileName: fileName,
+        fileMimeType: fileMimeType,
+        createdMs: createdMs,
+        modifiedMs: modifiedMs,
+        osStr: osStr,
+      );
+    } else {
+      final bodyBytes = await request.fold<List<int>>(
+        [],
+        (buf, chunk) => buf..addAll(chunk),
+      );
+
+      if (!_verifyHmac(bodyBytes, hmacHeader)) {
+        logger.w(() => 'LAN: HMAC verification failed from $fromDeviceId');
+        request.response
+          ..statusCode = io.HttpStatus.unauthorized
+          ..close();
+        return;
+      }
+
+      // Reverse peer learning: the sender includes its own HTTP server port so
+      // we can send clips back without waiting for our own mDNS discovery cycle.
+      final inboundPort = int.tryParse(
+        request.headers.value('x-cc-port') ?? '',
+      );
+      if (inboundPort != null) {
+        final host = request.connectionInfo?.remoteAddress.address ?? '';
+        if (host.isNotEmpty) {
+          _peers[fromDeviceId] = LanPeer(
+            fromDeviceId,
+            host,
+            inboundPort,
+            reachable: true,
+          );
+          _peersController.add(currentPeers);
+          unawaited(_savePeers());
+          logger.i(
+            () =>
+                'LAN: learned peer $fromDeviceId at $host:$inboundPort from /clip',
+          );
+        }
+      }
+
+      request.response
+        ..statusCode = io.HttpStatus.ok
+        ..close();
+
+      _processIncomingClip(
+        bodyBytes: bodyBytes,
+        fromDeviceId: fromDeviceId,
+        originId: originId,
+        type: clipType,
+      );
+    }
   }
 
   void _processIncomingClip({
@@ -298,7 +425,7 @@ class LanSyncService {
 
       final ts = json['ts'] as int? ?? 0;
       if (DateTime.now().millisecondsSinceEpoch - ts > _kReplayWindowMs) {
-        logger.w('LAN: Replay detected from $fromDeviceId, dropping');
+        logger.w(() => 'LAN: Replay detected from $fromDeviceId, dropping');
         return;
       }
 
@@ -348,6 +475,207 @@ class LanSyncService {
     } catch (e) {
       logger.e(() => 'LAN: Failed to process incoming clip: $e');
     }
+  }
+
+  /// Streams an incoming binary (media / file) clip to a temp file, verifies
+  /// its HMAC as the bytes arrive, and returns the final file path on success.
+  Future<io.File?> _saveIncomingBinaryClip({
+    required io.HttpRequest request,
+    required int contentLength,
+    required String originId,
+    required String expectedHmac,
+  }) async {
+    final fileMimeType =
+        request.headers.value('x-cc-mime') ??
+        request.headers.contentType?.mimeType;
+    final fileExt = request.headers.value('x-cc-ext');
+    final fileName = request.headers.value('x-cc-name');
+    final clipType =
+        _parseClipType(request.headers.value('x-cc-type') ?? '') ??
+        ClipItemType.file;
+    final actualType =
+        (fileMimeType?.startsWith('image/') == true &&
+            clipType == ClipItemType.file)
+        ? ClipItemType.media
+        : clipType;
+    final rootDir = actualType == ClipItemType.media ? 'medias' : 'files';
+    final ext = (fileExt?.trim().isNotEmpty == true) ? fileExt!.trim() : 'bin';
+    final name = (fileName?.trim().isNotEmpty == true)
+        ? p.basename(fileName!.trim())
+        : '$originId.$ext';
+
+    final digests = <Digest>[];
+    final macInput = Hmac(sha256, utf8.encode(userId)).startChunkedConversion(
+      ChunkedConversionSink.withCallback(digests.addAll),
+    );
+
+    final docDir = await getApplicationDocumentsDirectory();
+    final dir = io.Directory(p.join(docDir.path, 'offline', rootDir));
+    await dir.create(recursive: true);
+
+    final tempFile = io.File(
+      p.join(
+        dir.path,
+        '${originId}_${DateTime.now().millisecondsSinceEpoch}.part',
+      ),
+    );
+    final sink = tempFile.openWrite();
+    var receivedBytes = 0;
+
+    try {
+      await for (final chunk in request) {
+        receivedBytes += chunk.length;
+        if (receivedBytes > contentLength) {
+          logger.w(
+            () => 'LAN: Received body larger than declared size for $originId',
+          );
+          await sink.close();
+          try {
+            if (await tempFile.exists()) {
+              await tempFile.delete();
+            }
+          } catch (_) {}
+          return null;
+        }
+        sink.add(chunk);
+        macInput.add(chunk);
+      }
+
+      await sink.close();
+      macInput.close();
+
+      if (receivedBytes != contentLength) {
+        logger.w(
+          () =>
+              'LAN: Short streamed body for $originId: expected=$contentLength got=$receivedBytes',
+        );
+        try {
+          if (await tempFile.exists()) {
+            await tempFile.delete();
+          }
+        } catch (_) {}
+        return null;
+      }
+
+      if (digests.isEmpty) {
+        logger.w(() => 'LAN: Missing HMAC digest after streaming $originId');
+        try {
+          if (await tempFile.exists()) {
+            await tempFile.delete();
+          }
+        } catch (_) {}
+        return null;
+      }
+
+      final actualHmac = digests.single.toString();
+      if (!_compareHmac(actualHmac, expectedHmac)) {
+        logger.w(
+          () =>
+              'LAN: HMAC verification failed from ${request.headers.value('x-cc-did') ?? ''}',
+        );
+        try {
+          if (await tempFile.exists()) {
+            await tempFile.delete();
+          }
+        } catch (_) {}
+        return null;
+      }
+
+      final finalPath = p.join(dir.path, '${originId}_$name');
+      final finalFile = io.File(finalPath);
+      if (await finalFile.exists()) {
+        await finalFile.delete();
+      }
+      await tempFile.rename(finalPath);
+      return finalFile;
+    } catch (e) {
+      macInput.close();
+      await sink.close();
+      try {
+        if (await tempFile.exists()) {
+          await tempFile.delete();
+        }
+      } catch (_) {}
+      logger.w(() => 'LAN: Failed to stream binary clip for $originId: $e');
+      return null;
+    }
+  }
+
+  /// Handles an incoming binary (media / file) clip from a LAN peer.
+  ///
+  /// Persists the saved file path through [_batchSync] so it lands in the local
+  /// Isar DB exactly like any other persisted clip.
+  void _processIncomingBinaryClip({
+    required io.File file,
+    required String fromDeviceId,
+    required String originId,
+    required ClipItemType type,
+    int? tsMs,
+    String? fileExt,
+    String? fileName,
+    String? fileMimeType,
+    int? createdMs,
+    int? modifiedMs,
+    String? osStr,
+  }) {
+    if (tsMs != null &&
+        DateTime.now().millisecondsSinceEpoch - tsMs > _kBinaryReplayWindowMs) {
+      logger.w(
+        () => 'LAN: Binary replay detected from $fromDeviceId, dropping',
+      );
+      return;
+    }
+
+    unawaited(() async {
+      try {
+        final now = systemTime();
+        final itemCreated = createdMs != null
+            ? DateTime.fromMillisecondsSinceEpoch(createdMs)
+            : now;
+        final itemModified = modifiedMs != null
+            ? DateTime.fromMillisecondsSinceEpoch(modifiedMs)
+            : now;
+        final itemOs = _parseOS(osStr) ?? PlatformOS.android;
+        final actualType =
+            (fileMimeType?.startsWith('image/') == true &&
+                type == ClipItemType.file)
+            ? ClipItemType.media
+            : type;
+        final extFromPath = p.extension(file.path).replaceFirst('.', '');
+        final ext = (fileExt?.isNotEmpty == true)
+            ? fileExt!
+            : (extFromPath.isNotEmpty ? extFromPath : 'bin');
+        final name = (fileName?.isNotEmpty == true)
+            ? fileName!
+            : p.basename(file.path);
+        final fileSize = await file.length();
+
+        final item = ClipboardItem(
+          userId: userId.isNotEmpty ? userId : kLocalUserId,
+          deviceId: fromDeviceId.isNotEmpty ? fromDeviceId : null,
+          type: actualType,
+          localPath: file.path,
+          fileName: name,
+          title: name,
+          fileExtension: ext,
+          fileMimeType: fileMimeType,
+          fileSize: fileSize,
+          created: itemCreated,
+          modified: itemModified,
+          os: itemOs,
+          originId: originId,
+        );
+
+        final events = await _batchSync.syncBatch([item], {});
+        if (events.isNotEmpty) _syncEventBus.emit<ClipboardItem>(events.first);
+        logger.d(
+          () =>
+              'LAN: binary clip from $fromDeviceId — type=${type.name} size=$fileSize saved=${file.path}',
+        );
+      } catch (e) {
+        logger.e(() => 'LAN: Failed to process incoming binary clip: $e');
+      }
+    }());
   }
 
   ClipboardItem? _buildClipboardItem({
@@ -453,12 +781,12 @@ class LanSyncService {
         if (await _checkReachable(host, port)) {
           _peers[did] = LanPeer(did, host, port, reachable: true);
           restored = true;
-          logger.i('LAN: restored peer $did at $host:$port from disk');
+          logger.i(() => 'LAN: restored peer $did at $host:$port from disk');
         }
       }
       if (restored) _peersController.add(currentPeers);
     } catch (e) {
-      logger.w('LAN: could not restore persisted peers: $e');
+      logger.w(() => 'LAN: could not restore persisted peers: $e');
     }
   }
 
@@ -466,7 +794,36 @@ class LanSyncService {
 
   Future<void> _startMdns() async {
     await _registerService();
-    await _discoverPeers();
+    await _discoverPeersThrottled(force: true);
+  }
+
+  Future<void> _discoverPeersThrottled({bool force = false}) async {
+    if (_discoveryInFlight) return;
+    if (!force && _lastDiscoveryAt != null) {
+      final elapsed = DateTime.now().difference(_lastDiscoveryAt!);
+      if (elapsed < _kDiscoveryCooldown) return;
+    }
+
+    _discoveryInFlight = true;
+    _lastDiscoveryAt = DateTime.now();
+    try {
+      await _discoverPeers();
+    } finally {
+      _discoveryInFlight = false;
+    }
+  }
+
+  void _startDiscoveryWarmup() {
+    _discoveryWarmupTimer?.cancel();
+    _discoveryWarmupTimer = Timer.periodic(_kDiscoveryWarmupInterval, (_) {
+      if (!_started) return;
+      if (_peers.isNotEmpty) {
+        _discoveryWarmupTimer?.cancel();
+        _discoveryWarmupTimer = null;
+        return;
+      }
+      unawaited(_discoverPeersThrottled(force: true));
+    });
   }
 
   Future<void> _registerService() async {
@@ -478,7 +835,9 @@ class LanSyncService {
     );
     _mdnsServer = MDNSServer(MDNSServerConfig(zone: service, reusePort: true));
     await _mdnsServer!.start();
-    logger.i('LAN mDNS: advertising "$_kServiceType" on port $_serverPort');
+    logger.i(
+      () => 'LAN mDNS: advertising "$_kServiceType" on port $_serverPort',
+    );
   }
 
   Future<void> _discoverPeers() async {
@@ -493,7 +852,7 @@ class LanSyncService {
         _handleDiscoveredEntry(entry);
       }
     } catch (e) {
-      logger.w('LAN mDNS: discovery error: $e');
+      logger.w(() => 'LAN mDNS: discovery error: $e');
     }
   }
 
@@ -510,22 +869,49 @@ class LanSyncService {
     final ip = entry.addrV4?.address ?? entry.addrV6?.address;
     if (ip == null) return;
 
-    if (!_peers.containsKey(did)) {
-      _peers[did] = LanPeer(did, ip, entry.port);
-      _peersController.add(currentPeers);
-      unawaited(_savePeers());
-      logger.i('LAN: discovered peer $did at $ip:${entry.port}');
-      unawaited(_pingSinglePeer(did));
+    final existing = _peers[did];
+    final changed =
+        existing == null ||
+        existing.host != ip ||
+        existing.port != entry.port ||
+        !existing.reachable;
+    if (!changed) return;
+
+    _peers[did] = LanPeer(did, ip, entry.port, reachable: true);
+    _peerFailures[did] = 0;
+    _peersController.add(currentPeers);
+    unawaited(_savePeers());
+    _discoveryWarmupTimer?.cancel();
+    _discoveryWarmupTimer = null;
+
+    if (existing == null) {
+      logger.i(() => 'LAN: discovered peer $did at $ip:${entry.port}');
+    } else {
+      logger.i(
+        () =>
+            'LAN: refreshed peer $did -> $ip:${entry.port} (was ${existing.host}:${existing.port})',
+      );
     }
+    unawaited(_pingSinglePeer(did));
   }
 
   // MARK: - Sending
 
-  /// Broadcast a text or URL clip to all discovered LAN peers.
+  /// Broadcast a clip to all discovered LAN peers.
+  /// Text and URL clips are sent as JSON; media and file clips are sent as raw
+  /// binary with file-metadata headers.
   Future<void> broadcastClip(ClipboardItem item) async {
     if (!_started || _peers.isEmpty) return;
-    if (item.type != ClipItemType.text && item.type != ClipItemType.url) return;
 
+    if (item.type == ClipItemType.text || item.type == ClipItemType.url) {
+      await _broadcastTextClip(item);
+    } else if (item.type == ClipItemType.media ||
+        item.type == ClipItemType.file) {
+      await _broadcastBinaryClip(item);
+    }
+  }
+
+  Future<void> _broadcastTextClip(ClipboardItem item) async {
     final content = item.type == ClipItemType.url
         ? (item.url ?? '')
         : (item.text ?? '');
@@ -540,6 +926,10 @@ class LanSyncService {
       'modified': item.modified.millisecondsSinceEpoch,
       'os': item.os.name,
       'encrypted': item.encrypted,
+      if (item.sourceId != null && item.sourceId!.isNotEmpty)
+        'sourceId': item.sourceId,
+      if (item.sourceApp != null && item.sourceApp!.isNotEmpty)
+        'sourceApp': item.sourceApp,
       if (item.iv != null) 'iv': item.iv,
       if (item.encMode != null) 'encMode': item.encMode,
     });
@@ -548,13 +938,61 @@ class LanSyncService {
     final originId = item.originId ?? ClipboardItem.generateOriginId();
 
     for (final peer in _peers.values) {
-      _sendToPeer(
-        host: peer.host,
-        port: peer.port,
-        originId: originId,
-        typeStr: item.type.name,
-        bodyBytes: bodyBytes,
-        hmac: hmac,
+      unawaited(
+        _sendToPeer(
+          host: peer.host,
+          port: peer.port,
+          originId: originId,
+          typeStr: item.type.name,
+          bodyBytes: bodyBytes,
+          hmac: hmac,
+        ),
+      );
+    }
+  }
+
+  Future<void> _broadcastBinaryClip(ClipboardItem item) async {
+    final path = item.localPath;
+    if (path == null) return;
+
+    final file = io.File(path);
+    if (!await file.exists()) return;
+
+    final fileLength = await file.length();
+    if (fileLength > _kMaxLanFileSizeBytes) {
+      logger.w(
+        () => 'LAN: Skipping file broadcast — too large ($fileLength bytes)',
+      );
+      return;
+    }
+
+    final originId = item.originId ?? ClipboardItem.generateOriginId();
+    final ts = DateTime.now().millisecondsSinceEpoch;
+    final mimeType = item.fileMimeType ?? 'application/octet-stream';
+    final ext = item.fileExtension ?? p.extension(path).replaceFirst('.', '');
+    final name = item.fileName ?? p.basename(path);
+    final hmac = await _computeHmacForFile(file);
+
+    for (final peer in _peers.values.toList()) {
+      unawaited(
+        _sendBinaryToPeer(
+          host: peer.host,
+          port: peer.port,
+          file: file,
+          fileLength: fileLength,
+          originId: originId,
+          typeStr: item.type.name,
+          hmac: hmac,
+          ts: ts,
+          mimeType: mimeType,
+          fileExt: ext,
+          fileName: name,
+          sourceId: item.sourceId,
+          sourceApp: item.sourceApp,
+          created: item.created.millisecondsSinceEpoch,
+          modified: item.modified.millisecondsSinceEpoch,
+          osStr: item.os.name,
+        ),
       );
     }
   }
@@ -567,8 +1005,8 @@ class LanSyncService {
     required List<int> bodyBytes,
     required String hmac,
   }) async {
+    final client = io.HttpClient();
     try {
-      final client = io.HttpClient();
       client.connectionTimeout = const Duration(seconds: 3);
       final req = await client.postUrl(Uri.parse('http://$host:$port/clip'));
       req.headers
@@ -576,15 +1014,89 @@ class LanSyncService {
         ..set('X-CC-OID', originId)
         ..set('X-CC-TYPE', typeStr)
         ..set('X-CC-HMAC', hmac)
+        ..set('X-CC-PORT', _serverPort.toString())
         ..contentType = io.ContentType.json
         ..contentLength = bodyBytes.length;
       req.add(bodyBytes);
       final resp = await req.close();
       await resp.drain<void>();
-      client.close();
     } catch (e) {
       logger.d('LAN: Could not reach peer $host:$port: $e');
+    } finally {
+      client.close(force: true);
     }
+  }
+
+  Future<void> _sendBinaryToPeer({
+    required String host,
+    required int port,
+    required io.File file,
+    required int fileLength,
+    required String originId,
+    required String typeStr,
+    required String hmac,
+    required int ts,
+    required String mimeType,
+    required String fileExt,
+    required String fileName,
+    required String? sourceId,
+    required String? sourceApp,
+    required int created,
+    required int modified,
+    required String osStr,
+  }) async {
+    final client = io.HttpClient();
+    try {
+      client.connectionTimeout = const Duration(seconds: 10);
+      final req = await client.postUrl(Uri.parse('http://$host:$port/clip'));
+      req.headers
+        ..set('X-CC-DID', deviceId)
+        ..set('X-CC-OID', originId)
+        ..set('X-CC-TYPE', typeStr)
+        ..set('X-CC-HMAC', hmac)
+        ..set('X-CC-PORT', _serverPort.toString())
+        ..set('X-CC-TS', ts.toString())
+        ..set('X-CC-EXT', fileExt)
+        ..set('X-CC-NAME', fileName)
+        ..set('X-CC-MIME', mimeType)
+        ..set('X-CC-CREATED', created.toString())
+        ..set('X-CC-MODIFIED', modified.toString())
+        ..set('X-CC-OS', osStr)
+        ..set('X-CC-SOURCE-ID', sourceId ?? '')
+        ..set('X-CC-SOURCE-APP', sourceApp ?? '')
+        ..set('Content-Type', mimeType)
+        ..contentLength = fileLength;
+      await req.addStream(file.openRead());
+      final resp = await req.close();
+      await resp.drain<void>();
+    } catch (e) {
+      logger.d('LAN: Could not send binary clip to peer $host:$port: $e');
+    } finally {
+      client.close(force: true);
+    }
+  }
+
+  Future<String> _computeHmacForFile(io.File file) async {
+    final digests = <Digest>[];
+    final input = Hmac(sha256, utf8.encode(userId)).startChunkedConversion(
+      ChunkedConversionSink.withCallback(digests.addAll),
+    );
+
+    await for (final chunk in file.openRead()) {
+      input.add(chunk);
+    }
+    input.close();
+
+    return digests.single.toString();
+  }
+
+  bool _compareHmac(String actual, String expected) {
+    if (actual.length != expected.length) return false;
+    var diff = 0;
+    for (var i = 0; i < actual.length; i++) {
+      diff |= actual.codeUnitAt(i) ^ expected.codeUnitAt(i);
+    }
+    return diff == 0;
   }
 
   // MARK: - Auth
@@ -603,8 +1115,11 @@ class LanSyncService {
   // MARK: - Helpers
 
   ClipItemType? _parseClipType(String raw) {
+    final normalized = raw.toLowerCase();
+    // Android uses 'fileurl' (from ClipType.FileUrl); map to file for routing.
+    if (normalized == 'fileurl') return ClipItemType.file;
     try {
-      return ClipItemType.values.byName(raw.toLowerCase());
+      return ClipItemType.values.byName(normalized);
     } catch (_) {
       return null;
     }

@@ -203,6 +203,7 @@ class AppConfigCubit extends Cubit<AppConfigState> {
     final plugin = sl<AndroidBackgroundClipboard>();
     plugin.writeShared('lanInstantSync', config.lanInstantSync);
     plugin.writeShared('autoWriteOnReceive', config.autoWriteOnReceive);
+    plugin.writeShared('dontCopyOver', config.dontCopyOver);
   }
 
   bool get isCopyingPaused =>

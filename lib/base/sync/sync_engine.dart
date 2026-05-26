@@ -20,7 +20,7 @@ enum SyncResult { success, failed, skipped }
 /// Generic sync engine for any [Syncable] entity.
 ///
 /// Handles:
-/// - Pull sync (server → local) with cursor persistence
+/// - Pull sync (server -> local) with cursor persistence
 /// - Push sync (outbox processing with retry)
 /// - Realtime sync (WebSocket with polling fallback)
 /// - Conflict resolution
@@ -61,7 +61,7 @@ class SyncEngine<T extends Syncable> {
   /// Unique identifier for this engine.
   String get identity => "${adapter.entityType}:$namespace";
 
-  // PULL (Server → Local)
+  // PULL (Server -> Local)
 
   /// Fetches changes and deletions from the server and applies them locally.
   ///
@@ -286,7 +286,7 @@ class SyncEngine<T extends Syncable> {
     return SyncResult.success;
   }
 
-  // PUSH (Local → Server via Outbox)
+  // PUSH (Local -> Server via Outbox)
 
   /// Processes local changes waiting in the outbox.
   Future<void> processOutbox() async {

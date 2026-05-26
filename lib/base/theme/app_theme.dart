@@ -40,7 +40,6 @@ ThemeData buildAppTheme({
     brightness: brightness,
     inputDecorationTheme: const InputDecorationTheme(
       border: OutlineInputBorder(),
-      isDense: true,
     ),
     textButtonTheme: textButtonTheme,
     elevatedButtonTheme: elevatedButtonTheme,

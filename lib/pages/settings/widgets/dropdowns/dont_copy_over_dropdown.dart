@@ -1,11 +1,15 @@
+import 'package:android_background_clipboard/android_background_clipboard.dart'
+    show AndroidBackgroundClipboard;
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/numbers/file_sizes.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/di/di.dart';
 import 'package:clipboard/widgets/settings_menu_dropdown.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:universal_io/io.dart';
 
 class DontAutoCopyOverDropdown extends StatelessWidget {
   const DontAutoCopyOverDropdown({super.key});
@@ -32,12 +36,19 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
     );
   }
 
+  Future<void> _onSelected(BuildContext context, int value) async {
+    final cubit = context.read<AppConfigCubit>();
+
+    if (Platform.isAndroid) {
+      await sl<AndroidBackgroundClipboard>().writeShared('dontCopyOver', value);
+    }
+    await cubit.changeDontCopyOver(value);
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (isMobilePlatform) return const SizedBox.shrink();
     final textTheme = context.textTheme;
     final colors = context.colors;
-    final cubit = context.read<AppConfigCubit>();
     return BlocSelector<AppConfigCubit, AppConfigState, int>(
       selector: (state) {
         switch (state) {
@@ -76,7 +87,7 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
                 trailing: null,
               );
             },
-            onSelected: cubit.changeDontCopyOver,
+            onSelected: (value) => _onSelected(context, value),
           ),
         );
       },

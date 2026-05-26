@@ -19,6 +19,7 @@ import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 
 inline fun debugLog(tag: String, message: () -> String) {
     if (Log.isLoggable(tag, Log.DEBUG)) {
@@ -26,14 +27,16 @@ inline fun debugLog(tag: String, message: () -> String) {
     }
 }
 
-/** Generates a cryptographically random 8-char alphanumeric ID, matching Mac's originId format. */
-fun generateOriginId(): String {
-    val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    val sb = StringBuilder(8)
-    val rng = java.security.SecureRandom()
-    repeat(8) { sb.append(chars[rng.nextInt(chars.length)]) }
-    return sb.toString()
-}
+private const val ORIGIN_ID_LENGTH = 11
+
+/**
+ * Generates a short NanoID for LAN/sync origin deduplication.
+ */
+fun generateOriginId(): String = NanoIdUtils.randomNanoId(
+    NanoIdUtils.DEFAULT_NUMBER_GENERATOR,
+    NanoIdUtils.DEFAULT_ALPHABET,
+    ORIGIN_ID_LENGTH,
+)
 
 class Utils {
 

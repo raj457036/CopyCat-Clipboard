@@ -8,7 +8,6 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/drag_to_move_area_2.dart';
 import 'package:clipboard/widgets/view_buttons/app_layout_button.dart';
 import 'package:clipboard/widgets/view_buttons/app_view_button.dart';
-import 'package:clipboard/widgets/view_buttons/navigate_to_home.dart';
 import 'package:clipboard/widgets/view_buttons/pin_to_top_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -95,11 +94,6 @@ class TitlebarView extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  if (!isWindowMode && !hideTabToggle)
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: NavigationButtons(),
-                    ),
                   const Spacer(),
                   LimitedBox(
                     maxWidth: 166.0,
@@ -113,7 +107,8 @@ class TitlebarView extends StatelessWidget {
                           if (!hidePinToggle) const PinToTopButton(),
                           width2,
                           width2,
-                          if (!hideLayoutToggle) const AppLayoutToggleButton(),
+                          if (!hideLayoutToggle)
+                            const AppLayoutToggleButton(compact: true),
                           width2,
                           if (!hideViewToggle) const AppViewButton(),
                           if (Platform.isWindows && isWindowMode)

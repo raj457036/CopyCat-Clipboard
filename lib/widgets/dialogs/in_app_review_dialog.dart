@@ -6,6 +6,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/widgets/cat_introduction_avatar.dart';
 import 'package:clipboard/widgets/copycat_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -98,20 +99,7 @@ class _InAppReviewDialog extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: CircleAvatar(
-                  radius: 60,
-                  child: SlideInLeft(
-                    child: Tada(
-                      child: const Align(
-                        alignment: Alignment.bottomCenter,
-                        child: CopyCatLogo(dimension: 86),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              const CatIntroductionAvatar(),
               const SizedBox(height: 14),
               Text(
                 locale.review__dialog__title,

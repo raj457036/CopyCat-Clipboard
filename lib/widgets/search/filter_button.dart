@@ -1,3 +1,4 @@
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/search_filter_state.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -27,26 +28,23 @@ class FilterButton extends StatelessWidget {
     final colors = context.colors;
     final active = filterState.isActive;
     final count = filterState.activeFilterCount;
-    return Focus(
-      skipTraversal: true,
-      descendantsAreFocusable: false,
-      child: Badge(
-        isLabelVisible: count > 0,
-        label: Text('$count'),
-        backgroundColor: colors.error,
-        textColor: colors.onError,
-        child: IconButton(
-          icon: const Icon(Icons.filter_list_rounded),
-          iconSize: 20,
-          tooltip: context.locale.search__tooltip__filter,
-          color: active ? colors.onPrimary : null,
-          style: IconButton.styleFrom(
-            backgroundColor: active
-                ? colors.primary
-                : colors.surfaceContainerHighest,
-          ),
-          onPressed: () => _openDialog(context),
+    return Badge(
+      isLabelVisible: count > 0,
+      label: Text('$count'),
+      backgroundColor: colors.error,
+      textColor: colors.onError,
+      child: IconButton(
+        icon: const Icon(Icons.filter_list_rounded),
+        tooltip: context.locale.search__tooltip__filter,
+        color: active ? colors.onPrimary : null,
+        style: IconButton.styleFrom(
+          backgroundColor: active
+              ? colors.primary
+              : colors.surfaceContainerHighest,
+          maximumSize: const Size.square(kToolbarHeight),
+          padding: const EdgeInsets.all(padding10),
         ),
+        onPressed: () => _openDialog(context),
       ),
     );
   }

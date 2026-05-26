@@ -20,7 +20,7 @@ abstract class SyncAdapter<T extends Syncable> {
   /// Find latest synced item timestamp for cursor reconstruction.
   Future<DateTime?> getLatestSyncTimestamp();
 
-  // Pull (Server → Local)
+  // Pull (Server -> Local)
 
   /// Fetch changed items from server since [lastModified] (keyset cursor).
   FailureOr<PaginatedResult<T>> fetchRemoteChanges({
@@ -48,7 +48,7 @@ abstract class SyncAdapter<T extends Syncable> {
   /// Delete items locally.
   Future<List<T>> deleteLocally(List<T> items);
 
-  // Push (Local → Server)
+  // Push (Local -> Server)
 
   /// Get a local item by ID (for outbox processing).
   Future<T?> getLocalById(int localId);
