@@ -20,11 +20,11 @@ class ExclusionRulesPage extends StatelessWidget {
     ExclusionRules rules,
   ) async {
     final cubit = context.read<AppConfigCubit>();
-    final androidCubit = context.read<AndroidBgClipboardCubit>();
+    final androidCubit = context.read<AndroidBgClipboardCubit?>();
     final granted = await cubit.confirmAccessibilityPermission();
     if (!granted) return;
     cubit.updateExclusionRule(rules);
-    androidCubit.updateExclusionRule(rules);
+    androidCubit?.updateExclusionRule(rules);
   }
 
   @override
