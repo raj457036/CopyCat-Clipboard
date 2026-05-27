@@ -58,6 +58,9 @@ class AppConfig with _$AppConfig, Identifiable {
     // Quick paste popup hotkey
     String? quickPasteHotkey,
 
+    // Paste stack toggle hotkey
+    String? pasteStackHotkey,
+
     /// If enabled, the primary action on clips will be smartly selected.
     /// The primary action will be paste, which will directly paste the clip
     /// to the last focused cursor in the last window, and the clipboard will minimize.
@@ -150,6 +153,10 @@ class AppConfig with _$AppConfig, Identifiable {
 
   HotKey? get getQuickPasteHotkey => quickPasteHotkey != null
       ? HotKey.fromJson(jsonDecode(quickPasteHotkey!))
+      : null;
+
+  HotKey? get getPasteStackHotkey => pasteStackHotkey != null
+      ? HotKey.fromJson(jsonDecode(pasteStackHotkey!))
       : null;
 
   ColorScheme get lightThemeColorScheme {

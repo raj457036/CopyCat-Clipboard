@@ -62,7 +62,6 @@ const microsoftStoreId = String.fromEnvironment("MICROSOFT_STORE_ID");
 
 const dbName = "CopyCat-Clipboard-DB";
 
-
 // system env variable keys
 const dbPathEnvKey = "COPYCAT_DB_ROOT";
 

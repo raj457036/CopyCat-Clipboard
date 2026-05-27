@@ -165,4 +165,3 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "./resources/macos-icon.png"
-

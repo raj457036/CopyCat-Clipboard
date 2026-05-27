@@ -8,9 +8,9 @@ import 'package:clipboard/utils/common_extension.dart'
     show BuildContextExtension;
 import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/layout/custom_scaffold.dart';
-import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class PasteStackPage extends StatelessWidget {
   final int count;
@@ -45,6 +45,15 @@ class PasteStackPage extends StatelessWidget {
           appBar: AppBar(
             automaticallyImplyLeading: false,
             // scrolledUnderElevation: 0,
+            leading: BackButton(
+              onPressed: context.pop,
+              style: IconButton.styleFrom(
+                iconSize: 20,
+                padding: const EdgeInsets.all(padding8),
+                minimumSize: Size.zero,
+              ),
+            ),
+            titleSpacing: 0,
             backgroundColor: context.colors.surface,
             title: Text(context.locale.paste_stack__title(count: count)),
             centerTitle: false,
@@ -52,16 +61,13 @@ class PasteStackPage extends StatelessWidget {
             toolbarHeight: 40,
             bottom: pasteStackLimit != 0 ? banner : null,
             actions: [
-              IconButton(
+              IconButton.filledTonal(
                 onPressed: () => reverseStack(context),
                 tooltip: context.locale.paste_stack__reverse_tooltip,
                 icon: const Icon(Icons.unfold_more_rounded),
                 iconSize: 20,
                 style: IconButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
+                  padding: const EdgeInsets.all(padding8),
                   minimumSize: Size.zero,
                 ),
               ),

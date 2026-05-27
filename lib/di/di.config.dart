@@ -443,7 +443,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i292.SyncEventBus>(),
       ),
     );
-    gh.singleton<_i227.QuickPasteService>(
+    gh.lazySingleton<_i227.QuickPasteService>(
       () => _i227.QuickPasteService(
         gh<_i542.AppConfigCubit>(),
         gh<_i230.ClipboardRepository>(instanceName: 'local'),

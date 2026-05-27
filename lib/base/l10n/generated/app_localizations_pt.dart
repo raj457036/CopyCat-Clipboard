@@ -1584,6 +1584,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Use um atalho de teclado para acessar rapidamente o CopyCat Clipboard';
 
   @override
+  String get settings__switch__paste_stack_hotkey__title =>
+      'Paste Stack Hotkey';
+
+  @override
+  String get settings__switch__paste_stack_hotkey__subtitle =>
+      'Use a keyboard shortcut to open or close Paste Stack';
+
+  @override
   String get settings__switch__quickpaste_hotkey__title => 'Quick Paste Hotkey';
 
   @override
