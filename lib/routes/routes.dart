@@ -242,6 +242,7 @@ final appRouter = GoRouter(
                 return NoTransitionPage(
                   key: state.pageKey,
                   child: BlocProvider<PasteStackCubit>(
+                    lazy: false,
                     create: (context) => PasteStackCubit(
                       context.read<AppConfigCubit>(),
                       context.read<WindowActionCubit>(),

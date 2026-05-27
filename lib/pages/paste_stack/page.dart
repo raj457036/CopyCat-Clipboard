@@ -1,4 +1,6 @@
+import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
+import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/pages/paste_stack/widgets/paste_stack_body.dart';
@@ -21,25 +23,34 @@ class PasteStackPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pasteStackLimit = context.select<MonetizationCubit, int>(
+      (cubit) => cubit.state.maybeWhen(
+        active: (s) => s.isFree ? s.pasteStackLimit : 0,
+        orElse: () => defaultPasteStackLimit,
+      ),
+    );
+
+    final banner = PreferredSize(
+      preferredSize: const Size.fromHeight(40),
+      child: MaterialBanner(
+        content: Text("You have a limit of $pasteStackLimit items"),
+        actions: const [TextButton(onPressed: null, child: Text("Upgrade"))],
+        minActionBarHeight: 40,
+      ),
+    );
+
     return CanPasteBuilder(
       builder: (context, canPaste) {
         return CustomScaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            scrolledUnderElevation: 0,
+            // scrolledUnderElevation: 0,
             backgroundColor: context.colors.surface,
             title: Text(context.locale.paste_stack__title(count: count)),
             centerTitle: false,
             titleTextStyle: context.textTheme.titleMedium,
-            toolbarHeight: 48,
-            bottom: const PreferredSize(
-              preferredSize: Size.fromHeight(40),
-              child: MaterialBanner(
-                content: Text("You have a limit of 10 item max."),
-                actions: [TextButton(onPressed: null, child: Text("Upgrade"))],
-                minActionBarHeight: 40,
-              ),
-            ),
+            toolbarHeight: 40,
+            bottom: pasteStackLimit != 0 ? banner : null,
             actions: [
               IconButton(
                 onPressed: () => reverseStack(context),
@@ -57,7 +68,7 @@ class PasteStackPage extends StatelessWidget {
               width10,
             ],
           ),
-          body: const ScaffoldBody(child: PasteStackBody()),
+          body: const PasteStackBody(),
           activeIndex: -1,
         );
       },
