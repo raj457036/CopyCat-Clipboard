@@ -1487,6 +1487,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__switch__startup__subtitle => '设备启动时自动启动 CopyCat。';
 
   @override
+  String get settings__switch__hide_from_screen_capture__title =>
+      'Hide from Screen Recording';
+
+  @override
+  String get settings__switch__hide_from_screen_capture__subtitle =>
+      'When enabled, screen captures and recordings should hide CopyCat content on supported platforms.';
+
+  @override
   String get settings__switch__hotkey__title => '用快捷键切换';
 
   @override

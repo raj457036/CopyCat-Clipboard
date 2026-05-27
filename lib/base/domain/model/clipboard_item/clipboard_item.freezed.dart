@@ -99,8 +99,8 @@ mixin _$ClipboardItem {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get isQueued => throw _privateConstructorUsedError;
 
-  /// Short 8-char alphanumeric ID assigned at creation on the originating
-  /// device. Used to deduplicate clips arriving via both LAN and Supabase.
+  /// Short ID assigned at creation on the originating
+  /// device. Used to deduplicate clips arriving from different sources.
   /// Persisted locally and round-tripped through the server.
   @JsonKey(name: "origin_id")
   String? get originId => throw _privateConstructorUsedError;
@@ -893,8 +893,8 @@ class _$ClipboardItemImpl extends _ClipboardItem {
   @JsonKey(includeFromJson: false, includeToJson: false)
   final bool isQueued;
 
-  /// Short 8-char alphanumeric ID assigned at creation on the originating
-  /// device. Used to deduplicate clips arriving via both LAN and Supabase.
+  /// Short ID assigned at creation on the originating
+  /// device. Used to deduplicate clips arriving from different sources.
   /// Persisted locally and round-tripped through the server.
   @override
   @JsonKey(name: "origin_id")
@@ -1232,8 +1232,8 @@ abstract class _ClipboardItem extends ClipboardItem {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get isQueued;
 
-  /// Short 8-char alphanumeric ID assigned at creation on the originating
-  /// device. Used to deduplicate clips arriving via both LAN and Supabase.
+  /// Short ID assigned at creation on the originating
+  /// device. Used to deduplicate clips arriving from different sources.
   /// Persisted locally and round-tripped through the server.
   @override
   @JsonKey(name: "origin_id")

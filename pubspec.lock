@@ -48,14 +48,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.9"
-  ansicolor:
-    dependency: transitive
-    description:
-      name: ansicolor
-      sha256: "50e982d500bc863e1d703448afdbf9e5a72eb48840a4f766fa361ffd6877055f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.3"
   any_link_preview:
     dependency: "direct main"
     description:
@@ -645,14 +637,6 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
-  font_awesome_flutter:
-    dependency: transitive
-    description:
-      name: font_awesome_flutter
-      sha256: b9011df3a1fa02993630b8fb83526368cf2206a711259830325bab2f1d2a4eb0
-      url: "https://pub.dev"
-    source: hosted
-    version: "10.12.0"
   form_validator:
     dependency: "direct main"
     description:
@@ -709,14 +693,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.3"
-  globbing:
-    dependency: transitive
-    description:
-      name: globbing
-      sha256: "4f89cfaf6fa74c9c1740a96259da06bd45411ede56744e28017cc534a12b6e2d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   go_router:
     dependency: "direct main"
     description:
@@ -925,14 +901,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.7.0"
-  injector:
-    dependency: transitive
-    description:
-      name: injector
-      sha256: ed389bed5b48a699d5b9561c985023d0d5cc88dd5ff2237aadcce5a5ab433e4e
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   installed_apps:
     dependency: "direct main"
     description:
@@ -1014,14 +982,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
-  jni:
-    dependency: transitive
-    description:
-      name: jni
-      sha256: d2c361082d554d4593c3012e26f6b188f902acd291330f13d6427641a92b3da1
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.14.2"
   js:
     dependency: transitive
     description:
@@ -1202,10 +1162,10 @@ packages:
     dependency: transitive
     description:
       name: meta
-      sha256: "23f08335362185a5ea2ad3a4e597f1375e78bce8a040df5c600c8d3552ef2394"
+      sha256: "1741988757a65eb6b36abe716829688cf01910bbf91c34354ff7ec1c3de2b349"
       url: "https://pub.dev"
     source: hosted
-    version: "1.17.0"
+    version: "1.18.0"
   mime:
     dependency: "direct main"
     description:
@@ -1246,6 +1206,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.0"
+  no_screenshot:
+    dependency: "direct main"
+    description:
+      name: no_screenshot
+      sha256: "373cc7d9ec62f2fe0898318bfa38ad8f717e5b9729be78cd00112d3ab278cb18"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   ntp:
     dependency: "direct main"
     description:
@@ -1478,22 +1446,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.7.0"
-  process:
-    dependency: transitive
-    description:
-      name: process
-      sha256: c6248e4526673988586e8c00bb22a49210c258dc91df5227d5da9748ecf79744
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.0.5"
-  properties:
-    dependency: transitive
-    description:
-      name: properties
-      sha256: "333f427dd4ed07bdbe8c75b9ff864a1e70b5d7a8426a2e8bdd457b65ae5ac598"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.1"
   provider:
     dependency: transitive
     description:
@@ -1621,30 +1573,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
-  sentry:
-    dependency: transitive
-    description:
-      name: sentry
-      sha256: "8c07a413ce5691db5b299024498f1ad6376e015f61b6d8fc8819b042f65df6c7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.18.0"
-  sentry_dart_plugin:
-    dependency: "direct dev"
-    description:
-      name: sentry_dart_plugin
-      sha256: "514cd5cc5c022bed9c232d08dc126a081b8a965dbad78b819ae91bf3a06e622c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.1"
-  sentry_flutter:
-    dependency: "direct main"
-    description:
-      name: sentry_flutter
-      sha256: "0c98ca79261325806c4eccc47274910306e2d914dfefc598650819677ce2b484"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.18.0"
   share_handler:
     dependency: "direct main"
     description:
@@ -1933,10 +1861,9 @@ packages:
   supabase_auth_ui:
     dependency: "direct main"
     description:
-      name: supabase_auth_ui
-      sha256: c1d9c5018f37701af94887fb5d15fa7eed284c58e4e06015644218a49140ec47
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/supabase_auth_ui"
+      relative: true
+    source: path
     version: "0.5.5"
   supabase_flutter:
     dependency: "direct main"
@@ -1978,14 +1905,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.0"
-  system_info2:
-    dependency: transitive
-    description:
-      name: system_info2
-      sha256: b937736ecfa63c45b10dde1ceb6bb30e5c0c340e14c441df024150679d65ac43
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
   term_glyph:
     dependency: transitive
     description:
@@ -1998,10 +1917,10 @@ packages:
     dependency: transitive
     description:
       name: test_api
-      sha256: "8161c84903fd860b26bfdefb7963b3f0b68fee7adea0f59ef805ecca346f0c7a"
+      sha256: "949a932224383300f01be9221c39180316445ecb8e7547f70a41a35bf421fb9e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.10"
+    version: "0.7.11"
   time:
     dependency: transitive
     description:

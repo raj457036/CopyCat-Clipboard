@@ -68,6 +68,7 @@ mixin _$AppConfig {
   String? get enc2 => throw _privateConstructorUsedError;
   bool get autoEncrypt => throw _privateConstructorUsedError;
   bool get useEncryptionNonce => throw _privateConstructorUsedError;
+  bool get hideFromScreenCapture => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
   ExclusionRules? get exclusionRules => throw _privateConstructorUsedError; // Customization
   int get themeColor => throw _privateConstructorUsedError;
@@ -136,6 +137,7 @@ abstract class $AppConfigCopyWith<$Res> {
     String? enc2,
     bool autoEncrypt,
     bool useEncryptionNonce,
+    bool hideFromScreenCapture,
     @JsonKey(includeFromJson: false, includeToJson: false)
     ExclusionRules? exclusionRules,
     int themeColor,
@@ -199,6 +201,7 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? enc2 = freezed,
     Object? autoEncrypt = null,
     Object? useEncryptionNonce = null,
+    Object? hideFromScreenCapture = null,
     Object? exclusionRules = freezed,
     Object? themeColor = null,
     Object? themeVariant = null,
@@ -317,6 +320,10 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
             useEncryptionNonce: null == useEncryptionNonce
                 ? _value.useEncryptionNonce
                 : useEncryptionNonce // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            hideFromScreenCapture: null == hideFromScreenCapture
+                ? _value.hideFromScreenCapture
+                : hideFromScreenCapture // ignore: cast_nullable_to_non_nullable
                       as bool,
             exclusionRules: freezed == exclusionRules
                 ? _value.exclusionRules
@@ -437,6 +444,7 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     String? enc2,
     bool autoEncrypt,
     bool useEncryptionNonce,
+    bool hideFromScreenCapture,
     @JsonKey(includeFromJson: false, includeToJson: false)
     ExclusionRules? exclusionRules,
     int themeColor,
@@ -500,6 +508,7 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? enc2 = freezed,
     Object? autoEncrypt = null,
     Object? useEncryptionNonce = null,
+    Object? hideFromScreenCapture = null,
     Object? exclusionRules = freezed,
     Object? themeColor = null,
     Object? themeVariant = null,
@@ -619,6 +628,10 @@ class __$$AppConfigImplCopyWithImpl<$Res>
             ? _value.useEncryptionNonce
             : useEncryptionNonce // ignore: cast_nullable_to_non_nullable
                   as bool,
+        hideFromScreenCapture: null == hideFromScreenCapture
+            ? _value.hideFromScreenCapture
+            : hideFromScreenCapture // ignore: cast_nullable_to_non_nullable
+                  as bool,
         exclusionRules: freezed == exclusionRules
             ? _value.exclusionRules
             : exclusionRules // ignore: cast_nullable_to_non_nullable
@@ -717,6 +730,7 @@ class _$AppConfigImpl extends _AppConfig {
     this.enc2,
     this.autoEncrypt = false,
     this.useEncryptionNonce = false,
+    this.hideFromScreenCapture = true,
     @JsonKey(includeFromJson: false, includeToJson: false) this.exclusionRules,
     this.themeColor = defaultThemeColor,
     this.themeVariant = DynamicSchemeVariant.tonalSpot,
@@ -834,6 +848,9 @@ class _$AppConfigImpl extends _AppConfig {
   @JsonKey()
   final bool useEncryptionNonce;
   @override
+  @JsonKey()
+  final bool hideFromScreenCapture;
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   final ExclusionRules? exclusionRules;
   // Customization
@@ -891,7 +908,7 @@ class _$AppConfigImpl extends _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, richDataCapture: $richDataCapture, lanInstantSync: $lanInstantSync, autoWriteOnReceive: $autoWriteOnReceive, onBoardComplete: $onBoardComplete, reviewQualifyingEventCount: $reviewQualifyingEventCount, lastReviewPromptDate: $lastReviewPromptDate, reviewNeverAsk: $reviewNeverAsk, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
+    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, hideFromScreenCapture: $hideFromScreenCapture, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, richDataCapture: $richDataCapture, lanInstantSync: $lanInstantSync, autoWriteOnReceive: $autoWriteOnReceive, onBoardComplete: $onBoardComplete, reviewQualifyingEventCount: $reviewQualifyingEventCount, lastReviewPromptDate: $lastReviewPromptDate, reviewNeverAsk: $reviewNeverAsk, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
   }
 
   @override
@@ -942,6 +959,8 @@ class _$AppConfigImpl extends _AppConfig {
                 other.autoEncrypt == autoEncrypt) &&
             (identical(other.useEncryptionNonce, useEncryptionNonce) ||
                 other.useEncryptionNonce == useEncryptionNonce) &&
+            (identical(other.hideFromScreenCapture, hideFromScreenCapture) ||
+                other.hideFromScreenCapture == hideFromScreenCapture) &&
             (identical(other.exclusionRules, exclusionRules) ||
                 other.exclusionRules == exclusionRules) &&
             (identical(other.themeColor, themeColor) ||
@@ -1009,6 +1028,7 @@ class _$AppConfigImpl extends _AppConfig {
     enc2,
     autoEncrypt,
     useEncryptionNonce,
+    hideFromScreenCapture,
     exclusionRules,
     themeColor,
     themeVariant,
@@ -1068,6 +1088,7 @@ abstract class _AppConfig extends AppConfig {
     final String? enc2,
     final bool autoEncrypt,
     final bool useEncryptionNonce,
+    final bool hideFromScreenCapture,
     @JsonKey(includeFromJson: false, includeToJson: false)
     final ExclusionRules? exclusionRules,
     final int themeColor,
@@ -1161,6 +1182,8 @@ abstract class _AppConfig extends AppConfig {
   bool get autoEncrypt;
   @override
   bool get useEncryptionNonce;
+  @override
+  bool get hideFromScreenCapture;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   ExclusionRules? get exclusionRules; // Customization

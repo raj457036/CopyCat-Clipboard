@@ -1555,6 +1555,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Lancez automatiquement CopyCat lorsque votre appareil s\'allume.';
 
   @override
+  String get settings__switch__hide_from_screen_capture__title =>
+      'Hide from Screen Recording';
+
+  @override
+  String get settings__switch__hide_from_screen_capture__subtitle =>
+      'When enabled, screen captures and recordings should hide CopyCat content on supported platforms.';
+
+  @override
   String get settings__switch__hotkey__title => 'Activer avec le raccourci';
 
   @override

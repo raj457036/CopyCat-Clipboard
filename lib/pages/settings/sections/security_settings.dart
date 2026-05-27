@@ -1,5 +1,6 @@
 import 'package:clipboard/pages/settings/widgets/e2ee_settings.dart';
 import 'package:clipboard/pages/settings/widgets/exclusion_rules/exclusion_rules_switch_tile.dart';
+import 'package:clipboard/pages/settings/widgets/switches/hide_from_screen_capture_switch.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
 import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
@@ -32,6 +33,8 @@ class SecuritySettings extends StatelessWidget {
           const DisableForLocalUser(
             child: Divider(indent: padding12, endIndent: padding12),
           ),
+          const HideFromScreenCaptureSwitchTile(),
+          const Divider(indent: padding12, endIndent: padding12),
           const ExclusionRulesSwitchTile(),
         ],
       ),

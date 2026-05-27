@@ -13,9 +13,9 @@ list(APPEND FLUTTER_PLUGIN_LIST
   isar_community_flutter_libs
   media_kit_libs_windows_video
   media_kit_video
+  no_screenshot
   open_dir_windows
   screen_retriever_windows
-  sentry_flutter
   share_plus
   super_native_extensions
   tray_manager
@@ -24,7 +24,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
-  jni
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

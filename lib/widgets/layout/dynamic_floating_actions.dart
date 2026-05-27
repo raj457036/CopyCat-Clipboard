@@ -1,4 +1,3 @@
-import 'package:clipboard/widgets/copycat_logo.dart';
 import 'package:clipboard/widgets/fabs/create_collection.dart';
 import 'package:clipboard/widgets/fabs/paste.dart';
 import 'package:clipboard/widgets/fabs/sync_status.dart';
