@@ -13,7 +13,7 @@ import 'package:path/path.dart' as p;
 import 'package:quick_paste_popup/quick_paste_popup.dart';
 
 /// Service to manage quick paste popup functionality.
-@singleton
+@lazySingleton
 class QuickPasteService {
   final AppConfigCubit appConfigCubit;
   final ClipboardRepository repo;

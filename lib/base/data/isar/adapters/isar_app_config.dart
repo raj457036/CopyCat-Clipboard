@@ -36,6 +36,7 @@ class IsarAppConfig {
   SyncSpeed syncSpeed = SyncSpeed.balanced;
   String? toggleHotkey;
   String? quickPasteHotkey;
+  String? pasteStackHotkey;
   bool smartPaste = false;
   bool transformAsNewClip = false;
   bool launchAtStartup = false;
@@ -79,6 +80,7 @@ class IsarAppConfig {
     syncSpeed: syncSpeed,
     toggleHotkey: toggleHotkey,
     quickPasteHotkey: quickPasteHotkey,
+    pasteStackHotkey: pasteStackHotkey,
     smartPaste: smartPaste,
     transformAsNewClip: transformAsNewClip,
     launchAtStartup: launchAtStartup,
@@ -120,6 +122,7 @@ class IsarAppConfig {
     ..syncSpeed = config.syncSpeed
     ..toggleHotkey = config.toggleHotkey
     ..quickPasteHotkey = config.quickPasteHotkey
+    ..pasteStackHotkey = config.pasteStackHotkey
     ..smartPaste = config.smartPaste
     ..transformAsNewClip = config.transformAsNewClip
     ..launchAtStartup = config.launchAtStartup

@@ -9,7 +9,6 @@ import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
-import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
@@ -175,9 +174,6 @@ class AppContent extends StatelessWidget {
                   SyncIntent.activator: const SyncIntent(),
                   PasteIntent.activator: const PasteIntent(),
                   DeleteItemIntent.activator: const DeleteItemIntent(),
-                  if (isDesktopPlatform)
-                    TogglePasteStackIntent.activator:
-                        const TogglePasteStackIntent(),
                   if (appConfig.view == AppView.windowed)
                     NavigateToSettingPageIntent.activator:
                         const NavigateToSettingPageIntent(),
@@ -196,8 +192,6 @@ class AppContent extends StatelessWidget {
                   CreateNewClipNoteIntent: CreateNewClipNoteAction(),
                   PasteIntent: PasteAction(),
                   DeleteItemIntent: DeleteSelectedItemsAction(),
-                  if (isDesktopPlatform)
-                    TogglePasteStackIntent: TogglePasteStackAction(),
                   if (isDesktopPlatform) PopRouteIntent: HideWindowAction(),
                   if (appConfig.view == AppView.windowed)
                     NavigateToSettingPageIntent: NavigateToSettingPageAction(),

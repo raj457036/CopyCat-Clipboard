@@ -2824,6 +2824,18 @@ abstract class AppLocalizations {
   /// **'Use a keyboard shortcut to quickly access your CopyCat Clipboard'**
   String get settings__switch__hotkey__subtitle;
 
+  /// No description provided for @settings__switch__paste_stack_hotkey__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste Stack Hotkey'**
+  String get settings__switch__paste_stack_hotkey__title;
+
+  /// No description provided for @settings__switch__paste_stack_hotkey__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a keyboard shortcut to open or close Paste Stack'**
+  String get settings__switch__paste_stack_hotkey__subtitle;
+
   /// No description provided for @settings__switch__quickpaste_hotkey__title.
   ///
   /// In en, this message translates to:

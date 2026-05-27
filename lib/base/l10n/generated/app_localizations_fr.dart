@@ -1570,6 +1570,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Utilisez un raccourci clavier pour accéder rapidement à votre presse-papiers CopyCat';
 
   @override
+  String get settings__switch__paste_stack_hotkey__title =>
+      'Paste Stack Hotkey';
+
+  @override
+  String get settings__switch__paste_stack_hotkey__subtitle =>
+      'Use a keyboard shortcut to open or close Paste Stack';
+
+  @override
   String get settings__switch__quickpaste_hotkey__title => 'Quick Paste Hotkey';
 
   @override

@@ -304,6 +304,14 @@ class AppConfigCubit extends Cubit<AppConfigState> {
     await repo.update(newConfig);
   }
 
+  Future<void> setPasteStackHotkey(HotKey? key) async {
+    final newConfig = state.config.copyWith(
+      pasteStackHotkey: key != null ? jsonEncode(key.toJson()) : null,
+    );
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+  }
+
   Future<void> setE2EEKey(String? key) async {
     final newConfig = state.config.copyWith(enc2: key);
     emit(state.copyWith(config: newConfig));

@@ -658,6 +658,8 @@
   "settings__switch__hide_from_screen_capture__subtitle": "When enabled, screen captures and recordings should hide CopyCat content on supported platforms.",
   "settings__switch__hotkey__title": "Toggle with Hotkey",
   "settings__switch__hotkey__subtitle": "Use a keyboard shortcut to quickly access your CopyCat Clipboard",
+  "settings__switch__paste_stack_hotkey__title": "Paste Stack Hotkey",
+  "settings__switch__paste_stack_hotkey__subtitle": "Use a keyboard shortcut to open or close Paste Stack",
   "settings__switch__quickpaste_hotkey__title": "Quick Paste Hotkey",
   "settings__switch__quickpaste_hotkey__subtitle": "Use a keyboard shortcut to instantly access your top 10 clipboard items",
   "settings__hotkey__unassigned": "Not Assigned",

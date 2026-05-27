@@ -1,6 +1,7 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/l10n/generated/app_localizations.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/paste_stack.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:flutter/material.dart';
@@ -96,13 +97,15 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
     await trayManager.setIcon(icon);
     Menu menu = Menu(
       items: [
-        MenuItem(disabled: true, label: locale.app__name),
-        MenuItem(
+        MenuItem(key: "show_window", label: locale.app__name),
+        MenuItem.checkbox(
           key: 'pause_copycat',
           label: paused
               ? locale.tray__menu__resume_copycat
               : locale.tray__menu__pause_copycat,
+          checked: paused,
         ),
+        MenuItem(key: 'paste_stack', label: "Paste Stack", disabled: paused),
         MenuItem.separator(),
         MenuItem(key: 'quit_app', label: locale.app__quit),
       ],
@@ -155,6 +158,9 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
           );
           await configCubit.changePausedTill(pauseTill);
         }
+
+      case "paste_stack":
+        await togglePasteStack(context);
 
       case "quit_app":
         await quitApp();

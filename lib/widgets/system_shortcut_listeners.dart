@@ -2,11 +2,14 @@ import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/data/services/quick_paste_service.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/di/di.dart';
+import 'package:clipboard/utils/paste_stack.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
+import 'package:universal_io/io.dart';
 
 class SystemShortcutListener extends StatelessWidget {
   final Widget child;
@@ -23,12 +26,25 @@ class SystemShortcutListener extends StatelessWidget {
     await quickPasteService.showQuickPastePopup();
   }
 
+  Future<void> showPasteStack(BuildContext context) async {
+    await togglePasteStack(context);
+  }
+
   Future<void> _handleStateChange(
     BuildContext context,
     AppConfig config,
   ) async {
     final toggleHotKey = config.getToggleHotkey;
     final quickPasteHotKey = config.getQuickPasteHotkey;
+    final pasteStackHotKey =
+        config.getPasteStackHotkey ??
+        HotKey(
+          key: PhysicalKeyboardKey.keyC,
+          modifiers: Platform.isMacOS
+              ? [HotKeyModifier.meta, HotKeyModifier.shift]
+              : [HotKeyModifier.control, HotKeyModifier.shift],
+          scope: HotKeyScope.system,
+        );
 
     await hotKeyManager.unregisterAll();
 
@@ -51,6 +67,14 @@ class SystemShortcutListener extends StatelessWidget {
         },
       );
     }
+
+    // Register paste stack hotkey
+    await hotKeyManager.register(
+      pasteStackHotKey,
+      keyDownHandler: (hotKey_) async {
+        if (pasteStackHotKey == hotKey_) showPasteStack(context);
+      },
+    );
   }
 
   @override
@@ -62,7 +86,8 @@ class SystemShortcutListener extends StatelessWidget {
     return BlocListener<AppConfigCubit, AppConfigState>(
       listenWhen: (previous, current) =>
           previous.config.toggleHotkey != current.config.toggleHotkey ||
-          previous.config.quickPasteHotkey != current.config.quickPasteHotkey,
+          previous.config.quickPasteHotkey != current.config.quickPasteHotkey ||
+          previous.config.pasteStackHotkey != current.config.pasteStackHotkey,
       listener: (context, state) async {
         await _handleStateChange(context, state.config);
       },
