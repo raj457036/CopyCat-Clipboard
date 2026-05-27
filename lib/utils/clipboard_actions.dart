@@ -115,12 +115,6 @@ Future<void> shareClipboardItem(
     unawaited(
       ctx.read<OfflinePersistenceCubit>().shareClipboardItem(ctx, item),
     );
-    InAppNotificationService.i.notify(
-      NotificationMessage(
-        id: "share_item_unavailable",
-        body: ctx.locale.app__feature_unavailable,
-      ),
-    );
   } catch (e) {
     InAppNotificationService.i.notify(
       NotificationMessage(
@@ -139,12 +133,6 @@ Future<void> shareClipboardItems(
   try {
     unawaited(
       ctx.read<OfflinePersistenceCubit>().shareClipboardItems(ctx, items),
-    );
-    InAppNotificationService.i.notify(
-      NotificationMessage(
-        id: "share_items_unavailable",
-        body: ctx.locale.app__feature_unavailable,
-      ),
     );
   } catch (e) {
     InAppNotificationService.i.notify(

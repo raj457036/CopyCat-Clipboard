@@ -44,7 +44,6 @@ import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:universal_io/io.dart';
 import 'package:upgrader/upgrader.dart';
@@ -64,19 +63,7 @@ Future<void> main() async {
   PaintingBinding.instance.imageCache.maximumSize = 20;
   PaintingBinding.instance.imageCache.maximumSizeBytes = 50 << 20;
 
-  if (sentryDSN != "" && !kDebugMode) {
-    await SentryFlutter.init((options) {
-      options.dsn = sentryDSN;
-      options.environment = kDebugMode
-          ? "Dev"
-          : kProfileMode
-          ? "Profile"
-          : "Prod";
-      options.tracesSampleRate = kDebugMode ? 0 : 0.05;
-    }, appRunner: appRunner);
-  } else {
-    await appRunner();
-  }
+  await appRunner();
 }
 
 Future<void> initializeServices() async {

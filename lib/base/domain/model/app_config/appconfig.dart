@@ -78,6 +78,7 @@ class AppConfig with _$AppConfig, Identifiable {
     String? enc2,
     @Default(false) bool autoEncrypt,
     @Default(false) bool useEncryptionNonce,
+    @Default(true) bool hideFromScreenCapture,
     @JsonKey(includeFromJson: false, includeToJson: false)
     ExclusionRules? exclusionRules,
 

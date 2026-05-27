@@ -1569,6 +1569,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Inicie automaticamente o CopyCat quando seu dispositivo for ligado.';
 
   @override
+  String get settings__switch__hide_from_screen_capture__title =>
+      'Hide from Screen Recording';
+
+  @override
+  String get settings__switch__hide_from_screen_capture__subtitle =>
+      'When enabled, screen captures and recordings should hide CopyCat content on supported platforms.';
+
+  @override
   String get settings__switch__hotkey__title => 'Alternar com Tecla de Atalho';
 
   @override

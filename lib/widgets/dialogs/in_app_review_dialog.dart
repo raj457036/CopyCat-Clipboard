@@ -1,4 +1,4 @@
-import 'package:animate_do/animate_do.dart' show SlideInLeft, SlideInUp, Tada;
+import 'package:animate_do/animate_do.dart' show SlideInUp;
 import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/services/review_prompt_service.dart';
@@ -7,7 +7,6 @@ import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/cat_introduction_avatar.dart';
-import 'package:clipboard/widgets/copycat_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

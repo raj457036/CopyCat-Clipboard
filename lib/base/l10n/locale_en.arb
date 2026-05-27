@@ -654,6 +654,8 @@
   "settings__switch__type_search__subtitle": "Search clips while you type in the search bar.",
   "settings__switch__startup__title": "Launch at Startup",
   "settings__switch__startup__subtitle": "Automatically start the CopyCat when your device powers on.",
+  "settings__switch__hide_from_screen_capture__title": "Hide from Screen Recording",
+  "settings__switch__hide_from_screen_capture__subtitle": "When enabled, screen captures and recordings should hide CopyCat content on supported platforms.",
   "settings__switch__hotkey__title": "Toggle with Hotkey",
   "settings__switch__hotkey__subtitle": "Use a keyboard shortcut to quickly access your CopyCat Clipboard",
   "settings__switch__quickpaste_hotkey__title": "Quick Paste Hotkey",

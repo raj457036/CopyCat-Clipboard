@@ -6,6 +6,7 @@ import 'package:clipboard/widgets/clip_item/clip_card/clip_card_body.dart'
 import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PasteStackBody extends StatelessWidget {
@@ -21,6 +22,7 @@ class PasteStackBody extends StatelessWidget {
         return ClipsProvider(
           clips: items,
           child: ReorderableListView.builder(
+            scrollCacheExtent: const ScrollCacheExtent.pixels(maxHeight),
             padding: context.isMobile
                 ? const EdgeInsets.all(padding8)
                 : inset12,
@@ -28,8 +30,7 @@ class PasteStackBody extends StatelessWidget {
             proxyDecorator: (child, index, animation) {
               return Material(type: MaterialType.transparency, child: child);
             },
-            cacheExtent: maxHeight,
-            onReorder: (oldIndex, newIndex) {
+            onReorderItem: (oldIndex, newIndex) {
               context.read<PasteStackCubit>().reorderItem(oldIndex, newIndex);
             },
 

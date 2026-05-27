@@ -14,6 +14,7 @@ import 'package:clipboard/widgets/empty.dart';
 import 'package:clipboard/widgets/on_event.dart';
 import 'package:clipboard/widgets/select_clip_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class ClipsBuilder extends StatelessWidget {
   final List<ClipboardItem> items;
@@ -78,7 +79,7 @@ class ClipsBuilder extends StatelessWidget {
 
   Widget buildGridView(List<ClipboardItem> selectedClips) {
     return GridView.builder(
-      cacheExtent: 300,
+      scrollCacheExtent: const ScrollCacheExtent.pixels(300),
       padding: const EdgeInsets.only(
         left: padding4,
         right: padding4,
@@ -110,7 +111,7 @@ class ClipsBuilder extends StatelessWidget {
 
   Widget buildListView(List<ClipboardItem> selectedClips) {
     return ListView.builder(
-      cacheExtent: 300,
+      scrollCacheExtent: const ScrollCacheExtent.pixels(300),
       padding: const EdgeInsets.all(padding4),
       itemCount: items.length,
       itemBuilder: (context, index) {

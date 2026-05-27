@@ -20,9 +20,9 @@ mixin _$SyncStatus {
   @JsonKey(includeToJson: false, includeFromJson: false)
   int? get id => throw _privateConstructorUsedError;
   DateTime? get lastSyncPoint =>
-      throw _privateConstructorUsedError; // . . . -\>* . . |<- it stores the last sync end point in time.
+      throw _privateConstructorUsedError; // . . . ->* . . |<- it stores the last sync end point in time.
   DateTime? get lastSyncStartPoint =>
-      throw _privateConstructorUsedError; // . . . →| . . *<- it stores the last sync start point in time.
+      throw _privateConstructorUsedError; // . . . ->| . . *<- it stores the last sync start point in time.
   int? get lastKnownSyncCount => throw _privateConstructorUsedError;
   int? get lastKnownTotalCount => throw _privateConstructorUsedError;
   bool get restorationPending => throw _privateConstructorUsedError;
@@ -193,10 +193,10 @@ class _$SyncStatusImpl extends _SyncStatus {
   final int? id;
   @override
   final DateTime? lastSyncPoint;
-  // . . . -\>* . . |<- it stores the last sync end point in time.
+  // . . . ->* . . |<- it stores the last sync end point in time.
   @override
   final DateTime? lastSyncStartPoint;
-  // . . . →| . . *<- it stores the last sync start point in time.
+  // . . . ->| . . *<- it stores the last sync start point in time.
   @override
   final int? lastKnownSyncCount;
   @override
@@ -263,9 +263,9 @@ abstract class _SyncStatus extends SyncStatus {
   @JsonKey(includeToJson: false, includeFromJson: false)
   int? get id;
   @override
-  DateTime? get lastSyncPoint; // . . . -\>* . . |<- it stores the last sync end point in time.
+  DateTime? get lastSyncPoint; // . . . ->* . . |<- it stores the last sync end point in time.
   @override
-  DateTime? get lastSyncStartPoint; // . . . →| . . *<- it stores the last sync start point in time.
+  DateTime? get lastSyncStartPoint; // . . . ->| . . *<- it stores the last sync start point in time.
   @override
   int? get lastKnownSyncCount;
   @override

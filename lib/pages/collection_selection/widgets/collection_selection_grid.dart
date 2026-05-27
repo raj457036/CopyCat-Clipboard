@@ -9,6 +9,7 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_collection_grid_item.dart';
 import 'package:clipboard/widgets/no_collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -59,7 +60,7 @@ class CollectionSelectionGrid extends StatelessWidget {
               final extraCount = showCreateItem ? 1 : 0;
 
               return GridView.builder(
-                cacheExtent: 300,
+                scrollCacheExtent: const ScrollCacheExtent.pixels(300),
                 padding: const EdgeInsets.all(padding10),
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                   maxCrossAxisExtent: 380,

@@ -20,6 +20,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:injectable/injectable.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
+import 'package:no_screenshot/no_screenshot.dart';
 import 'package:ntp/ntp.dart';
 import 'package:retry/retry.dart';
 import 'package:universal_io/io.dart';
@@ -182,11 +183,25 @@ class AppConfigCubit extends Cubit<AppConfigState> {
     } else if (!Platform.isIOS) {
       _initLanSyncService(next.config);
     }
+    await _applyScreenCaptureProtection(next.config.hideFromScreenCapture);
 
     if (!loaded.isCompleted) {
       loaded.complete();
     }
     return next;
+  }
+
+  Future<void> _applyScreenCaptureProtection(bool enabled) async {
+    try {
+      final noScreenshot = NoScreenshot.instance;
+      if (enabled) {
+        await noScreenshot.screenshotOff();
+      } else {
+        await noScreenshot.screenshotOn();
+      }
+    } catch (e) {
+      logger.e('Failed to apply screen capture protection: $e');
+    }
   }
 
   void _initLanSyncService(AppConfig config) {
@@ -412,6 +427,13 @@ class AppConfigCubit extends Cubit<AppConfigState> {
     final newConfig = state.config.copyWith(useEncryptionNonce: value);
     emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
+  }
+
+  Future<void> toggleHideFromScreenCapture(bool value) async {
+    final newConfig = state.config.copyWith(hideFromScreenCapture: value);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+    await _applyScreenCaptureProtection(value);
   }
 
   Future<void> changeOnBoardStatus(bool value) async {

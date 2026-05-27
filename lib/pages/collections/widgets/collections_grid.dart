@@ -5,6 +5,7 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_collection_grid_item.dart';
 import 'package:clipboard/widgets/no_collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CollectionsGrid extends StatelessWidget {
@@ -65,7 +66,7 @@ class CollectionsGrid extends StatelessWidget {
                 }
 
                 return GridView.builder(
-                  cacheExtent: 300,
+                  scrollCacheExtent: const ScrollCacheExtent.pixels(300),
                   padding: isMobile ? const EdgeInsets.all(padding10) : inset12,
                   itemCount: filtered.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

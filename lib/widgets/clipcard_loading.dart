@@ -1,6 +1,7 @@
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class LoadingCard extends StatelessWidget {
   const LoadingCard({super.key});
@@ -21,7 +22,7 @@ class ClipcardLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      cacheExtent: 300,
+      scrollCacheExtent: const ScrollCacheExtent.pixels(300),
       padding: compact ? const EdgeInsets.all(padding8) : inset12,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(

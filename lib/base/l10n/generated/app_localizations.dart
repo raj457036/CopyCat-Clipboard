@@ -2800,6 +2800,18 @@ abstract class AppLocalizations {
   /// **'Automatically start the CopyCat when your device powers on.'**
   String get settings__switch__startup__subtitle;
 
+  /// No description provided for @settings__switch__hide_from_screen_capture__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide from Screen Recording'**
+  String get settings__switch__hide_from_screen_capture__title;
+
+  /// No description provided for @settings__switch__hide_from_screen_capture__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When enabled, screen captures and recordings should hide CopyCat content on supported platforms.'**
+  String get settings__switch__hide_from_screen_capture__subtitle;
+
   /// No description provided for @settings__switch__hotkey__title.
   ///
   /// In en, this message translates to:

@@ -65,12 +65,12 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   flutter_svg: ^2.2.4
   screen_retriever: ^0.2.0
+  no_screenshot: ^1.1.0
   flutter_svg_provider:
     git:
       url: https://github.com/raj457036/flutter_svg_provider.git
   android_background_clipboard:
     path: packages/android_background_clipboard
-  sentry_flutter: ^9.6.0
   animate_do: ^3.3.4
   installed_apps:
     git:
@@ -117,10 +117,10 @@ dev_dependencies:
   freezed: ^2.5.8
   json_serializable: ^6.8.0
   flutter_launcher_icons: ^0.14.4
-  sentry_dart_plugin: ^3.1.1
-
 dependency_overrides:
   connectivity_plus: 7.0.0
+  supabase_auth_ui:
+    path: packages/supabase_auth_ui
   # irondash_engine_context:
   #   git:
   #     url: https://github.com/Sabbar-Engineering/irondash
@@ -166,5 +166,3 @@ flutter_launcher_icons:
     generate: true
     image_path: "./resources/macos-icon.png"
 
-sentry:
-  upload_debug_symbols: true

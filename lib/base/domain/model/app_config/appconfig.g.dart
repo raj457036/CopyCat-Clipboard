@@ -45,6 +45,7 @@ _$AppConfigImpl _$$AppConfigImplFromJson(
   enc2: json['enc2'] as String?,
   autoEncrypt: json['autoEncrypt'] as bool? ?? false,
   useEncryptionNonce: json['useEncryptionNonce'] as bool? ?? false,
+  hideFromScreenCapture: json['hideFromScreenCapture'] as bool? ?? true,
   themeColor: (json['themeColor'] as num?)?.toInt() ?? defaultThemeColor,
   themeVariant:
       $enumDecodeNullable(
@@ -94,6 +95,7 @@ Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
       'enc2': instance.enc2,
       'autoEncrypt': instance.autoEncrypt,
       'useEncryptionNonce': instance.useEncryptionNonce,
+      'hideFromScreenCapture': instance.hideFromScreenCapture,
       'themeColor': instance.themeColor,
       'themeVariant': _$DynamicSchemeVariantEnumMap[instance.themeVariant]!,
       'enableDragNDrop': instance.enableDragNDrop,
