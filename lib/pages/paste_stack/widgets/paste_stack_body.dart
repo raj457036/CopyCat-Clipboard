@@ -14,8 +14,7 @@ class PasteStackBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const maxHeight = 150.0;
-    context.read<PasteStackCubit>();
+    const maxHeight = 250.0;
     return BlocBuilder<PasteStackCubit, PasteStackState>(
       builder: (context, state) {
         final items = state.items;
@@ -33,9 +32,31 @@ class PasteStackBody extends StatelessWidget {
             onReorderItem: (oldIndex, newIndex) {
               context.read<PasteStackCubit>().reorderItem(oldIndex, newIndex);
             },
-
             itemBuilder: (context, index) {
               final item = items[index];
+              late final ShapeBorder shape;
+
+              switch (index) {
+                case 0 when items.length == 1:
+                  shape = const RoundedRectangleBorder(borderRadius: radius8);
+                case 0:
+                  shape = const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(12),
+                      bottom: Radius.circular(4),
+                    ),
+                  );
+                case _ when index == items.length - 1:
+                  shape = const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(4),
+                      bottom: Radius.circular(12),
+                    ),
+                  );
+                default:
+                  shape = const RoundedRectangleBorder(borderRadius: radius4);
+              }
+
               return LimitedBox(
                 key: ValueKey(
                   "paste-stack-item-${item.created.millisecondsSinceEpoch}",
@@ -43,9 +64,13 @@ class PasteStackBody extends StatelessWidget {
                 maxHeight: maxHeight,
                 child: ClipItemScope(
                   item: item,
-                  child: const Card.outlined(
+                  child: Card.filled(
+                    color: context.colors.secondaryContainer,
                     clipBehavior: Clip.hardEdge,
-                    child: ClipCardBodyContent(liteMode: true),
+                    elevation: 0,
+                    shape: shape,
+                    margin: const EdgeInsets.symmetric(vertical: padding2),
+                    child: const ClipCardBodyContent(liteMode: true),
                   ),
                 ),
               );

@@ -22,7 +22,7 @@ class PasteStackState extends Equatable {
   const PasteStackState.inactive() : this(items: const []);
 
   @override
-  List<Object?> get props => [count];
+  List<Object?> get props => [items];
 
   ClipboardItem? get currentItem => items.firstOrNull;
   ClipboardItem? get nextItem => items.length > 1 ? items[1] : null;
@@ -68,7 +68,6 @@ class PasteStackCubit extends Cubit<PasteStackState> {
 
   void reorderItem(int oldIndex, int newIndex) {
     final items = List<ClipboardItem>.from(state.items);
-    if (newIndex > oldIndex) newIndex--;
     final item = items.removeAt(oldIndex);
     items.insert(newIndex, item);
     emit(state.copyWith(items: items));

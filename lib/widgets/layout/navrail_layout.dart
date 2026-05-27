@@ -17,8 +17,9 @@ class NavrailLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.max,
       children: [
-        NavLayoutNavrail(
+        CopyCatNavrail(
           navbarActiveIndex: navbarActiveIndex,
           floatingActionButton: floatingActionButton,
         ),
