@@ -154,73 +154,113 @@ void main() {
       await offline.dispose();
     });
 
-    test('activate uses paste stack window animation when previous view is windowed', () async {
-      final appConfig = _StubAppConfigCubit(
-        AppConfig(view: AppView.windowed, pinned: false),
-      );
-      final monetization = _StubMonetizationCubit(const MonetizationState.unknown());
+    test(
+      'activate uses paste stack window animation when previous view is windowed',
+      () async {
+        final appConfig = _StubAppConfigCubit(
+          AppConfig(view: AppView.windowed, pinned: false),
+        );
+        final monetization = _StubMonetizationCubit(
+          const MonetizationState.unknown(),
+        );
 
-      final cubit = PasteStackCubit(appConfig, windowAction, monetization, offline);
-      await cubit.activate();
+        final cubit = PasteStackCubit(
+          appConfig,
+          windowAction,
+          monetization,
+          offline,
+        );
+        await cubit.activate();
 
-      expect(windowAction.showPasteStackViewCalls, 1);
-      expect(windowAction.showCalls, 0);
-      expect(windowAction.focusCalls, 0);
+        expect(windowAction.showPasteStackViewCalls, 1);
+        expect(windowAction.showCalls, 0);
+        expect(windowAction.focusCalls, 0);
 
-      await cubit.close();
-    });
+        await cubit.close();
+      },
+    );
 
-    test('activate shows and focuses window when previous view is docked', () async {
-      final appConfig = _StubAppConfigCubit(
-        AppConfig(view: AppView.leftDocked, pinned: false),
-      );
-      final monetization = _StubMonetizationCubit(const MonetizationState.unknown());
+    test(
+      'activate shows and focuses window when previous view is docked',
+      () async {
+        final appConfig = _StubAppConfigCubit(
+          AppConfig(view: AppView.leftDocked, pinned: false),
+        );
+        final monetization = _StubMonetizationCubit(
+          const MonetizationState.unknown(),
+        );
 
-      final cubit = PasteStackCubit(appConfig, windowAction, monetization, offline);
-      await cubit.activate();
+        final cubit = PasteStackCubit(
+          appConfig,
+          windowAction,
+          monetization,
+          offline,
+        );
+        await cubit.activate();
 
-      expect(windowAction.showPasteStackViewCalls, 0);
-      expect(windowAction.showCalls, 1);
-      expect(windowAction.focusCalls, 1);
+        expect(windowAction.showPasteStackViewCalls, 0);
+        expect(windowAction.showCalls, 1);
+        expect(windowAction.focusCalls, 1);
 
-      await cubit.close();
-    });
+        await cubit.close();
+      },
+    );
 
-    test('activate waits for show and focus completion when previous view is not windowed', () async {
-      final appConfig = _StubAppConfigCubit(
-        AppConfig(view: AppView.leftDocked, pinned: false),
-      );
-      final monetization = _StubMonetizationCubit(const MonetizationState.unknown());
-      windowAction.showDelay = const Duration(milliseconds: 20);
-      windowAction.focusDelay = const Duration(milliseconds: 20);
+    test(
+      'activate waits for show and focus completion when previous view is not windowed',
+      () async {
+        final appConfig = _StubAppConfigCubit(
+          AppConfig(view: AppView.leftDocked, pinned: false),
+        );
+        final monetization = _StubMonetizationCubit(
+          const MonetizationState.unknown(),
+        );
+        windowAction.showDelay = const Duration(milliseconds: 20);
+        windowAction.focusDelay = const Duration(milliseconds: 20);
 
-      final cubit = PasteStackCubit(appConfig, windowAction, monetization, offline);
-      await cubit.activate();
+        final cubit = PasteStackCubit(
+          appConfig,
+          windowAction,
+          monetization,
+          offline,
+        );
+        await cubit.activate();
 
-      expect(windowAction.showCompleted, isTrue);
-      expect(windowAction.focusCompleted, isTrue);
+        expect(windowAction.showCompleted, isTrue);
+        expect(windowAction.focusCompleted, isTrue);
 
-      await cubit.close();
-    });
+        await cubit.close();
+      },
+    );
 
-    test('deactivate clears background mode and restores always-on-top with pinned value', () async {
-      final appConfig = _StubAppConfigCubit(
-        AppConfig(view: AppView.windowed, pinned: true),
-      );
-      final monetization = _StubMonetizationCubit(const MonetizationState.unknown());
+    test(
+      'deactivate clears background mode and restores always-on-top with pinned value',
+      () async {
+        final appConfig = _StubAppConfigCubit(
+          AppConfig(view: AppView.windowed, pinned: true),
+        );
+        final monetization = _StubMonetizationCubit(
+          const MonetizationState.unknown(),
+        );
 
-      final cubit = PasteStackCubit(appConfig, windowAction, monetization, offline);
-      await cubit.activate();
-      await cubit.deactivate();
+        final cubit = PasteStackCubit(
+          appConfig,
+          windowAction,
+          monetization,
+          offline,
+        );
+        await cubit.activate();
+        await cubit.deactivate();
 
-      expect(windowAction.clearBackgroundToggleCalls, 1);
-      expect(windowAction.changeViewCalls, 1);
-      expect(windowAction.changedView, AppView.windowed);
-      expect(windowAction.alwaysOnTopCalls, 1);
-      expect(windowAction.alwaysOnTopValue, isTrue);
+        expect(windowAction.clearBackgroundToggleCalls, 1);
+        expect(windowAction.changeViewCalls, 1);
+        expect(windowAction.changedView, AppView.windowed);
+        expect(windowAction.alwaysOnTopCalls, 1);
+        expect(windowAction.alwaysOnTopValue, isTrue);
 
-      await cubit.close();
-    });
+        await cubit.close();
+      },
+    );
 
     test('pushItems keeps only cacheable and unencrypted items', () async {
       final appConfig = _StubAppConfigCubit(AppConfig(view: AppView.windowed));
@@ -228,7 +268,12 @@ void main() {
         MonetizationState.active(subscription: _subscription()),
       );
 
-      final cubit = PasteStackCubit(appConfig, windowAction, monetization, offline);
+      final cubit = PasteStackCubit(
+        appConfig,
+        windowAction,
+        monetization,
+        offline,
+      );
 
       final valid = _textItem('A');
       final encrypted = _textItem('B').copyWith(encrypted: true);

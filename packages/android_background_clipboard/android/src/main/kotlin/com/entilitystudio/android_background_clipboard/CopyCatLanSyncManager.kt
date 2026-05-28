@@ -20,13 +20,18 @@ import java.io.IOException
 import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.Socket
+import java.text.SimpleDateFormat
 import java.util.concurrent.ArrayBlockingQueue
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.RejectedExecutionHandler
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.ThreadPoolExecutor
+import java.util.TimeZone
+import java.security.MessageDigest
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
@@ -41,6 +46,8 @@ data class LanClipPayload(
     val encrypted: Boolean,
     val iv: String?,
     val encMode: String?,
+    val userId: String? = null,
+    val serverId: Long? = null,
     // File / media fields — null for text/url clips.
     val localFilePath: String? = null,
     val fileMimeType: String? = null,
@@ -73,6 +80,7 @@ class CopyCatLanSyncManager(
         private const val REPLAY_WINDOW_MS = 10_000L
         private const val MAX_HEADER_LINE_BYTES = 8 * 1024
         private const val MAX_BODY_BYTES = 100 * 1024 * 1024
+        private const val MAX_TEXT_BODY_BYTES = 512 * 1024
         private const val HMAC_ALGO = "HmacSHA256"
         private const val LAN_RECV_DIR = "lan_recv"
         private const val STREAM_BUFFER_BYTES = 64 * 1024
@@ -263,6 +271,10 @@ class CopyCatLanSyncManager(
 
                 when (clipType) {
                     ClipType.Text, ClipType.Url, ClipType.Email, ClipType.Phone -> {
+                        if (contentLength > MAX_TEXT_BODY_BYTES) {
+                            Log.w(LOG_TAG, "Rejecting oversized text clip: $contentLength bytes")
+                            return
+                        }
                         val bodyBytes = readBodyBytes(rawInput, contentLength, originId) ?: return
                         if (!verifyHmac(bodyBytes, hmacHeader)) {
                             Log.w(LOG_TAG, "HMAC verification failed from $fromDeviceId")
@@ -353,18 +365,44 @@ class CopyCatLanSyncManager(
             return
         }
 
+        val fullItem = json.optJSONObject("item")
+        val fallbackContent = when (type) {
+            ClipType.Url -> fullItem?.optString("url", "") ?: ""
+            else -> fullItem?.optString("text", "") ?: ""
+        }
+        val content = json.optString("content", fallbackContent)
+        val label = json.optString("label", fullItem?.optString("title", "") ?: "")
+        val encrypted = if (json.has("encrypted")) {
+            json.optBoolean("encrypted", false)
+        } else {
+            fullItem?.optBoolean("encrypted", false) ?: false
+        }
+        val iv = json.optString("iv").takeIf { it.isNotEmpty() }
+            ?: fullItem?.optString("iv")?.takeIf { it.isNotEmpty() }
+        val encMode = json.optString("encMode").takeIf { it.isNotEmpty() }
+            ?: fullItem?.optString("enc_mode")?.takeIf { it.isNotEmpty() }
+            ?: fullItem?.optString("encMode")?.takeIf { it.isNotEmpty() }
+        val sourceId = json.optString("sourceId").takeIf { it.isNotEmpty() }
+            ?: fullItem?.optString("sourceId")?.takeIf { it.isNotEmpty() }
+        val sourceApp = json.optString("sourceApp").takeIf { it.isNotEmpty() }
+            ?: fullItem?.optString("sourceApp")?.takeIf { it.isNotEmpty() }
+        val itemUserId = fullItem?.optString("userId")?.takeIf { it.isNotEmpty() }
+        val itemServerId = fullItem?.optLong("id")?.takeIf { it > 0L }
+
         val payload = LanClipPayload(
             originId = originId,
             fromDeviceId = fromDeviceId,
             type = type,
-            content = json.optString("content", ""),
-            label = json.optString("label", ""),
+            content = content,
+            label = label,
             timestamp = timestamp,
-            encrypted = json.optBoolean("encrypted", false),
-            iv = json.optString("iv").takeIf { it.isNotEmpty() },
-            encMode = json.optString("encMode").takeIf { it.isNotEmpty() },
-            sourceId = json.optString("sourceId").takeIf { it.isNotEmpty() },
-            sourceApp = json.optString("sourceApp").takeIf { it.isNotEmpty() },
+            encrypted = encrypted,
+            iv = iv,
+            encMode = encMode,
+            userId = itemUserId,
+            serverId = itemServerId,
+            sourceId = sourceId,
+            sourceApp = sourceApp,
         )
 
         onLanClipReceived(payload)
@@ -390,7 +428,8 @@ class CopyCatLanSyncManager(
     ) {
         try {
             val recvDir = File(appContext.cacheDir, LAN_RECV_DIR).also { it.mkdirs() }
-            val tempFile = File(recvDir, "$originId.$ext")
+            val safeOriginId = originId.replace(Regex("[^a-zA-Z0-9\\-]"), "_")
+            val tempFile = File(recvDir, "$safeOriginId.$ext")
             val mac = Mac.getInstance(HMAC_ALGO).apply {
                 init(SecretKeySpec(userId.toByteArray(Charsets.UTF_8), HMAC_ALGO))
             }
@@ -413,8 +452,8 @@ class CopyCatLanSyncManager(
                 output.flush()
             }
 
-            val actualHmac = mac.doFinal().joinToString("") { "%02x".format(it) }
-            if (!actualHmac.equals(expectedHmac, ignoreCase = true)) {
+            val expectedBytes = parseHmacHex(expectedHmac)
+            if (expectedBytes == null || !MessageDigest.isEqual(mac.doFinal(), expectedBytes)) {
                 Log.w(LOG_TAG, "HMAC verification failed from $fromDeviceId")
                 tempFile.delete()
                 return
@@ -483,8 +522,8 @@ class CopyCatLanSyncManager(
 
     private fun sanitizeExt(raw: String?): String {
         val value = raw?.trim()?.lowercase().orEmpty()
-        if (value.isEmpty() || value == "." || value == "null") return "bin"
-        return value.removePrefix(".")
+            .replace(Regex("[^a-z0-9]"), "")
+        return if (value.isEmpty()) "bin" else value
     }
 
     private fun sanitizeFileName(raw: String?, originId: String): String {
@@ -504,6 +543,7 @@ class CopyCatLanSyncManager(
             serviceType = SERVICE_TYPE
             port = serverPort
             setAttribute("did", deviceId)
+            setAttribute("os", "android")
         }
 
         val listener = object : NsdManager.RegistrationListener {
@@ -664,6 +704,7 @@ class CopyCatLanSyncManager(
                     .url("http://${peer.host}:${peer.port}/ping")
                     .addHeader("X-CC-DID", deviceId)
                     .addHeader("X-CC-PORT", serverPort.toString())
+                    .addHeader("X-CC-OS", "android")
                     .get()
                     .build()
                 httpClient.newCall(request).execute().use { /* trigger reverse learning */ }
@@ -697,11 +738,39 @@ class CopyCatLanSyncManager(
             put("content", content)
             put("label", label)
             put("ts", timestamp)
+            put("created", timestamp)
+            put("modified", timestamp)
+            put("os", "android")
             put("encrypted", encrypted)
             if (iv != null) put("iv", iv)
             if (encMode != null) put("encMode", encMode)
             if (!sourceId.isNullOrBlank()) put("sourceId", sourceId)
             if (!sourceApp.isNullOrBlank()) put("sourceApp", sourceApp)
+
+            val payloadType = when (type) {
+                ClipType.Url -> "url"
+                else -> "text"
+            }
+            val itemJson = JSONObject().apply {
+                put("type", payloadType)
+                put("userId", if (userId.isNotBlank()) userId else "local")
+                put("created", toIso8601Utc(timestamp))
+                put("modified", toIso8601Utc(timestamp))
+                put("os", "android")
+                put("title", label)
+                put("origin_id", originId)
+                put("encrypted", encrypted)
+                if (payloadType == "url") {
+                    put("url", content)
+                } else {
+                    put("text", content)
+                }
+                if (iv != null) put("iv", iv)
+                if (encMode != null) put("enc_mode", encMode)
+                if (!sourceId.isNullOrBlank()) put("sourceId", sourceId)
+                if (!sourceApp.isNullOrBlank()) put("sourceApp", sourceApp)
+            }
+            put("item", itemJson)
         }
         val bodyBytes = bodyJson.toString().toByteArray(Charsets.UTF_8)
         val hmac = computeHmac(bodyBytes)
@@ -786,6 +855,12 @@ class CopyCatLanSyncManager(
         }
     }
 
+    private fun toIso8601Utc(timestampMs: Long): String {
+        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        return formatter.format(Date(timestampMs))
+    }
+
     // MARK: - Auth
 
     private fun computeHmac(body: ByteArray): String {
@@ -798,6 +873,19 @@ class CopyCatLanSyncManager(
 
     private fun verifyHmac(body: ByteArray, expected: String): Boolean {
         if (userId.isBlank()) return false
-        return computeHmac(body).equals(expected, ignoreCase = true)
+        val expectedBytes = parseHmacHex(expected) ?: return false
+        val key = userId.toByteArray(Charsets.UTF_8)
+        val mac = Mac.getInstance(HMAC_ALGO)
+        mac.init(SecretKeySpec(key, HMAC_ALGO))
+        return MessageDigest.isEqual(mac.doFinal(body), expectedBytes)
+    }
+
+    private fun parseHmacHex(hex: String): ByteArray? {
+        if (hex.length != 64) return null
+        return try {
+            ByteArray(32) { i -> hex.substring(i * 2, i * 2 + 2).toInt(16).toByte() }
+        } catch (_: NumberFormatException) {
+            null
+        }
     }
 }

@@ -46,31 +46,33 @@ class CollectionFilterChips extends StatelessWidget {
                       backgroundColor: colorScheme.surfaceContainerHighest,
                       selectedColor: colorScheme.primaryContainer,
                       disabledColor: colorScheme.surfaceContainerLow,
-                      side: BorderSide(color: colorScheme.outlineVariant),
-                      labelStyle: TextStyle(color: colorScheme.onSurface),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                      side: BorderSide.none,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: radius4,
                       ),
                     ),
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.all(padding8),
-                      itemCount: collections.length + 1,
-                      separatorBuilder: (_, index) => index == 0
-                          ? const VerticalDivider(indent: 6, endIndent: 6)
-                          : width8,
-                      itemBuilder: (context, index) {
-                        if (index == 0) {
-                          return _CreateCollectionChip(canCreate: canCreate);
-                        }
-                        final collection = collections[index - 1];
-                        final isReadOnly = loaded.isReadOnly(collection);
-                        return _CollectionChip(
-                          collection: collection,
-                          isSelected: activeId == collection.id,
-                          isReadOnly: isReadOnly,
-                        );
-                      },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: padding8),
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(vertical: padding8),
+                        itemCount: collections.length + 1,
+                        separatorBuilder: (_, index) => index == 0
+                            ? const VerticalDivider(indent: 6, endIndent: 6)
+                            : width8,
+                        itemBuilder: (context, index) {
+                          if (index == 0) {
+                            return _CreateCollectionChip(canCreate: canCreate);
+                          }
+                          final collection = collections[index - 1];
+                          final isReadOnly = loaded.isReadOnly(collection);
+                          return _CollectionChip(
+                            collection: collection,
+                            isSelected: activeId == collection.id,
+                            isReadOnly: isReadOnly,
+                          );
+                        },
+                      ),
                     ),
                   ),
                 );
@@ -146,7 +148,8 @@ class _CollectionChip extends StatelessWidget {
         selected: isSelected,
         tooltip: collection.description,
         onSelected: (selected) => _onSelected(context, selected),
-        showCheckmark: true,
+        shape: isSelected ? const StadiumBorder() : null,
+        showCheckmark: false,
         mouseCursor: SystemMouseCursors.click,
       ),
     );
