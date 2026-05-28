@@ -96,7 +96,6 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
 
     final isAppFocused = windowAction.isFocused;
     if (isAppFocused) {
-      // windowAction.blur();
       await Future.delayed(Durations.short1);
     }
     await focusManager.pasteOnFocusedWindow();

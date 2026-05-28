@@ -1,6 +1,7 @@
 import 'package:clipboard/base/background/encryption_worker.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialog.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +28,9 @@ class E2EESettings extends StatelessWidget {
       selector: (state) {
         switch (state) {
           case AppConfigLoaded(:final config):
+            final cubit = sl<AppConfigCubit>();
             return (
-              config.enc2 != null,
+              cubit.isE2EESetupDone,
               config.autoEncrypt,
               config.useEncryptionNonce,
             );

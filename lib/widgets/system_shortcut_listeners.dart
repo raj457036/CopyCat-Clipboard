@@ -1,7 +1,10 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/quick_paste_service.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/di/di.dart';
+import 'package:clipboard/routes/routes.dart';
+import 'package:clipboard/utils/common_extension.dart' show GoRouterExtension;
 import 'package:clipboard/utils/paste_stack.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
@@ -15,8 +18,14 @@ class SystemShortcutListener extends StatelessWidget {
   const SystemShortcutListener({super.key, required this.child});
 
   Future<void> toggleWindow(BuildContext context) async {
+    final isPasteStackOpen = appRouter.location() == RouteConstants.pasteStack;
+    if (isPasteStackOpen && appRouter.canPop()) {
+      appRouter.pop();
+      return;
+    }
+
     final focusManager = WindowFocusManager.of(context);
-    focusManager?.toggleWindow();
+    await focusManager?.toggleWindow();
   }
 
   Future<void> showQuickPaste(BuildContext context) async {

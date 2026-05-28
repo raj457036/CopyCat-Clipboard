@@ -37,8 +37,6 @@ class PasteStackState extends Equatable {
 
 @Injectable(cache: true)
 class PasteStackCubit extends Cubit<PasteStackState> {
-  static const Size stackWindowSize = Size(320, 720);
-
   final debouncer = Debouncer(milliseconds: 200);
   final AppConfigCubit appConfig;
   final WindowActionCubit windowAction;
@@ -86,22 +84,18 @@ class PasteStackCubit extends Cubit<PasteStackState> {
     _snapshotCurrentState();
     emit(const PasteStackState(items: []));
     if (_previousView == AppView.windowed) {
-      await windowAction.changeView(AppView.windowed, stackWindowSize);
+      await windowAction.showPasteStackView();
+    } else {
+      await windowAction.show();
+      await windowAction.focus();
     }
-    await windowAction.alwaysOnTop(true);
-    await windowAction.blur();
-  }
-
-  void _snapshotCurrentState() {
-    final config = appConfig.state.config;
-    _previousView ??= config.view;
-    _previousWindowSize ??= config.windowSize;
   }
 
   Future<void> deactivate() async {
     final view = _previousView;
     final size = _previousWindowSize;
 
+    windowAction.clearPasteStackBackgroundToggleMode();
     _clearSnapshot();
 
     if (view == AppView.windowed) {
@@ -114,6 +108,12 @@ class PasteStackCubit extends Cubit<PasteStackState> {
 
     final isPinned = appConfig.state.config.pinned;
     await windowAction.alwaysOnTop(isPinned);
+  }
+
+  void _snapshotCurrentState() {
+    final config = appConfig.state.config;
+    _previousView ??= config.view;
+    _previousWindowSize ??= config.windowSize;
   }
 
   void _clearSnapshot() {
