@@ -856,8 +856,6 @@
   "multi_paste__validation__custom_separator_required": "Please enter a custom separator.",
   "settings__tile__backup_restore__title": "Backup & Restore",
   "settings__tile__backup_restore__subtitle": "Create .ccbkup backups and restore locally",
-  "settings__switch__prevent_duplicates__title": "Avoid Immediate Duplicates",
-  "settings__switch__prevent_duplicates__subtitle": "Avoid copying the same content twice in a row",
   "settings__switch__rich_data_capture__title": "Rich Data Capture",
   "settings__switch__rich_data_capture__subtitle": "Keep formatting when you copy and paste between apps.",
   "settings__decrypt__title": "Clipboard Decryption",

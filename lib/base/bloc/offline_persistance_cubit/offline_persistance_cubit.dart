@@ -10,6 +10,7 @@ import 'package:clipboard/base/domain/repositories/analytics.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
+import 'package:clipboard/base/data/services/clipboard/clip_hash_registry.dart';
 import 'package:clipboard/base/data/services/lan_sync_service.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/di/di.dart';
@@ -102,9 +103,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       return;
     }
     if (await appConfig.isCopyingAllowedByActivity()) {
-      await clipboard.readClipboard(
-        preventDuplicate: appConfig.duplicatePrevention,
-      );
+      await clipboard.readClipboard();
     }
   }
 
@@ -381,13 +380,10 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         return;
       }
 
-      if (clip.isDuplicate) {
-        emit(
-          const OfflinePersistanceState.error(
-            Failure(message: "Duplicate Clip Detected", code: "duplicate-clip"),
-          ),
-        );
-        return;
+      if (clip.isDuplicate) continue;
+
+      if (!manualPaste) {
+        ClipHashRegistry.instance.register(clip.contentHash);
       }
 
       final item = await _convertToClipboardItem(
@@ -436,26 +432,32 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       );
 
       for (var result in results) {
-        result.fold((l) => emit(OfflinePersistanceState.error(l)), (r) {
-          syncEventBus.emit<ClipboardItem>((
-            synced ? CrossSyncEventType.update : CrossSyncEventType.create,
-            r,
-          ));
-          if (!synced &&
-              appConfig.state.config.lanInstantSync &&
-              !Platform.isAndroid &&
-              !Platform.isIOS) {
-            unawaited(sl<LanSyncService>().broadcastClip(r));
-          }
-          emit(
-            OfflinePersistanceState.saved(
-              count: 1,
-              created: true,
-              synced: synced,
-              updatedFields: updatedFields,
-            ),
-          );
-        });
+        result.fold(
+          (l) {
+            ClipHashRegistry.instance.clear(); // allow retry on failure
+            emit(OfflinePersistanceState.error(l));
+          },
+          (r) {
+            syncEventBus.emit<ClipboardItem>((
+              synced ? CrossSyncEventType.update : CrossSyncEventType.create,
+              r,
+            ));
+            if (!synced &&
+                appConfig.state.config.lanInstantSync &&
+                !Platform.isAndroid &&
+                !Platform.isIOS) {
+              unawaited(sl<LanSyncService>().broadcastClip(r));
+            }
+            emit(
+              OfflinePersistanceState.saved(
+                count: 1,
+                created: true,
+                synced: synced,
+                updatedFields: updatedFields,
+              ),
+            );
+          },
+        );
       }
       return;
     }

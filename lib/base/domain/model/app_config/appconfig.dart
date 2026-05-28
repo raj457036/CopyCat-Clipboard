@@ -92,7 +92,6 @@ class AppConfig with _$AppConfig, Identifiable {
     @Default(false) bool enableDragNDrop,
     @Default(false) bool enablePasteStack,
     @Default(false) bool androidBgListener,
-    @Default(false) bool duplicatePrevention,
     @Default(false) bool richDataCapture,
 
     // LAN Instant Sync

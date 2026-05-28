@@ -3700,18 +3700,6 @@ abstract class AppLocalizations {
   /// **'Create .ccbkup backups and restore locally'**
   String get settings__tile__backup_restore__subtitle;
 
-  /// No description provided for @settings__switch__prevent_duplicates__title.
-  ///
-  /// In en, this message translates to:
-  /// **'Avoid Immediate Duplicates'**
-  String get settings__switch__prevent_duplicates__title;
-
-  /// No description provided for @settings__switch__prevent_duplicates__subtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Avoid copying the same content twice in a row'**
-  String get settings__switch__prevent_duplicates__subtitle;
-
   /// No description provided for @settings__switch__rich_data_capture__title.
   ///
   /// In en, this message translates to:

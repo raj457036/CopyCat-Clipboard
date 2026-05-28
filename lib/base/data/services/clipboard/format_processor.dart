@@ -1,26 +1,23 @@
 import 'dart:async' show Completer, TimeoutException;
 import 'dart:convert' show utf8;
 
+import 'package:crypto/crypto.dart' show sha256;
+
 import 'package:clipboard/base/background/file_ops_worker.dart';
 import 'package:clipboard/base/constants/misc.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
+import 'package:clipboard/base/data/services/clipboard/clip_hash_registry.dart';
 import 'package:clipboard/base/data/services/clipboard/clip_models.dart';
 import 'package:clipboard/base/domain/services/analysis/text_analysis.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
-import 'package:crypto/crypto.dart' show sha1, Digest;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' as service;
 import 'package:mime/mime.dart' as mime;
 import 'package:path/path.dart' as p;
 import 'package:super_clipboard/super_clipboard.dart';
 import 'package:universal_io/io.dart';
-
-// Globals used for duplicate detection across clipboard reads.
-
-ImmediateClip? _immediateClip;
-const _duplicateTag = "<-Duplicate";
 
 // Cache-file writer — persists raw bytes / text into the app cache directory.
 
@@ -72,11 +69,16 @@ Future<(File?, String?, int, String?)> writeToClipboardCacheFile({
   return (null, null, 0, null);
 }
 
+typedef _FileReadResult = ({
+  String? fileName,
+  String? fileExtension,
+  Uint8List? bytes,
+  String? contentHash,
+});
+
 /// Processes clipboard format data into a [ClipItem].
 /// Handles text, images, URIs, and generic file formats with automatic extension resolution.
 class ClipboardFormatProcessor {
-  bool preventDuplicate = false;
-
   late final Map<DataFormat, Future<ClipItem?> Function(DataReader)> _handlers =
       <DataFormat, Future<ClipItem?> Function(DataReader)>{
         Formats.htmlText: _getHtml,
@@ -162,54 +164,53 @@ class ClipboardFormatProcessor {
     return completer.future;
   }
 
-  Future<Uint8List> streamToUint8List(Stream<Uint8List> stream) async {
-    final bytes = <int>[];
-    await for (final chunk in stream) {
-      bytes.addAll(chunk);
-    }
-    return Uint8List.fromList(bytes);
-  }
+  Future<String> _hashStream(Stream<List<int>> stream) async =>
+      (await stream.transform(sha256).first).toString();
 
-  Future<({String? fileName, String? fileExtension, Uint8List? bytes})>
-  readFile(DataReader reader, FileFormat format, {bool virtual = true}) async {
+  Future<_FileReadResult> _readFile(
+    DataReader reader,
+    FileFormat format, {
+    bool virtual = true,
+  }) async {
     Uint8List? bytes;
     String? fileName;
     String? fileExtension;
+    String? contentHash;
     final c = Completer<void>();
     final progress = reader.getFile(
       format,
       (file) async {
         try {
-          if (file.fileName != null &&
-              isDuplicate(
-                type: ClipItemType.file,
-                path: file.fileName,
-                save: true,
-              )) {
-            logger.w("Duplicate File Clip Found!");
-            c.complete();
-            fileName = _duplicateTag;
-            return;
-          }
-
           final sourceFileName = file.fileName;
           if (sourceFileName != null && sourceFileName.isNotEmpty) {
             fileName = p.basenameWithoutExtension(sourceFileName);
             fileExtension = _normalizeExtension(p.extension(sourceFileName));
           }
-          final bin = await streamToUint8List(file.getStream());
-          final digest = sha1.convert(bin);
-          if (isDuplicate(
-            type: ClipItemType.file,
-            digest: digest,
-            save: true,
-          )) {
-            logger.w("Duplicate File Digest Found!");
+
+          final chunks = <Uint8List>[];
+          await for (final chunk in file.getStream()) {
+            chunks.add(chunk);
+          }
+          final resolvedHash = sha256
+              .convert(chunks.expand((c) => c).toList())
+              .toString();
+
+          if (ClipHashRegistry.instance.isDuplicate(resolvedHash)) {
+            contentHash = resolvedHash;
             c.complete();
-            fileName = _duplicateTag;
             return;
           }
-          bytes = bin;
+
+          contentHash = resolvedHash;
+
+          final totalLength = chunks.fold(0, (sum, c) => sum + c.length);
+          final buffer = Uint8List(totalLength);
+          var offset = 0;
+          for (final chunk in chunks) {
+            buffer.setRange(offset, offset + chunk.length, chunk);
+            offset += chunk.length;
+          }
+          bytes = buffer;
           c.complete();
         } catch (e) {
           c.completeError(e);
@@ -220,51 +221,12 @@ class ClipboardFormatProcessor {
     );
     if (progress == null) c.complete();
     await c.future;
-    return (fileName: fileName, fileExtension: fileExtension, bytes: bytes);
-  }
-
-  ImmediateClip? getImmediateClip({
-    required ClipItemType type,
-    String? text,
-    String? path,
-    Digest? digest,
-    Uri? uri,
-  }) {
-    if (type == ClipItemType.text && text != null) {
-      return ImmediateClip(type: type, text: text);
-    }
-    if ((type == ClipItemType.media || type == ClipItemType.file) &&
-            path != null ||
-        digest != null) {
-      return ImmediateClip(type: type, ogFilePath: path, digest: digest);
-    }
-    if (type == ClipItemType.url && uri != null) {
-      return ImmediateClip(type: type, uri: uri);
-    }
-    return null;
-  }
-
-  bool isDuplicate({
-    required ClipItemType type,
-    String? text,
-    String? path,
-    Digest? digest,
-    Uri? uri,
-    bool save = false,
-  }) {
-    if (!preventDuplicate) return false;
-    final ic = getImmediateClip(
-      type: type,
-      text: text,
-      path: path,
-      digest: digest,
-      uri: uri,
+    return (
+      fileName: fileName,
+      fileExtension: fileExtension,
+      bytes: bytes,
+      contentHash: contentHash,
     );
-    final isDuplicate_ = ic == _immediateClip && ic != null;
-    if (save && ic != null) {
-      _immediateClip = ic;
-    }
-    return isDuplicate_;
   }
 
   Future<ClipItem?> _getHtml(DataReader reader) async {
@@ -340,8 +302,13 @@ class ClipboardFormatProcessor {
     }
 
     // Check if the text is a URI
-    final uri = Uri.tryParse(textValue.trim());
+    final trimmed = textValue.trim();
+    final uri = Uri.tryParse(trimmed);
     if (uri != null && supportedUriSchemas.contains(uri.scheme)) {
+      final hash = sha256.convert(utf8.encode(trimmed)).toString();
+      if (ClipHashRegistry.instance.isDuplicate(hash)) {
+        return ClipItem.duplicate();
+      }
       return ClipItem.uri(uri: uri);
     }
 
@@ -362,9 +329,8 @@ class ClipboardFormatProcessor {
     }
 
     final (textCategory, parsedText) = TextAnalysis.getTextCategory(text);
-
-    if (isDuplicate(type: ClipItemType.text, text: parsedText, save: true)) {
-      logger.w("Duplicate Text Clip Found!");
+    final hash = sha256.convert(utf8.encode(parsedText)).toString();
+    if (ClipHashRegistry.instance.isDuplicate(hash)) {
       return ClipItem.duplicate();
     }
 
@@ -372,12 +338,14 @@ class ClipboardFormatProcessor {
   }
 
   Future<ClipItem?> _getPlainTextFile(DataReader reader) async {
-    final fileData = await readFile(reader, Formats.plainTextFile);
+    final fileData = await _readFile(reader, Formats.plainTextFile);
     final fileName = fileData.fileName;
     final fileBytes = fileData.bytes;
 
-    if (fileName == _duplicateTag) return ClipItem.duplicate();
     if (fileBytes == null) {
+      if (fileData.contentHash != null) {
+        return ClipItem.duplicate(contentDigest: fileData.contentHash);
+      }
       logger.w("Text file is null or empty.");
       return null;
     }
@@ -419,17 +387,23 @@ class ClipboardFormatProcessor {
     required ClipItemType type,
   }) async {
     try {
-      ({String? fileName, String? fileExtension, Uint8List? bytes}) result;
+      ({
+        String? fileName,
+        String? fileExtension,
+        Uint8List? bytes,
+        String? contentHash,
+      })
+      result;
       final tryVirtualFirst = Platform.isWindows;
       try {
-        result = await readFile(
+        result = await _readFile(
           reader,
           format,
           virtual: tryVirtualFirst,
         ).timeout(const Duration(seconds: 3));
       } on TimeoutException catch (e) {
         logger.e(e);
-        result = await readFile(
+        result = await _readFile(
           reader,
           format,
           virtual: !tryVirtualFirst,
@@ -441,8 +415,10 @@ class ClipboardFormatProcessor {
 
       final fileName = result.fileName;
       final binary = result.bytes;
-      if (fileName == _duplicateTag) return ClipItem.duplicate();
       if (binary == null) {
+        if (result.contentHash != null) {
+          return ClipItem.duplicate(contentDigest: result.contentHash);
+        }
         logger.w("Couldn't read content of image file with format $format");
         return null;
       }
@@ -472,6 +448,7 @@ class ClipboardFormatProcessor {
           fileName: fileName,
           fileSize: size,
           originalPathUri: Uri.file(originalPath ?? file.path),
+          contentDigest: result.contentHash,
         );
       }
 
@@ -481,6 +458,7 @@ class ClipboardFormatProcessor {
         fileName: fileName,
         fileSize: size,
         originalPathUri: Uri.file(originalPath ?? file.path),
+        contentDigest: result.contentHash,
       );
     } catch (e) {
       return null;
@@ -514,9 +492,9 @@ class ClipboardFormatProcessor {
       return null;
     }
 
-    if (isDuplicate(type: ClipItemType.file, path: file.path, save: true)) {
-      logger.w("Duplicate File Clip Found!");
-      return ClipItem.duplicate();
+    final hash = await _hashStream(file.openRead());
+    if (ClipHashRegistry.instance.isDuplicate(hash)) {
+      return ClipItem.duplicate(contentDigest: hash);
     }
 
     final ext = p.extension(file.path).substring(1);
@@ -540,6 +518,7 @@ class ClipboardFormatProcessor {
       fileName: fileName,
       fileSize: size,
       originalPathUri: Uri.file(originalPath ?? file.path),
+      contentDigest: hash,
     );
   }
 
@@ -567,7 +546,9 @@ class ClipboardFormatProcessor {
     }
 
     if (uri != null) {
-      if (isDuplicate(type: ClipItemType.url, uri: uri.uri, save: true)) {
+      final urlStr = uri.uri.toString().trim();
+      final hash = sha256.convert(utf8.encode(urlStr)).toString();
+      if (ClipHashRegistry.instance.isDuplicate(hash)) {
         return ClipItem.duplicate();
       }
       return await getUrl(reader, uri);
@@ -576,26 +557,17 @@ class ClipboardFormatProcessor {
     return await _getPlainText(reader);
   }
 
-  Future<ClipItem?> process(
-    DataReader reader,
-    DataFormat format, {
-    bool preventDuplicate = false,
-  }) async {
-    try {
-      this.preventDuplicate = preventDuplicate;
-      final handler = _handlers[format];
-      if (handler != null) {
-        return await handler(reader);
-      }
-
-      if (format is FileFormat) {
-        return await _getGenericFile(reader, format);
-      }
-
-      logger.w(() => "[FormatProcessor] Unsupported clipboard format: $format");
-      return null;
-    } finally {
-      this.preventDuplicate = false;
+  Future<ClipItem?> process(DataReader reader, DataFormat format) async {
+    final handler = _handlers[format];
+    if (handler != null) {
+      return await handler(reader);
     }
+
+    if (format is FileFormat) {
+      return await _getGenericFile(reader, format);
+    }
+
+    logger.w(() => "[FormatProcessor] Unsupported clipboard format: $format");
+    return null;
   }
 }
