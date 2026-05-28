@@ -107,7 +107,6 @@ class AuthListener extends StatelessWidget {
                   body: failure.message,
                 ),
               );
-              return;
             }
             unawaited(resetAll(context));
             await context.windowAction?.show();
