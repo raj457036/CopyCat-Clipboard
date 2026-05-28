@@ -71,6 +71,8 @@ const dockedTBMinHeight = 260.0;
 
 const initialWindowSize = Size(initialWindowWidth, initialWindowHeight);
 const minimumWindowSize = Size(410, 480);
+const pasteStackWindowSize = Size(320, 720);
+const stackWindowOffset = Offset(-20, 0);
 
 const gridItemBorderWidth = 1.0;
 const gridMaxExtent = 260.0;

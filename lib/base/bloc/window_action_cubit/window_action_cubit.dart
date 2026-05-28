@@ -4,7 +4,7 @@ import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:screen_retriever/screen_retriever.dart';
@@ -20,6 +20,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
   Display? primaryDisplay;
   bool isCompactMode = false;
   bool isFocused = false;
+  bool _isPasteStackBackgroundToggleMode = false;
 
   WindowActionCubit() : super(const WindowActionState.loaded());
 
@@ -138,17 +139,67 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     emit(state.copyWith(view: view));
   }
 
-  Future<void> setWindowdView([Size? size]) async {
+  Future<void> showPasteStackView() async {
+    final openedFromBackground = !isFocused;
+    _isPasteStackBackgroundToggleMode = openedFromBackground;
+
+    final position = await calcWindowPosition(
+      pasteStackWindowSize,
+      Alignment.centerRight,
+    );
+    if (openedFromBackground) {
+      // Hide the window on the right edge of the screen, in the background.
+      final offScreenPosition = Offset(displayWidth + 100, position.dy);
+      await windowManager.setPosition(offScreenPosition, animate: false);
+      await wait(Durations.short4.inMilliseconds);
+    }
+
+    final positionWithOffset = position + stackWindowOffset;
+    await setWindowdView(pasteStackWindowSize, positionWithOffset);
+    await show();
+    await focus();
+    await windowManager.setResizable(false);
+  }
+
+  bool get isPasteStackBackgroundToggleMode =>
+      _isPasteStackBackgroundToggleMode;
+
+  void clearPasteStackBackgroundToggleMode() {
+    _isPasteStackBackgroundToggleMode = false;
+  }
+
+  Future<void> hidePasteStackView() async {
+    final position = await calcWindowPosition(
+      pasteStackWindowSize,
+      Alignment.centerRight,
+    );
+    final offScreenPosition = Offset(displayWidth + 100, position.dy);
+    await windowManager.setPosition(offScreenPosition, animate: true);
+    await wait(Durations.short4.inMilliseconds);
+    await hide();
+    await windowManager.setResizable(true);
+  }
+
+  Future<void> setWindowdView([Size? size, Offset? position]) async {
     await windowManager.setMinimumSize(minimumWindowSize);
+    await windowManager.setResizable(true);
     if (primaryDisplay != null) {
       await windowManager.setMaximumSize(primaryDisplay!.size);
     }
     if (Platform.isMacOS) await windowManager.setMovable(true);
     if (Platform.isWindows) await windowManager.undock();
     await windowManager.setAlwaysOnTop(true);
-    await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-    await windowManager.setSize(size ?? initialWindowSize);
-    await windowManager.center(animate: true);
+    await windowManager.setTitleBarStyle(
+      TitleBarStyle.hidden,
+      windowButtonVisibility: false,
+    );
+    await Future.wait([
+      windowManager.setSize(size ?? initialWindowSize, animate: false),
+      if (position == null)
+        windowManager.center(animate: true)
+      else
+        windowManager.setPosition(position, animate: true),
+    ]);
     emit(state.copyWith(view: AppView.windowed));
   }
 

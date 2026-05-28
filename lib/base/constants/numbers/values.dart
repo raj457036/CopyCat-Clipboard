@@ -13,7 +13,7 @@ const defaultCollectionCount = 3;
 /// Default number of items allowed in an active paste stack
 const defaultPasteStackLimit = 10;
 
-const defaultMaxPasteStackLimit = 200;
+const defaultMaxPasteStackLimit = 2000;
 
 /// Default sync items within the last [defaultSyncHourOffset] hours
 const defaultSyncHourOffset = 24;
