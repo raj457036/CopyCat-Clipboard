@@ -51,7 +51,6 @@ class IsarAppConfig {
   bool enableDragNDrop = false;
   bool enablePasteStack = false;
   bool androidBgListener = false;
-  bool duplicatePrevention = false;
   bool richDataCapture = false;
   bool onBoardComplete = true;
   int reviewQualifyingEventCount = 0;
@@ -94,7 +93,6 @@ class IsarAppConfig {
     enableDragNDrop: enableDragNDrop,
     enablePasteStack: enablePasteStack,
     androidBgListener: androidBgListener,
-    duplicatePrevention: duplicatePrevention,
     richDataCapture: richDataCapture,
     onBoardComplete: onBoardComplete,
     reviewQualifyingEventCount: _sanitizeCounter(reviewQualifyingEventCount),
@@ -138,7 +136,6 @@ class IsarAppConfig {
     ..enableDragNDrop = config.enableDragNDrop
     ..enablePasteStack = config.enablePasteStack
     ..androidBgListener = config.androidBgListener
-    ..duplicatePrevention = config.duplicatePrevention
     ..richDataCapture = config.richDataCapture
     ..onBoardComplete = config.onBoardComplete
     ..reviewQualifyingEventCount = _sanitizeCounter(

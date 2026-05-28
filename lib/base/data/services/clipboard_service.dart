@@ -136,10 +136,7 @@ class ClipboardService with ClipboardListener {
     }
   }
 
-  Future<List<ClipItem?>?> readClipboard({
-    bool manual = false,
-    preventDuplicate = false,
-  }) async {
+  Future<List<ClipItem?>?> readClipboard({bool manual = false}) async {
     _logger.d("Reading clipboard");
     await Future.delayed(Durations.short2);
     final reader = await getReader();
@@ -167,7 +164,6 @@ class ClipboardService with ClipboardListener {
     final clips = await processMultipleReaderDataFormat(
       readerSet,
       manual: manual,
-      preventDuplicate: preventDuplicate,
     );
     return clips;
   }
@@ -179,17 +175,12 @@ class ClipboardService with ClipboardListener {
   Future<List<ClipItem?>?> processMultipleReaderDataFormat(
     Iterable<(DataReader, DataFormat<Object>)> readerSet, {
     bool manual = false,
-    bool preventDuplicate = false,
   }) async {
     final records = readerSet.toList(growable: false);
     final clips = await Future.wait(
       records.map((record) {
         final (reader, format) = record;
-        return processor.process(
-          reader,
-          format,
-          preventDuplicate: preventDuplicate && !manual,
-        );
+        return processor.process(reader, format);
       }),
     );
 
@@ -211,15 +202,10 @@ class ClipboardService with ClipboardListener {
     DataReader reader,
     Iterable<DataFormat<Object>> data, {
     bool manual = false,
-    bool preventDuplicate = false,
   }) async {
     final clips = await Future.wait(
       data.map((format) {
-        return processor.process(
-          reader,
-          format,
-          preventDuplicate: preventDuplicate && !manual,
-        );
+        return processor.process(reader, format);
       }),
     );
 

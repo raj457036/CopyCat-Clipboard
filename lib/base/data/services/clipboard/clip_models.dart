@@ -1,28 +1,9 @@
+import 'dart:convert' show utf8;
+
 import 'package:clipboard/base/enums/clip_type.dart';
-import 'package:crypto/crypto.dart' show Digest;
-import 'package:equatable/equatable.dart';
+import 'package:crypto/crypto.dart' show sha256;
 import 'package:path/path.dart' as p;
 import 'package:universal_io/io.dart';
-
-/// Lightweight snapshot of a clipboard event used for duplicate detection.
-class ImmediateClip extends Equatable {
-  final ClipItemType type;
-  final String? text;
-  final Uri? uri;
-  final Digest? digest;
-  final String? ogFilePath;
-
-  const ImmediateClip({
-    required this.type,
-    this.text,
-    this.uri,
-    this.ogFilePath,
-    this.digest,
-  });
-
-  @override
-  List<Object?> get props => [type, text, uri, ogFilePath, digest];
-}
 
 /// Transient in-memory representation of a clipboard item built during
 /// capture. Not persisted directly — converted to [ClipboardItem] by the
@@ -44,6 +25,11 @@ class ClipItem {
 
   final bool isDuplicate;
 
+  /// SHA-256 hex digest of the raw file/media bytes, precomputed during
+  /// capture. Null for text and URL clips (their hash is derived lazily from
+  /// their string fields via [contentHash]).
+  final String? contentDigest;
+
   ClipItem({
     required this.type,
     required this.file,
@@ -57,6 +43,7 @@ class ClipItem {
     this.richData,
     this.blurHash,
     this.isDuplicate = false,
+    this.contentDigest,
   });
 
   bool get isImage => fileMimeType?.startsWith("image") ?? false;
@@ -68,13 +55,32 @@ class ClipItem {
   bool get isTextSubType =>
       type == ClipItemType.text || type == ClipItemType.url;
 
+  /// SHA-256 of the canonical content.
+  /// For text/URL: computed lazily from the stored string.
+  /// For file/media: returns the precomputed [contentDigest] from raw bytes.
+  String? get contentHash {
+    switch (type) {
+      case ClipItemType.text:
+        final t = text?.trim();
+        if (t == null || t.isEmpty) return null;
+        return sha256.convert(utf8.encode(t)).toString();
+      case ClipItemType.url:
+        final u = uri?.toString().trim();
+        if (u == null || u.isEmpty) return null;
+        return sha256.convert(utf8.encode(u)).toString();
+      case ClipItemType.file:
+      case ClipItemType.media:
+        return contentDigest;
+    }
+  }
+
   Future<void> cleanup() async {
     if (file != null && await file!.exists()) {
       await file!.delete();
     }
   }
 
-  factory ClipItem.duplicate() => ClipItem(
+  factory ClipItem.duplicate({String? contentDigest}) => ClipItem(
     type: ClipItemType.text,
     file: null,
     fileName: null,
@@ -84,6 +90,7 @@ class ClipItem {
     fileExtension: null,
     fileSize: null,
     isDuplicate: true,
+    contentDigest: contentDigest,
   );
 
   factory ClipItem.text({required String text, TextCategory? textCategory}) =>
@@ -117,6 +124,7 @@ class ClipItem {
     required int fileSize,
     String? blurHash,
     Uri? originalPathUri,
+    String? contentDigest,
   }) => ClipItem(
     fileName: fileName,
     file: file,
@@ -127,6 +135,7 @@ class ClipItem {
     fileExtension: p.extension(file.path),
     fileSize: fileSize,
     blurHash: blurHash,
+    contentDigest: contentDigest,
   );
 
   factory ClipItem.file({
@@ -136,6 +145,7 @@ class ClipItem {
     required String mimeType,
     required int fileSize,
     Uri? originalPathUri,
+    String? contentDigest,
   }) => ClipItem(
     file: file,
     fileName: fileName,
@@ -145,5 +155,6 @@ class ClipItem {
     fileMimeType: mimeType,
     fileExtension: p.extension(file.path),
     fileSize: fileSize,
+    contentDigest: contentDigest,
   );
 }

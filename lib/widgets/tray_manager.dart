@@ -7,6 +7,7 @@ import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/paste_stack.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocListener, ReadContext;
@@ -69,7 +70,7 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
 
     if (configCubit.state.config.showTrayIcon) {
       await initTray();
-      await windowActionCubit.showInTaskbar(false);
+      await windowActionCubit.showInTaskbar(!kReleaseMode);
     } else {
       await windowActionCubit.showInTaskbar(true);
     }
@@ -206,7 +207,7 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
           await destroyTray();
           return;
         }
-        await windowActionCubit.showInTaskbar(false);
+        await windowActionCubit.showInTaskbar(!kReleaseMode);
         await windowActionCubit.show();
         final isPaused =
             config.pausedTill != null &&

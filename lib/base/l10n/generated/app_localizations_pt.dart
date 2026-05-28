@@ -2104,14 +2104,6 @@ class AppLocalizationsPt extends AppLocalizations {
       'Create .ccbkup backups and restore locally';
 
   @override
-  String get settings__switch__prevent_duplicates__title =>
-      'Avoid Immediate Duplicates';
-
-  @override
-  String get settings__switch__prevent_duplicates__subtitle =>
-      'Avoid copying the same content twice in a row';
-
-  @override
   String get settings__switch__rich_data_capture__title => 'Rich Data Capture';
 
   @override

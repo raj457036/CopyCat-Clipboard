@@ -13,6 +13,22 @@ class SimpleClipboardReadStrategy {
       return Formats.fileUri;
     }
 
+    // Image and media formats take priority over text-file representations
+    // (e.g. plainTextFile / htmlFile), which appear earlier in standardFormats.
+    for (final supportedFormat in allSupportedClipFormats) {
+      if (supportedFormat is SimpleFileFormat &&
+          (supportedFormat.mimeTypes?.any(
+                (m) =>
+                    m.startsWith('image/') ||
+                    m.startsWith('video/') ||
+                    m.startsWith('audio/'),
+              ) ??
+              false) &&
+          itemFormats.contains(supportedFormat)) {
+        return supportedFormat;
+      }
+    }
+
     for (final supportedFormat in allSupportedClipFormats) {
       if (supportedFormat is FileFormat &&
           itemFormats.contains(supportedFormat)) {

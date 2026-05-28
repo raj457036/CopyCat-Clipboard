@@ -79,7 +79,6 @@ mixin _$AppConfig {
   bool get enableDragNDrop => throw _privateConstructorUsedError;
   bool get enablePasteStack => throw _privateConstructorUsedError;
   bool get androidBgListener => throw _privateConstructorUsedError;
-  bool get duplicatePrevention => throw _privateConstructorUsedError;
   bool get richDataCapture =>
       throw _privateConstructorUsedError; // LAN Instant Sync
   bool get lanInstantSync => throw _privateConstructorUsedError;
@@ -149,7 +148,6 @@ abstract class $AppConfigCopyWith<$Res> {
     bool enableDragNDrop,
     bool enablePasteStack,
     bool androidBgListener,
-    bool duplicatePrevention,
     bool richDataCapture,
     bool lanInstantSync,
     bool autoWriteOnReceive,
@@ -214,7 +212,6 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? enableDragNDrop = null,
     Object? enablePasteStack = null,
     Object? androidBgListener = null,
-    Object? duplicatePrevention = null,
     Object? richDataCapture = null,
     Object? lanInstantSync = null,
     Object? autoWriteOnReceive = null,
@@ -360,10 +357,6 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
                 ? _value.androidBgListener
                 : androidBgListener // ignore: cast_nullable_to_non_nullable
                       as bool,
-            duplicatePrevention: null == duplicatePrevention
-                ? _value.duplicatePrevention
-                : duplicatePrevention // ignore: cast_nullable_to_non_nullable
-                      as bool,
             richDataCapture: null == richDataCapture
                 ? _value.richDataCapture
                 : richDataCapture // ignore: cast_nullable_to_non_nullable
@@ -468,7 +461,6 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     bool enableDragNDrop,
     bool enablePasteStack,
     bool androidBgListener,
-    bool duplicatePrevention,
     bool richDataCapture,
     bool lanInstantSync,
     bool autoWriteOnReceive,
@@ -533,7 +525,6 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? enableDragNDrop = null,
     Object? enablePasteStack = null,
     Object? androidBgListener = null,
-    Object? duplicatePrevention = null,
     Object? richDataCapture = null,
     Object? lanInstantSync = null,
     Object? autoWriteOnReceive = null,
@@ -679,10 +670,6 @@ class __$$AppConfigImplCopyWithImpl<$Res>
             ? _value.androidBgListener
             : androidBgListener // ignore: cast_nullable_to_non_nullable
                   as bool,
-        duplicatePrevention: null == duplicatePrevention
-            ? _value.duplicatePrevention
-            : duplicatePrevention // ignore: cast_nullable_to_non_nullable
-                  as bool,
         richDataCapture: null == richDataCapture
             ? _value.richDataCapture
             : richDataCapture // ignore: cast_nullable_to_non_nullable
@@ -765,7 +752,6 @@ class _$AppConfigImpl extends _AppConfig {
     this.enableDragNDrop = false,
     this.enablePasteStack = false,
     this.androidBgListener = false,
-    this.duplicatePrevention = false,
     this.richDataCapture = false,
     this.lanInstantSync = false,
     this.autoWriteOnReceive = false,
@@ -904,9 +890,6 @@ class _$AppConfigImpl extends _AppConfig {
   final bool androidBgListener;
   @override
   @JsonKey()
-  final bool duplicatePrevention;
-  @override
-  @JsonKey()
   final bool richDataCapture;
   // LAN Instant Sync
   @override
@@ -944,7 +927,7 @@ class _$AppConfigImpl extends _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, pasteStackHotkey: $pasteStackHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, hideFromScreenCapture: $hideFromScreenCapture, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, richDataCapture: $richDataCapture, lanInstantSync: $lanInstantSync, autoWriteOnReceive: $autoWriteOnReceive, showTrayIcon: $showTrayIcon, onBoardComplete: $onBoardComplete, reviewQualifyingEventCount: $reviewQualifyingEventCount, lastReviewPromptDate: $lastReviewPromptDate, reviewNeverAsk: $reviewNeverAsk, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
+    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, pasteStackHotkey: $pasteStackHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, hideFromScreenCapture: $hideFromScreenCapture, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, richDataCapture: $richDataCapture, lanInstantSync: $lanInstantSync, autoWriteOnReceive: $autoWriteOnReceive, showTrayIcon: $showTrayIcon, onBoardComplete: $onBoardComplete, reviewQualifyingEventCount: $reviewQualifyingEventCount, lastReviewPromptDate: $lastReviewPromptDate, reviewNeverAsk: $reviewNeverAsk, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
   }
 
   @override
@@ -1011,8 +994,6 @@ class _$AppConfigImpl extends _AppConfig {
                 other.enablePasteStack == enablePasteStack) &&
             (identical(other.androidBgListener, androidBgListener) ||
                 other.androidBgListener == androidBgListener) &&
-            (identical(other.duplicatePrevention, duplicatePrevention) ||
-                other.duplicatePrevention == duplicatePrevention) &&
             (identical(other.richDataCapture, richDataCapture) ||
                 other.richDataCapture == richDataCapture) &&
             (identical(other.lanInstantSync, lanInstantSync) ||
@@ -1076,7 +1057,6 @@ class _$AppConfigImpl extends _AppConfig {
     enableDragNDrop,
     enablePasteStack,
     androidBgListener,
-    duplicatePrevention,
     richDataCapture,
     lanInstantSync,
     autoWriteOnReceive,
@@ -1139,7 +1119,6 @@ abstract class _AppConfig extends AppConfig {
     final bool enableDragNDrop,
     final bool enablePasteStack,
     final bool androidBgListener,
-    final bool duplicatePrevention,
     final bool richDataCapture,
     final bool lanInstantSync,
     final bool autoWriteOnReceive,
@@ -1243,8 +1222,6 @@ abstract class _AppConfig extends AppConfig {
   bool get enablePasteStack;
   @override
   bool get androidBgListener;
-  @override
-  bool get duplicatePrevention;
   @override
   bool get richDataCapture; // LAN Instant Sync
   @override

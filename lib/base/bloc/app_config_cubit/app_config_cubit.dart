@@ -252,8 +252,6 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
   bool get isFileSyncEnabled =>
       state.config.enableSync && state.config.enableFileSync;
 
-  bool get duplicatePrevention => state.config.duplicatePrevention;
-
   ExclusionRules get exclusionRules => state.config.copyExclusionRules;
 
   Future<void> changePausedTill(DateTime? pausedTill) async {
@@ -381,12 +379,6 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
 
   Future<void> changeSync(bool value) async {
     final newConfig = state.config.copyWith(enableSync: value);
-    emit(state.copyWith(config: newConfig));
-    await repo.update(newConfig);
-  }
-
-  Future<void> togglePreventDuplication(bool value) async {
-    final newConfig = state.config.copyWith(duplicatePrevention: value);
     emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }
