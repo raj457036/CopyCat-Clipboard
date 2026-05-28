@@ -29,10 +29,8 @@ class AuthListener extends StatelessWidget {
     syncOrchestrator = sl<SyncOrchestrator>();
   }
 
-  Future<void> initEncryptionWorker(
-    AppConfigCubit appConfigCubit,
-    AuthenticatedAuthState authState,
-  ) async {
+  Future<void> initEncryptionWorker(AuthenticatedAuthState authState) async {
+    final appConfigCubit = sl<AppConfigCubit>();
     final encryptionWorker = EncryptionWorker.instance;
     await encryptionWorker.waitUntilReady();
 
@@ -70,18 +68,13 @@ class AuthListener extends StatelessWidget {
     BuildContext context,
     AuthenticatedAuthState state,
   ) async {
-    final AppConfigCubit appConfigCubit = sl();
     final reviewPromptCubit = context.read<ReviewPromptCubit>();
-
-    if (!appConfigCubit.loaded.isCompleted) {
-      await appConfigCubit.loaded.future;
-    }
 
     final monetizationCubit = sl<MonetizationCubit>();
     unawaited(monetizationCubit.login(state.user.userId));
 
     if (state.isEncryptionKeySetup) {
-      unawaited(initEncryptionWorker(appConfigCubit, state));
+      unawaited(initEncryptionWorker(state));
     }
 
     if (!state.isOnboardingCompleted) {

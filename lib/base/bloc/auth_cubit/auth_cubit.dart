@@ -121,6 +121,10 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> authenticated(AuthUser user, String accessToken) async {
     analyticsRepo.setAnalyticUser(user);
 
+    if (!appConfigCubit.loaded.isCompleted) {
+      await appConfigCubit.loaded.future;
+    }
+
     final isOnboardingCompleted = appConfigCubit.state.config.onBoardComplete;
     final isEncryptionKeySetup = appConfigCubit.isE2EESetupDone;
     emit(

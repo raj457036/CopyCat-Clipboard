@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:math' show max;
 
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
+import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/common/logging.dart';
@@ -59,8 +61,9 @@ class PasteStackCubit extends Cubit<PasteStackState> {
   }
 
   int get maxItemCountAllowed => monetizationCubit.state.when(
-    unknown: () => 10,
-    active: (subscription) => subscription.pasteStackLimit,
+    unknown: () => defaultPasteStackLimit,
+    active: (subscription) =>
+        max(defaultMaxPasteStackLimit, subscription.pasteStackLimit),
   );
 
   void reverseStack() =>

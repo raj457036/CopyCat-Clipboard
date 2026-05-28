@@ -131,9 +131,10 @@ class _CreateNewCollectionItem extends StatelessWidget {
               if (isFocused) {
                 Scrollable.ensureVisible(
                   context,
-                  alignment: 0.5,
                   duration: Durations.medium1,
-                  curve: Curves.easeOut,
+                  curve: Curves.easeOutCubic,
+                  alignmentPolicy:
+                      ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
                 );
               }
             },

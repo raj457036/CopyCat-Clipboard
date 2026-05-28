@@ -85,9 +85,9 @@ class ClipCollectionGridItem extends StatelessWidget {
               setState(() => selected = isFocused);
               Scrollable.ensureVisible(
                 context,
-                alignment: 0.5,
                 duration: Durations.medium1,
-                curve: Curves.easeOut,
+                curve: Curves.easeOutCubic,
+                alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
               );
             },
             autofocus: autoFocus,

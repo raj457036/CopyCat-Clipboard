@@ -127,9 +127,9 @@ class _ClipCardBodyState extends State<ClipCardBody> {
     if (hasFocus) {
       Scrollable.ensureVisible(
         context,
-        alignment: 0.5,
         duration: Durations.medium1,
-        curve: Curves.easeOut,
+        curve: Curves.easeOutCubic,
+        alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
       );
     }
 

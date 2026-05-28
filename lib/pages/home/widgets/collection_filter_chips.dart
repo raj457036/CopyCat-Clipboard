@@ -31,6 +31,7 @@ class CollectionFilterChips extends StatelessWidget {
               prev.filterState.collectionId != next.filterState.collectionId,
           builder: (context, clipboardState) {
             final activeId = clipboardState.filterState.collectionId;
+            final colorScheme = context.colors;
 
             return SubscriptionBuilder(
               builder: (context, subscription) {
@@ -40,25 +41,37 @@ class CollectionFilterChips extends StatelessWidget {
 
                 return SizedBox(
                   height: 64,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.all(padding8),
-                    itemCount: collections.length + 1,
-                    separatorBuilder: (_, index) => index == 0
-                        ? const VerticalDivider(indent: 6, endIndent: 6)
-                        : width8,
-                    itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return _CreateCollectionChip(canCreate: canCreate);
-                      }
-                      final collection = collections[index - 1];
-                      final isReadOnly = loaded.isReadOnly(collection);
-                      return _CollectionChip(
-                        collection: collection,
-                        isSelected: activeId == collection.id,
-                        isReadOnly: isReadOnly,
-                      );
-                    },
+                  child: ChipTheme(
+                    data: ChipThemeData(
+                      backgroundColor: colorScheme.surfaceContainerHighest,
+                      selectedColor: colorScheme.primaryContainer,
+                      disabledColor: colorScheme.surfaceContainerLow,
+                      side: BorderSide(color: colorScheme.outlineVariant),
+                      labelStyle: TextStyle(color: colorScheme.onSurface),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.all(padding8),
+                      itemCount: collections.length + 1,
+                      separatorBuilder: (_, index) => index == 0
+                          ? const VerticalDivider(indent: 6, endIndent: 6)
+                          : width8,
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return _CreateCollectionChip(canCreate: canCreate);
+                        }
+                        final collection = collections[index - 1];
+                        final isReadOnly = loaded.isReadOnly(collection);
+                        return _CollectionChip(
+                          collection: collection,
+                          isSelected: activeId == collection.id,
+                          isReadOnly: isReadOnly,
+                        );
+                      },
+                    ),
                   ),
                 );
               },
@@ -92,7 +105,7 @@ class _CreateCollectionChip extends StatelessWidget {
       label: Text(context.locale.badges__label__pro),
       alignment: Alignment.topLeft,
       isLabelVisible: !canCreate,
-      child: ActionChip(
+      child: ActionChip.elevated(
         avatar: const Icon(Icons.add_rounded),
         color: canCreate ? context.colors.onPrimary.msp : null,
         backgroundColor: canCreate ? context.colors.primary : null,
@@ -125,15 +138,12 @@ class _CollectionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return TooltipTheme(
       data: const TooltipThemeData(constraints: BoxConstraints(maxWidth: 200)),
-      child: ChoiceChip(
-        shape: const StadiumBorder(),
+      child: ChoiceChip.elevated(
         avatar: isReadOnly
             ? const Icon(Icons.lock_outline_rounded, size: 16)
             : Text(collection.emoji),
         label: Text(collection.title),
         selected: isSelected,
-        elevation: 0.5,
-        pressElevation: 0.5,
         tooltip: collection.description,
         onSelected: (selected) => _onSelected(context, selected),
         showCheckmark: true,
