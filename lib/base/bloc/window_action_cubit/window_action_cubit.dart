@@ -171,7 +171,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
   Future<void> show() async {
     if (isMobilePlatform) return;
     await windowManager.show();
-    await windowManager.focus();
+    // await windowManager.focus();
     isFocused = true;
     requestFocus();
   }
