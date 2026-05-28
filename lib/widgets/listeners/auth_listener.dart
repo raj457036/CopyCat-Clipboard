@@ -10,7 +10,6 @@ import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
-import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/base/domain/services/database_service.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
@@ -31,19 +30,20 @@ class AuthListener extends StatelessWidget {
   }
 
   Future<void> initEncryptionWorker(
-    AppConfig appConfig,
+    AppConfigCubit appConfigCubit,
     AuthenticatedAuthState authState,
   ) async {
-    if (appConfig.enc2Key == null) return;
-
     final encryptionWorker = EncryptionWorker.instance;
     await encryptionWorker.waitUntilReady();
 
     final enc1 = authState.user.enc1;
-    final enc1Decrypt = appConfig.decryptEnc2(enc1);
+    final enc1Decrypt = await appConfigCubit.decryptEnc2(enc1);
+
     if (enc1Decrypt == null) return;
+
+    final config = appConfigCubit.state.config;
     await encryptionWorker.start(enc1Decrypt);
-    encryptionWorker.setEncryption(appConfig.autoEncrypt);
+    encryptionWorker.setEncryption(config.autoEncrypt);
     encryptionWorker.setDecryption(true);
   }
 
@@ -77,13 +77,11 @@ class AuthListener extends StatelessWidget {
       await appConfigCubit.loaded.future;
     }
 
-    final config = appConfigCubit.state.config;
-
     final monetizationCubit = sl<MonetizationCubit>();
-    await monetizationCubit.login(state.user.userId);
+    unawaited(monetizationCubit.login(state.user.userId));
 
     if (state.isEncryptionKeySetup) {
-      await initEncryptionWorker(config, state);
+      unawaited(initEncryptionWorker(appConfigCubit, state));
     }
 
     if (!state.isOnboardingCompleted) {

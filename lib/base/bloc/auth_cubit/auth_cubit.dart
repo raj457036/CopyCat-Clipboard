@@ -122,7 +122,7 @@ class AuthCubit extends Cubit<AuthState> {
     analyticsRepo.setAnalyticUser(user);
 
     final isOnboardingCompleted = appConfigCubit.state.config.onBoardComplete;
-    final isEncryptionKeySetup = appConfigCubit.state.config.enc2Key != null;
+    final isEncryptionKeySetup = appConfigCubit.isE2EESetupDone;
     emit(
       AuthState.authenticated(
         user: user,

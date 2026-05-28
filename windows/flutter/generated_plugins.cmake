@@ -7,6 +7,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   clipboard_watcher
   emoji_picker_flutter
   flutter_platform_alert
+  flutter_secure_storage_windows
   focus_window
   hotkey_manager_windows
   irondash_engine_context
