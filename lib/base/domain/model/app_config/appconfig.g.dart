@@ -61,6 +61,7 @@ _$AppConfigImpl _$$AppConfigImplFromJson(
   richDataCapture: json['richDataCapture'] as bool? ?? false,
   lanInstantSync: json['lanInstantSync'] as bool? ?? false,
   autoWriteOnReceive: json['autoWriteOnReceive'] as bool? ?? false,
+  showTrayIcon: json['showTrayIcon'] as bool? ?? true,
   onBoardComplete: json['onBoardComplete'] as bool? ?? true,
   reviewQualifyingEventCount:
       (json['reviewQualifyingEventCount'] as num?)?.toInt() ?? 0,
@@ -107,6 +108,7 @@ Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
       'richDataCapture': instance.richDataCapture,
       'lanInstantSync': instance.lanInstantSync,
       'autoWriteOnReceive': instance.autoWriteOnReceive,
+      'showTrayIcon': instance.showTrayIcon,
       'onBoardComplete': instance.onBoardComplete,
       'reviewQualifyingEventCount': instance.reviewQualifyingEventCount,
       'lastReviewPromptDate': instance.lastReviewPromptDate?.toIso8601String(),

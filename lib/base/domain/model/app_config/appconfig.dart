@@ -99,6 +99,9 @@ class AppConfig with _$AppConfig, Identifiable {
     @Default(false) bool lanInstantSync,
     @Default(false) bool autoWriteOnReceive,
 
+    // Desktop UI
+    @Default(true) bool showTrayIcon,
+
     // on boarding
     @Default(true)
     bool onBoardComplete, // On logout/unauth this will be set to true

@@ -1,3 +1,4 @@
+import 'package:clipboard/pages/settings/widgets/switches/tray_icon_switch.dart';
 import 'package:clipboard/pages/settings/widgets/copycat_about_tile.dart';
 import 'package:clipboard/pages/settings/widgets/download_desktop_client.dart';
 import 'package:clipboard/pages/settings/widgets/dropdowns/dont_copy_over_dropdown.dart';
@@ -38,6 +39,7 @@ class GeneralSettings extends StatelessWidget {
           if (!Platform.isIOS) const DontAutoCopyOverDropdown(),
           if (isDesktopPlatform) const PauseTillSwitch(),
           if (isDesktopPlatform) const StartUpLaunchSwitch(),
+          if (isDesktopPlatform) const TrayIconSwitch(),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.backup_rounded),

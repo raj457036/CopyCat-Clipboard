@@ -2800,6 +2800,18 @@ abstract class AppLocalizations {
   /// **'Automatically start the CopyCat when your device powers on.'**
   String get settings__switch__startup__subtitle;
 
+  /// No description provided for @settings__switch__tray_icon__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Menu Bar Icon'**
+  String get settings__switch__tray_icon__title;
+
+  /// No description provided for @settings__switch__tray_icon__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Display the CopyCat icon in the system menu bar / tray.'**
+  String get settings__switch__tray_icon__subtitle;
+
   /// No description provided for @settings__switch__hide_from_screen_capture__title.
   ///
   /// In en, this message translates to:

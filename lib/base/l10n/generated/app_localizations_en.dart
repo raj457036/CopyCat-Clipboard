@@ -1552,6 +1552,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Automatically start the CopyCat when your device powers on.';
 
   @override
+  String get settings__switch__tray_icon__title => 'Show Menu Bar Icon';
+
+  @override
+  String get settings__switch__tray_icon__subtitle =>
+      'Display the CopyCat icon in the system menu bar / tray.';
+
+  @override
   String get settings__switch__hide_from_screen_capture__title =>
       'Hide from Screen Recording';
 
