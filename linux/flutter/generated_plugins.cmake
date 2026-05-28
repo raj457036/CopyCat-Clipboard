@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   clipboard_watcher
   emoji_picker_flutter
   flutter_platform_alert
+  flutter_secure_storage_linux
   focus_window
   gtk
   hotkey_manager_linux

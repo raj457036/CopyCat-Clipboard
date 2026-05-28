@@ -1,4 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart' show AuthCubit;
+import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart'
+    show MonetizationCubit;
 import 'package:clipboard/common/logging.dart';
 
 class CustomBlocObserver extends BlocObserver {
@@ -29,6 +32,10 @@ class CustomBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
+
+    if (bloc is AuthCubit) return;
+    if (bloc is MonetizationCubit) return;
+
     _logger.d(
       () =>
           'onChange(${bloc.runtimeType}) -- ${change.currentState} → ${change.nextState}',

@@ -9,6 +9,7 @@
 #include <clipboard_watcher/clipboard_watcher_plugin.h>
 #include <emoji_picker_flutter/emoji_picker_flutter_plugin.h>
 #include <flutter_platform_alert/flutter_platform_alert_plugin.h>
+#include <flutter_secure_storage_linux/flutter_secure_storage_linux_plugin.h>
 #include <focus_window/focus_window_plugin.h>
 #include <gtk/gtk_plugin.h>
 #include <hotkey_manager_linux/hotkey_manager_linux_plugin.h>
@@ -34,6 +35,9 @@ void fl_register_plugins(FlPluginRegistry* registry) {
   g_autoptr(FlPluginRegistrar) flutter_platform_alert_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "FlutterPlatformAlertPlugin");
   flutter_platform_alert_plugin_register_with_registrar(flutter_platform_alert_registrar);
+  g_autoptr(FlPluginRegistrar) flutter_secure_storage_linux_registrar =
+      fl_plugin_registry_get_registrar_for_plugin(registry, "FlutterSecureStorageLinuxPlugin");
+  flutter_secure_storage_linux_plugin_register_with_registrar(flutter_secure_storage_linux_registrar);
   g_autoptr(FlPluginRegistrar) focus_window_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "FocusWindowPlugin");
   focus_window_plugin_register_with_registrar(focus_window_registrar);

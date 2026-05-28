@@ -230,8 +230,8 @@ class MainApp extends StatelessWidget {
     );
     final child = MultiBlocProvider(
       providers: [
-        BlocProvider<AuthCubit>(create: (context) => sl()),
-        BlocProvider<AppConfigCubit>(create: (context) => sl()..load()),
+        BlocProvider<AuthCubit>(create: (context) => sl(), lazy: false),
+        BlocProvider<AppConfigCubit>(create: (context) => sl(), lazy: false),
         BlocProvider<WindowActionCubit>(create: (context) => sl()),
         BlocProvider<EventBusCubit>(create: (context) => sl()),
         BlocProvider<MonetizationCubit>(create: (context) => sl()),

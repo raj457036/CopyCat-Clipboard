@@ -81,30 +81,15 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
         return;
       }
 
-      /** 
-    if (appConfig.enc2Key == null) return;
-
-    final encryptionWorker = EncryptionWorker.instance;
-    await encryptionWorker.waitUntilReady();
-
-    final enc1 = authState.user.enc1;
-    final enc1Decrypt = appConfig.decryptEnc2(enc1);
-    if (enc1Decrypt == null) return;
-    await encryptionWorker.start(enc1Decrypt);
-    encryptionWorker.setEncryption(appConfig.autoEncrypt);
-    encryptionWorker.setDecryption(true);
-       */
-
       if (importedKeyId == keyId && key != null) {
         await appConfigCubit.setE2EEKey(key);
 
-        final appConfig = appConfigCubit.state.config;
         final enc1 = authCubit.state.maybeWhen(
           authenticated: (user, _, _, _) => user.enc1,
           orElse: () => null,
         );
 
-        final enc1Decrypt = appConfig.decryptEnc2(enc1);
+        final enc1Decrypt = await appConfigCubit.decryptEnc2(enc1);
         if (enc1Decrypt == null) {
           setState(() => invalidImportedKey = true);
           return;
@@ -173,46 +158,49 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<AppConfigCubit, AppConfigState, String?>(
-      selector: (state) {
-        return state.config.enc2;
-      },
-      builder: (context, enc2Key) {
-        return BlocSelector<AuthCubit, AuthState, AuthUser?>(
-          selector: (state) {
-            return state.whenOrNull(authenticated: (user, _, _, _) => user);
-          },
-          builder: (context, user) {
-            if (user == null) return const SizedBox.shrink();
-            final keyId = user.enc2KeyId;
-            final enc1 = user.enc1;
+    return BlocBuilder<AppConfigCubit, AppConfigState>(
+      builder: (context, _) {
+        return FutureBuilder<String?>(
+          future: appConfigCubit.getE2EEKey(),
+          builder: (context, snapshot) {
+            final enc2Key = snapshot.data;
+            return BlocSelector<AuthCubit, AuthState, AuthUser?>(
+              selector: (state) {
+                return state.whenOrNull(authenticated: (user, _, _, _) => user);
+              },
+              builder: (context, user) {
+                if (user == null) return const SizedBox.shrink();
+                final keyId = user.enc2KeyId;
+                final enc1 = user.enc1;
 
-            if (keyId == null || enc1 == null) {
-              return GenerateE2eeDialog(
-                loading: loading,
-                generateEnc2Key: generateEnc2Key,
-              );
-            }
+                if (keyId == null || enc1 == null) {
+                  return GenerateE2eeDialog(
+                    loading: loading,
+                    generateEnc2Key: generateEnc2Key,
+                  );
+                }
 
-            if (enc2Key == null) {
-              return ImportE2eeDialog(
-                importEnc2Key: () => importEnc2Key(keyId),
-                loading: loading,
-                invalidImportedKey: invalidImportedKey,
-                bottom: EncryptedClipsStat(
-                  repository: sl(instanceName: "local"),
-                  onNavigate: context.pop,
-                ),
-              );
-            }
-            return ExportE2eeDialog(
-              exportEnc2Key: () => exportEnc2Key(context, keyId, enc2Key),
-              loading: loading,
-              bottom: EncryptedClipsStat(
-                repository: sl(instanceName: "local"),
-                withDecryptButton: true,
-                onNavigate: context.pop,
-              ),
+                if (enc2Key == null) {
+                  return ImportE2eeDialog(
+                    importEnc2Key: () => importEnc2Key(keyId),
+                    loading: loading,
+                    invalidImportedKey: invalidImportedKey,
+                    bottom: EncryptedClipsStat(
+                      repository: sl(instanceName: "local"),
+                      onNavigate: context.pop,
+                    ),
+                  );
+                }
+                return ExportE2eeDialog(
+                  exportEnc2Key: () => exportEnc2Key(context, keyId, enc2Key),
+                  loading: loading,
+                  bottom: EncryptedClipsStat(
+                    repository: sl(instanceName: "local"),
+                    withDecryptButton: true,
+                    onNavigate: context.pop,
+                  ),
+                );
+              },
             );
           },
         );

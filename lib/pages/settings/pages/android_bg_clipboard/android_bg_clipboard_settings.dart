@@ -260,7 +260,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
       writingConfig = true;
     });
     try {
-      final enc1Decrypt = appConfigCubit.state.config.decryptEnc2(enc1Key);
+      final enc1Decrypt = await appConfigCubit.decryptEnc2(enc1Key);
       final useEncryptionNonce = appConfigCubit.state.config.useEncryptionNonce;
       final syncSpeed = appConfigCubit.state.config.syncSpeed.name;
       final syncInterval = monetizationCubit.active?.syncInterval ?? 45;

@@ -6,10 +6,8 @@ import 'package:clipboard/utils/paste_stack.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
-import 'package:universal_io/io.dart';
 
 class SystemShortcutListener extends StatelessWidget {
   final Widget child;
@@ -36,15 +34,7 @@ class SystemShortcutListener extends StatelessWidget {
   ) async {
     final toggleHotKey = config.getToggleHotkey;
     final quickPasteHotKey = config.getQuickPasteHotkey;
-    final pasteStackHotKey =
-        config.getPasteStackHotkey ??
-        HotKey(
-          key: PhysicalKeyboardKey.keyC,
-          modifiers: Platform.isMacOS
-              ? [HotKeyModifier.meta, HotKeyModifier.shift]
-              : [HotKeyModifier.control, HotKeyModifier.shift],
-          scope: HotKeyScope.system,
-        );
+    final pasteStackHotKey = config.getPasteStackHotkey;
 
     await hotKeyManager.unregisterAll();
 
@@ -69,12 +59,14 @@ class SystemShortcutListener extends StatelessWidget {
     }
 
     // Register paste stack hotkey
-    await hotKeyManager.register(
-      pasteStackHotKey,
-      keyDownHandler: (hotKey_) async {
-        if (pasteStackHotKey == hotKey_) showPasteStack(context);
-      },
-    );
+    if (pasteStackHotKey != null) {
+      await hotKeyManager.register(
+        pasteStackHotKey,
+        keyDownHandler: (hotKey_) async {
+          if (pasteStackHotKey == hotKey_) showPasteStack(context);
+        },
+      );
+    }
   }
 
   @override

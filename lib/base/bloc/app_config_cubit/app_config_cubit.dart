@@ -3,6 +3,7 @@ import 'dart:convert' show jsonEncode;
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
+import 'package:clipboard/base/data/services/encryption.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_checker.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_rules.dart';
@@ -23,6 +24,7 @@ import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:no_screenshot/no_screenshot.dart';
 import 'package:ntp/ntp.dart';
 import 'package:retry/retry.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:universal_io/io.dart';
 import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
@@ -31,13 +33,15 @@ import 'package:clipboard/di/di.dart';
 
 part 'app_config_cubit.freezed.dart';
 part 'app_config_state.dart';
+part 'app_config_cubit_e2ee_mixin.dart';
 
 ExclusionChecker? exclusionChecker;
 DateTime? currentInternetTime;
 
 @singleton
-class AppConfigCubit extends Cubit<AppConfigState> {
+class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
   ActivityInfo? lastActivity;
+  @override
   final AppConfigRepository repo;
   final FocusWindow focusWindow = FocusWindow();
 
@@ -123,10 +127,13 @@ class AppConfigCubit extends Cubit<AppConfigState> {
   }
 
   Future<void> reset() async {
+    await _clearStoredE2EEKey();
+    _hasStoredE2EEKey = false;
     final config = AppConfig(
       id: 1,
       onBoardComplete: false,
       syncSpeed: SyncSpeed.balanced,
+      enc2: null,
     );
     emit(AppConfigState.loaded(config: config));
     await repo.update(config);
@@ -178,6 +185,8 @@ class AppConfigCubit extends Cubit<AppConfigState> {
       },
     );
     initializeExclusionChecker();
+    await _migrateLegacyEnc2ToSecureStorage(next.config);
+    await _refreshE2EEKeyPresence();
     if (Platform.isAndroid) {
       _syncLanConfigToAndroid(next.config);
     } else if (!Platform.isIOS) {
@@ -237,7 +246,6 @@ class AppConfigCubit extends Cubit<AppConfigState> {
       !state.config.clockUnSynced && state.config.enableSync;
 
   bool get isEncryptionEnabled => state.config.autoEncrypt;
-  bool get isE2EESetupDone => state.config.enc2 != null;
 
   bool get isPinned => state.config.pinned;
 
@@ -308,12 +316,6 @@ class AppConfigCubit extends Cubit<AppConfigState> {
     final newConfig = state.config.copyWith(
       pasteStackHotkey: key != null ? jsonEncode(key.toJson()) : null,
     );
-    emit(state.copyWith(config: newConfig));
-    await repo.update(newConfig);
-  }
-
-  Future<void> setE2EEKey(String? key) async {
-    final newConfig = state.config.copyWith(enc2: key);
     emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }

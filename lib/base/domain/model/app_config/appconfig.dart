@@ -1,7 +1,6 @@
 import 'dart:convert' show jsonDecode;
 import 'package:clipboard/base/constants/numbers/file_sizes.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/data/services/encryption.dart';
 import 'package:clipboard/base/domain/model/base.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_rules.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
@@ -132,21 +131,6 @@ class AppConfig with _$AppConfig, Identifiable {
 
   ExclusionRules get copyExclusionRules =>
       exclusionRules ?? ExclusionRules(enable: false);
-
-  EncryptionSecret? get enc2Key =>
-      enc2 != null ? EncryptionSecret.deserilize(enc2!) : null;
-
-  String? decryptEnc2(String? enc1) {
-    if (enc2Key == null || enc1 == null) return null;
-    try {
-      final encMngr = EncryptionManager(enc2Key!);
-      final enc1Decrypt = encMngr.decrypt(enc1);
-      return enc1Decrypt;
-    } catch (e) {
-      // If decryption fails, return null. This can happen if the key is invalid or the data is corrupted.
-      return null;
-    }
-  }
 
   HotKey? get getToggleHotkey =>
       toggleHotkey != null ? HotKey.fromJson(jsonDecode(toggleHotkey!)) : null;
