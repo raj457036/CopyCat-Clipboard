@@ -1,10 +1,15 @@
 package com.entilitystudio.android_background_clipboard
 
+import android.content.BroadcastReceiver
 import android.content.ClipData as AndroidClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.PowerManager
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.util.Log
@@ -113,9 +118,29 @@ class CopyCatLanSyncManager(
     private val mainHandler = Handler(Looper.getMainLooper())
     private val discoveryRefreshRunnable = object : Runnable {
         override fun run() {
-            if (!started) return
+            if (!started || nsdPaused) return
             refreshDiscovery("periodic")
             scheduleDiscoveryRefresh()
+        }
+    }
+
+    // MARK: - Screen State
+    private var isScreenOn: Boolean = true
+    private var screenReceiverRegistered: Boolean = false
+    private var nsdPaused: Boolean = false
+
+    private val screenStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action) {
+                Intent.ACTION_SCREEN_OFF -> {
+                    isScreenOn = false
+                    if (started) pauseNsd()
+                }
+                Intent.ACTION_SCREEN_ON -> {
+                    isScreenOn = true
+                    if (started) resumeNsd()
+                }
+            }
         }
     }
 
@@ -130,10 +155,17 @@ class CopyCatLanSyncManager(
     fun start() {
         if (started || !lanSyncEnabled) return
         started = true
+        isScreenOn = readScreenInteractiveState()
+        registerScreenReceiver()
         startServer()
-        registerNsd()
-        discoverPeers()
-        scheduleDiscoveryRefresh()
+        if (isScreenOn) {
+            registerNsd()
+            discoverPeers()
+            scheduleDiscoveryRefresh()
+        } else {
+            nsdPaused = true
+            Log.i(LOG_TAG, "LAN sync started with mDNS deferred (screen off)")
+        }
         Log.i(LOG_TAG, "LAN sync started on port $serverPort")
     }
 
@@ -141,6 +173,7 @@ class CopyCatLanSyncManager(
         if (!started) return
         started = false
         mainHandler.removeCallbacks(discoveryRefreshRunnable)
+        unregisterScreenReceiver()
         stopDiscovery()
         unregisterNsd()
         serverThread?.interrupt()
@@ -150,8 +183,35 @@ class CopyCatLanSyncManager(
         serverSocket = null
         peers.clear()
         serviceNameToDeviceId.clear()
+        nsdPaused = false
         LanPeerReporter.getInstance().clear()
         Log.i(LOG_TAG, "LAN sync stopped")
+    }
+
+    private fun readScreenInteractiveState(): Boolean {
+        val pm = appContext.getSystemService(Context.POWER_SERVICE) as? PowerManager
+        return pm?.isInteractive ?: true
+    }
+
+    private fun registerScreenReceiver() {
+        if (screenReceiverRegistered) return
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_SCREEN_ON)
+            addAction(Intent.ACTION_SCREEN_OFF)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            appContext.registerReceiver(screenStateReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            @Suppress("UnspecifiedRegisterReceiverFlag")
+            appContext.registerReceiver(screenStateReceiver, filter)
+        }
+        screenReceiverRegistered = true
+    }
+
+    private fun unregisterScreenReceiver() {
+        if (!screenReceiverRegistered) return
+        try { appContext.unregisterReceiver(screenStateReceiver) } catch (_: Exception) {}
+        screenReceiverRegistered = false
     }
 
     fun reconfigure() {
@@ -643,8 +703,29 @@ class CopyCatLanSyncManager(
         mainHandler.postDelayed(discoveryRefreshRunnable, delayMs)
     }
 
+    private fun pauseNsd() {
+        if (nsdPaused) return
+        nsdPaused = true
+        mainHandler.removeCallbacks(discoveryRefreshRunnable)
+        stopDiscovery()
+        unregisterNsd()
+        peers.clear()
+        serviceNameToDeviceId.clear()
+        LanPeerReporter.getInstance().clear()
+        Log.i(LOG_TAG, "LAN mDNS paused (screen off)")
+    }
+
+    private fun resumeNsd() {
+        if (!nsdPaused) return
+        nsdPaused = false
+        registerNsd()
+        discoverPeers()
+        scheduleDiscoveryRefresh()
+        Log.i(LOG_TAG, "LAN mDNS resumed (screen on)")
+    }
+
     private fun refreshDiscovery(reason: String) {
-        if (!started) return
+        if (!started || nsdPaused) return
         stopDiscovery()
         discoverPeers()
         Log.d(LOG_TAG, "NSD discovery refreshed ($reason)")
