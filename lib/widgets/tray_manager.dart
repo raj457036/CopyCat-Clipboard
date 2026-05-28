@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/l10n/generated/app_localizations.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -33,13 +36,14 @@ class TrayManager extends StatefulWidget {
 class TrayManagerState extends State<TrayManager> with TrayListener {
   late final Future<AppLocalizations> englishL10n;
   late final AppConfigCubit configCubit;
+  late final WindowActionCubit windowActionCubit;
   bool paused = false;
 
   @override
   void initState() {
     englishL10n = lookupAppLocalizations(const Locale('en'));
     configCubit = context.read<AppConfigCubit>();
-
+    windowActionCubit = context.read<WindowActionCubit>();
     if (configCubit.state is AppConfigLoaded) {
       final config = (configCubit.state as AppConfigLoaded).config;
       paused =
@@ -49,13 +53,26 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
 
     trayManager.addListener(this);
     super.initState();
-    initTray();
+    unawaited(_initTrayIfConfigured());
   }
 
   @override
   void dispose() {
     trayManager.removeListener(this);
     super.dispose();
+  }
+
+  Future<void> _initTrayIfConfigured() async {
+    if (!configCubit.loaded.isCompleted) {
+      await configCubit.loaded.future;
+    }
+
+    if (configCubit.state.config.showTrayIcon) {
+      await initTray();
+      await windowActionCubit.showInTaskbar(false);
+    } else {
+      await windowActionCubit.showInTaskbar(true);
+    }
   }
 
   String get icon {
@@ -168,17 +185,29 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
     }
   }
 
+  Future<void> destroyTray() async {
+    await trayManager.destroy();
+    await windowActionCubit.showInTaskbar(true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AppConfigCubit, AppConfigState>(
       listenWhen: (p, c) {
         if (p is AppConfigLoaded && c is AppConfigLoaded) {
-          return p.config.pausedTill != c.config.pausedTill;
+          return p.config.pausedTill != c.config.pausedTill ||
+              p.config.showTrayIcon != c.config.showTrayIcon;
         }
         return false;
       },
-      listener: (context, state) {
+      listener: (context, state) async {
         final config = (state as AppConfigLoaded).config;
+        if (!config.showTrayIcon) {
+          await destroyTray();
+          return;
+        }
+        await windowActionCubit.showInTaskbar(false);
+        await windowActionCubit.show();
         final isPaused =
             config.pausedTill != null &&
             systemTime().isBefore(config.pausedTill!);

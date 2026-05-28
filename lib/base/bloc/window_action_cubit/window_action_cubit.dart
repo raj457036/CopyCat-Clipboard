@@ -46,6 +46,11 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     return initialWindowSize.width;
   }
 
+  Future<void> showInTaskbar(bool show) async {
+    if (!isDesktopPlatform) return;
+    await windowManager.setSkipTaskbar(!show);
+  }
+
   Future<void> checkFocus() async {
     if (isDesktopPlatform) {
       isFocused = await windowManager.isFocused();

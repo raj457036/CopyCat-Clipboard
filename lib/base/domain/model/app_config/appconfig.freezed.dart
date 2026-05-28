@@ -84,7 +84,8 @@ mixin _$AppConfig {
       throw _privateConstructorUsedError; // LAN Instant Sync
   bool get lanInstantSync => throw _privateConstructorUsedError;
   bool get autoWriteOnReceive =>
-      throw _privateConstructorUsedError; // on boarding
+      throw _privateConstructorUsedError; // Desktop UI
+  bool get showTrayIcon => throw _privateConstructorUsedError; // on boarding
   bool get onBoardComplete =>
       throw _privateConstructorUsedError; // On logout/unauth this will be set to true
   // In-App Review tracking
@@ -152,6 +153,7 @@ abstract class $AppConfigCopyWith<$Res> {
     bool richDataCapture,
     bool lanInstantSync,
     bool autoWriteOnReceive,
+    bool showTrayIcon,
     bool onBoardComplete,
     int reviewQualifyingEventCount,
     DateTime? lastReviewPromptDate,
@@ -216,6 +218,7 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? richDataCapture = null,
     Object? lanInstantSync = null,
     Object? autoWriteOnReceive = null,
+    Object? showTrayIcon = null,
     Object? onBoardComplete = null,
     Object? reviewQualifyingEventCount = null,
     Object? lastReviewPromptDate = freezed,
@@ -373,6 +376,10 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
                 ? _value.autoWriteOnReceive
                 : autoWriteOnReceive // ignore: cast_nullable_to_non_nullable
                       as bool,
+            showTrayIcon: null == showTrayIcon
+                ? _value.showTrayIcon
+                : showTrayIcon // ignore: cast_nullable_to_non_nullable
+                      as bool,
             onBoardComplete: null == onBoardComplete
                 ? _value.onBoardComplete
                 : onBoardComplete // ignore: cast_nullable_to_non_nullable
@@ -465,6 +472,7 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     bool richDataCapture,
     bool lanInstantSync,
     bool autoWriteOnReceive,
+    bool showTrayIcon,
     bool onBoardComplete,
     int reviewQualifyingEventCount,
     DateTime? lastReviewPromptDate,
@@ -529,6 +537,7 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? richDataCapture = null,
     Object? lanInstantSync = null,
     Object? autoWriteOnReceive = null,
+    Object? showTrayIcon = null,
     Object? onBoardComplete = null,
     Object? reviewQualifyingEventCount = null,
     Object? lastReviewPromptDate = freezed,
@@ -686,6 +695,10 @@ class __$$AppConfigImplCopyWithImpl<$Res>
             ? _value.autoWriteOnReceive
             : autoWriteOnReceive // ignore: cast_nullable_to_non_nullable
                   as bool,
+        showTrayIcon: null == showTrayIcon
+            ? _value.showTrayIcon
+            : showTrayIcon // ignore: cast_nullable_to_non_nullable
+                  as bool,
         onBoardComplete: null == onBoardComplete
             ? _value.onBoardComplete
             : onBoardComplete // ignore: cast_nullable_to_non_nullable
@@ -756,6 +769,7 @@ class _$AppConfigImpl extends _AppConfig {
     this.richDataCapture = false,
     this.lanInstantSync = false,
     this.autoWriteOnReceive = false,
+    this.showTrayIcon = true,
     this.onBoardComplete = true,
     this.reviewQualifyingEventCount = 0,
     this.lastReviewPromptDate,
@@ -901,6 +915,10 @@ class _$AppConfigImpl extends _AppConfig {
   @override
   @JsonKey()
   final bool autoWriteOnReceive;
+  // Desktop UI
+  @override
+  @JsonKey()
+  final bool showTrayIcon;
   // on boarding
   @override
   @JsonKey()
@@ -926,7 +944,7 @@ class _$AppConfigImpl extends _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, pasteStackHotkey: $pasteStackHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, hideFromScreenCapture: $hideFromScreenCapture, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, richDataCapture: $richDataCapture, lanInstantSync: $lanInstantSync, autoWriteOnReceive: $autoWriteOnReceive, onBoardComplete: $onBoardComplete, reviewQualifyingEventCount: $reviewQualifyingEventCount, lastReviewPromptDate: $lastReviewPromptDate, reviewNeverAsk: $reviewNeverAsk, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
+    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, pasteStackHotkey: $pasteStackHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, hideFromScreenCapture: $hideFromScreenCapture, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, duplicatePrevention: $duplicatePrevention, richDataCapture: $richDataCapture, lanInstantSync: $lanInstantSync, autoWriteOnReceive: $autoWriteOnReceive, showTrayIcon: $showTrayIcon, onBoardComplete: $onBoardComplete, reviewQualifyingEventCount: $reviewQualifyingEventCount, lastReviewPromptDate: $lastReviewPromptDate, reviewNeverAsk: $reviewNeverAsk, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
   }
 
   @override
@@ -1001,6 +1019,8 @@ class _$AppConfigImpl extends _AppConfig {
                 other.lanInstantSync == lanInstantSync) &&
             (identical(other.autoWriteOnReceive, autoWriteOnReceive) ||
                 other.autoWriteOnReceive == autoWriteOnReceive) &&
+            (identical(other.showTrayIcon, showTrayIcon) ||
+                other.showTrayIcon == showTrayIcon) &&
             (identical(other.onBoardComplete, onBoardComplete) ||
                 other.onBoardComplete == onBoardComplete) &&
             (identical(
@@ -1060,6 +1080,7 @@ class _$AppConfigImpl extends _AppConfig {
     richDataCapture,
     lanInstantSync,
     autoWriteOnReceive,
+    showTrayIcon,
     onBoardComplete,
     reviewQualifyingEventCount,
     lastReviewPromptDate,
@@ -1122,6 +1143,7 @@ abstract class _AppConfig extends AppConfig {
     final bool richDataCapture,
     final bool lanInstantSync,
     final bool autoWriteOnReceive,
+    final bool showTrayIcon,
     final bool onBoardComplete,
     final int reviewQualifyingEventCount,
     final DateTime? lastReviewPromptDate,
@@ -1228,7 +1250,9 @@ abstract class _AppConfig extends AppConfig {
   @override
   bool get lanInstantSync;
   @override
-  bool get autoWriteOnReceive; // on boarding
+  bool get autoWriteOnReceive; // Desktop UI
+  @override
+  bool get showTrayIcon; // on boarding
   @override
   bool get onBoardComplete; // On logout/unauth this will be set to true
   // In-App Review tracking

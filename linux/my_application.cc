@@ -19,6 +19,15 @@ G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
 static void my_application_activate(GApplication *application)
 {
   MyApplication *self = MY_APPLICATION(application);
+
+  // Single-instance: if a window already exists, just present it.
+  GList *windows = gtk_application_get_windows(GTK_APPLICATION(application));
+  if (windows != NULL)
+  {
+    gtk_window_present(GTK_WINDOW(windows->data));
+    return;
+  }
+
   GtkWindow *window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
 
@@ -64,8 +73,7 @@ static void my_application_activate(GApplication *application)
   gtk_widget_show(GTK_WIDGET(view));
   gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
 
-  
-  fl_register_plugins(FL_PLUGIN_REGISTRY(view));
+    fl_register_plugins(FL_PLUGIN_REGISTRY(view));
 
   // Ubuntu handy window
   // gtk_widget_show(GTK_WIDGET(window));
@@ -137,6 +145,5 @@ MyApplication *my_application_new()
 {
   return MY_APPLICATION(g_object_new(my_application_get_type(),
                                      "application-id", APPLICATION_ID,
-                                     "flags", G_APPLICATION_NON_UNIQUE,
                                      nullptr));
 }
