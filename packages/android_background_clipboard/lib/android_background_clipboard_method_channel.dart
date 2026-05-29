@@ -190,4 +190,9 @@ class MethodChannelAndroidBackgroundClipboard
         .receiveBroadcastStream()
         .map((event) => event.toString());
   }
+
+  @override
+  Future<void> broadcastClip(Map<String, dynamic> clip) async {
+    await methodChannel.invokeMethod<void>('broadcastClip', clip);
+  }
 }

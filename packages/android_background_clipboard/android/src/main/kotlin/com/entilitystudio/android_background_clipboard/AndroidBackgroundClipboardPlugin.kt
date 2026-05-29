@@ -189,6 +189,16 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
                 result.success(isRunning)
             }
 
+            "broadcastClip" -> {
+                @Suppress("UNCHECKED_CAST")
+                val data = call.arguments as? Map<String, Any?> ?: emptyMap()
+                // Run on a background thread — network I/O.
+                Thread {
+                    storage.broadcastForegroundClip(data)
+                }.start()
+                result.success(null)
+            }
+
             else -> result.notImplemented()
         }
     }

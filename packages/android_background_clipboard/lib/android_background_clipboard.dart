@@ -99,4 +99,10 @@ class AndroidBackgroundClipboard {
   Stream<String> lanClipReceivedStream() {
     return AndroidBackgroundClipboardPlatform.instance.lanClipReceivedStream();
   }
+
+  /// Broadcasts a foreground-captured clip to LAN peers via the Android
+  /// background service's LAN manager.
+  Future<void> broadcastClip(Map<String, dynamic> clip) {
+    return AndroidBackgroundClipboardPlatform.instance.broadcastClip(clip);
+  }
 }

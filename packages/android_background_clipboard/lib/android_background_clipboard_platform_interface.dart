@@ -107,4 +107,14 @@ abstract class AndroidBackgroundClipboardPlatform extends PlatformInterface {
   Stream<String> lanClipReceivedStream() {
     throw UnimplementedError();
   }
+
+  /// Broadcasts a foreground-captured clip to LAN peers via the Android
+  /// background service's [CopyCatLanSyncManager].
+  ///
+  /// [clip] must contain: originId, type (text|url|media|file), content,
+  /// label, encrypted. Optional: iv, encMode, sourceId, sourceApp,
+  /// localPath, fileMimeType, fileExtension, fileName (for media/file).
+  Future<void> broadcastClip(Map<String, dynamic> clip) async {
+    throw UnimplementedError();
+  }
 }

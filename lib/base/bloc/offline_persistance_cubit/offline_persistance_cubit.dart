@@ -11,6 +11,7 @@ import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/data/services/clipboard/clip_hash_registry.dart';
+import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:clipboard/base/data/services/lan_sync_service.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/di/di.dart';
@@ -442,11 +443,16 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
               synced ? CrossSyncEventType.update : CrossSyncEventType.create,
               r,
             ));
-            if (!synced &&
-                appConfig.state.config.lanInstantSync &&
-                !Platform.isAndroid &&
-                !Platform.isIOS) {
-              unawaited(sl<LanSyncService>().broadcastClip(r));
+            if (!synced && appConfig.state.config.lanInstantSync) {
+              if (Platform.isAndroid) {
+                unawaited(
+                  sl<AndroidBackgroundClipboard>().broadcastClip(
+                    _toLanClipMap(r),
+                  ),
+                );
+              } else if (!Platform.isIOS) {
+                unawaited(sl<LanSyncService>().broadcastClip(r));
+              }
             }
             emit(
               OfflinePersistanceState.saved(
@@ -522,6 +528,26 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     if (item.type != ClipItemType.text && item.type != ClipItemType.url) return;
     if (item.encrypted) return; // can't write ciphertext to clipboard
     unawaited(_autoWriteToClipboard(item));
+  }
+
+  Map<String, dynamic> _toLanClipMap(ClipboardItem item) {
+    return {
+      'originId': item.originId ?? ClipboardItem.generateOriginId(),
+      'type': item.type.name,
+      'content': item.text ?? item.url ?? '',
+      'label': item.title ?? '',
+      'encrypted': item.encrypted,
+      if (item.iv != null) 'iv': item.iv,
+      if (item.encMode != null) 'encMode': item.encMode,
+      if (item.sourceId != null && item.sourceId!.isNotEmpty)
+        'sourceId': item.sourceId,
+      if (item.sourceApp != null && item.sourceApp!.isNotEmpty)
+        'sourceApp': item.sourceApp,
+      if (item.localPath != null) 'localPath': item.localPath,
+      if (item.fileMimeType != null) 'fileMimeType': item.fileMimeType,
+      if (item.fileExtension != null) 'fileExtension': item.fileExtension,
+      if (item.fileName != null) 'fileName': item.fileName,
+    };
   }
 
   Future<void> _autoWriteToClipboard(ClipboardItem item) async {
