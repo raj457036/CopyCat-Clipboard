@@ -461,7 +461,7 @@
   "settings__tab__1": "常规",
   "settings__tab__2": "个性化",
   "settings__tab__3": "云端",
-  "settings__tab__4": "加密",
+  "settings__tab__4": "安全",
   "settings__tab__5": "实验性",
   "settings__text__encryption": "加密",
   "settings__text__sync_not_available": "使用本地剪贴板时，同步相关配置不可用。",

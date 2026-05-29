@@ -461,7 +461,7 @@
   "settings__tab__1": "Geral",
   "settings__tab__2": "Personalização",
   "settings__tab__3": "Cloud",
-  "settings__tab__4": "Criptografia",
+  "settings__tab__4": "Segurança",
   "settings__tab__5": "Experimental",
   "settings__text__encryption": "Criptografia",
   "settings__text__sync_not_available": "As configurações relacionadas à sincronização não estão disponíveis ao usar o clipboard local.",

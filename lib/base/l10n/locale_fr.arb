@@ -461,7 +461,7 @@
   "settings__tab__1": "Général",
   "settings__tab__2": "Personnalisation",
   "settings__tab__3": "Cloud",
-  "settings__tab__4": "Chiffrement",
+  "settings__tab__4": "Sécurité",
   "settings__tab__5": "Expérimental",
   "settings__text__encryption": "Chiffrement",
   "settings__text__sync_not_available": "Les configurations relatives à la synchronisation ne sont pas disponibles lors de l'utilisation du presse-papiers local.",

@@ -462,7 +462,7 @@
   "settings__tab__1": "Allgemein",
   "settings__tab__2": "Anpassung",
   "settings__tab__3": "Cloud",
-  "settings__tab__4": "Verschlüsselung",
+  "settings__tab__4": "Sicherheit",
   "settings__tab__5": "Experimentell",
   "settings__text__encryption": "Verschlüsselung",
   "settings__text__sync_not_available": "Synchronisierungsbezogene Konfigurationen sind nicht verfügbar, wenn die lokale Zwischenablage verwendet wird.",

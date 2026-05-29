@@ -1320,7 +1320,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings__tab__3 => 'Cloud';
 
   @override
-  String get settings__tab__4 => 'Verschlüsselung';
+  String get settings__tab__4 => 'Sicherheit';
 
   @override
   String get settings__tab__5 => 'Experimentell';

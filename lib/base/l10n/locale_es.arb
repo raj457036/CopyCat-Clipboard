@@ -461,7 +461,7 @@
   "settings__tab__1": "General",
   "settings__tab__2": "Personalización",
   "settings__tab__3": "Cloud",
-  "settings__tab__4": "Encriptación",
+  "settings__tab__4": "Seguridad",
   "settings__tab__5": "Experimental",
   "settings__text__encryption": "Encriptación",
   "settings__text__sync_not_available": "Configuraciones relacionadas con la sincronización no están disponibles al usar el portapapeles local.",
