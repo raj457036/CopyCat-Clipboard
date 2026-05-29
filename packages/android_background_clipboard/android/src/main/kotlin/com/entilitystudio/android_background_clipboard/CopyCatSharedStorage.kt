@@ -703,6 +703,75 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         debugLog(logTag) { "writeBinaryClip: persisted $nextId and broadcast $mimeType clip (${ data.size } bytes)" }
     }
 
+    /**
+     * Broadcasts a foreground-captured clip to LAN peers by routing directly
+     * through the already-running [CopyCatLanSyncManager].
+     *
+     * Called from Flutter (foreground app) via method channel so that Android
+     * foreground clips participate in instant-LAN-sync without needing to go
+     * through the background service's capture pipeline.
+     *
+     * [data] keys: originId, type (text|url|media|file), content, label,
+     * encrypted, iv?, encMode?, sourceId?, sourceApp?,
+     * localPath? (for media/file), fileMimeType?, fileExtension?, fileName?
+     */
+    fun broadcastForegroundClip(data: Map<String, Any?>) {
+        val typeStr = data["type"] as? String ?: return
+        val originId = data["originId"] as? String ?: return
+        val label = data["label"] as? String ?: ""
+        val encrypted = data["encrypted"] as? Boolean ?: false
+        val iv = data["iv"] as? String
+        val encMode = data["encMode"] as? String
+        val sourceId = data["sourceId"] as? String
+        val sourceApp = data["sourceApp"] as? String
+
+        // Lazily propagate userId in case the token loaded after service start.
+        if (lanSyncManager.userId.isBlank()) {
+            val uid = syncManager.currentUserId ?: ""
+            if (uid.isNotBlank()) lanSyncManager.userId = uid
+        }
+
+        when (typeStr) {
+            "text", "url" -> {
+                val content = data["content"] as? String ?: return
+                val type = if (typeStr == "url") ClipType.Url else ClipType.Text
+                lanSyncManager.broadcastTextClip(
+                    originId = originId,
+                    type = type,
+                    content = content,
+                    label = label,
+                    encrypted = encrypted,
+                    iv = iv,
+                    encMode = encMode,
+                    sourceId = sourceId,
+                    sourceApp = sourceApp,
+                )
+            }
+            "media", "file" -> {
+                val localPath = data["localPath"] as? String ?: return
+                val mimeType = data["fileMimeType"] as? String ?: "*/*"
+                val ext = data["fileExtension"] as? String ?: ""
+                val fileName = data["fileName"] as? String ?: ""
+                val fileBytes = try {
+                    java.io.File(localPath).readBytes()
+                } catch (e: Exception) {
+                    Log.w(logTag, "broadcastForegroundClip: cannot read $localPath: ${e.message}")
+                    return
+                }
+                lanSyncManager.broadcastBinaryClip(
+                    originId = originId,
+                    type = ClipType.FileUrl,
+                    data = fileBytes,
+                    mimeType = mimeType,
+                    ext = ext,
+                    fileName = fileName,
+                    sourceId = sourceId,
+                    sourceApp = sourceApp,
+                )
+            }
+        }
+    }
+
     fun clean() {
         flushPersistEndId()
         mainHandler.removeCallbacks(reconfigureRunnable)
