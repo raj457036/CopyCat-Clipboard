@@ -84,6 +84,8 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     emit(SyncStatusState.syncing(progress: progress));
   }
 
+  void markDisabled() => emit(const SyncStatusState.disabled());
+
   void _subscribeToEvents() {
     _eventSub?.cancel();
     _eventSub = eventBus.stream.listen((event) async {

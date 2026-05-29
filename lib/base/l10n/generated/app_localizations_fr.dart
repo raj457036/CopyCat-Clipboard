@@ -1322,7 +1322,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settings__tab__2 => 'Personnalisation';
 
   @override
-  String get settings__tab__3 => 'Synchronisation';
+  String get settings__tab__3 => 'Cloud';
 
   @override
   String get settings__tab__4 => 'Chiffrement';

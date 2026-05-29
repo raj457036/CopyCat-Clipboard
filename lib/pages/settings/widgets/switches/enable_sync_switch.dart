@@ -29,6 +29,7 @@ class EnableSyncSwitch extends StatelessWidget {
       context.read<SyncStatusCubit>().syncAll(const SyncAllParams());
     } else {
       syncOrchestrator.stop();
+      sl<SyncStatusCubit>().markDisabled();
     }
   }
 

@@ -1272,7 +1272,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__tab__2 => '个性化';
 
   @override
-  String get settings__tab__3 => '同步';
+  String get settings__tab__3 => '云端';
 
   @override
   String get settings__tab__4 => '加密';

@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart' show AuthCubit;
+import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart'
+    show DriveSetupCubit;
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart'
     show MonetizationCubit;
 import 'package:clipboard/common/logging.dart';
@@ -35,6 +37,7 @@ class CustomBlocObserver extends BlocObserver {
 
     if (bloc is AuthCubit) return;
     if (bloc is MonetizationCubit) return;
+    if (bloc is DriveSetupCubit) return;
 
     _logger.d(
       () =>

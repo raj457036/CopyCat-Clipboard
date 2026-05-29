@@ -86,7 +86,13 @@ class AuthListener extends StatelessWidget {
     reviewPromptCubit.setEnabled(true);
 
     unawaited(sl<OfflinePersistenceCubit>().startListeners());
-    unawaited(sl<SyncStatusCubit>().syncAll(const SyncAllParams()));
+
+    final appConfigCubit = sl<AppConfigCubit>();
+    if (appConfigCubit.isSyncEnabled) {
+      unawaited(sl<SyncStatusCubit>().syncAll(const SyncAllParams()));
+    } else {
+      sl<SyncStatusCubit>().markDisabled();
+    }
     unawaited(sl<UserDevicesCubit>().registerCurrentDevice());
     appRouter.goNamed(RouteConstants.home);
   }

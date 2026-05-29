@@ -33,6 +33,8 @@ class SyncStatusFAB extends StatelessWidget {
                 isSyncing = false;
                 icon = Icons.sync_lock_rounded;
                 message = context.locale.fab__sync_unavailable;
+              case SyncStatusDisabled():
+                return const SizedBox.shrink();
               case SyncingStatus():
                 disabled = true;
                 isSyncing = true;

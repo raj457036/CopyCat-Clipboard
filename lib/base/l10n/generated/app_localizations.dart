@@ -2409,7 +2409,7 @@ abstract class AppLocalizations {
   /// No description provided for @settings__tab__3.
   ///
   /// In en, this message translates to:
-  /// **'Syncing'**
+  /// **'Cloud'**
   String get settings__tab__3;
 
   /// No description provided for @settings__tab__4.
