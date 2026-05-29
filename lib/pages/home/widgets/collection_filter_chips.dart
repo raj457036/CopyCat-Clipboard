@@ -53,25 +53,36 @@ class CollectionFilterChips extends StatelessWidget {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: padding8),
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(vertical: padding8),
-                        itemCount: collections.length + 1,
-                        separatorBuilder: (_, index) => index == 0
-                            ? const VerticalDivider(indent: 6, endIndent: 6)
-                            : width8,
-                        itemBuilder: (context, index) {
-                          if (index == 0) {
-                            return _CreateCollectionChip(canCreate: canCreate);
-                          }
-                          final collection = collections[index - 1];
-                          final isReadOnly = loaded.isReadOnly(collection);
-                          return _CollectionChip(
-                            collection: collection,
-                            isSelected: activeId == collection.id,
-                            isReadOnly: isReadOnly,
-                          );
-                        },
+                      child: Row(
+                        spacing: padding4,
+                        children: [
+                          _CreateCollectionChip(canCreate: canCreate),
+                          const VerticalDivider(
+                            indent: padding14,
+                            endIndent: padding14,
+                          ),
+                          Expanded(
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: padding8,
+                              ),
+                              itemCount: collections.length,
+                              separatorBuilder: (_, _) => width8,
+                              itemBuilder: (context, index) {
+                                final collection = collections[index];
+                                final isReadOnly = loaded.isReadOnly(
+                                  collection,
+                                );
+                                return _CollectionChip(
+                                  collection: collection,
+                                  isSelected: activeId == collection.id,
+                                  isReadOnly: isReadOnly,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -140,7 +151,7 @@ class _CollectionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return TooltipTheme(
       data: const TooltipThemeData(constraints: BoxConstraints(maxWidth: 200)),
-      child: ChoiceChip.elevated(
+      child: ChoiceChip(
         avatar: isReadOnly
             ? const Icon(Icons.lock_outline_rounded, size: 16)
             : Text(collection.emoji),
