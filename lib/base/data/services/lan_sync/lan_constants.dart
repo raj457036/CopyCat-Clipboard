@@ -1,6 +1,3 @@
-/// mDNS service type — matches Android NsdManager registration.
-const kLanServiceType = '_copycat._tcp';
-
 /// Maximum age of a clip's timestamp before we reject it as a replay.
 const kLanReplayWindowMs = 10000;
 

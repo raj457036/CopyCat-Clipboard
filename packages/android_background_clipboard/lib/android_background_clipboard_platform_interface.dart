@@ -95,12 +95,16 @@ abstract class AndroidBackgroundClipboardPlatform extends PlatformInterface {
     throw UnimplementedError();
   }
 
-  /// Streams the list of NSD-discovered LAN peers from the Android background
-  /// service. Each peer is a map with keys: `deviceId`, `host`, `port`.
-  ///
-  /// LAN Instant Sync feature — remove this method (and its implementations)
-  /// to disable peer-list streaming.
+  /// Streams NSD-discovered LAN peers from the Android background service.
+  /// Each peer map contains `deviceId`, `host`, and `port` (as String).
   Stream<List<Map<String, dynamic>>> lanPeersStream() {
+    throw UnimplementedError();
+  }
+
+  /// Emits the clip key (e.g. "Clip-8") each time the Android background service
+  /// writes a LAN clip to shared storage. Flutter reads that single clip directly
+  /// without a full batch scan.
+  Stream<String> lanClipReceivedStream() {
     throw UnimplementedError();
   }
 }

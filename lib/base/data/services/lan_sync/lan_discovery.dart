@@ -43,7 +43,7 @@ class LanDiscovery {
     final localOs = currentPlatformOS().name;
     final service = await MDNSService.create(
       instance: 'copycat-${_config.deviceId}',
-      service: kLanServiceType,
+      service: _config.serviceType,
       port: _config.serverPort,
       txt: ['did=${_config.deviceId}', 'os=$localOs'],
     );
@@ -51,7 +51,7 @@ class LanDiscovery {
     await _mdnsServer!.start();
     logger.i(
       () =>
-          'LAN mDNS: advertising "$kLanServiceType" on port ${_config.serverPort}',
+          'LAN mDNS: advertising "${_config.serviceType}" on port ${_config.serverPort}',
     );
   }
 
@@ -78,7 +78,7 @@ class LanDiscovery {
   Future<void> _discoverPeers() async {
     try {
       final entries = await MDNSClient.discover(
-        kLanServiceType,
+        _config.serviceType,
         timeout: const Duration(seconds: 5),
         reusePort: true,
       );

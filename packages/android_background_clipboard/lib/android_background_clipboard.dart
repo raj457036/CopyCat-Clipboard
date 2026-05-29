@@ -92,4 +92,11 @@ class AndroidBackgroundClipboard {
   Stream<List<Map<String, dynamic>>> lanPeersStream() {
     return AndroidBackgroundClipboardPlatform.instance.lanPeersStream();
   }
+
+  /// Emits the clip key (e.g. "Clip-8") each time the Android background service
+  /// writes a LAN clip to shared storage. Flutter reads that single clip directly
+  /// without a full batch scan.
+  Stream<String> lanClipReceivedStream() {
+    return AndroidBackgroundClipboardPlatform.instance.lanClipReceivedStream();
+  }
 }

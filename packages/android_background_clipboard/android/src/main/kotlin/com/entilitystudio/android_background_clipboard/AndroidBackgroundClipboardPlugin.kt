@@ -23,7 +23,8 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
     /// when the Flutter Engine is detached from the Activity
     private lateinit var channel: MethodChannel
     private lateinit var statusChannel: EventChannel
-    private lateinit var peersChannel: EventChannel       // LAN peer discovery stream
+    private lateinit var peersChannel: EventChannel          // LAN peer discovery stream
+    private lateinit var lanClipReceivedChannel: EventChannel // LAN clip received signal
     private lateinit var applicationContext: Context
     private var applicationActivity: Activity? = null
     private lateinit var storage: CopyCatSharedStorage
@@ -31,6 +32,7 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
     private val detectionStatusReporter = DetectionStatusReporter.getInstance()
     private var detectionStatusListener: ((Map<String, String>) -> Unit)? = null
     private var lanPeersStreamHandler: LanPeersStreamHandler? = null
+    private var lanClipReceivedStreamHandler: LanClipReceivedStreamHandler? = null
     private var isEngineAttached: Boolean = false
 
 
@@ -39,19 +41,25 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
         isEngineAttached = true
         Utils.isActivityOnTop = true
         channel =
-            MethodChannel(flutterPluginBinding.binaryMessenger, "android_background_clipboard")
+            MethodChannel(flutterPluginBinding.binaryMessenger, "copycat_clipboard")
         statusChannel = EventChannel(
             flutterPluginBinding.binaryMessenger,
-            "android_background_clipboard/detection_status",
+            "copycat_clipboard/detection_status",
         )
         peersChannel = EventChannel(
             flutterPluginBinding.binaryMessenger,
-            "android_background_clipboard/lan_peers",
+            "copycat_clipboard/lan_peers",
+        )
+        lanClipReceivedChannel = EventChannel(
+            flutterPluginBinding.binaryMessenger,
+            "copycat_clipboard/lan_clip_received",
         )
         lanPeersStreamHandler = LanPeersStreamHandler()
+        lanClipReceivedStreamHandler = LanClipReceivedStreamHandler()
         channel.setMethodCallHandler(this)
         statusChannel.setStreamHandler(this)
         peersChannel.setStreamHandler(lanPeersStreamHandler)
+        lanClipReceivedChannel.setStreamHandler(lanClipReceivedStreamHandler)
         applicationContext = flutterPluginBinding.applicationContext
         storage = CopyCatSharedStorage.getInstance(applicationContext)
 
@@ -191,9 +199,12 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
         clearDetectionStatusListener()
         lanPeersStreamHandler?.dispose()
         lanPeersStreamHandler = null
+        lanClipReceivedStreamHandler?.dispose()
+        lanClipReceivedStreamHandler = null
         channel.setMethodCallHandler(null)
         statusChannel.setStreamHandler(null)
         peersChannel.setStreamHandler(null)
+        lanClipReceivedChannel.setStreamHandler(null)
         Utils.isActivityOnTop = false
         application?.unregisterActivityLifecycleCallbacks(this)
     }
@@ -284,7 +295,45 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
     }
 
     /**
-     * EventChannel.StreamHandler for the `android_background_clipboard/lan_peers` channel.
+     * EventChannel.StreamHandler for the `copycat_clipboard/lan_clip_received` channel.
+     *
+     * Sends the clip key (e.g. "Clip-8") each time a LAN clip is written to shared
+     * storage. Flutter reads that single clip directly without a full batch scan.
+     */
+    private inner class LanClipReceivedStreamHandler : EventChannel.StreamHandler {
+        private val reporter = LanClipReceivedReporter.getInstance()
+        private var listener: ((String) -> Unit)? = null
+
+        override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+            listener?.let { reporter.removeListener(it) }
+            if (events == null) return
+            val l: (String) -> Unit = l@{ clipKey ->
+                if (!isEngineAttached) return@l
+                try {
+                    events.success(clipKey)
+                } catch (e: Exception) {
+                    debugLog("CopyCat Service") {
+                        "Failed to emit LAN clip received event after engine detach: ${e.message}"
+                    }
+                    dispose()
+                }
+            }
+            listener = l
+            reporter.addListener(l)
+        }
+
+        override fun onCancel(arguments: Any?) {
+            dispose()
+        }
+
+        fun dispose() {
+            listener?.let { reporter.removeListener(it) }
+            listener = null
+        }
+    }
+
+    /**
+     * EventChannel.StreamHandler for the `copycat_clipboard/lan_peers` channel.
      *
      *      Bridges [LanPeerReporter] updates to Flutter.
      *          The explicitly calls [dispose] during engine detach to ensure listener cleanup

@@ -80,7 +80,6 @@ class CopyCatLanSyncManager(
     private val markCaptured: (String) -> Unit,
 ) {
     companion object {
-        private const val SERVICE_TYPE = "_copycat._tcp."
         private const val LOG_TAG = "CopyCatLanSyncManager"
         private const val REPLAY_WINDOW_MS = 10_000L
         private const val MAX_HEADER_LINE_BYTES = 8 * 1024
@@ -93,6 +92,14 @@ class CopyCatLanSyncManager(
         private const val DISCOVERY_REFRESH_STABLE_MS = 60_000L
         private const val DISCOVERY_POST_REGISTER_DELAY_MS = 1_200L
     }
+
+    private val serviceType: String
+        get() {
+            if (userId.isEmpty()) return "_copycat._tcp."
+            val hash = MessageDigest.getInstance("SHA-256").digest(userId.toByteArray(Charsets.UTF_8))
+            val fp = hash.joinToString("") { "%02x".format(it) }.substring(0, 8)
+            return "_cc-$fp._tcp."
+        }
 
     // MARK: - Mutable Config
     var lanSyncEnabled: Boolean = false
@@ -288,6 +295,10 @@ class CopyCatLanSyncManager(
                 val requestLine = readAsciiLine(rawInput) ?: return
                 // Respond to health-check pings from desktop peers.
                 if (requestLine.startsWith("GET /ping")) {
+                    while (true) {
+                        val line = readAsciiLine(rawInput) ?: break
+                        if (line.isEmpty()) break
+                    }
                     s.getOutputStream().write("HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n".toByteArray())
                     return
                 }
@@ -486,10 +497,11 @@ class CopyCatLanSyncManager(
         sourceId: String?,
         sourceApp: String?,
     ) {
+        var tempFile: File? = null
         try {
             val recvDir = File(appContext.cacheDir, LAN_RECV_DIR).also { it.mkdirs() }
             val safeOriginId = originId.replace(Regex("[^a-zA-Z0-9\\-]"), "_")
-            val tempFile = File(recvDir, "$safeOriginId.$ext")
+            tempFile = File(recvDir, "$safeOriginId.$ext")
             val mac = Mac.getInstance(HMAC_ALGO).apply {
                 init(SecretKeySpec(userId.toByteArray(Charsets.UTF_8), HMAC_ALGO))
             }
@@ -559,6 +571,7 @@ class CopyCatLanSyncManager(
             Log.d(LOG_TAG, "Binary clip ($mimeType) received from $fromDeviceId — persisted${if (autoWriteOnReceive) " + clipboard" else ""}")
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to handle binary clip: ${e.message}")
+            tempFile?.delete()
         }
     }
 
@@ -600,7 +613,7 @@ class CopyCatLanSyncManager(
 
         val info = NsdServiceInfo().apply {
             serviceName = "copycat-$deviceId"
-            serviceType = SERVICE_TYPE
+            serviceType = this@CopyCatLanSyncManager.serviceType
             port = serverPort
             setAttribute("did", deviceId)
             setAttribute("os", "android")
@@ -667,7 +680,7 @@ class CopyCatLanSyncManager(
                 }
             }
             override fun onServiceFound(info: NsdServiceInfo) {
-                if (info.serviceType != SERVICE_TYPE) return
+                if (info.serviceType != serviceType) return
                 // Resolve to get host + port
                 nsd.resolveService(info, makeResolveListener())
             }
@@ -690,7 +703,7 @@ class CopyCatLanSyncManager(
             }
         }
         discoveryListener = listener
-        nsd.discoverServices(SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, listener)
+        nsd.discoverServices(serviceType, NsdManager.PROTOCOL_DNS_SD, listener)
     }
 
     private fun scheduleDiscoveryRefresh() {

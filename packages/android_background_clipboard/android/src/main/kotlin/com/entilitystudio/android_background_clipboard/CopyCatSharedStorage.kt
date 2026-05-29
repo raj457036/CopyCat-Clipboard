@@ -109,6 +109,16 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     }
 
     private val listener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        if (key == "endId") {
+            val spEndId = sharedPreferences.getInt(key, -1)
+            // When Flutter resets endId (e.g. after syncStates()), sync the
+            // in-memory value and cancel any pending deferred write so it
+            // cannot overwrite the reset and cause stale clip-range reads.
+            if (spEndId < endId) {
+                mainHandler.removeCallbacks(persistEndIdRunnable)
+                endId = spEndId
+            }
+        }
         if (key == "excludedPackages") {
             excludedPackages = sharedPreferences.getStringSet(key, emptySet())!!
         }
@@ -850,7 +860,16 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         }
 
         when (writeOutcome) {
-            is CopyCatFileStorage.ClipWriteOutcome.Written -> commitEndId(endId + 1)
+            is CopyCatFileStorage.ClipWriteOutcome.Written -> {
+                endId += 1
+                // Write endId synchronously before signalling Flutter so:
+                // 1. Flutter can read the correct value immediately via the stream.
+                // 2. syncStates() on lifecycle resume also finds this clip if the
+                //    stream event was missed while the app was in the background.
+                mainHandler.removeCallbacks(persistEndIdRunnable)
+                sp.edit().putInt("endId", endId).apply()
+                LanClipReceivedReporter.getInstance().signal(nextId)
+            }
             is CopyCatFileStorage.ClipWriteOutcome.Duplicate -> debugLog(logTag) {
                 "Skipping duplicate LAN clip originId=${payload.originId} existingClipId=${writeOutcome.clipId}"
             }
