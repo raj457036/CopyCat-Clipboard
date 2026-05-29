@@ -151,18 +151,18 @@ flutter:
         - asset: fonts/CustomIcons.ttf
 
 flutter_launcher_icons:
-  image_path: "./resources/icon.png"
+  image_path: "./resources/icon_2026_flat.png"
   android: true
   min_sdk_android: 24
 
-  ios: true
+  ios: "./resources/icon_2026_rounded.png"
   remove_alpha_ios: true
 
   windows:
     generate: true
     icon_size: 256
-    image_path: "./resources/windows-icon.png"
+    image_path: "./resources/icon_2026_flat.png"
 
   macos:
     generate: true
-    image_path: "./resources/macos-icon.png"
+    image_path: "./resources/icon_2026_macos.png"
