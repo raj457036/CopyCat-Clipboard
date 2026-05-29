@@ -2415,7 +2415,7 @@ abstract class AppLocalizations {
   /// No description provided for @settings__tab__4.
   ///
   /// In en, this message translates to:
-  /// **'Encryption'**
+  /// **'Security'**
   String get settings__tab__4;
 
   /// No description provided for @settings__tab__5.

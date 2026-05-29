@@ -567,7 +567,7 @@
   "settings__tab__1": "General",
   "settings__tab__2": "Customization",
   "settings__tab__3": "Cloud",
-  "settings__tab__4": "Encryption",
+  "settings__tab__4": "Security",
   "settings__tab__5": "Experimental",
   "settings__text__encryption": "Encryption",
   "settings__text__sync_not_available": "Sync-related configurations are not available while using the local clipboard.",
