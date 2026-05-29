@@ -72,10 +72,12 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
               monetizationCubit.active?.syncInterval ??
               defaultBestEffortSyncInterval;
           final config = appConfigCubit.state.config;
-          syncOrchestrator.start(
-            syncSpeed: config.syncSpeed,
-            intervalSeconds: cadence,
-          );
+          if (config.enableSync) {
+            syncOrchestrator.start(
+              syncSpeed: config.syncSpeed,
+              intervalSeconds: cadence,
+            );
+          }
           emit(
             state.copyWith(
               isRegistering: false,

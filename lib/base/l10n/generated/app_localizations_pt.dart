@@ -1337,7 +1337,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settings__tab__2 => 'Personalização';
 
   @override
-  String get settings__tab__3 => 'Sincronização';
+  String get settings__tab__3 => 'Cloud';
 
   @override
   String get settings__tab__4 => 'Criptografia';

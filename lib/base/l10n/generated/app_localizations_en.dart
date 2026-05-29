@@ -1324,7 +1324,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings__tab__2 => 'Customization';
 
   @override
-  String get settings__tab__3 => 'Syncing';
+  String get settings__tab__3 => 'Cloud';
 
   @override
   String get settings__tab__4 => 'Encryption';

@@ -31,4 +31,5 @@ class SyncStatusState with _$SyncStatusState {
   const factory SyncStatusState.complete({@Default(false) bool hasUpdates}) =
       SyncStatusComplete;
   const factory SyncStatusState.failed(Failure failure) = SyncStatusFailed;
+  const factory SyncStatusState.disabled() = SyncStatusDisabled;
 }

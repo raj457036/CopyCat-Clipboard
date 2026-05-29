@@ -11,7 +11,7 @@ import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage;
+    show NotificationMessage, NotificationContent;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
@@ -320,9 +320,14 @@ Future<void> pasteContent(BuildContext context) async {
   InAppNotificationService.i.notify(
     NotificationMessage(id: "pasting", body: ctx.locale.app__ack__pasting),
   );
-  unawaited(ctx.read<OfflinePersistenceCubit>().paste());
+  await ctx.read<OfflinePersistenceCubit>().paste();
+  InAppNotificationService.i.dismiss("pasting");
   InAppNotificationService.i.notify(
-    NotificationMessage(id: "pasted", body: ctx.locale.app__ack__pasted),
+    NotificationMessage.builder(
+      id: "pasted",
+      builder: (context) =>
+          NotificationContent(body: ctx.locale.app__ack__pasted),
+    ),
   );
 }
 

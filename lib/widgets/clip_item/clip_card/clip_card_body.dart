@@ -39,6 +39,13 @@ class ClipCardBodyContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final item = ClipItemScope.of(context);
     final textTheme = context.textTheme;
+    // NOTE: drag and drop doesn't work in android for now
+    final selected = context.select(
+      (SelectedClipsCubit cubit) => cubit.isSelected(item),
+    );
+    final syncActive = context.select(
+      (AppConfigCubit cubit) => cubit.state.config.enableSync,
+    );
     final child = liteMode
         ? ClipPreview(item: item)
         : Column(
@@ -70,14 +77,10 @@ class ClipCardBodyContent extends StatelessWidget {
                   ],
                 ),
               ),
-              const _SyncStatusFooter(),
+              if (!selected && syncActive) const _SyncStatusFooter(),
             ],
           );
 
-    // NOTE: drag and drop doesn't work in android for now
-    final selected = context.select(
-      (SelectedClipsCubit cubit) => cubit.isSelected(item),
-    );
     if (!Platform.isAndroid && !selected) {
       return DraggableItem(item: item, child: child);
     }
@@ -91,12 +94,6 @@ class _SyncStatusFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final item = ClipItemScope.of(context);
-    final selected = context.select(
-      (SelectedClipsCubit cubit) => cubit.isSelected(item),
-    );
-    if (selected) {
-      return const SizedBox.shrink();
-    }
     return DisableForLocalUser(child: ClipSyncStatusFooter(item: item));
   }
 }
