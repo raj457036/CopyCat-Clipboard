@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
@@ -11,6 +13,7 @@ import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:synchronized/synchronized.dart';
 
 part 'android_bg_clipboard_cubit.freezed.dart';
 part 'android_bg_clipboard_state.dart';
@@ -21,14 +24,25 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
   final AndroidBackgroundClipboard plugin;
   final ClipboardRepository clipRepo;
   final String deviceId;
-  bool isSyncing = false;
+  final _lock = Lock();
+  StreamSubscription<String>? _lanClipSub;
 
   AndroidBgClipboardCubit(
     this.plugin,
     this.syncEventBus,
     @Named("local") this.clipRepo,
     @Named("device_id") this.deviceId,
-  ) : super(const AndroidBgClipboardState.unknown());
+  ) : super(const AndroidBgClipboardState.unknown()) {
+    _lanClipSub = plugin.lanClipReceivedStream().listen((clipKey) {
+      _syncOneLanClip(clipKey);
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _lanClipSub?.cancel();
+    return super.close();
+  }
 
   Future<void> updateExclusionRule(ExclusionRules? rules) async {
     if (rules != null && rules.enable) {
@@ -153,10 +167,22 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
     );
   }
 
+  Future<void> _syncOneLanClip(String clipKey) async {
+    await _lock.synchronized(() async {
+      final index = int.tryParse(clipKey.replaceFirst('Clip-', ''));
+      if (index == null) return;
+      final clips = await plugin.readClipsBatch(index, index);
+      if (clips.isEmpty || clips.first.isEmpty) return;
+      final clipItem = parseClip(clips.first);
+      final success = await writeToLocal(clipItem);
+      if (success) {
+        await plugin.deleteShared([clipKey]);
+      }
+    });
+  }
+
   Future<void> syncStates() async {
-    if (isSyncing) return;
-    isSyncing = true;
-    try {
+    await _lock.synchronized(() async {
       final endMark = await plugin.readShared<int>("endId") ?? -1;
       if (endMark == -1) return;
 
@@ -203,8 +229,6 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
 
       await plugin.writeShared("endId", -1);
       await plugin.deleteShared(deleteKeys);
-    } finally {
-      isSyncing = false;
-    }
+    });
   }
 }

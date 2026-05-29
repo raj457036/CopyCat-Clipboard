@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io' as io;
+import 'dart:typed_data';
 
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/common/logging.dart';
@@ -205,10 +206,11 @@ class LanHttpHandler {
     required String hmacHeader,
     required PlatformOS? fromOs,
   }) async {
-    final bodyBytes = await request.fold<List<int>>(
-      [],
-      (buf, chunk) => buf..addAll(chunk),
-    );
+    final builder = BytesBuilder(copy: false);
+    await for (final chunk in request) {
+      builder.add(chunk);
+    }
+    final bodyBytes = builder.takeBytes();
 
     if (bodyBytes.length > kLanMaxTextPayloadBytes) {
       request.response

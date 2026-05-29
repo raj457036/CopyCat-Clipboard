@@ -102,12 +102,6 @@ class LanReceiver {
     int? modifiedMs,
     String? osStr,
   }) {
-    if (tsMs != null && isReplayTimestamp(tsMs, kLanBinaryReplayWindowMs)) {
-      logger.w(
-        () => 'LAN: Binary replay detected from $fromDeviceId, dropping',
-      );
-      return;
-    }
     unawaited(
       _processBinaryClipAsync(
         file: file,

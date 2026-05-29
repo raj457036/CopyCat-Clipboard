@@ -8,16 +8,21 @@ class MethodChannelAndroidBackgroundClipboard
     extends AndroidBackgroundClipboardPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
-  final methodChannel = const MethodChannel('android_background_clipboard');
+  final methodChannel = const MethodChannel('copycat_clipboard');
 
   @visibleForTesting
   final detectionStatusEventChannel = const EventChannel(
-    'android_background_clipboard/detection_status',
+    'copycat_clipboard/detection_status',
   );
 
   @visibleForTesting
   final lanPeersEventChannel = const EventChannel(
-    'android_background_clipboard/lan_peers',
+    'copycat_clipboard/lan_peers',
+  );
+
+  @visibleForTesting
+  final lanClipReceivedEventChannel = const EventChannel(
+    'copycat_clipboard/lan_clip_received',
   );
 
   @override
@@ -177,5 +182,12 @@ class MethodChannelAndroidBackgroundClipboard
           .map((e) => Map<String, dynamic>.from(e as Map))
           .toList();
     });
+  }
+
+  @override
+  Stream<String> lanClipReceivedStream() {
+    return lanClipReceivedEventChannel
+        .receiveBroadcastStream()
+        .map((event) => event.toString());
   }
 }

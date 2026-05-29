@@ -81,7 +81,7 @@ class LanPeerRegistry {
 
   Future<io.File> get _peersFile async {
     final dir = await getApplicationSupportDirectory();
-    return io.File('${dir.path}/lan_peers.json');
+    return io.File('${dir.path}/cached_lan_peers.json');
   }
 
   /// Persist the current peer map to disk.
@@ -112,21 +112,23 @@ class LanPeerRegistry {
       final data =
           jsonDecode(await file.readAsString()) as Map<String, dynamic>;
       var anyRestored = false;
-      for (final entry in data.entries) {
-        final did = entry.key;
-        if (did == _config.deviceId) continue;
-        final peerData = entry.value as Map<String, dynamic>;
-        final host = peerData['host'] as String?;
-        final port = peerData['port'] as int?;
-        final os = _parseOS(peerData['os'] as String?);
-        if (host == null || port == null) continue;
-        if (await isReachable(host, port)) {
-          peers[did] = LanPeer(did, host, port, reachable: true);
-          if (os != null) peerOsByDeviceId[did] = os;
-          anyRestored = true;
-          logger.i(() => 'LAN: restored peer $did at $host:$port from disk');
-        }
-      }
+      await Future.wait(
+        data.entries.map((entry) async {
+          final did = entry.key;
+          if (did == _config.deviceId) return;
+          final peerData = entry.value as Map<String, dynamic>;
+          final host = peerData['host'] as String?;
+          final port = peerData['port'] as int?;
+          final os = _parseOS(peerData['os'] as String?);
+          if (host == null || port == null) return;
+          if (await isReachable(host, port)) {
+            peers[did] = LanPeer(did, host, port, reachable: true);
+            if (os != null) peerOsByDeviceId[did] = os;
+            anyRestored = true;
+            logger.i(() => 'LAN: restored peer $did at $host:$port from disk');
+          }
+        }),
+      );
       if (anyRestored) _controller.add(currentPeers);
     } catch (e) {
       logger.w(() => 'LAN: could not restore persisted peers: $e');
