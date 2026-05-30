@@ -727,6 +727,67 @@
   "@@SYNC_DEVICES": "Sync Devices Management",
   "settings__sync__manage_devices__title": "Manage Sync Devices",
   "settings__sync__manage_devices__subtitle": "View active devices and remove devices from sync access.",
+  "@@LAN_MESH": "LAN Network Page",
+  "settings__lan_mesh__app_bar_title": "LAN Network",
+  "settings__lan_mesh__unknown_device": "Unknown Device",
+  "settings__lan_mesh__searching": "Searching for devices on the network…",
+  "settings__lan_mesh__reachable": "Reachable",
+  "settings__lan_mesh__unreachable": "Unreachable",
+  "settings__lan_mesh__disabled_banner": "LAN Instant Sync is disabled. Enable it from Settings to discover nearby devices.",
+  "@@DEVICE_MANAGEMENT": "Device Management Page",
+  "settings__device_mgmt__app_bar_title": "Manage Sync Devices",
+  "settings__device_mgmt__dialog_title": "Remove Sync Access",
+  "settings__device_mgmt__dialog_cancel": "Cancel",
+  "settings__device_mgmt__dialog_remove": "Remove",
+  "settings__device_mgmt__revoke_failed": "Failed to remove sync access.",
+  "settings__device_mgmt__active_now": "Active now",
+  "settings__device_mgmt__today_at": "Today at {time}",
+  "@settings__device_mgmt__today_at": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "settings__device_mgmt__days_ago": "{count}d ago",
+  "@settings__device_mgmt__days_ago": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settings__device_mgmt__load_failed": "Failed to load devices.",
+  "settings__device_mgmt__retry": "Retry",
+  "settings__device_mgmt__empty": "No sync devices found.",
+  "settings__device_mgmt__max_limit_tooltip": "Maximum number of devices you can sync with your current plan.",
+  "settings__device_mgmt__max_limit_label": "Max Limit • {count}",
+  "@settings__device_mgmt__max_limit_label": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settings__device_mgmt__active_count_tooltip": "Number of devices currently active.",
+  "settings__device_mgmt__active_count_label": "Active • {count}",
+  "@settings__device_mgmt__active_count_label": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@@DEVICE_CARD": "Device Card Widget",
+  "settings__device_card__last_seen": "Last seen: {time}",
+  "@settings__device_card__last_seen": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "settings__device_card__revoke": "Revoke",
   "@@CUSTOM_EXCLUSION_RULES": "Custom Exclusion Rules Screen",
   "custom_er__nav__1": "App",
   "custom_er__nav__2": "Window Title",
@@ -826,6 +887,10 @@
       }
     }
   },
+  "abc__detection_mode__title": "Detection Mode",
+  "abc__detection_mode__subtitle__enabled": "Choose how CopyCat detects copy actions in other apps. CopyCat stays inactive until you pick a mode.",
+  "abc__detection_mode__subtitle__disabled": "Enable accessibility service first, then choose a detection mode.",
+  "abc__network__header": "Network",
   "current_time__local": "Local: {time}",
   "@current_time__local": {
     "placeholders": {

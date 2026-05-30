@@ -1764,6 +1764,93 @@ class AppLocalizationsDe extends AppLocalizations {
       'Aktive Geräte anzeigen und Geräte aus dem Synchronisierungszugriff entfernen.';
 
   @override
+  String get settings__lan_mesh__app_bar_title => 'Lokales Netzwerk';
+
+  @override
+  String get settings__lan_mesh__unknown_device => 'Unbekanntes Gerät';
+
+  @override
+  String get settings__lan_mesh__searching => 'Suche nach Geräten im Netzwerk…';
+
+  @override
+  String get settings__lan_mesh__reachable => 'Erreichbar';
+
+  @override
+  String get settings__lan_mesh__unreachable => 'Nicht erreichbar';
+
+  @override
+  String get settings__lan_mesh__disabled_banner =>
+      'LAN-Sofortsynchronisierung ist deaktiviert. Aktivieren Sie sie in den Einstellungen, um Geräte in der Nähe zu entdecken.';
+
+  @override
+  String get settings__device_mgmt__app_bar_title =>
+      'Synchronisierungsgeräte verwalten';
+
+  @override
+  String get settings__device_mgmt__dialog_title =>
+      'Synchronisierungszugriff entfernen';
+
+  @override
+  String get settings__device_mgmt__dialog_cancel => 'Abbrechen';
+
+  @override
+  String get settings__device_mgmt__dialog_remove => 'Entfernen';
+
+  @override
+  String get settings__device_mgmt__revoke_failed =>
+      'Fehler beim Entfernen des Synchronisierungszugriffs.';
+
+  @override
+  String get settings__device_mgmt__active_now => 'Gerade aktiv';
+
+  @override
+  String settings__device_mgmt__today_at({required String time}) {
+    return 'Heute um $time';
+  }
+
+  @override
+  String settings__device_mgmt__days_ago({required int count}) {
+    return 'vor ${count}T';
+  }
+
+  @override
+  String get settings__device_mgmt__load_failed =>
+      'Fehler beim Laden der Geräte.';
+
+  @override
+  String get settings__device_mgmt__retry => 'Erneut versuchen';
+
+  @override
+  String get settings__device_mgmt__empty =>
+      'Keine Synchronisierungsgeräte gefunden.';
+
+  @override
+  String get settings__device_mgmt__max_limit_tooltip =>
+      'Maximale Anzahl von Geräten, die Sie mit Ihrem aktuellen Plan synchronisieren können.';
+
+  @override
+  String settings__device_mgmt__max_limit_label({required int count}) {
+    return 'Max. Limit • $count';
+  }
+
+  @override
+  String get settings__device_mgmt__active_count_tooltip =>
+      'Anzahl der derzeit aktiven Geräte.';
+
+  @override
+  String settings__device_mgmt__active_count_label({required int count}) {
+    return 'Aktiv • $count';
+  }
+
+  @override
+  String settings__device_card__last_seen({required String time}) {
+    return 'Zuletzt gesehen: $time';
+  }
+
+  @override
+  String get settings__device_card__revoke => 'Widerrufen';
+
+  @override
   String get custom_er__nav__1 => 'App';
 
   @override
@@ -2051,6 +2138,20 @@ class AppLocalizationsDe extends AppLocalizations {
   String abc__ack__detection_mode_update_failed({required String message}) {
     return 'Failed to update detection mode: $message';
   }
+
+  @override
+  String get abc__detection_mode__title => 'Erkennungsmodus';
+
+  @override
+  String get abc__detection_mode__subtitle__enabled =>
+      'Wählen Sie, wie CopyCat Kopiervorganäge in anderen Apps erkennt. CopyCat bleibt inaktiv, bis Sie einen Modus auswählen.';
+
+  @override
+  String get abc__detection_mode__subtitle__disabled =>
+      'Aktivieren Sie zuerst den Bedienungshilfendienst und wählen Sie dann einen Erkennungsmodus.';
+
+  @override
+  String get abc__network__header => 'Netzwerk';
 
   @override
   String current_time__local({required String time}) {

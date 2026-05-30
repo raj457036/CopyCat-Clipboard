@@ -1680,6 +1680,86 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__sync__manage_devices__subtitle => '查看活跃设备并从同步访问中移除设备。';
 
   @override
+  String get settings__lan_mesh__app_bar_title => '局域网';
+
+  @override
+  String get settings__lan_mesh__unknown_device => '未知设备';
+
+  @override
+  String get settings__lan_mesh__searching => '正在搜索网络中的设备…';
+
+  @override
+  String get settings__lan_mesh__reachable => '可访问';
+
+  @override
+  String get settings__lan_mesh__unreachable => '不可访问';
+
+  @override
+  String get settings__lan_mesh__disabled_banner =>
+      '局域网即时同步已禁用。请在设置中启用以发现附近设备。';
+
+  @override
+  String get settings__device_mgmt__app_bar_title => '管理同步设备';
+
+  @override
+  String get settings__device_mgmt__dialog_title => '移除同步权限';
+
+  @override
+  String get settings__device_mgmt__dialog_cancel => '取消';
+
+  @override
+  String get settings__device_mgmt__dialog_remove => '移除';
+
+  @override
+  String get settings__device_mgmt__revoke_failed => '移除同步权限失败。';
+
+  @override
+  String get settings__device_mgmt__active_now => '活跃中';
+
+  @override
+  String settings__device_mgmt__today_at({required String time}) {
+    return '今天 $time';
+  }
+
+  @override
+  String settings__device_mgmt__days_ago({required int count}) {
+    return '$count天前';
+  }
+
+  @override
+  String get settings__device_mgmt__load_failed => '加载设备失败。';
+
+  @override
+  String get settings__device_mgmt__retry => '重试';
+
+  @override
+  String get settings__device_mgmt__empty => '未找到同步设备。';
+
+  @override
+  String get settings__device_mgmt__max_limit_tooltip => '您当前套餐可同步的最大设备数量。';
+
+  @override
+  String settings__device_mgmt__max_limit_label({required int count}) {
+    return '上限 • $count';
+  }
+
+  @override
+  String get settings__device_mgmt__active_count_tooltip => '当前活跃设备数量。';
+
+  @override
+  String settings__device_mgmt__active_count_label({required int count}) {
+    return '活跃 • $count';
+  }
+
+  @override
+  String settings__device_card__last_seen({required String time}) {
+    return '上次在线：$time';
+  }
+
+  @override
+  String get settings__device_card__revoke => '撤销';
+
+  @override
   String get custom_er__nav__1 => '应用';
 
   @override
@@ -1937,6 +2017,19 @@ class AppLocalizationsZh extends AppLocalizations {
   String abc__ack__detection_mode_update_failed({required String message}) {
     return 'Failed to update detection mode: $message';
   }
+
+  @override
+  String get abc__detection_mode__title => '检测模式';
+
+  @override
+  String get abc__detection_mode__subtitle__enabled =>
+      '选择CopyCat检测其他应用中复制操作的方式。CopyCat在您选择模式之前保持非活跃状态。';
+
+  @override
+  String get abc__detection_mode__subtitle__disabled => '请先启用无障碍服务，然后选择检测模式。';
+
+  @override
+  String get abc__network__header => '网络';
 
   @override
   String current_time__local({required String time}) {

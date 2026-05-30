@@ -1758,6 +1758,90 @@ class AppLocalizationsEn extends AppLocalizations {
       'View active devices and remove devices from sync access.';
 
   @override
+  String get settings__lan_mesh__app_bar_title => 'LAN Network';
+
+  @override
+  String get settings__lan_mesh__unknown_device => 'Unknown Device';
+
+  @override
+  String get settings__lan_mesh__searching =>
+      'Searching for devices on the network…';
+
+  @override
+  String get settings__lan_mesh__reachable => 'Reachable';
+
+  @override
+  String get settings__lan_mesh__unreachable => 'Unreachable';
+
+  @override
+  String get settings__lan_mesh__disabled_banner =>
+      'LAN Instant Sync is disabled. Enable it from Settings to discover nearby devices.';
+
+  @override
+  String get settings__device_mgmt__app_bar_title => 'Manage Sync Devices';
+
+  @override
+  String get settings__device_mgmt__dialog_title => 'Remove Sync Access';
+
+  @override
+  String get settings__device_mgmt__dialog_cancel => 'Cancel';
+
+  @override
+  String get settings__device_mgmt__dialog_remove => 'Remove';
+
+  @override
+  String get settings__device_mgmt__revoke_failed =>
+      'Failed to remove sync access.';
+
+  @override
+  String get settings__device_mgmt__active_now => 'Active now';
+
+  @override
+  String settings__device_mgmt__today_at({required String time}) {
+    return 'Today at $time';
+  }
+
+  @override
+  String settings__device_mgmt__days_ago({required int count}) {
+    return '${count}d ago';
+  }
+
+  @override
+  String get settings__device_mgmt__load_failed => 'Failed to load devices.';
+
+  @override
+  String get settings__device_mgmt__retry => 'Retry';
+
+  @override
+  String get settings__device_mgmt__empty => 'No sync devices found.';
+
+  @override
+  String get settings__device_mgmt__max_limit_tooltip =>
+      'Maximum number of devices you can sync with your current plan.';
+
+  @override
+  String settings__device_mgmt__max_limit_label({required int count}) {
+    return 'Max Limit • $count';
+  }
+
+  @override
+  String get settings__device_mgmt__active_count_tooltip =>
+      'Number of devices currently active.';
+
+  @override
+  String settings__device_mgmt__active_count_label({required int count}) {
+    return 'Active • $count';
+  }
+
+  @override
+  String settings__device_card__last_seen({required String time}) {
+    return 'Last seen: $time';
+  }
+
+  @override
+  String get settings__device_card__revoke => 'Revoke';
+
+  @override
   String get custom_er__nav__1 => 'App';
 
   @override
@@ -2037,6 +2121,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String abc__ack__detection_mode_update_failed({required String message}) {
     return 'Failed to update detection mode: $message';
   }
+
+  @override
+  String get abc__detection_mode__title => 'Detection Mode';
+
+  @override
+  String get abc__detection_mode__subtitle__enabled =>
+      'Choose how CopyCat detects copy actions in other apps. CopyCat stays inactive until you pick a mode.';
+
+  @override
+  String get abc__detection_mode__subtitle__disabled =>
+      'Enable accessibility service first, then choose a detection mode.';
+
+  @override
+  String get abc__network__header => 'Network';
 
   @override
   String current_time__local({required String time}) {

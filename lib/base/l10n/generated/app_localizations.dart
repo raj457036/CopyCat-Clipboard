@@ -3130,6 +3130,144 @@ abstract class AppLocalizations {
   /// **'View active devices and remove devices from sync access.'**
   String get settings__sync__manage_devices__subtitle;
 
+  /// No description provided for @settings__lan_mesh__app_bar_title.
+  ///
+  /// In en, this message translates to:
+  /// **'LAN Network'**
+  String get settings__lan_mesh__app_bar_title;
+
+  /// No description provided for @settings__lan_mesh__unknown_device.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown Device'**
+  String get settings__lan_mesh__unknown_device;
+
+  /// No description provided for @settings__lan_mesh__searching.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching for devices on the network…'**
+  String get settings__lan_mesh__searching;
+
+  /// No description provided for @settings__lan_mesh__reachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Reachable'**
+  String get settings__lan_mesh__reachable;
+
+  /// No description provided for @settings__lan_mesh__unreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unreachable'**
+  String get settings__lan_mesh__unreachable;
+
+  /// No description provided for @settings__lan_mesh__disabled_banner.
+  ///
+  /// In en, this message translates to:
+  /// **'LAN Instant Sync is disabled. Enable it from Settings to discover nearby devices.'**
+  String get settings__lan_mesh__disabled_banner;
+
+  /// No description provided for @settings__device_mgmt__app_bar_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Sync Devices'**
+  String get settings__device_mgmt__app_bar_title;
+
+  /// No description provided for @settings__device_mgmt__dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Sync Access'**
+  String get settings__device_mgmt__dialog_title;
+
+  /// No description provided for @settings__device_mgmt__dialog_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get settings__device_mgmt__dialog_cancel;
+
+  /// No description provided for @settings__device_mgmt__dialog_remove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get settings__device_mgmt__dialog_remove;
+
+  /// No description provided for @settings__device_mgmt__revoke_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to remove sync access.'**
+  String get settings__device_mgmt__revoke_failed;
+
+  /// No description provided for @settings__device_mgmt__active_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Active now'**
+  String get settings__device_mgmt__active_now;
+
+  /// No description provided for @settings__device_mgmt__today_at.
+  ///
+  /// In en, this message translates to:
+  /// **'Today at {time}'**
+  String settings__device_mgmt__today_at({required String time});
+
+  /// No description provided for @settings__device_mgmt__days_ago.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}d ago'**
+  String settings__device_mgmt__days_ago({required int count});
+
+  /// No description provided for @settings__device_mgmt__load_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load devices.'**
+  String get settings__device_mgmt__load_failed;
+
+  /// No description provided for @settings__device_mgmt__retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get settings__device_mgmt__retry;
+
+  /// No description provided for @settings__device_mgmt__empty.
+  ///
+  /// In en, this message translates to:
+  /// **'No sync devices found.'**
+  String get settings__device_mgmt__empty;
+
+  /// No description provided for @settings__device_mgmt__max_limit_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum number of devices you can sync with your current plan.'**
+  String get settings__device_mgmt__max_limit_tooltip;
+
+  /// No description provided for @settings__device_mgmt__max_limit_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Limit • {count}'**
+  String settings__device_mgmt__max_limit_label({required int count});
+
+  /// No description provided for @settings__device_mgmt__active_count_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of devices currently active.'**
+  String get settings__device_mgmt__active_count_tooltip;
+
+  /// No description provided for @settings__device_mgmt__active_count_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Active • {count}'**
+  String settings__device_mgmt__active_count_label({required int count});
+
+  /// No description provided for @settings__device_card__last_seen.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen: {time}'**
+  String settings__device_card__last_seen({required String time});
+
+  /// No description provided for @settings__device_card__revoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke'**
+  String get settings__device_card__revoke;
+
   /// No description provided for @custom_er__nav__1.
   ///
   /// In en, this message translates to:
@@ -3621,6 +3759,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to update detection mode: {message}'**
   String abc__ack__detection_mode_update_failed({required String message});
+
+  /// No description provided for @abc__detection_mode__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Detection Mode'**
+  String get abc__detection_mode__title;
+
+  /// No description provided for @abc__detection_mode__subtitle__enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how CopyCat detects copy actions in other apps. CopyCat stays inactive until you pick a mode.'**
+  String get abc__detection_mode__subtitle__enabled;
+
+  /// No description provided for @abc__detection_mode__subtitle__disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable accessibility service first, then choose a detection mode.'**
+  String get abc__detection_mode__subtitle__disabled;
+
+  /// No description provided for @abc__network__header.
+  ///
+  /// In en, this message translates to:
+  /// **'Network'**
+  String get abc__network__header;
 
   /// No description provided for @current_time__local.
   ///
