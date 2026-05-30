@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class ClipCollectionGridItem extends StatelessWidget {
+class ClipCollectionGridItem extends StatefulWidget {
   final ClipCollection collection;
   final bool autoFocus;
   final VoidCallback? onTap;
@@ -26,10 +26,17 @@ class ClipCollectionGridItem extends StatelessWidget {
     required this.collection,
   });
 
+  @override
+  State<ClipCollectionGridItem> createState() => _ClipCollectionGridItemState();
+}
+
+class _ClipCollectionGridItemState extends State<ClipCollectionGridItem> {
+  bool isFocused = false;
+
   void edit(BuildContext context) {
     context.pushNamed(
       RouteConstants.createEditCollection,
-      pathParameters: {"id": collection.id.toString()},
+      pathParameters: {"id": widget.collection.id.toString()},
     );
   }
 
@@ -37,18 +44,18 @@ class ClipCollectionGridItem extends StatelessWidget {
     final cubit = context.read<ClipCollectionCubit>();
     final confirm = await ConfirmDialog(
       title: context.locale.dialog__delete_collection__title(
-        collectionName: collection.title,
+        collectionName: widget.collection.title,
       ),
       message: context.locale.dialog__delete_collection__subtitle,
     ).show(context);
     if (!confirm) return;
-    cubit.delete(collection);
+    cubit.delete(widget.collection);
   }
 
   void showDetail(BuildContext context) {
     context.goNamed(
       RouteConstants.collectionDetail,
-      pathParameters: {"id": collection.id.toString()},
+      pathParameters: {"id": widget.collection.id.toString()},
     );
   }
 
@@ -56,33 +63,38 @@ class ClipCollectionGridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
     final colors = context.colors;
-    var selected = false;
     final selectedShape = RoundedRectangleBorder(
       side: BorderSide(
         color: colors.primary,
-        width: 2.5,
+        width: 2,
         strokeAlign: BorderSide.strokeAlignOutside,
       ),
-      borderRadius: radius12,
+      borderRadius: radius8,
     );
-    final collectionTile = StatefulBuilder(
-      builder: (context, setState) {
+    final collectionTile = Builder(
+      builder: (context) {
         return Card.outlined(
-          color: isReadOnly ? colors.surfaceContainerLowest : colors.surface,
+          color: widget.isReadOnly
+              ? colors.surfaceContainerLowest
+              : colors.surface,
           margin: EdgeInsets.zero,
-          shape: selected ? selectedShape : null,
+          shape: isFocused ? selectedShape : null,
+          elevation: isFocused ? 4 : 0,
           child: InkWell(
+            focusColor: context.colors.secondaryContainer.withValues(
+              alpha: 0.5,
+            ),
             mouseCursor: SystemMouseCursors.click,
-            borderRadius: radius12,
-            onSecondaryTapUp: selectionOnly
+            borderRadius: radius8,
+            onSecondaryTapUp: widget.selectionOnly
                 ? null
                 : (detail) {
                     Menu.of(
                       context,
                     ).openPopupMenu(context, detail.globalPosition);
                   },
-            onFocusChange: (isFocused) {
-              setState(() => selected = isFocused);
+            onFocusChange: (focused) {
+              // setState(() => isFocused = focused);
               Scrollable.ensureVisible(
                 context,
                 duration: Durations.medium1,
@@ -90,11 +102,11 @@ class ClipCollectionGridItem extends StatelessWidget {
                 alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
               );
             },
-            autofocus: autoFocus,
-            onLongPress: selectionOnly
+            autofocus: widget.autoFocus,
+            onLongPress: widget.selectionOnly
                 ? null
                 : () => Menu.of(context).openMenu(context),
-            onTap: onTap ?? () => showDetail(context),
+            onTap: widget.onTap ?? () => showDetail(context),
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: padding12,
@@ -103,14 +115,17 @@ class ClipCollectionGridItem extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (isReadOnly)
+                  if (widget.isReadOnly)
                     Icon(
                       Icons.lock_outline_rounded,
                       size: 36,
                       color: colors.outline,
                     )
                   else
-                    Text(collection.emoji, style: textTheme.displaySmall),
+                    Text(
+                      widget.collection.emoji,
+                      style: textTheme.displaySmall,
+                    ),
                   width16,
                   Expanded(
                     child: Column(
@@ -120,17 +135,17 @@ class ClipCollectionGridItem extends StatelessWidget {
                       children: [
                         Flexible(
                           child: Text(
-                            collection.title,
+                            widget.collection.title,
                             maxLines: 1,
                             style: textTheme.titleMedium,
                           ),
                         ),
-                        if (collection.description != null)
+                        if (widget.collection.description != null)
                           Flexible(
                             child: Tooltip(
-                              message: collection.description!,
+                              message: widget.collection.description!,
                               child: Text(
-                                collection.description!,
+                                widget.collection.description!,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: textTheme.bodyMedium?.apply(
@@ -150,11 +165,11 @@ class ClipCollectionGridItem extends StatelessWidget {
       },
     );
 
-    if (selectionOnly) return collectionTile;
+    if (widget.selectionOnly) return collectionTile;
 
     return Menu(
       items: [
-        if (!isReadOnly)
+        if (!widget.isReadOnly)
           MenuItem(
             icon: Icons.edit,
             text: context.locale.app__edit,

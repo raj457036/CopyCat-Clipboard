@@ -46,6 +46,7 @@
   "app__logout": "Abmelden",
   "app__no_collection": "Keine Sammlung gefunden",
   "app__create_collection": "Sammlung erstellen",
+  "app__create": "Erstellen",
   "app__pro_tip": "Pro Tipp",
   "app__try_again": "Erneut versuchen",
   "app__realtime_connected": "Echtzeit verbunden",

@@ -284,6 +284,12 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
     await repo.update(newConfig);
   }
 
+  Future<void> showCollectionTip(final bool value) async {
+    final newConfig = state.config.copyWith(showCollectionTip: value);
+    emit(AppConfigState.loaded(config: newConfig));
+    await repo.update(newConfig);
+  }
+
   Future<void> changeWindowSize({double? width, double? height}) async {
     final config = state.config;
     final newConfig = config.copyWith(

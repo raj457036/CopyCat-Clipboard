@@ -160,6 +160,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get app__create_collection => 'Sammlung erstellen';
 
   @override
+  String get app__create => 'Erstellen';
+
+  @override
   String get app__pro_tip => 'Pro Tipp';
 
   @override

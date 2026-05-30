@@ -46,6 +46,7 @@
   "app__logout": "Cerrar Sesión",
   "app__no_collection": "No se encontró ninguna colección",
   "app__create_collection": "Crear Colección",
+  "app__create": "Crear",
   "app__pro_tip": "Consejo Profesional",
   "app__try_again": "Intentar de nuevo",
   "app__realtime_connected": "Conectado en tiempo real",

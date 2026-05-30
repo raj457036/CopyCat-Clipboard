@@ -57,6 +57,7 @@ _$AppConfigImpl _$$AppConfigImplFromJson(
         json['themeVariant'],
       ) ??
       DynamicSchemeVariant.tonalSpot,
+  showCollectionTip: json['showCollectionTip'] as bool? ?? true,
   enableDragNDrop: json['enableDragNDrop'] as bool? ?? false,
   enablePasteStack: json['enablePasteStack'] as bool? ?? false,
   androidBgListener: json['androidBgListener'] as bool? ?? false,
@@ -105,6 +106,7 @@ Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
       'localAuthTimeoutMinutes': instance.localAuthTimeoutMinutes,
       'themeColor': instance.themeColor,
       'themeVariant': _$DynamicSchemeVariantEnumMap[instance.themeVariant]!,
+      'showCollectionTip': instance.showCollectionTip,
       'enableDragNDrop': instance.enableDragNDrop,
       'enablePasteStack': instance.enablePasteStack,
       'androidBgListener': instance.androidBgListener,

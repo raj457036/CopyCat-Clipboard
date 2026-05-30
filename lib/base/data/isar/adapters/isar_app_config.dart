@@ -63,6 +63,9 @@ class IsarAppConfig {
   bool enableLocalAuth = false;
   int localAuthTimeoutMinutes = 1;
 
+  // Flags
+  bool showCollectionTip = true;
+
   static int _sanitizeCounter(int value) => value < 0 ? 0 : value;
 
   AppConfig toDomain() => AppConfig(
@@ -106,6 +109,7 @@ class IsarAppConfig {
     autoWriteOnReceive: autoWriteOnReceive,
     enableLocalAuth: enableLocalAuth,
     localAuthTimeoutMinutes: localAuthTimeoutMinutes,
+    showCollectionTip: showCollectionTip,
   );
 
   static IsarAppConfig fromDomain(AppConfig config) => IsarAppConfig()
@@ -152,5 +156,6 @@ class IsarAppConfig {
     ..lanInstantSync = config.lanInstantSync
     ..autoWriteOnReceive = config.autoWriteOnReceive
     ..enableLocalAuth = config.enableLocalAuth
-    ..localAuthTimeoutMinutes = config.localAuthTimeoutMinutes;
+    ..localAuthTimeoutMinutes = config.localAuthTimeoutMinutes
+    ..showCollectionTip = config.showCollectionTip;
 }

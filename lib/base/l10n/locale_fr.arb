@@ -46,6 +46,7 @@
   "app__logout": "Déconnexion",
   "app__no_collection": "Aucune collection trouvée",
   "app__create_collection": "Créer une collection",
+  "app__create": "Créer",
   "app__pro_tip": "Conseil pro",
   "app__try_again": "Essayer à nouveau",
   "app__realtime_connected": "Connecté en temps réel",

@@ -58,6 +58,7 @@
   "app__logout": "Logout",
   "app__no_collection": "No Collection Found",
   "app__create_collection": "Create Collection",
+  "app__create": "Create",
   "app__pro_tip": "Pro Tip",
   "app__try_again": "Try Again",
   "app__realtime_connected": "Realtime Connected",

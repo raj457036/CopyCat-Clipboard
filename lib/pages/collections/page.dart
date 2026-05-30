@@ -6,6 +6,7 @@ import 'package:clipboard/pages/collections/widgets/appbar.dart';
 import 'package:clipboard/pages/collections/widgets/collections_grid.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/appconfig_flag.dart';
 import 'package:clipboard/widgets/layout/custom_scaffold.dart';
 import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/widgets/pro_tip_banner.dart';
@@ -94,12 +95,8 @@ class _CollectionsPageState extends State<CollectionsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = context.mq.size.width;
+    final width = context.screenSize.width;
     final isMobile = Breakpoints.isMobile(width);
-    final searchTopPadding = isMobile ? padding12 : padding8;
-    final typeToSearchEnabled = context.select(
-      (AppConfigCubit c) => c.state.config.enableTypeToSearch,
-    );
     final crossAxisCount = Breakpoints.on<int>(
       width,
       default_: 1,
@@ -113,75 +110,20 @@ class _CollectionsPageState extends State<CollectionsPage> {
       appBar: isMobilePlatform ? const CollectionAppBar() : null,
       body: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              padding12,
-              searchTopPadding,
-              padding12,
-              8,
-            ),
-            child: Center(
-              child: AnimatedContainer(
-                curve: Curves.easeIn,
-                height: 40,
-                width: _isSearchFocused ? 650 : 500,
-                duration: Durations.short2,
-                child: Row(
-                  spacing: 4,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        focusNode: _searchFocusNode,
-                        onTapOutside: (_) => _searchFocusNode.unfocus(),
-                        onChanged: (text) =>
-                            onQueryChanged(text, typeToSearchEnabled),
-                        onSubmitted: onQuerySubmitted,
-                        decoration: InputDecoration(
-                          border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(50)),
-                            borderSide: BorderSide.none,
-                          ),
-                          fillColor: context.colors.surfaceContainerHigh,
-                          filled: true,
-                          prefixIcon: const Icon(Icons.search_rounded),
-                          hintText: context.locale.app__search,
-                          contentPadding: const EdgeInsets.only(
-                            left: padding12,
-                          ),
-                        ),
-                        textInputAction: TextInputAction.search,
-                      ),
-                    ),
-                    if (_searchController.text.isNotEmpty)
-                      IconButton(
-                        focusNode: _searchResetButtonFocus,
-                        style: IconButton.styleFrom(
-                          backgroundColor: context.colors.surfaceContainerHigh,
-                        ),
-                        onPressed: clearQuery,
-                        icon: const Icon(Icons.clear_rounded),
-                        color: context.colors.outline,
-                      ),
-                  ],
+          if (width > Breakpoints.xs)
+            DisableForLocalUser(
+              child: AppConfigBuilder(
+                when: (c) => c.showCollectionTip,
+                builder: (_) => TipTile(
+                  tip: context.locale.collections__text__tip,
+                  trailing: CloseButton(
+                    onPressed: () =>
+                        context.read<AppConfigCubit>().showCollectionTip(false),
+                  ),
                 ),
               ),
             ),
-          ),
-          if (width > 200)
-            DisableForLocalUser(
-              child: isMobile
-                  ? TipTile(tip: context.locale.collections__text__tip)
-                  : Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 720),
-                        child: TipTile(
-                          tip: context.locale.collections__text__tip,
-                        ),
-                      ),
-                    ),
-            ),
+          height12,
           Expanded(
             child: ScaffoldBody(
               child: CollectionsGrid(

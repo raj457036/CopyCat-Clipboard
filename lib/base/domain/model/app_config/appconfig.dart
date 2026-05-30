@@ -92,6 +92,9 @@ class AppConfig with _$AppConfig, Identifiable {
     @Default(defaultThemeColor) int themeColor,
     @Default(DynamicSchemeVariant.tonalSpot) DynamicSchemeVariant themeVariant,
 
+    // Flags
+    @Default(true) bool showCollectionTip,
+
     // Exprimental
     @Default(false) bool enableDragNDrop,
     @Default(false) bool enablePasteStack,

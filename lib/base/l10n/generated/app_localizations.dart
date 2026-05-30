@@ -405,6 +405,12 @@ abstract class AppLocalizations {
   /// **'Create Collection'**
   String get app__create_collection;
 
+  /// No description provided for @app__create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get app__create;
+
   /// No description provided for @app__pro_tip.
   ///
   /// In en, this message translates to:

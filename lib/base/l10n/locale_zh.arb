@@ -46,6 +46,7 @@
   "app__logout": "登出",
   "app__no_collection": "未找到收藏",
   "app__create_collection": "创建收藏",
+  "app__create": "创建",
   "app__pro_tip": "专业提示",
   "app__try_again": "重试",
   "app__realtime_connected": "实时连接",

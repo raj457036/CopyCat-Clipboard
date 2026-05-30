@@ -78,6 +78,8 @@ mixin _$AppConfig {
       throw _privateConstructorUsedError; // Customization
   int get themeColor => throw _privateConstructorUsedError;
   DynamicSchemeVariant get themeVariant =>
+      throw _privateConstructorUsedError; // Flags
+  bool get showCollectionTip =>
       throw _privateConstructorUsedError; // Exprimental
   bool get enableDragNDrop => throw _privateConstructorUsedError;
   bool get enablePasteStack => throw _privateConstructorUsedError;
@@ -150,6 +152,7 @@ abstract class $AppConfigCopyWith<$Res> {
     int localAuthTimeoutMinutes,
     int themeColor,
     DynamicSchemeVariant themeVariant,
+    bool showCollectionTip,
     bool enableDragNDrop,
     bool enablePasteStack,
     bool androidBgListener,
@@ -216,6 +219,7 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? localAuthTimeoutMinutes = null,
     Object? themeColor = null,
     Object? themeVariant = null,
+    Object? showCollectionTip = null,
     Object? enableDragNDrop = null,
     Object? enablePasteStack = null,
     Object? androidBgListener = null,
@@ -360,6 +364,10 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
                 ? _value.themeVariant
                 : themeVariant // ignore: cast_nullable_to_non_nullable
                       as DynamicSchemeVariant,
+            showCollectionTip: null == showCollectionTip
+                ? _value.showCollectionTip
+                : showCollectionTip // ignore: cast_nullable_to_non_nullable
+                      as bool,
             enableDragNDrop: null == enableDragNDrop
                 ? _value.enableDragNDrop
                 : enableDragNDrop // ignore: cast_nullable_to_non_nullable
@@ -475,6 +483,7 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     int localAuthTimeoutMinutes,
     int themeColor,
     DynamicSchemeVariant themeVariant,
+    bool showCollectionTip,
     bool enableDragNDrop,
     bool enablePasteStack,
     bool androidBgListener,
@@ -541,6 +550,7 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? localAuthTimeoutMinutes = null,
     Object? themeColor = null,
     Object? themeVariant = null,
+    Object? showCollectionTip = null,
     Object? enableDragNDrop = null,
     Object? enablePasteStack = null,
     Object? androidBgListener = null,
@@ -685,6 +695,10 @@ class __$$AppConfigImplCopyWithImpl<$Res>
             ? _value.themeVariant
             : themeVariant // ignore: cast_nullable_to_non_nullable
                   as DynamicSchemeVariant,
+        showCollectionTip: null == showCollectionTip
+            ? _value.showCollectionTip
+            : showCollectionTip // ignore: cast_nullable_to_non_nullable
+                  as bool,
         enableDragNDrop: null == enableDragNDrop
             ? _value.enableDragNDrop
             : enableDragNDrop // ignore: cast_nullable_to_non_nullable
@@ -778,6 +792,7 @@ class _$AppConfigImpl extends _AppConfig {
     this.localAuthTimeoutMinutes = 1,
     this.themeColor = defaultThemeColor,
     this.themeVariant = DynamicSchemeVariant.tonalSpot,
+    this.showCollectionTip = true,
     this.enableDragNDrop = false,
     this.enablePasteStack = false,
     this.androidBgListener = false,
@@ -914,6 +929,10 @@ class _$AppConfigImpl extends _AppConfig {
   @override
   @JsonKey()
   final DynamicSchemeVariant themeVariant;
+  // Flags
+  @override
+  @JsonKey()
+  final bool showCollectionTip;
   // Exprimental
   @override
   @JsonKey()
@@ -963,7 +982,7 @@ class _$AppConfigImpl extends _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, pasteStackHotkey: $pasteStackHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, hideFromScreenCapture: $hideFromScreenCapture, exclusionRules: $exclusionRules, enableLocalAuth: $enableLocalAuth, localAuthTimeoutMinutes: $localAuthTimeoutMinutes, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, richDataCapture: $richDataCapture, lanInstantSync: $lanInstantSync, autoWriteOnReceive: $autoWriteOnReceive, showTrayIcon: $showTrayIcon, onBoardComplete: $onBoardComplete, reviewQualifyingEventCount: $reviewQualifyingEventCount, lastReviewPromptDate: $lastReviewPromptDate, reviewNeverAsk: $reviewNeverAsk, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
+    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, pasteStackHotkey: $pasteStackHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, hideFromScreenCapture: $hideFromScreenCapture, exclusionRules: $exclusionRules, enableLocalAuth: $enableLocalAuth, localAuthTimeoutMinutes: $localAuthTimeoutMinutes, themeColor: $themeColor, themeVariant: $themeVariant, showCollectionTip: $showCollectionTip, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, richDataCapture: $richDataCapture, lanInstantSync: $lanInstantSync, autoWriteOnReceive: $autoWriteOnReceive, showTrayIcon: $showTrayIcon, onBoardComplete: $onBoardComplete, reviewQualifyingEventCount: $reviewQualifyingEventCount, lastReviewPromptDate: $lastReviewPromptDate, reviewNeverAsk: $reviewNeverAsk, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
   }
 
   @override
@@ -1031,6 +1050,8 @@ class _$AppConfigImpl extends _AppConfig {
                 other.themeColor == themeColor) &&
             (identical(other.themeVariant, themeVariant) ||
                 other.themeVariant == themeVariant) &&
+            (identical(other.showCollectionTip, showCollectionTip) ||
+                other.showCollectionTip == showCollectionTip) &&
             (identical(other.enableDragNDrop, enableDragNDrop) ||
                 other.enableDragNDrop == enableDragNDrop) &&
             (identical(other.enablePasteStack, enablePasteStack) ||
@@ -1099,6 +1120,7 @@ class _$AppConfigImpl extends _AppConfig {
     localAuthTimeoutMinutes,
     themeColor,
     themeVariant,
+    showCollectionTip,
     enableDragNDrop,
     enablePasteStack,
     androidBgListener,
@@ -1163,6 +1185,7 @@ abstract class _AppConfig extends AppConfig {
     final int localAuthTimeoutMinutes,
     final int themeColor,
     final DynamicSchemeVariant themeVariant,
+    final bool showCollectionTip,
     final bool enableDragNDrop,
     final bool enablePasteStack,
     final bool androidBgListener,
@@ -1266,7 +1289,9 @@ abstract class _AppConfig extends AppConfig {
   @override
   int get themeColor;
   @override
-  DynamicSchemeVariant get themeVariant; // Exprimental
+  DynamicSchemeVariant get themeVariant; // Flags
+  @override
+  bool get showCollectionTip; // Exprimental
   @override
   bool get enableDragNDrop;
   @override

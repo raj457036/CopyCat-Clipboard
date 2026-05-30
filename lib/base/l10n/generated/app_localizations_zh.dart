@@ -159,6 +159,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app__create_collection => '创建收藏';
 
   @override
+  String get app__create => '创建';
+
+  @override
   String get app__pro_tip => '专业提示';
 
   @override

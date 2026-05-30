@@ -46,6 +46,7 @@
   "app__logout": "Sair",
   "app__no_collection": "Nenhuma coleção encontrada",
   "app__create_collection": "Criar Coleção",
+  "app__create": "Criar",
   "app__pro_tip": "Dica Pro",
   "app__try_again": "Tente Novamente",
   "app__realtime_connected": "Conectado em tempo real",

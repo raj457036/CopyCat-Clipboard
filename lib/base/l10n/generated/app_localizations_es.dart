@@ -160,6 +160,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get app__create_collection => 'Crear Colección';
 
   @override
+  String get app__create => 'Crear';
+
+  @override
   String get app__pro_tip => 'Consejo Profesional';
 
   @override
