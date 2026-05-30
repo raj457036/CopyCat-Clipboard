@@ -67,7 +67,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get app__share => 'Compartilhar';
 
   @override
-  String get app__loading => 'Loading...';
+  String get app__loading => 'Carregando...';
 
   @override
   String get app__uploading => 'Carregando...';
@@ -100,10 +100,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get app__load_more => 'Carregar Mais';
 
   @override
-  String get app__search => 'Search';
+  String get app__search => 'Buscar';
 
   @override
-  String get app__no_results => 'No results found';
+  String get app__no_results => 'Nenhum resultado encontrado';
 
   @override
   String get app__locale_en => 'Inglês';
@@ -127,28 +127,28 @@ class AppLocalizationsPt extends AppLocalizations {
   String get app__language => 'Idioma';
 
   @override
-  String get app__yes => 'Yes';
+  String get app__yes => 'Sim';
 
   @override
-  String get app__no => 'No';
+  String get app__no => 'Não';
 
   @override
-  String get app__quit => 'Quit';
+  String get app__quit => 'Sair';
 
   @override
-  String get app__clear => 'Clear';
+  String get app__clear => 'Limpar';
 
   @override
-  String get app__reset => 'Reset';
+  String get app__reset => 'Redefinir';
 
   @override
-  String get app__continue => 'Continue';
+  String get app__continue => 'Continuar';
 
   @override
-  String get app__paste => 'Paste';
+  String get app__paste => 'Colar';
 
   @override
-  String get app__copycat_logo => 'CopyCat Logo';
+  String get app__copycat_logo => 'Logo do CopyCat';
 
   @override
   String get app__logout => 'Sair';
@@ -221,7 +221,7 @@ class AppLocalizationsPt extends AppLocalizations {
     required String entityType,
     required String message,
   }) {
-    return 'Failed to sync $entityType: $message';
+    return 'Falha ao sincronizar $entityType: $message';
   }
 
   @override
@@ -282,15 +282,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get dialog__text__inconsistent_time__still_off =>
-      'Clock is still out of sync. Please update your system time manually.';
+      'O relógio ainda está dessincronizado. Atualize a hora do sistema manualmente.';
 
   @override
   String get dialog__text__inconsistent_time__ntp_unreachable =>
-      'Could not reach time server. Please check your internet connection and sync your clock manually.';
+      'Não foi possível acessar o servidor de horário. Verifique sua conexão com a internet e sincronize o relógio manualmente.';
 
   @override
   String get dialog__text__inconsistent_time__check_failed =>
-      'Time check failed. Please update your system clock manually.';
+      'Falha na verificação do horário. Atualize o relógio do sistema manualmente.';
 
   @override
   String get dialog__button__try_again => 'Verificar Novamente';
@@ -332,7 +332,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Digite o código e pressione Enviar';
 
   @override
-  String get dialog__grant_entitlement__code_label => 'Code';
+  String get dialog__grant_entitlement__code_label => 'Código';
 
   @override
   String get dialog__grant_entitlement__apply_code => 'Aplicar';
@@ -676,7 +676,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get search_filter__text_cat__color => 'Cor';
 
   @override
-  String get search_filter__text_cat__struct => 'Struct';
+  String get search_filter__text_cat__struct => 'Estruturado';
 
   @override
   String get search_filter__text__sort_by => 'Ordenar Por';
@@ -703,13 +703,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get search_filter__sort_ord__desc => 'Desc';
 
   @override
-  String get search_filter__tooltip__clear => 'Clear';
+  String get search_filter__tooltip__clear => 'Limpar';
 
   @override
   String get search_filter__empty => '∅';
 
   @override
-  String get search_filter__button__reset => 'Reset';
+  String get search_filter__button__reset => 'Redefinir';
 
   @override
   String get login__local_signin__tooltip =>
@@ -808,98 +808,98 @@ class AppLocalizationsPt extends AppLocalizations {
   String get preview__form__input__description => 'Descrição';
 
   @override
-  String get preview__inspector__title => 'Clip Details';
+  String get preview__inspector__title => 'Detalhes do clipe';
 
   @override
-  String get preview__inspector__untitled => 'Untitled Clip';
+  String get preview__inspector__untitled => 'Clipe sem título';
 
   @override
-  String get preview__inspector__saved => 'Details updated';
+  String get preview__inspector__saved => 'Detalhes salvos';
 
   @override
-  String get preview__inspector__save_changes => 'Save changes';
+  String get preview__inspector__save_changes => 'Salvar alterações';
 
   @override
-  String get preview__inspector__decrypt => 'Decrypt';
+  String get preview__inspector__decrypt => 'Descriptografar';
 
   @override
-  String get preview__inspector__open_source => 'Open Source';
+  String get preview__inspector__open_source => 'Abrir origem';
 
   @override
-  String get preview__inspector__section__actions => 'Actions';
+  String get preview__inspector__section__actions => 'Ações';
 
   @override
-  String get preview__inspector__section__details => 'Details';
+  String get preview__inspector__section__details => 'Detalhes';
 
   @override
-  String get preview__inspector__section__content => 'Content';
+  String get preview__inspector__section__content => 'Conteúdo';
 
   @override
-  String get preview__inspector__section__organize => 'Organize';
+  String get preview__inspector__section__organize => 'Organizar';
 
   @override
-  String get preview__inspector__label__created => 'Created';
+  String get preview__inspector__label__created => 'Criado em';
 
   @override
-  String get preview__inspector__label__modified => 'Modified';
+  String get preview__inspector__label__modified => 'Modificado em';
 
   @override
-  String get preview__inspector__label__last_copied => 'Last Copied';
+  String get preview__inspector__label__last_copied => 'Última cópia';
 
   @override
-  String get preview__inspector__label__copied_count => 'Copied Count';
+  String get preview__inspector__label__copied_count => 'Total de cópias';
 
   @override
-  String get preview__inspector__label__source_app => 'Source App';
+  String get preview__inspector__label__source_app => 'Aplicativo de origem';
 
   @override
-  String get preview__inspector__label__source_url => 'Source URL';
+  String get preview__inspector__label__source_url => 'URL de origem';
 
   @override
-  String get preview__inspector__label__file_size => 'File Size';
+  String get preview__inspector__label__file_size => 'Tamanho do arquivo';
 
   @override
-  String get preview__inspector__label__mime_type => 'MIME Type';
+  String get preview__inspector__label__mime_type => 'Tipo MIME';
 
   @override
-  String get preview__inspector__label__extension => 'Extension';
+  String get preview__inspector__label__extension => 'Extensão';
 
   @override
-  String get preview__inspector__label__characters => 'Characters';
+  String get preview__inspector__label__characters => 'Caracteres';
 
   @override
-  String get preview__inspector__label__lines => 'Lines';
+  String get preview__inspector__label__lines => 'Linhas';
 
   @override
   String get preview__inspector__label__link => 'Link';
 
   @override
-  String get preview__inspector__status__encrypted => 'Encrypted';
+  String get preview__inspector__status__encrypted => 'Criptografado';
 
   @override
-  String get preview__inspector__status__local_only => 'Local Only';
+  String get preview__inspector__status__local_only => 'Somente local';
 
   @override
-  String get preview__inspector__status__synced => 'Synced';
+  String get preview__inspector__status__synced => 'Sincronizado';
 
   @override
-  String get preview__inspector__status__not_synced => 'Not Synced';
+  String get preview__inspector__status__not_synced => 'Não sincronizado';
 
   @override
   String get preview__inspector__status__download_required =>
-      'Download Required';
+      'Download necessário';
 
   @override
-  String get preview__inspector__status__available => 'Available Offline';
+  String get preview__inspector__status__available => 'Disponível offline';
 
   @override
-  String get preview__inspector__type__text => 'Text';
+  String get preview__inspector__type__text => 'Texto';
 
   @override
-  String get preview__inspector__type__media => 'Media';
+  String get preview__inspector__type__media => 'Mídia';
 
   @override
-  String get preview__inspector__type__file => 'File';
+  String get preview__inspector__type__file => 'Arquivo';
 
   @override
   String get preview__inspector__type__link => 'Link';
@@ -1063,17 +1063,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get sync_restore__checking_backup => 'Verificando backup remoto...';
 
   @override
-  String get sync_restore__decrypting_title => 'Decrypting clips';
+  String get sync_restore__decrypting_title => 'Descriptografando clipes';
 
   @override
-  String get sync_restore__decrypting_counting => 'Counting encrypted clips...';
+  String get sync_restore__decrypting_counting =>
+      'Contando clipes criptografados...';
 
   @override
   String sync_restore__decrypting_progress({
     required int decrypted,
     required int total,
   }) {
-    return 'Decrypted $decrypted of $total';
+    return '$decrypted de $total descriptografados';
   }
 
   @override
@@ -1283,11 +1284,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get collections__input__description => 'Descrição';
 
   @override
-  String get collections__label__emoji => 'Collection Icon (Click to change)';
+  String get collections__label__emoji =>
+      'Ícone da coleção (clique para alterar)';
 
   @override
   String get collections__validation__duplicate =>
-      'A collection with this icon and name already exists';
+      'Já existe uma coleção com este ícone e nome';
 
   @override
   String get select_collection__appbar__title => 'Selecionar Coleção';
@@ -1322,13 +1324,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settings__appbar__title => 'Configurações';
 
   @override
-  String get settings__header__appearance => 'Appearance';
+  String get settings__header__appearance => 'Aparência';
 
   @override
-  String get settings__header__sorting => 'Default Sorting';
+  String get settings__header__sorting => 'Ordenação padrão';
 
   @override
-  String get settings__header__interactions => 'Interactions';
+  String get settings__header__interactions => 'Interações';
 
   @override
   String get settings__tab__1 => 'Geral';
@@ -1442,10 +1444,11 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settings__dropdown__theme__title => 'Modo de Tema';
 
   @override
-  String get settings__dropdown__default_sort__title => 'Sort By';
+  String get settings__dropdown__default_sort__title => 'Ordenar por';
 
   @override
-  String get settings__dropdown__default_sort_order__title => 'Sort Order';
+  String get settings__dropdown__default_sort_order__title =>
+      'Ordem de classificação';
 
   @override
   String get settings__theme__system => 'Sistema';
@@ -1555,11 +1558,11 @@ class AppLocalizationsPt extends AppLocalizations {
       'Quando ativado, as ações de transformação criam um novo clip em vez de copiar ou colar imediatamente.';
 
   @override
-  String get settings__switch__type_search__title => 'Type to Search';
+  String get settings__switch__type_search__title => 'Buscar enquanto digita';
 
   @override
   String get settings__switch__type_search__subtitle =>
-      'Search clips while you type in the search bar.';
+      'Pesquise clipes enquanto digita na barra de busca.';
 
   @override
   String get settings__switch__startup__title => 'Lançar na Inicialização';
@@ -1569,19 +1572,20 @@ class AppLocalizationsPt extends AppLocalizations {
       'Inicie automaticamente o CopyCat quando seu dispositivo for ligado.';
 
   @override
-  String get settings__switch__tray_icon__title => 'Show Menu Bar Icon';
+  String get settings__switch__tray_icon__title =>
+      'Mostrar ícone na barra do sistema';
 
   @override
   String get settings__switch__tray_icon__subtitle =>
-      'Display the CopyCat icon in the system menu bar / tray.';
+      'Exibe o ícone do CopyCat na barra de menu / bandeja do sistema.';
 
   @override
   String get settings__switch__hide_from_screen_capture__title =>
-      'Hide from Screen Recording';
+      'Ocultar em capturas de tela';
 
   @override
   String get settings__switch__hide_from_screen_capture__subtitle =>
-      'When enabled, screen captures and recordings should hide CopyCat content on supported platforms.';
+      'Quando ativado, capturas e gravações de tela devem ocultar o conteúdo do CopyCat em plataformas compatíveis.';
 
   @override
   String get settings__switch__hotkey__title => 'Alternar com Tecla de Atalho';
@@ -1592,18 +1596,19 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settings__switch__paste_stack_hotkey__title =>
-      'Paste Stack Hotkey';
+      'Atalho do Paste Stack';
 
   @override
   String get settings__switch__paste_stack_hotkey__subtitle =>
-      'Use a keyboard shortcut to open or close Paste Stack';
+      'Use um atalho de teclado para abrir ou fechar o Paste Stack';
 
   @override
-  String get settings__switch__quickpaste_hotkey__title => 'Quick Paste Hotkey';
+  String get settings__switch__quickpaste_hotkey__title =>
+      'Atalho do Quick Paste';
 
   @override
   String get settings__switch__quickpaste_hotkey__subtitle =>
-      'Use a keyboard shortcut to instantly access your top 10 clipboard items';
+      'Use um atalho de teclado para acessar instantaneamente seus 10 principais itens da área de transferência';
 
   @override
   String get settings__hotkey__unassigned => 'Não Atribuído';
@@ -1651,11 +1656,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settings__switch__e2e_nonce__title =>
-      'High-Security Mode (Recommended)';
+      'Modo de alta segurança (recomendado)';
 
   @override
   String get settings__switch__e2e_nonce__subtitle =>
-      'Upgrades encryption to AES-GCM for superior data protection and tamper detection. (Older app versions cannot decrypt these new clips)';
+      'Usa AES-GCM para melhor proteção dos dados e detecção de alterações. (Versões antigas do aplicativo não conseguem descriptografar esses novos clipes)';
 
   @override
   String get settings__dialog__conn_gdrive__title => 'Reconectar Google Drive?';
@@ -2136,26 +2141,26 @@ class AppLocalizationsPt extends AppLocalizations {
   String get abc__other_setting__title => 'Outras configurações';
 
   @override
-  String get abc__tile__two_way_sync__title => '2-Way Sync';
+  String get abc__tile__two_way_sync__title => 'Sincronização bidirecional';
 
   @override
   String abc__tile__two_way_sync__subtitle({required String warning}) {
-    return 'Keeps your clipboard synced across devices instantly.\n$warning';
+    return 'Mantém sua área de transferência sincronizada instantaneamente entre dispositivos.\n$warning';
   }
 
   @override
   String get abc__tile__two_way_sync__realtime_required =>
-      '⚠️ Realtime mode required.';
+      '⚠️ O modo em tempo real é obrigatório.';
 
   @override
-  String get abc__ack__detection_mode_cleared => 'Detection mode cleared';
+  String get abc__ack__detection_mode_cleared => 'Modo de detecção limpo';
 
   @override
-  String get abc__ack__detection_mode_updated => 'Detection mode updated';
+  String get abc__ack__detection_mode_updated => 'Modo de detecção atualizado';
 
   @override
   String abc__ack__detection_mode_update_failed({required String message}) {
-    return 'Failed to update detection mode: $message';
+    return 'Falha ao atualizar o modo de detecção: $message';
   }
 
   @override
@@ -2184,33 +2189,33 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String encrypted_stat__summary({required int count}) {
-    return 'You currently have $count encrypted clips that are inaccessible.';
+    return 'Você tem atualmente $count clipes criptografados que estão inacessíveis.';
   }
 
   @override
   String get encrypted_stat__all_decrypted =>
-      '🥳 Congratulations! All your clips have been successfully decrypted locally, so rebuilding the database is not required.';
+      '🥳 Parabéns! Todos os seus clipes foram descriptografados localmente com sucesso, então não é necessário reconstruir o banco de dados.';
 
   @override
-  String get encrypted_stat__rebuild_database => 'Rebuild Database';
+  String get encrypted_stat__rebuild_database => 'Reconstruir banco de dados';
 
   @override
   String tray__tooltip__paused_till({required String time}) {
-    return 'CopyCat Clipboard - Paused till $time';
+    return 'CopyCat Clipboard - Em pausa até $time';
   }
 
   @override
-  String get tray__menu__resume_copycat => 'Resume';
+  String get tray__menu__resume_copycat => 'Retomar';
 
   @override
-  String get tray__menu__pause_copycat => 'Pause';
+  String get tray__menu__pause_copycat => 'Pausar';
 
   @override
-  String get tray__dialog__quit__subtitle => 'Are you sure you want to quit?';
+  String get tray__dialog__quit__subtitle =>
+      'Tem certeza de que deseja sair do aplicativo?';
 
   @override
-  String get splash__checking_authentication =>
-      'Checking for authentication...';
+  String get splash__checking_authentication => 'Verificando autenticação...';
 
   @override
   String paste_stack__title({required int count}) {
@@ -2218,88 +2223,91 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get paste_stack__reverse_tooltip => 'Reverse Stack';
+  String get paste_stack__reverse_tooltip => 'Inverter pilha';
 
   @override
-  String get multi_paste__title => 'Multi Paste Setup';
+  String get multi_paste__title => 'Configuração de colagem múltipla';
 
   @override
   String get multi_paste__subtitle =>
-      'Control how selected clips are merged and paced.';
+      'Controle como os clipes selecionados são mesclados e temporizados.';
 
   @override
-  String get multi_paste__stat__selected => 'Selected';
+  String get multi_paste__stat__selected => 'Selecionados';
 
   @override
-  String get multi_paste__stat__text => 'Text';
+  String get multi_paste__stat__text => 'Texto';
 
   @override
-  String get multi_paste__stat__non_text => 'Non-text';
+  String get multi_paste__stat__non_text => 'Conteúdo não textual';
 
   @override
-  String get multi_paste__merge__title => 'Merge consecutive text clips';
+  String get multi_paste__merge__title =>
+      'Mesclar clipes de texto consecutivos';
 
   @override
   String get multi_paste__merge__subtitle =>
-      'Text clips merge until a non-text clip interrupts the sequence.';
+      'Clipes de texto são mesclados até que um clipe não textual interrompa a sequência.';
 
   @override
-  String get multi_paste__separator__title => 'Separator';
+  String get multi_paste__separator__title => 'Separador';
 
   @override
-  String get multi_paste__separator__new_line => 'New line';
+  String get multi_paste__separator__new_line => 'Nova linha';
 
   @override
-  String get multi_paste__separator__space => 'Space';
+  String get multi_paste__separator__space => 'Espaço';
 
   @override
-  String get multi_paste__separator__custom => 'Custom';
+  String get multi_paste__separator__custom => 'Personalizado';
 
   @override
-  String get multi_paste__separator__custom_label => 'Custom separator';
+  String get multi_paste__separator__custom_label => 'Separador personalizado';
 
   @override
   String get multi_paste__separator__custom_hint =>
-      'Supports escape sequences like \\n and \\t';
+      'Aceita sequências de escape como \\n e \\t';
 
   @override
-  String get multi_paste__pacing__title => 'Paste pacing';
+  String get multi_paste__pacing__title => 'Temporização da colagem';
 
   @override
   String get multi_paste__pacing__subtitle =>
-      'Increase the delay if the target app misses paste events.';
+      'Aumente o atraso se o aplicativo de destino perder eventos de colagem.';
 
   @override
-  String get multi_paste__wait_between_pastes => 'Wait time between pastes';
+  String get multi_paste__wait_between_pastes => 'Intervalo entre colagens';
 
   @override
   String get multi_paste__validation__wait_positive =>
-      'Wait time must be a positive number.';
+      'O tempo de espera deve ser um número positivo.';
 
   @override
   String get multi_paste__validation__custom_separator_required =>
-      'Please enter a custom separator.';
+      'Informe um separador personalizado.';
 
   @override
-  String get settings__tile__backup_restore__title => 'Backup & Restore';
+  String get settings__tile__backup_restore__title => 'Backup e restauração';
 
   @override
   String get settings__tile__backup_restore__subtitle =>
-      'Create .ccbkup backups and restore locally';
+      'Crie backups .ccbkup e restaure localmente';
 
   @override
-  String get settings__switch__rich_data_capture__title => 'Rich Data Capture';
+  String get settings__switch__rich_data_capture__title =>
+      'Captura de dados avançada';
 
   @override
   String get settings__switch__rich_data_capture__subtitle =>
-      'Keep formatting when you copy and paste between apps.';
+      'Mantenha a formatação ao copiar e colar entre aplicativos.';
 
   @override
-  String get settings__decrypt__title => 'Clipboard Decryption';
+  String get settings__decrypt__title =>
+      'Descriptografia da área de transferência';
 
   @override
   String settings__decrypt__count({required int count}) {
-    return 'Currently you have $count encrypted clips locally.';
+    return 'Atualmente você tem $count clipes criptografados localmente.';
   }
 
   @override
@@ -2307,268 +2315,270 @@ class AppLocalizationsPt extends AppLocalizations {
     required int decrypted,
     required int total,
   }) {
-    return 'Decrypted: $decrypted of $total clips.';
+    return 'Descriptografados: $decrypted de $total clipes.';
   }
 
   @override
   String get settings__decrypt__warning =>
-      '⚠️ Please keep this screen open during this process to avoid data corruption or inconsistencies.';
+      '⚠️ Mantenha esta tela aberta durante esse processo para evitar corrupção de dados ou inconsistências.';
 
   @override
-  String get not_found__title => 'Page Not Found';
+  String get not_found__title => 'Página não encontrada';
 
   @override
   String get not_found__subtitle =>
-      'The page you are looking for is not found.';
+      'A página que você está procurando não foi encontrada.';
 
   @override
-  String get not_found__go_home => 'Go Home';
+  String get not_found__go_home => 'Ir para o início';
 
   @override
-  String get backup_restore__dialog__save_as => 'Save Backup As';
+  String get backup_restore__dialog__save_as => 'Salvar backup como';
 
   @override
-  String get backup_restore__busy__creating => 'Creating backup...';
+  String get backup_restore__busy__creating => 'Criando backup...';
 
   @override
   String get backup_restore__error__encryption_unavailable =>
-      'Encryption is enabled but currently unavailable. Please unlock E2EE and try again.';
+      'A criptografia está ativada, mas está indisponível no momento. Desbloqueie o E2EE e tente novamente.';
 
   @override
   String backup_restore__snackbar__saved({required String outputPath}) {
-    return 'Backup saved to $outputPath';
+    return 'Backup salvo em $outputPath';
   }
 
   @override
   String backup_restore__snackbar__create_failed({required String message}) {
-    return 'Backup failed: $message';
+    return 'Falha no backup: $message';
   }
 
   @override
-  String get backup_restore__dialog__select_file => 'Select Backup File';
+  String get backup_restore__dialog__select_file =>
+      'Selecionar arquivo de backup';
 
   @override
-  String get backup_restore__dialog__restore_title => 'Restore Backup';
+  String get backup_restore__dialog__restore_title => 'Restaurar backup';
 
   @override
   String get backup_restore__dialog__restore_subtitle =>
-      'Enter password if this backup is password-protected.';
+      'Digite a senha se este backup estiver protegido por senha.';
 
   @override
-  String get backup_restore__dialog__restore_action => 'Restore';
+  String get backup_restore__dialog__restore_action => 'Restaurar';
 
   @override
-  String get backup_restore__busy__restoring => 'Restoring backup...';
+  String get backup_restore__busy__restoring => 'Restaurando backup...';
 
   @override
   String backup_restore__snackbar__restore_completed({
     required int clips,
     required int collections,
   }) {
-    return 'Restore completed: $clips clips, $collections collections.';
+    return 'Restauração concluída: $clips clipes, $collections coleções.';
   }
 
   @override
   String backup_restore__snackbar__restore_failed({required String message}) {
-    return 'Restore failed: $message';
+    return 'Falha na restauração: $message';
   }
 
   @override
   String get backup_restore__error__select_clip_type =>
-      'Select at least one clip type.';
+      'Selecione pelo menos um tipo de clipe.';
 
   @override
   String get backup_restore__error__from_after_to =>
-      'From date must be earlier than To date.';
+      'A data inicial deve ser anterior à data final.';
 
   @override
   String get backup_restore__dialog__options__description =>
-      'Choose what to include in this backup archive.';
+      'Escolha o que incluir neste arquivo de backup.';
 
   @override
-  String get backup_restore__section__clip_types => 'Clip Types';
+  String get backup_restore__section__clip_types => 'Tipos de clipe';
 
   @override
-  String get backup_restore__section__cached_files => 'Cached Files';
+  String get backup_restore__section__cached_files => 'Arquivos em cache';
 
   @override
   String get backup_restore__input__max_cached_file_size =>
-      'Max cached file size (MB)';
+      'Tamanho máximo dos arquivos em cache (MB)';
 
   @override
   String get backup_restore__input__max_cached_file_size__hint =>
-      'Optional, e.g. 50';
+      'Opcional, ex.: 50';
 
   @override
   String get backup_restore__error__positive_number =>
-      'Enter a positive number.';
+      'Digite um número positivo.';
 
   @override
   String get backup_restore__text__select_file_media_for_cache_limit =>
-      'Select File or Media clip types to configure a max cached file size.';
+      'Selecione os tipos de clipe Arquivo ou Mídia para configurar um tamanho máximo dos arquivos em cache.';
 
   @override
-  String get backup_restore__section__date_range => 'Date Range';
+  String get backup_restore__section__date_range => 'Intervalo de datas';
 
   @override
-  String get backup_restore__from_date => 'From date';
+  String get backup_restore__from_date => 'Data inicial';
 
   @override
-  String get backup_restore__to_date => 'To date';
+  String get backup_restore__to_date => 'Data final';
 
   @override
-  String get backup_restore__no_minimum_date => 'No minimum date';
+  String get backup_restore__no_minimum_date => 'Sem data mínima';
 
   @override
-  String get backup_restore__no_maximum_date => 'No maximum date';
+  String get backup_restore__no_maximum_date => 'Sem data máxima';
 
   @override
-  String get backup_restore__clear_date_filter => 'Clear date filter';
+  String get backup_restore__clear_date_filter => 'Limpar filtro de data';
 
   @override
-  String get backup_restore__section__security => 'Security';
+  String get backup_restore__section__security => 'Segurança';
 
   @override
   String get backup_restore__toggle__password_protect =>
-      'Protect backup with password';
+      'Proteger backup com senha';
 
   @override
-  String get backup_restore__input__password => 'Password';
+  String get backup_restore__input__password => 'Senha';
 
   @override
-  String get backup_restore__input__password__hint => 'At least 6 characters';
+  String get backup_restore__input__password__hint => 'Pelo menos 6 caracteres';
 
   @override
   String get backup_restore__error__password_min_length =>
-      'Password must be at least 6 characters.';
+      'A senha deve ter pelo menos 6 caracteres.';
 
   @override
   String get backup_restore__dialog__create_manual_title =>
-      'Create Manual Backup';
+      'Criar backup manual';
 
   @override
-  String get backup_restore__appbar__title => 'Backup & Restore';
+  String get backup_restore__appbar__title => 'Backup e restauração';
 
   @override
-  String get backup_restore__card__title => 'Manual Backup & Restore';
+  String get backup_restore__card__title => 'Backup e restauração manuais';
 
   @override
   String get backup_restore__card__subtitle =>
-      'Create local .ccbkup archives with optional password protection and restore them locally with best-effort dedupe.';
+      'Crie arquivos .ccbkup locais com proteção opcional por senha e restaure-os localmente com deduplicação por melhor esforço.';
 
   @override
-  String get backup_restore__actions__title => 'Actions';
+  String get backup_restore__actions__title => 'Ações';
 
   @override
-  String get backup_restore__button__create => 'Create Backup';
+  String get backup_restore__button__create => 'Criar backup';
 
   @override
-  String get backup_restore__button__restore => 'Restore Backup';
+  String get backup_restore__button__restore => 'Restaurar backup';
 
   @override
-  String get backup_restore__snapshot__backup_title => 'Latest Backup Snapshot';
+  String get backup_restore__snapshot__backup_title =>
+      'Último resumo do backup';
 
   @override
   String get backup_restore__snapshot__restore_title =>
-      'Latest Restore Snapshot';
+      'Último resumo da restauração';
 
   @override
   String get backup_restore__snapshot__restore_subtitle =>
-      'Best-effort dedupe and integrity report';
+      'Deduplicação por melhor esforço e relatório de integridade';
 
   @override
   String get backup_restore__empty_session =>
-      'No backup or restore has been run in this session yet.';
+      'Nenhum backup ou restauração foi executado nesta sessão ainda.';
 
   @override
-  String get backup_restore__label__collections => 'Collections';
+  String get backup_restore__label__collections => 'Coleções';
 
   @override
-  String get backup_restore__label__clips => 'Clips';
+  String get backup_restore__label__clips => 'Clipes';
 
   @override
-  String get backup_restore__label__files_included => 'Files Included';
+  String get backup_restore__label__files_included => 'Arquivos incluídos';
 
   @override
-  String get backup_restore__label__files_missing => 'Files Missing';
+  String get backup_restore__label__files_missing => 'Arquivos ausentes';
 
   @override
-  String get backup_restore__label__files_skipped_by_size => 'Skipped by Size';
+  String get backup_restore__label__files_skipped_by_size =>
+      'Ignorados por tamanho';
 
   @override
-  String get backup_restore__label__encrypted_clips => 'Encrypted Clips';
+  String get backup_restore__label__encrypted_clips => 'Clipes criptografados';
 
   @override
   String get backup_restore__label__collections_restored =>
-      'Collections Restored';
+      'Coleções restauradas';
 
   @override
   String get backup_restore__label__collections_duplicates =>
-      'Collections Duplicates';
+      'Coleções duplicadas';
 
   @override
-  String get backup_restore__label__collections_failed => 'Collections Failed';
+  String get backup_restore__label__collections_failed => 'Coleções com falha';
 
   @override
-  String get backup_restore__label__clips_restored => 'Clips Restored';
+  String get backup_restore__label__clips_restored => 'Clipes restaurados';
 
   @override
-  String get backup_restore__label__clips_duplicates => 'Clips Duplicates';
+  String get backup_restore__label__clips_duplicates => 'Clipes duplicados';
 
   @override
-  String get backup_restore__label__clips_failed => 'Clips Failed';
+  String get backup_restore__label__clips_failed => 'Clipes com falha';
 
   @override
   String get backup_restore__label__attachments_restored =>
-      'Attachments Restored';
+      'Anexos restaurados';
 
   @override
-  String get backup_restore__label__attachments_missing =>
-      'Attachments Missing';
+  String get backup_restore__label__attachments_missing => 'Anexos ausentes';
 
   @override
-  String get backup_restore__label__attachments_failed => 'Attachments Failed';
+  String get backup_restore__label__attachments_failed => 'Anexos com falha';
 
   @override
-  String get backup_restore__label__corrupt_entries => 'Corrupt Entries';
+  String get backup_restore__label__corrupt_entries => 'Entradas corrompidas';
 
   @override
-  String get subscription__loading => 'Loading...';
+  String get subscription__loading => 'Carregando...';
 
   @override
-  String get review__dialog__title => 'Liking CopyCat so far?';
+  String get review__dialog__title => 'Está gostando do CopyCat até aqui?';
 
   @override
   String get review__dialog__message =>
-      'A quick rating helps more people discover CopyCat and keeps new features coming.';
+      'Uma avaliação rápida ajuda mais pessoas a descobrirem o CopyCat e incentiva a chegada de novos recursos.';
 
   @override
-  String get review__dialog__never => 'Never';
+  String get review__dialog__never => 'Nunca';
 
   @override
-  String get review__dialog__remind_later => 'Remind me in 7 days';
+  String get review__dialog__remind_later => 'Lembrar em 7 dias';
 
   @override
-  String get review__dialog__rate_now => 'Give a Quick Rating';
+  String get review__dialog__rate_now => 'Avaliar agora';
 
   @override
-  String get settings__tile__review__title => 'Rate CopyCat';
+  String get settings__tile__review__title => 'Avaliar o CopyCat';
 
   @override
   String get settings__tile__review__subtitle =>
-      'Leave a review on the App Store';
+      'Deixe uma avaliação na App Store';
 
   @override
   String get collections__read_only__banner =>
-      'Read-only on your current plan. Upgrade to edit this collection.';
+      'Somente leitura no seu plano atual. Faça upgrade para editar esta coleção.';
 
   @override
   String get collections__read_only__toast =>
-      'This collection is read-only on your current plan. Upgrade to edit all collections.';
+      'Esta coleção é somente leitura no seu plano atual. Faça upgrade para editar todas as coleções.';
 
   @override
-  String get collections__read_only__upgrade_action => 'Upgrade';
+  String get collections__read_only__upgrade_action => 'Fazer upgrade';
 
   @override
-  String get collections__locked_section__label => 'Locked';
+  String get collections__locked_section__label => 'Bloqueado';
 }
