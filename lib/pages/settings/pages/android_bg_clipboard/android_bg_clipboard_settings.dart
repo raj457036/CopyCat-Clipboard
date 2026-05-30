@@ -438,12 +438,11 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
         ),
         height5,
         ListTile(
-          title: const Text("Detection Mode"),
+          title: Text(context.locale.abc__detection_mode__title),
           subtitle: Text(
             accessibility
-                ? "Choose how CopyCat detects copy actions in other apps. "
-                      "CopyCat stays inactive until you pick a mode."
-                : "Enable accessibility service first, then choose a detection mode.",
+                ? context.locale.abc__detection_mode__subtitle__enabled
+                : context.locale.abc__detection_mode__subtitle__disabled,
             style: textTheme.bodyMedium?.copyWith(color: colors.outline),
           ),
           trailing: SettingsMenuDropdown<String>(
@@ -479,7 +478,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
           },
         ),
         height5,
-        const SettingHeader(name: 'Network'),
+        SettingHeader(name: context.locale.abc__network__header),
         LanInstantSyncSwitchTile(serviceActive: isRunning && accessibility),
       ],
     );

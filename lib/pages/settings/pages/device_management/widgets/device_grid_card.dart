@@ -1,5 +1,6 @@
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/sync/user_device_access.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/pages/settings/pages/device_management/widgets/device_status_badge.dart';
 import 'package:flutter/material.dart';
 
@@ -80,7 +81,9 @@ class DeviceGridCard extends StatelessWidget {
               ),
               const Spacer(),
               Text(
-                'Last seen: $lastSeenText',
+                context.locale.settings__device_card__last_seen(
+                  time: lastSeenText,
+                ),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: colorScheme.onSurfaceVariant,
                 ),
@@ -91,7 +94,7 @@ class DeviceGridCard extends StatelessWidget {
                   child: TextButton.icon(
                     onPressed: onRevoke,
                     icon: const Icon(Icons.link_off_rounded, size: 16),
-                    label: const Text('Revoke'),
+                    label: Text(context.locale.settings__device_card__revoke),
                     style: TextButton.styleFrom(
                       visualDensity: VisualDensity.compact,
                     ),

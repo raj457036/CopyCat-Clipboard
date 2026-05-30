@@ -4,6 +4,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/base/domain/model/sync/user_device_access.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/settings/pages/device_management/widgets/device_grid_card.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -39,18 +40,18 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Remove Sync Access'),
+          title: Text(context.locale.settings__device_mgmt__dialog_title),
           content: Text(
             'This will revoke sync access for ${device.deviceId}. You can register it again later by signing in from that device.',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(context.locale.settings__device_mgmt__dialog_cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Remove'),
+              child: Text(context.locale.settings__device_mgmt__dialog_remove),
             ),
           ],
         );
@@ -64,8 +65,9 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
       if (!mounted) return;
       InAppNotificationService.i.notify(
         NotificationMessage.builder(
-          builder: (context) =>
-              NotificationContent(body: 'Failed to remove sync access.'),
+          builder: (context) => NotificationContent(
+            body: context.locale.settings__device_mgmt__revoke_failed,
+          ),
           id: 'revoke-device-${device.deviceId}-failure',
         ),
       );
@@ -84,16 +86,19 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
     );
   }
 
-  String _formatLastSeen(DateTime value) {
+  String _formatLastSeen(BuildContext context, DateTime value) {
     final now = DateTime.now();
     final diff = now.difference(value);
 
     if (diff.inMinutes < 60) {
-      return 'Active now';
+      return context.locale.settings__device_mgmt__active_now;
     } else if (diff.inHours < 24) {
-      return 'Today at ${value.toLocal().hour.toString().padLeft(2, '0')}:${value.toLocal().minute.toString().padLeft(2, '0')}';
+      final t = value.toLocal();
+      final hh = t.hour.toString().padLeft(2, '0');
+      final mm = t.minute.toString().padLeft(2, '0');
+      return context.locale.settings__device_mgmt__today_at(time: '$hh:$mm');
     } else if (diff.inDays < 7) {
-      return '${diff.inDays}d ago';
+      return context.locale.settings__device_mgmt__days_ago(count: diff.inDays);
     } else {
       return value.toLocal().toString().split(' ')[0];
     }
@@ -104,7 +109,7 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: const Text('Manage Sync Devices'),
+        title: Text(context.locale.settings__device_mgmt__app_bar_title),
       ),
       body: ScaffoldBody(
         margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -124,11 +129,13 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text('Failed to load devices.'),
+                        Text(context.locale.settings__device_mgmt__load_failed),
                         height12,
                         FilledButton(
                           onPressed: _refresh,
-                          child: const Text('Retry'),
+                          child: Text(
+                            context.locale.settings__device_mgmt__retry,
+                          ),
                         ),
                       ],
                     ),
@@ -145,7 +152,9 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                 final devices = data.devices;
 
                 if (devices.isEmpty) {
-                  return const Center(child: Text('No sync devices found.'));
+                  return Center(
+                    child: Text(context.locale.settings__device_mgmt__empty),
+                  );
                 }
 
                 final allDevices = devices.toList(growable: false)
@@ -173,17 +182,30 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                         spacing: padding8,
                         children: [
                           Tooltip(
-                            message:
-                                "Maximum number of devices you can sync with your current plan.",
+                            message: context
+                                .locale
+                                .settings__device_mgmt__max_limit_tooltip,
                             child: Chip(
-                              label: Text("Max Limit • ${data.limit}"),
+                              label: Text(
+                                context.locale
+                                    .settings__device_mgmt__max_limit_label(
+                                      count: data.limit,
+                                    ),
+                              ),
                               color: context.colors.primaryContainer.msp,
                             ),
                           ),
                           Tooltip(
-                            message: "Number of devices currently active.",
+                            message: context
+                                .locale
+                                .settings__device_mgmt__active_count_tooltip,
                             child: Chip(
-                              label: Text("Active • ${data.activeCount}"),
+                              label: Text(
+                                context.locale
+                                    .settings__device_mgmt__active_count_label(
+                                      count: data.activeCount,
+                                    ),
+                              ),
                               color: context.colors.secondaryContainer.msp,
                             ),
                           ),
@@ -217,6 +239,7 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                                   isCurrentDevice:
                                       device.deviceId == _currentDeviceId,
                                   lastSeenText: _formatLastSeen(
+                                    context,
                                     device.lastSeenAt,
                                   ),
                                   onRevoke:

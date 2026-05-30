@@ -4,6 +4,7 @@ import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_state.dart';
 import 'package:clipboard/base/data/services/lan_sync_service.dart';
 import 'package:clipboard/base/domain/model/sync/user_device_access.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,7 +44,9 @@ class _LanMeshPageState extends State<LanMeshPage> {
       },
       builder: (context, lanInstantSync) {
         return Scaffold(
-          appBar: AppBar(title: const Text('LAN Network')),
+          appBar: AppBar(
+            title: Text(context.locale.settings__lan_mesh__app_bar_title),
+          ),
           body: Column(
             children: [
               if (!lanInstantSync) const _DisabledBanner(),
@@ -135,7 +138,7 @@ IconData _deviceIcon(String platform) {
   return Icons.devices_other_rounded;
 }
 
-String _deviceLabel(String platform) {
+String? _deviceLabel(String platform) {
   final p = platform.toLowerCase();
   if (p.contains('android')) return 'Android';
   if (p.contains('ipad')) return 'iPad';
@@ -143,7 +146,7 @@ String _deviceLabel(String platform) {
   if (p.contains('macos')) return 'Mac';
   if (p.contains('windows')) return 'Windows';
   if (p.contains('linux')) return 'Linux';
-  return 'Unknown Device';
+  return null;
 }
 
 // MARK: - Peer List
@@ -165,7 +168,8 @@ class _PeerList extends StatelessWidget {
         final peer = peers[i];
         final info = deviceMap[peer.deviceId];
         final label = info != null
-            ? _deviceLabel(info.platform)
+            ? (_deviceLabel(info.platform) ??
+                  context.locale.settings__lan_mesh__unknown_device)
             : _shortId(peer.deviceId);
         final icon = info != null
             ? _deviceIcon(info.platform)
@@ -219,7 +223,7 @@ class _ScanningEmpty extends StatelessWidget {
             ),
           ),
           Text(
-            'Searching for devices on the network…',
+            context.locale.settings__lan_mesh__searching,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),
@@ -258,7 +262,9 @@ class _ReachabilityBadge extends StatelessWidget {
             ),
           ),
           Text(
-            reachable ? 'Reachable' : 'Unreachable',
+            reachable
+                ? context.locale.settings__lan_mesh__reachable
+                : context.locale.settings__lan_mesh__unreachable,
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
@@ -284,7 +290,7 @@ class _DisabledBanner extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       color: colors.errorContainer,
       child: Text(
-        'LAN Instant Sync is disabled. Enable it from Settings to discover nearby devices.',
+        context.locale.settings__lan_mesh__disabled_banner,
         style: TextStyle(color: colors.onErrorContainer, fontSize: 13),
         textAlign: TextAlign.center,
       ),
