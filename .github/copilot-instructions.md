@@ -19,6 +19,14 @@
 - Navigation lives in [lib/routes/routes.dart](../lib/routes/routes.dart) using `go_router`, a `ShellRoute` for the main layout, and modal `DynamicPage` wrappers. New pages should be added there with the surrounding `BlocProvider` dependencies.
 - `lib/base` is layered: `domain/model/` for persisted Freezed and Isar-backed models, `domain/repositories` and `domain/sources` for interfaces, `data/` for implementations and services, and `bloc/` for cubits. Mirror that structure for new features.
 - Platform-specific behavior is intentionally wrapped in `lib/widgets` and `packages/`. Extend `EventBridge`, `WindowFocusManager`, `TrayManager`, `SystemShortcutListeners`, or the local packages before reaching for new platform channels.
+- Clip types are defined in [lib/base/enums/clip_type.dart](../lib/base/enums/clip_type.dart): `text`, `media`, `file`, `url`. Sub-type routing within `media` and `file` uses `ClipboardItem.fileMimeType`.
+- LAN sync lives entirely in [lib/base/data/services/lan_sync/](../lib/base/data/services/lan_sync/) under `LanSyncService` (`@LazySingleton`). It orchestrates mDNS discovery, an HTTP server, HMAC auth, peer registry, and send/receive flows. Do not bypass it with direct HTTP calls.
+
+## Preview And File Types
+
+- [lib/pages/preview/](../lib/pages/preview/) contains the full viewer system. `ClipPreview` is the top-level dispatcher that routes to type-specific widgets (`TextClipPreviewCard`, `URLClipPreviewCard`, `MediaClipPreviewCard`, `FileClipPreviewCard`). `MediaClipPreviewCard` further dispatches by MIME type to image/video/audio widgets.
+- To add a new file-type viewer (e.g., PDF): create a widget in `lib/pages/preview/widgets/`, match on `fileMimeType` inside the appropriate dispatcher, and keep the widget stateless where possible.
+- `ClipPreviewConfig` is an `InheritedWidget` in the same directory that carries shape and sizing config into preview subtrees — read it via `ClipPreviewConfig.of(context)` rather than passing props.
 
 ## Data, Sync, And State
 
