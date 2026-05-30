@@ -15,6 +15,8 @@ import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipbo
     as _i643;
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart'
     as _i542;
+import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart'
+    as _i242;
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart' as _i29;
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart'
     as _i620;
@@ -84,6 +86,7 @@ import 'package:clipboard/base/data/services/in_app_review_service.dart'
     as _i930;
 import 'package:clipboard/base/data/services/lan_sync/lan_sync_service.dart'
     as _i976;
+import 'package:clipboard/base/data/services/local_auth_service.dart' as _i405;
 import 'package:clipboard/base/data/services/post_sync_decryption_service.dart'
     as _i579;
 import 'package:clipboard/base/data/services/quick_paste_service.dart' as _i227;
@@ -190,6 +193,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i563.GoogleOAuth2Service>(
       () => _i563.GoogleOAuth2Service(),
     );
+    gh.lazySingleton<_i405.LocalAuthService>(() => _i405.LocalAuthService());
     gh.lazySingleton<_i707.AnalyticsRepository>(
       () => const _i202.AnalyticsRepositoryImpl(),
     );
@@ -383,6 +387,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i61.SyncRepository>(
       () => _i223.SyncRepositoryImpl(
         gh<_i782.SyncClipboardSource>(instanceName: 'remote'),
+      ),
+    );
+    gh.lazySingleton<_i242.AppLockCubit>(
+      () => _i242.AppLockCubit(
+        gh<_i542.AppConfigCubit>(),
+        gh<_i405.LocalAuthService>(),
       ),
     );
     gh.lazySingleton<_i956.SubscriptionRepository>(

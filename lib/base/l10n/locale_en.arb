@@ -690,6 +690,43 @@
   "settings__text__gdrive__info": "Your files and media are securely synced across devices via Google Drive, ensuring your privacy is protected.",
   "settings__tile__other_cloud__title": "Setup Other Cloud Drive",
   "settings__tile__other_cloud__subtitle": "Setup other cloud drives like Dropbox, OneDrive, etc.",
+  "@@APP_LOCK": "App Lock Settings",
+  "settings__app_lock__title": "App Lock",
+  "settings__app_lock__tile__subtitle": "Require biometric or device PIN to access the clipboard",
+  "settings__app_lock__no_biometrics": "No biometric or device credential found. Set up a PIN or biometric in your device settings first.",
+  "settings__app_lock__lock_after__title": "Lock after",
+  "settings__app_lock__lock_after__subtitle": "Automatically lock when the app goes to the background",
+  "settings__app_lock__timeout__immediately": "Immediately",
+  "settings__app_lock__timeout__minutes": "{count} {count, plural, one{minute} other{minutes}}",
+  "@settings__app_lock__timeout__minutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "app_lock__screen__locked": "Locked",
+  "app_lock__screen__unlock": "Unlock",
+  "@@LAN_SYNC": "LAN Sync Settings",
+  "settings__lan__title": "LAN Network",
+  "settings__lan__service_inactive": "Start the background service to use LAN sync",
+  "settings__lan__subtitle__disabled": "Sync clipboard instantly with nearby devices",
+  "settings__lan__subtitle__mobile": "Background service scanning for nearby devices",
+  "settings__lan__searching": "Searching for devices\u2026",
+  "settings__lan__devices_found": "{count} {count, plural, one{device} other{devices}} found on network",
+  "@settings__lan__devices_found": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@@AUTO_WRITE": "Auto-Write on Receive Settings",
+  "settings__auto_write__title": "Auto-Write on Receive",
+  "settings__auto_write__subtitle": "Automatically copy incoming clips to the clipboard",
+  "@@SYNC_DEVICES": "Sync Devices Management",
+  "settings__sync__manage_devices__title": "Manage Sync Devices",
+  "settings__sync__manage_devices__subtitle": "View active devices and remove devices from sync access.",
   "@@CUSTOM_EXCLUSION_RULES": "Custom Exclusion Rules Screen",
   "custom_er__nav__1": "App",
   "custom_er__nav__2": "Window Title",

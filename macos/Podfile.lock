@@ -64,6 +64,9 @@ PODS:
     - FlutterMacOS
   - isar_community_flutter_libs (1.0.0):
     - FlutterMacOS
+  - local_auth_darwin (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - media_kit_libs_macos_video (1.0.4):
     - FlutterMacOS
   - media_kit_video (0.0.1):
@@ -124,6 +127,7 @@ DEPENDENCIES:
   - in_app_review (from `Flutter/ephemeral/.symlinks/plugins/in_app_review/macos`)
   - irondash_engine_context (from `Flutter/ephemeral/.symlinks/plugins/irondash_engine_context/macos`)
   - isar_community_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/isar_community_flutter_libs/macos`)
+  - local_auth_darwin (from `Flutter/ephemeral/.symlinks/plugins/local_auth_darwin/darwin`)
   - media_kit_libs_macos_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_libs_macos_video/macos`)
   - media_kit_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_video/macos`)
   - no_screenshot (from `Flutter/ephemeral/.symlinks/plugins/no_screenshot/macos`)
@@ -185,6 +189,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/irondash_engine_context/macos
   isar_community_flutter_libs:
     :path: Flutter/ephemeral/.symlinks/plugins/isar_community_flutter_libs/macos
+  local_auth_darwin:
+    :path: Flutter/ephemeral/.symlinks/plugins/local_auth_darwin/darwin
   media_kit_libs_macos_video:
     :path: Flutter/ephemeral/.symlinks/plugins/media_kit_libs_macos_video/macos
   media_kit_video:
@@ -244,6 +250,7 @@ SPEC CHECKSUMS:
   in_app_review: 66e7680752b632d83f4f0e88b34d52ed303fbff4
   irondash_engine_context: 893c7d96d20ce361d7e996f39d360c4c2f9869ba
   isar_community_flutter_libs: a631ceb5622413b56bcd0a8bf49cb55bf3d8bb2b
+  local_auth_darwin: c3ee6cce0a8d56be34c8ccb66ba31f7f180aaebb
   media_kit_libs_macos_video: 85a23e549b5f480e72cae3e5634b5514bc692f65
   media_kit_video: fa6564e3799a0a28bff39442334817088b7ca758
   no_screenshot: 9f52bedf1830389e82d9af7122c16eee32924136

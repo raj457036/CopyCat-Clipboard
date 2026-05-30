@@ -72,7 +72,10 @@ mixin _$AppConfig {
   bool get useEncryptionNonce => throw _privateConstructorUsedError;
   bool get hideFromScreenCapture => throw _privateConstructorUsedError;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  ExclusionRules? get exclusionRules => throw _privateConstructorUsedError; // Customization
+  ExclusionRules? get exclusionRules => throw _privateConstructorUsedError; // App Lock
+  bool get enableLocalAuth => throw _privateConstructorUsedError;
+  int get localAuthTimeoutMinutes =>
+      throw _privateConstructorUsedError; // Customization
   int get themeColor => throw _privateConstructorUsedError;
   DynamicSchemeVariant get themeVariant =>
       throw _privateConstructorUsedError; // Exprimental
@@ -143,6 +146,8 @@ abstract class $AppConfigCopyWith<$Res> {
     bool hideFromScreenCapture,
     @JsonKey(includeFromJson: false, includeToJson: false)
     ExclusionRules? exclusionRules,
+    bool enableLocalAuth,
+    int localAuthTimeoutMinutes,
     int themeColor,
     DynamicSchemeVariant themeVariant,
     bool enableDragNDrop,
@@ -207,6 +212,8 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
     Object? useEncryptionNonce = null,
     Object? hideFromScreenCapture = null,
     Object? exclusionRules = freezed,
+    Object? enableLocalAuth = null,
+    Object? localAuthTimeoutMinutes = null,
     Object? themeColor = null,
     Object? themeVariant = null,
     Object? enableDragNDrop = null,
@@ -337,6 +344,14 @@ class _$AppConfigCopyWithImpl<$Res, $Val extends AppConfig>
                 ? _value.exclusionRules
                 : exclusionRules // ignore: cast_nullable_to_non_nullable
                       as ExclusionRules?,
+            enableLocalAuth: null == enableLocalAuth
+                ? _value.enableLocalAuth
+                : enableLocalAuth // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            localAuthTimeoutMinutes: null == localAuthTimeoutMinutes
+                ? _value.localAuthTimeoutMinutes
+                : localAuthTimeoutMinutes // ignore: cast_nullable_to_non_nullable
+                      as int,
             themeColor: null == themeColor
                 ? _value.themeColor
                 : themeColor // ignore: cast_nullable_to_non_nullable
@@ -456,6 +471,8 @@ abstract class _$$AppConfigImplCopyWith<$Res>
     bool hideFromScreenCapture,
     @JsonKey(includeFromJson: false, includeToJson: false)
     ExclusionRules? exclusionRules,
+    bool enableLocalAuth,
+    int localAuthTimeoutMinutes,
     int themeColor,
     DynamicSchemeVariant themeVariant,
     bool enableDragNDrop,
@@ -520,6 +537,8 @@ class __$$AppConfigImplCopyWithImpl<$Res>
     Object? useEncryptionNonce = null,
     Object? hideFromScreenCapture = null,
     Object? exclusionRules = freezed,
+    Object? enableLocalAuth = null,
+    Object? localAuthTimeoutMinutes = null,
     Object? themeColor = null,
     Object? themeVariant = null,
     Object? enableDragNDrop = null,
@@ -650,6 +669,14 @@ class __$$AppConfigImplCopyWithImpl<$Res>
             ? _value.exclusionRules
             : exclusionRules // ignore: cast_nullable_to_non_nullable
                   as ExclusionRules?,
+        enableLocalAuth: null == enableLocalAuth
+            ? _value.enableLocalAuth
+            : enableLocalAuth // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        localAuthTimeoutMinutes: null == localAuthTimeoutMinutes
+            ? _value.localAuthTimeoutMinutes
+            : localAuthTimeoutMinutes // ignore: cast_nullable_to_non_nullable
+                  as int,
         themeColor: null == themeColor
             ? _value.themeColor
             : themeColor // ignore: cast_nullable_to_non_nullable
@@ -747,6 +774,8 @@ class _$AppConfigImpl extends _AppConfig {
     this.useEncryptionNonce = false,
     this.hideFromScreenCapture = true,
     @JsonKey(includeFromJson: false, includeToJson: false) this.exclusionRules,
+    this.enableLocalAuth = false,
+    this.localAuthTimeoutMinutes = 1,
     this.themeColor = defaultThemeColor,
     this.themeVariant = DynamicSchemeVariant.tonalSpot,
     this.enableDragNDrop = false,
@@ -871,6 +900,13 @@ class _$AppConfigImpl extends _AppConfig {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   final ExclusionRules? exclusionRules;
+  // App Lock
+  @override
+  @JsonKey()
+  final bool enableLocalAuth;
+  @override
+  @JsonKey()
+  final int localAuthTimeoutMinutes;
   // Customization
   @override
   @JsonKey()
@@ -927,7 +963,7 @@ class _$AppConfigImpl extends _AppConfig {
 
   @override
   String toString() {
-    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, pasteStackHotkey: $pasteStackHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, hideFromScreenCapture: $hideFromScreenCapture, exclusionRules: $exclusionRules, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, richDataCapture: $richDataCapture, lanInstantSync: $lanInstantSync, autoWriteOnReceive: $autoWriteOnReceive, showTrayIcon: $showTrayIcon, onBoardComplete: $onBoardComplete, reviewQualifyingEventCount: $reviewQualifyingEventCount, lastReviewPromptDate: $lastReviewPromptDate, reviewNeverAsk: $reviewNeverAsk, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
+    return 'AppConfig(id: $id, themeMode: $themeMode, enableSync: $enableSync, enableFileSync: $enableFileSync, layout: $layout, view: $view, pinned: $pinned, windowWidth: $windowWidth, windowHeight: $windowHeight, sortBy: $sortBy, sortOrder: $sortOrder, dontUploadOver: $dontUploadOver, dontCopyOver: $dontCopyOver, pausedTill: $pausedTill, syncSpeed: $syncSpeed, toggleHotkey: $toggleHotkey, quickPasteHotkey: $quickPasteHotkey, pasteStackHotkey: $pasteStackHotkey, smartPaste: $smartPaste, transformAsNewClip: $transformAsNewClip, enableTypeToSearch: $enableTypeToSearch, launchAtStartup: $launchAtStartup, locale: $locale, enc2: $enc2, autoEncrypt: $autoEncrypt, useEncryptionNonce: $useEncryptionNonce, hideFromScreenCapture: $hideFromScreenCapture, exclusionRules: $exclusionRules, enableLocalAuth: $enableLocalAuth, localAuthTimeoutMinutes: $localAuthTimeoutMinutes, themeColor: $themeColor, themeVariant: $themeVariant, enableDragNDrop: $enableDragNDrop, enablePasteStack: $enablePasteStack, androidBgListener: $androidBgListener, richDataCapture: $richDataCapture, lanInstantSync: $lanInstantSync, autoWriteOnReceive: $autoWriteOnReceive, showTrayIcon: $showTrayIcon, onBoardComplete: $onBoardComplete, reviewQualifyingEventCount: $reviewQualifyingEventCount, lastReviewPromptDate: $lastReviewPromptDate, reviewNeverAsk: $reviewNeverAsk, lastFocusedWindowId: $lastFocusedWindowId, clockUnSynced: $clockUnSynced)';
   }
 
   @override
@@ -984,6 +1020,13 @@ class _$AppConfigImpl extends _AppConfig {
                 other.hideFromScreenCapture == hideFromScreenCapture) &&
             (identical(other.exclusionRules, exclusionRules) ||
                 other.exclusionRules == exclusionRules) &&
+            (identical(other.enableLocalAuth, enableLocalAuth) ||
+                other.enableLocalAuth == enableLocalAuth) &&
+            (identical(
+                  other.localAuthTimeoutMinutes,
+                  localAuthTimeoutMinutes,
+                ) ||
+                other.localAuthTimeoutMinutes == localAuthTimeoutMinutes) &&
             (identical(other.themeColor, themeColor) ||
                 other.themeColor == themeColor) &&
             (identical(other.themeVariant, themeVariant) ||
@@ -1052,6 +1095,8 @@ class _$AppConfigImpl extends _AppConfig {
     useEncryptionNonce,
     hideFromScreenCapture,
     exclusionRules,
+    enableLocalAuth,
+    localAuthTimeoutMinutes,
     themeColor,
     themeVariant,
     enableDragNDrop,
@@ -1114,6 +1159,8 @@ abstract class _AppConfig extends AppConfig {
     final bool hideFromScreenCapture,
     @JsonKey(includeFromJson: false, includeToJson: false)
     final ExclusionRules? exclusionRules,
+    final bool enableLocalAuth,
+    final int localAuthTimeoutMinutes,
     final int themeColor,
     final DynamicSchemeVariant themeVariant,
     final bool enableDragNDrop,
@@ -1211,7 +1258,11 @@ abstract class _AppConfig extends AppConfig {
   bool get hideFromScreenCapture;
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  ExclusionRules? get exclusionRules; // Customization
+  ExclusionRules? get exclusionRules; // App Lock
+  @override
+  bool get enableLocalAuth;
+  @override
+  int get localAuthTimeoutMinutes; // Customization
   @override
   int get themeColor;
   @override

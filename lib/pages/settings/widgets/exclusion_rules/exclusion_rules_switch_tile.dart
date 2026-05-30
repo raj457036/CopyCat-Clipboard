@@ -44,6 +44,7 @@ class ExclusionRulesSwitchTile extends StatelessWidget {
           children: [
             Expanded(
               child: ListTile(
+                leading: const Icon(Icons.rule_rounded),
                 title: Row(
                   spacing: 4,
                   mainAxisSize: MainAxisSize.min,

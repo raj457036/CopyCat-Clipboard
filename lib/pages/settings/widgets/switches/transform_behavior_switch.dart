@@ -23,6 +23,7 @@ class TransformBehaviorSwitch extends StatelessWidget {
       },
       builder: (context, enabled) {
         return SwitchListTile(
+          secondary: const Icon(Icons.transform_rounded),
           value: enabled,
           onChanged: context.read<AppConfigCubit>().toggleTransformAsNewClip,
           title: Text(

@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
@@ -43,6 +44,7 @@ class _StateInitializerState extends State<StateInitializer>
 
   late final AppConfigCubit appConfigCubit;
   late final AuthCubit authCubit;
+  late final AppLockCubit appLockCubit;
   late final MonetizationCubit monetizationCubit;
   late final SyncStatusCubit syncStatusCubit;
   late final SyncOrchestrator syncOrchestrator;
@@ -82,6 +84,7 @@ class _StateInitializerState extends State<StateInitializer>
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     appConfigCubit = context.read<AppConfigCubit>();
     authCubit = context.read<AuthCubit>();
+    appLockCubit = context.read<AppLockCubit>();
     monetizationCubit = context.read<MonetizationCubit>();
     syncStatusCubit = context.read<SyncStatusCubit>();
     syncOrchestrator = sl<SyncOrchestrator>();
@@ -121,11 +124,13 @@ class _StateInitializerState extends State<StateInitializer>
         disableRendering(false);
         _isAppLifecycleBackgrounded = false;
         if (state == AppLifecycleState.resumed) {
+          appLockCubit.onAppForeground();
           unawaited(_runResumeSyncCatchUp());
         }
       case _:
         powerSaverDebounce(() => disableRendering(true));
         _isAppLifecycleBackgrounded = true;
+        appLockCubit.onAppBackground();
     }
     _syncClipboardBackgroundState();
   }

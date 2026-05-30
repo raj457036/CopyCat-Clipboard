@@ -13,18 +13,15 @@ class ExperimentalSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 650),
-      child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: padding12),
-        children: [
-          const DragAndDropSwitchTile(),
-          if (isDesktopPlatform) const RichDataCaptureSwitchTile(),
-          if (Platform.isAndroid) const AndroidClipboardSettingListTile(),
-          if (isDesktopPlatform) const LanInstantSyncSwitchTile(),
-          if (isDesktopPlatform) const AutoWriteOnReceiveSwitchTile(),
-        ],
-      ),
+    return ListView(
+      padding: const EdgeInsets.all(padding12),
+      children: [
+        const DragAndDropSwitchTile(),
+        if (isDesktopPlatform) const RichDataCaptureSwitchTile(),
+        if (Platform.isAndroid) const AndroidClipboardSettingListTile(),
+        if (isDesktopPlatform) const LanInstantSyncSwitchTile(),
+        if (isDesktopPlatform) const AutoWriteOnReceiveSwitchTile(),
+      ],
     );
   }
 }

@@ -22,9 +22,11 @@ class QuickPasteHotKeySwitch extends StatelessWidget {
       },
       builder: (context, state) {
         return SwitchListTile(
+          secondary: const Icon(Icons.flash_on_rounded),
           title: Text(
             context.locale.settings__switch__quickpaste_hotkey__title,
           ),
+          isThreeLine: true,
           subtitle: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +48,12 @@ class QuickPasteHotKeySwitch extends StatelessWidget {
                     text: context.locale.settings__hotkey__preview_start,
                     children: [
                       WidgetSpan(
-                        child: HotKeyVirtualView(hotKey: state),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: padding4,
+                          ),
+                          child: HotKeyVirtualView(hotKey: state),
+                        ),
                         alignment: PlaceholderAlignment.middle,
                       ),
                       TextSpan(

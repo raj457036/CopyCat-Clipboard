@@ -59,6 +59,10 @@ class IsarAppConfig {
   bool lanInstantSync = false;
   bool autoWriteOnReceive = false;
 
+  // App Lock
+  bool enableLocalAuth = false;
+  int localAuthTimeoutMinutes = 1;
+
   static int _sanitizeCounter(int value) => value < 0 ? 0 : value;
 
   AppConfig toDomain() => AppConfig(
@@ -100,6 +104,8 @@ class IsarAppConfig {
     reviewNeverAsk: reviewNeverAsk,
     lanInstantSync: lanInstantSync,
     autoWriteOnReceive: autoWriteOnReceive,
+    enableLocalAuth: enableLocalAuth,
+    localAuthTimeoutMinutes: localAuthTimeoutMinutes,
   );
 
   static IsarAppConfig fromDomain(AppConfig config) => IsarAppConfig()
@@ -144,5 +150,7 @@ class IsarAppConfig {
     ..lastReviewPromptDate = config.lastReviewPromptDate
     ..reviewNeverAsk = config.reviewNeverAsk
     ..lanInstantSync = config.lanInstantSync
-    ..autoWriteOnReceive = config.autoWriteOnReceive;
+    ..autoWriteOnReceive = config.autoWriteOnReceive
+    ..enableLocalAuth = config.enableLocalAuth
+    ..localAuthTimeoutMinutes = config.localAuthTimeoutMinutes;
 }

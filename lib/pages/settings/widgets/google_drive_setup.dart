@@ -61,81 +61,63 @@ class GoogleDriveSetup extends StatelessWidget {
             hasError = true;
         }
         return Card(
-          elevation: 0.5,
-          margin: const EdgeInsets.symmetric(horizontal: padding16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: padding16,
-                  right: padding16,
-                  top: padding16,
-                ),
-                child: Text(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(padding12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
                   context.locale.settings__text__cloud__title,
                   style: textTheme.titleMedium?.copyWith(
                     fontVariations: fontVarW700,
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: padding16,
-                  vertical: padding8,
-                ),
-                child: Text(
+                Text(
                   "${hasError ? "${context.locale.settings__text__gdrive__error}\n\n" : ''}${context.locale.settings__text__gdrive__info}",
                 ),
-              ),
-              ListTile(
-                tileColor: colors.secondaryContainer,
-                minLeadingWidth: 20,
-                title: Text(
-                  context.locale.settings__text__cloud__name,
-                  style: textTheme.titleMedium?.copyWith(
-                    fontVariations: fontVarW700,
+                height12,
+                ListTile(
+                  tileColor: colors.secondaryContainer,
+                  title: Text(
+                    context.locale.settings__text__cloud__name,
+                    style: textTheme.titleMedium,
                   ),
-                ),
-                // subtitle: const Text(
-                //   "🔗 linked email...",
-                // ),
-                trailing: FilledButton.icon(
-                  style: FilledButton.styleFrom(
-                    fixedSize: const Size(185, 40),
-                    textStyle: textTheme.labelLarge?.copyWith(
-                      fontVariations: fontVarW700,
+                  contentPadding: const EdgeInsets.all(padding12),
+                  trailing: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: const Size(185, 40),
+                    ),
+                    onPressed: buttonDisabled
+                        ? null
+                        : () => connectGDrive(
+                            context,
+                            alreadyConnected: alreadyConnected,
+                          ),
+                    label: Text(text),
+                    icon: const Image(
+                      image: AssetImage(AssetConstants.googleDriveLogo),
+                      height: 22,
                     ),
                   ),
-                  onPressed: buttonDisabled
-                      ? null
-                      : () => connectGDrive(
-                          context,
-                          alreadyConnected: alreadyConnected,
-                        ),
-                  label: Text(text),
-                  icon: const Image(
-                    image: AssetImage(AssetConstants.googleDriveLogo),
-                    height: 22,
-                  ),
                 ),
-              ),
-              // ListTile(
-              //   contentPadding: const EdgeInsets.symmetric(
-              //     horizontal: padding16,
-              //   ),
-              //   title: Text(
-              //     context.locale.settings__tile__other_cloud__title,
-              //   ),
-              //   subtitle: Text(
-              //     context.locale.settings__tile__other_cloud__subtitle,
-              //   ),
-              //   trailing: const Icon(Icons.chevron_right),
-              //   onTap: () => {},
-              // ),
-              height12,
-            ],
+                // height12,
+                // ListTile(
+                //   contentPadding: const EdgeInsets.symmetric(
+                //     horizontal: padding16,
+                //   ),
+                //   title: Text(
+                //     context.locale.settings__tile__other_cloud__title,
+                //   ),
+                //   subtitle: Text(
+                //     context.locale.settings__tile__other_cloud__subtitle,
+                //   ),
+                //   trailing: const Icon(Icons.chevron_right),
+                //   onTap: () => {},
+                // ),
+              ],
+            ),
           ),
         );
       },

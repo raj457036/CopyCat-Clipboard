@@ -1684,6 +1684,88 @@ class AppLocalizationsEs extends AppLocalizations {
       'Configura otras unidades en la nube como Dropbox, OneDrive, etc.';
 
   @override
+  String get settings__app_lock__title => 'Bloqueo de App';
+
+  @override
+  String get settings__app_lock__tile__subtitle =>
+      'Requiere biometría o PIN del dispositivo para acceder al portapapeles';
+
+  @override
+  String get settings__app_lock__no_biometrics =>
+      'No se encontró biometría ni credencial del dispositivo. Configure primero un PIN o biometría en los ajustes de su dispositivo.';
+
+  @override
+  String get settings__app_lock__lock_after__title => 'Bloquear después de';
+
+  @override
+  String get settings__app_lock__lock_after__subtitle =>
+      'Bloquear automáticamente cuando la app pase al fondo';
+
+  @override
+  String get settings__app_lock__timeout__immediately => 'Inmediatamente';
+
+  @override
+  String settings__app_lock__timeout__minutes({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'minutos',
+      one: 'minuto',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String get app_lock__screen__locked => 'Bloqueado';
+
+  @override
+  String get app_lock__screen__unlock => 'Desbloquear';
+
+  @override
+  String get settings__lan__title => 'Red Local';
+
+  @override
+  String get settings__lan__service_inactive =>
+      'Inicia el servicio en segundo plano para usar la sincronización LAN';
+
+  @override
+  String get settings__lan__subtitle__disabled =>
+      'Sincroniza el portapapeles instantáneamente con dispositivos cercanos';
+
+  @override
+  String get settings__lan__subtitle__mobile =>
+      'Servicio en segundo plano buscando dispositivos cercanos';
+
+  @override
+  String get settings__lan__searching => 'Buscando dispositivos…';
+
+  @override
+  String settings__lan__devices_found({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'dispositivos encontrados',
+      one: 'dispositivo encontrado',
+    );
+    return '$count $_temp0 en la red';
+  }
+
+  @override
+  String get settings__auto_write__title => 'Escritura automática al recibir';
+
+  @override
+  String get settings__auto_write__subtitle =>
+      'Copiar automáticamente los clips entrantes al portapapeles';
+
+  @override
+  String get settings__sync__manage_devices__title =>
+      'Administrar dispositivos de sincronización';
+
+  @override
+  String get settings__sync__manage_devices__subtitle =>
+      'Ver dispositivos activos y eliminar dispositivos del acceso de sincronización.';
+
+  @override
   String get custom_er__nav__1 => 'Aplicación';
 
   @override

@@ -1,4 +1,5 @@
 import 'package:clipboard/base/constants/strings/strings.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -25,15 +26,18 @@ class DownloadDesktopClientTile extends StatelessWidget {
       icon = Icons.phone_android_sharp;
     }
 
-    return ListTile(
-      title: Text(title),
-      subtitle: Text(context.locale.settings__tile__client__subtitle),
-      leading: Icon(icon),
-      trailing: const Icon(Icons.open_in_new),
-      tileColor: colors.primary,
-      textColor: colors.onPrimary,
-      iconColor: colors.onPrimary,
-      onTap: openDownloadPage,
+    return Material(
+      type: MaterialType.transparency,
+      child: ListTile(
+        title: Text(title),
+        subtitle: Text(context.locale.settings__tile__client__subtitle),
+        leading: Icon(icon),
+        trailing: const Icon(Icons.open_in_new),
+        tileColor: colors.primary,
+        textColor: colors.onPrimary,
+        iconColor: colors.onPrimary,
+        onTap: openDownloadPage,
+      ),
     );
   }
 }

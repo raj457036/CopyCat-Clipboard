@@ -22,6 +22,7 @@ class DefaultSortByDropdownTile extends StatelessWidget {
     final locale = context.locale;
 
     return ListTile(
+      leading: const Icon(Icons.sort_by_alpha_rounded),
       title: Text(locale.settings__dropdown__default_sort__title),
       trailing: BlocSelector<AppConfigCubit, AppConfigState, ClipboardSortKey>(
         selector: (state) => state.config.sortBy,

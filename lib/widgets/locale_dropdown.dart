@@ -8,6 +8,7 @@ class LocaleDropdownTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      leading: const Icon(Icons.language_rounded),
       title: Text(context.locale.app__language),
       trailing: const LocaleDropdownButton(),
     );

@@ -1,7 +1,9 @@
 import 'package:bloc/bloc.dart';
+import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -194,10 +196,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     if (Platform.isMacOS) await windowManager.setMovable(true);
     if (Platform.isWindows) await windowManager.undock();
     await windowManager.setAlwaysOnTop(true);
-    await windowManager.setTitleBarStyle(
-      TitleBarStyle.hidden,
-      windowButtonVisibility: false,
-    );
+    await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
     await Future.wait([
       windowManager.setSize(size ?? initialWindowSize, animate: false),
       if (position == null)
@@ -226,8 +225,15 @@ class WindowActionCubit extends Cubit<WindowActionState> {
 
   Future<void> show() async {
     if (isMobilePlatform) return;
+    // Pre-lock before the window becomes visible so the user never sees a
+    // flash of app content. If a lock is needed the state transitions to
+    // AppLockAuthenticating; we wait one frame for it to paint, then show.
+    final lockCubit = sl<AppLockCubit>();
+    lockCubit.onAppForeground();
+    if (lockCubit.state is! AppLockUnlocked) {
+      await WidgetsBinding.instance.endOfFrame;
+    }
     await windowManager.show();
-    // await windowManager.focus();
     isFocused = true;
     requestFocus();
   }

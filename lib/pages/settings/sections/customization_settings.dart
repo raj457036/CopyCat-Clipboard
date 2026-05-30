@@ -20,32 +20,28 @@ class CustomizationSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.locale;
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 650),
-      child: ListView(
-        padding: const EdgeInsets.symmetric(
-          vertical: padding12,
-          // horizontal: padding16,
-        ),
-        children: [
-          SettingHeader(name: locale.settings__header__appearance),
-          const ThemeDropdownTile(),
-          const ColorPickerTile(),
-          const ThemeVariantDropdown(),
-          height24,
-          SettingHeader(name: locale.settings__header__sorting),
-          const DefaultSortByDropdownTile(),
-          const DefaultSortOrderTile(),
-          height24,
-          SettingHeader(name: locale.settings__header__interactions),
-          const SmartPasteSwitch(),
-          const TransformBehaviorSwitch(),
-          const TypeToSearchSwitch(),
-          const ClipboardHotKeySwitch(),
-          const PasteStackHotKeySwitch(),
-          const QuickPasteHotKeySwitch(),
-        ],
-      ),
+    return ListView(
+      padding: const EdgeInsets.all(padding12),
+      children: [
+        SettingHeader(name: locale.settings__header__appearance),
+        const ThemeDropdownTile(),
+        const ColorPickerTile(),
+        const ThemeVariantDropdown(),
+        height24,
+        SettingHeader(name: locale.settings__header__sorting),
+        const DefaultSortByDropdownTile(),
+        const DefaultSortOrderTile(),
+        height24,
+        SettingHeader(name: locale.settings__header__interactions),
+        const SmartPasteSwitch(),
+        const TransformBehaviorSwitch(),
+        const TypeToSearchSwitch(),
+        height24,
+        const SettingHeader(name: "Keyboard Shortcuts"),
+        const ClipboardHotKeySwitch(),
+        const PasteStackHotKeySwitch(),
+        const QuickPasteHotKeySwitch(),
+      ],
     );
   }
 }

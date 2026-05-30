@@ -7,8 +7,8 @@ import 'package:clipboard/widgets/dialogs/e2ee_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class E2EESettings extends StatelessWidget {
-  const E2EESettings({super.key});
+class E2EESetupListTile extends StatelessWidget {
+  const E2EESetupListTile({super.key});
 
   void toggleAutoEncrypt(BuildContext context, bool value) {
     context.read<AppConfigCubit>().toggleAutoEncrypt(value);
@@ -44,6 +44,7 @@ class E2EESettings extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ListTile(
+              leading: const Icon(Icons.key),
               title: Text(context.locale.settings__tile__e2e_setup__title),
               subtitle: Text(
                 context.locale.settings__tile__e2e_setup__subtitle,
@@ -56,6 +57,7 @@ class E2EESettings extends StatelessWidget {
               onTap: () => const E2EESettingDialog().show(context),
             ),
             SwitchListTile(
+              secondary: const Icon(Icons.lock_outline_rounded),
               value: autoEncrypt,
               onChanged: setup
                   ? (value) => toggleAutoEncrypt(context, value)
@@ -67,6 +69,7 @@ class E2EESettings extends StatelessWidget {
               ),
             ),
             SwitchListTile(
+              secondary: const Icon(Icons.shield_rounded),
               value: useNonce,
               onChanged: setup
                   ? (value) => toggleUseEncryptionNonce(context, value)
