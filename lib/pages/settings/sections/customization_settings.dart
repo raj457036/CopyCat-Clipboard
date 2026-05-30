@@ -12,6 +12,7 @@ import 'package:clipboard/pages/settings/widgets/switches/transform_behavior_swi
 import 'package:clipboard/pages/settings/widgets/switches/type_to_search_switch.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
 class CustomizationSettings extends StatelessWidget {
@@ -20,8 +21,11 @@ class CustomizationSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.locale;
+    final dense = context.isMobile;
     return ListView(
-      padding: const EdgeInsets.all(padding12),
+      padding: dense
+          ? const EdgeInsets.symmetric(vertical: padding12)
+          : const EdgeInsets.all(padding12),
       children: [
         SettingHeader(name: locale.settings__header__appearance),
         const ThemeDropdownTile(),

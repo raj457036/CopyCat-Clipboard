@@ -20,6 +20,7 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final dense = context.isMobile;
     return DefaultTabController(
       length: 5,
       initialIndex: 0,
@@ -39,6 +40,7 @@ class SettingsPage extends StatelessWidget {
           ],
         ),
         body: ScaffoldBody(
+          enabled: !dense,
           margin: const EdgeInsets.only(right: padding12),
           child: Column(
             children: [
@@ -69,12 +71,15 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ],
               ),
-              const Expanded(
+              Expanded(
                 child: ListTileTheme(
                   data: ListTileThemeData(
-                    shape: RoundedRectangleBorder(borderRadius: radius12),
+                    shape: dense
+                        ? const RoundedRectangleBorder()
+                        : const RoundedRectangleBorder(borderRadius: radius12),
+                    dense: dense,
                   ),
-                  child: SizedBox(
+                  child: const SizedBox(
                     width: 800,
                     child: TabBarView(
                       children: [

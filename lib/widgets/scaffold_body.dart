@@ -11,16 +11,20 @@ class ScaffoldBody extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final BorderRadius? borderRadius;
   final Color? background;
+  final bool enabled;
+
   const ScaffoldBody({
     super.key,
     required this.child,
     this.margin,
     this.background,
     this.borderRadius,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (!enabled) return child;
     final width = context.mq.size.width;
     final isMobile = Breakpoints.isMobile(width);
     BorderRadius borderRadius_ = const BorderRadius.vertical(

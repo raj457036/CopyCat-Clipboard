@@ -8,6 +8,7 @@ import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/locale_dropdown.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
@@ -27,8 +28,11 @@ class GeneralSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.locale;
+    final dense = context.isMobile;
     return ListView(
-      padding: const EdgeInsets.all(padding12),
+      padding: dense
+          ? const EdgeInsets.symmetric(vertical: padding12)
+          : const EdgeInsets.all(padding12),
       children: [
         const DownloadDesktopClientTile(),
         height16,

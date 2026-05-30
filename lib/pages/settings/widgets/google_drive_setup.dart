@@ -33,6 +33,7 @@ class GoogleDriveSetup extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
     final colors = context.colors;
+    final dense = context.isMobile;
     return BlocBuilder<DriveSetupCubit, DriveSetupState>(
       builder: (context, state) {
         String text = context.locale.settings__drive__connected;
@@ -61,7 +62,7 @@ class GoogleDriveSetup extends StatelessWidget {
             hasError = true;
         }
         return Card(
-          margin: EdgeInsets.zero,
+          margin: dense ? const EdgeInsets.all(padding12) : EdgeInsets.zero,
           child: Padding(
             padding: const EdgeInsets.all(padding12),
             child: Column(
@@ -84,6 +85,7 @@ class GoogleDriveSetup extends StatelessWidget {
                     context.locale.settings__text__cloud__name,
                     style: textTheme.titleMedium,
                   ),
+                  shape: const RoundedRectangleBorder(borderRadius: radius8),
                   contentPadding: const EdgeInsets.all(padding12),
                   trailing: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
