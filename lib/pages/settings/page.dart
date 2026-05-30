@@ -77,7 +77,7 @@ class SettingsPage extends StatelessWidget {
                     shape: dense
                         ? const RoundedRectangleBorder()
                         : const RoundedRectangleBorder(borderRadius: radius12),
-                    dense: dense,
+                    // dense: dense,
                   ),
                   child: const SizedBox(
                     width: 800,

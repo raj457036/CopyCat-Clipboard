@@ -45,9 +45,9 @@ class CopycatAboutTile extends StatelessWidget {
     return AboutListTile(
       icon: const Icon(Icons.new_releases_rounded),
       applicationName: context.locale.app__name,
-      applicationIcon: const Image(
-        image: AssetImage(AssetConstants.copyCatIcon),
-        width: 60,
+      applicationIcon: const ClipRRect(
+        borderRadius: radius16,
+        child: Image(image: AssetImage(AssetConstants.copyCatIcon), width: 85),
       ),
       applicationVersion: "$version+$build",
       aboutBoxChildren: [
