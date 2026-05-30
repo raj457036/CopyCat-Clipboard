@@ -2,6 +2,7 @@ import 'package:clipboard/pages/settings/widgets/dropdowns/sync_mode_dropdown.da
 import 'package:clipboard/pages/settings/widgets/switches/enable_sync_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/file_sync_switch.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
@@ -13,8 +14,11 @@ class SyncingSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dense = context.isMobile;
     return ListView(
-      padding: const EdgeInsets.all(padding12),
+      padding: dense
+          ? const EdgeInsets.symmetric(vertical: padding12)
+          : const EdgeInsets.all(padding12),
       children: [
         DisableForLocalUser(
           ifLocal: ListTile(
