@@ -42,33 +42,10 @@ class CollectionsGrid extends StatelessWidget {
                   return const Center(child: NoCollectionAvailable());
                 }
 
-                final filtered = searchQuery.isEmpty
-                    ? collections
-                    : collections.where((c) {
-                        return c.title.toLowerCase().contains(searchQuery) ||
-                            (c.description?.toLowerCase().contains(
-                                  searchQuery,
-                                ) ??
-                                false);
-                      }).toList();
-
-                if (filtered.isEmpty && searchQuery.isNotEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.search_off, size: 48),
-                        const SizedBox(height: 16),
-                        Text(context.locale.app__no_results),
-                      ],
-                    ),
-                  );
-                }
-
                 return GridView.builder(
                   scrollCacheExtent: const ScrollCacheExtent.pixels(300),
                   padding: isMobile ? const EdgeInsets.all(padding10) : inset12,
-                  itemCount: filtered.length,
+                  itemCount: collections.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: crossAxisCount,
                     childAspectRatio: 16 / 7,
@@ -77,7 +54,7 @@ class CollectionsGrid extends StatelessWidget {
                     crossAxisSpacing: 10,
                   ),
                   itemBuilder: (context, index) {
-                    final collection = filtered[index];
+                    final collection = collections[index];
                     final originalIdx = collections.indexWhere(
                       (c) => c.id == collection.id,
                     );

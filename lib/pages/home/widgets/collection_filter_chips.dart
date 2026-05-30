@@ -38,6 +38,10 @@ class CollectionFilterChips extends StatelessWidget {
                 final limit =
                     subscription?.collections ?? defaultCollectionCount;
                 final canCreate = limit > collections.length;
+                final dense = context.isMobile;
+                final itemLength = dense
+                    ? collections.length + 1
+                    : collections.length;
 
                 return SizedBox(
                   height: 64,
@@ -56,21 +60,29 @@ class CollectionFilterChips extends StatelessWidget {
                       child: Row(
                         spacing: padding4,
                         children: [
-                          _CreateCollectionChip(canCreate: canCreate),
-                          const VerticalDivider(
-                            indent: padding14,
-                            endIndent: padding14,
-                          ),
+                          if (!dense)
+                            _CreateCollectionChip(canCreate: canCreate),
+                          if (!dense)
+                            const VerticalDivider(
+                              indent: padding14,
+                              endIndent: padding14,
+                            ),
                           Expanded(
                             child: ListView.separated(
                               scrollDirection: Axis.horizontal,
                               padding: const EdgeInsets.symmetric(
                                 vertical: padding8,
                               ),
-                              itemCount: collections.length,
+                              itemCount: itemLength,
                               separatorBuilder: (_, _) => width8,
                               itemBuilder: (context, index) {
-                                final collection = collections[index];
+                                if (dense && index == 0) {
+                                  return _CreateCollectionChip(
+                                    canCreate: canCreate,
+                                  );
+                                }
+                                final i = dense ? index - 1 : index;
+                                final collection = collections[i];
                                 final isReadOnly = loaded.isReadOnly(
                                   collection,
                                 );
@@ -123,7 +135,7 @@ class _CreateCollectionChip extends StatelessWidget {
         color: canCreate ? context.colors.onPrimary.msp : null,
         backgroundColor: canCreate ? context.colors.primary : null,
         shape: const StadiumBorder(),
-        label: const Text("Create"),
+        label: Text(context.locale.app__create),
         onPressed: () => _onCreate(context),
         mouseCursor: SystemMouseCursors.click,
       ),
