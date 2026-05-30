@@ -22,6 +22,7 @@ class ThemeVariantDropdown extends StatelessWidget {
           subscription.isActive && subscription.theming,
       builder: (context, hasAccess, _) {
         return ListTile(
+          leading: const Icon(Icons.lens_blur_rounded),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [

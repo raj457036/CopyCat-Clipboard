@@ -95,6 +95,7 @@ class ColorPickerTile extends StatelessWidget {
           subscription.isActive && subscription.theming,
       builder: (context, hasAccess, _) {
         return ListTile(
+          leading: const Icon(Icons.color_lens_rounded),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -115,10 +116,9 @@ class ColorPickerTile extends StatelessWidget {
               final color = Color(
                 themeColor.isNegative ? defaultThemeColor : themeColor,
               );
-              return ElevatedButton.icon(
+              return ElevatedButton(
                 onPressed: hasAccess ? () => chooseColor(context, color) : null,
-                label: Text(context.locale.app__change),
-                icon: const Icon(Icons.color_lens_rounded),
+                child: Text(context.locale.app__change),
               );
             },
           ),

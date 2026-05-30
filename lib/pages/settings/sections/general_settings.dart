@@ -27,46 +27,43 @@ class GeneralSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final locale = context.locale;
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 650),
-      child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: padding12),
-        children: [
-          const DownloadDesktopClientTile(),
-          height16,
-          const LocaleDropdownTile(),
-          height10,
-          if (!Platform.isIOS) const DontAutoCopyOverDropdown(),
-          if (isDesktopPlatform) const PauseTillSwitch(),
-          if (isDesktopPlatform) const StartUpLaunchSwitch(),
-          if (isDesktopPlatform) const TrayIconSwitch(),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.backup_rounded),
-            title: Text(locale.settings__tile__backup_restore__title),
-            subtitle: Text(locale.settings__tile__backup_restore__subtitle),
-            trailing: const Icon(Icons.arrow_forward_ios_rounded),
-            onTap: () => context.goNamed(RouteConstants.backupRestore),
-          ),
-          height10,
-          BlocBuilder<AppConfigCubit, AppConfigState>(
-            buildWhen: (prev, curr) =>
-                prev.config.reviewNeverAsk != curr.config.reviewNeverAsk,
-            builder: (context, state) {
-              if (state.config.reviewNeverAsk) return const SizedBox.shrink();
-              return ListTile(
-                leading: const Icon(Icons.star_rounded),
-                title: Text(locale.settings__tile__review__title),
-                subtitle: Text(locale.settings__tile__review__subtitle),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                onTap: () => _onRateTap(context),
-              );
-            },
-          ),
-          height10,
-          const CopycatAboutTile(),
-        ],
-      ),
+    return ListView(
+      padding: const EdgeInsets.all(padding12),
+      children: [
+        const DownloadDesktopClientTile(),
+        height16,
+        const LocaleDropdownTile(),
+        height10,
+        if (!Platform.isIOS) const DontAutoCopyOverDropdown(),
+        if (isDesktopPlatform) const PauseTillSwitch(),
+        if (isDesktopPlatform) const StartUpLaunchSwitch(),
+        if (isDesktopPlatform) const TrayIconSwitch(),
+        const Divider(),
+        ListTile(
+          leading: const Icon(Icons.backup_rounded),
+          title: Text(locale.settings__tile__backup_restore__title),
+          subtitle: Text(locale.settings__tile__backup_restore__subtitle),
+          trailing: const Icon(Icons.arrow_forward_ios_rounded),
+          onTap: () => context.goNamed(RouteConstants.backupRestore),
+        ),
+        height10,
+        BlocBuilder<AppConfigCubit, AppConfigState>(
+          buildWhen: (prev, curr) =>
+              prev.config.reviewNeverAsk != curr.config.reviewNeverAsk,
+          builder: (context, state) {
+            if (state.config.reviewNeverAsk) return const SizedBox.shrink();
+            return ListTile(
+              leading: const Icon(Icons.star_rounded),
+              title: Text(locale.settings__tile__review__title),
+              subtitle: Text(locale.settings__tile__review__subtitle),
+              trailing: const Icon(Icons.arrow_forward_ios_rounded),
+              onTap: () => _onRateTap(context),
+            );
+          },
+        ),
+        height10,
+        const CopycatAboutTile(),
+      ],
     );
   }
 }

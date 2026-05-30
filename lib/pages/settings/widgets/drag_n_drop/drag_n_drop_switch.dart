@@ -34,6 +34,7 @@ class DragAndDropSwitchTile extends StatelessWidget {
               subscription.isActive && subscription.dragNdrop && isDNDSupported,
           builder: (context, hasAccess, _) {
             return SwitchListTile(
+              secondary: const Icon(Icons.back_hand_rounded),
               value: enabled,
               onChanged: hasAccess
                   ? context.read<AppConfigCubit>().toggleDragNDrop

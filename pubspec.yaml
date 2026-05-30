@@ -67,6 +67,7 @@ dependencies:
   screen_retriever: ^0.2.0
   no_screenshot: ^1.1.0
   flutter_secure_storage: ^9.2.4
+  local_auth: ^3.0.1
   flutter_svg_provider:
     git:
       url: https://github.com/raj457036/flutter_svg_provider.git
@@ -153,10 +154,15 @@ flutter:
 flutter_launcher_icons:
   image_path: "./resources/icon_2026_flat.png"
   android: true
+  adaptive_icon_background: "#262141"
+  adaptive_icon_foreground: "./resources/icon_2026_adaptive_fg.png"
   min_sdk_android: 24
 
-  ios: "./resources/icon_2026_rounded.png"
+  ios: "./resources/icon_2026_ios.png"
+  image_path_ios_dark_transparent: "./resources/icon_2026_rounded.png"
   remove_alpha_ios: true
+  desaturate_tinted_to_grayscale_ios: true
+  background_color_ios: "#262141"
 
   windows:
     generate: true

@@ -6,8 +6,6 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/pages/settings/widgets/exclusion_rules/exclude_custom_rules.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
 import 'package:clipboard/utils/utility.dart';
-import 'package:clipboard/widgets/layout/custom_scaffold.dart';
-import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universal_io/io.dart';
@@ -35,8 +33,7 @@ class ExclusionRulesPage extends StatelessWidget {
       },
       builder: (context, state) {
         final enable = state.enable;
-        return CustomScaffold(
-          activeIndex: 2,
+        return Scaffold(
           appBar: AppBar(
             // automaticallyImplyLeading: true,
             centerTitle: false,
@@ -51,85 +48,83 @@ class ExclusionRulesPage extends StatelessWidget {
               width16,
             ],
           ),
-          body: ScaffoldBody(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 650),
-                child: ListView(
-                  children: [
-                    ExcludeCustomRules(enabled: enable),
-                    const Divider(),
-                    height8,
-                    SettingHeader(
-                      name: context.locale.settings__text__er__predefine,
+          body: Align(
+            alignment: Alignment.topCenter,
+            child: SizedBox(
+              width: 800,
+              child: ListView(
+                children: [
+                  ExcludeCustomRules(enabled: enable),
+                  const Divider(),
+                  height8,
+                  SettingHeader(
+                    name: context.locale.settings__text__er__predefine,
+                  ),
+                  SwitchListTile(
+                    title: Text(
+                      context.locale.settings__text__er__pass_manager,
                     ),
+                    value: state.passwordManager,
+                    onChanged: enable
+                        ? (value) {
+                            updateExclusionRules(
+                              context,
+                              state.copyWith(passwordManager: value),
+                            );
+                          }
+                        : null,
+                  ),
+                  if (isDesktopPlatform)
                     SwitchListTile(
-                      title: Text(
-                        context.locale.settings__text__er__pass_manager,
-                      ),
-                      value: state.passwordManager,
+                      title: Text(context.locale.settings__text__er__cc),
+                      value: state.creditCard,
                       onChanged: enable
                           ? (value) {
                               updateExclusionRules(
                                 context,
-                                state.copyWith(passwordManager: value),
+                                state.copyWith(creditCard: value),
                               );
                             }
                           : null,
                     ),
-                    if (isDesktopPlatform)
-                      SwitchListTile(
-                        title: Text(context.locale.settings__text__er__cc),
-                        value: state.creditCard,
-                        onChanged: enable
-                            ? (value) {
-                                updateExclusionRules(
-                                  context,
-                                  state.copyWith(creditCard: value),
-                                );
-                              }
-                            : null,
-                      ),
+                  SwitchListTile(
+                    title: Text(context.locale.settings__text__er__phone),
+                    value: state.phone,
+                    onChanged: enable
+                        ? (value) {
+                            updateExclusionRules(
+                              context,
+                              state.copyWith(phone: value),
+                            );
+                          }
+                        : null,
+                  ),
+                  SwitchListTile(
+                    title: Text(context.locale.settings__text__er__email),
+                    value: state.email,
+                    onChanged: enable
+                        ? (value) {
+                            updateExclusionRules(
+                              context,
+                              state.copyWith(email: value),
+                            );
+                          }
+                        : null,
+                  ),
+                  if (Platform.isMacOS)
                     SwitchListTile(
-                      title: Text(context.locale.settings__text__er__phone),
-                      value: state.phone,
+                      title: Text(context.locale.settings__text__er__url),
+                      value: state.sensitiveUrls,
                       onChanged: enable
                           ? (value) {
                               updateExclusionRules(
                                 context,
-                                state.copyWith(phone: value),
+                                state.copyWith(sensitiveUrls: value),
                               );
                             }
                           : null,
                     ),
-                    SwitchListTile(
-                      title: Text(context.locale.settings__text__er__email),
-                      value: state.email,
-                      onChanged: enable
-                          ? (value) {
-                              updateExclusionRules(
-                                context,
-                                state.copyWith(email: value),
-                              );
-                            }
-                          : null,
-                    ),
-                    if (Platform.isMacOS)
-                      SwitchListTile(
-                        title: Text(context.locale.settings__text__er__url),
-                        value: state.sensitiveUrls,
-                        onChanged: enable
-                            ? (value) {
-                                updateExclusionRules(
-                                  context,
-                                  state.copyWith(sensitiveUrls: value),
-                                );
-                              }
-                            : null,
-                      ),
-                  ],
-                ),
+                ],
               ),
             ),
           ),

@@ -1,4 +1,5 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,10 +21,9 @@ class AutoWriteOnReceiveSwitchTile extends StatelessWidget {
           state is AppConfigLoaded ? state.config.autoWriteOnReceive : false,
       builder: (context, value) {
         return SwitchListTile(
-          title: const Text('Auto-Write on Receive'),
-          subtitle: const Text(
-            'Automatically copy incoming clips to the clipboard',
-          ),
+          secondary: const Icon(Icons.auto_fix_high_rounded),
+          title: Text(context.locale.settings__auto_write__title),
+          subtitle: Text(context.locale.settings__auto_write__subtitle),
           value: value,
           onChanged: enabled
               ? (val) {

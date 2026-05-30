@@ -84,6 +84,10 @@ class AppConfig with _$AppConfig, Identifiable {
     @JsonKey(includeFromJson: false, includeToJson: false)
     ExclusionRules? exclusionRules,
 
+    // App Lock
+    @Default(false) bool enableLocalAuth,
+    @Default(1) int localAuthTimeoutMinutes,
+
     // Customization
     @Default(defaultThemeColor) int themeColor,
     @Default(DynamicSchemeVariant.tonalSpot) DynamicSchemeVariant themeVariant,

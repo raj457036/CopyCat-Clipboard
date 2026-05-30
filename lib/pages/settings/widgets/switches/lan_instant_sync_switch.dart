@@ -1,6 +1,7 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/lan_sync_service.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
@@ -32,10 +33,11 @@ class LanInstantSyncSwitchTile extends StatelessWidget {
       },
       builder: (context, enabled) {
         return ListTile(
-          title: const Text('LAN Network'),
+          leading: const Icon(Icons.wifi_tethering_rounded),
+          title: Text(context.locale.settings__lan__title),
           subtitle: serviceActive
               ? _LanSubtitle(enabled: enabled)
-              : const Text('Start the background service to use LAN sync'),
+              : Text(context.locale.settings__lan__service_inactive),
           subtitleTextStyle: textTheme.bodyMedium?.copyWith(
             color: serviceActive ? colors.outline : colors.error,
           ),
@@ -70,11 +72,11 @@ class _LanSubtitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!enabled) {
-      return const Text('Sync clipboard instantly with nearby devices');
+      return Text(context.locale.settings__lan__subtitle__disabled);
     }
 
     if (Platform.isAndroid || Platform.isIOS) {
-      return const Text('Background service scanning for nearby devices');
+      return Text(context.locale.settings__lan__subtitle__mobile);
     }
 
     final service = sl<LanSyncService>();
@@ -85,8 +87,8 @@ class _LanSubtitle extends StatelessWidget {
         final count = snapshot.data?.length ?? 0;
         return Text(
           count == 0
-              ? 'Searching for devices…'
-              : '$count device${count == 1 ? '' : 's'} found on network',
+              ? context.locale.settings__lan__searching
+              : context.locale.settings__lan__devices_found(count: count),
         );
       },
     );

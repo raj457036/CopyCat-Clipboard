@@ -1677,6 +1677,87 @@ class AppLocalizationsEn extends AppLocalizations {
       'Setup other cloud drives like Dropbox, OneDrive, etc.';
 
   @override
+  String get settings__app_lock__title => 'App Lock';
+
+  @override
+  String get settings__app_lock__tile__subtitle =>
+      'Require biometric or device PIN to access the clipboard';
+
+  @override
+  String get settings__app_lock__no_biometrics =>
+      'No biometric or device credential found. Set up a PIN or biometric in your device settings first.';
+
+  @override
+  String get settings__app_lock__lock_after__title => 'Lock after';
+
+  @override
+  String get settings__app_lock__lock_after__subtitle =>
+      'Automatically lock when the app goes to the background';
+
+  @override
+  String get settings__app_lock__timeout__immediately => 'Immediately';
+
+  @override
+  String settings__app_lock__timeout__minutes({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'minutes',
+      one: 'minute',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String get app_lock__screen__locked => 'Locked';
+
+  @override
+  String get app_lock__screen__unlock => 'Unlock';
+
+  @override
+  String get settings__lan__title => 'LAN Network';
+
+  @override
+  String get settings__lan__service_inactive =>
+      'Start the background service to use LAN sync';
+
+  @override
+  String get settings__lan__subtitle__disabled =>
+      'Sync clipboard instantly with nearby devices';
+
+  @override
+  String get settings__lan__subtitle__mobile =>
+      'Background service scanning for nearby devices';
+
+  @override
+  String get settings__lan__searching => 'Searching for devices…';
+
+  @override
+  String settings__lan__devices_found({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'devices',
+      one: 'device',
+    );
+    return '$count $_temp0 found on network';
+  }
+
+  @override
+  String get settings__auto_write__title => 'Auto-Write on Receive';
+
+  @override
+  String get settings__auto_write__subtitle =>
+      'Automatically copy incoming clips to the clipboard';
+
+  @override
+  String get settings__sync__manage_devices__title => 'Manage Sync Devices';
+
+  @override
+  String get settings__sync__manage_devices__subtitle =>
+      'View active devices and remove devices from sync access.';
+
+  @override
   String get custom_er__nav__1 => 'App';
 
   @override

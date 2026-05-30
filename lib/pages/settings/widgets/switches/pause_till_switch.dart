@@ -46,6 +46,7 @@ class PauseTillSwitch extends StatelessWidget {
       builder: (context, state) {
         final isActive = state != null && systemTime().isBefore(state);
         return SwitchListTile(
+          secondary: const Icon(Icons.pause_circle_outline_rounded),
           title: Text(context.locale.settings__switch__paused__title),
           subtitle: Text(
             isActive

@@ -25,6 +25,7 @@ class SmartPasteSwitch extends StatelessWidget {
       },
       builder: (context, state) {
         return SwitchListTile(
+          secondary: const Icon(Icons.paste_rounded),
           value: state,
           onChanged: (value) async {
             final hasPermission = await cubit.focusWindow

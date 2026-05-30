@@ -48,6 +48,7 @@ class EnableSyncSwitch extends StatelessWidget {
       },
       builder: (context, state) {
         return SwitchListTile(
+          secondary: const Icon(Icons.cloud_sync_rounded),
           value: state,
           onChanged: (enabled) => _toggleEnableSync(context, enabled),
           title: Text(context.locale.settings__switch__enable_sync__title),

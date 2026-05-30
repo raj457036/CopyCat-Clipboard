@@ -38,7 +38,7 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
           key: 'pasteStack',
           label:
               'Move to Paste Stack • ${keyboardShortcut(meta: true, shift: true, key: 'C')}',
-          icon: Icons.line_weight_rounded,
+          icon: Icons.layers_rounded,
           action: () {
             clearSelection(context);
             context.pushNamed(

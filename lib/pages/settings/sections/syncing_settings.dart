@@ -13,37 +13,36 @@ class SyncingSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 650),
-      child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: padding12),
-        children: [
-          DisableForLocalUser(
-            ifLocal: ListTile(
-              leading: const Icon(Icons.sync_disabled),
-              enabled: false,
-              title: Text(context.locale.settings__text__sync_not_available),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const EnableSyncSwitch(),
-                const EnableFileSyncSwitch(),
-                const SyncModeDropdown(),
-                ListTile(
-                  // leading: const Icon(Icons.devices_rounded),
-                  title: const Text('Manage Sync Devices'),
-                  subtitle: const Text(
-                    'View active devices and remove devices from sync access.',
-                  ),
-                  onTap: () => context.goNamed(RouteConstants.deviceManagement),
-                ),
-              ],
-            ),
+    return ListView(
+      padding: const EdgeInsets.all(padding12),
+      children: [
+        DisableForLocalUser(
+          ifLocal: ListTile(
+            leading: const Icon(Icons.sync_disabled),
+            enabled: false,
+            title: Text(context.locale.settings__text__sync_not_available),
           ),
-        ],
-      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const EnableSyncSwitch(),
+              const EnableFileSyncSwitch(),
+              const SyncModeDropdown(),
+              ListTile(
+                leading: const Icon(Icons.devices_rounded),
+                title: Text(
+                  context.locale.settings__sync__manage_devices__title,
+                ),
+                subtitle: Text(
+                  context.locale.settings__sync__manage_devices__subtitle,
+                ),
+                onTap: () => context.goNamed(RouteConstants.deviceManagement),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

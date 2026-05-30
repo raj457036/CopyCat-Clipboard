@@ -1606,6 +1606,80 @@ class AppLocalizationsZh extends AppLocalizations {
       '设置其他云驱动，如 Dropbox, OneDrive 等。';
 
   @override
+  String get settings__app_lock__title => '应用锁定';
+
+  @override
+  String get settings__app_lock__tile__subtitle => '需要生物识别或设备 PIN 才能访问剪贴板';
+
+  @override
+  String get settings__app_lock__no_biometrics =>
+      '未找到生物识别或设备凭据。请先在设备设置中设置 PIN 或生物识别。';
+
+  @override
+  String get settings__app_lock__lock_after__title => '锁定时间';
+
+  @override
+  String get settings__app_lock__lock_after__subtitle => '当应用进入后台时自动锁定';
+
+  @override
+  String get settings__app_lock__timeout__immediately => '立即';
+
+  @override
+  String settings__app_lock__timeout__minutes({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '分钟',
+      one: '分钟',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String get app_lock__screen__locked => '已锁定';
+
+  @override
+  String get app_lock__screen__unlock => '解锁';
+
+  @override
+  String get settings__lan__title => '局域网';
+
+  @override
+  String get settings__lan__service_inactive => '启动后台服务以使用局域网同步';
+
+  @override
+  String get settings__lan__subtitle__disabled => '与附近设备即时同步剪贴板';
+
+  @override
+  String get settings__lan__subtitle__mobile => '后台服务正在扫描附近设备';
+
+  @override
+  String get settings__lan__searching => '正在搜索设备…';
+
+  @override
+  String settings__lan__devices_found({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '台设备',
+      one: '台设备',
+    );
+    return '$count $_temp0在网络中找到';
+  }
+
+  @override
+  String get settings__auto_write__title => '接收自动写入';
+
+  @override
+  String get settings__auto_write__subtitle => '自动将传入的剪贴板内容复制到剪贴板';
+
+  @override
+  String get settings__sync__manage_devices__title => '管理同步设备';
+
+  @override
+  String get settings__sync__manage_devices__subtitle => '查看活跃设备并从同步访问中移除设备。';
+
+  @override
   String get custom_er__nav__1 => '应用';
 
   @override

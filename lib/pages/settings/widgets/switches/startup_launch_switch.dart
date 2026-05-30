@@ -25,6 +25,7 @@ class StartUpLaunchSwitch extends StatelessWidget {
       },
       builder: (context, state) {
         return SwitchListTile(
+          secondary: const Icon(Icons.launch_rounded),
           value: state,
           onChanged: cubit.setLaunchAtStartup,
           title: Text(context.locale.settings__switch__startup__title),

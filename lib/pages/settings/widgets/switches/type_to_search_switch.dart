@@ -30,6 +30,7 @@ class TypeToSearchSwitch extends StatelessWidget {
               subscription.isActive && !subscription.isFree,
           builder: (context, hasAccess, _) {
             return SwitchListTile(
+              secondary: const Icon(Icons.manage_search_rounded),
               value: enabled,
               onChanged: hasAccess
                   ? context.read<AppConfigCubit>().toggleTypeToSearch

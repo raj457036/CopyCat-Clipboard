@@ -60,6 +60,7 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
       },
       builder: (context, state) {
         return ListTile(
+          leading: const Icon(Icons.block_rounded),
           title: Text(
             context.locale.settings__dropdown__no_copy_over_limit__title,
           ),

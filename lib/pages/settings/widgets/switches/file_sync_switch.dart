@@ -29,6 +29,7 @@ class EnableFileSyncSwitch extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SwitchListTile(
+              secondary: const Icon(Icons.attach_file_rounded),
               value: enableFileSync,
               onChanged: enableSync ? cubit.changeFileSync : null,
               title: Text(context.locale.settings__switch__sync_file__title),

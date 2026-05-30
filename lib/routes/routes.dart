@@ -45,9 +45,11 @@ import "package:clipboard/pages/settings/pages/backup_restore/page.dart";
 import "package:clipboard/pages/settings/pages/device_management/page.dart";
 import "package:clipboard/pages/settings/pages/custom_exclusion_rule/custom_exclusion_rule.dart";
 import "package:clipboard/pages/settings/pages/decrypt_clips.dart";
+import "package:clipboard/pages/settings/pages/app_lock/app_lock_settings_page.dart";
 import "package:clipboard/pages/settings/pages/exclusion_rules.dart";
 import "package:clipboard/pages/settings/pages/lan_mesh/lan_mesh_page.dart";
 import "package:clipboard/pages/splash_page.dart";
+import "package:clipboard/widgets/app_lock_overlay.dart";
 import "package:clipboard/widgets/listeners/monetization_listener.dart";
 import "package:clipboard/widgets/page_route/dynamic_page_route.dart";
 import "package:flutter/foundation.dart";
@@ -100,11 +102,7 @@ final appRouter = GoRouter(
   debugLogDiagnostics: kDebugMode,
   navigatorKey: rootNavigationKey,
   extraCodec: const _RouteExtraCodec(),
-  // initialLocation: "/",
-  errorBuilder: (context, state) {
-    return const NotFoundPage();
-  },
-
+  errorBuilder: (context, state) => NotFoundPage(key: state.pageKey),
   routes: [
     GoRoute(
       name: RouteConstants.splash,
@@ -219,7 +217,9 @@ final appRouter = GoRouter(
         ),
         ShellRoute(
           builder: (context, state, child) {
-            return ShellPage(key: state.pageKey, child: child);
+            return AppLockOverlay(
+              child: ShellPage(key: state.pageKey, child: child),
+            );
           },
           routes: [
             GoRoute(
@@ -307,6 +307,12 @@ final appRouter = GoRouter(
                     bgService: sl(),
                     deviceId: sl(instanceName: "device_id"),
                   ),
+                ),
+                GoRoute(
+                  name: RouteConstants.appLockSettings,
+                  path: 'app-lock',
+                  builder: (context, state) =>
+                      AppLockSettingsPage(key: state.pageKey),
                 ),
                 GoRoute(
                   name: RouteConstants.exclusionRules,

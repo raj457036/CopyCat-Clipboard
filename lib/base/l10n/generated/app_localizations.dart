@@ -3016,6 +3016,120 @@ abstract class AppLocalizations {
   /// **'Setup other cloud drives like Dropbox, OneDrive, etc.'**
   String get settings__tile__other_cloud__subtitle;
 
+  /// No description provided for @settings__app_lock__title.
+  ///
+  /// In en, this message translates to:
+  /// **'App Lock'**
+  String get settings__app_lock__title;
+
+  /// No description provided for @settings__app_lock__tile__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Require biometric or device PIN to access the clipboard'**
+  String get settings__app_lock__tile__subtitle;
+
+  /// No description provided for @settings__app_lock__no_biometrics.
+  ///
+  /// In en, this message translates to:
+  /// **'No biometric or device credential found. Set up a PIN or biometric in your device settings first.'**
+  String get settings__app_lock__no_biometrics;
+
+  /// No description provided for @settings__app_lock__lock_after__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock after'**
+  String get settings__app_lock__lock_after__title;
+
+  /// No description provided for @settings__app_lock__lock_after__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically lock when the app goes to the background'**
+  String get settings__app_lock__lock_after__subtitle;
+
+  /// No description provided for @settings__app_lock__timeout__immediately.
+  ///
+  /// In en, this message translates to:
+  /// **'Immediately'**
+  String get settings__app_lock__timeout__immediately;
+
+  /// No description provided for @settings__app_lock__timeout__minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} {count, plural, one{minute} other{minutes}}'**
+  String settings__app_lock__timeout__minutes({required int count});
+
+  /// No description provided for @app_lock__screen__locked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get app_lock__screen__locked;
+
+  /// No description provided for @app_lock__screen__unlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get app_lock__screen__unlock;
+
+  /// No description provided for @settings__lan__title.
+  ///
+  /// In en, this message translates to:
+  /// **'LAN Network'**
+  String get settings__lan__title;
+
+  /// No description provided for @settings__lan__service_inactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the background service to use LAN sync'**
+  String get settings__lan__service_inactive;
+
+  /// No description provided for @settings__lan__subtitle__disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync clipboard instantly with nearby devices'**
+  String get settings__lan__subtitle__disabled;
+
+  /// No description provided for @settings__lan__subtitle__mobile.
+  ///
+  /// In en, this message translates to:
+  /// **'Background service scanning for nearby devices'**
+  String get settings__lan__subtitle__mobile;
+
+  /// No description provided for @settings__lan__searching.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching for devices…'**
+  String get settings__lan__searching;
+
+  /// No description provided for @settings__lan__devices_found.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} {count, plural, one{device} other{devices}} found on network'**
+  String settings__lan__devices_found({required int count});
+
+  /// No description provided for @settings__auto_write__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-Write on Receive'**
+  String get settings__auto_write__title;
+
+  /// No description provided for @settings__auto_write__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatically copy incoming clips to the clipboard'**
+  String get settings__auto_write__subtitle;
+
+  /// No description provided for @settings__sync__manage_devices__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Sync Devices'**
+  String get settings__sync__manage_devices__title;
+
+  /// No description provided for @settings__sync__manage_devices__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'View active devices and remove devices from sync access.'**
+  String get settings__sync__manage_devices__subtitle;
+
   /// No description provided for @custom_er__nav__1.
   ///
   /// In en, this message translates to:

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:clipboard/base/background/encryption_worker.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
@@ -22,12 +23,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthListener extends StatelessWidget {
-  late final SyncOrchestrator syncOrchestrator;
   final Widget child;
 
-  AuthListener({super.key, required this.child}) {
-    syncOrchestrator = sl<SyncOrchestrator>();
-  }
+  const AuthListener({super.key, required this.child});
 
   Future<void> initEncryptionWorker(AuthenticatedAuthState authState) async {
     final appConfigCubit = sl<AppConfigCubit>();
@@ -61,7 +59,7 @@ class AuthListener extends StatelessWidget {
     sl<OfflinePersistenceCubit>().stopListeners();
     sl<UserDevicesCubit>().clear();
     sl<AppConfigCubit>().reset();
-    syncOrchestrator.stop();
+    sl<SyncOrchestrator>().stop();
   }
 
   Future<void> _handleAuthenticatedState(
@@ -95,6 +93,7 @@ class AuthListener extends StatelessWidget {
     }
     unawaited(sl<UserDevicesCubit>().registerCurrentDevice());
     appRouter.goNamed(RouteConstants.home);
+    sl<AppLockCubit>().onAppForeground();
   }
 
   @override
@@ -120,10 +119,15 @@ class AuthListener extends StatelessWidget {
           case LocalAuthenticatedAuthState():
             // MARK: - Offline Authentication Success
             final appConfigCubit = sl<AppConfigCubit>();
+            if (!appConfigCubit.loaded.isCompleted) {
+              await appConfigCubit.loaded.future;
+            }
+            if (!context.mounted) return;
             final isOnboarded = appConfigCubit.state.config.onBoardComplete;
             context.read<ReviewPromptCubit>().setEnabled(isOnboarded);
             unawaited(sl<OfflinePersistenceCubit>().startListeners());
             appRouter.goNamed(RouteConstants.home);
+            sl<AppLockCubit>().onAppForeground();
         }
       },
       child: child,

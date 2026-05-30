@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
 import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
@@ -58,6 +59,8 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   final debounce = Debouncer(milliseconds: 100);
 
   late final AppConfigCubit appConfigCubit;
+  late final AppLockCubit appLockCubit;
+  late final ReviewPromptCubit reviewPromptCubit;
 
   void _setWindowInBackground(bool value) {
     if (isWindowInBackground == value) return;
@@ -172,12 +175,13 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   void onWindowFocus() {
     _setWindowInBackground(false);
     context.windowAction?.isFocused = true;
+    appLockCubit.onAppForeground();
     _maybeTrackWindowForeground();
   }
 
   Future<void> _maybeTrackWindowForeground() async {
     try {
-      await sl<ReviewPromptCubit>().trackAppEntry();
+      await reviewPromptCubit.trackAppEntry();
     } catch (e) {
       logger.e(() => "Error tracking app entry for review prompt. $e");
     }
@@ -203,9 +207,17 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   @override
   Future<void> onWindowBlur() async {
     _setWindowInBackground(true);
+    final authInProgress =
+        appLockCubit.state is AppLockAuthenticating ||
+        appLockCubit.isSensitiveAuthInProgress;
+
+    if (!authInProgress) appLockCubit.onAppBackground();
+
     final appConfig = sl<AppConfigCubit>();
+
     if (!appConfig.isPinned) {
       if (context.location == RouteConstants.pasteStack) return;
+      if (authInProgress) return;
       context.windowAction?.hide();
     }
   }
@@ -216,6 +228,8 @@ class WindowFocusManagerState extends State<WindowFocusManager>
     windowManager.addListener(this);
     windowManager.setPreventClose(true);
     appConfigCubit = sl<AppConfigCubit>();
+    appLockCubit = sl<AppLockCubit>();
+    reviewPromptCubit = sl<ReviewPromptCubit>();
   }
 
   @override

@@ -34,6 +34,7 @@ class RichDataCaptureSwitchTile extends StatelessWidget {
           },
           builder: (context, enabled) {
             return SwitchListTile(
+              secondary: const Icon(Icons.data_object_rounded),
               value: enabled && hasAccess,
               onChanged: hasAccess
                   ? (value) => _setRichDataCapture(context, value)

@@ -64,6 +64,7 @@ class SyncModeDropdown extends StatelessWidget {
           builder: (context, state) {
             final (speed, enabled) = state;
             return ListTile(
+              leading: const Icon(Icons.sync_alt_rounded),
               enabled: enabled,
               title: Text(context.locale.settings__dropdown__sync_mode__title),
               subtitle: Text(

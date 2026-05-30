@@ -200,10 +200,13 @@ extension ColorExtensions on Color {
 
 extension GoRouterExtension on GoRouter {
   String location() {
-    final RouteMatch lastMatch = routerDelegate.currentConfiguration.last;
+    final config = routerDelegate.currentConfiguration;
+    if (config.isEmpty) return '';
+    final RouteMatch lastMatch = config.last;
     final RouteMatchList matchList = lastMatch is ImperativeRouteMatch
         ? lastMatch.matches
-        : routerDelegate.currentConfiguration;
+        : config;
+    if (matchList.isEmpty) return '';
     final String? location = matchList.last.route.name;
     return location ?? "";
   }

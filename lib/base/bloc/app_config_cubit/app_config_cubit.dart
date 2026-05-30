@@ -438,6 +438,18 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
     await _applyScreenCaptureProtection(value);
   }
 
+  Future<void> toggleLocalAuth(bool value) async {
+    final newConfig = state.config.copyWith(enableLocalAuth: value);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+  }
+
+  Future<void> setLocalAuthTimeout(int minutes) async {
+    final newConfig = state.config.copyWith(localAuthTimeoutMinutes: minutes);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+  }
+
   Future<void> changeOnBoardStatus(bool value) async {
     final newConfig = state.config.copyWith(onBoardComplete: value);
     emit(state.copyWith(config: newConfig));

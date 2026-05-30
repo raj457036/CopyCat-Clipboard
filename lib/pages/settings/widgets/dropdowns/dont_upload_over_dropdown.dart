@@ -26,6 +26,7 @@ class DontAutoUploadOverDropdown extends StatelessWidget {
       },
       builder: (context, state) {
         return ListTile(
+          leading: const Icon(Icons.cloud_off_rounded),
           title: Text(
             context.locale.settings__dropdown__no_upload_over_limit__title,
           ),

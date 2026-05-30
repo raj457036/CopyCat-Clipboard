@@ -22,7 +22,9 @@ class ClipboardHotKeySwitch extends StatelessWidget {
       },
       builder: (context, state) {
         return SwitchListTile(
+          secondary: const Icon(Icons.keyboard_rounded),
           title: Text(context.locale.settings__switch__hotkey__title),
+          isThreeLine: true,
           subtitle: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,7 +46,12 @@ class ClipboardHotKeySwitch extends StatelessWidget {
                     text: context.locale.settings__hotkey__preview_start,
                     children: [
                       WidgetSpan(
-                        child: HotKeyVirtualView(hotKey: state),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: padding4,
+                          ),
+                          child: HotKeyVirtualView(hotKey: state),
+                        ),
                         alignment: PlaceholderAlignment.middle,
                       ),
                       TextSpan(

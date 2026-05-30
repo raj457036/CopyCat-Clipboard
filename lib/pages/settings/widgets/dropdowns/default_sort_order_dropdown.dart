@@ -20,6 +20,7 @@ class DefaultSortOrderTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final locale = context.locale;
     return ListTile(
+      leading: const Icon(Icons.sort_rounded),
       title: Text(locale.settings__dropdown__default_sort_order__title),
       trailing: BlocSelector<AppConfigCubit, AppConfigState, SortOrder>(
         selector: (state) => state.config.sortOrder,

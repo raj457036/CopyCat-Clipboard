@@ -47,6 +47,9 @@ _$AppConfigImpl _$$AppConfigImplFromJson(
   autoEncrypt: json['autoEncrypt'] as bool? ?? false,
   useEncryptionNonce: json['useEncryptionNonce'] as bool? ?? false,
   hideFromScreenCapture: json['hideFromScreenCapture'] as bool? ?? true,
+  enableLocalAuth: json['enableLocalAuth'] as bool? ?? false,
+  localAuthTimeoutMinutes:
+      (json['localAuthTimeoutMinutes'] as num?)?.toInt() ?? 1,
   themeColor: (json['themeColor'] as num?)?.toInt() ?? defaultThemeColor,
   themeVariant:
       $enumDecodeNullable(
@@ -98,6 +101,8 @@ Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
       'autoEncrypt': instance.autoEncrypt,
       'useEncryptionNonce': instance.useEncryptionNonce,
       'hideFromScreenCapture': instance.hideFromScreenCapture,
+      'enableLocalAuth': instance.enableLocalAuth,
+      'localAuthTimeoutMinutes': instance.localAuthTimeoutMinutes,
       'themeColor': instance.themeColor,
       'themeVariant': _$DynamicSchemeVariantEnumMap[instance.themeVariant]!,
       'enableDragNDrop': instance.enableDragNDrop,

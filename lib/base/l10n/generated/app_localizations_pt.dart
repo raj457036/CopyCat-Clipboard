@@ -1699,6 +1699,88 @@ class AppLocalizationsPt extends AppLocalizations {
       'Configure outros drives na nuvem como Dropbox, OneDrive, etc.';
 
   @override
+  String get settings__app_lock__title => 'Bloqueio do App';
+
+  @override
+  String get settings__app_lock__tile__subtitle =>
+      'Exigir biometria ou PIN do dispositivo para acessar a área de transferência';
+
+  @override
+  String get settings__app_lock__no_biometrics =>
+      'Nenhuma biometria ou credencial encontrada. Configure um PIN ou biometria nas configurações do dispositivo primeiro.';
+
+  @override
+  String get settings__app_lock__lock_after__title => 'Bloquear após';
+
+  @override
+  String get settings__app_lock__lock_after__subtitle =>
+      'Bloquear automaticamente quando o app for para o fundo';
+
+  @override
+  String get settings__app_lock__timeout__immediately => 'Imediatamente';
+
+  @override
+  String settings__app_lock__timeout__minutes({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'minutos',
+      one: 'minuto',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String get app_lock__screen__locked => 'Bloqueado';
+
+  @override
+  String get app_lock__screen__unlock => 'Desbloquear';
+
+  @override
+  String get settings__lan__title => 'Rede Local';
+
+  @override
+  String get settings__lan__service_inactive =>
+      'Inicie o serviço em segundo plano para usar a sincronização LAN';
+
+  @override
+  String get settings__lan__subtitle__disabled =>
+      'Sincronize instantaneamente a área de transferência com dispositivos próximos';
+
+  @override
+  String get settings__lan__subtitle__mobile =>
+      'Serviço em segundo plano procurando dispositivos próximos';
+
+  @override
+  String get settings__lan__searching => 'Procurando dispositivos…';
+
+  @override
+  String settings__lan__devices_found({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'dispositivos encontrados',
+      one: 'dispositivo encontrado',
+    );
+    return '$count $_temp0 na rede';
+  }
+
+  @override
+  String get settings__auto_write__title => 'Escrita Automática ao Receber';
+
+  @override
+  String get settings__auto_write__subtitle =>
+      'Copiar automaticamente os clipes recebidos para a área de transferência';
+
+  @override
+  String get settings__sync__manage_devices__title =>
+      'Gerenciar Dispositivos de Sincronização';
+
+  @override
+  String get settings__sync__manage_devices__subtitle =>
+      'Ver dispositivos ativos e remover dispositivos do acesso de sincronização.';
+
+  @override
   String get custom_er__nav__1 => 'App';
 
   @override

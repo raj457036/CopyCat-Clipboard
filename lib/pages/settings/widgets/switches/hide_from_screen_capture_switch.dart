@@ -20,6 +20,7 @@ class HideFromScreenCaptureSwitchTile extends StatelessWidget {
       },
       builder: (context, enabled) {
         return SwitchListTile(
+          secondary: const Icon(Icons.stop_screen_share_outlined),
           value: enabled,
           onChanged: cubit.toggleHideFromScreenCapture,
           title: Text(

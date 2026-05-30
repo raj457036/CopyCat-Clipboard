@@ -23,6 +23,7 @@ class TrayIconSwitch extends StatelessWidget {
       },
       builder: (context, showTrayIcon) {
         return SwitchListTile(
+          secondary: const Icon(Icons.linear_scale_rounded),
           value: showTrayIcon,
           onChanged: cubit.toggleTrayIcon,
           title: Text(context.locale.settings__switch__tray_icon__title),

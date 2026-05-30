@@ -1686,6 +1686,89 @@ class AppLocalizationsFr extends AppLocalizations {
       'Configurez d\'autres lecteurs cloud comme Dropbox, OneDrive, etc.';
 
   @override
+  String get settings__app_lock__title => 'Verrouillage de l\'app';
+
+  @override
+  String get settings__app_lock__tile__subtitle =>
+      'Exiger une biométrie ou un code PIN pour accéder au presse-papiers';
+
+  @override
+  String get settings__app_lock__no_biometrics =>
+      'Aucune biométrie ou authentification appareil trouvée. Configurez d\'abord un code PIN ou une biométrie dans les paramètres de votre appareil.';
+
+  @override
+  String get settings__app_lock__lock_after__title => 'Verrouiller après';
+
+  @override
+  String get settings__app_lock__lock_after__subtitle =>
+      'Verrouiller automatiquement quand l\'app passe en arrière-plan';
+
+  @override
+  String get settings__app_lock__timeout__immediately => 'Immédiatement';
+
+  @override
+  String settings__app_lock__timeout__minutes({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'minutes',
+      one: 'minute',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String get app_lock__screen__locked => 'Verrouillé';
+
+  @override
+  String get app_lock__screen__unlock => 'Déverrouiller';
+
+  @override
+  String get settings__lan__title => 'Réseau local';
+
+  @override
+  String get settings__lan__service_inactive =>
+      'Démarrez le service en arrière-plan pour utiliser la sync LAN';
+
+  @override
+  String get settings__lan__subtitle__disabled =>
+      'Synchronisez instantanément le presse-papiers avec les appareils à proximité';
+
+  @override
+  String get settings__lan__subtitle__mobile =>
+      'Le service en arrière-plan recherche des appareils à proximité';
+
+  @override
+  String get settings__lan__searching => 'Recherche d\'appareils…';
+
+  @override
+  String settings__lan__devices_found({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'appareils trouvés',
+      one: 'appareil trouvé',
+    );
+    return '$count $_temp0 sur le réseau';
+  }
+
+  @override
+  String get settings__auto_write__title =>
+      'Écriture automatique à la réception';
+
+  @override
+  String get settings__auto_write__subtitle =>
+      'Copier automatiquement les clips entrants dans le presse-papiers';
+
+  @override
+  String get settings__sync__manage_devices__title =>
+      'Gérer les appareils de synchronisation';
+
+  @override
+  String get settings__sync__manage_devices__subtitle =>
+      'Afficher les appareils actifs et supprimer des appareils de l\'accès à la synchronisation.';
+
+  @override
   String get custom_er__nav__1 => 'Application';
 
   @override

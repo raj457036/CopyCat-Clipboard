@@ -1681,6 +1681,89 @@ class AppLocalizationsDe extends AppLocalizations {
       'Richten Sie andere Cloud-Speicher wie Dropbox, OneDrive usw. ein.';
 
   @override
+  String get settings__app_lock__title => 'App-Sperre';
+
+  @override
+  String get settings__app_lock__tile__subtitle =>
+      'Biometrie oder Geräte-PIN für den Zugriff auf die Zwischenablage erforderlich';
+
+  @override
+  String get settings__app_lock__no_biometrics =>
+      'Keine Biometrie oder Geräteanmeldedaten gefunden. Richten Sie zuerst eine PIN oder Biometrie in den Geräteeinstellungen ein.';
+
+  @override
+  String get settings__app_lock__lock_after__title => 'Sperren nach';
+
+  @override
+  String get settings__app_lock__lock_after__subtitle =>
+      'Automatisch sperren, wenn die App in den Hintergrund geht';
+
+  @override
+  String get settings__app_lock__timeout__immediately => 'Sofort';
+
+  @override
+  String settings__app_lock__timeout__minutes({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Minuten',
+      one: 'Minute',
+    );
+    return '$count $_temp0';
+  }
+
+  @override
+  String get app_lock__screen__locked => 'Gesperrt';
+
+  @override
+  String get app_lock__screen__unlock => 'Entsperren';
+
+  @override
+  String get settings__lan__title => 'Lokales Netzwerk';
+
+  @override
+  String get settings__lan__service_inactive =>
+      'Starten Sie den Hintergrunddienst zur LAN-Synchronisierung';
+
+  @override
+  String get settings__lan__subtitle__disabled =>
+      'Zwischenablage sofort mit Geräten in der Nähe synchronisieren';
+
+  @override
+  String get settings__lan__subtitle__mobile =>
+      'Hintergrunddienst sucht nach Geräten in der Nähe';
+
+  @override
+  String get settings__lan__searching => 'Suche nach Geräten…';
+
+  @override
+  String settings__lan__devices_found({required int count}) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Geräte',
+      one: 'Gerät',
+    );
+    return '$count $_temp0 im Netzwerk gefunden';
+  }
+
+  @override
+  String get settings__auto_write__title =>
+      'Automatisch schreiben beim Empfang';
+
+  @override
+  String get settings__auto_write__subtitle =>
+      'Eingehende Clips automatisch in die Zwischenablage kopieren';
+
+  @override
+  String get settings__sync__manage_devices__title =>
+      'Synchronisierungsgeräte verwalten';
+
+  @override
+  String get settings__sync__manage_devices__subtitle =>
+      'Aktive Geräte anzeigen und Geräte aus dem Synchronisierungszugriff entfernen.';
+
+  @override
   String get custom_er__nav__1 => 'App';
 
   @override
