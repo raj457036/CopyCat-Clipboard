@@ -156,6 +156,7 @@ flutter_launcher_icons:
   android: true
   adaptive_icon_background: "#262141"
   adaptive_icon_foreground: "./resources/icon_2026_adaptive_fg.png"
+  adaptive_icon_monochrome: "./resources/icon_2026_monochrome_fg.png"
   min_sdk_android: 24
 
   ios: "./resources/icon_2026_ios.png"
