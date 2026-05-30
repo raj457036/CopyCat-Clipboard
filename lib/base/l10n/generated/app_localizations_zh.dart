@@ -1218,10 +1218,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get collections__input__description => '描述';
 
   @override
-  String get collections__label__emoji => '收藏图标（点击更改）';
+  String get collections__label__emoji => '收藏夹图标（点击更改）';
 
   @override
-  String get collections__validation__duplicate => '已存在相同名称和图标的收藏';
+  String get collections__validation__duplicate => '已存在相同名称和图标的收藏夹';
+
+  @override
+  String get collections__validation__name_required => '请输入名称。';
+
+  @override
+  String get collections__validation__name_max_length => '名称最多 30 个字符。';
 
   @override
   String get select_collection__appbar__title => '选择收藏';
@@ -2058,6 +2064,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tray__menu__pause_copycat => '暂停';
 
   @override
+  String get tray__menu__paste_stack => '粘贴堆栈';
+
+  @override
   String get tray__dialog__quit__subtitle => '确定要退出应用吗？';
 
   @override
@@ -2229,7 +2238,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get backup_restore__section__cached_files => '缓存文件';
 
   @override
-  String get backup_restore__input__max_cached_file_size => '缓存文件大小上限（MB）';
+  String get backup_restore__input__max_cached_file_size => '缓存文件大小上限 (MB)';
 
   @override
   String get backup_restore__input__max_cached_file_size__hint => '可选，例如 50';

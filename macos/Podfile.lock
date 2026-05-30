@@ -1,277 +1,106 @@
 PODS:
-  - app_links (6.4.1):
-    - FlutterMacOS
-  - AppAuth (1.7.6):
-    - AppAuth/Core (= 1.7.6)
-    - AppAuth/ExternalUserAgent (= 1.7.6)
-  - AppAuth/Core (1.7.6)
-  - AppAuth/ExternalUserAgent (1.7.6):
-    - AppAuth/Core
-  - AppCheckCore (11.2.0):
-    - GoogleUtilities/Environment (~> 8.0)
-    - GoogleUtilities/UserDefaults (~> 8.0)
-    - PromisesObjC (~> 2.4)
   - clipboard_watcher (0.0.1):
-    - FlutterMacOS
-  - device_info_plus (0.0.1):
-    - FlutterMacOS
-  - emoji_picker_flutter (0.0.1):
-    - FlutterMacOS
-  - file_picker (0.0.1):
-    - FlutterMacOS
-  - flutter_platform_alert (0.0.1):
     - FlutterMacOS
   - flutter_secure_storage_macos (6.1.3):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
   - focus_window (0.0.1):
     - FlutterMacOS
-  - google_sign_in_ios (0.0.1):
-    - AppAuth (>= 1.7.4)
-    - Flutter
-    - FlutterMacOS
-    - GoogleSignIn (~> 8.0)
-    - GTMSessionFetcher (>= 3.4.0)
-  - GoogleSignIn (8.0.0):
-    - AppAuth (< 2.0, >= 1.7.3)
-    - AppCheckCore (~> 11.0)
-    - GTMAppAuth (< 5.0, >= 4.1.1)
-    - GTMSessionFetcher/Core (~> 3.3)
-  - GoogleUtilities/Environment (8.1.0):
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Logger (8.1.0):
-    - GoogleUtilities/Environment
-    - GoogleUtilities/Privacy
-  - GoogleUtilities/Privacy (8.1.0)
-  - GoogleUtilities/UserDefaults (8.1.0):
-    - GoogleUtilities/Logger
-    - GoogleUtilities/Privacy
-  - GTMAppAuth (4.1.1):
-    - AppAuth/Core (~> 1.7)
-    - GTMSessionFetcher/Core (< 4.0, >= 3.3)
-  - GTMSessionFetcher (3.5.0):
-    - GTMSessionFetcher/Full (= 3.5.0)
-  - GTMSessionFetcher/Core (3.5.0)
-  - GTMSessionFetcher/Full (3.5.0):
-    - GTMSessionFetcher/Core
   - HotKey (0.2.1)
   - hotkey_manager_macos (0.0.1):
     - FlutterMacOS
     - HotKey
-  - in_app_review (2.0.0):
-    - FlutterMacOS
   - irondash_engine_context (0.0.1):
     - FlutterMacOS
   - isar_community_flutter_libs (1.0.0):
-    - FlutterMacOS
-  - local_auth_darwin (0.0.1):
-    - Flutter
     - FlutterMacOS
   - media_kit_libs_macos_video (1.0.4):
     - FlutterMacOS
   - media_kit_video (0.0.1):
     - FlutterMacOS
-  - no_screenshot (0.10.0):
-    - FlutterMacOS
   - open_dir_macos (0.0.1):
     - FlutterMacOS
-  - package_info_plus (0.0.1):
-    - FlutterMacOS
-  - PromisesObjC (2.4.0)
-  - purchases_flutter (10.1.0):
-    - FlutterMacOS
-    - PurchasesHybridCommon (= 18.6.0)
-  - PurchasesHybridCommon (18.6.0):
-    - RevenueCat (= 5.72.0)
   - quick_paste_popup (0.0.1):
     - FlutterMacOS
-  - RevenueCat (5.72.0)
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
-  - share_plus (0.0.1):
-    - FlutterMacOS
-  - shared_preferences_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
   - sign_in_with_apple (0.0.1):
-    - FlutterMacOS
-  - sqflite_darwin (0.0.4):
-    - Flutter
     - FlutterMacOS
   - super_native_extensions (0.0.1):
     - FlutterMacOS
   - tray_manager (0.0.1):
     - FlutterMacOS
-  - url_launcher_macos (0.0.1):
-    - FlutterMacOS
-  - video_player_avfoundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - wakelock_plus (0.0.1):
-    - FlutterMacOS
-  - window_manager (0.5.0):
-    - FlutterMacOS
 
 DEPENDENCIES:
-  - app_links (from `Flutter/ephemeral/.symlinks/plugins/app_links/macos`)
   - clipboard_watcher (from `Flutter/ephemeral/.symlinks/plugins/clipboard_watcher/macos`)
-  - device_info_plus (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos`)
-  - emoji_picker_flutter (from `Flutter/ephemeral/.symlinks/plugins/emoji_picker_flutter/macos`)
-  - file_picker (from `Flutter/ephemeral/.symlinks/plugins/file_picker/macos`)
-  - flutter_platform_alert (from `Flutter/ephemeral/.symlinks/plugins/flutter_platform_alert/macos`)
   - flutter_secure_storage_macos (from `Flutter/ephemeral/.symlinks/plugins/flutter_secure_storage_macos/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - focus_window (from `Flutter/ephemeral/.symlinks/plugins/focus_window/macos`)
-  - google_sign_in_ios (from `Flutter/ephemeral/.symlinks/plugins/google_sign_in_ios/darwin`)
   - hotkey_manager_macos (from `Flutter/ephemeral/.symlinks/plugins/hotkey_manager_macos/macos`)
-  - in_app_review (from `Flutter/ephemeral/.symlinks/plugins/in_app_review/macos`)
   - irondash_engine_context (from `Flutter/ephemeral/.symlinks/plugins/irondash_engine_context/macos`)
   - isar_community_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/isar_community_flutter_libs/macos`)
-  - local_auth_darwin (from `Flutter/ephemeral/.symlinks/plugins/local_auth_darwin/darwin`)
   - media_kit_libs_macos_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_libs_macos_video/macos`)
   - media_kit_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_video/macos`)
-  - no_screenshot (from `Flutter/ephemeral/.symlinks/plugins/no_screenshot/macos`)
   - open_dir_macos (from `Flutter/ephemeral/.symlinks/plugins/open_dir_macos/macos`)
-  - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
-  - purchases_flutter (from `Flutter/ephemeral/.symlinks/plugins/purchases_flutter/macos`)
   - quick_paste_popup (from `Flutter/ephemeral/.symlinks/plugins/quick_paste_popup/macos`)
   - screen_retriever_macos (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos`)
-  - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
-  - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sign_in_with_apple (from `Flutter/ephemeral/.symlinks/plugins/sign_in_with_apple/macos`)
-  - sqflite_darwin (from `Flutter/ephemeral/.symlinks/plugins/sqflite_darwin/darwin`)
   - super_native_extensions (from `Flutter/ephemeral/.symlinks/plugins/super_native_extensions/macos`)
   - tray_manager (from `Flutter/ephemeral/.symlinks/plugins/tray_manager/macos`)
-  - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
-  - video_player_avfoundation (from `Flutter/ephemeral/.symlinks/plugins/video_player_avfoundation/darwin`)
-  - wakelock_plus (from `Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos`)
-  - window_manager (from `Flutter/ephemeral/.symlinks/plugins/window_manager/macos`)
 
 SPEC REPOS:
   trunk:
-    - AppAuth
-    - AppCheckCore
-    - GoogleSignIn
-    - GoogleUtilities
-    - GTMAppAuth
-    - GTMSessionFetcher
     - HotKey
-    - PromisesObjC
-    - PurchasesHybridCommon
-    - RevenueCat
 
 EXTERNAL SOURCES:
-  app_links:
-    :path: Flutter/ephemeral/.symlinks/plugins/app_links/macos
   clipboard_watcher:
     :path: Flutter/ephemeral/.symlinks/plugins/clipboard_watcher/macos
-  device_info_plus:
-    :path: Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos
-  emoji_picker_flutter:
-    :path: Flutter/ephemeral/.symlinks/plugins/emoji_picker_flutter/macos
-  file_picker:
-    :path: Flutter/ephemeral/.symlinks/plugins/file_picker/macos
-  flutter_platform_alert:
-    :path: Flutter/ephemeral/.symlinks/plugins/flutter_platform_alert/macos
   flutter_secure_storage_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/flutter_secure_storage_macos/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
   focus_window:
     :path: Flutter/ephemeral/.symlinks/plugins/focus_window/macos
-  google_sign_in_ios:
-    :path: Flutter/ephemeral/.symlinks/plugins/google_sign_in_ios/darwin
   hotkey_manager_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/hotkey_manager_macos/macos
-  in_app_review:
-    :path: Flutter/ephemeral/.symlinks/plugins/in_app_review/macos
   irondash_engine_context:
     :path: Flutter/ephemeral/.symlinks/plugins/irondash_engine_context/macos
   isar_community_flutter_libs:
     :path: Flutter/ephemeral/.symlinks/plugins/isar_community_flutter_libs/macos
-  local_auth_darwin:
-    :path: Flutter/ephemeral/.symlinks/plugins/local_auth_darwin/darwin
   media_kit_libs_macos_video:
     :path: Flutter/ephemeral/.symlinks/plugins/media_kit_libs_macos_video/macos
   media_kit_video:
     :path: Flutter/ephemeral/.symlinks/plugins/media_kit_video/macos
-  no_screenshot:
-    :path: Flutter/ephemeral/.symlinks/plugins/no_screenshot/macos
   open_dir_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/open_dir_macos/macos
-  package_info_plus:
-    :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
-  purchases_flutter:
-    :path: Flutter/ephemeral/.symlinks/plugins/purchases_flutter/macos
   quick_paste_popup:
     :path: Flutter/ephemeral/.symlinks/plugins/quick_paste_popup/macos
   screen_retriever_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos
-  share_plus:
-    :path: Flutter/ephemeral/.symlinks/plugins/share_plus/macos
-  shared_preferences_foundation:
-    :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
   sign_in_with_apple:
     :path: Flutter/ephemeral/.symlinks/plugins/sign_in_with_apple/macos
-  sqflite_darwin:
-    :path: Flutter/ephemeral/.symlinks/plugins/sqflite_darwin/darwin
   super_native_extensions:
     :path: Flutter/ephemeral/.symlinks/plugins/super_native_extensions/macos
   tray_manager:
     :path: Flutter/ephemeral/.symlinks/plugins/tray_manager/macos
-  url_launcher_macos:
-    :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
-  video_player_avfoundation:
-    :path: Flutter/ephemeral/.symlinks/plugins/video_player_avfoundation/darwin
-  wakelock_plus:
-    :path: Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos
-  window_manager:
-    :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
 
 SPEC CHECKSUMS:
-  app_links: 05a6ec2341985eb05e9f97dc63f5837c39895c3f
-  AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
-  AppCheckCore: cc8fd0a3a230ddd401f326489c99990b013f0c4f
   clipboard_watcher: e9c9d88b3aea4889fe80025037e690e73600b160
-  device_info_plus: 4fb280989f669696856f8b129e4a5e3cd6c48f76
-  emoji_picker_flutter: 51ca408e289d84d1e460016b2a28721ec754fcf7
-  file_picker: 7584aae6fa07a041af2b36a2655122d42f578c1a
-  flutter_platform_alert: 8fa7a7c21f95b26d08b4a3891936ca27e375f284
   flutter_secure_storage_macos: 7f45e30f838cf2659862a4e4e3ee1c347c2b3b54
   FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
   focus_window: e14fdc16bda6bc0e5a799415b3c0023e6a2d312d
-  google_sign_in_ios: b48bb9af78576358a168361173155596c845f0b9
-  GoogleSignIn: ce8c89bb9b37fb624b92e7514cc67335d1e277e4
-  GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
-  GTMAppAuth: f69bd07d68cd3b766125f7e072c45d7340dea0de
-  GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   HotKey: 400beb7caa29054ea8d864c96f5ba7e5b4852277
   hotkey_manager_macos: a4317849af96d2430fa89944d3c58977ca089fbe
-  in_app_review: 66e7680752b632d83f4f0e88b34d52ed303fbff4
   irondash_engine_context: 893c7d96d20ce361d7e996f39d360c4c2f9869ba
   isar_community_flutter_libs: a631ceb5622413b56bcd0a8bf49cb55bf3d8bb2b
-  local_auth_darwin: c3ee6cce0a8d56be34c8ccb66ba31f7f180aaebb
   media_kit_libs_macos_video: 85a23e549b5f480e72cae3e5634b5514bc692f65
   media_kit_video: fa6564e3799a0a28bff39442334817088b7ca758
-  no_screenshot: 9f52bedf1830389e82d9af7122c16eee32924136
   open_dir_macos: 79810d7921d777f8732bf6358b3a0839a8fad9b5
-  package_info_plus: f0052d280d17aa382b932f399edf32507174e870
-  PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  purchases_flutter: 1996c53360a6521e28749639ed840acfbb834415
-  PurchasesHybridCommon: 89a3ddba365c20457a4712bc3d6377b0ea3c9b4f
   quick_paste_popup: 0ed179088e77d0add387a5acb6e641940c9230bf
-  RevenueCat: 136390ad99039cdd692156af5e479293ae83b2a9
   screen_retriever_macos: 452e51764a9e1cdb74b3c541238795849f21557f
-  share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
-  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sign_in_with_apple: 6673c03c9e3643f6c8d33601943fbfa9ae99f94e
-  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   super_native_extensions: c2795d6d9aedf4a79fae25cb6160b71b50549189
   tray_manager: a104b5c81b578d83f3c3d0f40a997c8b10810166
-  url_launcher_macos: f87a979182d112f911de6820aefddaf56ee9fbfd
-  video_player_avfoundation: 3453f792138786248960ca029747fcd9f318ef52
-  wakelock_plus: 917609be14d812ddd9e9528876538b2263aaa03b
-  window_manager: b729e31d38fb04905235df9ea896128991cad99e
 
 PODFILE CHECKSUM: e3463bd25a7e58627241ed9f24f187733e0d00ab
 

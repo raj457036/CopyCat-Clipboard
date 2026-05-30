@@ -35,14 +35,13 @@ class TrayManager extends StatefulWidget {
 }
 
 class TrayManagerState extends State<TrayManager> with TrayListener {
-  late final Future<AppLocalizations> englishL10n;
   late final AppConfigCubit configCubit;
   late final WindowActionCubit windowActionCubit;
+  Locale? _lastLocale;
   bool paused = false;
 
   @override
   void initState() {
-    englishL10n = lookupAppLocalizations(const Locale('en'));
     configCubit = context.read<AppConfigCubit>();
     windowActionCubit = context.read<WindowActionCubit>();
     if (configCubit.state is AppConfigLoaded) {
@@ -55,6 +54,21 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
     trayManager.addListener(this);
     super.initState();
     unawaited(_initTrayIfConfigured());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final locale = Localizations.localeOf(context);
+    if (_lastLocale == null) {
+      _lastLocale = locale;
+      return;
+    }
+    if (_lastLocale == locale) return;
+    _lastLocale = locale;
+    if (configCubit.state.config.showTrayIcon) {
+      unawaited(_refreshLocalizedTray());
+    }
   }
 
   @override
@@ -91,12 +105,39 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
     setState(() {
       paused = isPaused;
     });
-    _setToolTip();
-    initTray();
+    unawaited(_refreshLocalizedTray());
+  }
+
+  Locale _normalizedLocale(String localeCode) {
+    final languageCode = localeCode.split(RegExp(r'[-_]')).first.toLowerCase();
+    return switch (languageCode) {
+      'es' => const Locale('es'),
+      'fr' => const Locale('fr'),
+      'de' => const Locale('de'),
+      'zh' => const Locale('zh'),
+      'pt' => const Locale('pt'),
+      _ => const Locale('en'),
+    };
+  }
+
+  Future<AppLocalizations> _currentL10n() async {
+    if (!configCubit.loaded.isCompleted) {
+      await configCubit.loaded.future;
+    }
+    final localeCode = configCubit.state.config.locale;
+    final effectiveLocale = localeCode.isEmpty
+        ? Platform.localeName
+        : localeCode;
+    return lookupAppLocalizations(_normalizedLocale(effectiveLocale));
+  }
+
+  Future<void> _refreshLocalizedTray() async {
+    await _setToolTip();
+    await initTray();
   }
 
   Future<void> _setToolTip() async {
-    final locale = await englishL10n;
+    final locale = await _currentL10n();
     if (paused) {
       final config = (configCubit.state as AppConfigLoaded).config;
       final pausedTill = DateFormat(
@@ -111,7 +152,7 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
   }
 
   Future<void> initTray() async {
-    final locale = await englishL10n;
+    final locale = await _currentL10n();
     await trayManager.setIcon(icon);
     Menu menu = Menu(
       items: [
@@ -123,7 +164,11 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
               : locale.tray__menu__pause_copycat,
           checked: paused,
         ),
-        MenuItem(key: 'paste_stack', label: "Paste Stack", disabled: paused),
+        MenuItem(
+          key: 'paste_stack',
+          label: locale.tray__menu__paste_stack,
+          disabled: paused,
+        ),
         MenuItem.separator(),
         MenuItem(key: 'quit_app', label: locale.app__quit),
       ],
@@ -143,7 +188,7 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
   }
 
   Future<void> quitApp() async {
-    final locale = await englishL10n;
+    final locale = await _currentL10n();
     final result = await FlutterPlatformAlert.showCustomAlert(
       windowTitle: locale.app__name,
       text: locale.tray__dialog__quit__subtitle,

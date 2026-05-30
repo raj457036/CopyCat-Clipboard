@@ -2316,6 +2316,18 @@ abstract class AppLocalizations {
   /// **'A collection with this icon and name already exists'**
   String get collections__validation__duplicate;
 
+  /// No description provided for @collections__validation__name_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required'**
+  String get collections__validation__name_required;
+
+  /// No description provided for @collections__validation__name_max_length.
+  ///
+  /// In en, this message translates to:
+  /// **'Name must be 30 characters or fewer'**
+  String get collections__validation__name_max_length;
+
   /// No description provided for @select_collection__appbar__title.
   ///
   /// In en, this message translates to:
@@ -3831,6 +3843,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pause'**
   String get tray__menu__pause_copycat;
+
+  /// No description provided for @tray__menu__paste_stack.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste Stack'**
+  String get tray__menu__paste_stack;
 
   /// No description provided for @tray__dialog__quit__subtitle.
   ///

@@ -1278,6 +1278,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'A collection with this icon and name already exists';
 
   @override
+  String get collections__validation__name_required => 'Name is required';
+
+  @override
+  String get collections__validation__name_max_length =>
+      'Name must be 30 characters or fewer';
+
+  @override
   String get select_collection__appbar__title => 'Select Collection';
 
   @override
@@ -2168,6 +2175,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tray__menu__pause_copycat => 'Pause';
+
+  @override
+  String get tray__menu__paste_stack => 'Paste Stack';
 
   @override
   String get tray__dialog__quit__subtitle => 'Are you sure you want to quit?';

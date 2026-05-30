@@ -159,15 +159,15 @@ class _ClipCollectionCreateEditFormState
               ),
               controller: nameController,
               validator: (value) {
-                // Default validation
                 if (value == null || value.trim().isEmpty) {
-                  return 'Name is required';
+                  return context.locale.collections__validation__name_required;
                 }
                 if (value.length > 30) {
-                  return 'Name must be less than 30 characters';
+                  return context
+                      .locale
+                      .collections__validation__name_max_length;
                 }
 
-                // Check for duplicates (only for different collections)
                 final isDuplicate = allCollections.any((c) {
                   final isDifferentCollection =
                       widget.collection == null ||

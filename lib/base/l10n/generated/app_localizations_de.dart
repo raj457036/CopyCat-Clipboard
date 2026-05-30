@@ -1273,6 +1273,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'Eine Sammlung mit diesem Symbol und Namen existiert bereits';
 
   @override
+  String get collections__validation__name_required =>
+      'Bitte geben Sie einen Namen ein.';
+
+  @override
+  String get collections__validation__name_max_length =>
+      'Der Name darf höchstens 30 Zeichen lang sein.';
+
+  @override
   String get select_collection__appbar__title => 'Sammlung auswählen';
 
   @override
@@ -2191,6 +2199,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tray__menu__pause_copycat => 'Pausieren';
+
+  @override
+  String get tray__menu__paste_stack => 'Paste Stack';
 
   @override
   String get tray__dialog__quit__subtitle =>

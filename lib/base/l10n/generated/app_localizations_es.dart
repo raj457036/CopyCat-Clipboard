@@ -154,7 +154,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get app__logout => 'Cerrar Sesión';
 
   @override
-  String get app__no_collection => 'No Se Encontró Colección';
+  String get app__no_collection => 'No se encontró ninguna colección';
 
   @override
   String get app__create_collection => 'Crear Colección';
@@ -1274,6 +1274,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'Ya existe una colección con este icono y nombre';
 
   @override
+  String get collections__validation__name_required =>
+      'El nombre es obligatorio.';
+
+  @override
+  String get collections__validation__name_max_length =>
+      'El nombre debe tener como máximo 30 caracteres.';
+
+  @override
   String get select_collection__appbar__title => 'Seleccionar Colección';
 
   @override
@@ -2195,6 +2203,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tray__menu__pause_copycat => 'Pausar';
+
+  @override
+  String get tray__menu__paste_stack => 'Paste Stack';
 
   @override
   String get tray__dialog__quit__subtitle =>
