@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/sheets/sheet_handle.dart';
@@ -139,7 +140,7 @@ class _MenuState extends State<Menu> {
     await _showMenuBottomSheet(
       context: context,
       groupedItems: _groupedMenuItems(
-        _flattenBottomSheetItems(_limitMenuItems(widget.items)),
+        _flattenBottomSheetItems(_limitMenuItems(context, widget.items)),
       ),
     );
 
@@ -168,7 +169,7 @@ class _MenuState extends State<Menu> {
         onClose: _handlePopupClose,
         menuChildren: _buildDesktopMenuChildren(
           context,
-          _limitMenuItems(widget.items),
+          _limitMenuItems(context, widget.items),
         ),
         child: widget.child,
       ),

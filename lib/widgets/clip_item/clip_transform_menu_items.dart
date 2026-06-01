@@ -6,6 +6,8 @@ import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/services/analysis/code_text_analysis.dart';
 import 'package:clipboard/base/domain/services/analysis/text_analysis.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
+import 'package:clipboard/base/l10n/generated/app_localizations.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/menu.dart';
@@ -252,100 +254,83 @@ Future<void> _copyOrPasteResult(
   await copyToClipboard(context, transformed, noAck: false);
 }
 
-List<_TransformAction> _definitions(ClipboardItem item) => [
+List<_TransformAction> _definitions(AppLocalizations l) => [
   _TransformAction(
-    label: 'Uppercase',
-    section: 'Text Core',
+    label: l.transform__label__uppercase,
+    section: l.transform__section__text_core,
     icon: Icons.keyboard_capslock_rounded,
     priority: 11,
     when: (_) => true,
     run: (context, tx) =>
-        _copyOrPasteResult(context, tx, tx.text.toUpperCase(), 'Uppercase'),
+        _copyOrPasteResult(context, tx, tx.text.toUpperCase(), ''),
   ),
   _TransformAction(
-    label: 'Lowercase',
-    section: 'Text Core',
+    label: l.transform__label__lowercase,
+    section: l.transform__section__text_core,
     icon: Icons.text_fields_rounded,
     priority: 12,
     when: (_) => true,
     run: (context, tx) =>
-        _copyOrPasteResult(context, tx, tx.text.toLowerCase(), 'Lowercase'),
+        _copyOrPasteResult(context, tx, tx.text.toLowerCase(), ''),
   ),
   _TransformAction(
-    label: 'Capitalize',
-    section: 'Text Core',
+    label: l.transform__label__capitalize,
+    section: l.transform__section__text_core,
     icon: Icons.title_rounded,
     priority: 13,
     when: (_) => true,
     run: (context, tx) =>
-        _copyOrPasteResult(context, tx, _titleCase(tx.text), 'Title case'),
+        _copyOrPasteResult(context, tx, _titleCase(tx.text), ''),
   ),
   _TransformAction(
-    label: 'Trim whitespace',
-    section: 'Text Core',
+    label: l.transform__label__trim_whitespace,
+    section: l.transform__section__text_core,
     icon: Icons.format_clear_rounded,
     priority: 14,
     when: (_) => true,
-    run: (context, tx) =>
-        _copyOrPasteResult(context, tx, tx.text.trim(), 'Trimmed text'),
+    run: (context, tx) => _copyOrPasteResult(context, tx, tx.text.trim(), ''),
   ),
 
   _TransformAction(
-    label: 'Remove line breaks',
-    section: 'Text Utilities',
+    label: l.transform__label__remove_line_breaks,
+    section: l.transform__section__text_utilities,
     icon: Icons.wrap_text_rounded,
     priority: 20,
     when: (tx) => tx.text.contains('\n'),
-    run: (context, tx) => _copyOrPasteResult(
-      context,
-      tx,
-      _removeLineBreaks(tx.text),
-      'Line breaks removed',
-    ),
+    run: (context, tx) =>
+        _copyOrPasteResult(context, tx, _removeLineBreaks(tx.text), ''),
   ),
   _TransformAction(
-    label: 'Normalize spaces',
-    section: 'Text Utilities',
+    label: l.transform__label__normalize_spaces,
+    section: l.transform__section__text_utilities,
     icon: Icons.horizontal_distribute_rounded,
     priority: 21,
     when: (_) => true,
-    run: (context, tx) => _copyOrPasteResult(
-      context,
-      tx,
-      _normalizeSpaces(tx.text),
-      'Normalized spaces',
-    ),
+    run: (context, tx) =>
+        _copyOrPasteResult(context, tx, _normalizeSpaces(tx.text), ''),
   ),
   _TransformAction(
-    label: 'Reverse text',
-    section: 'Text Utilities',
+    label: l.transform__label__reverse_text,
+    section: l.transform__section__text_utilities,
     icon: Icons.swap_horiz_rounded,
     priority: 22,
     when: (_) => true,
-    run: (context, tx) => _copyOrPasteResult(
-      context,
-      tx,
-      tx.text.split('').reversed.join(),
-      'Reversed text',
-    ),
+    run: (context, tx) =>
+        _copyOrPasteResult(context, tx, tx.text.split('').reversed.join(), ''),
   ),
   _TransformAction(
-    label: 'Deduplicate lines',
-    section: 'Text Utilities',
+    label: l.transform__label__deduplicate_lines,
+    section: l.transform__section__text_utilities,
     icon: Icons.content_copy_rounded,
     priority: 24,
     when: (tx) => tx.text.contains('\n'),
-    run: (context, tx) => _copyOrPasteResult(
-      context,
-      tx,
-      _dedupLines(tx.text),
-      'Deduplicated lines',
-    ),
+    run: (context, tx) =>
+        _copyOrPasteResult(context, tx, _dedupLines(tx.text), ''),
   ),
 
   _TransformAction(
-    label: 'JSON → prettify',
-    section: 'Struct',
+    label: l.transform__label__json_prettify,
+    section: l.transform__section__struct,
     icon: Icons.data_object_rounded,
     priority: 30,
     when: (tx) => tx.isStruct && tx.structuredKind == StructuredKind.json,
@@ -357,14 +342,14 @@ List<_TransformAction> _definitions(ClipboardItem item) => [
         context,
         tx,
         pretty,
-        'Prettified JSON',
+        '',
         categoryOverride: TextCategory.struct,
       );
     },
   ),
   _TransformAction(
-    label: 'JSON → minify',
-    section: 'Struct',
+    label: l.transform__label__json_minify,
+    section: l.transform__section__struct,
     icon: Icons.compress_rounded,
     priority: 31,
     when: (tx) => tx.isStruct && tx.structuredKind == StructuredKind.json,
@@ -374,129 +359,109 @@ List<_TransformAction> _definitions(ClipboardItem item) => [
         context,
         tx,
         min,
-        'Minified JSON',
+        '',
         categoryOverride: TextCategory.struct,
       );
     },
   ),
   _TransformAction(
-    label: 'URL encode',
-    section: 'Struct',
+    label: l.transform__label__url_encode,
+    section: l.transform__section__struct,
     icon: Icons.link_rounded,
     priority: 32,
     when: (_) => true,
-    run: (context, tx) => _copyOrPasteResult(
-      context,
-      tx,
-      Uri.encodeComponent(tx.text),
-      'URL encoded',
-    ),
+    run: (context, tx) =>
+        _copyOrPasteResult(context, tx, Uri.encodeComponent(tx.text), ''),
   ),
   _TransformAction(
-    label: 'URL decode',
-    section: 'Struct',
+    label: l.transform__label__url_decode,
+    section: l.transform__section__struct,
     icon: Icons.link_off_rounded,
     priority: 33,
     when: (tx) => tx.text.contains('%'),
-    run: (context, tx) => _copyOrPasteResult(
-      context,
-      tx,
-      Uri.decodeComponent(tx.text),
-      'URL decoded',
-    ),
+    run: (context, tx) =>
+        _copyOrPasteResult(context, tx, Uri.decodeComponent(tx.text), ''),
   ),
   _TransformAction(
-    label: 'Base64 encode',
-    section: 'Struct',
+    label: l.transform__label__base64_encode,
+    section: l.transform__section__struct,
     icon: Icons.key_rounded,
     priority: 34,
     when: (_) => true,
-    run: (context, tx) => _copyOrPasteResult(
-      context,
-      tx,
-      base64Encode(utf8.encode(tx.text)),
-      'Base64 encoded',
-    ),
+    run: (context, tx) =>
+        _copyOrPasteResult(context, tx, base64Encode(utf8.encode(tx.text)), ''),
   ),
   _TransformAction(
-    label: 'Base64 decode',
-    section: 'Struct',
+    label: l.transform__label__base64_decode,
+    section: l.transform__section__struct,
     icon: Icons.key_off_rounded,
     priority: 35,
     when: (tx) => RegExp(r'^[A-Za-z0-9+/\r\n=]+$').hasMatch(tx.trimmed),
     run: (context, tx) async {
       final decoded = utf8.decode(base64Decode(tx.trimmed));
-      await _copyOrPasteResult(context, tx, decoded, 'Base64 decoded');
+      await _copyOrPasteResult(context, tx, decoded, '');
     },
   ),
   _TransformAction(
-    label: 'Remove tracking params',
-    section: 'URLs',
+    label: l.transform__label__remove_tracking_params,
+    section: l.transform__section__urls,
     icon: Icons.cleaning_services_rounded,
     priority: 41,
     when: (tx) => tx.isUrlCategory,
-    run: (context, tx) => _copyOrPasteResult(
-      context,
-      tx,
-      _stripTrackingParams(tx.trimmed),
-      'URL without tracking params',
-    ),
+    run: (context, tx) =>
+        _copyOrPasteResult(context, tx, _stripTrackingParams(tx.trimmed), ''),
   ),
   _TransformAction(
-    label: 'Extract domain',
-    section: 'URLs',
+    label: l.transform__label__extract_domain,
+    section: l.transform__section__urls,
     icon: Icons.domain_rounded,
     priority: 42,
     when: (tx) => tx.isUrlCategory,
     run: (context, tx) =>
-        _copyOrPasteResult(context, tx, _extractDomain(tx.trimmed), 'Domain'),
+        _copyOrPasteResult(context, tx, _extractDomain(tx.trimmed), ''),
   ),
 
   _TransformAction(
-    label: 'HEX → RGB',
-    section: 'Colors',
+    label: l.transform__label__hex_to_rgb,
+    section: l.transform__section__colors,
     icon: Icons.palette_outlined,
     priority: 50,
     when: (tx) => tx.isColorCategory && tx.isHexColor,
     run: (context, tx) =>
-        _copyOrPasteResult(context, tx, _hexToRgb(tx.trimmed), 'RGB color'),
+        _copyOrPasteResult(context, tx, _hexToRgb(tx.trimmed), ''),
   ),
   _TransformAction(
-    label: 'RGB → HEX',
-    section: 'Colors',
+    label: l.transform__label__rgb_to_hex,
+    section: l.transform__section__colors,
     icon: Icons.palette_rounded,
     priority: 51,
     when: (tx) => tx.isColorCategory && tx.isRgbColor,
     run: (context, tx) =>
-        _copyOrPasteResult(context, tx, _rgbToHex(tx.trimmed), 'HEX color'),
+        _copyOrPasteResult(context, tx, _rgbToHex(tx.trimmed), ''),
   ),
   _TransformAction(
-    label: 'HEX → HSL',
-    section: 'Colors',
+    label: l.transform__label__hex_to_hsl,
+    section: l.transform__section__colors,
     icon: Icons.format_paint_rounded,
     priority: 52,
     when: (tx) => tx.isColorCategory && tx.isHexColor,
     run: (context, tx) =>
-        _copyOrPasteResult(context, tx, _hexToHsl(tx.trimmed), 'HSL color'),
+        _copyOrPasteResult(context, tx, _hexToHsl(tx.trimmed), ''),
   ),
 
   _TransformAction(
-    label: 'Copy cleaned',
-    section: 'Emails / Phones',
+    label: l.transform__label__copy_cleaned,
+    section: l.transform__section__emails_phones,
     icon: Icons.cleaning_services_outlined,
     priority: 60,
     when: (tx) => tx.isEmailCategory || tx.isPhoneCategory,
-    run: (context, tx) => _copyOrPasteResult(
-      context,
-      tx,
-      _cleanEmailPhone(tx.trimmed),
-      'Cleaned value',
-    ),
+    run: (context, tx) =>
+        _copyOrPasteResult(context, tx, _cleanEmailPhone(tx.trimmed), ''),
   ),
 
   _TransformAction(
-    label: 'Extract emails',
-    section: 'Structured Text',
+    label: l.transform__label__extract_emails,
+    section: l.transform__section__structured_text,
     icon: Icons.email_rounded,
     priority: 70,
     when: (tx) {
@@ -507,13 +472,13 @@ List<_TransformAction> _definitions(ClipboardItem item) => [
       context,
       tx,
       TextAnalysis.extractEmails(tx.text).join('\n'),
-      'Extracted emails',
+      '',
       categoryOverride: TextCategory.email,
     ),
   ),
   _TransformAction(
-    label: 'Extract URLs',
-    section: 'Structured Text',
+    label: l.transform__label__extract_urls,
+    section: l.transform__section__structured_text,
     icon: Icons.link_rounded,
     priority: 71,
     when: (tx) =>
@@ -522,12 +487,12 @@ List<_TransformAction> _definitions(ClipboardItem item) => [
       context,
       tx,
       TextAnalysis.extractUrls(tx.text).join('\n'),
-      'Extracted URLs',
+      '',
     ),
   ),
   _TransformAction(
-    label: 'Extract numbers',
-    section: 'Structured Text',
+    label: l.transform__label__extract_numbers,
+    section: l.transform__section__structured_text,
     icon: Icons.pin_rounded,
     priority: 72,
     when: (tx) =>
@@ -537,7 +502,7 @@ List<_TransformAction> _definitions(ClipboardItem item) => [
       context,
       tx,
       TextAnalysis.extractNumbers(tx.text).join('\n'),
-      'Extracted numbers',
+      '',
     ),
   ),
 ];
@@ -549,8 +514,9 @@ List<MenuItem> buildSmartTransformMenuItems(
   final tx = _TransformContext.fromItem(item);
   if (tx == null) return const [];
 
-  final definitions = _definitions(item).where((d) => d.when(tx)).toList()
-    ..sort((a, b) => a.priority.compareTo(b.priority));
+  final definitions =
+      _definitions(context.locale).where((d) => d.when(tx)).toList()
+        ..sort((a, b) => a.priority.compareTo(b.priority));
 
   return [
     for (final def in definitions)

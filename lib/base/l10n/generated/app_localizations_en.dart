@@ -100,6 +100,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app__load_more => 'Fetch More';
 
   @override
+  String get app__more => 'More';
+
+  @override
   String get app__search => 'Search';
 
   @override
@@ -2551,4 +2554,95 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get collections__locked_section__label => 'Locked';
+
+  @override
+  String get transform__section__text_core => 'Text Core';
+
+  @override
+  String get transform__section__text_utilities => 'Text Utilities';
+
+  @override
+  String get transform__section__struct => 'Struct';
+
+  @override
+  String get transform__section__urls => 'URLs';
+
+  @override
+  String get transform__section__colors => 'Colors';
+
+  @override
+  String get transform__section__emails_phones => 'Emails / Phones';
+
+  @override
+  String get transform__section__structured_text => 'Structured Text';
+
+  @override
+  String get transform__label__uppercase => 'Uppercase';
+
+  @override
+  String get transform__label__lowercase => 'Lowercase';
+
+  @override
+  String get transform__label__capitalize => 'Capitalize';
+
+  @override
+  String get transform__label__trim_whitespace => 'Trim whitespace';
+
+  @override
+  String get transform__label__remove_line_breaks => 'Remove line breaks';
+
+  @override
+  String get transform__label__normalize_spaces => 'Normalize spaces';
+
+  @override
+  String get transform__label__reverse_text => 'Reverse text';
+
+  @override
+  String get transform__label__deduplicate_lines => 'Deduplicate lines';
+
+  @override
+  String get transform__label__json_prettify => 'JSON → prettify';
+
+  @override
+  String get transform__label__json_minify => 'JSON → minify';
+
+  @override
+  String get transform__label__url_encode => 'URL encode';
+
+  @override
+  String get transform__label__url_decode => 'URL decode';
+
+  @override
+  String get transform__label__base64_encode => 'Base64 encode';
+
+  @override
+  String get transform__label__base64_decode => 'Base64 decode';
+
+  @override
+  String get transform__label__remove_tracking_params =>
+      'Remove tracking params';
+
+  @override
+  String get transform__label__extract_domain => 'Extract domain';
+
+  @override
+  String get transform__label__hex_to_rgb => 'HEX → RGB';
+
+  @override
+  String get transform__label__rgb_to_hex => 'RGB → HEX';
+
+  @override
+  String get transform__label__hex_to_hsl => 'HEX → HSL';
+
+  @override
+  String get transform__label__copy_cleaned => 'Copy cleaned';
+
+  @override
+  String get transform__label__extract_emails => 'Extract emails';
+
+  @override
+  String get transform__label__extract_urls => 'Extract URLs';
+
+  @override
+  String get transform__label__extract_numbers => 'Extract numbers';
 }

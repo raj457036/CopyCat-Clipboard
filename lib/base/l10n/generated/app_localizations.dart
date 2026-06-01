@@ -285,6 +285,12 @@ abstract class AppLocalizations {
   /// **'Fetch More'**
   String get app__load_more;
 
+  /// No description provided for @app__more.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get app__more;
+
   /// No description provided for @app__search.
   ///
   /// In en, this message translates to:
@@ -4491,6 +4497,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Locked'**
   String get collections__locked_section__label;
+
+  /// No description provided for @transform__section__text_core.
+  ///
+  /// In en, this message translates to:
+  /// **'Text Core'**
+  String get transform__section__text_core;
+
+  /// No description provided for @transform__section__text_utilities.
+  ///
+  /// In en, this message translates to:
+  /// **'Text Utilities'**
+  String get transform__section__text_utilities;
+
+  /// No description provided for @transform__section__struct.
+  ///
+  /// In en, this message translates to:
+  /// **'Struct'**
+  String get transform__section__struct;
+
+  /// No description provided for @transform__section__urls.
+  ///
+  /// In en, this message translates to:
+  /// **'URLs'**
+  String get transform__section__urls;
+
+  /// No description provided for @transform__section__colors.
+  ///
+  /// In en, this message translates to:
+  /// **'Colors'**
+  String get transform__section__colors;
+
+  /// No description provided for @transform__section__emails_phones.
+  ///
+  /// In en, this message translates to:
+  /// **'Emails / Phones'**
+  String get transform__section__emails_phones;
+
+  /// No description provided for @transform__section__structured_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Structured Text'**
+  String get transform__section__structured_text;
+
+  /// No description provided for @transform__label__uppercase.
+  ///
+  /// In en, this message translates to:
+  /// **'Uppercase'**
+  String get transform__label__uppercase;
+
+  /// No description provided for @transform__label__lowercase.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowercase'**
+  String get transform__label__lowercase;
+
+  /// No description provided for @transform__label__capitalize.
+  ///
+  /// In en, this message translates to:
+  /// **'Capitalize'**
+  String get transform__label__capitalize;
+
+  /// No description provided for @transform__label__trim_whitespace.
+  ///
+  /// In en, this message translates to:
+  /// **'Trim whitespace'**
+  String get transform__label__trim_whitespace;
+
+  /// No description provided for @transform__label__remove_line_breaks.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove line breaks'**
+  String get transform__label__remove_line_breaks;
+
+  /// No description provided for @transform__label__normalize_spaces.
+  ///
+  /// In en, this message translates to:
+  /// **'Normalize spaces'**
+  String get transform__label__normalize_spaces;
+
+  /// No description provided for @transform__label__reverse_text.
+  ///
+  /// In en, this message translates to:
+  /// **'Reverse text'**
+  String get transform__label__reverse_text;
+
+  /// No description provided for @transform__label__deduplicate_lines.
+  ///
+  /// In en, this message translates to:
+  /// **'Deduplicate lines'**
+  String get transform__label__deduplicate_lines;
+
+  /// No description provided for @transform__label__json_prettify.
+  ///
+  /// In en, this message translates to:
+  /// **'JSON → prettify'**
+  String get transform__label__json_prettify;
+
+  /// No description provided for @transform__label__json_minify.
+  ///
+  /// In en, this message translates to:
+  /// **'JSON → minify'**
+  String get transform__label__json_minify;
+
+  /// No description provided for @transform__label__url_encode.
+  ///
+  /// In en, this message translates to:
+  /// **'URL encode'**
+  String get transform__label__url_encode;
+
+  /// No description provided for @transform__label__url_decode.
+  ///
+  /// In en, this message translates to:
+  /// **'URL decode'**
+  String get transform__label__url_decode;
+
+  /// No description provided for @transform__label__base64_encode.
+  ///
+  /// In en, this message translates to:
+  /// **'Base64 encode'**
+  String get transform__label__base64_encode;
+
+  /// No description provided for @transform__label__base64_decode.
+  ///
+  /// In en, this message translates to:
+  /// **'Base64 decode'**
+  String get transform__label__base64_decode;
+
+  /// No description provided for @transform__label__remove_tracking_params.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove tracking params'**
+  String get transform__label__remove_tracking_params;
+
+  /// No description provided for @transform__label__extract_domain.
+  ///
+  /// In en, this message translates to:
+  /// **'Extract domain'**
+  String get transform__label__extract_domain;
+
+  /// No description provided for @transform__label__hex_to_rgb.
+  ///
+  /// In en, this message translates to:
+  /// **'HEX → RGB'**
+  String get transform__label__hex_to_rgb;
+
+  /// No description provided for @transform__label__rgb_to_hex.
+  ///
+  /// In en, this message translates to:
+  /// **'RGB → HEX'**
+  String get transform__label__rgb_to_hex;
+
+  /// No description provided for @transform__label__hex_to_hsl.
+  ///
+  /// In en, this message translates to:
+  /// **'HEX → HSL'**
+  String get transform__label__hex_to_hsl;
+
+  /// No description provided for @transform__label__copy_cleaned.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy cleaned'**
+  String get transform__label__copy_cleaned;
+
+  /// No description provided for @transform__label__extract_emails.
+  ///
+  /// In en, this message translates to:
+  /// **'Extract emails'**
+  String get transform__label__extract_emails;
+
+  /// No description provided for @transform__label__extract_urls.
+  ///
+  /// In en, this message translates to:
+  /// **'Extract URLs'**
+  String get transform__label__extract_urls;
+
+  /// No description provided for @transform__label__extract_numbers.
+  ///
+  /// In en, this message translates to:
+  /// **'Extract numbers'**
+  String get transform__label__extract_numbers;
 }
 
 class _AppLocalizationsDelegate

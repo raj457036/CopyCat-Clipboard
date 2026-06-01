@@ -100,6 +100,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get app__load_more => 'Charger plus';
 
   @override
+  String get app__more => 'Plus';
+
+  @override
   String get app__search => 'Rechercher';
 
   @override
@@ -2597,4 +2600,96 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get collections__locked_section__label => 'Verrouillé';
+
+  @override
+  String get transform__section__text_core => 'Texte de base';
+
+  @override
+  String get transform__section__text_utilities => 'Outils texte';
+
+  @override
+  String get transform__section__struct => 'Structure';
+
+  @override
+  String get transform__section__urls => 'URLs';
+
+  @override
+  String get transform__section__colors => 'Couleurs';
+
+  @override
+  String get transform__section__emails_phones => 'E-mails / Téléphones';
+
+  @override
+  String get transform__section__structured_text => 'Texte structuré';
+
+  @override
+  String get transform__label__uppercase => 'Majuscules';
+
+  @override
+  String get transform__label__lowercase => 'Minuscules';
+
+  @override
+  String get transform__label__capitalize => 'Mettre en majuscule';
+
+  @override
+  String get transform__label__trim_whitespace => 'Supprimer les espaces';
+
+  @override
+  String get transform__label__remove_line_breaks =>
+      'Supprimer les sauts de ligne';
+
+  @override
+  String get transform__label__normalize_spaces => 'Normaliser les espaces';
+
+  @override
+  String get transform__label__reverse_text => 'Inverser le texte';
+
+  @override
+  String get transform__label__deduplicate_lines => 'Supprimer les doublons';
+
+  @override
+  String get transform__label__json_prettify => 'JSON → formater';
+
+  @override
+  String get transform__label__json_minify => 'JSON → minifier';
+
+  @override
+  String get transform__label__url_encode => 'Encoder l\'URL';
+
+  @override
+  String get transform__label__url_decode => 'Décoder l\'URL';
+
+  @override
+  String get transform__label__base64_encode => 'Encoder en Base64';
+
+  @override
+  String get transform__label__base64_decode => 'Décoder en Base64';
+
+  @override
+  String get transform__label__remove_tracking_params =>
+      'Supprimer les traceurs';
+
+  @override
+  String get transform__label__extract_domain => 'Extraire le domaine';
+
+  @override
+  String get transform__label__hex_to_rgb => 'HEX → RGB';
+
+  @override
+  String get transform__label__rgb_to_hex => 'RGB → HEX';
+
+  @override
+  String get transform__label__hex_to_hsl => 'HEX → HSL';
+
+  @override
+  String get transform__label__copy_cleaned => 'Copier nettoyé';
+
+  @override
+  String get transform__label__extract_emails => 'Extraire les e-mails';
+
+  @override
+  String get transform__label__extract_urls => 'Extraire les URLs';
+
+  @override
+  String get transform__label__extract_numbers => 'Extraire les nombres';
 }

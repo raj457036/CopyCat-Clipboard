@@ -99,6 +99,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app__load_more => '加载更多';
 
   @override
+  String get app__more => '更多';
+
+  @override
   String get app__search => '搜索';
 
   @override
@@ -2407,4 +2410,94 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get collections__locked_section__label => '已锁定';
+
+  @override
+  String get transform__section__text_core => '文本核心';
+
+  @override
+  String get transform__section__text_utilities => '文本工具';
+
+  @override
+  String get transform__section__struct => '结构';
+
+  @override
+  String get transform__section__urls => '网址';
+
+  @override
+  String get transform__section__colors => '颜色';
+
+  @override
+  String get transform__section__emails_phones => '邮件 / 电话';
+
+  @override
+  String get transform__section__structured_text => '结构化文本';
+
+  @override
+  String get transform__label__uppercase => '转大写';
+
+  @override
+  String get transform__label__lowercase => '转小写';
+
+  @override
+  String get transform__label__capitalize => '首字母大写';
+
+  @override
+  String get transform__label__trim_whitespace => '去除空白';
+
+  @override
+  String get transform__label__remove_line_breaks => '删除换行';
+
+  @override
+  String get transform__label__normalize_spaces => '规范化空格';
+
+  @override
+  String get transform__label__reverse_text => '反转文本';
+
+  @override
+  String get transform__label__deduplicate_lines => '去重行';
+
+  @override
+  String get transform__label__json_prettify => 'JSON → 格式化';
+
+  @override
+  String get transform__label__json_minify => 'JSON → 压缩';
+
+  @override
+  String get transform__label__url_encode => 'URL 编码';
+
+  @override
+  String get transform__label__url_decode => 'URL 解码';
+
+  @override
+  String get transform__label__base64_encode => 'Base64 编码';
+
+  @override
+  String get transform__label__base64_decode => 'Base64 解码';
+
+  @override
+  String get transform__label__remove_tracking_params => '删除追踪参数';
+
+  @override
+  String get transform__label__extract_domain => '提取域名';
+
+  @override
+  String get transform__label__hex_to_rgb => 'HEX → RGB';
+
+  @override
+  String get transform__label__rgb_to_hex => 'RGB → HEX';
+
+  @override
+  String get transform__label__hex_to_hsl => 'HEX → HSL';
+
+  @override
+  String get transform__label__copy_cleaned => '复制清理后';
+
+  @override
+  String get transform__label__extract_emails => '提取邮件';
+
+  @override
+  String get transform__label__extract_urls => '提取网址';
+
+  @override
+  String get transform__label__extract_numbers => '提取数字';
 }

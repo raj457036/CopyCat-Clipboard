@@ -38,14 +38,15 @@ Widget _buildDesktopMenuButton(MenuItem item) {
   );
 }
 
-List<MenuItem> _limitMenuItems(List<MenuItem> source) {
+List<MenuItem> _limitMenuItems(BuildContext context, List<MenuItem> source) {
   if (source.length <= 10) return source;
+  final label = context.locale.app__more;
   return [
     ...source.take(9),
     MenuItem(
-      text: 'More',
+      text: label,
       icon: Icons.more_horiz_rounded,
-      section: 'More',
+      section: label,
       children: source
           .skip(9)
           .map(
