@@ -294,10 +294,14 @@ final appRouter = GoRouter(
             GoRoute(
               name: RouteConstants.settings,
               path: '/settings',
-              pageBuilder: (context, state) => NoTransitionPage(
-                key: state.pageKey,
-                child: const SettingsPage(),
-              ),
+              pageBuilder: (context, state) {
+                final tab =
+                    int.tryParse(state.uri.queryParameters['tab'] ?? '') ?? 0;
+                return NoTransitionPage(
+                  key: state.pageKey,
+                  child: SettingsPage(initialIndex: tab),
+                );
+              },
               routes: [
                 GoRoute(
                   name: RouteConstants.androidBgClipboardSettings,

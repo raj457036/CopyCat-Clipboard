@@ -13,9 +13,12 @@ import 'package:clipboard/widgets/logout_button.dart';
 import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:clipboard/widgets/subscription/active_plan_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+  final int initialIndex;
+
+  const SettingsPage({super.key, this.initialIndex = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +26,7 @@ class SettingsPage extends StatelessWidget {
     final dense = context.isMobile;
     return DefaultTabController(
       length: 5,
-      initialIndex: 0,
+      initialIndex: initialIndex,
       child: CustomScaffold(
         activeIndex: 2,
         appBar: AppBar(
@@ -47,7 +50,7 @@ class SettingsPage extends StatelessWidget {
               TabBar(
                 isScrollable: true,
                 tabAlignment: TabAlignment.center,
-                onTap: (_) {},
+                onTap: (i) => context.go('/settings?tab=$i'),
                 tabs: [
                   Tab(
                     icon: const Icon(Icons.settings_rounded),
@@ -77,7 +80,6 @@ class SettingsPage extends StatelessWidget {
                     shape: dense
                         ? const RoundedRectangleBorder()
                         : const RoundedRectangleBorder(borderRadius: radius12),
-                    // dense: dense,
                   ),
                   child: const SizedBox(
                     width: 800,

@@ -55,13 +55,13 @@ class LanInstantSyncSwitchTile extends StatelessWidget {
                 color: serviceActive ? colors.outline : colors.error,
               ),
               enabled: serviceActive && hasAccess,
-              onTap: serviceActive && hasAccess
+              onTap: serviceActive && hasAccess && enabled
                   ? () => context.goNamed(RouteConstants.lanMesh)
                   : null,
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const VerticalDivider(),
+                  if (enabled) const VerticalDivider(),
                   Switch(
                     mouseCursor: (serviceActive && hasAccess)
                         ? SystemMouseCursors.click
