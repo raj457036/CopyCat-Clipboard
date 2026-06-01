@@ -310,6 +310,7 @@
   "login__form__text_tnc_p4": "Terms of Service.",
   "@@HOME": "Home Screen",
   "home__search__hint": "Search in clipboard",
+  "collections__search__hint": "Search collection",
   "home__search__reset": "Reset Search",
   "@@PREVIEW": "Preview Screen",
   "preview__vert_view__tab1_title": "Preview",

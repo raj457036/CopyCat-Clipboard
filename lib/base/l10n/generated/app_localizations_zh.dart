@@ -750,6 +750,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get home__search__hint => '在剪贴板中搜索';
 
   @override
+  String get collections__search__hint => '搜索集合';
+
+  @override
   String get home__search__reset => '重置搜索';
 
   @override

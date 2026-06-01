@@ -1500,6 +1500,12 @@ abstract class AppLocalizations {
   /// **'Search in clipboard'**
   String get home__search__hint;
 
+  /// No description provided for @collections__search__hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search collection'**
+  String get collections__search__hint;
+
   /// No description provided for @home__search__reset.
   ///
   /// In en, this message translates to:

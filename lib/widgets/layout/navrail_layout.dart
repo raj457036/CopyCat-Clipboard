@@ -23,7 +23,7 @@ class NavrailLayout extends StatelessWidget {
           navbarActiveIndex: navbarActiveIndex,
           floatingActionButton: floatingActionButton,
         ),
-        Expanded(child: child),
+        Expanded(child: SafeArea(child: child)),
       ],
     );
   }

@@ -1,42 +1,31 @@
+import 'dart:async';
+
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/sheets/sheet_handle.dart';
 import 'package:flutter/material.dart';
 
-class MenuItem {
-  final String? text;
-  final IconData? icon;
-  final VoidCallback? onPressed;
-  final String? section;
-  final List<MenuItem> children;
+part 'menu/menu_handle.dart';
+part 'menu/menu_helpers.dart';
+part 'menu/menu_item.dart';
 
-  const MenuItem({
-    this.text,
-    this.icon,
-    this.onPressed,
-    this.section,
-    this.children = const [],
-  });
-}
-
-/// Returned by [Menu.of]. Use this to open the menu.
-class MenuHandle {
-  final _MenuState _state;
-  MenuHandle._(this._state);
-
-  Future<void> openMenu(BuildContext context) => _state._openMenu(context);
-
-  void openPopupMenu(BuildContext context, Offset globalPosition) =>
-      _state._openPopupMenu(context, globalPosition);
-}
+_MenuState? _activePopupMenu;
 
 class _MenuScope extends InheritedWidget {
   final MenuHandle handle;
-  const _MenuScope({required this.handle, required super.child});
+  final bool isOpen;
+
+  const _MenuScope({
+    required this.handle,
+    required this.isOpen,
+    required super.child,
+  });
 
   @override
-  bool updateShouldNotify(_MenuScope old) => handle != old.handle;
+  bool updateShouldNotify(_MenuScope old) {
+    return handle != old.handle || isOpen != old.isOpen;
+  }
 }
 
 class Menu extends StatefulWidget {
@@ -56,8 +45,16 @@ class Menu extends StatefulWidget {
   static MenuHandle? maybeOf(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<_MenuScope>()?.handle;
 
-  static MenuHandle of(BuildContext context) {
+  static MenuHandle? of(BuildContext context) {
     final result = maybeOf(context);
+    return result;
+  }
+
+  static bool? maybeIsOpenOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_MenuScope>()?.isOpen;
+
+  static bool isOpenOf(BuildContext context) {
+    final result = maybeIsOpenOf(context);
     assert(result != null, 'No Menu found in context');
     return result!;
   }
@@ -69,28 +66,31 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> {
   final _menuController = MenuController();
   final _menuAnchorKey = GlobalKey();
-  late final MenuHandle _handle = MenuHandle._(this);
-
-  static const _cardWidth = 260.0;
-  static const _cardRadius = 14.0;
-  static const _groupGap = 6.0;
-
-  static const _itemStyle = ButtonStyle(
-    backgroundColor: WidgetStatePropertyAll(Colors.transparent),
-    padding: WidgetStatePropertyAll(
-      EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-    ),
-    visualDensity: VisualDensity.comfortable,
+  bool _isOpen = false;
+  late final MenuHandle _handle = MenuHandle._(
+    openMenu: _openMenu,
+    openPopupMenu: _openPopupMenu,
   );
 
-  static const _panelStyle = MenuStyle(
-    backgroundColor: WidgetStatePropertyAll(Colors.transparent),
-    shadowColor: WidgetStatePropertyAll(Colors.transparent),
-    surfaceTintColor: WidgetStatePropertyAll(Colors.transparent),
-    elevation: WidgetStatePropertyAll(0),
-    padding: WidgetStatePropertyAll(EdgeInsets.all(8)),
-    side: WidgetStatePropertyAll(BorderSide.none),
-  );
+  void _setOpen(bool value) {
+    if (_isOpen == value || !mounted) return;
+    setState(() {
+      _isOpen = value;
+    });
+  }
+
+  void _handlePopupOpen() {
+    _activePopupMenu = this;
+    _setOpen(true);
+  }
+
+  void _handlePopupClose() {
+    if (identical(_activePopupMenu, this)) {
+      _activePopupMenu = null;
+    }
+    _setOpen(false);
+    widget.onAfterClose?.call();
+  }
 
   Future<void> _runBeforeOpen() async {
     final callback = widget.onBeforeOpen;
@@ -100,206 +100,58 @@ class _MenuState extends State<Menu> {
     } catch (_) {}
   }
 
-  void _openPopupMenu(BuildContext context, Offset globalPosition) async {
-    await _runBeforeOpen();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final box =
-          _menuAnchorKey.currentContext?.findRenderObject() as RenderBox?;
-      _menuController.open(
-        position: box?.globalToLocal(globalPosition) ?? globalPosition,
-      );
-    });
-  }
-
-  List<Widget> _buildMenuChildren(BuildContext context) {
-    final grouped = _grouped(_limitItems(widget.items));
-    final colors = context.colors;
-    final cardColor = colors.surfaceBright;
-    final sections = <Widget>[];
-
-    for (final entry in grouped.entries) {
-      if (sections.isNotEmpty) sections.add(const SizedBox(height: _groupGap));
-
-      sections.add(
-        _MenuCard(
-          width: _cardWidth,
-          radius: _cardRadius,
-          color: cardColor,
-          shadowColor: colors.shadow,
-          children: [
-            if (entry.key != null) _SectionLabel(entry.key!),
-            for (final item in entry.value)
-              if (item.children.isNotEmpty)
-                _buildSubmenuButton(context, item, cardColor, colors)
-              else
-                _buildItemButton(item, colors),
-          ],
-        ),
-      );
-    }
-
-    return sections;
-  }
-
-  Widget _buildItemButton(MenuItem item, ColorScheme colors) => MenuItemButton(
-    style: _itemStyle,
-    leadingIcon: item.icon != null
-        ? Icon(item.icon, size: 18, color: colors.onSurfaceVariant)
-        : null,
-    onPressed: item.onPressed,
-    child: Text(item.text ?? ''),
-  );
-
-  Widget _buildSubmenuButton(
+  Future<void> _openPopupMenu(
     BuildContext context,
-    MenuItem item,
-    Color cardColor,
-    ColorScheme colors,
-  ) => SubmenuButton(
-    style: _itemStyle,
-    menuStyle: _panelStyle,
-    leadingIcon: item.icon != null
-        ? Icon(item.icon, size: 18, color: colors.onSurfaceVariant)
-        : null,
-    menuChildren: [
-      _MenuCard(
-        width: _cardWidth,
-        radius: _cardRadius,
-        color: cardColor,
-        shadowColor: colors.shadow,
-        children: item.children
-            .map((child) => _buildItemButton(child, colors))
-            .toList(),
-      ),
-    ],
-    child: Text(item.text ?? ''),
-  );
+    Offset globalPosition,
+  ) async {
+    final waitForItemsFrame = widget.onBeforeOpen != null;
+    final otherPopupMenu = _activePopupMenu;
+    final reopenCurrentMenu = _menuController.isOpen;
 
-  List<MenuItem> _limitItems(List<MenuItem> source) {
-    if (source.length <= 10) return source;
-    return [
-      ...source.take(9),
-      MenuItem(
-        text: 'More',
-        icon: Icons.more_horiz_rounded,
-        section: 'More',
-        children: source
-            .skip(9)
-            .map(
-              (e) => MenuItem(
-                text: e.text,
-                icon: e.icon,
-                onPressed: e.onPressed,
-                section: e.section,
-              ),
-            )
-            .toList(),
-      ),
-    ];
-  }
-
-  List<MenuItem> _flattenBottomSheetItems(
-    List<MenuItem> source, {
-    String? fallbackSection,
-  }) {
-    final flattened = <MenuItem>[];
-
-    for (final item in source) {
-      final section = item.section ?? fallbackSection;
-
-      if (item.onPressed != null || item.children.isEmpty) {
-        flattened.add(
-          MenuItem(
-            text: item.text,
-            icon: item.icon,
-            onPressed: item.onPressed,
-            section: section,
-          ),
-        );
-      }
-
-      if (item.children.isNotEmpty) {
-        flattened.addAll(
-          _flattenBottomSheetItems(
-            item.children,
-            fallbackSection: item.text ?? section,
-          ),
-        );
-      }
+    if (otherPopupMenu != null && !identical(otherPopupMenu, this)) {
+      otherPopupMenu._menuController.close();
     }
 
-    return flattened;
-  }
-
-  Map<String?, List<MenuItem>> _grouped(List<MenuItem> source) {
-    final map = <String?, List<MenuItem>>{};
-    for (final item in source) {
-      map.putIfAbsent(item.section, () => []).add(item);
+    if (reopenCurrentMenu) {
+      _menuController.close();
     }
-    return map;
+
+    await _runBeforeOpen();
+
+    if (otherPopupMenu != null || reopenCurrentMenu || waitForItemsFrame) {
+      await WidgetsBinding.instance.endOfFrame;
+    }
+
+    if (!mounted) return;
+    final box = _menuAnchorKey.currentContext?.findRenderObject() as RenderBox?;
+    _menuController.open(
+      position: box?.globalToLocal(globalPosition) ?? globalPosition,
+    );
   }
 
   Future<void> _openMenu(BuildContext context) async {
     await _runBeforeOpen();
     await WidgetsBinding.instance.endOfFrame;
     if (!context.mounted) return;
-    final mq = context.mq;
-    final colors = context.colors;
-    final safeArea = mq.systemGestureInsets.bottom + padding8;
-    final grouped = _grouped(_flattenBottomSheetItems(widget.items));
 
-    await showModalBottomSheet(
+    _setOpen(true);
+
+    await _showMenuBottomSheet(
       context: context,
-      scrollControlDisabledMaxHeightRatio: 0.8,
-      constraints: BoxConstraints(maxWidth: mq.size.width * 0.9),
-      useSafeArea: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: safeArea),
-        child: Material(
-          color: colors.surface,
-          borderRadius: radius16,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: mq.size.height * 0.8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SheetHandle(),
-                Flexible(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      for (final entry in grouped.entries) ...[
-                        if (entry.key != null)
-                          _BottomSheetSectionLabel(entry.key!),
-                        for (final item in entry.value)
-                          ListTile(
-                            leading: Icon(item.icon),
-                            title: Text(item.text!),
-                            onTap: () async {
-                              Navigator.pop(context);
-                              await wait(250);
-                              item.onPressed?.call();
-                            },
-                          ),
-                      ],
-                      height10,
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+      groupedItems: _groupedMenuItems(
+        _flattenBottomSheetItems(_limitMenuItems(widget.items)),
       ),
     );
 
+    _setOpen(false);
     widget.onAfterClose?.call();
   }
 
   @override
   void dispose() {
+    if (identical(_activePopupMenu, this)) {
+      _activePopupMenu = null;
+    }
     super.dispose();
   }
 
@@ -307,91 +159,18 @@ class _MenuState extends State<Menu> {
   Widget build(BuildContext context) {
     return _MenuScope(
       handle: _handle,
+      isOpen: _isOpen,
       child: MenuAnchor(
         key: _menuAnchorKey,
         controller: _menuController,
-        style: _panelStyle,
-        onClose: widget.onAfterClose,
-        menuChildren: _buildMenuChildren(context),
+        animated: true,
+        onOpen: _handlePopupOpen,
+        onClose: _handlePopupClose,
+        menuChildren: _buildDesktopMenuChildren(
+          context,
+          _limitMenuItems(widget.items),
+        ),
         child: widget.child,
-      ),
-    );
-  }
-}
-
-/// A rounded card that wraps a group of menu items.
-class _MenuCard extends StatelessWidget {
-  final double width;
-  final double radius;
-  final Color color;
-  final Color shadowColor;
-  final List<Widget> children;
-
-  const _MenuCard({
-    required this.width,
-    required this.radius,
-    required this.color,
-    required this.shadowColor,
-    required this.children,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return LimitedBox(
-      maxWidth: width,
-      child: Material(
-        elevation: 2,
-        type: MaterialType.button,
-        shadowColor: shadowColor,
-        borderRadius: BorderRadius.circular(radius),
-        color: color,
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: children,
-        ),
-      ),
-    );
-  }
-}
-
-/// Uppercase section label rendered inside a card.
-class _SectionLabel extends StatelessWidget {
-  final String text;
-  const _SectionLabel(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 10, 14, 2),
-      child: Text(
-        text.toUpperCase(),
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: context.colors.onSurfaceVariant,
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.8,
-        ),
-      ),
-    );
-  }
-}
-
-/// Section label used in the mobile bottom-sheet (non-uppercase, larger).
-class _BottomSheetSectionLabel extends StatelessWidget {
-  final String text;
-  const _BottomSheetSectionLabel(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-      child: Text(
-        text,
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: context.colors.onSurfaceVariant,
-          fontWeight: FontWeight.w600,
-        ),
       ),
     );
   }

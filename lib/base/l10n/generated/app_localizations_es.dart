@@ -789,6 +789,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get home__search__hint => 'Buscar en el portapapeles';
 
   @override
+  String get collections__search__hint => 'Buscar colección';
+
+  @override
   String get home__search__reset => 'Restablecer Búsqueda';
 
   @override

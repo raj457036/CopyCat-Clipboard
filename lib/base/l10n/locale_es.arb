@@ -278,6 +278,7 @@
   "login__form__text_tnc_p4": "Términos del Servicio.",
   "@@HOME": "Pantalla de Inicio",
   "home__search__hint": "Buscar en el portapapeles",
+  "collections__search__hint": "Buscar colección",
   "home__search__reset": "Restablecer Búsqueda",
   "@@PREVIEW": "Pantalla de Vista Previa",
   "preview__vert_view__tab1_title": "Vista Previa",

@@ -786,6 +786,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get home__search__hint => 'In der Zwischenablage suchen';
 
   @override
+  String get collections__search__hint => 'Sammlung suchen';
+
+  @override
   String get home__search__reset => 'Suche zurücksetzen';
 
   @override

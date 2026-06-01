@@ -5,6 +5,7 @@ import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/subscription_actions.dart';
 import 'package:clipboard/widgets/badges.dart';
 import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
@@ -57,47 +58,32 @@ class CreateCollectionButton extends StatelessWidget {
             final remaining = localMode
                 ? "∞"
                 : max(collection - count, 0).toString();
-            Widget child;
             if (!isFab) {
-              child = IconButton.filledTonal(
-                onPressed: canCreate ? () => createCollection(context) : null,
-                icon: const Icon(Icons.add),
+              return IconButton.filledTonal(
+                onPressed: canCreate
+                    ? () => createCollection(context)
+                    : showUpgradePlanDialog,
+                icon: const Icon(Icons.create_new_folder_rounded),
                 tooltip: context.locale.fab__create_collection(
                   remaining: remaining,
                 ),
               );
-            } else {
-              child = FloatingActionButton(
-                heroTag: "collection-fab",
-
-                backgroundColor: canCreate ? null : colors.outline,
-                mouseCursor: canCreate
-                    ? SystemMouseCursors.click
-                    : SystemMouseCursors.forbidden,
-                onPressed: canCreate ? () => createCollection(context) : null,
-                tooltip: context.locale.fab__create_collection(
-                  remaining: remaining,
-                ),
-                child: const Icon(Icons.library_add_rounded),
-              );
             }
 
-            if (!canCreate) {
-              child = Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  child,
-                  const Positioned(
-                    bottom: -6,
-                    left: 0,
-                    right: 0,
-                    child: ProBadge(noTooltip: true),
-                  ),
-                ],
-              );
-            }
-
-            return child;
+            return FloatingActionButton(
+              heroTag: "collection-fab",
+              backgroundColor: canCreate ? null : colors.outline,
+              mouseCursor: canCreate
+                  ? SystemMouseCursors.click
+                  : SystemMouseCursors.forbidden,
+              onPressed: canCreate
+                  ? () => createCollection(context)
+                  : showUpgradePlanDialog,
+              tooltip: context.locale.fab__create_collection(
+                remaining: remaining,
+              ),
+              child: const Icon(Icons.create_new_folder_rounded),
+            );
           },
         );
       },

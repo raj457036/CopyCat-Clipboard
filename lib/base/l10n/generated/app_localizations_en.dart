@@ -776,6 +776,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get home__search__hint => 'Search in clipboard';
 
   @override
+  String get collections__search__hint => 'Search collection';
+
+  @override
   String get home__search__reset => 'Reset Search';
 
   @override

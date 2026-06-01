@@ -20,12 +20,12 @@ class HoverScope extends InheritedWidget {
 /// Provides hover state without rebuilding child content.
 /// Only the hoverable parts rebuild when hover changes.
 class HoverScopeProvider extends StatefulWidget {
-  final Widget Function(BuildContext context, bool hovered) builder;
+  final Widget child;
 
-  const HoverScopeProvider({super.key, required this.builder});
+  const HoverScopeProvider({super.key, required this.child});
 
   @override
-  createState() => _HoverScopeProviderState();
+  State<HoverScopeProvider> createState() => _HoverScopeProviderState();
 }
 
 class _HoverScopeProviderState extends State<HoverScopeProvider> {
@@ -54,10 +54,7 @@ class _HoverScopeProviderState extends State<HoverScopeProvider> {
     return MouseRegion(
       onEnter: (_) => _onHover(true),
       onExit: (_) => _onHover(false),
-      child: HoverScope(
-        hovered: _hovered,
-        child: widget.builder(context, _hovered),
-      ),
+      child: HoverScope(hovered: _hovered, child: widget.child),
     );
   }
 }

@@ -107,7 +107,6 @@ String keyboardShortcut({
   bool meta = true,
   bool shift = false,
   bool ctrl = false,
-  bool prefixDot = false,
   required String key,
 }) {
   final parts = <String>[];

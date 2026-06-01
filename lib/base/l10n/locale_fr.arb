@@ -278,6 +278,7 @@
   "login__form__text_tnc_p4": "les conditions d'utilisation.",
   "@@HOME": "Écran d'accueil",
   "home__search__hint": "Rechercher dans le presse-papiers",
+  "collections__search__hint": "Rechercher une collection",
   "home__search__reset": "Réinitialiser la recherche",
   "@@PREVIEW": "Écran d'aperçu",
   "preview__vert_view__tab1_title": "Aperçu",

@@ -791,6 +791,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get home__search__hint => 'Rechercher dans le presse-papiers';
 
   @override
+  String get collections__search__hint => 'Rechercher une collection';
+
+  @override
   String get home__search__reset => 'Réinitialiser la recherche';
 
   @override

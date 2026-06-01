@@ -278,6 +278,7 @@
   "login__form__text_tnc_p4": "Nutzungsbedingungen zu.",
   "@@HOME": "Startbildschirm",
   "home__search__hint": "In der Zwischenablage suchen",
+  "collections__search__hint": "Sammlung suchen",
   "home__search__reset": "Suche zurücksetzen",
   "@@PREVIEW": "Vorschau-Bildschirm",
   "preview__vert_view__tab1_title": "Vorschau",

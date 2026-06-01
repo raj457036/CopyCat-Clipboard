@@ -24,13 +24,13 @@ class SearchInputBar extends StatefulWidget {
 
 class _SearchBarInputState extends State<SearchInputBar> {
   late final TextEditingController queryController;
-  late final FocusNode focusNode;
+  late final FocusNode searchInputFocusNode;
   final Debouncer _debouncer = Debouncer(milliseconds: 250);
   bool isFocused = false;
 
   void onFocus() {
     setState(() {
-      isFocused = focusNode.hasFocus;
+      isFocused = searchInputFocusNode.hasFocus;
     });
   }
 
@@ -39,8 +39,7 @@ class _SearchBarInputState extends State<SearchInputBar> {
     super.initState();
     final cubit = context.read<ClipboardCubit>();
     queryController = TextEditingController(text: cubit.state.query);
-    focusNode = FocusNode(
-      debugLabel: "searchbar-input",
+    searchInputFocusNode = FocusNode(
       onKeyEvent: (node, event) {
         if (event.logicalKey == LogicalKeyboardKey.escape ||
             event.logicalKey == LogicalKeyboardKey.arrowDown) {
@@ -49,22 +48,23 @@ class _SearchBarInputState extends State<SearchInputBar> {
         }
         return KeyEventResult.ignored;
       },
+      debugLabel: 'home-search-input',
     );
-    focusNode.addListener(onFocus);
+    searchInputFocusNode.addListener(onFocus);
   }
 
   @override
   void dispose() {
     _debouncer.cancel();
-    focusNode.removeListener(onFocus);
+    searchInputFocusNode.removeListener(onFocus);
     queryController.dispose();
-    focusNode.dispose();
+    searchInputFocusNode.dispose();
     super.dispose();
   }
 
   void focus() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      focusNode.requestFocus();
+      searchInputFocusNode.requestFocus();
     });
   }
 
@@ -134,18 +134,20 @@ class _SearchBarInputState extends State<SearchInputBar> {
             children: [
               Expanded(
                 child: Focus(
+                  skipTraversal: true,
                   onFocusChange: (value) => value ? focus() : null,
                   child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(50)),
                     child: SearchBar(
                       controller: queryController,
-                      focusNode: focusNode,
+                      focusNode: searchInputFocusNode,
                       side: isFocused
                           ? BorderSide(color: colors.outline, width: 2).msp
                           : null,
                       smartDashesType: SmartDashesType.disabled,
                       smartQuotesType: SmartQuotesType.disabled,
-                      onTapOutside: (event) => focusNode.nextFocus(),
+                      onTapOutside: (event) => searchInputFocusNode
+                          .focusInDirection(TraversalDirection.down),
                       elevation: 0.0.msp,
                       hintText: context.locale.home__search__hint,
                       leading: const Align(

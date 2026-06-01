@@ -784,6 +784,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get home__search__hint => 'Pesquisar no clipboard';
 
   @override
+  String get collections__search__hint => 'Pesquisar coleção';
+
+  @override
   String get home__search__reset => 'Redefinir Pesquisa';
 
   @override

@@ -30,7 +30,7 @@ class ShellPage extends StatelessWidget {
       onPopInvokedWithResult: (didPop, result) {
         logger.i(() => "[Shell Route] DID POP: $didPop");
       },
-      child: FocusScope(autofocus: true, child: child_),
+      child: child_,
     );
   }
 }

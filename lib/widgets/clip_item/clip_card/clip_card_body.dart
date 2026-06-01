@@ -194,19 +194,21 @@ class _ClipCardBodyState extends State<ClipCardBody> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-
+    final menuOpen = Menu.maybeIsOpenOf(context) ?? false;
+    final highlighted = focused || menuOpen;
     final selectedShape = RoundedRectangleBorder(
       side: BorderSide(
-        color: focused || widget.selected
-            ? focused
-                  ? colors.primary
-                  : colors.secondary
+        color: widget.selected
+            ? colors.secondary
+            : highlighted
+            ? colors.primary
             : colors.outlineVariant,
-        width: focused ? gridItemBorderWidth * 2 : gridItemBorderWidth,
+        width: highlighted ? gridItemBorderWidth * 2 : gridItemBorderWidth,
         strokeAlign: BorderSide.strokeAlignInside,
       ),
       borderRadius: radius12,
     );
+    const content = HoverScopeProvider(child: ClipCardBodyContent());
 
     return SpaceEnterListener(
       onSpace: (context) => widget.selectionActive
@@ -219,7 +221,8 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       onShiftSpaceEnter: (context) => onShiftEnter(context),
       onShiftC: (context) => onShiftC(context, widget.item),
       child: Card.outlined(
-        elevation: focused ? 2 : 0,
+        color: menuOpen ? colors.surfaceContainerHigh : null,
+        elevation: highlighted ? 2 : 0,
         shape: selectedShape,
         clipBehavior: Clip.hardEdge,
         child: InkWell(
@@ -233,6 +236,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
           onSecondaryTapUp: !widget.selectionActive
               ? (detail) async {
                   final menu = Menu.of(context);
+                  if (menu == null) return;
                   if (isMobilePlatform) {
                     menu.openMenu(context);
                     return;
@@ -242,9 +246,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
               : null,
           onFocusChange: onFocusChange,
           autofocus: widget.focused,
-          child: HoverScopeProvider(
-            builder: (context, hovered) => const ClipCardBodyContent(),
-          ),
+          child: content,
         ),
       ),
     );

@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 class BorderPainter extends CustomPainter {
   final Offset position;
   final Size boxSize;
+  final String debugLabel;
 
-  const BorderPainter({required this.position, required this.boxSize});
+  const BorderPainter({
+    required this.position,
+    required this.boxSize,
+    required this.debugLabel,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -23,8 +28,9 @@ class BorderPainter extends CustomPainter {
     canvas.drawRect(rect, fillPaint);
     canvas.drawRect(rect, borderPaint);
 
-    // Dimension label: "x, y  w × h"
+    // Dimension label: "[debugLabel]  x, y  w × h"
     final label =
+        '[$debugLabel] | '
         'x:${position.dx.toStringAsFixed(1)}  '
         'y:${position.dy.toStringAsFixed(1)}  '
         'w:${boxSize.width.toStringAsFixed(1)}  '
@@ -71,7 +77,9 @@ class BorderPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(BorderPainter old) =>
-      old.position != position || old.boxSize != boxSize;
+      old.position != position ||
+      old.boxSize != boxSize ||
+      old.debugLabel != debugLabel;
 }
 
 class FocusNodeRectGizmo extends StatefulWidget {
@@ -109,9 +117,12 @@ class _FocusNodeRectGizmoState extends State<FocusNodeRectGizmo> {
       if (focusedNode != null && focusedNode.context != null) {
         final renderBox = focusedNode.rect;
         // final offset = renderBox.localToGlobal(Offset.zero);
-
         _removeOverlay();
-        _overlayEntry = _createOverlayEntry(renderBox.topLeft, renderBox.size);
+        _overlayEntry = _createOverlayEntry(
+          renderBox.topLeft,
+          renderBox.size,
+          focusedNode.debugLabel,
+        );
         overlay.insert(_overlayEntry!);
       } else {
         _removeOverlay();
@@ -119,7 +130,11 @@ class _FocusNodeRectGizmoState extends State<FocusNodeRectGizmo> {
     });
   }
 
-  OverlayEntry _createOverlayEntry(Offset offset, Size size) {
+  OverlayEntry _createOverlayEntry(
+    Offset offset,
+    Size size,
+    String? debugLabel,
+  ) {
     return OverlayEntry(
       builder: (context) => Positioned(
         left: offset.dx,
@@ -128,7 +143,11 @@ class _FocusNodeRectGizmoState extends State<FocusNodeRectGizmo> {
         height: size.height,
         child: IgnorePointer(
           child: CustomPaint(
-            painter: BorderPainter(position: offset, boxSize: size),
+            painter: BorderPainter(
+              position: offset,
+              boxSize: size,
+              debugLabel: debugLabel ?? "NA",
+            ),
           ),
         ),
       ),

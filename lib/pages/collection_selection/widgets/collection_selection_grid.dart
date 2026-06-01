@@ -81,12 +81,11 @@ class CollectionSelectionGrid extends StatelessWidget {
 
                   return ClipCollectionGridItem(
                     collection: collection,
-                    autoFocus:
+                    autofocus:
                         collection.id == selectedCollectionId ||
                         (!showCreateItem &&
                             collectionIndex == 0 &&
                             isDesktopPlatform),
-                    selectionOnly: true,
                     isReadOnly: isReadOnly,
                     onTap: isReadOnly
                         ? () => _notifyReadOnly(context, collection.id)
