@@ -35,8 +35,7 @@ class ClipsBuilder extends StatelessWidget {
   void onIndexPaste(BuildContext context, EventBusIndexPasteEvent state) {
     final index = state.index - 1;
     if (!index.isNegative && index < items.length) {
-      final canPaste = CanPasteScope.of(context);
-      performPrimaryActionOnClip(context, items[index], canPaste);
+      performPrimaryActionOnClip(context, items[index], true);
     }
   }
 
@@ -56,7 +55,7 @@ class ClipsBuilder extends StatelessWidget {
       case AppView.bottomDocked || AppView.topDocked:
         return const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 1,
-          childAspectRatio: 1,
+          childAspectRatio: 9 / 20,
         );
       case AppView.windowed || AppView.leftDocked || AppView.rightDocked:
         return const SliverGridDelegateWithMaxCrossAxisExtent(

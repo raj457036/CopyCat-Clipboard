@@ -17,7 +17,7 @@ class PasteByClipIndexShortcutActivator implements ShortcutActivator {
   @override
   bool accepts(KeyEvent event, HardwareKeyboard state) {
     final accepted =
-        (event is KeyDownEvent || (event is! KeyRepeatEvent)) &&
+        event is KeyDownEvent &&
         triggers.contains(event.logicalKey) &&
         _shouldAcceptMetaModifiers(state.logicalKeysPressed);
 

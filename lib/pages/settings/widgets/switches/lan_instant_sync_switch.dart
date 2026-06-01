@@ -4,6 +4,8 @@ import 'package:clipboard/base/data/services/lan_sync_service.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/widgets/badges.dart';
+import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -22,42 +24,57 @@ class LanInstantSyncSwitchTile extends StatelessWidget {
     final textTheme = context.textTheme;
     final colors = context.colors;
 
-    return BlocSelector<AppConfigCubit, AppConfigState, bool>(
-      selector: (state) {
-        switch (state) {
-          case AppConfigLoaded(:final config):
-            return config.lanInstantSync;
-          default:
-            return false;
-        }
-      },
-      builder: (context, enabled) {
-        return ListTile(
-          leading: const Icon(Icons.wifi_tethering_rounded),
-          title: Text(context.locale.settings__lan__title),
-          subtitle: serviceActive
-              ? _LanSubtitle(enabled: enabled)
-              : Text(context.locale.settings__lan__service_inactive),
-          subtitleTextStyle: textTheme.bodyMedium?.copyWith(
-            color: serviceActive ? colors.outline : colors.error,
-          ),
-          enabled: serviceActive,
-          onTap: serviceActive
-              ? () => context.goNamed(RouteConstants.lanMesh)
-              : null,
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const VerticalDivider(),
-              Switch(
-                mouseCursor: serviceActive
-                    ? SystemMouseCursors.click
-                    : SystemMouseCursors.forbidden,
-                value: enabled,
-                onChanged: serviceActive ? cubit.toggleLanInstantSync : null,
+    return HasAccessToFeature(
+      hasAccess: (subscription) =>
+          subscription.isActive && !subscription.isFree,
+      builder: (context, hasAccess, _) {
+        return BlocSelector<AppConfigCubit, AppConfigState, bool>(
+          selector: (state) {
+            switch (state) {
+              case AppConfigLoaded(:final config):
+                return config.lanInstantSync;
+              default:
+                return false;
+            }
+          },
+          builder: (context, enabled) {
+            return ListTile(
+              leading: const Icon(Icons.wifi_tethering_rounded),
+              title: Row(
+                spacing: 4,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(context.locale.settings__lan__title),
+                  const ProBadge(),
+                ],
               ),
-            ],
-          ),
+              subtitle: serviceActive
+                  ? _LanSubtitle(enabled: enabled && hasAccess)
+                  : Text(context.locale.settings__lan__service_inactive),
+              subtitleTextStyle: textTheme.bodyMedium?.copyWith(
+                color: serviceActive ? colors.outline : colors.error,
+              ),
+              enabled: serviceActive && hasAccess,
+              onTap: serviceActive && hasAccess
+                  ? () => context.goNamed(RouteConstants.lanMesh)
+                  : null,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const VerticalDivider(),
+                  Switch(
+                    mouseCursor: (serviceActive && hasAccess)
+                        ? SystemMouseCursors.click
+                        : SystemMouseCursors.forbidden,
+                    value: enabled && hasAccess,
+                    onChanged: (serviceActive && hasAccess)
+                        ? cubit.toggleLanInstantSync
+                        : null,
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
     );
