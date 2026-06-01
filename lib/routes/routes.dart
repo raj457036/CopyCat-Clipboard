@@ -217,9 +217,7 @@ final appRouter = GoRouter(
         ),
         ShellRoute(
           builder: (context, state, child) {
-            return AppLockOverlay(
-              child: ShellPage(key: state.pageKey, child: child),
-            );
+            return ShellPage(key: state.pageKey, child: child);
           },
           routes: [
             GoRoute(

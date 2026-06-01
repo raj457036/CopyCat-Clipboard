@@ -1,4 +1,5 @@
 import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
@@ -50,25 +51,26 @@ class _LockScreen extends StatelessWidget {
                 size: 72,
                 color: theme.colorScheme.primary,
               ),
-              const SizedBox(height: 24),
+              height24,
               Text(
-                'CopyCat Clipboard',
+                context.locale.app__name,
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 8),
+              height8,
               Text(
                 context.locale.app_lock__screen__locked,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-              const SizedBox(height: 48),
+              height32,
               FilledButton.icon(
                 onPressed: () => context.read<AppLockCubit>().unlock(),
                 icon: const Icon(Icons.fingerprint),
                 label: Text(context.locale.app_lock__screen__unlock),
+                autofocus: false,
               ),
             ],
           ),

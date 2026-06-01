@@ -23,6 +23,7 @@ import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/scroll_behaviour.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/utils/windows/update_registry.dart';
+import 'package:clipboard/widgets/app_lock_overlay.dart';
 import 'package:clipboard/widgets/debug/gizmo_overlay.dart';
 import 'package:clipboard/widgets/keyboard_shortcuts/actions/select_all.dart';
 import 'package:clipboard/widgets/listeners/auth_listener.dart';
@@ -206,8 +207,10 @@ class AppContent extends StatelessWidget {
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
                 builder: (context, child) {
-                  return TrayManager.forPlatform(
-                    child: UpgraderBuilder(child: child),
+                  return AppLockOverlay(
+                    child: TrayManager.forPlatform(
+                      child: UpgraderBuilder(child: child),
+                    ),
                   );
                 },
               ),
