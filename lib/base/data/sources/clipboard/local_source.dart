@@ -136,7 +136,7 @@ class LocalClipboardSource implements ClipboardSource {
     final isarResults = await db.txn(() async => await paginatedQuery);
     final results = isarResults.map((e) {
       final item = _toPreviewItem(e.toDomain());
-      return item.id != null && outbox.isLocalIdQueued(item.id!)
+      return item.id != null && outbox.isLocalIdQueued('clip', item.id!)
           ? item.copyWith(isQueued: true)
           : item;
     }).toList();

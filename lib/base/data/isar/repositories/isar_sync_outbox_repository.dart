@@ -19,18 +19,21 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
 
   final _newEntryController = StreamController<void>.broadcast();
   final _collectorDebouncer = Debouncer(
-    milliseconds: Durations.short4.inMilliseconds,
+    milliseconds: Durations.medium3.inMilliseconds,
   );
   final _collector = <SyncOutboxEntry>[];
 
-  /// In-memory index of pending local entity IDs for O(1) [isLocalIdQueued] lookup.
-  final Set<int> _pendingLocalIds = {};
+  /// In-memory index of pending entity/local ID pairs
+  /// [isLocalIdQueued] lookups.
+  final Set<String> _pendingEntityLocalIds = {};
 
-  /// Maps Isar outbox-entry IDs -> local entity IDs so [markCompleted] can
-  /// remove the right entry from [_pendingLocalIds] without an extra DB read.
-  final Map<int, int> _idToLocalId = {};
+  /// Maps Isar outbox-entry IDs -> entity/local ID key so [markCompleted] can
+  /// remove the right entry from [_pendingEntityLocalIds] without an extra DB read.
+  final Map<int, String> _idToEntityLocalKey = {};
 
   bool _initialized = false;
+
+  String _key(String entityType, int localId) => '$entityType:$localId';
 
   /// Populates [_pendingLocalIds] and [_idToLocalId] from Isar synchronously
   /// (safe on the main isolate after the DB is open) plus any collector items
@@ -40,12 +43,13 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
     _initialized = true;
     final existing = _collection.where().findAllSync();
     for (final e in existing) {
-      _pendingLocalIds.add(e.localId);
-      _idToLocalId[e.id] = e.localId;
+      final key = _key(e.entityType, e.localId);
+      _pendingEntityLocalIds.add(key);
+      _idToEntityLocalKey[e.id] = key;
     }
     // Items sitting in the collector are pending but not yet in Isar.
     for (final e in _collector) {
-      _pendingLocalIds.add(e.localId);
+      _pendingEntityLocalIds.add(_key(e.entityType, e.localId));
     }
   }
 
@@ -60,7 +64,9 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
     );
 
     _collector.add(entry);
-    _pendingLocalIds.add(entry.localId); // track immediately, before flush
+    _pendingEntityLocalIds.add(
+      _key(entry.entityType, entry.localId),
+    ); // track immediately, before flush
     _logger.d(() => 'Added to collector. Collector size: ${_collector.length}');
     _collectorDebouncer(_flushCollector);
   }
@@ -89,7 +95,7 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
         for (final old in existing) {
           if (merged == null) break;
           merged = _mergeEntries(old.toDomain(), merged);
-          _idToLocalId.remove(old.id);
+          _idToEntityLocalKey.remove(old.id);
         }
 
         if (existing.isNotEmpty) {
@@ -97,14 +103,17 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
         }
 
         if (merged == null) {
-          _pendingLocalIds.remove(incoming.localId);
+          _pendingEntityLocalIds.remove(
+            _key(incoming.entityType, incoming.localId),
+          );
           continue;
         }
 
         final isarEntry = IsarSyncOutboxEntry.fromDomain(merged);
         final id = await _collection.put(isarEntry);
-        _idToLocalId[id] = merged.localId;
-        _pendingLocalIds.add(merged.localId);
+        final key = _key(merged.entityType, merged.localId);
+        _idToEntityLocalKey[id] = key;
+        _pendingEntityLocalIds.add(key);
         persistedCount++;
       }
     });
@@ -191,8 +200,8 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
 
   @override
   Future<void> markCompleted(int id) async {
-    final localId = _idToLocalId.remove(id);
-    if (localId != null) _pendingLocalIds.remove(localId);
+    final entityLocalKey = _idToEntityLocalKey.remove(id);
+    if (entityLocalKey != null) _pendingEntityLocalIds.remove(entityLocalKey);
     await _db.writeTxn(() async {
       await _collection.delete(id);
     });
@@ -200,8 +209,9 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
 
   @override
   Future<void> removeByEntity(String entityType, int localId) async {
-    _pendingLocalIds.remove(localId);
-    _idToLocalId.removeWhere((_, v) => v == localId);
+    final key = _key(entityType, localId);
+    _pendingEntityLocalIds.remove(key);
+    _idToEntityLocalKey.removeWhere((_, v) => v == key);
     await _db.writeTxn(() async {
       await _collection
           .filter()
@@ -214,8 +224,8 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
 
   @override
   Future<void> clearAll() async {
-    _pendingLocalIds.clear();
-    _idToLocalId.clear();
+    _pendingEntityLocalIds.clear();
+    _idToEntityLocalKey.clear();
     _initialized = false;
     await _db.writeTxn(() async {
       await _collection.clear();
@@ -223,8 +233,8 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
   }
 
   @override
-  bool isLocalIdQueued(int localId) {
+  bool isLocalIdQueued(String entityType, int localId) {
     _ensureInitialized();
-    return _pendingLocalIds.contains(localId);
+    return _pendingEntityLocalIds.contains(_key(entityType, localId));
   }
 }
