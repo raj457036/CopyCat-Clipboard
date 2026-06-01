@@ -148,6 +148,10 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
         syncSpeed: SyncSpeed.balanced,
         enableDragNDrop: false,
         enableTypeToSearch: false,
+        lanInstantSync: false,
+        autoWriteOnReceive: false,
+        quickPasteHotkey: null,
+        richDataCapture: false,
       );
       return (config, true);
     }
