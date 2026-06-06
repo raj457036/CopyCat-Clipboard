@@ -133,7 +133,7 @@ class RemoteClipboardSource implements ClipboardSource {
   }
 
   @override
-  Future<ClipboardItem> updateOrCreate(ClipboardItem item) {
+  Future<(ClipboardItem, bool)> updateOrCreate(ClipboardItem item) {
     throw UnimplementedError();
   }
 

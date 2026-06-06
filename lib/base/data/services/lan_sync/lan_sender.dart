@@ -75,6 +75,60 @@ class LanSender {
     }
   }
 
+  Future<void> broadcastMutation(ClipboardItem item) async {
+    final ts = DateTime.now().millisecondsSinceEpoch;
+    final originId =
+        item.originId ??
+        (item.serverId != null
+            ? 'srv-${item.serverId}'
+            : ClipboardItem.generateOriginId());
+
+    for (final peer in _registry.peers.values.toList()) {
+      final peerOs = _registry.peerOsByDeviceId[peer.deviceId];
+      final includeRichData =
+          _config.sendRichTextToAndroid || peerOs != PlatformOS.android;
+      final itemPayload = includeRichData
+          ? item
+          : item.copyWith(richData: null);
+
+      final content = item.type == ClipItemType.url
+          ? (item.url ?? '')
+          : (item.text ?? '');
+
+      final body = jsonEncode({
+        'content': content,
+        'label': item.title ?? item.fileName ?? '',
+        'ts': ts,
+        'created': item.created.millisecondsSinceEpoch,
+        'modified': item.modified.millisecondsSinceEpoch,
+        'os': item.os.name,
+        'encrypted': item.encrypted,
+        'item': itemPayload.toJson(),
+        if (item.sourceId != null && item.sourceId!.isNotEmpty)
+          'sourceId': item.sourceId,
+        if (item.sourceApp != null && item.sourceApp!.isNotEmpty)
+          'sourceApp': item.sourceApp,
+        if (item.iv != null) 'iv': item.iv,
+        if (item.encMode != null) 'encMode': item.encMode,
+      });
+      final bodyBytes = utf8.encode(body);
+      final mac = _hmac.compute(bodyBytes);
+
+      // Force text envelope for mutations so updates/deletes of media/file
+      // clips don't require re-sending binary bytes.
+      unawaited(
+        sendToPeer(
+          host: peer.host,
+          port: peer.port,
+          originId: originId,
+          typeStr: ClipItemType.text.name,
+          bodyBytes: bodyBytes,
+          hmac: mac,
+        ),
+      );
+    }
+  }
+
   Future<void> broadcastBinaryClip(ClipboardItem item) async {
     final path = item.localPath;
     if (path == null) return;

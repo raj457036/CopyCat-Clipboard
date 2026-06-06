@@ -143,8 +143,9 @@ class CopyCatFileStorage(private val context: Context) {
     * Line 9: originId (base62, empty for old-format clips)
     * Line 10: sourceId/packageName (empty when unknown)
     * Line 11: sourceApp/appName (empty when unknown)
-    * Line 12: ---|---|---
-    * Line 13+: clip content
+    * Line 12: deletedAt timestamp millis (empty when not deleted)
+    * Line 13: ---|---|---
+    * Line 14+: clip content
      */
     fun writeClipItem(
         clipId: String,
@@ -160,6 +161,7 @@ class CopyCatFileStorage(private val context: Context) {
         originId: String = "",
         sourceId: String = "",
         sourceApp: String = "",
+        deletedAt: Long? = null,
     ): Boolean = lock.write {
         try {
             writeClipItemLocked(
@@ -176,6 +178,7 @@ class CopyCatFileStorage(private val context: Context) {
                 originId = originId,
                 sourceId = sourceId,
                 sourceApp = sourceApp,
+                deletedAt = deletedAt,
             )
             debugLog(logTag) { "Wrote $clipId to disk (${text.length} bytes)" }
             return true
@@ -199,6 +202,7 @@ class CopyCatFileStorage(private val context: Context) {
         originId: String = "",
         sourceId: String = "",
         sourceApp: String = "",
+        deletedAt: Long? = null,
     ): ClipWriteOutcome = lock.write {
         try {
             val normalizedOriginId = originId.trim()
@@ -224,6 +228,7 @@ class CopyCatFileStorage(private val context: Context) {
                 originId = normalizedOriginId,
                 sourceId = sourceId,
                 sourceApp = sourceApp,
+                deletedAt = deletedAt,
             )
             debugLog(logTag) { "Wrote $clipId to disk (${text.length} bytes)" }
             ClipWriteOutcome.Written(clipId)
@@ -247,6 +252,7 @@ class CopyCatFileStorage(private val context: Context) {
         originId: String,
         sourceId: String,
         sourceApp: String,
+        deletedAt: Long?,
     ) {
         val clipFile = File(storageDir, "$clipId.txt")
         clipFile.bufferedWriter().use { writer ->
@@ -262,6 +268,7 @@ class CopyCatFileStorage(private val context: Context) {
             writer.write("$originId\n")
             writer.write("$sourceId\n")
             writer.write("$sourceApp\n")
+            writer.write("${deletedAt ?: ""}\n")
             writer.write("---|---|---\n")
             writer.write(text)
         }
@@ -417,6 +424,10 @@ class CopyCatFileStorage(private val context: Context) {
             val originId = if (separatorIndex >= 10) lines[9].ifBlank { null } else null
             val sourceId = if (separatorIndex >= 11) lines[10].ifBlank { null } else null
             val sourceApp = if (separatorIndex >= 12) lines[11].ifBlank { null } else null
+            val deletedAt = when {
+                separatorIndex >= 13 -> lines[12].toLongOrNull()
+                else -> null
+            }
             
             val text = if (separatorIndex != -1 && separatorIndex < lines.size - 1) {
                 lines.subList(separatorIndex + 1, lines.size).joinToString("\n")
@@ -438,6 +449,7 @@ class CopyCatFileStorage(private val context: Context) {
                 originId,
                 sourceId,
                 sourceApp,
+                deletedAt,
             )
         } catch (e: Exception) {
             Log.e(logTag, "Error reading clip $clipId: ${e.message}")
@@ -530,6 +542,7 @@ class CopyCatFileStorage(private val context: Context) {
         val originId: String? = null,
         val sourceId: String? = null,
         val sourceApp: String? = null,
+        val deletedAt: Long? = null,
     ) {
         fun toMap(): Map<String, Any?> {
             return mapOf(
@@ -546,6 +559,7 @@ class CopyCatFileStorage(private val context: Context) {
                 "originId" to originId,
                 "sourceId" to sourceId,
                 "sourceApp" to sourceApp,
+                "deletedAt" to deletedAt,
             )
         }
     }

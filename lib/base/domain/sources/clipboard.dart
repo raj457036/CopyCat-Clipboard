@@ -26,7 +26,7 @@ abstract class ClipboardSource {
   Future<ClipboardItem> update(ClipboardItem item);
   Future<List<ClipboardItem>> updateAll(List<ClipboardItem> items);
 
-  Future<ClipboardItem> updateOrCreate(ClipboardItem item);
+  Future<(ClipboardItem, bool)> updateOrCreate(ClipboardItem item);
 
   Future<bool> delete(ClipboardItem item, {bool soft = true});
   Future<List<ClipboardItem>> deleteMany(

@@ -65,9 +65,15 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
 
   Future<bool> writeToLocal(ClipboardItem item) async {
     final result = await clipRepo.updateOrCreate(item);
-    return result.fold((failure) => false, (item) async {
+    return result.fold((failure) => false, (r) async {
+      var (item, created) = r;
       item = await item.decrypt();
-      syncEventBus.emit<ClipboardItem>((CrossSyncEventType.create, item));
+      final eventType = item.deletedAt != null
+          ? CrossSyncEventType.delete
+          : created
+          ? CrossSyncEventType.create
+          : CrossSyncEventType.update;
+      syncEventBus.emit<ClipboardItem>((eventType, item));
       return true;
     });
   }
@@ -104,11 +110,25 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
     final sourceId = (clip["sourceId"] as String?)?.trim();
     final sourceApp = (clip["sourceApp"] as String?)?.trim();
     final originId = clip["originId"] as String?;
+    final deletedAtRaw = clip["deletedAt"];
+    final deletedAt = deletedAtRaw is num
+        ? DateTime.fromMillisecondsSinceEpoch(deletedAtRaw.toInt())
+        : null;
 
     // For file/media types the "text" field carries the local file path stored
     // by the Android background service when a LAN binary clip was received.
-    final isFileClip = clipType == ClipItemType.file;
-    final localPath = isFileClip ? clipText : null;
+    final isFileClip =
+        clipType == ClipItemType.file || clipType == ClipItemType.media;
+    final String? localPath;
+    if (isFileClip) {
+      if (clipText?.isEmpty == true) {
+        localPath = null;
+      } else {
+        localPath = clipText;
+      }
+    } else {
+      localPath = null;
+    }
 
     // Infer MIME type and upgrade to media type from the cached file extension.
     // The Android file storage format does not persist fileMimeType, so we
@@ -164,6 +184,7 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       lastSynced: systemTime(),
       deviceId: deviceId,
       originId: originId?.isEmpty == true ? null : originId,
+      deletedAt: deletedAt,
     );
   }
 

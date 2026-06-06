@@ -133,7 +133,7 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
   }
 
   @override
-  FailureOr<ClipboardItem> updateOrCreate(ClipboardItem item) {
+  FailureOr<(ClipboardItem, bool)> updateOrCreate(ClipboardItem item) {
     throw UnimplementedError();
   }
 
@@ -400,7 +400,7 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
   }
 
   @override
-  FailureOr<ClipboardItem> updateOrCreate(ClipboardItem item) async {
+  FailureOr<(ClipboardItem, bool)> updateOrCreate(ClipboardItem item) async {
     try {
       final result = await local.updateOrCreate(item);
       return Right(result);

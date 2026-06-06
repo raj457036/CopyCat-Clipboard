@@ -36,6 +36,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.TimeZone
+import java.time.Instant
 import java.security.MessageDigest
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
@@ -60,6 +61,8 @@ data class LanClipPayload(
     val fileName: String? = null,
     val sourceId: String? = null,
     val sourceApp: String? = null,
+    val deleted: Boolean = false,
+    val deletedAtMs: Long? = null,
 )
 
 private data class PeerAddress(val host: String, val port: Int)
@@ -459,11 +462,24 @@ class CopyCatLanSyncManager(
             ?: fullItem?.optString("sourceApp")?.takeIf { it.isNotEmpty() }
         val itemUserId = fullItem?.optString("userId")?.takeIf { it.isNotEmpty() }
         val itemServerId = fullItem?.optLong("id")?.takeIf { it > 0L }
+        val deleted = hasDeletedMarker(fullItem) || hasDeletedMarker(json)
+        val deletedAtMs = parseDeletedAtMillis(fullItem) ?: parseDeletedAtMillis(json)
+
+        val payloadType = fullItem?.optString("type")
+            ?.takeIf { it.isNotBlank() }
+            ?.let { raw ->
+                when (raw.lowercase()) {
+                    "url" -> ClipType.Url
+                    "text" -> ClipType.Text
+                    "media", "file", "fileurl" -> ClipType.FileUrl
+                    else -> type
+                }
+            } ?: type
 
         val payload = LanClipPayload(
             originId = originId,
             fromDeviceId = fromDeviceId,
-            type = type,
+            type = payloadType,
             content = content,
             label = label,
             timestamp = timestamp,
@@ -474,13 +490,43 @@ class CopyCatLanSyncManager(
             serverId = itemServerId,
             sourceId = sourceId,
             sourceApp = sourceApp,
+            deleted = deleted,
+            deletedAtMs = deletedAtMs,
         )
 
         onLanClipReceived(payload)
 
-        if (autoWriteOnReceive && payload.content.isNotBlank()) {
+        if (autoWriteOnReceive && !payload.deleted && payload.content.isNotBlank()) {
             markCaptured(originId)
             writeTextToClipboard(payload.content, payload.label)
+        }
+    }
+
+    private fun hasDeletedMarker(json: JSONObject?): Boolean {
+        if (json == null) return false
+        val deletedAtCamel = json.optString("deletedAt").trim()
+        if (deletedAtCamel.isNotEmpty() &&
+            !deletedAtCamel.equals("null", ignoreCase = true)) {
+            return true
+        }
+        return false
+    }
+
+    private fun parseDeletedAtMillis(json: JSONObject?): Long? {
+        if (json == null) return null
+
+        val rawCamel = json.optString("deletedAt").trim()
+        val raw = when {
+            rawCamel.isNotEmpty() && !rawCamel.equals("null", ignoreCase = true) -> rawCamel
+            else -> return null
+        }
+
+        raw.toLongOrNull()?.let { return it }
+
+        return try {
+            Instant.parse(raw).toEpochMilli()
+        } catch (_: Exception) {
+            null
         }
     }
 

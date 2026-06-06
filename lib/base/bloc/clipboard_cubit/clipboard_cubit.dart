@@ -164,17 +164,17 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   }
 
   bool _isSameItem(ClipboardItem left, ClipboardItem right) {
-    if (left.id != null && right.id != null && left.id == right.id) return true;
-    if (left.serverId != null &&
-        right.serverId != null &&
-        left.serverId == right.serverId) {
-      return true;
-    }
     if (left.originId != null &&
         right.originId != null &&
         left.originId == right.originId) {
       return true;
     }
+    if (left.serverId != null &&
+        right.serverId != null &&
+        left.serverId == right.serverId) {
+      return true;
+    }
+    if (left.id != null && right.id != null && left.id == right.id) return true;
     return false;
   }
 

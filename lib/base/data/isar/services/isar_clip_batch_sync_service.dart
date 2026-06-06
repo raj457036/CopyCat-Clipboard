@@ -78,9 +78,12 @@ void _syncInBackground(_Payload record, Sender send) async {
   // Phase 3: in-memory conflict resolution
   for (var index = 0; index < items.length; index++) {
     var item = items[index];
-    final collectionId =
+    final resolvedCollectionId =
         collectionMap[item.serverCollectionId] ??
         fallbackCollectionMap[item.serverCollectionId];
+    final hasServerCollectionRef = item.serverCollectionId != null;
+    final shouldDetachCollection =
+        !hasServerCollectionRef && item.collectionId == null;
     IsarClipboardItem? found;
 
     if (item.serverId != null &&
@@ -92,7 +95,12 @@ void _syncInBackground(_Payload record, Sender send) async {
     }
 
     if (found == null) {
-      item = item.copyWith(collectionId: collectionId, lastSynced: now);
+      item = item.copyWith(
+        collectionId: shouldDetachCollection
+            ? null
+            : (resolvedCollectionId ?? item.collectionId),
+        lastSynced: now,
+      );
       items[index] = item;
       events.add((CrossSyncEventType.create, item));
       continue;
@@ -104,7 +112,11 @@ void _syncInBackground(_Payload record, Sender send) async {
         id: found.isarId == Isar.autoIncrement ? null : found.isarId,
         lastSynced: now,
         localPath: found.localPath,
-        collectionId: collectionId ?? found.collectionId,
+        collectionId: shouldDetachCollection
+            ? null
+            : (hasServerCollectionRef
+                  ? (resolvedCollectionId ?? found.collectionId)
+                  : found.collectionId),
         sourceApp: found.sourceApp ?? item.sourceApp,
         sourceId: found.sourceId ?? item.sourceId,
       );

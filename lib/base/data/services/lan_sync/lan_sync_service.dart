@@ -155,6 +155,11 @@ class LanSyncService {
     }
   }
 
+  Future<void> broadcastMutation(ClipboardItem item) async {
+    if (!_started || _registry.peers.isEmpty) return;
+    await _sender.broadcastMutation(item);
+  }
+
   // MARK: - HTTP server
 
   Future<void> _startHttpServer() async {

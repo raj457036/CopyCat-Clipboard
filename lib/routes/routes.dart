@@ -49,7 +49,6 @@ import "package:clipboard/pages/settings/pages/app_lock/app_lock_settings_page.d
 import "package:clipboard/pages/settings/pages/exclusion_rules.dart";
 import "package:clipboard/pages/settings/pages/lan_mesh/lan_mesh_page.dart";
 import "package:clipboard/pages/splash_page.dart";
-import "package:clipboard/widgets/app_lock_overlay.dart";
 import "package:clipboard/widgets/listeners/monetization_listener.dart";
 import "package:clipboard/widgets/page_route/dynamic_page_route.dart";
 import "package:flutter/foundation.dart";

@@ -476,6 +476,9 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     for (var result in updated) {
       result.fold((l) => emit(OfflinePersistanceState.error(l)), (r) {
         syncEventBus.emit<ClipboardItem>((CrossSyncEventType.update, r));
+        if (!synced && appConfig.state.config.lanInstantSync) {
+          _broadcastLanMutation(r);
+        }
         emit(
           OfflinePersistanceState.saved(
             synced: synced,
@@ -490,6 +493,19 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   Future<void> delete(List<ClipboardItem> items) async {
     final items_ = items.map((item) => item.copyWith(deviceId: deviceId));
     await repo.deleteMany(items_.toList());
+
+    if (appConfig.state.config.lanInstantSync) {
+      for (final item in items_) {
+        final deletedAt = item.deletedAt ?? systemTime();
+        final mutation = item.copyWith(
+          userId: auth.userId ?? kLocalUserId,
+          deletedAt: deletedAt,
+          modified: deletedAt,
+        );
+        _broadcastLanMutation(mutation);
+      }
+    }
+
     final deleteEvents = items
         .map<CrossSyncEvent<ClipboardItem>>(
           (item) => (CrossSyncEventType.delete, item),
@@ -548,6 +564,12 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       if (item.fileExtension != null) 'fileExtension': item.fileExtension,
       if (item.fileName != null) 'fileName': item.fileName,
     };
+  }
+
+  void _broadcastLanMutation(ClipboardItem item) {
+    if (Platform.isIOS) return;
+    // Route mutations via Dart LAN service to preserve full model payload.
+    unawaited(sl<LanSyncService>().broadcastMutation(item));
   }
 
   Future<void> _autoWriteToClipboard(ClipboardItem item) async {

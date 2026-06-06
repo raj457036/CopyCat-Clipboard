@@ -890,6 +890,86 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             "LAN: processed clip from ${payload.fromDeviceId} with originId ${payload.originId} and type ${payload.type.name.lowercase()}"
         }
 
+        val existingClipId = payload.serverId?.takeIf { it > 0L }
+            ?.let { fileStorage.findClipIdByServerId(it) }
+            ?: payload.originId.takeIf { it.isNotBlank() }
+                ?.let { fileStorage.findClipIdByOriginId(it) }
+
+        if (payload.deleted) {
+            val targetClipId = existingClipId ?: getNextId()
+            val wasNew = existingClipId == null
+            val tombstoneTimestamp = payload.deletedAtMs ?: payload.timestamp
+            val writeSuccess = fileStorage.writeClipItem(
+                clipId = targetClipId,
+                text = payload.content,
+                type = payload.type,
+                label = payload.label,
+                encrypted = payload.encrypted,
+                iv = payload.iv,
+                encMode = payload.encMode,
+                serverId = payload.serverId ?: -1,
+                userId = payload.userId ?: "",
+                timestamp = payload.timestamp,
+                originId = payload.originId,
+                sourceId = payload.sourceId ?: "",
+                sourceApp = payload.sourceApp ?: "",
+                deletedAt = tombstoneTimestamp,
+            )
+
+            if (writeSuccess) {
+                if (wasNew) {
+                    endId += 1
+                    mainHandler.removeCallbacks(persistEndIdRunnable)
+                    sp.edit().putInt("endId", endId).apply()
+                }
+                LanClipReceivedReporter.getInstance().signal(targetClipId)
+                debugLog(logTag) {
+                    "LAN: tombstoned clip originId=${payload.originId} serverId=${payload.serverId} clipId=$targetClipId"
+                }
+            } else {
+                Log.e(logTag, "Failed to persist LAN tombstone originId=${payload.originId}")
+            }
+            return
+        }
+
+        if (existingClipId != null) {
+            // For media/file clips arriving as text-envelope mutations (title
+            // updates etc.), localFilePath and content are both empty. Preserve
+            // the existing stored file path so the clip remains playable.
+            val existingText = if (payload.localFilePath == null && payload.content.isBlank()) {
+                fileStorage.readClipItem(existingClipId)?.text ?: payload.content
+            } else {
+                payload.localFilePath ?: payload.content
+            }
+            val isFilePath = payload.localFilePath != null || (payload.content.isBlank() && existingText.isNotBlank())
+            val writeSuccess = fileStorage.writeClipItem(
+                clipId = existingClipId,
+                text = existingText,
+                type = payload.type,
+                label = if (isFilePath) {
+                    payload.fileName?.takeIf { it.isNotBlank() } ?: payload.label
+                } else {
+                    payload.label
+                },
+                encrypted = if (isFilePath) false else payload.encrypted,
+                iv = if (isFilePath) null else payload.iv,
+                encMode = if (isFilePath) null else payload.encMode,
+                serverId = payload.serverId ?: -1,
+                userId = payload.userId ?: "",
+                timestamp = payload.timestamp,
+                originId = payload.originId,
+                sourceId = payload.sourceId ?: "",
+                sourceApp = payload.sourceApp ?: "",
+                deletedAt = null,
+            )
+            if (writeSuccess) {
+                LanClipReceivedReporter.getInstance().signal(existingClipId)
+            } else {
+                Log.e(logTag, "Failed to update LAN clip originId=${payload.originId}")
+            }
+            return
+        }
+
         val nextId = getNextId()
 
         val writeOutcome = if (payload.localFilePath != null) {
@@ -909,6 +989,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                 originId = payload.originId,
                 sourceId = payload.sourceId ?: "",
                 sourceApp = payload.sourceApp ?: "",
+                deletedAt = null,
             )
         } else {
             fileStorage.writeClipItemIfOriginMissing(
@@ -925,6 +1006,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                 originId = payload.originId,
                 sourceId = payload.sourceId ?: "",
                 sourceApp = payload.sourceApp ?: "",
+                deletedAt = null,
             )
         }
 

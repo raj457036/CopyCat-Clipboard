@@ -292,21 +292,41 @@ class LocalClipboardSource implements ClipboardSource {
   }
 
   @override
-  Future<ClipboardItem> updateOrCreate(ClipboardItem item) async {
+  Future<(ClipboardItem, bool)> updateOrCreate(ClipboardItem item) async {
     item = item.copyWith(lastSynced: systemTime());
     item = await item.decrypt();
-    if (item.serverId != null) {
-      final existingClip = await get(serverId: item.serverId!);
-      if (existingClip != null) {
-        item = item.copyWith(
-          id: existingClip.id,
-          localPath: existingClip.localPath,
-          localOnly: existingClip.localOnly,
-        );
-        return update(item);
-      }
+
+    ClipboardItem? existingClip;
+
+    if (item.originId != null) {
+      existingClip = await db
+          .txn(
+            () =>
+                _collection.where().originIdEqualTo(item.originId).findFirst(),
+          )
+          .then((e) => e?.toDomain());
     }
-    return create(item);
+
+    if (existingClip == null && item.serverId != null) {
+      existingClip = await get(serverId: item.serverId!);
+    }
+
+    if (existingClip != null) {
+      item = existingClip.copyWith(
+        localPath: item.localPath ?? existingClip.localPath,
+        text: item.text ?? existingClip.text,
+        richData: item.richData ?? existingClip.richData,
+        modified: item.modified,
+        lastSynced: item.lastSynced,
+        serverId: item.serverId ?? existingClip.serverId,
+        originId: item.originId ?? existingClip.originId,
+        description: item.description ?? existingClip.description,
+        title: item.title ?? existingClip.title,
+      );
+      return (await update(item), false);
+    }
+
+    return (await create(item), true);
   }
 
   @override
