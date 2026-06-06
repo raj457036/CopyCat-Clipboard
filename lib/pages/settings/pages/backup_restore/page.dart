@@ -12,11 +12,14 @@ import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart' show GoRouterHelper;
+import 'package:path_provider/path_provider.dart';
+import 'package:universal_io/io.dart';
 
 class BackupRestorePage extends StatefulWidget {
   const BackupRestorePage({super.key});
@@ -46,18 +49,11 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
   }
 
   Future<void> _createBackup() async {
-    final config = await _showBackupOptionsDialog();
-    if (!mounted || config == null) return;
-
-    final savePath = await FilePicker.saveFile(
-      dialogTitle: context.locale.backup_restore__dialog__save_as,
-      fileName:
-          'copycat_backup_${DateTime.now().millisecondsSinceEpoch}.ccbkup',
-      type: FileType.custom,
-      allowedExtensions: const ['ccbkup'],
+    final appConfig = context.read<AppConfigCubit>();
+    final config = await _showBackupOptionsDialog(
+      canEncrypt: appConfig.isEncryptionEnabled,
     );
-
-    if (!mounted || savePath == null) return;
+    if (!mounted || config == null) return;
 
     setState(() {
       _busy = true;
@@ -65,7 +61,6 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
     });
 
     try {
-      final appConfig = context.read<AppConfigCubit>();
       if (appConfig.isEncryptionEnabled &&
           !EncryptionWorker.instance.isEncryptionActive) {
         throw Exception(
@@ -73,10 +68,10 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
         );
       }
 
-      final shouldEncrypt = appConfig.isEncryptionEnabled;
+      final shouldEncrypt =
+          appConfig.isEncryptionEnabled && config.encryptClipsInBackup;
 
       final result = await _service.createBackup(
-        outputPath: savePath,
         password: config.password,
         includeCachedFiles: config.includeCachedFiles,
         encryptClipsInBackup: shouldEncrypt,
@@ -87,20 +82,29 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
       );
 
       if (!mounted) return;
+      final title = context.locale.backup_restore__dialog__save_as;
+      final downloadDir = await getDownloadsDirectory();
+
+      final savePath = await FilePicker.saveFile(
+        dialogTitle: title,
+        fileName:
+            'copycat_backup_${DateTime.now().millisecondsSinceEpoch}.ccbkup',
+        type: FileType.custom,
+        initialDirectory: downloadDir?.path,
+        allowedExtensions: const ['ccbkup'],
+        bytes: await File(result.outputPath).readAsBytes(),
+      );
+
+      if (!mounted) return;
       setState(() {
         _backupSummary = result;
       });
-      // showTextSnackbar(
-      //   context.locale.backup_restore__snackbar__saved(
-      //     outputPath: result.outputPath,
-      //   ),
-      //   success: true,
-      // );
+
       InAppNotificationService.i.notify(
         NotificationMessage(
           id: "backup_created",
           body: context.locale.backup_restore__snackbar__saved(
-            outputPath: result.outputPath,
+            outputPath: savePath ?? result.outputPath,
           ),
         ),
       );
@@ -189,13 +193,14 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
     }
   }
 
-  Future<_BackupOptions?> _showBackupOptionsDialog() {
+  Future<_BackupOptions?> _showBackupOptionsDialog({required bool canEncrypt}) {
     final locale = context.locale;
     final formKey = GlobalKey<FormState>();
     final scrollController = ScrollController();
     final passwordController = TextEditingController();
     final maxSizeController = TextEditingController();
     var protectWithPassword = false;
+    var encryptClipsInBackup = true;
     DateTime? fromDate;
     DateTime? toDate;
     final selectedClipTypes = <ClipItemType>{
@@ -436,6 +441,18 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                   ),
                 height12,
                 _DialogSectionTitle(locale.backup_restore__section__security),
+                if (canEncrypt)
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(locale.backup_restore__label__encrypted_clips),
+                    value: encryptClipsInBackup,
+                    onChanged: (value) {
+                      setModalState(() {
+                        encryptClipsInBackup = value;
+                      });
+                    },
+                  ),
+
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(locale.backup_restore__toggle__password_protect),
@@ -449,6 +466,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
                     });
                   },
                 ),
+
                 if (protectWithPassword)
                   TextFormField(
                     controller: passwordController,
@@ -952,6 +970,7 @@ class _BackupOptions {
   final DateTime? toDate;
   final int? maxFileSizeBytes;
   final String? password;
+  final bool encryptClipsInBackup;
 
   bool get includeCachedFiles => _hasCacheableClipTypes(clipTypes);
 
@@ -961,6 +980,7 @@ class _BackupOptions {
     required this.toDate,
     required this.maxFileSizeBytes,
     this.password,
+    this.encryptClipsInBackup = true,
   });
 }
 

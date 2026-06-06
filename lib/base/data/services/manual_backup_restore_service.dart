@@ -12,6 +12,7 @@ import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:universal_io/io.dart';
 
 class BackupSummary {
@@ -73,7 +74,6 @@ class ManualBackupRestoreService {
   );
 
   Future<BackupSummary> createBackup({
-    required String outputPath,
     String? password,
     required bool includeCachedFiles,
     required bool encryptClipsInBackup,
@@ -98,16 +98,18 @@ class ManualBackupRestoreService {
     var cachedFilesSkippedBySize = 0;
     var encryptedClipsInBackup = 0;
 
-    final pathWithExtension = outputPath.endsWith('.ccbkup')
-        ? outputPath
-        : '$outputPath.ccbkup';
+    final cacheDir = await getApplicationCacheDirectory();
+    final pathWithExtension = p.join(
+      cacheDir.path,
+      'copycat_backup_${DateTime.now().millisecondsSinceEpoch}.ccbkup',
+    );
 
     final password_ = password?.trim();
     final zipEncoder = ZipFileEncoder(
       password: password_ == null || password_.isEmpty ? null : password_,
     );
 
-    final tempDir = await Directory.systemTemp.createTemp('copycat_backup_');
+    final tempDir = await cacheDir.createTemp('copycat_backup_');
     final payloadPath = p.join(tempDir.path, _payloadEntry);
     final payloadFile = File(payloadPath);
 
