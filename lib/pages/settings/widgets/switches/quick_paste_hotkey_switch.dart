@@ -2,7 +2,6 @@ import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/badges.dart';
 import 'package:clipboard/widgets/dialogs/record_keyboard_shortcut.dart';
 import 'package:clipboard/widgets/subscription/subscription_builder.dart';
@@ -15,7 +14,6 @@ class QuickPasteHotKeySwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isMobilePlatform) return const SizedBox.shrink();
     final textTheme = context.textTheme;
     final colors = context.colors;
     return HasAccessToFeature(

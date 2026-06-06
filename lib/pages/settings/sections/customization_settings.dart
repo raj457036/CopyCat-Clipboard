@@ -13,6 +13,7 @@ import 'package:clipboard/pages/settings/widgets/switches/type_to_search_switch.
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 
 class CustomizationSettings extends StatelessWidget {
@@ -41,10 +42,10 @@ class CustomizationSettings extends StatelessWidget {
         const TransformBehaviorSwitch(),
         const TypeToSearchSwitch(),
         height24,
-        const SettingHeader(name: "Keyboard Shortcuts"),
-        const ClipboardHotKeySwitch(),
-        const PasteStackHotKeySwitch(),
-        const QuickPasteHotKeySwitch(),
+        if (isDesktopPlatform) const SettingHeader(name: "Keyboard Shortcuts"),
+        if (isDesktopPlatform) const ClipboardHotKeySwitch(),
+        if (isDesktopPlatform) const PasteStackHotKeySwitch(),
+        if (isDesktopPlatform) const QuickPasteHotKeySwitch(),
       ],
     );
   }
