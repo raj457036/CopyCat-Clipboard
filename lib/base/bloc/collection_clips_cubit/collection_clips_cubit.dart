@@ -7,7 +7,6 @@ import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/common/failure.dart';
-import 'package:clipboard/utils/common_extension.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -115,7 +114,7 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
     );
   }
 
-  void put(ClipboardItem item) {
+  void put(ClipboardItem item, {bool isNew = false}) {
     if (item.collectionId != collection.id) {
       deleteItem([item]);
       return;
@@ -123,10 +122,18 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
 
     state.mapOrNull(
       results: (result) {
-        final items = result.results.replaceWhere(
-          (it) => it.id == item.id,
-          item,
-        );
+        final index = _findItemIndex(result.results, item);
+        if (index == -1) {
+          if (!isNew) return;
+          final items = List<ClipboardItem>.from(result.results);
+          items.insert(0, item);
+          emit(result.copyWith(results: items));
+          return;
+        }
+
+        if (result.results[index] == item) return;
+        final items = List<ClipboardItem>.from(result.results);
+        items[index] = item;
         emit(result.copyWith(results: items));
       },
     );
@@ -135,58 +142,51 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
   void onBatchSyncEvent(List<ClipCrossSyncEvent> events) {
     if (state is! CollectionClipsResultsState) return;
     final currentState = state as CollectionClipsResultsState;
-    // Deleted
-    final deleted = events
-        .where((event) {
-          final (type, _) = event;
-          return type == CrossSyncEventType.delete;
-        })
-        .map((event) => event.$2)
-        .toList();
-    deleteItem(deleted);
+    final hasSearch = currentQuery != null && currentQuery!.isNotEmpty;
 
-    if (currentQuery != null && currentQuery!.isNotEmpty) return;
+    final next = List<ClipboardItem>.from(currentState.results);
+    var deletedCount = 0;
+    var changed = false;
 
-    // Created
-    final created = events
-        .where((event) {
-          final (type, _) = event;
-          return type == CrossSyncEventType.create;
-        })
-        .map((event) => event.$2)
-        .toList();
-    if (created.isNotEmpty) {
-      emit(
-        currentState.copyWith(results: [...created, ...currentState.results]),
-      );
-    }
+    for (final event in events) {
+      final (type, item) = event;
+      final deleted =
+          item.deletedAt != null || type == CrossSyncEventType.delete;
+      final belongsToCurrentCollection = item.collectionId == collection.id;
+      final index = _findItemIndex(next, item);
 
-    // Updates
-    final updated = events
-        .where((event) {
-          final (type, _) = event;
-          return type == CrossSyncEventType.update;
-        })
-        .map((event) => event.$2)
-        .toList();
-    if (updated.isEmpty) return;
-    final updateIndexMap = <int, int>{};
-    for (var i = 0; i < updated.length; i++) {
-      final item = updated[i];
-      updateIndexMap[item.id!] = i;
-    }
+      if (deleted || !belongsToCurrentCollection) {
+        if (index != -1) {
+          next.removeAt(index);
+          deletedCount++;
+          changed = true;
+        }
+        continue;
+      }
 
-    final replaced = <ClipboardItem>[];
-    for (var i = 0; i < currentState.results.length; i++) {
-      final item = currentState.results[i];
-      final found = updateIndexMap[item.id];
-      if (found != null) {
-        replaced.add(item);
-      } else {
-        replaced.add(item);
+      if (hasSearch) continue;
+
+      if (type == CrossSyncEventType.create ||
+          type == CrossSyncEventType.update) {
+        if (index != -1) {
+          if (next[index] != item) {
+            next[index] = item;
+            changed = true;
+          }
+        } else {
+          next.insert(0, item);
+          changed = true;
+        }
+        continue;
       }
     }
-    emit(currentState.copyWith(results: replaced));
+
+    if (changed) {
+      emit(currentState.copyWith(results: next));
+    }
+    if (deletedCount > 0) {
+      unawaited(fetch(currentQuery, deletedCount));
+    }
   }
 
   void onSyncEvent(ClipCrossSyncEvent event) {
@@ -198,7 +198,31 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
     }
 
     if (currentQuery != null && currentQuery!.isNotEmpty) return;
-    put(item);
+
+    if (type == CrossSyncEventType.create ||
+        type == CrossSyncEventType.update) {
+      put(item, isNew: true);
+      return;
+    }
+  }
+
+  bool _isSameItem(ClipboardItem left, ClipboardItem right) {
+    if (left.id != null && right.id != null && left.id == right.id) return true;
+    if (left.serverId != null &&
+        right.serverId != null &&
+        left.serverId == right.serverId) {
+      return true;
+    }
+    if (left.originId != null &&
+        right.originId != null &&
+        left.originId == right.originId) {
+      return true;
+    }
+    return false;
+  }
+
+  int _findItemIndex(List<ClipboardItem> items, ClipboardItem item) {
+    return items.indexWhere((it) => _isSameItem(it, item));
   }
 
   @override

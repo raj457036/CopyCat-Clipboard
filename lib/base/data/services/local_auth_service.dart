@@ -6,6 +6,8 @@ class LocalAuthService {
   final _auth = LocalAuthentication();
 
   DateTime? _unlockedAt;
+  DateTime? _backgroundedAt;
+  Duration _backgroundElapsed = Duration.zero;
   int _timeoutMinutes = 1;
 
   /// True when the user has authenticated within the current timeout window.
@@ -14,8 +16,11 @@ class LocalAuthService {
     // timeout == 0 means "lock as soon as the app backgrounds" — the session
     // stays valid until onAppBackground() clears it, so return true here.
     if (_timeoutMinutes == 0) return true;
-    final elapsed = DateTime.now().difference(_unlockedAt!);
-    return elapsed < Duration(minutes: _timeoutMinutes);
+    final timeout = Duration(minutes: _timeoutMinutes);
+    final liveBackgroundElapsed = _backgroundedAt == null
+        ? Duration.zero
+        : DateTime.now().difference(_backgroundedAt!);
+    return (_backgroundElapsed + liveBackgroundElapsed) < timeout;
   }
 
   /// Returns true when the device has any authentication method available
@@ -83,10 +88,29 @@ class LocalAuthService {
   void onUnlocked({required int timeoutMinutes}) {
     _timeoutMinutes = timeoutMinutes;
     _unlockedAt = DateTime.now();
+    _backgroundedAt = null;
+    _backgroundElapsed = Duration.zero;
+  }
+
+  /// Starts counting timeout while app/window is backgrounded.
+  void onAppBackground() {
+    if (_unlockedAt == null) return;
+    if (_timeoutMinutes == 0) return;
+    _backgroundedAt ??= DateTime.now();
+  }
+
+  /// Stops timeout counting while app/window is foregrounded.
+  void onAppForeground() {
+    final startedAt = _backgroundedAt;
+    if (startedAt == null) return;
+    _backgroundElapsed += DateTime.now().difference(startedAt);
+    _backgroundedAt = null;
   }
 
   /// Invalidates the current unlock session.
   void lock() {
     _unlockedAt = null;
+    _backgroundedAt = null;
+    _backgroundElapsed = Duration.zero;
   }
 }

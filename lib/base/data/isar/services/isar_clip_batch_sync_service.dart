@@ -1,4 +1,5 @@
 import 'package:clipboard/base/constants/strings/strings.dart';
+import 'package:clipboard/base/data/isar/adapters/isar_clip_collection.dart';
 import 'package:clipboard/base/data/isar/adapters/isar_clipboard_item.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart';
@@ -19,6 +20,7 @@ typedef _Payload = (List<ClipboardItem>, Map<int, int>);
 void _syncInBackground(_Payload record, Sender send) async {
   final Isar db = Isar.getInstance(dbName)!;
   final isarCollection = db.collection<IsarClipboardItem>();
+  final isarCollections = db.collection<IsarClipCollection>();
 
   var (items, collectionMap) = record;
 
@@ -50,13 +52,35 @@ void _syncInBackground(_Payload record, Sender send) async {
         e.originId!: e,
   };
 
+  final unresolvedServerCollectionIds = items
+      .map((e) => e.serverCollectionId)
+      .whereType<int>()
+      .where((id) => !collectionMap.containsKey(id))
+      .toSet()
+      .toList(growable: false);
+
+  final fallbackCollectionMap = <int, int>{};
+  if (unresolvedServerCollectionIds.isNotEmpty) {
+    final localCollections = await isarCollections
+        .filter()
+        .anyOf(unresolvedServerCollectionIds, (q, id) => q.serverIdEqualTo(id))
+        .findAll();
+    for (final c in localCollections) {
+      final serverId = c.serverId;
+      if (serverId == null || c.isarId == Isar.autoIncrement) continue;
+      fallbackCollectionMap[serverId] = c.isarId;
+    }
+  }
+
   final events = <ClipCrossSyncEvent>[];
   final now = systemTime();
 
   // Phase 3: in-memory conflict resolution
   for (var index = 0; index < items.length; index++) {
     var item = items[index];
-    final collectionId = collectionMap[item.serverCollectionId];
+    final collectionId =
+        collectionMap[item.serverCollectionId] ??
+        fallbackCollectionMap[item.serverCollectionId];
     IsarClipboardItem? found;
 
     if (item.serverId != null &&
@@ -80,7 +104,7 @@ void _syncInBackground(_Payload record, Sender send) async {
         id: found.isarId == Isar.autoIncrement ? null : found.isarId,
         lastSynced: now,
         localPath: found.localPath,
-        collectionId: collectionId,
+        collectionId: collectionId ?? found.collectionId,
         sourceApp: found.sourceApp ?? item.sourceApp,
         sourceId: found.sourceId ?? item.sourceId,
       );
@@ -132,7 +156,7 @@ class IsarClipBatchSyncService implements ClipBatchSyncService {
         String? dbPath = Platform.environment[dbPathEnvKey];
         dbPath = dbPath ?? (await getApplicationDocumentsDirectory()).path;
         await Isar.open(
-          [IsarClipboardItemSchema],
+          [IsarClipboardItemSchema, IsarClipCollectionSchema],
           directory: dbPath,
           relaxedDurability: true,
           inspector: kDebugMode,

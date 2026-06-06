@@ -78,8 +78,14 @@ class SyncEngine<T extends Syncable> {
     eventBus.emitEngineStatus(adapter.entityType, true);
 
     try {
-      final cursor = await cursorRepo.get(adapter.entityType);
-      final DateTime? lastSynced;
+      final cursor = await cursorRepo.get(identity);
+      final legacyCursor = cursor == null && identity != adapter.entityType
+          ? await cursorRepo.get(adapter.entityType)
+          : null;
+      DateTime? lastSynced;
+      final maxLookback = pullOffset != null && pullOffset > 0
+          ? systemTime().subtract(Duration(seconds: pullOffset))
+          : null;
       if (freshPull) {
         final freshStart = (pullOffset == null || pullOffset == 0)
             ? DateTime.fromMillisecondsSinceEpoch(0)
@@ -97,8 +103,17 @@ class SyncEngine<T extends Syncable> {
         }
       } else {
         lastSynced =
-            (cursor?.lastSyncedAt ?? await adapter.getLatestSyncTimestamp());
+            (cursor?.lastSyncedAt ??
+            legacyCursor?.lastSyncedAt ??
+            await adapter.getLatestSyncTimestamp());
       }
+
+      // Never query beyond the active plan lookback window.
+      if (maxLookback != null &&
+          (lastSynced == null || lastSynced.isBefore(maxLookback))) {
+        lastSynced = maxLookback;
+      }
+
       final excludeDeviceId = freshPull ? null : deviceId;
 
       // During Restoration, we don't need to pull deleted records
@@ -113,16 +128,19 @@ class SyncEngine<T extends Syncable> {
       }
 
       // 2. Sync Created/Updated Items
-      final changesResult = await _pullChanges(
+      final (changesResult, latestPulledModified) = await _pullChanges(
         lastSynced,
         excludeDeviceId: excludeDeviceId,
       );
       if (changesResult == SyncResult.failed) return SyncResult.failed;
 
       // 3. Persist new cursor
-      await cursorRepo.upsert(
-        SyncCursor(entityType: adapter.entityType, lastSyncedAt: systemTime()),
-      );
+      final nextCursorTime = latestPulledModified ?? lastSynced;
+      if (nextCursorTime != null) {
+        await cursorRepo.upsert(
+          SyncCursor(entityType: identity, lastSyncedAt: nextCursorTime),
+        );
+      }
 
       return SyncResult.success;
     } catch (e, stack) {
@@ -184,12 +202,13 @@ class SyncEngine<T extends Syncable> {
     return SyncResult.success;
   }
 
-  Future<SyncResult> _pullChanges(
+  Future<(SyncResult, DateTime?)> _pullChanges(
     DateTime? lastSynced, {
     String? excludeDeviceId,
   }) async {
     bool hasMore = true;
     DateTime? lastModified = lastSynced;
+    DateTime? latestPulledModified;
     int syncedCount = 0;
     // Adaptive batch size: shrinks on timeout, grows on consecutive successes.
     int batchLimit = config.pullBatchSize;
@@ -233,16 +252,14 @@ class SyncEngine<T extends Syncable> {
           syncedCount += paginated.results.length;
           if (paginated.results.isNotEmpty) {
             lastModified = paginated.results.last.modified;
+            latestPulledModified = lastModified;
             // Grow batch size on success (up to maxBatchSize) so fast
             // connections naturally fetch more per round-trip over time.
             batchLimit = (batchLimit * 2).clamp(1, maxBatchSize);
             // Save a checkpoint so "Try Again" can resume from this offset
             // rather than restarting from the beginning.
             await cursorRepo.upsert(
-              SyncCursor(
-                entityType: adapter.entityType,
-                lastSyncedAt: lastModified!,
-              ),
+              SyncCursor(entityType: identity, lastSyncedAt: lastModified!),
             );
           }
 
@@ -280,10 +297,10 @@ class SyncEngine<T extends Syncable> {
         },
       );
 
-      if (!success) return SyncResult.failed;
+      if (!success) return (SyncResult.failed, latestPulledModified);
       await wait(config.interBatchDelayMs);
     }
-    return SyncResult.success;
+    return (SyncResult.success, latestPulledModified);
   }
 
   // PUSH (Local -> Server via Outbox)

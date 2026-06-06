@@ -28,6 +28,7 @@ import 'package:synchronized/synchronized.dart' show Lock;
 @singleton
 class SyncOrchestrator {
   static const _logger = AppLogger.scoped('SyncOrchestrator');
+  static const _realtimeStartupOutboxDelay = Duration(seconds: 4);
   final Map<String, SyncEngine> _engines = {};
   final SyncOutboxRepository _outboxRepo;
   Timer? _outboxTimer;
@@ -258,6 +259,13 @@ class SyncOrchestrator {
         _outboxStreamSub = _outboxRepo.onNewEntry.listen((_) {
           _logger.d('Stream notification received! Triggering push...');
           _processOutboxSynchronized();
+        });
+        // Realtime has no periodic outbox loop, so run one delayed startup
+        // drain to process entries that were queued before app launch.
+        _outboxTimer = Timer(_realtimeStartupOutboxDelay, () {
+          _outboxTimer = null;
+          _logger.d('Realtime startup drain: triggering outbox push once');
+          unawaited(_processOutboxSynchronized());
         });
       case SyncSpeed.balanced:
         final balancedInterval =

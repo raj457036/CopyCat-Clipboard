@@ -60,6 +60,9 @@ class AppLockCubit extends Cubit<AppLockState> {
   void onAppForeground() {
     if (!_isEnabled) return;
     if (_sensitiveAuthInProgress) return;
+
+    _localAuthService.onAppForeground();
+
     if (_localAuthService.isUnlocked) return;
     if (state is AppLockAuthenticating) return;
     emit(const AppLockAuthenticating());
@@ -97,6 +100,9 @@ class AppLockCubit extends Cubit<AppLockState> {
   void onAppBackground() {
     if (!_isEnabled) return;
     if (_sensitiveAuthInProgress) return;
+
+    _localAuthService.onAppBackground();
+
     if (_appConfigCubit.state.config.localAuthTimeoutMinutes == 0) {
       _localAuthService.lock();
       if (state is AppLockUnlocked) emit(const AppLockLocked());

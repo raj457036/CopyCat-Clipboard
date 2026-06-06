@@ -42,6 +42,7 @@ class SyncProgressInitParams {
 @lazySingleton
 class SyncStatusCubit extends Cubit<SyncStatusState> {
   static const _notificationDedupeWindow = Duration(seconds: 3);
+  static const _completionIdleDelay = Duration(seconds: 2);
 
   final MonetizationCubit monetizationCubit;
   final SyncOrchestrator orchestrator;
@@ -53,6 +54,8 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
   final Map<String, DateTime> _lastNotifiedAt = {};
   bool _isManualSyncing = false;
   DateTime? _lastManualSyncAt;
+  Future<void>? _syncAllInFlight;
+  bool _completionCheckPending = false;
   final Lock _syncLock = Lock();
 
   SyncStatusCubit(
@@ -72,10 +75,17 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     seconds: _activeSubscription?.syncInterval ?? defaultBestEffortSyncInterval,
   );
 
+  int get _maxSyncHoursByPlan {
+    final sub = _activeSubscription;
+    if (sub == null) return defaultSyncHourOffset;
+    if (sub.syncHours < 1) return defaultSyncHourOffset;
+    return sub.syncHours;
+  }
+
   /// Determines the pull offset for fresh pulls based on subscription status.
   int get pullOffset => _activeSubscription?.syncHours != null
-      ? _activeSubscription!.syncHours * 60 * 60
-      : 24 * 60 * 60; // Default to 24 hours for non-subscribers
+      ? _activeSubscription!.syncHours.clamp(1, _maxSyncHoursByPlan) * 60 * 60
+      : defaultSyncHourOffset * 60 * 60;
 
   void initializeProgress(SyncProgressInitParams params) {
     final progress = params.totalCounts.map(
@@ -160,19 +170,41 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
   }
 
   Future<void> _checkCompletion() async {
-    if (_busyEngines.isEmpty && !_isManualSyncing) {
-      // Small delay to handle transitions between engines or tasks
-      await Future.delayed(Durations.short2);
-      if (_busyEngines.isNotEmpty &&
-          _isManualSyncing &&
-          state is! SyncingStatus) {
+    if (_completionCheckPending ||
+        _busyEngines.isNotEmpty ||
+        _isManualSyncing) {
+      return;
+    }
+
+    _completionCheckPending = true;
+    try {
+      await Future.delayed(_completionIdleDelay);
+      if (_busyEngines.isNotEmpty || _isManualSyncing) {
         return;
       }
       await _runPostSyncDecryption();
+    } finally {
+      _completionCheckPending = false;
     }
   }
 
   Future<void> syncAll(SyncAllParams params) async {
+    final inFlight = _syncAllInFlight;
+    if (inFlight != null) {
+      return inFlight;
+    }
+
+    late final Future<void> tracked;
+    tracked = _runSyncAll(params).whenComplete(() {
+      if (identical(_syncAllInFlight, tracked)) {
+        _syncAllInFlight = null;
+      }
+    });
+    _syncAllInFlight = tracked;
+    return tracked;
+  }
+
+  Future<void> _runSyncAll(SyncAllParams params) async {
     if (_isOnManualCooldown(params)) {
       final cooldown = _manualSyncCooldown;
       final elapsed = systemTime().difference(_lastManualSyncAt!);

@@ -149,15 +149,37 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     }
 
     if (updated.isNotEmpty) {
-      final updateMap = {for (final e in updated) e.id: e};
-      for (var i = 0; i < _items.length; i++) {
-        final current = _items[i];
-        final replacement = updateMap[current.id];
-        if (replacement != null) _items[i] = replacement;
+      var changed = false;
+      for (final eventItem in updated) {
+        final index = _findItemIndex(_items, eventItem);
+        if (index == -1) continue;
+        if (_items[index] == eventItem) continue;
+        _items[index] = eventItem;
+        changed = true;
       }
+      if (!changed) return;
       _applySort(_items);
       emit(state.copyWith(revision: state.revision + 1));
     }
+  }
+
+  bool _isSameItem(ClipboardItem left, ClipboardItem right) {
+    if (left.id != null && right.id != null && left.id == right.id) return true;
+    if (left.serverId != null &&
+        right.serverId != null &&
+        left.serverId == right.serverId) {
+      return true;
+    }
+    if (left.originId != null &&
+        right.originId != null &&
+        left.originId == right.originId) {
+      return true;
+    }
+    return false;
+  }
+
+  int _findItemIndex(List<ClipboardItem> items, ClipboardItem item) {
+    return items.indexWhere((it) => _isSameItem(it, item));
   }
 
   void onSyncEvent(ClipCrossSyncEvent event) {
@@ -182,12 +204,16 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   }
 
   void put(ClipboardItem item, {bool isNew = false}) {
-    if (state.filterState.collectionId != item.collectionId) return;
+    final activeCollectionId = state.filterState.collectionId;
+    if (activeCollectionId != null && activeCollectionId != item.collectionId) {
+      deleteItem([item]);
+      return;
+    }
 
     if (isNew) {
       _items.insert(0, item);
     } else {
-      final updated = _items.indexWhere((it) => it.id == item.id);
+      final updated = _findItemIndex(_items, item);
       if (updated != -1) {
         _items[updated] = item;
       }
