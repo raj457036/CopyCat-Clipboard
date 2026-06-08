@@ -241,6 +241,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
               ? maxSizeMb * 1024 * 1024
               : null,
           password: protectWithPassword ? passwordController.text.trim() : null,
+          encryptClipsInBackup: encryptClipsInBackup,
         ),
       );
     }

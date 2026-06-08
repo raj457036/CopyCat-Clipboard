@@ -78,18 +78,13 @@ class SBClipCrossSyncListener
     _statusEvents.add((CrossSyncListenerStatus.connecting, null));
     _channel = client.channel(
       channelID,
-      // opts: const RealtimeChannelConfig(ack: true),
+      opts: const RealtimeChannelConfig(ack: false),
     );
     _channel
         ?.onPostgresChanges(
           schema: 'public',
           event: PostgresChangeEvent.all,
           table: clipItemTable,
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.neq,
-            column: "deviceId",
-            value: deviceId,
-          ),
           callback: _onChange,
         )
         .subscribe(_onStatusChange);
@@ -162,7 +157,7 @@ class SBCollectionCrossSyncListener
     _statusEvents.add((CrossSyncListenerStatus.connecting, null));
     _channel = client.channel(
       channelID,
-      // opts: const RealtimeChannelConfig(ack: true),
+      opts: const RealtimeChannelConfig(ack: false),
     );
 
     _channel
@@ -170,11 +165,6 @@ class SBCollectionCrossSyncListener
           schema: 'public',
           event: PostgresChangeEvent.all,
           table: clipCollectionTable,
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.neq,
-            column: "deviceId",
-            value: deviceId,
-          ),
           callback: _onChange,
         )
         .subscribe(_onStatusChange);

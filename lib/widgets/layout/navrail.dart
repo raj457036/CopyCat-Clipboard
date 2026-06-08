@@ -1,6 +1,8 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/routes/utils.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 
@@ -23,8 +25,13 @@ class CopyCatNavrail extends StatelessWidget {
     final settingsTooltip =
         "${context.locale.layout__navbar__settings} • ${keyboardShortcut(key: "X")}";
 
+    const duration = Duration(milliseconds: 1500);
+
     return ExcludeFocus(
       child: NavigationRail(
+        selectedLabelTextStyle: context.textTheme.labelMedium?.copyWith(
+          fontWeight: FontWeight.w600,
+        ),
         destinations: [
           NavigationRailDestination(
             padding: const EdgeInsets.symmetric(vertical: padding12),
@@ -34,7 +41,10 @@ class CopyCatNavrail extends StatelessWidget {
             ),
             selectedIcon: Tooltip(
               message: clipboardTooltip,
-              child: const Icon(Icons.paste_rounded),
+              child: const Swing(
+                duration: duration,
+                child: Icon(Icons.paste_rounded),
+              ),
             ),
             label: Text(
               context.locale.layout__navbar__clipboard,
@@ -45,11 +55,14 @@ class CopyCatNavrail extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: padding12),
             icon: Tooltip(
               message: collectionsTooltip,
-              child: const Icon(Icons.folder_outlined),
+              child: const Icon(Icons.folder),
             ),
             selectedIcon: Tooltip(
               message: collectionsTooltip,
-              child: const Icon(Icons.folder_open_rounded),
+              child: const Tada(
+                duration: duration,
+                child: Icon(Icons.folder_open_rounded),
+              ),
             ),
             label: Text(
               context.locale.layout__navbar__collections,
@@ -64,7 +77,10 @@ class CopyCatNavrail extends StatelessWidget {
             ),
             selectedIcon: Tooltip(
               message: settingsTooltip,
-              child: const Icon(Icons.settings),
+              child: const Spin(
+                duration: duration,
+                child: Icon(Icons.settings),
+              ),
             ),
             label: Text(
               context.locale.layout__navbar__settings,
@@ -72,10 +88,10 @@ class CopyCatNavrail extends StatelessWidget {
             ),
           ),
         ],
-        minWidth: 72,
+        minWidth: 86,
         leadingAtTop: true,
         leading: SizedBox(height: 155, child: floatingActionButton),
-        // labelType: NavigationRailLabelType.all,
+        labelType: NavigationRailLabelType.none,
         groupAlignment: -.5,
         selectedIndex: navbarActiveIndex,
         onDestinationSelected: (idx) => onNavItemTapped(context, idx),

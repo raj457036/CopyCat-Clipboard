@@ -73,7 +73,7 @@ dependencies:
       url: https://github.com/raj457036/flutter_svg_provider.git
   android_background_clipboard:
     path: packages/android_background_clipboard
-  animate_do: ^3.3.4
+  animate_do: ^5.1.0
   installed_apps:
     git:
       url: https://github.com/raj457036/installed_apps.git
@@ -129,6 +129,8 @@ dependency_overrides:
   #     path: "engine_context/dart"
 
 flutter:
+  config:
+    enable-swift-package-manager: false
   generate: true
   uses-material-design: true
   assets:
