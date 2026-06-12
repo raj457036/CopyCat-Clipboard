@@ -26,6 +26,8 @@ class IsarClipboardItem {
   @Index()
   DateTime? deletedAt;
   @Index()
+  bool locked = false;
+  @Index()
   bool encrypted = false;
   String? iv;
   String? encMode;
@@ -78,6 +80,7 @@ class IsarClipboardItem {
     title: title,
     description: description,
     deletedAt: deletedAt,
+    locked: locked,
     encrypted: encrypted,
     iv: iv,
     encMode: encMode,
@@ -116,6 +119,7 @@ class IsarClipboardItem {
     ..title = item.title
     ..description = item.description
     ..deletedAt = item.deletedAt
+    ..locked = item.locked
     ..encrypted = item.encrypted
     ..iv = item.iv
     ..encMode = item.encMode

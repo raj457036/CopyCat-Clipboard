@@ -160,7 +160,7 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                     locale.multi_paste__title,
                     style: theme.textTheme.headlineSmall,
                   ),
-                  const SizedBox(height: 2),
+                  height2,
                   Text(
                     locale.multi_paste__subtitle,
                     style: theme.textTheme.bodyMedium?.copyWith(
@@ -194,14 +194,14 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                             value: '${widget.items.length}',
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        height12,
                         Expanded(
                           child: _StatTile(
                             label: locale.multi_paste__stat__text,
                             value: '$textClipCount',
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        height12,
                         Expanded(
                           child: _StatTile(
                             label: locale.multi_paste__stat__non_text,
@@ -212,7 +212,7 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                height16,
                 Card.outlined(
                   margin: EdgeInsets.zero,
                   child: Padding(
@@ -230,7 +230,7 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                                     locale.multi_paste__merge__title,
                                     style: theme.textTheme.titleMedium,
                                   ),
-                                  const SizedBox(height: 4),
+                                  height4,
                                   Text(
                                     locale.multi_paste__merge__subtitle,
                                     style: theme.textTheme.bodyMedium?.copyWith(
@@ -240,7 +240,7 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            height12,
                             Switch.adaptive(
                               value: mergeConsecutiveText,
                               onChanged: (value) {
@@ -252,12 +252,12 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                           ],
                         ),
                         if (mergeConsecutiveText) ...[
-                          const SizedBox(height: 16),
+                          height16,
                           Text(
                             locale.multi_paste__separator__title,
                             style: theme.textTheme.labelLarge,
                           ),
-                          const SizedBox(height: 10),
+                          height10,
                           SegmentedButton<_SeparatorPreset>(
                             showSelectedIcon: false,
                             segments: [
@@ -279,7 +279,7 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                             },
                           ),
                           if (separatorPreset == _SeparatorPreset.custom) ...[
-                            const SizedBox(height: 12),
+                            height12,
                             TextField(
                               controller: customSeparatorController,
                               decoration: InputDecoration(
@@ -296,7 +296,7 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                height16,
                 Card.outlined(
                   margin: EdgeInsets.zero,
                   child: Padding(
@@ -308,14 +308,14 @@ class _MultiPasteDialogState extends State<MultiPasteDialog> {
                           locale.multi_paste__pacing__title,
                           style: theme.textTheme.titleMedium,
                         ),
-                        const SizedBox(height: 4),
+                        height4,
                         Text(
                           locale.multi_paste__pacing__subtitle,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        height16,
                         TextField(
                           controller: waitMsController,
                           keyboardType: TextInputType.number,
@@ -368,7 +368,7 @@ class _StatTile extends StatelessWidget {
             color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: 4),
+        height4,
         Text(value, style: theme.textTheme.headlineSmall),
       ],
     );

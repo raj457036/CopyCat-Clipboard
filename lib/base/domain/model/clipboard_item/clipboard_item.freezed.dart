@@ -42,6 +42,7 @@ mixin _$ClipboardItem {
   String? get description => throw _privateConstructorUsedError;
   @DateTimeConverter()
   DateTime? get deletedAt => throw _privateConstructorUsedError;
+  bool get locked => throw _privateConstructorUsedError;
   bool get encrypted => throw _privateConstructorUsedError;
   String? get iv => throw _privateConstructorUsedError;
   @JsonKey(name: "enc_mode")
@@ -135,6 +136,7 @@ abstract class $ClipboardItemCopyWith<$Res> {
     String? title,
     String? description,
     @DateTimeConverter() DateTime? deletedAt,
+    bool locked,
     bool encrypted,
     String? iv,
     @JsonKey(name: "enc_mode") String? encMode,
@@ -198,6 +200,7 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
     Object? title = freezed,
     Object? description = freezed,
     Object? deletedAt = freezed,
+    Object? locked = null,
     Object? encrypted = null,
     Object? iv = freezed,
     Object? encMode = freezed,
@@ -280,6 +283,10 @@ class _$ClipboardItemCopyWithImpl<$Res, $Val extends ClipboardItem>
                 ? _value.deletedAt
                 : deletedAt // ignore: cast_nullable_to_non_nullable
                       as DateTime?,
+            locked: null == locked
+                ? _value.locked
+                : locked // ignore: cast_nullable_to_non_nullable
+                      as bool,
             encrypted: null == encrypted
                 ? _value.encrypted
                 : encrypted // ignore: cast_nullable_to_non_nullable
@@ -432,6 +439,7 @@ abstract class _$$ClipboardItemImplCopyWith<$Res>
     String? title,
     String? description,
     @DateTimeConverter() DateTime? deletedAt,
+    bool locked,
     bool encrypted,
     String? iv,
     @JsonKey(name: "enc_mode") String? encMode,
@@ -494,6 +502,7 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
     Object? title = freezed,
     Object? description = freezed,
     Object? deletedAt = freezed,
+    Object? locked = null,
     Object? encrypted = null,
     Object? iv = freezed,
     Object? encMode = freezed,
@@ -576,6 +585,10 @@ class __$$ClipboardItemImplCopyWithImpl<$Res>
             ? _value.deletedAt
             : deletedAt // ignore: cast_nullable_to_non_nullable
                   as DateTime?,
+        locked: null == locked
+            ? _value.locked
+            : locked // ignore: cast_nullable_to_non_nullable
+                  as bool,
         encrypted: null == encrypted
             ? _value.encrypted
             : encrypted // ignore: cast_nullable_to_non_nullable
@@ -721,6 +734,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     this.title,
     this.description,
     @DateTimeConverter() this.deletedAt,
+    this.locked = false,
     this.encrypted = false,
     this.iv,
     @JsonKey(name: "enc_mode") this.encMode,
@@ -798,6 +812,9 @@ class _$ClipboardItemImpl extends _ClipboardItem {
   @override
   @DateTimeConverter()
   final DateTime? deletedAt;
+  @override
+  @JsonKey()
+  final bool locked;
   @override
   @JsonKey()
   final bool encrypted;
@@ -902,7 +919,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
 
   @override
   String toString() {
-    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, encrypted: $encrypted, iv: $iv, encMode: $encMode, text: $text, richData: $richData, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, sourceId: $sourceId, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent, previewOnly: $previewOnly, isQueued: $isQueued, originId: $originId)';
+    return 'ClipboardItem(id: $id, serverId: $serverId, lastSynced: $lastSynced, localPath: $localPath, created: $created, modified: $modified, deviceId: $deviceId, type: $type, userId: $userId, title: $title, description: $description, deletedAt: $deletedAt, locked: $locked, encrypted: $encrypted, iv: $iv, encMode: $encMode, text: $text, richData: $richData, url: $url, textCategory: $textCategory, fileName: $fileName, fileMimeType: $fileMimeType, fileExtension: $fileExtension, driveFileId: $driveFileId, fileSize: $fileSize, imgBlurHash: $imgBlurHash, sourceUrl: $sourceUrl, sourceApp: $sourceApp, sourceId: $sourceId, os: $os, serverCollectionId: $serverCollectionId, collectionId: $collectionId, localOnly: $localOnly, copiedCount: $copiedCount, lastCopied: $lastCopied, downloading: $downloading, downloadProgress: $downloadProgress, uploading: $uploading, uploadProgress: $uploadProgress, failure: $failure, userIntent: $userIntent, previewOnly: $previewOnly, isQueued: $isQueued, originId: $originId)';
   }
 
   @override
@@ -929,6 +946,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
                 other.description == description) &&
             (identical(other.deletedAt, deletedAt) ||
                 other.deletedAt == deletedAt) &&
+            (identical(other.locked, locked) || other.locked == locked) &&
             (identical(other.encrypted, encrypted) ||
                 other.encrypted == encrypted) &&
             (identical(other.iv, iv) || other.iv == iv) &&
@@ -1003,6 +1021,7 @@ class _$ClipboardItemImpl extends _ClipboardItem {
     title,
     description,
     deletedAt,
+    locked,
     encrypted,
     iv,
     encMode,
@@ -1070,6 +1089,7 @@ abstract class _ClipboardItem extends ClipboardItem {
     final String? title,
     final String? description,
     @DateTimeConverter() final DateTime? deletedAt,
+    final bool locked,
     final bool encrypted,
     final String? iv,
     @JsonKey(name: "enc_mode") final String? encMode,
@@ -1147,6 +1167,8 @@ abstract class _ClipboardItem extends ClipboardItem {
   @override
   @DateTimeConverter()
   DateTime? get deletedAt;
+  @override
+  bool get locked;
   @override
   bool get encrypted;
   @override

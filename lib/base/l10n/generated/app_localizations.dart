@@ -1554,6 +1554,18 @@ abstract class AppLocalizations {
   /// **'Edit Details'**
   String get preview__form__title;
 
+  /// No description provided for @preview__inspector__lock_clip.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock Clip'**
+  String get preview__inspector__lock_clip;
+
+  /// No description provided for @preview__inspector_lock_clip_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Encrypt this clip, disable search indexing, and require authentication to view it.'**
+  String get preview__inspector_lock_clip_description;
+
   /// No description provided for @preview__form__input__title.
   ///
   /// In en, this message translates to:
@@ -1619,6 +1631,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Content'**
   String get preview__inspector__section__content;
+
+  /// No description provided for @preview__inspector__section__security.
+  ///
+  /// In en, this message translates to:
+  /// **'Security'**
+  String get preview__inspector__section__security;
 
   /// No description provided for @preview__inspector__section__organize.
   ///

@@ -99,7 +99,7 @@ class _InAppReviewDialog extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const CatIntroductionAvatar(),
-              const SizedBox(height: 14),
+              height16,
               Text(
                 locale.review__dialog__title,
                 style: textTheme.headlineSmall?.copyWith(

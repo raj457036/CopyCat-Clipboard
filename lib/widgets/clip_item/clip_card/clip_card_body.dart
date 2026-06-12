@@ -57,7 +57,8 @@ class ClipCardBodyContent extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (item.displayTitle != null && !item.encrypted)
+                    if (item.displayTitle != null &&
+                        item.displayTitle!.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(
                           left: padding8,
@@ -209,6 +210,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       borderRadius: radius12,
     );
     const content = HoverScopeProvider(child: ClipCardBodyContent());
+    final bgColor = widget.item.locked ? colors.primaryContainer : null;
 
     return SpaceEnterListener(
       onSpace: (context) => widget.selectionActive
@@ -221,13 +223,13 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       onShiftSpaceEnter: (context) => onShiftEnter(context),
       onShiftC: (context) => onShiftC(context, widget.item),
       child: Card.outlined(
-        color: menuOpen ? colors.surfaceContainerHigh : null,
+        color: bgColor,
         elevation: highlighted ? 2 : 0,
         shape: selectedShape,
         clipBehavior: Clip.hardEdge,
         child: InkWell(
           mouseCursor: SystemMouseCursors.click,
-          focusColor: colors.surface,
+          focusColor: bgColor ?? colors.surface,
           customBorder: selectedShape,
           onTap: !widget.selectionActive
               ? () => performPrimaryActionOnClip(context, widget.item, canPaste)

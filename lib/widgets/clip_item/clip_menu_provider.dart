@@ -65,41 +65,43 @@ class _ClipMenuProviderState extends State<ClipMenuProvider> {
         section: 'Clip Actions',
         onPressed: () => selectClip(context, item),
       ),
-      if (!item.inCache)
+      if (!item.inCache && !item.encrypted)
         MenuItem(
           icon: Icons.download_for_offline_outlined,
           text: context.locale.app__download,
           section: 'Clip Actions',
           onPressed: () => downloadFile(context, item),
         ),
-      if (item.inCache)
+      if (item.inCache && !item.encrypted)
         MenuItem(
           icon: Icons.copy,
           text: context.mlocale.copyButtonLabel.title,
           section: 'Clip Actions',
           onPressed: () => copyToClipboard(context, item),
         ),
-      if (item.inCache)
+      if (item.inCache && !item.encrypted)
         MenuItem(
           icon: Icons.ios_share,
           text: context.locale.app__share,
           section: 'Clip Actions',
           onPressed: () => shareClipboardItem(context, item),
         ),
-      MenuItem(
-        icon: Icons.edit_note_rounded,
-        text: context.locale.app__preview,
-        section: 'Clip Actions',
-        onPressed: () => preview(context, item),
-      ),
-      if (item.type == ClipItemType.url)
+      if (!item.encrypted)
+        MenuItem(
+          icon: Icons.edit_note_rounded,
+          text: context.locale.app__preview,
+          section: 'Clip Actions',
+          onPressed: () => preview(context, item),
+        ),
+      if (item.type == ClipItemType.url && !item.encrypted)
         MenuItem(
           icon: Icons.open_in_new,
           text: context.locale.app__follow_link,
           onPressed: () => launchUrl(item),
         ),
       if ((item.type == ClipItemType.file || item.type == ClipItemType.media) &&
-          item.inCache)
+          item.inCache &&
+          !item.encrypted)
         MenuItem(
           icon: Icons.save_alt_rounded,
           text: context.locale.app__export,
@@ -107,7 +109,8 @@ class _ClipMenuProviderState extends State<ClipMenuProvider> {
           onPressed: () => copyToClipboard(context, item, saveFile: true),
         ),
       if ((item.type == ClipItemType.file || item.type == ClipItemType.media) &&
-          item.inCache)
+          item.inCache &&
+          !item.encrypted)
         MenuItem(
           icon: Icons.open_in_new,
           text: context.locale.app__open_file,
@@ -120,13 +123,14 @@ class _ClipMenuProviderState extends State<ClipMenuProvider> {
         section: 'Clip Actions',
         onPressed: () => changeCollection(context, [item]),
       ),
-      MenuItem(
-        icon: Icons.delete_outline,
-        text: context.locale.app__delete,
-        section: 'Clip Actions',
-        onPressed: () => deleteClipboardItem(context, [item]),
-      ),
-      ...transformItems,
+      if (!item.encrypted)
+        MenuItem(
+          icon: Icons.delete_outline,
+          text: context.locale.app__delete,
+          section: 'Clip Actions',
+          onPressed: () => deleteClipboardItem(context, [item]),
+        ),
+      if (!item.encrypted) ...transformItems,
     ];
   }
 

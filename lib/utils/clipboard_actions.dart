@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/file_cloud_cubit/file_cloud_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
@@ -149,7 +150,10 @@ Future<void> selectClip(BuildContext context, ClipboardItem item) async {
   ctx.read<SelectedClipsCubit>().select(item);
 }
 
-Future<void> decryptItem(BuildContext context, ClipboardItem item) async {
+Future<ClipboardItem?> decryptItem(
+  BuildContext context,
+  ClipboardItem item,
+) async {
   final persitCubit = context.read<OfflinePersistenceCubit>();
   final appConfig = context.read<AppConfigCubit>();
   if (!appConfig.isE2EESetupDone) {
@@ -159,11 +163,19 @@ Future<void> decryptItem(BuildContext context, ClipboardItem item) async {
         body: context.locale.app__ack__missing_e2e_setup,
       ),
     );
-    return;
+    return null;
+  }
+
+  if (item.locked) {
+    final authorized = await context
+        .read<AppLockCubit>()
+        .authorizeForSensitiveAction();
+    if (!authorized) return null;
   }
 
   final item_ = await item.decrypt();
   persitCubit.persist([item_]);
+  return item_;
 }
 
 Future<void> downloadFile(BuildContext context, ClipboardItem item) async {
@@ -370,12 +382,12 @@ Future<void> performPrimaryActionOnClip(
   bool canPaste,
 ) async {
   if (item.encrypted) {
-    decryptItem(context, item);
+    await decryptItem(context, item);
   } else if (item.needDownload) {
-    downloadFile(context, item);
+    await downloadFile(context, item);
   } else if (canPaste) {
-    pasteOnLastWindow(context, item);
+    await pasteOnLastWindow(context, item);
   } else {
-    copyToClipboard(context, item);
+    await copyToClipboard(context, item);
   }
 }

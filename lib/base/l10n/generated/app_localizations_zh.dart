@@ -777,6 +777,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get preview__form__title => '编辑详情';
 
   @override
+  String get preview__inspector__lock_clip => '锁定片段';
+
+  @override
+  String get preview__inspector_lock_clip_description =>
+      '加密此片段，禁用搜索索引，并要求身份验证才能查看。';
+
+  @override
   String get preview__form__input__title => '标题';
 
   @override
@@ -808,6 +815,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get preview__inspector__section__content => '内容';
+
+  @override
+  String get preview__inspector__section__security => '安全';
 
   @override
   String get preview__inspector__section__organize => '整理';

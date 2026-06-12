@@ -1,3 +1,4 @@
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/di/di.dart' show sl;
 import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:clipboard/pages/preview/widgets/clip_inspector.dart';
@@ -33,7 +34,7 @@ class ClipItemPreviewVerticalView extends StatelessWidget {
                 child: ClipPreview(item: item),
               ),
             ),
-            const SizedBox(height: 16),
+            height16,
             ClipInspector(
               item: item,
               includePagePadding: false,

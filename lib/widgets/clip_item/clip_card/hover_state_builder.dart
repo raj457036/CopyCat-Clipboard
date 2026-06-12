@@ -22,6 +22,9 @@ class HoverScope extends InheritedWidget {
 class HoverScopeProvider extends StatefulWidget {
   final Widget child;
 
+  /// Wrap [child] with a hover scope that provides hover state to its descendants.
+  ///
+  /// To get the hover state, use `HoverScope.of(context)` in the descendant widgets.
   const HoverScopeProvider({super.key, required this.child});
 
   @override

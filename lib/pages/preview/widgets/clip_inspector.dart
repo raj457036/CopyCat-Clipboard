@@ -1,3 +1,4 @@
+import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
@@ -23,6 +24,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:universal_io/universal_io.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:synchronized/extension.dart';
 
 class ClipInspector extends StatefulWidget {
   final ClipboardItem item;
@@ -43,10 +45,12 @@ class ClipInspector extends StatefulWidget {
 }
 
 class _ClipInspectorState extends State<ClipInspector> {
-  late final OfflinePersistenceCubit cubit;
+  late final OfflinePersistenceCubit offlineCubit;
+  late final AppLockCubit appLockCubit;
   late final GlobalKey<FormState> formKey;
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
+  bool isLocked = false;
 
   (int?, int?)? collectionId;
 
@@ -55,13 +59,15 @@ class _ClipInspectorState extends State<ClipInspector> {
   @override
   void initState() {
     super.initState();
-    cubit = context.read<OfflinePersistenceCubit>();
+    offlineCubit = context.read<OfflinePersistenceCubit>();
+    appLockCubit = context.read<AppLockCubit>();
     formKey = GlobalKey<FormState>();
     collectionId = (item.collectionId, item.serverCollectionId);
     titleController = TextEditingController(text: item.title);
     descriptionController = TextEditingController(text: item.description);
     titleController.addListener(_onFormChanged);
     descriptionController.addListener(_onFormChanged);
+    isLocked = item.locked;
   }
 
   void _onFormChanged() {
@@ -79,6 +85,7 @@ class _ClipInspectorState extends State<ClipInspector> {
     collectionId = (widget.item.collectionId, widget.item.serverCollectionId);
     titleController.addListener(_onFormChanged);
     descriptionController.addListener(_onFormChanged);
+    isLocked = widget.item.locked;
   }
 
   @override
@@ -182,7 +189,7 @@ class _ClipInspectorState extends State<ClipInspector> {
       modified: systemTime(),
     );
 
-    await cubit.persist([updatedItem]);
+    await offlineCubit.persist([updatedItem]);
     if (!mounted) return;
 
     ClipboardItemPreviewPage.of(context).updateItem(updatedItem);
@@ -203,8 +210,8 @@ class _ClipInspectorState extends State<ClipInspector> {
   }
 
   Future<void> _decrypt() async {
-    final updatedItem = await item.decrypt();
-    await cubit.persist([updatedItem]);
+    final updatedItem = await decryptItem(context, item);
+    if (updatedItem == null) return;
     if (!mounted) return;
     ClipboardItemPreviewPage.of(context).updateItem(updatedItem);
   }
@@ -466,17 +473,19 @@ class _ClipInspectorState extends State<ClipInspector> {
       }
     }
 
-    buttons.add(
-      OutlinedButton.icon(
-        onPressed: () async {
-          final done = await deleteClipboardItem(context, [item]);
-          if (!mounted || !done) return;
-          Navigator.pop(context);
-        },
-        icon: const Icon(Icons.delete_outline),
-        label: Text(context.locale.app__delete),
-      ),
-    );
+    if (!item.encrypted) {
+      buttons.add(
+        OutlinedButton.icon(
+          onPressed: () async {
+            final done = await deleteClipboardItem(context, [item]);
+            if (!mounted || !done) return;
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.delete_outline),
+          label: Text(context.locale.app__delete),
+        ),
+      );
+    }
 
     return buttons;
   }
@@ -604,6 +613,28 @@ class _ClipInspectorState extends State<ClipInspector> {
     return rows;
   }
 
+  Future<void> onLockedStateChanged(bool value) async {
+    if (!value) {
+      final authorized = await appLockCubit.authorizeForSensitiveAction();
+      if (!authorized) {
+        setState(() {});
+        return;
+      }
+    }
+    await synchronized(() async {
+      final updatedItem = item.locked ? await item.unlock() : await item.lock();
+
+      await offlineCubit.persist([updatedItem]);
+
+      if (!mounted) return;
+
+      ClipboardItemPreviewPage.of(context).updateItem(updatedItem);
+      setState(() {
+        isLocked = updatedItem.locked;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final contentRows = _buildContentRows();
@@ -641,6 +672,23 @@ class _ClipInspectorState extends State<ClipInspector> {
               child: Column(children: contentRows),
             ),
           ],
+          height16,
+          // Lock section
+          _InspectorSection(
+            title: context.locale.preview__inspector__section__security,
+            child: SwitchListTile(
+              title: Text(context.locale.preview__inspector__lock_clip),
+              subtitle: Text(
+                context.locale.preview__inspector_lock_clip_description,
+              ),
+              value: isLocked,
+              contentPadding: EdgeInsets.zero,
+              thumbIcon: isLocked
+                  ? const Icon(Icons.lock_rounded).msp
+                  : const Icon(Icons.lock_open_rounded).msp,
+              onChanged: (value) async => await onLockedStateChanged(value),
+            ),
+          ),
           height16,
           _InspectorSection(
             title: context.locale.preview__inspector__section__organize,

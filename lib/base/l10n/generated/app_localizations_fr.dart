@@ -818,6 +818,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get preview__form__title => 'Modifier les détails';
 
   @override
+  String get preview__inspector__lock_clip => 'Verrouiller le clip';
+
+  @override
+  String get preview__inspector_lock_clip_description =>
+      'Chiffrez ce clip, désactivez l’indexation de recherche et exigez une authentification pour le consulter.';
+
+  @override
   String get preview__form__input__title => 'Titre';
 
   @override
@@ -850,6 +857,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get preview__inspector__section__content => 'Contenu';
+
+  @override
+  String get preview__inspector__section__security => 'Sécurité';
 
   @override
   String get preview__inspector__section__organize => 'Organiser';

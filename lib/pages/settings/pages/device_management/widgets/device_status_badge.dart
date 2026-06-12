@@ -1,3 +1,4 @@
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:flutter/material.dart';
 
 enum DeviceStatusBadgeType { current, active, revoked }
@@ -37,7 +38,7 @@ class DeviceStatusBadge extends StatelessWidget {
           decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
           child: const SizedBox(width: 8, height: 8),
         ),
-        const SizedBox(width: 6),
+        width6,
         Text(
           label,
           style: Theme.of(context).textTheme.labelSmall?.copyWith(

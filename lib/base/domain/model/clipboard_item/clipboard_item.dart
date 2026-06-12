@@ -35,6 +35,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     String? title,
     String? description,
     @DateTimeConverter() DateTime? deletedAt,
+    @Default(false) bool locked,
     @Default(false) bool encrypted,
     String? iv,
     @JsonKey(name: "enc_mode") String? encMode,
@@ -243,6 +244,24 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     }
   }
 
+  /// Returns a copy of this item with [locked] set to true.
+  ///
+  /// Locked items will be decrypted on demand and their content won't be avaiable for searching.
+  Future<ClipboardItem> lock() async {
+    final locked = await copyWith(locked: true).encrypt();
+    if (!locked.encrypted) return this;
+    return locked;
+  }
+
+  /// Returns a copy of this item with [locked] set to false.
+  ///
+  /// The content of the unlocked item will be decrypted and available for searching.
+  Future<ClipboardItem> unlock() async {
+    final unlocked = await copyWith(locked: false).decrypt();
+    if (unlocked.encrypted) return this;
+    return unlocked;
+  }
+
   bool get isSynced => lastSynced != null;
 
   /// Whether this item needs a file upload before it can be synced to the server.
@@ -314,7 +333,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
       );
       return copyWith(encrypted: true, url: encUrl, iv: itemIV, encMode: mode);
     }
-    return this;
+    return copyWith(encrypted: true);
   }
 
   Future<ClipboardItem> decrypt({bool throwException = false}) async {
@@ -343,7 +362,7 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
       final decUrl = await encrypter.decrypt(url!, customIV: iv, mode: encMode);
       return copyWith(encrypted: false, url: decUrl);
     }
-    return this;
+    return copyWith(encrypted: false);
   }
 
   ClipboardItem syncDone([Failure? failure]) {

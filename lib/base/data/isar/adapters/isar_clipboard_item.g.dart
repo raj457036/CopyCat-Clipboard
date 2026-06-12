@@ -100,64 +100,65 @@ const IsarClipboardItemSchema = CollectionSchema(
       name: r'localPath',
       type: IsarType.string,
     ),
+    r'locked': PropertySchema(id: 19, name: r'locked', type: IsarType.bool),
     r'modified': PropertySchema(
-      id: 19,
+      id: 20,
       name: r'modified',
       type: IsarType.dateTime,
     ),
     r'originId': PropertySchema(
-      id: 20,
+      id: 21,
       name: r'originId',
       type: IsarType.string,
     ),
     r'os': PropertySchema(
-      id: 21,
+      id: 22,
       name: r'os',
       type: IsarType.string,
       enumMap: _IsarClipboardItemosEnumValueMap,
     ),
     r'richData': PropertySchema(
-      id: 22,
+      id: 23,
       name: r'richData',
       type: IsarType.string,
     ),
     r'serverCollectionId': PropertySchema(
-      id: 23,
+      id: 24,
       name: r'serverCollectionId',
       type: IsarType.long,
     ),
-    r'serverId': PropertySchema(id: 24, name: r'serverId', type: IsarType.long),
+    r'serverId': PropertySchema(id: 25, name: r'serverId', type: IsarType.long),
     r'sourceApp': PropertySchema(
-      id: 25,
+      id: 26,
       name: r'sourceApp',
       type: IsarType.string,
     ),
     r'sourceId': PropertySchema(
-      id: 26,
+      id: 27,
       name: r'sourceId',
       type: IsarType.string,
     ),
     r'sourceUrl': PropertySchema(
-      id: 27,
+      id: 28,
       name: r'sourceUrl',
       type: IsarType.string,
     ),
-    r'text': PropertySchema(id: 28, name: r'text', type: IsarType.string),
+    r'text': PropertySchema(id: 29, name: r'text', type: IsarType.string),
     r'textCategory': PropertySchema(
-      id: 29,
+      id: 30,
       name: r'textCategory',
       type: IsarType.string,
       enumMap: _IsarClipboardItemtextCategoryEnumValueMap,
     ),
-    r'title': PropertySchema(id: 30, name: r'title', type: IsarType.string),
+    r'title': PropertySchema(id: 31, name: r'title', type: IsarType.string),
     r'type': PropertySchema(
-      id: 31,
+      id: 32,
       name: r'type',
       type: IsarType.string,
       enumMap: _IsarClipboardItemtypeEnumValueMap,
     ),
-    r'url': PropertySchema(id: 32, name: r'url', type: IsarType.string),
-    r'userId': PropertySchema(id: 33, name: r'userId', type: IsarType.string),
+    r'url': PropertySchema(id: 33, name: r'url', type: IsarType.string),
+    r'userId': PropertySchema(id: 34, name: r'userId', type: IsarType.string),
   },
 
   estimateSize: _isarClipboardItemEstimateSize,
@@ -200,6 +201,19 @@ const IsarClipboardItemSchema = CollectionSchema(
       properties: [
         IndexPropertySchema(
           name: r'deletedAt',
+          type: IndexType.value,
+          caseSensitive: false,
+        ),
+      ],
+    ),
+    r'locked': IndexSchema(
+      id: 497338535767934804,
+      name: r'locked',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'locked',
           type: IndexType.value,
           caseSensitive: false,
         ),
@@ -444,21 +458,22 @@ void _isarClipboardItemSerialize(
   writer.writeDateTime(offsets[16], object.lastSynced);
   writer.writeBool(offsets[17], object.localOnly);
   writer.writeString(offsets[18], object.localPath);
-  writer.writeDateTime(offsets[19], object.modified);
-  writer.writeString(offsets[20], object.originId);
-  writer.writeString(offsets[21], object.os.name);
-  writer.writeString(offsets[22], object.richData);
-  writer.writeLong(offsets[23], object.serverCollectionId);
-  writer.writeLong(offsets[24], object.serverId);
-  writer.writeString(offsets[25], object.sourceApp);
-  writer.writeString(offsets[26], object.sourceId);
-  writer.writeString(offsets[27], object.sourceUrl);
-  writer.writeString(offsets[28], object.text);
-  writer.writeString(offsets[29], object.textCategory?.name);
-  writer.writeString(offsets[30], object.title);
-  writer.writeString(offsets[31], object.type.name);
-  writer.writeString(offsets[32], object.url);
-  writer.writeString(offsets[33], object.userId);
+  writer.writeBool(offsets[19], object.locked);
+  writer.writeDateTime(offsets[20], object.modified);
+  writer.writeString(offsets[21], object.originId);
+  writer.writeString(offsets[22], object.os.name);
+  writer.writeString(offsets[23], object.richData);
+  writer.writeLong(offsets[24], object.serverCollectionId);
+  writer.writeLong(offsets[25], object.serverId);
+  writer.writeString(offsets[26], object.sourceApp);
+  writer.writeString(offsets[27], object.sourceId);
+  writer.writeString(offsets[28], object.sourceUrl);
+  writer.writeString(offsets[29], object.text);
+  writer.writeString(offsets[30], object.textCategory?.name);
+  writer.writeString(offsets[31], object.title);
+  writer.writeString(offsets[32], object.type.name);
+  writer.writeString(offsets[33], object.url);
+  writer.writeString(offsets[34], object.userId);
 }
 
 IsarClipboardItem _isarClipboardItemDeserialize(
@@ -488,30 +503,31 @@ IsarClipboardItem _isarClipboardItemDeserialize(
   object.lastSynced = reader.readDateTimeOrNull(offsets[16]);
   object.localOnly = reader.readBool(offsets[17]);
   object.localPath = reader.readStringOrNull(offsets[18]);
-  object.modified = reader.readDateTime(offsets[19]);
-  object.originId = reader.readStringOrNull(offsets[20]);
+  object.locked = reader.readBool(offsets[19]);
+  object.modified = reader.readDateTime(offsets[20]);
+  object.originId = reader.readStringOrNull(offsets[21]);
   object.os =
-      _IsarClipboardItemosValueEnumMap[reader.readStringOrNull(offsets[21])] ??
+      _IsarClipboardItemosValueEnumMap[reader.readStringOrNull(offsets[22])] ??
       PlatformOS.android;
-  object.richData = reader.readStringOrNull(offsets[22]);
-  object.serverCollectionId = reader.readLongOrNull(offsets[23]);
-  object.serverId = reader.readLongOrNull(offsets[24]);
-  object.sourceApp = reader.readStringOrNull(offsets[25]);
-  object.sourceId = reader.readStringOrNull(offsets[26]);
-  object.sourceUrl = reader.readStringOrNull(offsets[27]);
-  object.text = reader.readStringOrNull(offsets[28]);
+  object.richData = reader.readStringOrNull(offsets[23]);
+  object.serverCollectionId = reader.readLongOrNull(offsets[24]);
+  object.serverId = reader.readLongOrNull(offsets[25]);
+  object.sourceApp = reader.readStringOrNull(offsets[26]);
+  object.sourceId = reader.readStringOrNull(offsets[27]);
+  object.sourceUrl = reader.readStringOrNull(offsets[28]);
+  object.text = reader.readStringOrNull(offsets[29]);
   object.textCategory =
       _IsarClipboardItemtextCategoryValueEnumMap[reader.readStringOrNull(
-        offsets[29],
+        offsets[30],
       )];
-  object.title = reader.readStringOrNull(offsets[30]);
+  object.title = reader.readStringOrNull(offsets[31]);
   object.type =
       _IsarClipboardItemtypeValueEnumMap[reader.readStringOrNull(
-        offsets[31],
+        offsets[32],
       )] ??
       ClipItemType.text;
-  object.url = reader.readStringOrNull(offsets[32]);
-  object.userId = reader.readString(offsets[33]);
+  object.url = reader.readStringOrNull(offsets[33]);
+  object.userId = reader.readString(offsets[34]);
   return object;
 }
 
@@ -561,23 +577,23 @@ P _isarClipboardItemDeserializeProp<P>(
     case 18:
       return (reader.readStringOrNull(offset)) as P;
     case 19:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 20:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readDateTime(offset)) as P;
     case 21:
+      return (reader.readStringOrNull(offset)) as P;
+    case 22:
       return (_IsarClipboardItemosValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               PlatformOS.android)
           as P;
-    case 22:
-      return (reader.readStringOrNull(offset)) as P;
     case 23:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 24:
       return (reader.readLongOrNull(offset)) as P;
     case 25:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 26:
       return (reader.readStringOrNull(offset)) as P;
     case 27:
@@ -585,20 +601,22 @@ P _isarClipboardItemDeserializeProp<P>(
     case 28:
       return (reader.readStringOrNull(offset)) as P;
     case 29:
+      return (reader.readStringOrNull(offset)) as P;
+    case 30:
       return (_IsarClipboardItemtextCategoryValueEnumMap[reader
               .readStringOrNull(offset)])
           as P;
-    case 30:
-      return (reader.readStringOrNull(offset)) as P;
     case 31:
+      return (reader.readStringOrNull(offset)) as P;
+    case 32:
       return (_IsarClipboardItemtypeValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               ClipItemType.text)
           as P;
-    case 32:
-      return (reader.readStringOrNull(offset)) as P;
     case 33:
+      return (reader.readStringOrNull(offset)) as P;
+    case 34:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -684,6 +702,14 @@ extension IsarClipboardItemQueryWhereSort
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         const IndexWhereClause.any(indexName: r'deletedAt'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterWhere> anyLocked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'locked'),
       );
     });
   }
@@ -1082,6 +1108,58 @@ extension IsarClipboardItemQueryWhere
           includeUpper: includeUpper,
         ),
       );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterWhereClause>
+  lockedEqualTo(bool locked) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IndexWhereClause.equalTo(indexName: r'locked', value: [locked]),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterWhereClause>
+  lockedNotEqualTo(bool locked) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'locked',
+                lower: [],
+                upper: [locked],
+                includeUpper: false,
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'locked',
+                lower: [locked],
+                includeLower: false,
+                upper: [],
+              ),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'locked',
+                lower: [locked],
+                includeLower: false,
+                upper: [],
+              ),
+            )
+            .addWhereClause(
+              IndexWhereClause.between(
+                indexName: r'locked',
+                lower: [],
+                upper: [locked],
+                includeUpper: false,
+              ),
+            );
+      }
     });
   }
 
@@ -3761,6 +3839,15 @@ extension IsarClipboardItemQueryFilter
   }
 
   QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  lockedEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'locked', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
   modifiedEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -6090,6 +6177,20 @@ extension IsarClipboardItemQuerySortBy
   }
 
   QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  sortByLocked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'locked', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  sortByLockedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'locked', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
   sortByModified() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'modified', Sort.asc);
@@ -6580,6 +6681,20 @@ extension IsarClipboardItemQuerySortThenBy
   }
 
   QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  thenByLocked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'locked', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  thenByLockedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'locked', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
   thenByModified() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'modified', Sort.asc);
@@ -6928,6 +7043,13 @@ extension IsarClipboardItemQueryWhereDistinct
   }
 
   QueryBuilder<IsarClipboardItem, IsarClipboardItem, QDistinct>
+  distinctByLocked() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'locked');
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QDistinct>
   distinctByModified() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'modified');
@@ -7169,6 +7291,12 @@ extension IsarClipboardItemQueryProperty
   localPathProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'localPath');
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, bool, QQueryOperations> lockedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'locked');
     });
   }
 

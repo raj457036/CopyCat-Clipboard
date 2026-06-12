@@ -245,11 +245,23 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
         previous = await local.get(id: item.id);
       }
 
+      // check if this was an unlock
+      if (previous != null &&
+          item.locked &&
+          previous.encrypted &&
+          !item.encrypted) {
+        return Right(item); // no update needed, just return the item as-is
+      }
+
       final result = await local.update(item);
       var queued = false;
 
-      if (result.id != null &&
-          _shouldEnqueueUpdate(previous, result, forceSync: item.userIntent)) {
+      final shouldEnqueue = _shouldEnqueueUpdate(
+        previous,
+        result,
+        forceSync: item.userIntent,
+      );
+      if (result.id != null && shouldEnqueue) {
         await outbox.enqueue(
           SyncOutboxEntry(
             entityType: SyncEntityType.clip,
@@ -274,9 +286,11 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
     if (forceSync) return true;
     if (previous == null) return true;
 
-    if (_isSyncRelevantUpdate(previous, next)) return true;
+    final hasSyncRelevantChanges = _isSyncRelevantUpdate(previous, next);
+    if (hasSyncRelevantChanges) return true;
 
-    if (_didCrossCopySyncThreshold(previous, next)) return true;
+    final crossedCopySyncThreshold = _didCrossCopySyncThreshold(previous, next);
+    if (crossedCopySyncThreshold) return true;
 
     return false;
   }
@@ -296,7 +310,7 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
     return previous.serverId != next.serverId ||
         previous.modified != next.modified ||
         previous.deletedAt != next.deletedAt ||
-        previous.text != next.text ||
+        (previous.text != next.text && !previous.encrypted) ||
         previous.richData != next.richData ||
         previous.url != next.url ||
         previous.title != next.title ||
@@ -314,7 +328,8 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
         previous.serverCollectionId != next.serverCollectionId ||
         previous.collectionId != next.collectionId ||
         previous.localOnly != next.localOnly ||
-        previous.originId != next.originId;
+        previous.originId != next.originId ||
+        previous.locked != next.locked;
   }
 
   @override

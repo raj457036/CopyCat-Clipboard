@@ -1,3 +1,4 @@
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/search_filter_state.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
@@ -188,7 +189,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 size: 18,
                 color: isSet ? colors.onSecondaryContainer : colors.primary,
               ),
-              const SizedBox(width: 10),
+              height10,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,7 +202,7 @@ class _FilterDialogState extends State<FilterDialog> {
                         letterSpacing: 0.2,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    height2,
                     Text(
                       value,
                       maxLines: 1,
@@ -252,7 +253,7 @@ class _FilterDialogState extends State<FilterDialog> {
       title: Row(
         children: [
           Icon(Icons.filter_list_rounded, color: colors.primary, size: 20),
-          const SizedBox(width: 8),
+          width8,
           Text(locale.search_filter__text__title),
         ],
       ),
@@ -307,7 +308,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 ],
               ),
 
-              const SizedBox(height: 20),
+              height20,
 
               // MARK: - Content Type
               _sectionLabel(context, locale.search_filter__text__including),
@@ -351,7 +352,7 @@ class _FilterDialogState extends State<FilterDialog> {
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SizedBox(height: 20),
+                          height20,
                           _sectionLabel(
                             context,
                             locale.search_filter__text__textCategories,
@@ -423,9 +424,9 @@ class _FilterDialogState extends State<FilterDialog> {
                     : const SizedBox.shrink(),
               ),
 
-              const SizedBox(height: 20),
+              height20,
               Divider(color: colors.outlineVariant),
-              const SizedBox(height: 12),
+              height12,
 
               // MARK: - Sort
               _sectionLabel(context, locale.search_filter__text__sort_by),
@@ -468,7 +469,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 ],
               ),
 
-              const SizedBox(height: 12),
+              height12,
 
               _sectionLabel(context, locale.search_filter__text__sort_order),
               SegmentedButton<SortOrder>(
@@ -489,7 +490,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 selected: {sortOrder},
                 style: const ButtonStyle(visualDensity: VisualDensity.compact),
               ),
-              const SizedBox(height: 4),
+              height4,
             ],
           ),
         ),

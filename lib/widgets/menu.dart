@@ -34,6 +34,7 @@ class Menu extends StatefulWidget {
   final Widget child;
   final Future<void> Function()? onBeforeOpen;
   final VoidCallback? onAfterClose;
+  final bool enabled;
 
   const Menu({
     super.key,
@@ -41,6 +42,7 @@ class Menu extends StatefulWidget {
     required this.child,
     this.onBeforeOpen,
     this.onAfterClose,
+    this.enabled = true,
   });
 
   static MenuHandle? maybeOf(BuildContext context) =>
@@ -105,6 +107,7 @@ class _MenuState extends State<Menu> {
     BuildContext context,
     Offset globalPosition,
   ) async {
+    if (!widget.enabled) return;
     final waitForItemsFrame = widget.onBeforeOpen != null;
     final otherPopupMenu = _activePopupMenu;
     final reopenCurrentMenu = _menuController.isOpen;
@@ -131,6 +134,7 @@ class _MenuState extends State<Menu> {
   }
 
   Future<void> _openMenu(BuildContext context) async {
+    if (!widget.enabled) return;
     await _runBeforeOpen();
     await WidgetsBinding.instance.endOfFrame;
     if (!context.mounted) return;

@@ -149,7 +149,7 @@ class _CreateNewCollectionItem extends StatelessWidget {
                   size: 28,
                   color: colors.primary,
                 ),
-                const SizedBox(height: 6),
+                height6,
                 Text(
                   context.locale.collections__appbar__title__create,
                   style: textTheme.labelMedium?.copyWith(color: colors.primary),

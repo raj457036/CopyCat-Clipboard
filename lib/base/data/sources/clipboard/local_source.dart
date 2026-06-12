@@ -57,9 +57,12 @@ class LocalClipboardSource implements ClipboardSource {
 
       if (collectionId != null) {
         resultsQuery = resultsQuery.collectionIdEqualTo(collectionId);
-      } else {
-        resultsQuery = resultsQuery.encryptedEqualTo(false);
       }
+      // else {
+      //   resultsQuery = resultsQuery
+      //       .encryptedEqualTo(false)
+      //       .lockedEqualTo(false);
+      // }
 
       for (final word in Isar.splitWords(search ?? "")) {
         resultsQuery = resultsQuery.group(
@@ -78,7 +81,9 @@ class LocalClipboardSource implements ClipboardSource {
     }
 
     if (encrypted != null) {
-      resultsQuery = resultsQuery.encryptedEqualTo(encrypted);
+      resultsQuery = resultsQuery
+          .encryptedEqualTo(encrypted)
+          .lockedEqualTo(false);
     }
 
     if (types != null) {
@@ -286,7 +291,11 @@ class LocalClipboardSource implements ClipboardSource {
   @override
   Future<int> fetchEncryptedCount() async {
     final count = await db.txn(() async {
-      return _collection.filter().encryptedEqualTo(true).count();
+      return _collection
+          .filter()
+          .encryptedEqualTo(true)
+          .lockedEqualTo(false)
+          .count();
     });
     return count;
   }

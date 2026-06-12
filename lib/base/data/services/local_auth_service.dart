@@ -43,17 +43,17 @@ class LocalAuthService {
       if (!supported) return true;
       // biometricOnly: true = Touch ID / Face ID only — no system password
       // dialog, giving a seamless in-window experience on macOS/Windows.
-      return await _auth.authenticate(
+      final authenticated = await _auth.authenticate(
         localizedReason: reason ?? 'Authenticate to access CopyCat Clipboard',
-        biometricOnly: true,
+        persistAcrossBackgrounding: true,
       );
+      return authenticated;
     } on LocalAuthException catch (e) {
       switch (e.code) {
+        case LocalAuthExceptionCode.userCanceled:
         case LocalAuthExceptionCode.temporaryLockout:
         case LocalAuthExceptionCode.biometricLockout:
           return false;
-        case LocalAuthExceptionCode.noBiometricsEnrolled:
-        case LocalAuthExceptionCode.noBiometricHardware:
         case LocalAuthExceptionCode.userRequestedFallback:
         case LocalAuthExceptionCode.noCredentialsSet:
           // No biometrics available — fall back to device credentials
