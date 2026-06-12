@@ -21,6 +21,10 @@
         android:enableOnBackInvokedCallback="true"
         android:networkSecurityConfig="@xml/network_security_config"
     >
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="true" />
+
         <service
             android:name="com.entilitystudio.android_background_clipboard.CopyCatClipboardService"
             android:foregroundServiceType="specialUse|dataSync"

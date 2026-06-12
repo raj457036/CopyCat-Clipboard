@@ -391,6 +391,14 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
     final newConfig = state.config.copyWith(enableSync: value);
     emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
+    if (Platform.isAndroid) {
+      final effectiveSyncEnabled =
+          !newConfig.clockUnSynced && newConfig.enableSync;
+      await sl<AndroidBackgroundClipboard>().writeShared(
+        'syncEnabled',
+        effectiveSyncEnabled,
+      );
+    }
   }
 
   Future<void> toggleRichDataCapture(bool value) async {

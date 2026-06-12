@@ -48,6 +48,8 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         appContext,
         onLanClipReceived = ::ingestLanClip,
         markCaptured = ::markCapturedByOriginId,
+        onBeforeClipboardWrite = ::suppressNextCapture,
+        decryptContent = ::decryptLanContent,
     )
     private var encryptor: CopyCatEncryptor? = null
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -84,6 +86,15 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private var remoteClipApplier: ((String) -> Unit)? = null
 //    For Future Use
     var autoCopyOtp: Boolean = false
+
+    @Volatile
+    var isWritingToClipboard: Boolean = false
+        private set
+
+    fun suppressNextCapture() {
+        isWritingToClipboard = true
+        mainHandler.postDelayed({ isWritingToClipboard = false }, 500L)
+    }
 
     val keystore: CopyCatKeyStore
         get() = CopyCatKeyStore.getInstance()
@@ -131,42 +142,42 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         if (key == "showAckToast") {
             showAckToast = sharedPreferences.getBoolean(key, true)
         }
-        if (key == "serviceEnabled") {
+        if (key == BgPrefKey.SERVICE_ENABLED) {
             serviceEnabled = sharedPreferences.getBoolean(key, false)
         }
-        if (key == "syncEnabled") {
+        if (key == BgPrefKey.SYNC_ENABLED) {
             syncEnabled = sharedPreferences.getBoolean(key, false)
             syncManager.syncEnabled = syncEnabled
             scheduleReconfigureConnections()
         }
-        if (key == "listeningMode") {
+        if (key == BgPrefKey.LISTENING_MODE) {
             listeningMode =
                 sharedPreferences.getString(key, ListeningMode.PUSH) ?: ListeningMode.PUSH
             syncManager.listeningMode = listeningMode
             scheduleReconfigureConnections()
         }
-        if (key == "lanInstantSync") {
+        if (key == BgPrefKey.LAN_INSTANT_SYNC) {
             lanSyncEnabled = sharedPreferences.getBoolean(key, false)
             lanSyncManager.lanSyncEnabled = lanSyncEnabled
             lanSyncManager.reconfigure()
         }
-        if (key == "autoWriteOnReceive") {
+        if (key == BgPrefKey.AUTO_WRITE_ON_RECEIVE) {
             autoWriteOnReceive = sharedPreferences.getBoolean(key, false)
             lanSyncManager.autoWriteOnReceive = autoWriteOnReceive
             syncManager.autoWriteOnReceive = autoWriteOnReceive
             scheduleReconfigureConnections()
         }
-        if (key == "dontCopyOver") {
+        if (key == BgPrefKey.DONT_COPY_OVER) {
             dontCopyOverBytes = sharedPreferences.getInt(key, DEFAULT_DONT_COPY_OVER_BYTES)
             lanSyncManager.maxAutoCopyBytes = dontCopyOverBytes
             debugLog(logTag) { "dontCopyOver updated to $dontCopyOverBytes bytes" }
         }
-        if (key == "syncSpeed") {
+        if (key == BgPrefKey.SYNC_SPEED) {
             syncSpeed = sharedPreferences.getString(key, "balanced") ?: "balanced"
             syncManager.syncSpeed = syncSpeed
             scheduleReconfigureConnections()
         }
-        if (key == "syncInterval") {
+        if (key == BgPrefKey.SYNC_INTERVAL) {
             syncIntervalSeconds = sharedPreferences.getInt(key, 45)
             syncManager.syncIntervalSeconds = syncIntervalSeconds
             scheduleReconfigureConnections()
@@ -198,26 +209,26 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         if (key == MODE1_ACK_TEXT_KEY) {
             mode1AckText = sharedPreferences.getString(key, null)?.trim()?.takeIf { it.isNotEmpty() }
         }
-        if (key == "projectKey") {
+        if (key == BgPrefKey.PROJECT_KEY) {
             readSecure(key)?.let {
                 syncManager.projectKey = it
                 scheduleReconfigureConnections()
             }
         }
-        if (key == "projectApiKey") {
+        if (key == BgPrefKey.PROJECT_API_KEY) {
             readSecure(key)?.let {
                 syncManager.projectApiKey = it
                 scheduleReconfigureConnections()
             }
         }
-        if (key == "deviceId") {
-            deviceId = sharedPreferences.getString("deviceId", "").toString()
+        if (key == BgPrefKey.DEVICE_ID) {
+            deviceId = sharedPreferences.getString(BgPrefKey.DEVICE_ID, "").toString()
             syncManager.deviceId = deviceId
             lanSyncManager.deviceId = deviceId
             scheduleReconfigureConnections()
         }
 
-        if (key == "e2e_key") {
+        if (key == BgPrefKey.E2E_KEY) {
             readSecure(key)?.let {
                 setupEncryptor(it)
             }
@@ -258,7 +269,12 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         val encrypted = sp.getString(key, "").toString()
         if (encrypted.isNotBlank()) {
             val decoded = Base64.decode(encrypted, Base64.DEFAULT)
-            return keystore.decryptData(decoded)
+            return try {
+                keystore.decryptData(decoded)
+            } catch (e: Exception) {
+                Log.e(logTag, "KeyStore decryption failed for '$key' — key may require user auth or is corrupt: ${e.message}")
+                null
+            }
         }
         debugLog(logTag) { "$key not found in secure storage" }
         return null
@@ -286,18 +302,18 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
     private fun readConfig() {
         debugLog(logTag) { "Reading initial setup configs" }
-        syncEnabled = sp.getBoolean("syncEnabled", false)
-        listeningMode = sp.getString("listeningMode", ListeningMode.PUSH) ?: ListeningMode.PUSH
-        syncSpeed = sp.getString("syncSpeed", "balanced") ?: "balanced"
-        syncIntervalSeconds = sp.getInt("syncInterval", 45)
-        deviceId = sp.getString("deviceId", "").toString()
+        syncEnabled = sp.getBoolean(BgPrefKey.SYNC_ENABLED, false)
+        listeningMode = sp.getString(BgPrefKey.LISTENING_MODE, ListeningMode.PUSH) ?: ListeningMode.PUSH
+        syncSpeed = sp.getString(BgPrefKey.SYNC_SPEED, "balanced") ?: "balanced"
+        syncIntervalSeconds = sp.getInt(BgPrefKey.SYNC_INTERVAL, 45)
+        deviceId = sp.getString(BgPrefKey.DEVICE_ID, "").toString()
         endId = maxOf(sp.getInt("endId", -1), fileStorage.getMaxClipIndex())
 
         excludedPackages = sp.getStringSet("excludedPackages", emptySet())!!
         strictCheck = sp.getBoolean("strictCheck", true)
         autoCopyOtp = sp.getBoolean("autoCopyOtp", false)
         showAckToast = sp.getBoolean("showAckToast", true)
-        serviceEnabled = sp.getBoolean("serviceEnabled", false)
+        serviceEnabled = sp.getBoolean(BgPrefKey.SERVICE_ENABLED, false)
         excludePasswordManagers = sp.getBoolean("exclude-pass-mgr", false)
         excludeEmail = sp.getBoolean("exclude-email", false)
         excludePhone = sp.getBoolean("exclude-phone", false)
@@ -312,13 +328,13 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             sp.edit().putBoolean(NOTIFICATION_PAUSED_KEY, false).apply()
         }
 
-        readSecure("projectKey")?.let {
+        readSecure(BgPrefKey.PROJECT_KEY)?.let {
             syncManager.projectKey = it
         }
-        readSecure("projectApiKey")?.let {
+        readSecure(BgPrefKey.PROJECT_API_KEY)?.let {
             syncManager.projectApiKey = it
         }
-        readSecure("e2e_key")?.let {
+        readSecure(BgPrefKey.E2E_KEY)?.let {
             setupEncryptor(it)
         }
 
@@ -328,17 +344,17 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         syncManager.syncSpeed = syncSpeed
         syncManager.syncIntervalSeconds = syncIntervalSeconds
 
-        lanSyncEnabled = sp.getBoolean("lanInstantSync", false)
+        lanSyncEnabled = sp.getBoolean(BgPrefKey.LAN_INSTANT_SYNC, false)
         lanSyncManager.lanSyncEnabled = lanSyncEnabled
         lanSyncManager.deviceId = deviceId
         // userId is available after token is loaded; set it lazily in ingestLanClip too
         lanSyncManager.userId = syncManager.currentUserId ?: ""
 
-        autoWriteOnReceive = sp.getBoolean("autoWriteOnReceive", false)
+        autoWriteOnReceive = sp.getBoolean(BgPrefKey.AUTO_WRITE_ON_RECEIVE, false)
         lanSyncManager.autoWriteOnReceive = autoWriteOnReceive
         syncManager.autoWriteOnReceive = autoWriteOnReceive
 
-        dontCopyOverBytes = sp.getInt("dontCopyOver", DEFAULT_DONT_COPY_OVER_BYTES)
+        dontCopyOverBytes = sp.getInt(BgPrefKey.DONT_COPY_OVER, DEFAULT_DONT_COPY_OVER_BYTES)
         lanSyncManager.maxAutoCopyBytes = dontCopyOverBytes
     }
     
@@ -814,6 +830,25 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             )
         } catch (e: Exception) {
             Log.w(logTag, "Failed to decrypt remote clip: ${e.message}")
+            null
+        }
+    }
+
+    private fun decryptLanContent(content: String, encMode: String?, iv: String?): String? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || encryptor == null) {
+            Log.w(logTag, "Encrypted LAN clip cannot be written to clipboard: encryptor unavailable")
+            mainHandler.post {
+                Toast.makeText(appContext, "CopyCat: Encryption key not ready - clip not copied", Toast.LENGTH_SHORT).show()
+            }
+            return null
+        }
+        return try {
+            encryptor?.decrypt(content, encMode ?: EncryptionMode.CFB, iv)
+        } catch (e: Exception) {
+            Log.w(logTag, "Failed to decrypt LAN clip: ${e.message}")
+            mainHandler.post {
+                Toast.makeText(appContext, "CopyCat: Failed to decrypt clip - not copied to clipboard", Toast.LENGTH_SHORT).show()
+            }
             null
         }
     }

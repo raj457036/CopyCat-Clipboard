@@ -78,7 +78,7 @@ class CopyCatNavrail extends StatelessWidget {
             selectedIcon: Tooltip(
               message: settingsTooltip,
               child: const Spin(
-                duration: duration,
+                duration: Durations.short3,
                 child: Icon(Icons.settings),
               ),
             ),

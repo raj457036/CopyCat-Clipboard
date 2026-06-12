@@ -434,28 +434,28 @@ class CopyCatSyncManager(
     private fun handleRealtimeMessage(text: String) {
         try {
             val msg = JSONObject(text)
-            val event = msg.optString("event")
+            val event = msg.optString(JsonKey.EVENT)
             if (event == "phx_reply") {
                 Log.i(logTag, "Realtime join reply received")
             }
             if (event != "postgres_changes") return
 
-            val payload = msg.optJSONObject("payload") ?: return
-            val data = payload.optJSONObject("data") ?: return
-            val eventType = data.optString("type")
+            val payload = msg.optJSONObject(JsonKey.PAYLOAD) ?: return
+            val data = payload.optJSONObject(JsonKey.DATA) ?: return
+            val eventType = data.optString(JsonKey.TYPE)
             Log.i(logTag, "Realtime postgres_changes event=$eventType")
 
             when (eventType) {
                 "INSERT", "UPDATE" -> {
-                    val record = data.optJSONObject("record") ?: return
+                    val record = data.optJSONObject(JsonKey.RECORD) ?: return
                     debugLog(logTag) {
                         "[CC] [debug] Received realtime event: ($eventType, $record)"
                     }
                     processRemoteRecord(record)
                 }
                 "DELETE" -> {
-                    val oldRecord = data.optJSONObject("old_record")
-                    val serverId = oldRecord?.optLong("id", -1L) ?: -1L
+                    val oldRecord = data.optJSONObject(JsonKey.OLD_RECORD)
+                    val serverId = oldRecord?.optLong(JsonKey.ID, -1L) ?: -1L
                     if (serverId > 0) {
                         onRemoteClipDelete(serverId)
                     }
@@ -467,21 +467,12 @@ class CopyCatSyncManager(
     }
 
     private fun processRemoteRecord(record: JSONObject) {
-        fun nullableString(value: String?): String? {
-            val cleaned = value?.trim()
-            return if (cleaned.isNullOrEmpty() || cleaned.equals("null", ignoreCase = true)) {
-                null
-            } else {
-                cleaned
-            }
-        }
-
-        val serverId = record.optLong("id", -1L)
+        val serverId = record.optLong(JsonKey.ID, -1L)
         if (serverId <= 0) return
 
-        val typeRaw = nullableString(record.optString("type", "text"))?.lowercase() ?: "text"
-        val textCategory = nullableString(record.optString("textCategory", ""))?.lowercase() ?: ""
-        val originId = nullableString(record.optString("origin_id", null))
+        val typeRaw = (record.optNonBlank(JsonKey.TYPE) ?: "text").lowercase()
+        val textCategory = (record.optNonBlank(JsonKey.TEXT_CATEGORY) ?: "").lowercase()
+        val originId = record.optNonBlank(JsonKey.ORIGIN_ID)
 
         // Non-text clips (media/file) are handled by LAN binary sync. Ignore
         // realtime upserts here to avoid creating text placeholder entries.
@@ -501,8 +492,8 @@ class CopyCatSyncManager(
         }
 
         val content = when (clipType) {
-            ClipType.Url -> nullableString(record.optString("url", null)) ?: ""
-            else -> nullableString(record.optString("text", null)) ?: ""
+            ClipType.Url -> record.optNonBlank(JsonKey.URL) ?: ""
+            else -> record.optNonBlank(JsonKey.TEXT) ?: ""
         }
 
         if (content.isBlank()) {
@@ -517,12 +508,12 @@ class CopyCatSyncManager(
             serverId = serverId,
             content = content,
             type = clipType,
-            label = nullableString(record.optString("title", null)),
-            encrypted = record.optBoolean("encrypted", false),
-            iv = nullableString(record.optString("iv", null)),
-            encMode = nullableString(record.optString("enc_mode", null)),
-            userId = nullableString(record.optString("userId", null)),
-            modifiedAt = parseIsoToMillis(record.optString("modified")),
+            label = record.optNonBlank(JsonKey.TITLE),
+            encrypted = record.optBoolean(JsonKey.ENCRYPTED, false),
+            iv = record.optNonBlank(JsonKey.IV),
+            encMode = record.optNonBlank(JsonKey.ENC_MODE_SNAKE),
+            userId = record.optNonBlank(JsonKey.USER_ID),
+            modifiedAt = parseIsoToMillis(record.optString(JsonKey.MODIFIED)),
             originId = originId,
         )
 
@@ -565,54 +556,50 @@ class CopyCatSyncManager(
         val url = "$url/rest/v1/clipboard_items"
         val normalizedSourceId = sourceId?.trim()?.ifEmpty { null }
         val normalizedSourceApp = sourceApp?.trim()?.ifEmpty { null }
-        val payload = mutableMapOf<String, Any?>(
-            "title" to label,
-            "description" to label,
-            "userId" to userId!!,
-            "modified" to currentTime(),
-            "os" to "android",
-            "deviceId" to deviceId,
-            "encrypted" to encrypted,
-            "origin_id" to originId,
-            "sourceId" to normalizedSourceId,
-            "sourceApp" to normalizedSourceApp,
-        )
+        val payload = JSONObject().apply {
+            putIfNotBlank(JsonKey.TITLE, label)
+            putIfNotBlank(JsonKey.DESCRIPTION, label)
+            put(JsonKey.USER_ID, userId!!)
+            put(JsonKey.MODIFIED, currentTime())
+            put(JsonKey.OS, "android")
+            put(JsonKey.DEVICE_ID, deviceId)
+            put(JsonKey.ENCRYPTED, encrypted)
+            putIfNotBlank(JsonKey.ORIGIN_ID, originId)
+            putIfNotBlank(JsonKey.SOURCE_ID, normalizedSourceId)
+            putIfNotBlank(JsonKey.SOURCE_APP, normalizedSourceApp)
 
-        if (encrypted) {
-            payload["iv"] = iv
-            payload["enc_mode"] = encMode
-        }
-
-        when (type) {
-            ClipType.Text -> {
-                payload["text"] = clip
-                payload["type"] = "text"
+            if (encrypted) {
+                putIfNotBlank(JsonKey.IV, iv)
+                putIfNotBlank(JsonKey.ENC_MODE_SNAKE, encMode)
             }
 
-            ClipType.Email -> {
-                payload["text"] = clip
-                payload["type"] = "text"
-                payload["textCategory"] = "email"
-            }
-
-            ClipType.Phone -> {
-                payload["text"] = clip
-                payload["type"] = "text"
-                payload["textCategory"] = "phone"
-            }
-
-            ClipType.Url -> {
-                payload["url"] = clip
-                payload["type"] = "url"
-            }
-
-            else -> {
-                payload["text"] = clip
-                payload["type"] = "text"
+            when (type) {
+                ClipType.Text -> {
+                    put(JsonKey.TEXT, clip)
+                    put(JsonKey.TYPE, "text")
+                }
+                ClipType.Email -> {
+                    put(JsonKey.TEXT, clip)
+                    put(JsonKey.TYPE, "text")
+                    put(JsonKey.TEXT_CATEGORY, "email")
+                }
+                ClipType.Phone -> {
+                    put(JsonKey.TEXT, clip)
+                    put(JsonKey.TYPE, "text")
+                    put(JsonKey.TEXT_CATEGORY, "phone")
+                }
+                ClipType.Url -> {
+                    put(JsonKey.URL, clip)
+                    put(JsonKey.TYPE, "url")
+                }
+                else -> {
+                    put(JsonKey.TEXT, clip)
+                    put(JsonKey.TYPE, "text")
+                }
             }
         }
 
-        val jsonPayload = JSONObject(payload).toString()
+        val jsonPayload = payload.toString()
         Log.i(
             logTag,
             "Remote payload metadata: type=${type.name} sourceId=$normalizedSourceId sourceApp=$normalizedSourceApp originId=$originId",

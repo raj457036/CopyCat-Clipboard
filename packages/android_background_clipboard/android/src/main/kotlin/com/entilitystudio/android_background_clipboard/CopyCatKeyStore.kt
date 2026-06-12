@@ -38,15 +38,33 @@ class CopyCatKeyStore private constructor() {
     @Throws(Exception::class)
     fun generateKey() {
         // Check if the key already exists in Keystore
+        if (keyStore.containsAlias(KEY_ALIAS)) {
+            // Verify the existing key is usable without user authentication (background-safe).
+            // If it throws UserNotAuthenticatedException or any crypto exception, the key was
+            // likely created under a stricter policy (common on Samsung Knox devices).
+            // Delete it so a new background-safe key gets generated below.
+            try {
+                val testCipher = Cipher.getInstance(AES_MODE)
+                testCipher.init(Cipher.ENCRYPT_MODE, getSecretKey())
+            } catch (_: Exception) {
+                keyStore.deleteEntry(KEY_ALIAS)
+            }
+        }
+
         if (keyStore.containsAlias(KEY_ALIAS)) return
 
-        // Define the key generation specifications
+        // Define the key generation specifications.
+        // setUserAuthenticationRequired(false) is set explicitly so the key is usable
+        // in background services without requiring the device to be unlocked —
+        // which is necessary on Samsung devices with Knox policies that may otherwise
+        // default new keys to auth-required.
         val keyGenParameterSpec = KeyGenParameterSpec.Builder(
             KEY_ALIAS,
             KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
         )
             .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            .setUserAuthenticationRequired(false)
             .build()
 
         // Initialize the KeyGenerator with AES algorithm

@@ -81,6 +81,8 @@ class CopyCatLanSyncManager(
     private val appContext: Context,
     private val onLanClipReceived: (LanClipPayload) -> Unit,
     private val markCaptured: (String) -> Unit,
+    private val onBeforeClipboardWrite: () -> Unit = {},
+    private val decryptContent: ((content: String, encMode: String?, iv: String?) -> String?)? = null,
 ) {
     companion object {
         private const val LOG_TAG = "CopyCatLanSyncManager"
@@ -439,44 +441,104 @@ class CopyCatLanSyncManager(
             return
         }
 
-        val fullItem = json.optJSONObject("item")
-        val fallbackContent = when (type) {
-            ClipType.Url -> fullItem?.optString("url", "") ?: ""
-            else -> fullItem?.optString("text", "") ?: ""
+        val payload = parseTextClipPayload(
+            json = json,
+            fromDeviceId = fromDeviceId,
+            originId = originId,
+            defaultType = type,
+            timestamp = timestamp,
+        )
+
+        onLanClipReceived(payload)
+
+        if (autoWriteOnReceive && !payload.deleted && payload.content.isNotBlank()) {
+            val textToWrite = if (payload.encrypted) {
+                decryptContent?.invoke(payload.content, payload.encMode, payload.iv)
+            } else {
+                payload.content
+            }
+            if (textToWrite != null) {
+                markCaptured(originId)
+                onBeforeClipboardWrite()
+                writeTextToClipboard(textToWrite, payload.label)
+            } else if (payload.encrypted) {
+                Log.w(LOG_TAG, "Skipping clipboard write: encrypted LAN clip could not be decrypted")
+            }
         }
-        val content = json.optString("content", fallbackContent)
-        val label = json.optString("label", fullItem?.optString("title", "") ?: "")
-        val encrypted = if (json.has("encrypted")) {
-            json.optBoolean("encrypted", false)
+    }
+
+    private fun hasDeletedMarker(json: JSONObject?): Boolean {
+        if (json == null) return false
+        val deletedAtCamel = json.optString(JsonKey.DELETED_AT).trim()
+        if (deletedAtCamel.isNotEmpty() &&
+            !deletedAtCamel.equals("null", ignoreCase = true)) {
+            return true
+        }
+        return false
+    }
+
+    private fun parseDeletedAtMillis(json: JSONObject?): Long? {
+        if (json == null) return null
+
+        val rawCamel = json.optString(JsonKey.DELETED_AT).trim()
+        val raw = when {
+            rawCamel.isNotEmpty() && !rawCamel.equals("null", ignoreCase = true) -> rawCamel
+            else -> return null
+        }
+
+        raw.toLongOrNull()?.let { return it }
+
+        return try {
+            Instant.parse(raw).toEpochMilli()
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun parseTextClipPayload(
+        json: JSONObject,
+        fromDeviceId: String,
+        originId: String,
+        defaultType: ClipType,
+        timestamp: Long,
+    ): LanClipPayload {
+        val fullItem = json.optJSONObject(JsonKey.ITEM)
+        val fallbackContent = when (defaultType) {
+            ClipType.Url -> fullItem?.optString(JsonKey.URL, "") ?: ""
+            else -> fullItem?.optString(JsonKey.TEXT, "") ?: ""
+        }
+        val content = json.optString(JsonKey.CONTENT, fallbackContent)
+        val label = json.optString(JsonKey.LABEL, fullItem?.optString(JsonKey.TITLE, "") ?: "")
+        val encrypted = if (json.has(JsonKey.ENCRYPTED)) {
+            json.optBoolean(JsonKey.ENCRYPTED, false)
         } else {
-            fullItem?.optBoolean("encrypted", false) ?: false
+            fullItem?.optBoolean(JsonKey.ENCRYPTED, false) ?: false
         }
-        val iv = json.optString("iv").takeIf { it.isNotEmpty() }
-            ?: fullItem?.optString("iv")?.takeIf { it.isNotEmpty() }
-        val encMode = json.optString("encMode").takeIf { it.isNotEmpty() }
-            ?: fullItem?.optString("enc_mode")?.takeIf { it.isNotEmpty() }
-            ?: fullItem?.optString("encMode")?.takeIf { it.isNotEmpty() }
-        val sourceId = json.optString("sourceId").takeIf { it.isNotEmpty() }
-            ?: fullItem?.optString("sourceId")?.takeIf { it.isNotEmpty() }
-        val sourceApp = json.optString("sourceApp").takeIf { it.isNotEmpty() }
-            ?: fullItem?.optString("sourceApp")?.takeIf { it.isNotEmpty() }
-        val itemUserId = fullItem?.optString("userId")?.takeIf { it.isNotEmpty() }
-        val itemServerId = fullItem?.optLong("id")?.takeIf { it > 0L }
+        val iv = json.optNonBlank(JsonKey.IV)
+            ?: fullItem?.optNonBlank(JsonKey.IV)
+        val encMode = json.optNonBlank(JsonKey.ENC_MODE)
+            ?: fullItem?.optNonBlank(JsonKey.ENC_MODE_SNAKE)
+            ?: fullItem?.optNonBlank(JsonKey.ENC_MODE)
+        val sourceId = json.optNonBlank(JsonKey.SOURCE_ID)
+            ?: fullItem?.optNonBlank(JsonKey.SOURCE_ID)
+        val sourceApp = json.optNonBlank(JsonKey.SOURCE_APP)
+            ?: fullItem?.optNonBlank(JsonKey.SOURCE_APP)
+        val itemUserId = fullItem?.optNonBlank(JsonKey.USER_ID)
+        val itemServerId = fullItem?.optLong(JsonKey.ID)?.takeIf { it > 0L }
         val deleted = hasDeletedMarker(fullItem) || hasDeletedMarker(json)
         val deletedAtMs = parseDeletedAtMillis(fullItem) ?: parseDeletedAtMillis(json)
 
-        val payloadType = fullItem?.optString("type")
-            ?.takeIf { it.isNotBlank() }
+        val payloadType = fullItem?.optNonBlank(JsonKey.TYPE)
             ?.let { raw ->
                 when (raw.lowercase()) {
                     "url" -> ClipType.Url
                     "text" -> ClipType.Text
                     "media", "file", "fileurl" -> ClipType.FileUrl
-                    else -> type
+                    else -> defaultType
                 }
-            } ?: type
+            } ?: defaultType
 
-        val payload = LanClipPayload(
+        return LanClipPayload(
             originId = originId,
             fromDeviceId = fromDeviceId,
             type = payloadType,
@@ -493,41 +555,6 @@ class CopyCatLanSyncManager(
             deleted = deleted,
             deletedAtMs = deletedAtMs,
         )
-
-        onLanClipReceived(payload)
-
-        if (autoWriteOnReceive && !payload.deleted && payload.content.isNotBlank()) {
-            markCaptured(originId)
-            writeTextToClipboard(payload.content, payload.label)
-        }
-    }
-
-    private fun hasDeletedMarker(json: JSONObject?): Boolean {
-        if (json == null) return false
-        val deletedAtCamel = json.optString("deletedAt").trim()
-        if (deletedAtCamel.isNotEmpty() &&
-            !deletedAtCamel.equals("null", ignoreCase = true)) {
-            return true
-        }
-        return false
-    }
-
-    private fun parseDeletedAtMillis(json: JSONObject?): Long? {
-        if (json == null) return null
-
-        val rawCamel = json.optString("deletedAt").trim()
-        val raw = when {
-            rawCamel.isNotEmpty() && !rawCamel.equals("null", ignoreCase = true) -> rawCamel
-            else -> return null
-        }
-
-        raw.toLongOrNull()?.let { return it }
-
-        return try {
-            Instant.parse(raw).toEpochMilli()
-        } catch (_: Exception) {
-            null
-        }
     }
 
     private fun handleBinaryClip(
@@ -612,6 +639,7 @@ class CopyCatLanSyncManager(
                 val clipData = AndroidClipData.newUri(appContext.contentResolver, fileName, uri)
                 val cm = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 markCaptured(originId)
+                onBeforeClipboardWrite()
                 cm.setPrimaryClip(clipData)
             }
             Log.d(LOG_TAG, "Binary clip ($mimeType) received from $fromDeviceId — persisted${if (autoWriteOnReceive) " + clipboard" else ""}")
@@ -874,43 +902,42 @@ class CopyCatLanSyncManager(
         if (!started || peers.isEmpty() || userId.isBlank()) return
 
         val timestamp = System.currentTimeMillis()
+        val payloadType = when (type) {
+            ClipType.Url -> "url"
+            else -> "text"
+        }
         val bodyJson = JSONObject().apply {
-            put("content", content)
-            put("label", label)
-            put("ts", timestamp)
-            put("created", timestamp)
-            put("modified", timestamp)
-            put("os", "android")
-            put("encrypted", encrypted)
-            if (iv != null) put("iv", iv)
-            if (encMode != null) put("encMode", encMode)
-            if (!sourceId.isNullOrBlank()) put("sourceId", sourceId)
-            if (!sourceApp.isNullOrBlank()) put("sourceApp", sourceApp)
+            put(JsonKey.CONTENT, content)
+            put(JsonKey.LABEL, label)
+            put(JsonKey.TS, timestamp)
+            put(JsonKey.CREATED, timestamp)
+            put(JsonKey.MODIFIED, timestamp)
+            put(JsonKey.OS, "android")
+            put(JsonKey.ENCRYPTED, encrypted)
+            putIfNotBlank(JsonKey.IV, iv)
+            putIfNotBlank(JsonKey.ENC_MODE, encMode)
+            putIfNotBlank(JsonKey.SOURCE_ID, sourceId)
+            putIfNotBlank(JsonKey.SOURCE_APP, sourceApp)
 
-            val payloadType = when (type) {
-                ClipType.Url -> "url"
-                else -> "text"
-            }
-            val itemJson = JSONObject().apply {
-                put("type", payloadType)
-                put("userId", if (userId.isNotBlank()) userId else "local")
-                put("created", toIso8601Utc(timestamp))
-                put("modified", toIso8601Utc(timestamp))
-                put("os", "android")
-                put("title", label)
-                put("origin_id", originId)
-                put("encrypted", encrypted)
+            put(JsonKey.ITEM, JSONObject().apply {
+                put(JsonKey.TYPE, payloadType)
+                put(JsonKey.USER_ID, if (userId.isNotBlank()) userId else "local")
+                put(JsonKey.CREATED, toIso8601Utc(timestamp))
+                put(JsonKey.MODIFIED, toIso8601Utc(timestamp))
+                put(JsonKey.OS, "android")
+                put(JsonKey.TITLE, label)
+                put(JsonKey.ORIGIN_ID, originId)
+                put(JsonKey.ENCRYPTED, encrypted)
                 if (payloadType == "url") {
-                    put("url", content)
+                    put(JsonKey.URL, content)
                 } else {
-                    put("text", content)
+                    put(JsonKey.TEXT, content)
                 }
-                if (iv != null) put("iv", iv)
-                if (encMode != null) put("enc_mode", encMode)
-                if (!sourceId.isNullOrBlank()) put("sourceId", sourceId)
-                if (!sourceApp.isNullOrBlank()) put("sourceApp", sourceApp)
-            }
-            put("item", itemJson)
+                putIfNotBlank(JsonKey.IV, iv)
+                putIfNotBlank(JsonKey.ENC_MODE_SNAKE, encMode)
+                putIfNotBlank(JsonKey.SOURCE_ID, sourceId)
+                putIfNotBlank(JsonKey.SOURCE_APP, sourceApp)
+            })
         }
         val bodyBytes = bodyJson.toString().toByteArray(Charsets.UTF_8)
         val hmac = computeHmac(bodyBytes)

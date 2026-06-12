@@ -198,6 +198,10 @@ class CopyCatClipboardService : Service() {
             debugLog(logTag) { "Clipboard capture paused: screen is off" }
             return
         }
+        if (copycatStorage.isWritingToClipboard) {
+            debugLog(logTag) { "Clipboard capture suppressed: LAN sync is writing to clipboard" }
+            return
+        }
         val resolvedPackageName = appPackageName.trim()
         debugLog(logTag) { "Current Package: $resolvedPackageName" }
         debugLog(logTag) { "Current Exclusions: ${copycatStorage.excludedPackages}" }
