@@ -40,32 +40,32 @@ class FeatureTabs extends StatelessWidget {
         context.locale.sub_dialog__f4__subtitle,
       ),
       (
-        const Icon(Icons.security_rounded),
+        const Icon(Icons.add_to_drive_rounded),
         context.locale.sub_dialog__f5__title,
         context.locale.sub_dialog__f5__subtitle,
       ),
       (
-        const Icon(Icons.add_to_drive_rounded),
+        const Icon(Icons.manage_search_rounded),
         context.locale.sub_dialog__f6__title,
         context.locale.sub_dialog__f6__subtitle,
       ),
       (
-        const Icon(Icons.manage_search_rounded),
+        const Icon(Icons.cloud_sync_rounded),
         context.locale.sub_dialog__f7__title,
         context.locale.sub_dialog__f7__subtitle,
       ),
       (
-        const Icon(Icons.cloud_sync_rounded),
+        const Icon(Icons.collections_bookmark_rounded),
         context.locale.sub_dialog__f8__title,
         context.locale.sub_dialog__f8__subtitle,
       ),
       (
-        const Icon(Icons.collections_bookmark_rounded),
+        const Icon(Icons.sync_rounded),
         context.locale.sub_dialog__f9__title,
         context.locale.sub_dialog__f9__subtitle,
       ),
       (
-        const Icon(Icons.sync_alt_rounded),
+        const Icon(Icons.security_rounded),
         context.locale.sub_dialog__f10__title,
         context.locale.sub_dialog__f10__subtitle,
       ),

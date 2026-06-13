@@ -62,7 +62,7 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
         to: to,
       );
       final decryptedItems = await Future.wait(
-        result.results.map((e) => e.decrypt()),
+        result.results.map((e) => e.locked ? Future.value(e) : e.decrypt()),
       );
 
       return Right(
@@ -105,7 +105,9 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
   FailureOr<ClipboardItem?> get({int? id, int? serverId}) async {
     try {
       final result = await remote.get(serverId: serverId);
-      final decrypted = await result?.decrypt();
+      final decrypted = result?.locked == true
+          ? result
+          : await result?.decrypt();
       return Right(decrypted);
     } catch (e) {
       return Left(Failure.fromException(e));
@@ -245,15 +247,12 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
         previous = await local.get(id: item.id);
       }
 
-      // check if this was an unlock
-      if (previous != null &&
-          item.locked &&
-          previous.encrypted &&
-          !item.encrypted) {
-        return Right(item); // no update needed, just return the item as-is
+      if (item.locked && !item.encrypted) {
+        item = await item.encrypt();
       }
 
-      final result = await local.update(item);
+      ClipboardItem result = await local.update(item);
+
       var queued = false;
 
       final shouldEnqueue = _shouldEnqueueUpdate(
@@ -272,6 +271,7 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
         );
         queued = true;
       }
+
       return Right(result.copyWith(isQueued: queued));
     } catch (e) {
       return Left(Failure.fromException(e));

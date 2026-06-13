@@ -879,13 +879,13 @@ abstract class AppLocalizations {
   /// No description provided for @sub_dialog__f9__title.
   ///
   /// In en, this message translates to:
-  /// **'Auto-Sync Every 45 Seconds'**
+  /// **'Background Sync'**
   String get sub_dialog__f9__title;
 
   /// No description provided for @sub_dialog__f9__subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Enjoy automatic syncing of clipboard items every 45 seconds, keeping your devices up-to-date without manual intervention.'**
+  /// **'Free syncing runs on a best-effort basis and may take up to 15 minutes depending on server load.'**
   String get sub_dialog__f9__subtitle;
 
   /// No description provided for @sub_dialog__f10__title.

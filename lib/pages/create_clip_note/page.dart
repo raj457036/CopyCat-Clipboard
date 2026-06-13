@@ -39,7 +39,8 @@ class _CreateClipNotePageState extends State<CreateClipNotePage> {
 
     if (note.isNotEmpty && widget.item != null) {
       final item = widget.item!.copyWith(text: note, modified: systemTime());
-      cubit.persist([item]);
+      await cubit.persist([item]);
+      if (!mounted) return;
       context.pop(item);
     } else {
       context.pop();
@@ -49,7 +50,8 @@ class _CreateClipNotePageState extends State<CreateClipNotePage> {
   Future<void> saveAsNew() async {
     final note = controller.text;
     final cubit = context.read<OfflinePersistenceCubit>();
-    if (note.isNotEmpty) cubit.paste(note);
+    if (note.isNotEmpty) await cubit.paste(note);
+    if (!mounted) return;
     context.goNamed(RouteConstants.home);
   }
 

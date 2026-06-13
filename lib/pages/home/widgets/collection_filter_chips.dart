@@ -13,7 +13,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class CollectionFilterChips extends StatelessWidget {
-  const CollectionFilterChips({super.key});
+  final bool placedInBottomNavBar;
+
+  const CollectionFilterChips({super.key, this.placedInBottomNavBar = false});
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,62 @@ class CollectionFilterChips extends StatelessWidget {
                     ? collections.length + 1
                     : collections.length;
 
+                final row = Row(
+                  spacing: padding4,
+                  children: [
+                    if (!dense) _CreateCollectionChip(canCreate: canCreate),
+                    if (!dense)
+                      const VerticalDivider(
+                        indent: padding14,
+                        endIndent: padding14,
+                      ),
+                    Expanded(
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        padding: placedInBottomNavBar
+                            ? const EdgeInsets.symmetric(
+                                horizontal: padding16,
+                                vertical: padding2,
+                              )
+                            : const EdgeInsets.symmetric(vertical: padding8),
+                        itemCount: itemLength,
+                        separatorBuilder: (_, _) => width8,
+                        itemBuilder: (context, index) {
+                          if (dense && index == 0) {
+                            return _CreateCollectionChip(canCreate: canCreate);
+                          }
+                          final i = dense ? index - 1 : index;
+                          final collection = collections[i];
+                          final isReadOnly = loaded.isReadOnly(collection);
+                          return _CollectionChip(
+                            collection: collection,
+                            isSelected: activeId == collection.id,
+                            isReadOnly: isReadOnly,
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+
+                final SingleChildRenderObjectWidget childWithPadding;
+                if (placedInBottomNavBar) {
+                  childWithPadding = DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerLow,
+                      border: Border(
+                        top: BorderSide(color: colorScheme.outlineVariant),
+                      ),
+                    ),
+                    child: row,
+                  );
+                } else {
+                  childWithPadding = Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: padding8),
+                    child: row,
+                  );
+                }
+
                 return SizedBox(
                   height: 64,
                   child: ChipTheme(
@@ -55,48 +113,7 @@ class CollectionFilterChips extends StatelessWidget {
                         borderRadius: radius4,
                       ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: padding8),
-                      child: Row(
-                        spacing: padding4,
-                        children: [
-                          if (!dense)
-                            _CreateCollectionChip(canCreate: canCreate),
-                          if (!dense)
-                            const VerticalDivider(
-                              indent: padding14,
-                              endIndent: padding14,
-                            ),
-                          Expanded(
-                            child: ListView.separated(
-                              scrollDirection: Axis.horizontal,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: padding8,
-                              ),
-                              itemCount: itemLength,
-                              separatorBuilder: (_, _) => width8,
-                              itemBuilder: (context, index) {
-                                if (dense && index == 0) {
-                                  return _CreateCollectionChip(
-                                    canCreate: canCreate,
-                                  );
-                                }
-                                final i = dense ? index - 1 : index;
-                                final collection = collections[i];
-                                final isReadOnly = loaded.isReadOnly(
-                                  collection,
-                                );
-                                return _CollectionChip(
-                                  collection: collection,
-                                  isSelected: activeId == collection.id,
-                                  isReadOnly: isReadOnly,
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    child: childWithPadding,
                   ),
                 );
               },

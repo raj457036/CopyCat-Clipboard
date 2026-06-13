@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
@@ -23,7 +24,7 @@ class SyncStatusFAB extends StatelessWidget {
         return BlocBuilder<SyncStatusCubit, SyncStatusState>(
           builder: (context, state) {
             bool disabled = false;
-            IconData icon = Icons.refresh_rounded;
+            IconData icon = Icons.cloud_rounded;
             bool isSyncing = false;
             String message = context.locale.fab__sync;
 
@@ -36,11 +37,10 @@ class SyncStatusFAB extends StatelessWidget {
               case SyncStatusDisabled():
                 return const SizedBox.shrink();
               case SyncingStatus():
-                disabled = true;
-                isSyncing = true;
               case SyncStatusDecrypting():
                 disabled = true;
                 isSyncing = true;
+                message = context.locale.app__syncing;
               case SyncStatusComplete():
                 disabled = false;
                 isSyncing = false;
@@ -69,22 +69,13 @@ class SyncStatusFAB extends StatelessWidget {
                 heroTag: "sync-fab",
                 backgroundColor: colors.secondary,
                 foregroundColor: colors.onSecondary,
-                child: AnimatedSwitcher(
-                  duration: Durations.medium1,
-                  switchInCurve: Curves.easeIn,
-                  switchOutCurve: Curves.easeOut,
-                  child: isSyncing
-                      ? SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: colors.onSecondary,
-                            strokeCap: StrokeCap.round,
-                          ),
-                        )
-                      : Icon(icon),
-                ),
+                child: isSyncing
+                    ? const Flash(
+                        delay: Durations.medium4,
+                        duration: Duration(seconds: 12),
+                        child: Icon(Icons.cloud),
+                      )
+                    : Icon(icon),
               ),
             );
           },

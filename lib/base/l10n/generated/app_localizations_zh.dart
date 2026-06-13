@@ -421,10 +421,11 @@ class AppLocalizationsZh extends AppLocalizations {
       '将您的剪贴板项目整理到最多 3 个收藏中，从而提供更好的分类以提高工作效率。';
 
   @override
-  String get sub_dialog__f9__title => '每 45 秒自动同步';
+  String get sub_dialog__f9__title => '后台同步';
 
   @override
-  String get sub_dialog__f9__subtitle => '享受剪贴板项目每 45 秒自动同步，而无需手动干预。';
+  String get sub_dialog__f9__subtitle =>
+      '免费版同步采用尽力而为机制，具体可能因服务器负载而最多需要 15 分钟完成。';
 
   @override
   String get sub_dialog__f10__title => '支持端到端加密';

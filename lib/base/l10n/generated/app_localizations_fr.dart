@@ -437,12 +437,11 @@ class AppLocalizationsFr extends AppLocalizations {
       'Organisez vos éléments de presse-papiers en jusqu\'à 3 collections, fournissant une catégorisation simple pour une meilleure gestion du flux de travail.';
 
   @override
-  String get sub_dialog__f9__title =>
-      'Synchronisation automatique toutes les 45 secondes';
+  String get sub_dialog__f9__title => 'Synchronisation en arrière-plan';
 
   @override
   String get sub_dialog__f9__subtitle =>
-      'Profitez de la synchronisation automatique des éléments de presse-papiers toutes les 45 secondes, gardant vos appareils à jour sans intervention manuelle.';
+      'La synchronisation gratuite fonctionne au mieux des capacités disponibles et peut prendre jusqu’à 15 minutes selon la charge des serveurs.';
 
   @override
   String get sub_dialog__f10__title =>

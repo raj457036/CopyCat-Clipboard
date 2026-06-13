@@ -55,13 +55,13 @@ class CopyCatNavrail extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: padding12),
             icon: Tooltip(
               message: collectionsTooltip,
-              child: const Icon(Icons.folder),
+              child: const Icon(Icons.folder_outlined),
             ),
             selectedIcon: Tooltip(
               message: collectionsTooltip,
               child: const Tada(
                 duration: duration,
-                child: Icon(Icons.folder_open_rounded),
+                child: Icon(Icons.folder_rounded),
               ),
             ),
             label: Text(

@@ -73,7 +73,7 @@ class LanReceiver {
 
       if (item == null) return;
 
-      final decrypted = await item.decrypt();
+      final decrypted = item.locked ? item : await item.decrypt();
       final events = await _batchSync.syncBatch([decrypted], {});
       _syncEventBus.emit<ClipboardItem>(events.first);
       logger.d(

@@ -125,6 +125,7 @@ class SBClipCrossSyncListener
     try {
       if (obj == null) return null;
       final item = ClipboardItem.fromJson(obj as Map<String, dynamic>);
+      if (item.locked) return item;
       return await item.decrypt();
     } catch (e) {
       logger.e("Error casting/decrypting ClipboardItem: $e");

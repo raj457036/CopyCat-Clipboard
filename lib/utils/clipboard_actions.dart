@@ -174,7 +174,7 @@ Future<ClipboardItem?> decryptItem(
   }
 
   final item_ = await item.decrypt();
-  persitCubit.persist([item_]);
+  persitCubit.persist([item_], stateless: item.locked);
   return item_;
 }
 

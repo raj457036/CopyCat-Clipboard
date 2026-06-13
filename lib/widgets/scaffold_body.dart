@@ -25,25 +25,11 @@ class ScaffoldBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!enabled) return child;
-    final width = context.mq.size.width;
-    final isMobile = Breakpoints.isMobile(width);
+    if (context.isMobile) return child;
+
     BorderRadius borderRadius_ = const BorderRadius.vertical(
       top: Radius.circular(18),
     );
-    if (isMobile) {
-      return Card(
-        elevation: 0,
-        clipBehavior: Clip.hardEdge,
-        margin: const EdgeInsets.only(
-          top: padding8,
-          left: padding8,
-          right: padding8,
-        ),
-        color: background,
-        shape: RoundedRectangleBorder(borderRadius: borderRadius_),
-        child: child,
-      );
-    }
 
     return BlocSelector<
       WindowActionCubit,

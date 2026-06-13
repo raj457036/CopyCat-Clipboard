@@ -436,12 +436,11 @@ class AppLocalizationsEs extends AppLocalizations {
       'Organiza los elementos de tu portapapeles en hasta 3 colecciones, proporcionando una categorización simple para una mejor gestión del flujo de trabajo.';
 
   @override
-  String get sub_dialog__f9__title =>
-      'Sincronización Automática Cada 45 Segundos';
+  String get sub_dialog__f9__title => 'Sincronización en segundo plano';
 
   @override
   String get sub_dialog__f9__subtitle =>
-      'Disfruta de la sincronización automática de elementos del portapapeles cada 45 segundos, manteniendo tus dispositivos actualizados sin intervención manual.';
+      'La sincronización gratuita funciona según disponibilidad y puede tardar hasta 15 minutos según la carga del servidor.';
 
   @override
   String get sub_dialog__f10__title =>

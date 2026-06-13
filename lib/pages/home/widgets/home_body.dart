@@ -1,5 +1,6 @@
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/pages/home/widgets/collection_filter_chips.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/app_layout_builder.dart';
 import 'package:clipboard/widgets/clip_view_builders/builder.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
@@ -19,7 +20,7 @@ class HomePageBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const CollectionFilterChips(),
+        if (!context.isMobile) const CollectionFilterChips(),
         Expanded(
           child: RefreshIndicator(
             onRefresh: () async => await refresh(context),

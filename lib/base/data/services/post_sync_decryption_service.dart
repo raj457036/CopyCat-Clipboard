@@ -52,7 +52,7 @@ class PostSyncDecryptionService {
         }
 
         try {
-          final dec = await item.decrypt();
+          final dec = item.locked ? item : await item.decrypt();
           if (!dec.encrypted) {
             try {
               await _localSource.update(dec);

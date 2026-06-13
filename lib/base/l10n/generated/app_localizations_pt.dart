@@ -434,12 +434,11 @@ class AppLocalizationsPt extends AppLocalizations {
       'Organize os itens do seu clipboard em até 3 coleções, proporcionando uma categorização simples para um melhor gerenciamento do fluxo de trabalho.';
 
   @override
-  String get sub_dialog__f9__title =>
-      'Sincronização Automática a Cada 45 Segundos';
+  String get sub_dialog__f9__title => 'Sincronização em segundo plano';
 
   @override
   String get sub_dialog__f9__subtitle =>
-      'Aproveite a sincronização automática dos itens do clipboard a cada 45 segundos, mantendo seus dispositivos atualizados sem intervenção manual.';
+      'A sincronização gratuita funciona com base no melhor esforço e pode levar até 15 minutos, dependendo da carga dos servidores.';
 
   @override
   String get sub_dialog__f10__title =>

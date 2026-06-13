@@ -21,6 +21,7 @@ import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -89,7 +90,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         return r;
       },
     );
-    return item;
+    return item?.decrypt();
   }
 
   Future<void> onCaptureClipboard() async {
@@ -403,10 +404,12 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     }
   }
 
+  /// stateless = true will not persist the change in the local database, only emit the new state. ( only work with updates )
   Future<void> persist(
     List<ClipboardItem> items, {
     bool synced = false,
     List<String>? updatedFields,
+    bool stateless = false,
   }) async {
     final persited = items
         .where((item) => item.isPersisted)
@@ -470,7 +473,11 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
 
     // If all items are already persisted, we just need to update the items.
     final updated = await Future.wait(
-      persited.map((item) => repo.update(item)),
+      persited.map(
+        (item) => stateless
+            ? Future.value(Right<Failure, ClipboardItem>(item))
+            : repo.update(item),
+      ),
     );
 
     for (var result in updated) {

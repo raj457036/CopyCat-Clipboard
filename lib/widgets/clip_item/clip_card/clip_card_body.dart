@@ -1,24 +1,17 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/data/services/notification_service.dart'
-    show InAppNotificationService;
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/base/domain/model/notification_message.dart'
-    show NotificationMessage;
-import 'package:clipboard/base/l10n/l10n.dart';
-import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/clip_item/clip_card/clip_card_options_header.dart';
 import 'package:clipboard/widgets/clip_item/clip_card/hover_state_builder.dart';
+import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
 import 'package:clipboard/widgets/clip_item/clip_preview.dart';
 import 'package:clipboard/widgets/clip_item/clip_sync_status_footer.dart';
-import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:clipboard/widgets/drag_drop/drag_item.dart';
 import 'package:clipboard/widgets/keyboard_shortcuts/space_enter_listener.dart';
@@ -139,33 +132,6 @@ class _ClipCardBodyState extends State<ClipCardBody> {
   }
 
   bool get canPaste => CanPasteScope.of(context);
-
-  Future<void> decryptItem(BuildContext context) async {
-    final persitCubit = context.read<OfflinePersistenceCubit>();
-    final appConfig = context.read<AppConfigCubit>();
-    if (!appConfig.isE2EESetupDone) {
-      InAppNotificationService.i.notify(
-        NotificationMessage(
-          id: "e2ee_no_setup",
-          body: context.locale.app__ack__missing_e2e_setup,
-        ),
-      );
-      return;
-    }
-
-    try {
-      final item_ = await widget.item.decrypt();
-      persitCubit.persist([item_]);
-    } catch (e) {
-      if (!context.mounted) return;
-      InAppNotificationService.i.notify(
-        NotificationMessage(
-          id: "decryption_failed",
-          body: Failure.fromException(e).message,
-        ),
-      );
-    }
-  }
 
   void toggleSelect(BuildContext context) {
     final cubit = context.read<SelectedClipsCubit>();

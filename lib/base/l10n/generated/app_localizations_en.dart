@@ -431,11 +431,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'Organize your clipboard items into up to 3 collections, providing simple categorization for better workflow management.';
 
   @override
-  String get sub_dialog__f9__title => 'Auto-Sync Every 45 Seconds';
+  String get sub_dialog__f9__title => 'Background Sync';
 
   @override
   String get sub_dialog__f9__subtitle =>
-      'Enjoy automatic syncing of clipboard items every 45 seconds, keeping your devices up-to-date without manual intervention.';
+      'Free syncing runs on a best-effort basis and may take up to 15 minutes depending on server load.';
 
   @override
   String get sub_dialog__f10__title => 'Support End-to-End Encryption';

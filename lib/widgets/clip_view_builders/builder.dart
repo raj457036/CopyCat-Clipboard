@@ -4,6 +4,7 @@ import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/app_layout_builder.dart';
 import 'package:clipboard/widgets/can_paste_builder.dart';
@@ -76,14 +77,19 @@ class ClipsBuilder extends StatelessWidget {
     return false;
   }
 
-  Widget buildGridView(List<ClipboardItem> selectedClips) {
+  Widget buildGridView(
+    BuildContext context,
+    List<ClipboardItem> selectedClips,
+  ) {
     return GridView.builder(
       scrollCacheExtent: const ScrollCacheExtent.pixels(300),
-      padding: const EdgeInsets.only(
-        left: padding4,
-        right: padding4,
-        bottom: padding8,
-      ),
+      padding: context.isMobile
+          ? const EdgeInsets.all(padding10)
+          : const EdgeInsets.only(
+              left: padding4,
+              right: padding4,
+              bottom: padding8,
+            ),
       scrollDirection: scrollDirection,
       gridDelegate: delegate,
       itemCount: items.length,
@@ -108,10 +114,19 @@ class ClipsBuilder extends StatelessWidget {
     );
   }
 
-  Widget buildListView(List<ClipboardItem> selectedClips) {
+  Widget buildListView(
+    BuildContext context,
+    List<ClipboardItem> selectedClips,
+  ) {
     return ListView.builder(
       scrollCacheExtent: const ScrollCacheExtent.pixels(300),
-      padding: const EdgeInsets.all(padding4),
+      padding: context.isMobile
+          ? const EdgeInsets.all(padding10)
+          : const EdgeInsets.only(
+              left: padding4,
+              right: padding4,
+              bottom: padding8,
+            ),
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];
@@ -160,8 +175,8 @@ class ClipsBuilder extends StatelessWidget {
                 onNotification: (notification) =>
                     onScrollNotification(notification, hasMore, loading),
                 child: layoutView.layout == AppLayout.grid
-                    ? buildGridView(selectedClips)
-                    : buildListView(selectedClips),
+                    ? buildGridView(context, selectedClips)
+                    : buildListView(context, selectedClips),
               );
             },
           );

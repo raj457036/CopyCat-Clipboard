@@ -433,12 +433,11 @@ class AppLocalizationsDe extends AppLocalizations {
       'Organisieren Sie Ihre Zwischenablage-Elemente in bis zu 3 Sammlungen, was einfache Kategorisierung für bessere Arbeitsablaufverwaltung bietet.';
 
   @override
-  String get sub_dialog__f9__title =>
-      'Automatische Synchronisation alle 45 Sekunden';
+  String get sub_dialog__f9__title => 'Hintergrundsynchronisierung';
 
   @override
   String get sub_dialog__f9__subtitle =>
-      'Genießen Sie die automatische Synchronisation von Zwischenablage-Elementen alle 45 Sekunden, halten Sie Ihre Geräte immer auf dem neuesten Stand, ohne manuelles Eingreifen.';
+      'Die Synchronisierung im kostenlosen Tarif erfolgt nach bestem Aufwand und kann je nach Serverauslastung bis zu 15 Minuten dauern.';
 
   @override
   String get sub_dialog__f10__title =>
