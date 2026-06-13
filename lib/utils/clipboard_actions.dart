@@ -13,6 +13,7 @@ import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart'
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage, NotificationContent;
+import 'package:clipboard/base/domain/model/route_payload.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
@@ -25,6 +26,19 @@ import 'package:go_router/go_router.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+Future<bool> isAuthorized(
+  Iterable<ClipboardItem> items,
+  BuildContext context,
+) async {
+  final anyItemLocked = items.any((item) => item.locked && item.encrypted);
+  if (!anyItemLocked) return true;
+
+  if (!context.mounted) return false;
+  final appLockCubit = context.read<AppLockCubit>();
+
+  return await appLockCubit.authorizeForSensitiveAction();
+}
+
 Future<void> _maybeShowReviewPrompt() async {
   final context = rootNavigationKey.currentContext;
   if (context == null) return;
@@ -36,11 +50,31 @@ Future<void> _maybeShowReviewPrompt() async {
   }
 }
 
+Future<void> moveToPasteStack(
+  BuildContext context,
+  Iterable<ClipboardItem> items,
+) async {
+  final authorized = await isAuthorized(items, context);
+  if (!authorized) return;
+
+  final decryptedItems = await Future.wait(items.map((item) => item.decrypt()));
+
+  if (!context.mounted) return;
+  await context.pushNamed(
+    RouteConstants.pasteStack,
+    extra: RoutePayload(data: decryptedItems),
+  );
+}
+
 /// Write multiple clips to clipboard.
 Future<void> multiCopyToClipboard(
   BuildContext context,
   List<ClipboardItem> items,
 ) async {
+  final authorized = await isAuthorized(items, context);
+  if (!authorized) return;
+
+  if (!context.mounted) return;
   final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   try {
     final cubit = ctx.read<OfflinePersistenceCubit>();
@@ -71,6 +105,10 @@ Future<void> copyToClipboard(
   bool saveFile = false,
   bool noAck = false,
 }) async {
+  final authorized = await isAuthorized([item], context);
+  if (!authorized) return;
+
+  if (!context.mounted) return;
   final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   try {
     final cubit = ctx.read<OfflinePersistenceCubit>();
@@ -99,11 +137,17 @@ Future<void> copyToClipboard(
   }
 }
 
-Future<void> preview(BuildContext context, ClipboardItem item) async {
+Future<void> openClipPreview(BuildContext context, ClipboardItem item) async {
+  final authorized = await isAuthorized([item], context);
+  if (!authorized) return;
+
+  if (!context.mounted) return;
+
   final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   ctx.pushNamed(
     RouteConstants.preview,
     pathParameters: {"id": item.id.toString()},
+    extra: RoutePayload(data: authorized),
   );
 }
 
@@ -111,6 +155,11 @@ Future<void> shareClipboardItem(
   BuildContext context,
   ClipboardItem item,
 ) async {
+  final authorized = await isAuthorized([item], context);
+  if (!authorized) return;
+
+  if (!context.mounted) return;
+
   final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   try {
     unawaited(
@@ -130,6 +179,11 @@ Future<void> shareClipboardItems(
   BuildContext context,
   List<ClipboardItem> items,
 ) async {
+  final authorized = await isAuthorized(items, context);
+  if (!authorized) return;
+
+  if (!context.mounted) return;
+
   final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   try {
     unawaited(
@@ -166,12 +220,10 @@ Future<ClipboardItem?> decryptItem(
     return null;
   }
 
-  if (item.locked) {
-    final authorized = await context
-        .read<AppLockCubit>()
-        .authorizeForSensitiveAction();
-    if (!authorized) return null;
-  }
+  final authorized = await isAuthorized([item], context);
+  if (!authorized) return null;
+
+  if (!context.mounted) return null;
 
   final item_ = await item.decrypt();
   persitCubit.persist([item_], stateless: item.locked);
@@ -179,6 +231,11 @@ Future<ClipboardItem?> decryptItem(
 }
 
 Future<void> downloadFile(BuildContext context, ClipboardItem item) async {
+  final authorized = await isAuthorized([item], context);
+  if (!authorized) return;
+
+  if (!context.mounted) return;
+
   final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   ctx.read<FileCloudCubit>().download(item);
 }
@@ -193,10 +250,16 @@ Future<ClipboardItem?> editTextContent(
   BuildContext context,
   ClipboardItem item,
 ) async {
+  final authorized = await isAuthorized([item], context);
+  if (!authorized) return null;
+
+  if (!context.mounted) return null;
+
   final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   return await ctx.pushNamed<ClipboardItem?>(
     RouteConstants.createClipNote,
     queryParameters: {"id": item.id.toString()},
+    extra: RoutePayload(data: authorized),
   );
 }
 
@@ -213,6 +276,11 @@ Future<void> launchEmail(ClipboardItem item) async {
 }
 
 Future<void> pasteOnLastWindow(BuildContext context, ClipboardItem item) async {
+  final authorized = await isAuthorized([item], context);
+  if (!authorized) return;
+
+  if (!context.mounted) return;
+
   final focusManager = WindowFocusManager.of(context);
   await copyToClipboard(context, item, noAck: true);
   await focusManager?.toggleAndPaste(item);
@@ -235,6 +303,11 @@ Future<void> pasteMultipleOnLastWindow(
   String? textMergeSeparator,
   Duration? waitBetweenPastes,
 }) async {
+  final authorized = await isAuthorized(items, context);
+  if (!authorized) return;
+
+  if (!context.mounted) return;
+
   final focusManager = WindowFocusManager.of(context);
   if (focusManager == null) return;
 
@@ -276,6 +349,11 @@ Future<bool> deleteClipboardItem(
   BuildContext context,
   List<ClipboardItem> items,
 ) async {
+  final authorized = await isAuthorized(items, context);
+  if (!authorized) return false;
+
+  if (!context.mounted) return false;
+
   final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   final confirmation = await ConfirmDialog(
     title: context.locale.dialog__delete_clip__title,
@@ -347,6 +425,11 @@ Future<void> changeCollection(
   BuildContext context,
   List<ClipboardItem> items,
 ) async {
+  final authorized = await isAuthorized(items, context);
+  if (!authorized) return;
+
+  if (!context.mounted) return;
+
   final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   final cubit = ctx.read<OfflinePersistenceCubit>();
 

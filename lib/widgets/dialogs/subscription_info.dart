@@ -175,7 +175,11 @@ class SubscriptionInfoDialog extends StatelessWidget {
   });
 
   Future<void> open(BuildContext context) async {
-    return await showDialog(context: context, builder: (context) => this);
+    return await showDialog(
+      context: context,
+      builder: (context) => this,
+      fullscreenDialog: context.isMobile,
+    );
   }
 
   Future<void> upgradeByPromoCode(BuildContext context) async {
@@ -236,74 +240,71 @@ class SubscriptionInfoDialog extends StatelessWidget {
 
               final expired = !state.isActive;
               final isTrial = state.isTrial;
-              return Scaffold(
-                backgroundColor: Colors.transparent,
-                body: AlertDialog(
-                  title: Row(
-                    children: [
-                      Text(context.locale.paywall_dialog__text__subscription),
-                      const Spacer(),
-                      const CloseButton(),
-                    ],
-                  ),
-                  insetPadding: isMobile
-                      ? const EdgeInsets.all(padding8)
-                      : const EdgeInsets.symmetric(
-                          horizontal: 40.0,
-                          vertical: 24.0,
-                        ),
-                  contentPadding: isMobile ? EdgeInsets.zero : null,
-                  content: SizedBox(
-                    width: 600,
-                    child: Column(
+
+              final body = Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    title: Text(
+                      expired
+                          ? context.locale.paywall_dialog__text__expired_plan
+                          : context.locale.paywall_dialog__text__current_plan,
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ListTile(
-                          title: Text(
-                            expired
-                                ? context
-                                      .locale
-                                      .paywall_dialog__text__expired_plan
-                                : context
-                                      .locale
-                                      .paywall_dialog__text__current_plan,
+                        Text(state.planName, style: textTheme.titleLarge),
+                        height2,
+                        if (isTrial && state.trialEnd != null)
+                          Text(
+                            context.locale.paywall_dialog__text__trial_till(
+                              till: state.trialEnd!,
+                            ),
                           ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(state.planName, style: textTheme.titleLarge),
-                              height2,
-                              if (isTrial && state.trialEnd != null)
-                                Text(
-                                  context.locale
-                                      .paywall_dialog__text__trial_till(
-                                        till: state.trialEnd!,
-                                      ),
-                                ),
-                            ],
-                          ),
-                          trailing: expired || state.isFree
-                              ? ElevatedButton.icon(
-                                  onPressed: () => upgrade(context),
-                                  onLongPress: () =>
-                                      upgradeByPromoCode(context),
-                                  icon: const Icon(
-                                    Icons.workspace_premium_rounded,
-                                  ),
-                                  label: Text(
-                                    context
-                                        .locale
-                                        .paywall_dialog__text__upgrade,
-                                  ),
-                                )
-                              : const ManageSubscriptionButton(),
-                        ),
-                        const Expanded(child: FeatureTabs()),
                       ],
                     ),
+                    trailing: expired || state.isFree
+                        ? ElevatedButton.icon(
+                            onPressed: () => upgrade(context),
+                            onLongPress: () => upgradeByPromoCode(context),
+                            icon: const Icon(Icons.workspace_premium_rounded),
+                            label: Text(
+                              context.locale.paywall_dialog__text__upgrade,
+                            ),
+                          )
+                        : const ManageSubscriptionButton(),
                   ),
+                  const Expanded(child: FeatureTabs()),
+                ],
+              );
+
+              if (context.isMobile) {
+                return Scaffold(
+                  appBar: AppBar(
+                    title: Text(
+                      context.locale.paywall_dialog__text__subscription,
+                    ),
+                    centerTitle: true,
+                  ),
+                  body: body,
+                );
+              }
+
+              return AlertDialog(
+                title: Row(
+                  children: [
+                    Text(context.locale.paywall_dialog__text__subscription),
+                    const Spacer(),
+                    const CloseButton(),
+                  ],
                 ),
+                insetPadding: const EdgeInsets.symmetric(
+                  horizontal: 40.0,
+                  vertical: 24.0,
+                ),
+                contentPadding: isMobile ? EdgeInsets.zero : null,
+                content: SizedBox(width: 600, child: body),
               );
             },
           ),

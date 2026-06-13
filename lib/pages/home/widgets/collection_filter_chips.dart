@@ -188,7 +188,9 @@ class _CollectionChip extends StatelessWidget {
         selected: isSelected,
         tooltip: collection.description,
         onSelected: (selected) => _onSelected(context, selected),
-        shape: isSelected ? const StadiumBorder() : null,
+        shape: isSelected
+            ? const StadiumBorder()
+            : const RoundedRectangleBorder(borderRadius: radius8),
         showCheckmark: false,
         mouseCursor: SystemMouseCursors.click,
       ),

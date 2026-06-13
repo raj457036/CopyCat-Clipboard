@@ -79,7 +79,10 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     );
   }
 
-  Future<ClipboardItem?> getItem({required int id}) async {
+  Future<ClipboardItem?> getItem({
+    required int id,
+    bool decrypted = false,
+  }) async {
     final result = await repo.get(id: id);
     final item = result.fold(
       (l) {
@@ -90,7 +93,9 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         return r;
       },
     );
-    return item?.decrypt();
+
+    if (decrypted) return item?.decrypt();
+    return item;
   }
 
   Future<void> onCaptureClipboard() async {

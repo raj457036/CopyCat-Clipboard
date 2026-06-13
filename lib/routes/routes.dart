@@ -193,10 +193,15 @@ final appRouter = GoRouter(
           path: "/preview/:id",
           redirect: idPresentOrRedirect,
           pageBuilder: (context, state) {
+            final payload = state.extra as RoutePayload?;
+            final authorized = payload?.get<bool>() ?? false;
+
             final id = int.parse(state.pathParameters["id"]!);
             final item = context.read<OfflinePersistenceCubit>().getItem(
               id: id,
+              decrypted: authorized,
             );
+
             return DynamicPage(
               key: state.pageKey,
               fullScreenDialog: false,
@@ -396,9 +401,20 @@ final appRouter = GoRouter(
           path: "/create-clip-note",
           pageBuilder: (context, state) {
             final id = int.tryParse(state.uri.queryParameters["id"] ?? "");
-            final item = id == null
-                ? null
-                : context.read<OfflinePersistenceCubit>().getItem(id: id);
+            final Future<ClipboardItem?>? item;
+
+            if (id == null) {
+              item = null;
+            } else {
+              final payload = state.extra as RoutePayload?;
+              final authorized = payload?.get<bool>() ?? false;
+
+              item = context.read<OfflinePersistenceCubit>().getItem(
+                id: id,
+                decrypted: authorized,
+              );
+            }
+
             return DynamicPage(
               key: state.pageKey,
               fullScreenDialog: false,

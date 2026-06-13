@@ -176,26 +176,28 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       borderRadius: radius12,
     );
     const content = HoverScopeProvider(child: ClipCardBodyContent());
-    final bgColor = widget.item.locked ? colors.primaryContainer : null;
+    final bgColor = widget.item.locked
+        ? colors.primaryContainer
+        : colors.surfaceContainerLowest;
 
     return SpaceEnterListener(
       onSpace: (context) => widget.selectionActive
           ? toggleSelect(context)
-          : preview(context, widget.item),
+          : openClipPreview(context, widget.item),
       onEnter: (context) => widget.selectionActive
           ? toggleSelect(context)
           : performPrimaryActionOnClip(context, widget.item, canPaste),
       onShiftSpace: (context) => toggleSelect(context),
       onShiftSpaceEnter: (context) => onShiftEnter(context),
       onShiftC: (context) => onShiftC(context, widget.item),
-      child: Card.outlined(
+      child: Card(
         color: bgColor,
         elevation: highlighted ? 2 : 0,
         shape: selectedShape,
         clipBehavior: Clip.hardEdge,
         child: InkWell(
           mouseCursor: SystemMouseCursors.click,
-          focusColor: bgColor ?? colors.surface,
+          focusColor: bgColor,
           customBorder: selectedShape,
           onTap: !widget.selectionActive
               ? () => performPrimaryActionOnClip(context, widget.item, canPaste)

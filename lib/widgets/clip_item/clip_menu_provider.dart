@@ -91,7 +91,7 @@ class _ClipMenuProviderState extends State<ClipMenuProvider> {
           icon: Icons.edit_note_rounded,
           text: context.locale.app__preview,
           section: 'Clip Actions',
-          onPressed: () => preview(context, item),
+          onPressed: () => openClipPreview(context, item),
         ),
       if (item.type == ClipItemType.url && !item.encrypted)
         MenuItem(

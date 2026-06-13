@@ -24,6 +24,7 @@ class FilterDialog extends StatefulWidget {
     return showDialog<SearchFilterState?>(
       context: context,
       builder: (innerContext) => this,
+      fullscreenDialog: context.isMobile,
     );
   }
 
@@ -171,63 +172,32 @@ class _FilterDialogState extends State<FilterDialog> {
   }) {
     final colors = context.colors;
     final textTheme = context.textTheme;
-    return InkWell(
-      borderRadius: BorderRadius.circular(14),
-      onTap: onTap,
-      child: Ink(
-        decoration: BoxDecoration(
-          color: isSet ? colors.secondaryContainer : colors.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: colors.outlineVariant),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Row(
-            children: [
-              Icon(
-                leading,
-                size: 18,
-                color: isSet ? colors.onSecondaryContainer : colors.primary,
-              ),
-              height10,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      title,
-                      style: textTheme.labelSmall?.copyWith(
-                        color: colors.outline,
-                        letterSpacing: 0.2,
-                      ),
-                    ),
-                    height2,
-                    Text(
-                      value,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: isSet
-                            ? colors.onSecondaryContainer
-                            : colors.onSurface,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (onClear != null)
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  onPressed: onClear,
-                  icon: const Icon(Icons.close_rounded, size: 16),
-                  tooltip: context.locale.search_filter__tooltip__clear,
-                ),
-            ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionLabel(context, title),
+        height2,
+        ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size.fromHeight(40),
+          ),
+          onPressed: isSet ? onClear ?? () {} : onTap,
+          icon: Icon(
+            leading,
+            size: 18,
+            color: isSet ? colors.onSecondaryContainer : colors.primary,
+          ),
+          label: Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: textTheme.bodyMedium?.copyWith(
+              color: isSet ? colors.onSecondaryContainer : colors.onSurface,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 
@@ -245,270 +215,272 @@ class _FilterDialogState extends State<FilterDialog> {
     final colors = context.colors;
     final textTheme = context.textTheme;
 
+    final title = Text(locale.search_filter__text__title);
+
+    final body = SizedBox(
+      width: 400,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: padding16,
+          vertical: padding8,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // MARK: - Date Range
+            Row(
+              children: [
+                Expanded(
+                  child: _buildDateSelector(
+                    context: context,
+                    title: locale.search_filter__text__from,
+                    value: from != null
+                        ? dateFormatter.format(from!)
+                        : locale.search_filter__text__select,
+                    leading: Icons.calendar_today_rounded,
+                    isSet: from != null,
+                    onTap: _selectFrom,
+                    onClear: from != null
+                        ? () => setState(() => from = null)
+                        : null,
+                  ),
+                ),
+                width10,
+                Expanded(
+                  child: _buildDateSelector(
+                    context: context,
+                    title: locale.search_filter__text__to,
+                    value: to != null
+                        ? dateFormatter.format(to!)
+                        : locale.search_filter__text__now,
+                    leading: Icons.event_rounded,
+                    isSet: to != null,
+                    onTap: _selectTo,
+                    onClear: to != null
+                        ? () => setState(() => to = null)
+                        : null,
+                  ),
+                ),
+              ],
+            ),
+            height20,
+
+            // MARK: - Content Type
+            _sectionLabel(context, locale.search_filter__text__including),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                FilterChip(
+                  avatar: const Icon(Icons.text_fields_rounded, size: 16),
+                  label: Text(locale.search_filter__chip__text),
+                  onSelected: (v) => _setTypeInclusion(v, ClipItemType.text),
+                  selected: typeIncludes.contains(ClipItemType.text),
+                  showCheckmark: false,
+                ),
+                FilterChip(
+                  avatar: const Icon(Icons.link_rounded, size: 16),
+                  label: Text(locale.search_filter__chip__url),
+                  onSelected: (v) => _setTypeInclusion(v, ClipItemType.url),
+                  selected: typeIncludes.contains(ClipItemType.url),
+                  showCheckmark: false,
+                ),
+                FilterChip(
+                  avatar: const Icon(Icons.image_rounded, size: 16),
+                  label: Text(locale.search_filter__chip__media),
+                  onSelected: (v) => _setTypeInclusion(v, ClipItemType.media),
+                  selected: typeIncludes.contains(ClipItemType.media),
+                  showCheckmark: false,
+                ),
+                FilterChip(
+                  avatar: const Icon(Icons.description_rounded, size: 16),
+                  label: Text(locale.search_filter__chip__docs),
+                  onSelected: (v) => _setTypeInclusion(v, ClipItemType.file),
+                  selected: typeIncludes.contains(ClipItemType.file),
+                  showCheckmark: false,
+                ),
+              ],
+            ),
+
+            // MARK: - Text Categories (Conditional)
+            AnimatedSize(
+              duration: Durations.short4,
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              child: typeIncludes.contains(ClipItemType.text)
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        height20,
+                        _sectionLabel(
+                          context,
+                          locale.search_filter__text__textCategories,
+                        ),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            FilterChip(
+                              avatar: const Icon(Icons.email_rounded, size: 16),
+                              label: Text(
+                                locale.search_filter__text_cat__email,
+                              ),
+                              onSelected: (v) =>
+                                  _setTextCategory(v, TextCategory.email),
+                              selected: textCategory.contains(
+                                TextCategory.email,
+                              ),
+                            ),
+                            FilterChip(
+                              avatar: const Icon(Icons.phone_rounded, size: 16),
+                              label: Text(
+                                locale.search_filter__text_cat__phone,
+                              ),
+                              onSelected: (v) =>
+                                  _setTextCategory(v, TextCategory.phone),
+                              selected: textCategory.contains(
+                                TextCategory.phone,
+                              ),
+                            ),
+                            FilterChip(
+                              avatar: const Icon(
+                                Icons.palette_rounded,
+                                size: 16,
+                              ),
+                              label: Text(
+                                locale.search_filter__text_cat__color,
+                              ),
+                              onSelected: (v) =>
+                                  _setTextCategory(v, TextCategory.color),
+                              selected: textCategory.contains(
+                                TextCategory.color,
+                              ),
+                            ),
+                            FilterChip(
+                              avatar: const Icon(Icons.code_rounded, size: 16),
+                              label: Text(
+                                locale.search_filter__text_cat__struct,
+                              ),
+                              onSelected: (v) =>
+                                  _setTextCategory(v, TextCategory.struct),
+                              selected: textCategory.contains(
+                                TextCategory.struct,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
+            ),
+
+            height20,
+            Divider(color: colors.outlineVariant),
+            height12,
+
+            // MARK: - Sort
+            _sectionLabel(context, locale.search_filter__text__sort_by),
+            DropdownMenu<ClipboardSortKey>(
+              width: 360,
+              menuStyle: const MenuStyle(visualDensity: VisualDensity.compact),
+              textStyle: textTheme.bodyMedium,
+              inputDecorationTheme: InputDecorationTheme(
+                filled: true,
+                fillColor: colors.surfaceContainerLow,
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
+              ),
+              initialSelection: sortBy,
+              onSelected: _selectSortBy,
+              dropdownMenuEntries: [
+                DropdownMenuEntry(
+                  value: ClipboardSortKey.modified,
+                  label: locale.search_filter__sort_by__last_mod,
+                ),
+                DropdownMenuEntry(
+                  value: ClipboardSortKey.created,
+                  label: locale.search_filter__sort_by__created,
+                ),
+                DropdownMenuEntry(
+                  value: ClipboardSortKey.copyCount,
+                  label: locale.search_filter__sort_by__copy_count,
+                ),
+                DropdownMenuEntry(
+                  value: ClipboardSortKey.lastCopied,
+                  label: locale.search_filter__sort_by__last_copied,
+                ),
+              ],
+            ),
+
+            height12,
+
+            _sectionLabel(context, locale.search_filter__text__sort_order),
+            SegmentedButton<SortOrder>(
+              showSelectedIcon: false,
+              segments: [
+                ButtonSegment(
+                  value: SortOrder.desc,
+                  icon: const Icon(Icons.arrow_downward_rounded, size: 16),
+                  label: Text(locale.search_filter__sort_ord__desc),
+                ),
+                ButtonSegment(
+                  value: SortOrder.asc,
+                  icon: const Icon(Icons.arrow_upward_rounded, size: 16),
+                  label: Text(locale.search_filter__sort_ord__asc),
+                ),
+              ],
+              onSelectionChanged: _setSortOrder,
+              selected: {sortOrder},
+              style: const ButtonStyle(visualDensity: VisualDensity.compact),
+            ),
+            height4,
+          ],
+        ),
+      ),
+    );
+
+    final actions = [
+      TextButton(
+        onPressed: _resetFilter,
+        child: Text(
+          locale.search_filter__button__reset,
+          style: TextStyle(color: colors.error),
+        ),
+      ),
+      FilledButton.icon(
+        onPressed: _applyFilter,
+        icon: const Icon(Icons.check_rounded, size: 18),
+        label: Text(locale.search_filter__button__apply),
+      ),
+    ];
+
+    if (context.isMobile) {
+      return Scaffold(
+        appBar: AppBar(title: title, centerTitle: true),
+        body: body,
+        bottomNavigationBar: BottomAppBar(
+          child: OverflowBar(
+            alignment: MainAxisAlignment.end,
+            children: actions,
+          ),
+        ),
+      );
+    }
+
     return AlertDialog(
       titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
       contentPadding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
       actionsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      title: Row(
-        children: [
-          Icon(Icons.filter_list_rounded, color: colors.primary, size: 20),
-          width8,
-          Text(locale.search_filter__text__title),
-        ],
-      ),
-      content: SizedBox(
-        width: 400,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // MARK: - Date Range
-              _sectionLabel(context, locale.search_filter__text__from),
-              Row(
-                spacing: 8,
-                children: [
-                  Expanded(
-                    child: _buildDateSelector(
-                      context: context,
-                      title: locale.search_filter__text__from,
-                      value: from != null
-                          ? dateFormatter.format(from!)
-                          : locale.search_filter__text__select,
-                      leading: Icons.calendar_today_rounded,
-                      isSet: from != null,
-                      onTap: _selectFrom,
-                      onClear: from != null
-                          ? () => setState(() => from = null)
-                          : null,
-                    ),
-                  ),
-                  Text(
-                    '→',
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: colors.outline,
-                    ),
-                  ),
-                  Expanded(
-                    child: _buildDateSelector(
-                      context: context,
-                      title: locale.search_filter__text__to,
-                      value: to != null
-                          ? dateFormatter.format(to!)
-                          : locale.search_filter__text__now,
-                      leading: Icons.event_rounded,
-                      isSet: to != null,
-                      onTap: _selectTo,
-                      onClear: to != null
-                          ? () => setState(() => to = null)
-                          : null,
-                    ),
-                  ),
-                ],
-              ),
-
-              height20,
-
-              // MARK: - Content Type
-              _sectionLabel(context, locale.search_filter__text__including),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  FilterChip(
-                    avatar: const Icon(Icons.text_fields_rounded, size: 16),
-                    label: Text(locale.search_filter__chip__text),
-                    onSelected: (v) => _setTypeInclusion(v, ClipItemType.text),
-                    selected: typeIncludes.contains(ClipItemType.text),
-                  ),
-                  FilterChip(
-                    avatar: const Icon(Icons.link_rounded, size: 16),
-                    label: Text(locale.search_filter__chip__url),
-                    onSelected: (v) => _setTypeInclusion(v, ClipItemType.url),
-                    selected: typeIncludes.contains(ClipItemType.url),
-                  ),
-                  FilterChip(
-                    avatar: const Icon(Icons.image_rounded, size: 16),
-                    label: Text(locale.search_filter__chip__media),
-                    onSelected: (v) => _setTypeInclusion(v, ClipItemType.media),
-                    selected: typeIncludes.contains(ClipItemType.media),
-                  ),
-                  FilterChip(
-                    avatar: const Icon(Icons.description_rounded, size: 16),
-                    label: Text(locale.search_filter__chip__docs),
-                    onSelected: (v) => _setTypeInclusion(v, ClipItemType.file),
-                    selected: typeIncludes.contains(ClipItemType.file),
-                  ),
-                ],
-              ),
-
-              // MARK: - Text Categories (Conditional)
-              AnimatedSize(
-                duration: Durations.short4,
-                curve: Curves.easeInOut,
-                alignment: Alignment.topCenter,
-                child: typeIncludes.contains(ClipItemType.text)
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          height20,
-                          _sectionLabel(
-                            context,
-                            locale.search_filter__text__textCategories,
-                          ),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: [
-                              FilterChip(
-                                avatar: const Icon(
-                                  Icons.email_rounded,
-                                  size: 16,
-                                ),
-                                label: Text(
-                                  locale.search_filter__text_cat__email,
-                                ),
-                                onSelected: (v) =>
-                                    _setTextCategory(v, TextCategory.email),
-                                selected: textCategory.contains(
-                                  TextCategory.email,
-                                ),
-                              ),
-                              FilterChip(
-                                avatar: const Icon(
-                                  Icons.phone_rounded,
-                                  size: 16,
-                                ),
-                                label: Text(
-                                  locale.search_filter__text_cat__phone,
-                                ),
-                                onSelected: (v) =>
-                                    _setTextCategory(v, TextCategory.phone),
-                                selected: textCategory.contains(
-                                  TextCategory.phone,
-                                ),
-                              ),
-                              FilterChip(
-                                avatar: const Icon(
-                                  Icons.palette_rounded,
-                                  size: 16,
-                                ),
-                                label: Text(
-                                  locale.search_filter__text_cat__color,
-                                ),
-                                onSelected: (v) =>
-                                    _setTextCategory(v, TextCategory.color),
-                                selected: textCategory.contains(
-                                  TextCategory.color,
-                                ),
-                              ),
-                              FilterChip(
-                                avatar: const Icon(
-                                  Icons.code_rounded,
-                                  size: 16,
-                                ),
-                                label: Text(
-                                  locale.search_filter__text_cat__struct,
-                                ),
-                                onSelected: (v) =>
-                                    _setTextCategory(v, TextCategory.struct),
-                                selected: textCategory.contains(
-                                  TextCategory.struct,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )
-                    : const SizedBox.shrink(),
-              ),
-
-              height20,
-              Divider(color: colors.outlineVariant),
-              height12,
-
-              // MARK: - Sort
-              _sectionLabel(context, locale.search_filter__text__sort_by),
-              DropdownMenu<ClipboardSortKey>(
-                width: 360,
-                menuStyle: const MenuStyle(
-                  visualDensity: VisualDensity.compact,
-                ),
-                textStyle: textTheme.bodyMedium,
-                inputDecorationTheme: InputDecorationTheme(
-                  filled: true,
-                  fillColor: colors.surfaceContainerLow,
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12)),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 12,
-                  ),
-                ),
-                initialSelection: sortBy,
-                onSelected: _selectSortBy,
-                dropdownMenuEntries: [
-                  DropdownMenuEntry(
-                    value: ClipboardSortKey.modified,
-                    label: locale.search_filter__sort_by__last_mod,
-                  ),
-                  DropdownMenuEntry(
-                    value: ClipboardSortKey.created,
-                    label: locale.search_filter__sort_by__created,
-                  ),
-                  DropdownMenuEntry(
-                    value: ClipboardSortKey.copyCount,
-                    label: locale.search_filter__sort_by__copy_count,
-                  ),
-                  DropdownMenuEntry(
-                    value: ClipboardSortKey.lastCopied,
-                    label: locale.search_filter__sort_by__last_copied,
-                  ),
-                ],
-              ),
-
-              height12,
-
-              _sectionLabel(context, locale.search_filter__text__sort_order),
-              SegmentedButton<SortOrder>(
-                showSelectedIcon: false,
-                segments: [
-                  ButtonSegment(
-                    value: SortOrder.desc,
-                    icon: const Icon(Icons.arrow_downward_rounded, size: 16),
-                    label: Text(locale.search_filter__sort_ord__desc),
-                  ),
-                  ButtonSegment(
-                    value: SortOrder.asc,
-                    icon: const Icon(Icons.arrow_upward_rounded, size: 16),
-                    label: Text(locale.search_filter__sort_ord__asc),
-                  ),
-                ],
-                onSelectionChanged: _setSortOrder,
-                selected: {sortOrder},
-                style: const ButtonStyle(visualDensity: VisualDensity.compact),
-              ),
-              height4,
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: _resetFilter,
-          child: Text(
-            locale.search_filter__button__reset,
-            style: TextStyle(color: colors.error),
-          ),
-        ),
-        FilledButton.icon(
-          onPressed: _applyFilter,
-          icon: const Icon(Icons.check_rounded, size: 18),
-          label: Text(locale.search_filter__button__apply),
-        ),
-      ],
+      title: title,
+      content: body,
+      actions: actions,
     );
   }
 }

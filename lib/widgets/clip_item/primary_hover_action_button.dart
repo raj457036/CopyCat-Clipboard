@@ -2,6 +2,7 @@ import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_item/clip_meta_info.dart';
@@ -13,10 +14,6 @@ class PrimaryHoverAction extends StatelessWidget {
   final bool hovered;
 
   const PrimaryHoverAction({super.key, required this.hovered});
-
-  Future<void> editClip(BuildContext context, String itemId) async {
-    context.pushNamed(RouteConstants.preview, pathParameters: {"id": itemId});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +48,7 @@ class PrimaryHoverAction extends StatelessWidget {
     return SizedBox.square(
       dimension: 34,
       child: IconButton(
-        onPressed: () => editClip(context, item.id.toString()),
+        onPressed: () => openClipPreview(context, item),
         iconSize: 20,
         style: IconButton.styleFrom(padding: EdgeInsets.zero),
         tooltip: context.locale.app__preview,

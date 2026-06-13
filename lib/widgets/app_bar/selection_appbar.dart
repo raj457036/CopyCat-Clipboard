@@ -1,8 +1,6 @@
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
-import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/base/domain/model/route_payload.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -14,7 +12,6 @@ import 'package:clipboard/widgets/select_clip_builder.dart'
     show SelectedClipBuilder;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
   final Widget defaultChild;
@@ -39,12 +36,9 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
           label:
               'Move to Paste Stack • ${keyboardShortcut(meta: true, shift: true, key: 'C')}',
           icon: Icons.layers_rounded,
-          action: () {
-            clearSelection(context);
-            context.pushNamed(
-              RouteConstants.pasteStack,
-              extra: RoutePayload(data: items.toList()),
-            );
+          action: () async {
+            await moveToPasteStack(context, items.toList());
+            if (context.mounted) clearSelection(context);
           },
         ),
       if (items.length > 1)
@@ -53,10 +47,11 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
           label: context.mlocale.copyButtonLabel,
           icon: Icons.copy_all_outlined,
           action: () async {
-            clearSelection(context);
             await multiCopyToClipboard(context, items.toList());
+            if (context.mounted) clearSelection(context);
           },
         ),
+
       if (isDesktopPlatform && items.length > 1)
         ActionItem(
           key: 'multiPaste',
@@ -68,6 +63,11 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
             onPasteComplete: () => clearSelection(context),
           ),
           action: () async {
+            final authorized = await isAuthorized(items, context);
+            if (!authorized) return;
+
+            if (!context.mounted) return;
+
             final options = await MultiPasteDialog(
               items: items.toList(),
             ).show(context);
