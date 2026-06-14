@@ -391,8 +391,8 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     final textTheme = context.textTheme;
     final colors = context.colors;
     final canChooseMode = accessibility && !writingConfig;
-    final checked = const Icon(Icons.check).msp;
-    final unchecked = const Icon(Icons.close).msp;
+    final checked = const Icon(Icons.check).wsp;
+    final unchecked = const Icon(Icons.close).wsp;
 
     final child = ListView(
       children: [
@@ -447,7 +447,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
           ),
           trailing: SettingsMenuDropdown<String>(
             value: _normalizeDetectionMode(_selectedMode),
-            maxWidth: 220,
             items: _detectionModes
                 .map(
                   (mode) => SettingsDropdownItem(

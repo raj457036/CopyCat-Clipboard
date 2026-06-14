@@ -204,10 +204,10 @@ class _LoginHeader extends StatelessWidget {
           child: CircleAvatar(
             radius: 34,
             backgroundColor: colors.primaryContainer,
-            child: Align(
+            child: const Align(
               alignment: Alignment.bottomCenter,
               child: BounceInUp(
-                child: const Image(
+                child: Image(
                   image: AssetImage(AssetConstants.catPeekImage),
                   height: 55,
                 ),

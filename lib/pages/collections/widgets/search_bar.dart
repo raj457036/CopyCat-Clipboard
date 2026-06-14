@@ -1,4 +1,3 @@
-
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
@@ -137,20 +136,20 @@ class _CollectionsSearchBarState extends State<CollectionsSearchBar> {
                     controller: _controller,
                     focusNode: searchInputFocusNode,
                     side: _isFocused
-                        ? BorderSide(color: colors.outline, width: 2).msp
+                        ? BorderSide(color: colors.outline, width: 2).wsp
                         : null,
                     smartDashesType: SmartDashesType.disabled,
                     smartQuotesType: SmartQuotesType.disabled,
                     onTapOutside: (_) => searchInputFocusNode.focusInDirection(
                       TraversalDirection.down,
                     ),
-                    elevation: 0.0.msp,
+                    elevation: 0.0.wsp,
                     hintText: context.locale.collections__search__hint,
                     leading: const Align(
                       alignment: Alignment.bottomLeft,
                       child: CopyCatLogo(),
                     ),
-                    backgroundColor: colors.surfaceContainerHigh.msp,
+                    backgroundColor: colors.surfaceContainerHigh.wsp,
                     trailing: [
                       if (isDesktopPlatform)
                         Align(

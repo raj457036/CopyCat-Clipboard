@@ -96,13 +96,8 @@ class ColorPickerTile extends StatelessWidget {
       builder: (context, hasAccess, _) {
         return ListTile(
           leading: const Icon(Icons.color_lens_rounded),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(context.locale.settings__tile__theme_color__title),
-              width8,
-              const ProBadge(),
-            ],
+          title: ProBadge(
+            child: Text(context.locale.settings__tile__theme_color__title),
           ),
           subtitle: Text(
             context.locale.settings__tile__theme_color__subtitle,

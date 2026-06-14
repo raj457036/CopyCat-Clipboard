@@ -171,6 +171,14 @@ class _MenuState extends State<Menu> {
         animated: true,
         onOpen: _handlePopupOpen,
         onClose: _handlePopupClose,
+        style: MenuStyle(
+          alignment: Alignment.topLeft,
+          shape: const WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: radius12),
+          ),
+          maximumSize: const WidgetStatePropertyAll(Size(290, 380)),
+          mouseCursor: SystemMouseCursors.click.wsp,
+        ),
         menuChildren: _buildDesktopMenuChildren(
           context,
           _limitMenuItems(context, widget.items),

@@ -142,19 +142,19 @@ class _SearchBarInputState extends State<SearchInputBar> {
                       controller: queryController,
                       focusNode: searchInputFocusNode,
                       side: isFocused
-                          ? BorderSide(color: colors.outline, width: 2).msp
+                          ? BorderSide(color: colors.outline, width: 2).wsp
                           : null,
                       smartDashesType: SmartDashesType.disabled,
                       smartQuotesType: SmartQuotesType.disabled,
                       onTapOutside: (event) => searchInputFocusNode
                           .focusInDirection(TraversalDirection.down),
-                      elevation: 0.0.msp,
+                      elevation: 0.0.wsp,
                       hintText: context.locale.home__search__hint,
                       leading: const Align(
                         alignment: Alignment.bottomLeft,
                         child: CopyCatLogo(),
                       ),
-                      backgroundColor: colors.surfaceContainerHigh.msp,
+                      backgroundColor: colors.surfaceContainerHigh.wsp,
                       trailing: [
                         if (isDesktopPlatform)
                           Align(

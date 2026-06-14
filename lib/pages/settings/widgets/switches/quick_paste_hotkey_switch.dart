@@ -27,15 +27,10 @@ class QuickPasteHotKeySwitch extends StatelessWidget {
           builder: (context, state) {
             return SwitchListTile(
               secondary: const Icon(Icons.flash_on_rounded),
-              title: Row(
-                spacing: padding8,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    context.locale.settings__switch__quickpaste_hotkey__title,
-                  ),
-                  const ProBadge(),
-                ],
+              title: ProBadge(
+                child: Text(
+                  context.locale.settings__switch__quickpaste_hotkey__title,
+                ),
               ),
               isThreeLine: true,
               subtitle: Column(

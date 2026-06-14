@@ -27,14 +27,18 @@ Widget _buildDesktopMenuButton(MenuItem item) {
     return SubmenuButton(
       leadingIcon: item.icon != null ? Icon(item.icon, size: 18) : null,
       menuChildren: item.children.map(_buildDesktopMenuButton).toList(),
-      child: Text(item.text ?? ''),
+      child: SizedBox(width: 150, child: Text(item.text ?? '')),
     );
   }
 
   return MenuItemButton(
     leadingIcon: item.icon != null ? Icon(item.icon, size: 18) : null,
     onPressed: item.onPressed,
-    child: Text(item.text ?? ''),
+    style: MenuItemButton.styleFrom(
+      enabledMouseCursor: SystemMouseCursors.click,
+      disabledMouseCursor: SystemMouseCursors.none,
+    ),
+    child: SizedBox(width: 150, child: Text(item.text ?? '')),
   );
 }
 
@@ -169,7 +173,7 @@ class _DesktopSectionLabel extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 4),
       child: Text(
         text.toUpperCase(),
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+        style: context.textTheme.labelSmall?.copyWith(
           color: context.colors.onSurfaceVariant,
           fontWeight: FontWeight.w700,
           letterSpacing: 0.8,

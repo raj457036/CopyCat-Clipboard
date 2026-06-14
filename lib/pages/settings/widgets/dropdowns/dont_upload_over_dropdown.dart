@@ -38,7 +38,6 @@ class DontAutoUploadOverDropdown extends StatelessWidget {
           ),
           trailing: SettingsMenuDropdown<int>(
             value: state,
-            maxWidth: 130,
             items: const [
               SettingsDropdownItem(value: $5MB),
               SettingsDropdownItem(value: $10MB),

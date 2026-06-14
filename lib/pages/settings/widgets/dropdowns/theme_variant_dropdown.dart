@@ -1,5 +1,4 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/widgets/settings_menu_dropdown.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -23,13 +22,8 @@ class ThemeVariantDropdown extends StatelessWidget {
       builder: (context, hasAccess, _) {
         return ListTile(
           leading: const Icon(Icons.lens_blur_rounded),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(context.locale.settings__dropdown__color_mode__title),
-              width8,
-              const ProBadge(),
-            ],
+          title: ProBadge(
+            child: Text(context.locale.settings__dropdown__color_mode__title),
           ),
           subtitle: Text(
             context.locale.settings__dropdown__color_mode__subtitle,
@@ -47,7 +41,6 @@ class ThemeVariantDropdown extends StatelessWidget {
                 builder: (context, variant) {
                   return SettingsMenuDropdown<DynamicSchemeVariant>(
                     value: variant,
-                    maxWidth: 180,
                     items: const [
                       SettingsDropdownItem(
                         value: DynamicSchemeVariant.tonalSpot,

@@ -32,26 +32,31 @@ class InfoBadge extends StatelessWidget {
 
 class ProBadge extends StatelessWidget {
   final bool noTooltip;
-  const ProBadge({super.key, this.noTooltip = false});
+  final Widget child;
+  const ProBadge({super.key, this.noTooltip = false, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = context.textTheme;
     final colors = context.colors;
-    final chip = Chip(
-      shape: const RoundedRectangleBorder(
-        borderRadius: radius12,
-        side: BorderSide(color: Colors.transparent),
-      ),
-      label: Text(context.locale.badges__label__pro),
-      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      padding: const EdgeInsets.symmetric(horizontal: padding10),
-      backgroundColor: colors.primaryContainer,
-      labelStyle: textTheme.labelMedium?.copyWith(
-        color: colors.onPrimaryContainer,
-        fontVariations: fontVarW600,
-      ),
-      labelPadding: const EdgeInsets.fromLTRB(2, -6, 2, -6),
+    final textTheme = context.textTheme;
+    final chip = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        child,
+        width4,
+        Badge(
+          label: Text(context.locale.badges__label__pro),
+          padding: const EdgeInsets.symmetric(horizontal: padding10),
+          backgroundColor: colors.primary,
+          alignment: Alignment.centerLeft,
+          offset: const Offset(105, -8),
+          textStyle: textTheme.labelMedium?.copyWith(
+            color: colors.onPrimaryContainer,
+            fontVariations: fontVarW600,
+          ),
+          // labelPadding: const EdgeInsets.fromLTRB(2, -6, 2, -6),
+        ),
+      ],
     );
 
     if (noTooltip) return chip;

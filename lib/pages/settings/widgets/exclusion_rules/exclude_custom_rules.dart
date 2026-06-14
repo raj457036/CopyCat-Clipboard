@@ -1,5 +1,4 @@
 import 'package:clipboard/base/constants/strings/route_constants.dart';
-import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/widgets/badges.dart';
 import 'package:clipboard/widgets/subscription/subscription_builder.dart';
@@ -20,14 +19,8 @@ class ExcludeCustomRules extends StatelessWidget {
       hasAccess: (subscription) => subscription.customExclusionRules,
       builder: (context, hasAccess, _) {
         return ListTile(
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(context.locale.settings__tile__cer_title),
-              width8,
-              const ProBadge(),
-            ],
+          title: ProBadge(
+            child: Text(context.locale.settings__tile__cer_title),
           ),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(topLeft: Radius.circular(16)),

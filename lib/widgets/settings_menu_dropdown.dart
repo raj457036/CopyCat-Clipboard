@@ -15,83 +15,99 @@ class SettingsDropdownItem<T> {
   final bool enabled;
 }
 
-class SettingsMenuDropdown<T> extends StatelessWidget {
+class SettingsMenuDropdown<T> extends StatefulWidget {
   const SettingsMenuDropdown({
     super.key,
     required this.value,
     required this.items,
     required this.itemBuilder,
     this.onSelected,
-    this.maxWidth,
   });
 
   final T value;
   final List<SettingsDropdownItem<T>> items;
   final SettingsDropdownItemBuilder<T> itemBuilder;
   final ValueChanged<T>? onSelected;
-  final double? maxWidth;
 
-  void handleToggle(MenuController controller) {
-    if (controller.isOpen) {
-      controller.close();
+  @override
+  State<SettingsMenuDropdown<T>> createState() =>
+      _SettingsMenuDropdownState<T>();
+}
+
+class _SettingsMenuDropdownState<T> extends State<SettingsMenuDropdown<T>> {
+  final MenuController _controller = MenuController();
+
+  void _toggle() {
+    if (_controller.isOpen) {
+      _controller.close();
     } else {
-      controller.open();
+      _controller.open();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final selected = itemBuilder(context, value);
-    final buttonChild = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (selected.leading != null) ...[selected.leading!, width8],
-        Flexible(child: selected.child),
-        width4,
-        const Icon(Icons.arrow_drop_down_rounded, size: 20),
-      ],
-    );
+    final selected = widget.itemBuilder(context, widget.value);
+    const menuWidth = 180.0;
 
-    final dropdown = MenuAnchor(
+    final anchor = MenuAnchor(
+      controller: _controller,
+      animated: true,
+      onOpen: () => setState(() {}),
+      onClose: () => setState(() {}),
+      alignmentOffset: const Offset(0, -18),
       style: MenuStyle(
-        shape: const RoundedRectangleBorder(borderRadius: radius12).msp,
-        mouseCursor: SystemMouseCursors.click.msp,
-        alignment: Alignment.bottomLeft,
+        alignment: Alignment.topLeft,
+        minimumSize: const Size(menuWidth, 0).wsp,
+        shape: const WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: radius16),
+        ),
       ),
       menuChildren: [
-        for (final item in items)
+        for (final item in widget.items)
           Builder(
             builder: (context) {
-              final details = itemBuilder(context, item.value);
+              final details = widget.itemBuilder(context, item.value);
               return MenuItemButton(
                 leadingIcon: details.leading,
-                trailingIcon: value == item.value
-                    ? const Icon(Icons.check_rounded)
+                trailingIcon: widget.value == item.value
+                    ? const Icon(Icons.check_rounded, size: 18)
                     : details.trailing,
-                onPressed: onSelected == null || !item.enabled
+                closeOnActivate: true,
+                onPressed: widget.onSelected == null || !item.enabled
                     ? null
-                    : () => onSelected!(item.value),
-                child: details.child,
+                    : () => widget.onSelected!(item.value),
+                style: MenuItemButton.styleFrom(
+                  enabledMouseCursor: SystemMouseCursors.click,
+                ),
+                child: SizedBox(width: menuWidth - 72, child: details.child),
               );
             },
           ),
       ],
-      child: buttonChild,
       builder: (context, controller, child) {
-        return ElevatedButton(
-          onPressed: onSelected == null ? null : () => handleToggle(controller),
-          child: child,
+        final button = ElevatedButton(
+          onPressed: widget.onSelected == null ? null : _toggle,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (selected.leading != null) ...[selected.leading!, width8],
+              Flexible(child: selected.child),
+              width4,
+              Icon(
+                controller.isOpen
+                    ? Icons.arrow_drop_up_rounded
+                    : Icons.arrow_drop_down_rounded,
+                size: 20,
+              ),
+            ],
+          ),
         );
+
+        return button;
       },
     );
 
-    if (maxWidth == null) {
-      return dropdown;
-    }
-
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: maxWidth!),
-      child: dropdown,
-    );
+    return anchor;
   }
 }

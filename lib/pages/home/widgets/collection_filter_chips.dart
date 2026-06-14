@@ -149,7 +149,7 @@ class _CreateCollectionChip extends StatelessWidget {
       isLabelVisible: !canCreate,
       child: ActionChip.elevated(
         avatar: const Icon(Icons.add_rounded),
-        color: canCreate ? context.colors.onPrimary.msp : null,
+        color: canCreate ? context.colors.onPrimary.wsp : null,
         backgroundColor: canCreate ? context.colors.primary : null,
         shape: const StadiumBorder(),
         label: Text(context.locale.app__create),

@@ -53,16 +53,18 @@ class LocaleDropdownButton extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return SettingsMenuDropdown<Locale>(
-          value: state,
+        return LimitedBox(
           maxWidth: 150,
-          items: _supportedLocales
-              .map((locale) => SettingsDropdownItem(value: locale))
-              .toList(growable: false),
-          itemBuilder: _localeDetails,
-          onSelected: (locale) {
-            context.read<AppConfigCubit>().changeLocale(locale.languageCode);
-          },
+          child: SettingsMenuDropdown<Locale>(
+            value: state,
+            items: _supportedLocales
+                .map((locale) => SettingsDropdownItem(value: locale))
+                .toList(growable: false),
+            itemBuilder: _localeDetails,
+            onSelected: (locale) {
+              context.read<AppConfigCubit>().changeLocale(locale.languageCode);
+            },
+          ),
         );
       },
     );

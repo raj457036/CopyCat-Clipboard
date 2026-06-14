@@ -1,7 +1,6 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/constants/numbers/duration.dart';
-import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
@@ -73,7 +72,6 @@ class SyncModeDropdown extends StatelessWidget {
               ),
               trailing: SettingsMenuDropdown<SyncSpeed>(
                 value: speed,
-                maxWidth: 190,
                 items: [
                   SettingsDropdownItem(
                     value: SyncSpeed.realtime,
@@ -85,13 +83,10 @@ class SyncModeDropdown extends StatelessWidget {
                   return switch (value) {
                     SyncSpeed.realtime => (
                       leading: null,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(context.locale.settings__sync_mode__realtime),
-                          width8,
-                          const ProBadge(),
-                        ],
+                      child: ProBadge(
+                        child: Text(
+                          context.locale.settings__sync_mode__realtime,
+                        ),
                       ),
                       trailing: null,
                     ),

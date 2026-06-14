@@ -100,7 +100,6 @@ class _AppLockSettingsPageState extends State<AppLockSettingsPage> {
                     ),
                     trailing: SettingsMenuDropdown<int>(
                       value: data.timeout,
-                      maxWidth: 190,
                       items: _timeoutMinutes
                           .map((m) => SettingsDropdownItem(value: m))
                           .toList(),

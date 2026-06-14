@@ -40,14 +40,7 @@ class LanInstantSyncSwitchTile extends StatelessWidget {
           builder: (context, enabled) {
             return ListTile(
               leading: const Icon(Icons.wifi_tethering_rounded),
-              title: Row(
-                spacing: 4,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(context.locale.settings__lan__title),
-                  const ProBadge(),
-                ],
-              ),
+              title: ProBadge(child: Text(context.locale.settings__lan__title)),
               subtitle: serviceActive
                   ? _LanSubtitle(enabled: enabled && hasAccess)
                   : Text(context.locale.settings__lan__service_inactive),

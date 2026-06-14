@@ -29,7 +29,6 @@ class DefaultSortByDropdownTile extends StatelessWidget {
         builder: (context, sortBy) {
           return SettingsMenuDropdown<ClipboardSortKey>(
             value: sortBy,
-            maxWidth: 180,
             items: const [
               SettingsDropdownItem(value: ClipboardSortKey.modified),
               SettingsDropdownItem(value: ClipboardSortKey.created),

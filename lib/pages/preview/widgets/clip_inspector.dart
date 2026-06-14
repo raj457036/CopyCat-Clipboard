@@ -684,8 +684,8 @@ class _ClipInspectorState extends State<ClipInspector> {
               value: isLocked,
               contentPadding: EdgeInsets.zero,
               thumbIcon: isLocked
-                  ? const Icon(Icons.lock_rounded).msp
-                  : const Icon(Icons.lock_open_rounded).msp,
+                  ? const Icon(Icons.lock_rounded).wsp
+                  : const Icon(Icons.lock_open_rounded).wsp,
               onChanged: (value) async => await onLockedStateChanged(value),
             ),
           ),

@@ -1,5 +1,4 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
@@ -39,14 +38,10 @@ class RichDataCaptureSwitchTile extends StatelessWidget {
               onChanged: hasAccess
                   ? (value) => _setRichDataCapture(context, value)
                   : null,
-              title: Row(
-                spacing: padding8,
-                children: [
-                  Text(
-                    context.locale.settings__switch__rich_data_capture__title,
-                  ),
-                  const ProBadge(),
-                ],
+              title: ProBadge(
+                child: Text(
+                  context.locale.settings__switch__rich_data_capture__title,
+                ),
               ),
               subtitle: Text(
                 context.locale.settings__switch__rich_data_capture__subtitle,

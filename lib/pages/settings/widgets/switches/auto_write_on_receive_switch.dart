@@ -29,13 +29,8 @@ class AutoWriteOnReceiveSwitchTile extends StatelessWidget {
           builder: (context, value) {
             return SwitchListTile(
               secondary: const Icon(Icons.auto_fix_high_rounded),
-              title: Row(
-                spacing: 8,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(context.locale.settings__auto_write__title),
-                  const ProBadge(),
-                ],
+              title: ProBadge(
+                child: Text(context.locale.settings__auto_write__title),
               ),
               subtitle: Text(context.locale.settings__auto_write__subtitle),
               value: value && hasAccess,

@@ -1,5 +1,4 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/badges.dart';
@@ -35,13 +34,10 @@ class TypeToSearchSwitch extends StatelessWidget {
               onChanged: hasAccess
                   ? context.read<AppConfigCubit>().toggleTypeToSearch
                   : null,
-              title: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(context.locale.settings__switch__type_search__title),
-                  width8,
-                  const ProBadge(),
-                ],
+              title: ProBadge(
+                child: Text(
+                  context.locale.settings__switch__type_search__title,
+                ),
               ),
               subtitle: Text(
                 context.locale.settings__switch__type_search__subtitle,

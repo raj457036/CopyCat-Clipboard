@@ -192,7 +192,7 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                                       count: data.limit,
                                     ),
                               ),
-                              color: context.colors.primaryContainer.msp,
+                              color: context.colors.primaryContainer.wsp,
                             ),
                           ),
                           Tooltip(
@@ -206,7 +206,7 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                                       count: data.activeCount,
                                     ),
                               ),
-                              color: context.colors.secondaryContainer.msp,
+                              color: context.colors.secondaryContainer.wsp,
                             ),
                           ),
                         ],

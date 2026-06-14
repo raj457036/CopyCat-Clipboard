@@ -19,8 +19,8 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:window_manager/window_manager.dart';
 
 extension WidgetStateExtension<T> on T {
-  /// Convert into material state property
-  WidgetStateProperty<T> get msp => WidgetStateProperty.all(this);
+  /// Convert into widget state property
+  WidgetStateProperty<T> get wsp => WidgetStateProperty.all(this);
 }
 
 extension StringExtension on String {

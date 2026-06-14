@@ -1,5 +1,4 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/badges.dart';
@@ -39,14 +38,10 @@ class DragAndDropSwitchTile extends StatelessWidget {
               onChanged: hasAccess
                   ? context.read<AppConfigCubit>().toggleDragNDrop
                   : null,
-              title: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(context.locale.settings__switch__drag_n_drop__title),
-                  width8,
-                  const ProBadge(),
-                ],
+              title: ProBadge(
+                child: Text(
+                  context.locale.settings__switch__drag_n_drop__title,
+                ),
               ),
               subtitle: isDNDSupported
                   ? Text(
