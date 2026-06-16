@@ -17,8 +17,6 @@ default_platform(:android)
 
 platform :android do
   PLAYSTORE_INTERNAL_TRACK = "internal"
-  PLAYSTORE_BETA_TESTER_TRACK = "Beta Testers"
-
 
   private_lane :validate_metadata do
     version_code = File.read("../../pubspec.yaml").match(/\+(\d+)/)[1]
@@ -68,14 +66,23 @@ platform :android do
   end
 
   # MARK: - Deployment lanes
+  # Call it like this: `fastlane android play_testers track:internal` or `fastlane android play_testers track:'Beta Testers'`
   desc "Deploy to Google Play Internal"
-  lane :android_internal do
-    # validate_metadata # enable for strict metadata validation
+  lane :play_testers do |options|
+    track = options[:track] || PLAYSTORE_INTERNAL_TRACK
+
+    if track == PLAYSTORE_INTERNAL_TRACK
+      UI.important("Deploying to Internal Track")
+    else
+      UI.important("Deploying to #{track} Track")
+      validate_metadata # enable for strict metadata validation
+    end
+
 
     sh "flutter clean"
     sh "flutter pub get"
 
-    playstore_tracker(track: PLAYSTORE_INTERNAL_TRACK)
+    playstore_tracker(track: track)
 
     sh "flutter build appbundle \
       --release \
@@ -84,39 +91,12 @@ platform :android do
       --split-debug-info=build_symbols"
 
     upload_to_play_store(
-      track: PLAYSTORE_INTERNAL_TRACK,
+      track: track,
       aab: "../build/app/outputs/bundle/release/app-release.aab",
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
       skip_upload_changelogs: true
-    )
-  end
-
-
-  # MARK: - Beta testing lanes
-  desc "Deploy to Google Play Beta Testers"
-  lane :android_beta do
-    validate_metadata
-
-    sh "flutter clean"
-    sh "flutter pub get"
-
-    playstore_tracker(track: PLAYSTORE_BETA_TESTER_TRACK)
-
-    sh "flutter build appbundle \
-      --release \
-      --dart-define-from-file=local/prod.json \
-      --obfuscate \
-      --split-debug-info=build_symbols"
-
-    upload_to_play_store(
-      track: PLAYSTORE_BETA_TESTER_TRACK,
-      aab: "../build/app/outputs/bundle/release/app-release.aab",
-      skip_upload_metadata: false,
-      skip_upload_images: true,
-      skip_upload_screenshots: true,
-      skip_upload_changelogs: false
     )
   end
 end
