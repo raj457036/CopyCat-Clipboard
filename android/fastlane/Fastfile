@@ -70,6 +70,8 @@ platform :android do
   desc "Deploy to Google Play Internal"
   lane :play_testers do |options|
     track = options[:track] || PLAYSTORE_INTERNAL_TRACK
+    sh "flutter clean"
+    sh "flutter pub get"
 
     if track == PLAYSTORE_INTERNAL_TRACK
       UI.important("Deploying to Internal Track")
@@ -77,11 +79,7 @@ platform :android do
       UI.important("Deploying to #{track} Track")
       validate_metadata # enable for strict metadata validation
     end
-
-
-    sh "flutter clean"
-    sh "flutter pub get"
-
+    
     playstore_tracker(track: track)
 
     sh "flutter build appbundle \
