@@ -1,0 +1,69 @@
+Simplify Your Copy-Paste Tasks Across Devices and Platforms
+Copycat Clipboard is an intuitive clipboard manager designed to enhance your workflow. Seamlessly switch between documents, apps, and devices while keeping all your copied items organized and accessible.
+
+Features:
+
+Multi-Language Support
+CopyCat now supports 6 languages:
+🇬🇧 English | 🇪🇸 Spanish | 🇵🇹 Portuguese | 🇨🇳 Chinese | 🇩🇪 German | 🇫🇷 French
+
+Unlimited Clipboard History 
+- Save and retrieve all your copied items without limits. 
+- Unlimited number of concurrent devices.
+
+Cross-Device Sync
+- Access your clipboard history on Android, Windows, Mac, iPhone, iPad, and Linux effortlessly.
+
+Organize with Collections 
+- Easily categorize and find your clips using collections. 
+- Whether it's your project assets, DevOps command list, or memes, collections provide instant access. 
+- Clips stored in collections are always available and won’t be automatically deleted like history.
+
+Quick Search 
+- Instantly find any copied item with powerful search functionality. 
+- Categorical search quickly locates the exact type you need.
+
+Secure and Private 
+- Your data is encrypted to ensure privacy and security. 
+- Opt for end-to-end encryption for added security. 
+- End-to-end encryption uses 256-bit AES encryption, ensuring even Copycat cannot access your clips.
+
+Real-Time Synchronization Across Multiple Devices 
+- Copy on one device and paste on any other instantly with real-time syncing.
+
+Smart Features 
+- Access your Copycat clipboard anywhere with a configurable shortcut. 
+- Paste directly into any application using smart paste. 
+- Add titles and descriptions to clips for easy searching.
+
+Background Listening (Android 10+)
+CopyCat Clipboard uses the Accessibility Service and Draw Over Other Apps permissions to enable clipboard monitoring in the background.
+
+- Accessibility Service: Required for detecting when you copy text, allowing clipboard content to be saved automatically. CopyCat does not collect or share any data beyond your clipboard content.
+- Draw Over Other Apps: Used to create a 0-pixel transparent window that briefly brings the app to the foreground, allowing it to read clipboard content. This is necessary due to Android 10+ restrictions on background clipboard access.
+
+These permissions are only used for clipboard monitoring when enabled and do not impact other app functions.
+
+---
+
+Copycat Clipboard effortlessly helps you keep track of your copied content, making your daily tasks smoother and more efficient.
+
+Download Copycat Clipboard today for free on iPhone, iPad, and Mac, and experience a better way to manage your clipboard.
+
+Unlock the Pro version for:
+
+Syncing Up to the Last 30 Days across all your devices.
+Over 50 collections for ultimate organization.
+Superior security with 256-bit AES end-to-end encryption.
+Real-time synchronization.
+Early access to new features.
+Fast & Priority support.
+
+Subscription Details:
+
+Subscription auto-renews unless canceled and will be charged via your Google Play account on an annual or monthly basis. Prices vary by location. Manage your subscription in account settings after purchase.
+
+For technical assistance, reach our team at support@entilitystudio.com. Visit entilitystudio.com for more information.
+
+Privacy Policy: https://www.entilitystudio.com/privacy-policy
+Terms of Service: https://www.entilitystudio.com/terms-conditions

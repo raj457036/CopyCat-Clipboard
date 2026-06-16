@@ -1,0 +1,77 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  private_lane :validate_metadata do
+    version_code = File.read("../../pubspec.yaml").match(/\+(\d+)/)[1]
+
+    required_locales = [
+      "de-DE",
+      "en-US",
+      "es-ES",
+      "fr-FR",
+      "pt-PT",
+      "zh-CN"
+    ]
+
+    required_locales.each do |locale|
+      changelog = "./fastlane/metadata/android/#{locale}/changelogs/#{version_code}.txt"
+
+      unless File.exist?(changelog)
+        UI.user_error!("Missing changelog: #{changelog}")
+      end
+    end
+  end
+
+  private_lane :playstore_tracker do
+    playstore_track = "Beta Testers"
+
+    pubspec = File.read("../../pubspec.yaml")
+    current_version_code = pubspec.match(/\+(\d+)/)[1].to_i
+    latest_version_codes = google_play_track_version_codes(track: playstore_track)
+
+    UI.message("🟡 Current version code: #{current_version_code}")
+    UI.message("🟢 Latest version codes on Play Store: #{latest_version_codes}")
+
+    if latest_version_codes.include?(current_version_code)
+      UI.user_error!("Build number #{current_version_code} already exists on Play Store. Increment pubspec.yaml build number to #{current_version_code + 1} and try again.")
+    end
+  end
+
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+    sh "flutter test"
+  end
+
+  desc "Deploy a new beta version to the Google Play"
+  lane :android_beta_testers do
+    # validate_metadata # only needed in production lane.
+
+    sh "flutter clean"
+    sh "flutter pub get"
+
+    playstore_tracker
+
+    sh "flutter build appbundle --release --dart-define-from-file='local/prod.json' --obfuscate --split-debug-info=./build_symbols --verbose"
+
+    upload_to_play_store(
+      track: playstore_track,
+      aab: "../build/app/outputs/bundle/release/app-release.aab"
+    )
+  end
+end

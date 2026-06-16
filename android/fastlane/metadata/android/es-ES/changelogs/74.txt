@@ -1,0 +1,7 @@
+
+    Esta actualización incluye varias mejoras y optimizaciones:
+
+    1. Mejora del escuchador en segundo plano del portapapeles.
+    2. Se añadieron más atajos de teclado, como Shift + clic izquierdo para seleccionar un rango de elementos y Ctrl/Cmd + A para seleccionar todo.
+    3. Mecanismo de sincronización de tiempo mejorado.
+    4. Corrección de errores y mejoras generales de estabilidad.

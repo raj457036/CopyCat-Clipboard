@@ -1,0 +1,6 @@
+    This update brings several improvements and refinements:
+
+    1. Improved Background Clipboard Listener.
+    2. Added more keyboard shortcuts, including Shift + Left Click to select a range of elements and Ctrl/Cmd + A to select all.
+    3. Enhanced time synchronization mechanism.
+    4. Various bug fixes and overall stability improvements.

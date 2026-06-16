@@ -1,0 +1,7 @@
+
+    Cette mise à jour apporte plusieurs améliorations et optimisations :
+
+    1. Amélioration de l’écouteur du presse-papiers en arrière-plan.
+    2. Ajout de nouveaux raccourcis clavier, notamment Maj + clic gauche pour sélectionner une plage d’éléments et Ctrl/Cmd + A pour tout sélectionner.
+    3. Amélioration du mécanisme de synchronisation de l’heure.
+    4. Corrections de bugs et amélioration générale de la stabilité.

@@ -1,0 +1,7 @@
+
+    Dieses Update bringt mehrere Verbesserungen und Optimierungen:
+
+    1. Verbesserter Hintergrund-Zwischenablage-Listener.
+    2. Weitere Tastenkombinationen hinzugefügt, darunter Shift + Linksklick zum Auswählen eines Bereichs und Strg/Cmd + A zum Auswählen aller Elemente.
+    3. Verbesserter Zeitsynchronisierungsmechanismus.
+    4. Fehlerbehebungen und allgemeine Stabilitätsverbesserungen.

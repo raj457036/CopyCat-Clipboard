@@ -63,3 +63,27 @@ packages/android_background_clipboard/*.md
 packages/supabase_auth_ui
 
 drizzle
+
+
+# Fastlane
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/README.md
+**/fastlane/screenshots/**/*.png
+
+# Fastlane iOS specific temporary files
+**/ios/.env
+**/ios/fastlane/report.xml
+**/ios/fastlane/Preview.html
+
+# Fastlane Android specific temporary files
+**/android/.env
+**/android/fastlane/report.xml
+**/android/fastlane/Preview.html
+
+# App Store & Google Play Private Signing Keys / Secrets
+*.jks
+*.keystore
+*.p8
+*.json
+.env*
