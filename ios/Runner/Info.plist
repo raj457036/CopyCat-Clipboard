@@ -69,8 +69,6 @@
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>FLTEnableImpeller</key>
 		<true />
-		<key>GADApplicationIdentifier</key>
-		<string>ca-app-pub-2217728188815563~5245191774</string>
 		<key>LSApplicationCategoryType</key>
 		<string>public.app-category.productivity</string>
 		<key>LSRequiresIPhoneOS</key>
