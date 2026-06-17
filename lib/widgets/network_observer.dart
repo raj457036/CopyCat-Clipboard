@@ -7,17 +7,13 @@ import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/snackbar.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 class NetworkObserver extends StatefulWidget {
   final Widget child;
-  const NetworkObserver({
-    super.key,
-    required this.child,
-  });
+  const NetworkObserver({super.key, required this.child});
 
   @override
   State<NetworkObserver> createState() => _NetworkObserverState();
@@ -49,14 +45,16 @@ class _NetworkObserverState extends State<NetworkObserver> {
     super.initState();
     authCubit = BlocProvider.of<AuthCubit>(context);
     if (authCubit.isLocalAuth) return;
-    networkObserver =
-        InternetConnection().onStatusChange.map(transformNetworkStatus);
+    networkObserver = InternetConnection().onStatusChange.map(
+      transformNetworkStatus,
+    );
     subscription = networkObserver?.listen(onConnectionChanged);
     monetizationCubit = BlocProvider.of<MonetizationCubit>(context);
     driveSetupCubit = BlocProvider.of<DriveSetupCubit>(context);
     appConfigCubit = BlocProvider.of<AppConfigCubit>(context);
-    collectionSyncManagerCubit =
-        BlocProvider.of<CollectionSyncManagerCubit>(context);
+    collectionSyncManagerCubit = BlocProvider.of<CollectionSyncManagerCubit>(
+      context,
+    );
     appConfigCubit.syncClocks();
   }
 
