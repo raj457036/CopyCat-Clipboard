@@ -1,7 +1,7 @@
 name: clipboard
 description: "CopyCat Clipboard: One Clipboard, Limitless Productivity"
 publish_to: "none"
-version: 1.2.2+74
+version: 1.2.2+80
 
 environment:
   sdk: ">=3.10.0 <4.0.0"
@@ -46,7 +46,6 @@ dependencies:
   duration: ^4.0.3
   open_filex: ^4.4.0
   hotkey_manager: ^0.2.3
-  google_mobile_ads: ^6.0.0
   focus_window:
     path: packages/focus_window
   package_info_plus: ^8.0.0
@@ -109,6 +108,7 @@ dev_dependencies:
 
 dependency_overrides:
   connectivity_plus: 7.0.0
+  font_awesome_flutter: ^11.0.0
 
 flutter:
   generate: true
