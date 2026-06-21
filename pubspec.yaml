@@ -87,7 +87,8 @@ dependencies:
   purchases_flutter: ^10.1.0
   purchases_ui_flutter: ^10.1.0
   supabase_flutter: ^2.12.4
-  supabase_auth_ui: ^0.5.5
+  supabase_auth_ui:
+    path: packages/supabase_auth_ui # get it from the desktop there must be a copy of this.
   super_clipboard: ^0.9.1
   super_drag_and_drop: ^0.9.1
   easy_worker: ^1.2.3
@@ -121,8 +122,6 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
 dependency_overrides:
   connectivity_plus: 7.0.0
-  supabase_auth_ui:
-    path: packages/supabase_auth_ui
   # irondash_engine_context:
   #   git:
   #     url: https://github.com/Sabbar-Engineering/irondash
