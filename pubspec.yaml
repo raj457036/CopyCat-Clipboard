@@ -20,7 +20,7 @@ dependencies:
   path: ^1.9.1
   path_provider: ^2.1.5
   json_annotation: ^4.9.0
-  get_it: ^8.3.0
+  get_it: ^9.2.1
   go_router: ^17.2.3
   dartz: ^0.10.1
   form_validator: ^2.1.1
@@ -120,6 +120,8 @@ dev_dependencies:
   freezed: ^2.5.8
   json_serializable: ^6.8.0
   flutter_launcher_icons: ^0.14.4
+  msix: ^3.17.0
+
 dependency_overrides:
   connectivity_plus: 7.0.0
   # irondash_engine_context:
@@ -151,6 +153,22 @@ flutter:
     - family: CustomIcons
       fonts:
         - asset: fonts/CustomIcons.ttf
+
+msix_config:
+  display_name: CopyCat Clipboard Manager
+  publisher_display_name: Entility Studio
+  publisher: CN=9130C7DE-B3E2-451F-88B6-0D0071113AA4
+  identity_name: EntilityStudio.CopyCatClipboard
+  # msix_version: 1.0.0.0 - will be taken from the version in pubspec.yaml
+  logo_path: ./assets/images/icons/icon.png
+  # we are using microsoft store signing, so no need to install a certificate
+  install_certificate: false
+  store: true
+  windows_build_args: --obfuscate --split-debug-info=./build_symbols --dart-define-from-file="local/prod.json"
+  capabilities: internetClient, privateNetworkClientServer
+  languages: en-US #, fr-FR, es-ES, de-DE, pt-BR, zh-CN
+  protocol_activation: clipboard
+  execution_alias: copycat
 
 flutter_launcher_icons:
   image_path: "./resources/icon_2026_flat.png"
