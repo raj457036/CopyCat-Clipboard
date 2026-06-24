@@ -20,11 +20,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AndroidBgClipboardSettings extends StatefulWidget {
   final AndroidBackgroundClipboard bgService;
   final String deviceId;
+  final bool embedInParentScaffold;
 
   const AndroidBgClipboardSettings({
     super.key,
     required this.bgService,
     required this.deviceId,
+    this.embedInParentScaffold = false,
   });
 
   @override
@@ -95,8 +97,8 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
 
     notification = await widget.bgService.isNotificationPermissionGranted();
     overlay = await widget.bgService.isOverlayPermissionGranted();
-    batteryOptimization =
-        !await widget.bgService.isBatteryOptimizationEnabled();
+    batteryOptimization = !await widget.bgService
+        .isBatteryOptimizationEnabled();
     accessibility = await widget.bgService.isAccessibilityPermissionGranted();
     isRunning = await widget.bgService.isServiceRunning();
     strictCheck =
@@ -157,8 +159,11 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
       final enc1Decrypt = appConfigCubit.state.config.decryptEnc2(enc1Key);
       final tkn = monetizationCubit.active?.tkn;
       if (tkn != null) {
-        await widget.bgService
-            .writeShared("sharedAccessKey", tkn, secure: true);
+        await widget.bgService.writeShared(
+          "sharedAccessKey",
+          tkn,
+          secure: true,
+        );
       }
       await widget.bgService.writeShared("syncEnabled", true);
       await widget.bgService.writeShared("deviceId", widget.deviceId);
@@ -192,18 +197,18 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     } catch (e) {
       logger.e(e);
       closeSnackbar();
+    } finally {
+      setState(() {
+        writingConfig = false;
+      });
+      closeSnackbar();
     }
-    setState(() {
-      writingConfig = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     final isLight = context.theme.brightness == Brightness.light;
-    Widget child = const Center(
-      child: CircularProgressIndicator(),
-    );
+    Widget child = const Center(child: CircularProgressIndicator());
 
     if (!loading) {
       final checked = const Icon(Icons.check).msp;
@@ -222,28 +227,18 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
             tip: context.locale.abc__tip__support_subtitle,
           ),
           height5,
-          SettingHeader(
-            name: context.locale.abc__heading__req_perm,
-          ),
+          SettingHeader(name: context.locale.abc__heading__req_perm),
           SwitchListTile(
-            title: Text(
-              context.locale.abc__tile__notification_title,
-            ),
-            subtitle: Text(
-              context.locale.abc__tile__notification_subtitle,
-            ),
+            title: Text(context.locale.abc__tile__notification_title),
+            subtitle: Text(context.locale.abc__tile__notification_subtitle),
             value: notification,
             enableFeedback: true,
             thumbIcon: notification ? checked : unchecked,
             onChanged: writingConfig ? null : (_) => openNotificationSetting(),
           ),
           SwitchListTile(
-            title: Text(
-              context.locale.abc__tile__battery_opt_title,
-            ),
-            subtitle: Text(
-              context.locale.abc__tile__battery_opt_subtitle,
-            ),
+            title: Text(context.locale.abc__tile__battery_opt_title),
+            subtitle: Text(context.locale.abc__tile__battery_opt_subtitle),
             value: batteryOptimization,
             enableFeedback: true,
             thumbIcon: batteryOptimization ? checked : unchecked,
@@ -252,12 +247,8 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                 : (_) => openBatteryOptimizationSetting(),
           ),
           SwitchListTile(
-            title: Text(
-              context.locale.abc__tile__overlay_title,
-            ),
-            subtitle: Text(
-              context.locale.abc__tile__overlay_subtitle,
-            ),
+            title: Text(context.locale.abc__tile__overlay_title),
+            subtitle: Text(context.locale.abc__tile__overlay_subtitle),
             value: overlay,
             enableFeedback: true,
             thumbIcon: overlay ? checked : unchecked,
@@ -266,16 +257,13 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                 : (_) => openOverlaySetting(),
           ),
           SwitchListTile(
-            title: Text(
-              context.locale.abc__tile__acc_title,
-            ),
-            subtitle: Text(
-              context.locale.abc__tile__acc_subtitle,
-            ),
+            title: Text(context.locale.abc__tile__acc_title),
+            subtitle: Text(context.locale.abc__tile__acc_subtitle),
             value: accessibility,
             enableFeedback: true,
             thumbIcon: accessibility ? checked : unchecked,
-            onChanged: writingConfig ||
+            onChanged:
+                writingConfig ||
                     !notification ||
                     !overlay ||
                     !batteryOptimization
@@ -286,13 +274,15 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
           ExpansionTile(
             tilePadding: EdgeInsets.zero,
             initiallyExpanded: true,
-            title:
-                SettingHeader(name: context.locale.abc__other_setting__title),
+            title: SettingHeader(
+              name: context.locale.abc__other_setting__title,
+            ),
             children: [
               SwitchListTile(
                 title: Text(context.locale.abc__enhanced_clip_detection__title),
-                subtitle:
-                    Text(context.locale.abc__enhanced_clip_detection__subtitle),
+                subtitle: Text(
+                  context.locale.abc__enhanced_clip_detection__subtitle,
+                ),
                 value: strictCheck,
                 enableFeedback: true,
                 thumbIcon: strictCheck ? checked : unchecked,
@@ -304,12 +294,14 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
       );
     }
 
+    if (widget.embedInParentScaffold) {
+      return child;
+    }
+
     return PopScope(
       canPop: !writingConfig,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(context.locale.abc_title),
-        ),
+        appBar: AppBar(title: Text(context.locale.abc_title)),
         body: child,
       ),
     );
