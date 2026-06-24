@@ -1,10 +1,8 @@
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/pages/settings/widgets/android_clipboard/setting_tile.dart';
 import 'package:clipboard/pages/settings/widgets/drag_n_drop/drag_n_drop_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/prevent_duplicate_switch.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
-import 'package:universal_io/io.dart';
 
 class ExperimentalSettings extends StatelessWidget {
   const ExperimentalSettings({super.key});
@@ -17,7 +15,6 @@ class ExperimentalSettings extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: padding12),
         children: [
           const DragAndDropSwitchTile(),
-          if (Platform.isAndroid) const AndroidClipboardSettingListTile(),
           if (isDesktopPlatform) const PreventDuplicateSwitchTile(),
         ],
       ),
