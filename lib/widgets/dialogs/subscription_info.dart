@@ -179,6 +179,7 @@ class SubscriptionInfoDialog extends StatelessWidget {
       context: context,
       builder: (context) => this,
       fullscreenDialog: context.isMobile,
+      useSafeArea: false,
     );
   }
 
@@ -223,9 +224,7 @@ class SubscriptionInfoDialog extends StatelessWidget {
             builder: (context, state) {
               if (state == null) {
                 return AlertDialog(
-                  title: Text(
-                    context.locale.paywall_dialog__text__subscription,
-                  ),
+                  title: Text(context.locale.paywall_dialog__text__upgrade),
                   content: Center(
                     child: SizedBox(
                       width: 250,
@@ -282,9 +281,7 @@ class SubscriptionInfoDialog extends StatelessWidget {
               if (context.isMobile) {
                 return Scaffold(
                   appBar: AppBar(
-                    title: Text(
-                      context.locale.paywall_dialog__text__subscription,
-                    ),
+                    title: Text(context.locale.paywall_dialog__text__upgrade),
                     centerTitle: true,
                   ),
                   body: body,
@@ -294,7 +291,7 @@ class SubscriptionInfoDialog extends StatelessWidget {
               return AlertDialog(
                 title: Row(
                   children: [
-                    Text(context.locale.paywall_dialog__text__subscription),
+                    Text(context.locale.paywall_dialog__text__upgrade),
                     const Spacer(),
                     const CloseButton(),
                   ],

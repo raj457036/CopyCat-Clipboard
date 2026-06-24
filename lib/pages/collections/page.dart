@@ -46,11 +46,11 @@ class _CollectionsPageState extends State<CollectionsPage> {
     final isMobile = Breakpoints.isMobile(width);
     final crossAxisCount = Breakpoints.on<int>(
       width,
-      default_: 1,
+      fallback: 1,
       tablet: 2,
       desktop: 3,
-      xldesktop: 4,
-      xxldesktop: 5,
+      largeDesktop: 4,
+      ultraWide: 5,
     );
     return CustomScaffold(
       activeIndex: 1,

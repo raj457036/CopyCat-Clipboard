@@ -76,6 +76,11 @@ class AppLocalizationsPt extends AppLocalizations {
   String get app__syncing => 'Sincronizando...';
 
   @override
+  String app__sync_cooldown({required String time}) {
+    return 'A sincronização está em período de espera. Por favor, aguarde $time antes de sincronizar novamente.';
+  }
+
+  @override
   String get app__sync => 'Sincronizar';
 
   @override

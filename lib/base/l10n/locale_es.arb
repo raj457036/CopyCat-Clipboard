@@ -29,6 +29,14 @@
   "app__share": "Compartir",
   "app__uploading": "Subiendo...",
   "app__syncing": "Sincronizando...",
+  "app__sync_cooldown": "La sincronización está en enfriamiento. Por favor espera {time} antes de sincronizar de nuevo.",
+  "@app__sync_cooldown": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "app__sync": "Sincronizar",
   "app__queued": "En cola",
   "app__local": "Local",

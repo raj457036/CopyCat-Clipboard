@@ -29,6 +29,14 @@
   "app__share": "分享",
   "app__uploading": "上传中...",
   "app__syncing": "同步中...",
+  "app__sync_cooldown": "同步处于冷却状态。请等待 {time} 后再进行同步。",
+  "@app__sync_cooldown": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "app__sync": "同步",
   "app__queued": "排队中",
   "app__local": "本地",

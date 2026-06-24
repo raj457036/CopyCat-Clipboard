@@ -30,6 +30,14 @@
   "app__loading": "Loading...",
   "app__uploading": "Uploading...",
   "app__syncing": "Syncing...",
+  "app__sync_cooldown": "Sync is on cooldown. Please wait {time} before syncing again.",
+  "@app__sync_cooldown": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "app__sync": "Sync",
   "app__queued": "Queued",
   "app__local": "Local",

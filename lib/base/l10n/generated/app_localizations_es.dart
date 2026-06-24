@@ -76,6 +76,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get app__syncing => 'Sincronizando...';
 
   @override
+  String app__sync_cooldown({required String time}) {
+    return 'La sincronización está en enfriamiento. Por favor espera $time antes de sincronizar de nuevo.';
+  }
+
+  @override
   String get app__sync => 'Sincronizar';
 
   @override

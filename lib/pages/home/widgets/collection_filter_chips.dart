@@ -48,7 +48,7 @@ class CollectionFilterChips extends StatelessWidget {
                 final row = Row(
                   spacing: padding4,
                   children: [
-                    if (!dense) _CreateCollectionChip(canCreate: canCreate),
+                    if (!dense) _CreateCollectionButton(canCreate: canCreate),
                     if (!dense)
                       const VerticalDivider(
                         indent: padding14,
@@ -67,7 +67,12 @@ class CollectionFilterChips extends StatelessWidget {
                         separatorBuilder: (_, _) => width8,
                         itemBuilder: (context, index) {
                           if (dense && index == 0) {
-                            return _CreateCollectionChip(canCreate: canCreate);
+                            return Align(
+                              alignment: Alignment.centerLeft,
+                              child: _CreateCollectionButton(
+                                canCreate: canCreate,
+                              ),
+                            );
                           }
                           final i = dense ? index - 1 : index;
                           final collection = collections[i];
@@ -125,10 +130,10 @@ class CollectionFilterChips extends StatelessWidget {
   }
 }
 
-class _CreateCollectionChip extends StatelessWidget {
+class _CreateCollectionButton extends StatelessWidget {
   final bool canCreate;
 
-  const _CreateCollectionChip({required this.canCreate});
+  const _CreateCollectionButton({required this.canCreate});
 
   void _onCreate(BuildContext context) {
     if (!canCreate) {
@@ -147,14 +152,17 @@ class _CreateCollectionChip extends StatelessWidget {
       label: Text(context.locale.badges__label__pro),
       alignment: Alignment.topLeft,
       isLabelVisible: !canCreate,
-      child: ActionChip.elevated(
-        avatar: const Icon(Icons.add_rounded),
-        color: canCreate ? context.colors.onPrimary.wsp : null,
-        backgroundColor: canCreate ? context.colors.primary : null,
-        shape: const StadiumBorder(),
-        label: Text(context.locale.app__create),
+      child: TextButton.icon(
+        icon: const Icon(Icons.add_rounded),
         onPressed: () => _onCreate(context),
-        mouseCursor: SystemMouseCursors.click,
+        style: TextButton.styleFrom(
+          foregroundColor: context.colors.onSecondaryContainer,
+          backgroundColor: context.colors.secondaryContainer,
+          shape: const StadiumBorder(),
+          enabledMouseCursor: SystemMouseCursors.click,
+          disabledMouseCursor: SystemMouseCursors.forbidden,
+        ),
+        label: Text(context.locale.app__create),
       ),
     );
   }

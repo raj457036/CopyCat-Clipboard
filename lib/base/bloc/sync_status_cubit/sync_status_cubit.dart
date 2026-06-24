@@ -273,8 +273,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
                 const EnglishDurationLocale(),
           );
           return NotificationContent(
-            body:
-                'Sync is on cooldown. Please wait $remainingText before syncing again.',
+            body: context.locale.app__sync_cooldown(time: remainingText),
             action: SnackBarAction(
               label: context.locale.paywall_dialog__text__upgrade,
               onPressed: showUpgradePlanDialog,

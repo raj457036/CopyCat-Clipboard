@@ -75,6 +75,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app__syncing => '同步中...';
 
   @override
+  String app__sync_cooldown({required String time}) {
+    return '同步处于冷却状态。请等待 $time 后再进行同步。';
+  }
+
+  @override
   String get app__sync => '同步';
 
   @override

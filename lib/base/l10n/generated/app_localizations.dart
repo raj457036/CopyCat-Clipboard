@@ -237,6 +237,12 @@ abstract class AppLocalizations {
   /// **'Syncing...'**
   String get app__syncing;
 
+  /// No description provided for @app__sync_cooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync is on cooldown. Please wait {time} before syncing again.'**
+  String app__sync_cooldown({required String time});
+
   /// No description provided for @app__sync.
   ///
   /// In en, this message translates to:

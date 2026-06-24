@@ -40,8 +40,8 @@ extension BreakpointExtension on BuildContext {
   bool get isMobile => Breakpoints.isMobile(screenSize.width);
   bool get isTablet => Breakpoints.isTablet(screenSize.width);
   bool get isDesktop => Breakpoints.isDesktop(screenSize.width);
-  bool get isXLDesktop => Breakpoints.isXLDesktop(screenSize.width);
-  bool get isXXLDesktop => Breakpoints.isXXLDesktop(screenSize.width);
+  bool get isLargeDesktop => Breakpoints.isLargeDesktop(screenSize.width);
+  bool get isUltraWide => Breakpoints.isUltraWide(screenSize.width);
 }
 
 extension BuildContextExtension on BuildContext {

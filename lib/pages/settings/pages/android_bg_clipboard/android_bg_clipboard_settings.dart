@@ -104,12 +104,11 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   @override
   void didChangeAppLifecycleState(AppLifecycleState appLifecycleState) {
     super.didChangeAppLifecycleState(appLifecycleState);
-    logger.w(appLifecycleState);
 
-    switch (appLifecycleState) {
-      case AppLifecycleState.resumed:
-        checkStatus();
-      default:
+    if (appLifecycleState == AppLifecycleState.resumed &&
+        _awaitingAccessibilityRefresh) {
+      _awaitingAccessibilityRefresh = false;
+      checkStatus();
     }
   }
 
@@ -320,10 +319,10 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
       logger.e(e);
     } finally {
       InAppNotificationService.i.dismiss("bg_setup");
+      setState(() {
+        writingConfig = false;
+      });
     }
-    setState(() {
-      writingConfig = false;
-    });
   }
 
   Future<void> _onModeChanged(String? newMode) async {
@@ -387,111 +386,106 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
 
   @override
   Widget build(BuildContext context) {
-    final isLight = context.theme.brightness == Brightness.light;
+    // final isLight = context.theme.brightness == Brightness.light;
     final textTheme = context.textTheme;
     final colors = context.colors;
     final canChooseMode = accessibility && !writingConfig;
     final checked = const Icon(Icons.check).wsp;
     final unchecked = const Icon(Icons.close).wsp;
 
-    final child = ListView(
-      children: [
-        TipTile(
-          title: context.locale.abc__tip__why_title,
-          tip: context.locale.abc__tip__why_subtitle,
-        ),
-        TipTile(
-          icon: const Icon(Icons.warning, color: Colors.amber),
-          bg: Colors.red.darker(50, isLight),
-          title: context.locale.abc__tip__support_title,
-          tip: context.locale.abc__tip__support_subtitle,
-        ),
-        height5,
-        SettingHeader(name: context.locale.abc__heading__req_perm),
-        SwitchListTile(
-          title: Text(context.locale.abc__tile__notification_title),
-          subtitle: Text(context.locale.abc__tile__notification_subtitle),
-          value: notification,
-          enableFeedback: true,
-          thumbIcon: notification ? checked : unchecked,
-          onChanged: writingConfig ? null : (_) => openNotificationSetting(),
-        ),
-        SwitchListTile(
-          title: Text(context.locale.abc__tile__battery_opt_title),
-          subtitle: Text(context.locale.abc__tile__battery_opt_subtitle),
-          value: batteryOptimization,
-          enableFeedback: true,
-          thumbIcon: batteryOptimization ? checked : unchecked,
-          onChanged: writingConfig || !notification
-              ? null
-              : (_) => openBatteryOptimizationSetting(),
-        ),
-        SwitchListTile(
-          title: Text(context.locale.abc__tile__acc_title),
-          subtitle: Text(context.locale.abc__tile__acc_subtitle),
-          value: accessibility,
-          enableFeedback: true,
-          thumbIcon: accessibility ? checked : unchecked,
-          onChanged: writingConfig || !notification || !batteryOptimization
-              ? null
-              : (_) => openAccessibilitySetting(),
-        ),
-        height5,
-        ListTile(
-          title: Text(context.locale.abc__detection_mode__title),
-          subtitle: Text(
-            accessibility
-                ? context.locale.abc__detection_mode__subtitle__enabled
-                : context.locale.abc__detection_mode__subtitle__disabled,
-            style: textTheme.bodyMedium?.copyWith(color: colors.outline),
+    final child = Material(
+      child: ListView(
+        children: [
+          TipTile(
+            title: context.locale.abc__tip__why_title,
+            tip: context.locale.abc__tip__why_subtitle,
           ),
-          trailing: SettingsMenuDropdown<String>(
-            value: _normalizeDetectionMode(_selectedMode),
-            items: _detectionModes
-                .map(
-                  (mode) => SettingsDropdownItem(
-                    value: mode.$1,
-                    enabled: accessibility || mode.$1 == 'inactive',
-                  ),
-                )
-                .toList(),
-            itemBuilder: (context, value) {
-              final label = _detectionModes
-                  .firstWhere((mode) => mode.$1 == value)
-                  .$2;
-              return (leading: null, child: Text(label), trailing: null);
+          // TipTile(
+          //   icon: const Icon(Icons.warning, color: Colors.amber),
+          //   bg: Colors.red.darker(50, isLight),
+          //   title: context.locale.abc__tip__support_title,
+          //   tip: context.locale.abc__tip__support_subtitle,
+          // ),
+          height5,
+          SettingHeader(name: context.locale.abc__heading__req_perm),
+          SwitchListTile(
+            title: Text(context.locale.abc__tile__notification_title),
+            subtitle: Text(context.locale.abc__tile__notification_subtitle),
+            value: notification,
+            enableFeedback: true,
+            thumbIcon: notification ? checked : unchecked,
+            onChanged: writingConfig ? null : (_) => openNotificationSetting(),
+          ),
+          SwitchListTile(
+            title: Text(context.locale.abc__tile__battery_opt_title),
+            subtitle: Text(context.locale.abc__tile__battery_opt_subtitle),
+            value: batteryOptimization,
+            enableFeedback: true,
+            thumbIcon: batteryOptimization ? checked : unchecked,
+            onChanged: writingConfig || !notification
+                ? null
+                : (_) => openBatteryOptimizationSetting(),
+          ),
+          SwitchListTile(
+            title: Text(context.locale.abc__tile__acc_title),
+            subtitle: Text(context.locale.abc__tile__acc_subtitle),
+            value: accessibility,
+            enableFeedback: true,
+            thumbIcon: accessibility ? checked : unchecked,
+            onChanged: writingConfig || !notification || !batteryOptimization
+                ? null
+                : (_) => openAccessibilitySetting(),
+          ),
+          height5,
+          ListTile(
+            title: Text(context.locale.abc__detection_mode__title),
+            subtitle: Text(
+              accessibility
+                  ? context.locale.abc__detection_mode__subtitle__enabled
+                  : context.locale.abc__detection_mode__subtitle__disabled,
+              style: textTheme.bodyMedium?.copyWith(color: colors.outline),
+            ),
+            trailing: SettingsMenuDropdown<String>(
+              value: _normalizeDetectionMode(_selectedMode),
+              items: _detectionModes
+                  .map(
+                    (mode) => SettingsDropdownItem(
+                      value: mode.$1,
+                      enabled: accessibility || mode.$1 == 'inactive',
+                    ),
+                  )
+                  .toList(),
+              itemBuilder: (context, value) {
+                final label = _detectionModes
+                    .firstWhere((mode) => mode.$1 == value)
+                    .$2;
+                return (leading: null, child: Text(label), trailing: null);
+              },
+              onSelected: canChooseMode ? _onModeChanged : null,
+            ),
+          ),
+          height5,
+          DetectionStatusCard(
+            state: _detectionStatusState,
+            outcome: _detectionStatusOutcome,
+          ),
+          height5,
+          AutoWriteOnReceiveSwitchTile(
+            enabled: !writingConfig && isRunning && accessibility,
+            onChanged: (val) async {
+              await widget.bgService.writeShared("autoWriteOnReceive", val);
             },
-            onSelected: canChooseMode ? _onModeChanged : null,
           ),
-        ),
-        height5,
-        DetectionStatusCard(
-          state: _detectionStatusState,
-          outcome: _detectionStatusOutcome,
-        ),
-        height5,
-        AutoWriteOnReceiveSwitchTile(
-          enabled: !writingConfig && isRunning && accessibility,
-          onChanged: (val) async {
-            await widget.bgService.writeShared("autoWriteOnReceive", val);
-          },
-        ),
-        height5,
-        SettingHeader(name: context.locale.abc__network__header),
-        LanInstantSyncSwitchTile(serviceActive: isRunning && accessibility),
-      ],
+          height5,
+          SettingHeader(name: context.locale.abc__network__header),
+          LanInstantSyncSwitchTile(serviceActive: isRunning && accessibility),
+        ],
+      ),
     );
 
     return PopScope(
       canPop: !writingConfig,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(context.locale.abc_title),
-          scrolledUnderElevation: 0.0,
-          backgroundColor: context.colors.surface,
-        ),
-        body: loading ? IgnorePointer(child: child) : child,
-      ),
+      child: loading ? IgnorePointer(child: child) : child,
     );
   }
 }

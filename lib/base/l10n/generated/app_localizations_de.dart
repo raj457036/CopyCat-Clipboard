@@ -76,6 +76,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get app__syncing => 'Synchronisieren...';
 
   @override
+  String app__sync_cooldown({required String time}) {
+    return 'Synchronisierung ist in der Abklingzeit. Bitte warten Sie $time, bevor Sie erneut synchronisieren.';
+  }
+
+  @override
   String get app__sync => 'Synchronisieren';
 
   @override
