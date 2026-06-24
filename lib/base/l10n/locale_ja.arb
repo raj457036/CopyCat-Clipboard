@@ -1,0 +1,666 @@
+{
+  "@@locale": "ja",
+  "@@format": "<App/Feature>__<Section/Component>__<Context>[__<Variant>",
+  "@@APP": "Shared locales throughout the app.",
+  "app__name": "CopyCat Clipboard",
+  "@app__name": {
+    "description": "App name: CopyCat Clipboard"
+  },
+  "app__slogan": "ひとつのクリップボード、無限の可能性",
+  "@app__slogan": {
+    "description": "CopyCat Clipboard Slogan"
+  },
+  "app__unknown_error": "予期しないエラーが発生しました",
+  "app__downloading": "ダウンロード中...",
+  "app__download": "ダウンロード",
+  "app__follow_link": "リンクを開く",
+  "app__edit": "編集",
+  "app__export": "エクスポート",
+  "app__delete": "削除",
+  "app__later": "スキップ",
+  "app__select": "選択",
+  "app__change": "変更",
+  "app__confirm": "確認",
+  "app__action_required": "操作が必要です",
+  "app__feature_unavailable": "この機能はご利用のプラットフォームでは使用できません。",
+  "app__preview": "プレビュー",
+  "app__open_file": "ファイルを開く",
+  "app__change_collection": "コレクションを変更",
+  "app__share": "共有",
+  "app__uploading": "アップロード中...",
+  "app__syncing": "同期中...",
+  "app__sync": "同期",
+  "app__local": "ローカル",
+  "app__send_message": "メッセージを送信",
+  "app__send_email": "メールを送信",
+  "app__empty_clipboard": "クリップボードは空です。",
+  "app__load_more": "さらに取得",
+  "app__locale_en": "英語",
+  "app__locale_es": "スペイン語",
+  "app__locale_fr": "フランス語",
+  "app__locale_de": "ドイツ語",
+  "app__locale_zh": "中国語",
+  "app__locale_pt": "ポルトガル語",
+  "app__language": "言語",
+  "app__logout": "ログアウト",
+  "app__no_collection": "コレクションが見つかりません",
+  "app__create_collection": "コレクションを作成",
+  "app__pro_tip": "PRO のヒント",
+  "app__try_again": "再試行",
+  "app__realtime_connected": "リアルタイム接続済み",
+  "app__realtime_disconnected": "リアルタイム切断",
+  "app__realtime_connecting": "リアルタイム接続中...",
+  "app__ack__exported": "エクスポート済み",
+  "app__ack__copied": "コピー済み",
+  "app__ack__pasted": "ペースト済み",
+  "app__ack__pasting": "ペースト中",
+  "app__ack__done": "完了",
+  "app__ack__quit_app": "アプリを終了",
+  "app__ack__deleted": "削除済み",
+  "app__ack__deleting": "削除中",
+  "app__ack__internet_connected": "インターネット接続済み",
+  "app__ack__internet_disconnected": "インターネット切断",
+  "app__ack__logout_success": "ログアウトしました。",
+  "app__ack__missing_e2e_setup": "暗号化設定がありません",
+  "app__ack__no_app_for_file": "このファイルを開くアプリが見つかりません。",
+  "app__ack__perm_fail_to_open_file": "このファイルを開く権限がありません。",
+  "@@DIALOG": "Common Dialog",
+  "dialog__delete_clip__title": "クリップを削除",
+  "dialog__delete_clip__subtitle": "{itemCount, plural, other{これらのクリップを削除しますか？} one{このクリップを削除しますか？}}",
+  "@dialog__delete_clip__subtitle": {
+    "placeholders": {
+      "itemCount": {
+        "type": "int"
+      }
+    }
+  },
+  "dialog__e2e__title": "エンドツーエンド暗号化",
+  "dialog__text__e2e_key_export": "おめでとうございます。エンドツーエンド暗号化の設定が完了しました。",
+  "dialog__text__e2e_key_export__note": "下のボタンをクリックして暗号化キーをエクスポートしてください。\n他のデバイスで暗号化されたデータにアクセスできるよう、キーを安全な場所に保存してください。",
+  "dialog__text__e2e_key_generate": "暗号化キーを生成して安全に保管してください。このキーは他のデバイスで暗号化データにアクセスする際に必要です。",
+  "dialog__button__e2e_generating_key": "生成中",
+  "dialog__button__e2e_generate_key": "生成済み",
+  "dialog__text__invalid_e2e_key": "インポートしたキーが無効です！",
+  "dialog__text__e2e_key_import__note": "このデバイスで暗号化データにアクセスするため、暗号化キーをインポートしてください。",
+  "dialog__button__e2e_importing_key": "インポート中",
+  "dialog__button__e2e_import_key": "インポート",
+
+  "dialog__text__inconsistent_time__title": "時刻同期の警告",
+  "dialog__text__inconsistent_time__content": "デバイスの時刻が一致していません\n\nクリップボードの同期を正確に行うため、デバイスの時刻設定を確認・修正してください。\n\n時刻設定の不一致は同期の問題を引き起こす可能性があります。",
+  "dialog__button__try_again": "再確認",
+
+  "dialog__record_keys__title": "キーボードショートカットを記録",
+  "dialog__record_keys__subtitle": "キーボードでショートカットを入力してクリックしてください ",
+
+  "dialog__delete_collection__title": "{collectionName} を削除",
+  "@dialog__delete_collection__title": {
+    "placeholders": {
+      "collectionName": {
+        "type": "String"
+      }
+    }
+  },
+  "dialog__delete_collection__subtitle": "このコレクションを削除しますか？",
+
+  "@@APPLY_DIALOG": "Apply Coupon Dialog",
+  "dialog__ack__sub_updated": "サブスクリプションが更新されました",
+  "dialog__grant_entitlement__title": "利用権の付与",
+  "dialog__grant_entitlement__subtitle_p1": "付与された利用権コードは特定のユーザーにカスタム権限として共有されます。招待がまだ利用可能かどうかは ",
+  "dialog__grant_entitlement__subtitle_p2": "こちらをクリック",
+  "dialog__grant_entitlement__enter_code": "コードを入力して送信を押してください",
+  "dialog__grant_entitlement__apply_code": "適用",
+
+  "@@VIEW_BUTTONS": "Layout View Buttons",
+  "view_button__switch_to_grid": "グリッドレイアウトに切り替え",
+  "view_button__switch_to_list": "リストレイアウトに切り替え",
+  "view_button__change_view": "表示を変更",
+  "view_button__view_window": "ウィンドウ",
+  "view_button__view_dock_right": "右に固定",
+  "view_button__view_dock_bottom": "下に固定",
+  "view_button__view_dock_left": "左に固定",
+  "view_button__view_dock_top": "上に固定",
+  "view_button__pin": "上部に固定",
+  "view_button__unpin": "固定解除",
+
+  "@@SUBSCRIPTION_DIALOG": "Subscription detail dialog",
+  "sub_dialog__text__included": "含まれる機能",
+  "sub_dialog__f1__title": "無制限のクリップボードアイテム",
+  "sub_dialog__f1__subtitle": "無制限のクリップボードアイテムでスペース不足を解消し、最新のコピーに常にアクセスできます。",
+  "sub_dialog__f2__title": "主要プラットフォーム対応",
+  "sub_dialog__f2__subtitle": "Android、iOS、Windows、macOS、Linux など主要プラットフォーム間でシームレスに同期し、どこでも作業を継続できます。",
+  "sub_dialog__f3__title": "Apple ユニバーサルクリップボード対応",
+  "sub_dialog__f3__subtitle": "Apple のユニバーサルクリップボードに対応し、Apple デバイス間でクリップボードの内容を簡単に転送できます。",
+  "sub_dialog__f4__title": "デバイス上のストレージ",
+  "sub_dialog__f4__subtitle": "デバイス上のストレージでデータを安全に保管し、クリップボードアイテムを常に手元に置けます。",
+  "sub_dialog__f5__title": "Google Drive 連携",
+  "sub_dialog__f5__subtitle": "Google Drive にファイルやメディアを安全に保存し、CopyCat Clipboard とシームレスに統合してデータ管理を強化します。",
+  "sub_dialog__f6__title": "インスタント検索",
+  "sub_dialog__f6__subtitle": "強力なインスタント検索でクリップボードアイテムを素早く見つけられます。",
+  "sub_dialog__f7__title": "直近24時間の同期",
+  "sub_dialog__f7__subtitle": "過去24時間のクリップボード履歴をすべてのデバイスでアクセス・同期できます。重要なコピーを失わず、ワークフローをスムーズに保ちます。",
+  "sub_dialog__f8__title": "最大3つのコレクション",
+  "sub_dialog__f8__subtitle": "クリップボードアイテムを最大3つのコレクションに整理し、ワークフロー管理をシンプルにします。",
+  "sub_dialog__f9__title": "45秒ごとの自動同期",
+  "sub_dialog__f9__subtitle": "45秒ごとにクリップボードアイテムを自動同期し、手動操作なしでデバイスを常に最新の状態に保ちます。",
+  "sub_dialog__f10__title": "エンドツーエンド暗号化対応",
+  "sub_dialog__f10__subtitle": "E2EE ですべてを暗号化し、優れたプライバシーを実現します。",
+
+  "sub_dialog__text__pro_title": "PRO ✨ の機能",
+  "sub_dialog__text__pro_subtitle": "無料版のすべての機能 +",
+  "sub_dialog__f11__title": "最大50のコレクション",
+  "sub_dialog__f11__subtitle": "クリップボードアイテムを最大50のコレクションに整理し、究極の管理を実現します。",
+  "sub_dialog__f12__title": "直近30日間の同期",
+  "sub_dialog__f12__subtitle": "過去30日以内に作成したクリップのクリップボード履歴がすべてのデバイスで同期されます。どのデバイスを使っていても、先月コピーしたクリップにアクセスできます。",
+  "sub_dialog__f13__title": "リアルタイム同期",
+  "sub_dialog__f13__subtitle": "超高速の同期を体験してください。",
+  "sub_dialog__f14__title": "優先サポート",
+  "sub_dialog__f14__subtitle": "PRO ユーザーとして迅速かつ優先的なサポートを受けられます。",
+  "sub_dialog__f15__title": "新機能への早期アクセス",
+  "sub_dialog__f15__subtitle": "新機能やアップデートをいち早く試せます。",
+  "sub_dialog__f16__title": "カスタム除外ルール",
+  "sub_dialog__f16__subtitle": "クリップボードを精密にコントロール。何を、どこから、いつコピーするかを定義できます。",
+  "sub_dialog__f17__title": "ドラッグ＆ドロップ",
+  "sub_dialog__f17__subtitle": "デスクトップ・タブレットデバイスでアイテムを自由に移動できます。",
+  "sub_dialog__f18__title": "テーマ設定",
+  "sub_dialog__f18__subtitle": "アプリの外観全体を好みに合わせてカスタマイズできます。",
+  "paywall_dialog__text__month": "月",
+  "paywall_dialog__text__year": "年",
+  "paywall_dialog__text__subscription": "サブスクリプション",
+  "paywall_dialog__text__supported_platform": "Copycat Clipboard のプレミアム機能を利用するには、Play Store または Apple App Store からサブスクライブしてください。サブスクリプションは Linux や Windows を含むすべてのデバイスで同期されます。",
+  "paywall_dialog__text__unlock_pro": "CopyCat PRO のロックを解除",
+  "paywall_dialog__text__unlock_pro_p1": "30日以上の同期履歴、50以上のコレクション、エンドツーエンド暗号化、リアルタイム同期、最新機能へのアクセスなどをお楽しみください。",
+  "paywall_dialog__text__try_again": "もう一度お試しください",
+  "paywall_dialog__text__current_plan": "現在のプラン",
+  "paywall_dialog__text__expired_plan": "現在のプラン • 期限切れ",
+  "paywall_dialog__text__trial_till": "トライアル期間：{till}まで",
+  "@paywall_dialog__text__trial_till": {
+      "placeholders": {
+          "till": {
+              "type": "DateTime",
+              "format": "yMMMd"
+          }
+      }
+  },
+  "paywall_dialog__text__upgrade": "アップグレード",
+
+  "@@FAB": "Floating Action Button",
+  "fab__create_collection": "コレクションを作成（残り {remaining} ）",
+  "@fab__create_collection": {
+    "placeholders": {
+      "remaining": {
+        "type": "String"
+      }
+    }
+  },
+
+  "fab__sync": "同期",
+  "fab__sync_unavailable": "同期できません",
+  "fab__sync_up_to_date": "すでに最新の状態です。",
+  "fab__sync_failed": "同期に失敗しました：{message}",
+  "@fab__sync_failed": {
+      "placeholders": {
+          "message": {
+              "type": "String"
+          }
+      }
+  },
+
+  "@@LAYOUT": "Layout Widgets",
+  "layout__navbar__clipboard": "クリップボード",
+  "layout__navbar__collections": "コレクション",
+  "layout__navbar__settings": "設定",
+
+  "@@WIDGETS": "Custom Widgets",
+  "search__tooltip__filter": "検索フィルター",
+  "manage_sub__ack__promo_sub": "プロモーションサブスクリプションを {till} まで利用中です",
+  "@manage_sub__ack__promo_sub": {
+      "placeholders": {
+          "till": {
+              "type": "String"
+          }
+      }
+  },
+  "manage_sub__button__text": "サブスクリプション管理",
+
+  "my_account__button__tooltip": "マイアカウント",
+  "badges__tooltip__experimental": "この機能は実験的なものであり、期待通りに動作しない場合があります。",
+  "badges__tooltip__pro_only": "この機能は PRO ユーザー限定です。",
+
+  "collection_selector__tile__no_collection": "コレクションなし",
+  "collection_selector__button__remove_collection": "コレクションを削除",
+
+  "dialog__logout__title": "ログアウト",
+  "dialog__logout__subtitle": "⚠️ 警告 ⚠️\n\nログアウトすると、ローカルデータベース内の未同期の変更が削除されます。続行しますか？",
+  "dialog__logging_out__ack": "ログアウト中です。しばらくお待ちください...",
+
+  "reset_pass__text__label": "パスワードをリセット",
+
+  "dnd__text__drop_here": "ここにドロップ",
+  "dnd__ack__error_max_drop_count": "一度にドロップできるアイテムは最大 {count} 件です。",
+  "@dnd__ack__error_max_drop_count": {
+      "placeholders": {
+          "count": {
+              "type": "int"
+          }
+      }
+  },
+
+  "@@SEARCH_FILTER_DIALOG": "Search filter dialog",
+  "search_filter__text__title": "フィルター",
+  "search_filter__button__apply": "適用",
+  "search_filter__text__from": "開始",
+  "search_filter__text__select": "選択",
+  "search_filter__text__to": "終了",
+  "search_filter__text__now": "現在",
+  "search_filter__text__including": "含む",
+  "search_filter__chip__text": "テキスト",
+  "search_filter__chip__url": "URL",
+  "search_filter__chip__media": "メディア",
+  "search_filter__chip__docs": "ドキュメント",
+  "search_filter__text__textCategories": "テキストカテゴリ",
+  "search_filter__text__exclusive": "（排他的）",
+  "search_filter__text_cat__email": "メール",
+  "search_filter__text_cat__phone": "電話",
+  "search_filter__text_cat__color": "カラー",
+  "search_filter__text__sort_by": "並び替え",
+  "search_filter__sort_by__last_mod": "最終更新",
+  "search_filter__sort_by__created": "作成日",
+  "search_filter__sort_by__copy_count": "コピー回数",
+  "search_filter__sort_by__last_copied": "最終コピー日",
+  "search_filter__text__sort_order": "並び順",
+  "search_filter__sort_ord__asc": "昇順",
+  "search_filter__sort_ord__desc": "降順",
+
+  "@@LOGIN": "Login Screen",
+  "login__local_signin__tooltip": "同期なし。すべてのデータはデバイスに保存されます。",
+  "login__local_signin__btn__label": "ローカルで使用",
+  "login__form__input__name": "お名前を入力",
+  "login__form__input__email": "メールアドレスを入力",
+  "login__form__input__error_email": "有効なメールアドレスを入力してください",
+  "login__form__input__password": "パスワードを入力",
+  "login__form__input__error_password_length": "6文字以上のパスワードを入力してください",
+  "login__form__button__signin": "サインイン",
+  "login__form__button__signup": "サインアップ",
+  "login__form__button__forgot_password": "パスワードをお忘れですか？",
+  "login__form__text__signup": "アカウントをお持ちでない方はこちら",
+  "login__form__text__old_user": "すでにアカウントをお持ちの方はサインイン",
+  "login__form__text__reset_password": "パスワードリセットメールを送信",
+  "login__form__text__reset_ack": "パスワードリセットメールを送信しました",
+  "login__form__button__back": "サインインに戻る",
+  "login__form__button__update_password": "パスワードを更新",
+  "login__form__text_tnc_p1": "続行することで、以下に同意したものとみなされます ",
+  "login__form__text_tnc_p2": "プライバシーポリシー",
+  "login__form__text_tnc_p3": " および ",
+  "login__form__text_tnc_p4": "利用規約。",
+  "@@HOME": "Home Screen",
+  "home__search__hint": "クリップボードを検索",
+  "home__search__reset": "検索をリセット",
+  "@@PREVIEW": "Preview Screen",
+  "preview__vert_view__tab1_title": "プレビュー",
+  "preview__vert_view__tab2__title": "詳細",
+  "preview__card__missing_text": "このクリップは空です",
+  "preview__card__video__play": "動画を再生",
+  "preview__card__file__open": "ファイルを開く",
+  "preview__form__title": "詳細を編集",
+  "preview__form__input__title": "タイトル",
+  "preview__form__input__description": "説明",
+  "@@RESET_PASSWORD": "Reset Password Screen",
+  "reset_password__appbar__title": "パスワードをリセット",
+  "reset_password__success_ack": "パスワードを正常にリセットしました",
+  "@@ON_BOARDING": "On Boarding Screen",
+  "onboarding__text__welcome": "ようこそ",
+  "onboarding__text__lets_continue": "続けましょう",
+
+  "onboarding__button__to_login": "サインイン",
+  "onboarding__snackbar__export_success": "暗号化キーを正常にエクスポートしました。",
+  "onboarding__dialog__skip_export__title": "✋ 暗号化キーのバックアップ",
+  "onboarding__dialog__skip_export__subtitle": "まだ暗号化キーをエクスポートしていません。バックアップがないと、キーを紛失したりデバイスを変更した場合に暗号化されたクリップにアクセスできなくなります。\n\n👉 すでにキーの安全なバックアップがある場合は続行できます。そうでない場合は、データ損失を防ぐためキーを今すぐエクスポートすることを強くお勧めします。このまま続行しますか？",
+  "onboarding__dialog__export_info__title": "🤔 暗号化キーをエクスポートする理由は？",
+  "onboarding__dialog__export_info__subtitle": "暗号化キーのエクスポートは、複数のデバイスで暗号化データに安全にアクセスするために必要です。キーがないと、同期後に暗号化データにアクセスできなくなります。\n\nデータ損失を防ぐため、暗号化キーを安全な場所にバックアップしてください。キーはアカウントに固有のもので、紛失した場合は復元できません。\n\n注意：Copycat は暗号化されたクリップや暗号化キーにアクセスできません。これはプライバシーを最優先にしているためです。",
+  "onboarding__text__export_key_headline": "クリップボードの暗号化",
+  "onboarding__text__export_key_title": "💪 朗報！クリップボードの暗号化が有効になっています",
+  "onboarding__button__export_key": "キーをエクスポート",
+  "onboarding__dialog__skip_gen_key__title": "✋ クリップが保護されていません",
+  "onboarding__dialog__skip_gen_key__subtitle": "まだ暗号化キーを生成していません。生成しないと、クリップは暗号化されず保護されません。キーは後から 設定 ❯ セキュリティ で生成できます。このまま続行しますか？",
+  "onboarding__dialog__gen_key_info__title": "🤔 なぜ暗号化が必要ですか？",
+  "onboarding__dialog__gen_key_info__subtitle": "暗号化はデータをキーでのみアクセスできる安全な形式に変換することで保護します。暗号化がないと、クリップはプレーンテキストで保存され、不正アクセスのリスクがあります。暗号化を有効にすることで、機密データにアクセスできるのはあなただけになり、セキュリティの層が追加されます。",
+  "onboarding__text__gen_key_headline": "クリップボード暗号化のセットアップ",
+  "onboarding__text__key_generated_title": "🎉 キー {keyPreview}*** の生成が完了しました 🎉",
+  "@onboarding__text__key_generated_title": {
+    "placeholders": {
+      "keyPreview": {
+        "type": "String"
+      }
+    }
+  },
+  "onboarding__button__regenerate_key": "キーを再生成",
+  "onboarding__text__no_key": "アカウントに暗号化キーがありません",
+  "onboarding__button__generate_key": "キーを生成",
+  "onboarding__button__do_it_later": "後で行う",
+  "onboarding__button__why_important": "なぜ重要ですか？",
+  "onboarding__snackbar__invalid_key": "有効な CopyCat 暗号化キーではありません",
+  "onboarding__dialog__skip_import__title": "✋ 暗号化されたクリップにアクセスできません",
+  "onboarding__dialog__skip_import__subtitle": "まだ暗号化キーをインポートしていません。同期後、暗号化されたクリップはすべてローカルでアクセスできなくなります。\n\nアクセスするには 設定 ❯ セキュリティ からキーをインポートしてください。\nこのまま続行しますか？",
+  "onboarding__dialog__reset_key__title": "✋ 暗号化データを完全に削除",
+  "onboarding__dialog__reset_key__subtitle": "この操作は取り消せません。サーバー上の暗号化データをすべて完全に削除しますか？",
+  "onboarding__snackbar__reset_key__success": "暗号化が正常に解除されました。",
+  "onboarding__dialog__import_info__title": "🤔 キーはどこにありますか？",
+  "onboarding__dialog__import_info__subtitle": "暗号化キーは暗号化設定時に生成されたセキュアなファイルです。見当たらない場合は、ダウンロードフォルダや保存した可能性のあるバックアップ場所を確認してください。このキーがないと暗号化データにアクセスできません。\n\n別のデバイスで暗号化キーを設定した場合は、そのデバイスで 設定 ❯ セキュリティ ❯ E2EE Vault からエクスポートできます。キーをこのデバイスに安全に転送して暗号化データへのアクセスを回復してください。",
+  "onboarding__text__import_key_headline": "クリップボード暗号化キーのインポート",
+  "onboarding__text__import_key_title": "アカウントで暗号化が有効になっています。",
+  "onboarding__button__import_key": "キーをインポート",
+  "onboarding__button__reset_key": "暗号化をリセット",
+  "onboarding__button__where_key": "キーはどこにありますか？",
+  "onboarding__text__go_home": "ホームへ戻る",
+  "onboarding__restoration__failed": "復元に失敗しました：{message}",
+  "@onboarding__restoration__failed": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "onboarding__restoration_warning": "⚠️ データの破損や不整合を防ぐため、同期中はこの画面を開いたままにしてください。",
+
+  "@@RESTORE_CLIPS": "Restore Clips",
+  "restore_clips__text__title": "クリップボードを復元",
+  "restore_clips__error__no_backup": "クリップボードのバックアップが見つかりません",
+  "restore_clips__text__total_count": "復元するクリップが約 {totalCount} {totalCount, plural, other{件} one{件} zero{件}} あります。",
+  "@restore_clips__text__total_count": {
+    "placeholders": {
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_clips__sync_disable": "同期が現在無効です。続行するには同期を有効にしてください。",
+  "restore_clips__preparing": "クリップの復元を準備中です。しばらくお待ちください...",
+  "restore_clips__restored": "{syncCount} {syncCount, plural, other{件} one{件} zero{件}}のクリップが正常に復元されました。",
+  "@restore_clips__restored": {
+    "placeholders": {
+      "syncCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_clips__restoring": "復元中：{totalCount} 件中 {synced} 件完了。",
+  "@restore_clips__restoring": {
+    "placeholders": {
+      "synced": {
+        "type": "int"
+      },
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+
+  "@@RESTORE_COLLECTION": "Restore Collections",
+  "restore_collections__text__title": "コレクションを復元",
+  "restore_collections__error__no_backup": "コレクションのバックアップが見つかりません",
+  "restore_collections__text__total_count": "復元するコレクションが約 {totalCount} {totalCount, plural, other{件} one{件} zero{件}} あります。",
+  "@restore_collections__text__total_count": {
+    "placeholders": {
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_collections__sync_disable": "同期が現在無効です。続行するには同期を有効にしてください。",
+  "restore_collections__preparing": "コレクションの復元を準備中です。しばらくお待ちください...",
+  "restore_collections__restored": "{syncCount} {syncCount, plural, other{件} one{件} zero{件}}のコレクションが正常に復元されました。",
+  "@restore_collections__restored": {
+    "placeholders": {
+      "syncCount": {
+        "type": "int"
+      }
+    }
+  },
+  "restore_collections__restoring": "復元中：{totalCount} 件中 {synced} 件完了。",
+  "@restore_collections__restoring": {
+    "placeholders": {
+      "synced": {
+        "type": "int"
+      },
+      "totalCount": {
+        "type": "int"
+      }
+    }
+  },
+
+  "@@DRIVE_SETUP": "Drive Setup Screen",
+  "drive__snackbar__success": "Drive のセットアップが完了しました。",
+  "drive__text__setting_up": "セットアップと同期中...",
+  "drive__text__setting_up__warning": "完了するまでお待ちください。アプリを閉じないでください。",
+  "@@CREATE_CLIP_NOTE": "Create Clip Note Screen",
+  "create_clip__appbar__title__new": "新規クリップ",
+  "create_clip__appbar__title__edit": "クリップを編集",
+  "create_clip__button__save_new": "新規として保存",
+  "create_clip__input__hint": "クリップの内容をここに入力",
+  "@@COLLECTIONS": "Collections Screen",
+  "collections__text__tip": "重要なクリップをデバイス全体でいつでも利用できるように、コレクションに保存しましょう！",
+  "collections__appbar__title": "コレクション",
+  "collections__appbar__title__create": "コレクションを作成",
+  "collections__appbar__title__edit": "コレクションを編集",
+  "collections__input__name": "名前",
+  "collections__input__description": "説明",
+  "@@SELECT_COLLECTION": "Select Collection Screen",
+  "select_collection__appbar__title": "コレクションを選択",
+  "@@ACCOUNT": "Account Screen",
+  "account__dialog__delete_confirm__title": "アカウント削除リクエスト",
+  "account__dialog__delete_confirm__description": "アカウント削除リクエストフォームにリダイレクトされます。よろしいですか？",
+  "account__list_tile__display_name": "表示名",
+  "account__list_tile__email": "メール",
+  "account__list_tile__settings": "アカウント設定",
+  "account__list_tile__danger_zone": "危険な操作",
+  "account__button__req_delete": "アカウント削除を申請",
+  "account__appbar__title": "マイアカウント",
+  "@@SETTINGS": "Settings Screen",
+  "settings__appbar__title": "設定",
+  "settings__tab__1": "一般",
+  "settings__tab__2": "カスタマイズ",
+  "settings__tab__3": "同期",
+  "settings__tab__4": "暗号化",
+  "settings__tab__5": "実験的機能",
+  "settings__text__encryption": "暗号化",
+  "settings__text__sync_not_available": "ローカルクリップボード使用中は同期関連の設定を利用できません。",
+  "settings__appbar__er__title": "除外ルール",
+  "settings__text__er__predefine": "定義済み除外ルール",
+  "settings__text__er__pass_manager": "パスワードマネージャー",
+  "settings__text__er__cc": "クレジットカード番号",
+  "settings__text__er__phone": "電話番号",
+  "settings__text__er__email": "メールアドレス",
+  "settings__text__er__url": "機密 URL",
+  "settings__text__decrypted__note": "🥳 おめでとうございます！すべてのクリップがローカルで正常に復号化されました。\nデータベースの再構築は不要です。",
+  "settings__appbar__cer__title": "カスタム除外ルール",
+  "settings__switch__drag_n_drop__title": "ドラッグ＆ドロップ",
+  "settings__switch__drag_n_drop__subtitle": "アプリ内でアイテムを両方向に自由に移動できます。",
+  "settings__dropdown__no_copy_over_limit__title": "自動コピーしないサイズ上限",
+  "settings__dropdown__no_copy_over_limit__subtitle": "一定サイズ（{fileSize}）を超えるファイルとメディアは自動コピーされません。",
+  "@settings__dropdown__no_copy_over_limit__subtitle": {
+    "placeholders": {
+      "fileSize": {
+        "type": "String"
+      }
+    }
+  },
+  "settings__text__5MB": "5 MB",
+  "settings__text__10MB": "10 MB",
+  "settings__text__20MB": "20 MB",
+  "settings__text__50MB": "50 MB",
+  "settings__text__100MB": "100 MB",
+  "settings__dropdown__no_upload_over_limit__title": "自動アップロードしないサイズ上限",
+  "settings__dropdown__no_upload_over_limit__subtitle": "一定サイズ（{fileSize}）を超えるファイルとメディアは自動アップロードされません。",
+  "@settings__dropdown__no_upload_over_limit__subtitle": {
+    "placeholders": {
+      "fileSize": {
+        "type": "String"
+      }
+    }
+  },
+  "settings__dropdown__sync_mode__title": "同期モード",
+  "settings__dropdown__sync_mode__subtitle": "最適な同期速度を選択してください。",
+  "settings__sync_mode__realtime": "リアルタイム",
+  "settings__sync_mode__balanced": "バランス",
+  "settings__dropdown__theme__title": "テーマモード",
+  "settings__theme__system": "システム",
+  "settings__theme__light": "ライト",
+  "settings__theme__dark": "ダーク",
+  "settings__dropdown__color_mode__title": "カラーモード",
+  "settings__dropdown__color_mode__subtitle": "アプリの外観をカスタマイズするカラーモードを選択してください。デフォルトは「トーナルスポット」です。",
+  "settings__color_mode__tonalSpot": "トーナルスポット",
+  "settings__color_mode__content": "コンテンツ",
+  "settings__color_mode__expressive": "エクスプレッシブ",
+  "settings__color_mode__fidelity": "フィデリティ",
+  "settings__color_mode__fruit_salad": "フルーツサラダ",
+  "settings__color_mode__monochrome": "モノクロ",
+  "settings__color_mode__neutral": "ニュートラル",
+  "settings__color_mode__rainbow": "レインボー",
+  "settings__color_mode__vibrant": "ビブラント",
+  "settings__tile__cer_title": "カスタムルール",
+  "settings__tile__cer_subtitle": "アプリ、ウィンドウ／サイトのタイトル、URL、regex パターンで除外",
+  "settings__tile__er_title": "除外ルール",
+  "settings__tile__er_subtitle": "クリップボードへのコピーを防ぐ設定。詳細設定はこちら。",
+  "settings__switch__enable_sync__title": "クリップボード同期",
+  "settings__switch__enable_sync__subtitle": "デバイス間でクリップボードを簡単に同期します。",
+  "settings__switch__sync_file__title": "ファイル・メディア同期",
+  "settings__switch__sync_file__subtitle": "デバイス間でファイルとメディアのクリップを同期します。",
+  "settings__switch__paused__title": "クリップボードリスナーを一時停止",
+  "settings__switch__paused__subtitle": "設定した時刻までクリップボードの追跡を一時停止します。",
+  "settings__switch__paused_active__subtitle": "{time} まで一時停止中。タップして再開または時刻を変更。",
+  "@settings__switch__paused_active__subtitle": {
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "h:mm a",
+        "isCustomDateFormat": true
+      }
+    }
+  },
+  "settings__switch__smart_paste__title": "スマートペースト",
+  "settings__switch__smart_paste__subtitle": "フォーカス中のアプリに直接コンテンツをペーストします。",
+  "settings__switch__startup__title": "起動時に自動起動",
+  "settings__switch__startup__subtitle": "デバイスの電源が入ったときに CopyCat を自動的に起動します。",
+  "settings__switch__hotkey__title": "ホットキーで切り替え",
+  "settings__switch__hotkey__subtitle": "キーボードショートカットで CopyCat Clipboard にすばやくアクセスできます",
+  "settings__hotkey__unassigned": "未割り当て",
+  "settings__hotkey__preview_start": "",
+  "settings__hotkey__preview_end": " を押してアプリを表示・非表示にします。",
+  "settings__tile__theme_color__title": "テーマカラー",
+  "settings__tile__theme_color__subtitle": "このカラーがアプリ全体の外観に影響します。",
+  "settings__tile__desk_client__title": "デスクトップクライアントをダウンロード",
+  "settings__tile__mobile_client__title": "スマホクライアントをダウンロード",
+  "settings__tile__client__subtitle": "すべてのデバイスでクリップボードにアクセス。",
+  "settings__tile__e2e_setup__title": "エンドツーエンド暗号化設定",
+  "settings__tile__e2e_setup__subtitle": "クリップの暗号化を設定します。",
+  "settings__switch__e2e__title": "暗号化を有効にする",
+  "settings__switch__e2e__subtitle": "クリップのエンドツーエンド暗号化を有効・無効にします。",
+  "settings__dialog__conn_gdrive__title": "Google Drive に再接続しますか？",
+  "settings__dialog__conn_gdrive__subtitle": "Google Drive はすでに接続されています。再接続しますか？\n\nデータ損失を防ぐため、以前と同じアカウントを使用してください。",
+  "settings__drive__connected": "接続済み",
+  "settings__drive__loading": "読み込み中...",
+  "settings__drive__authorizing": "認証中...",
+  "settings__drive__disconnected": "未接続",
+  "settings__text__cloud__title": "クラウドドライブ",
+  "settings__text__cloud__name": "Google Drive",
+  "settings__text__gdrive__error": "Google Drive が接続されていません。ファイルとメディアの同期は現在無効です。",
+  "settings__text__gdrive__info": "ファイルとメディアは Google Drive を通じてデバイス間で安全に同期され、プライバシーが保護されます。",
+  "settings__tile__other_cloud__title": "他のクラウドドライブを設定",
+  "settings__tile__other_cloud__subtitle": "Dropbox、OneDrive などの他のクラウドドライブを設定します。",
+  "@@CUSTOM_EXCLUSION_RULES": "Custom Exclusion Rules Screen",
+  "custom_er__nav__1": "アプリ",
+  "custom_er__nav__2": "ウィンドウタイトル",
+  "custom_er__nav__3": "URL",
+  "custom_er__nav__4": "テキストパターン",
+  "custom_er__text__not_supported": "この除外は現在サポートされていません",
+  "custom_er__tile__add_app": "アプリを追加",
+  "custom_er__text__no_app": "カスタムアプリの除外はまだありません",
+  "custom_er__button__remove_app": "このアプリを削除",
+  "custom_er__tile__pattern": "コピーしたコンテンツがこれらのパターンに一致する場合にコピーを防ぐ",
+  "custom_er__text__no_pattern": "カスタムパターンの除外はありません",
+  "custom_er__button__remove_pattern": "このパターンを削除",
+  "custom_er__tile__url": "これらの URL セグメントに一致するウェブサイトからのコピーを防ぐ。",
+  "custom_er__input__url_hint": "URL またはその一部を入力してください。",
+  "custom_er__text__no_url": "カスタム URL の除外はありません",
+  "custom_er__button__remove_url": "この URL を削除",
+  "custom_er__tile__title": "ウィンドウタイトルが一致するアプリまたはウェブサイトからのコピーを防ぐ。",
+  "custom_er__text__no_title": "カスタムタイトルの除外はありません",
+  "custom_er__button__remove_title": "このタイトルを削除",
+
+  "@@ABOUT": "About App Dialog",
+  "about__tile__discord": "Discord • つながる",
+  "about__tile__youtube": "YouTube • チュートリアル",
+  "about__tile__read_tut": "読む • チュートリアル",
+  "about__tile__github": "Github • オープンソース",
+  "about__tile__website": "EntilityStudio • ウェブサイト",
+  "about__tile__support": "サポート",
+
+  "@@ANDROID_BACKGROUND_CLIPBOARD": "Android Background Clipboard",
+  "abc_title": "バックグラウンドクリップボード",
+  "abc__tile__subtitle": "バックグラウンドでクリップボードを監視",
+
+  "abc__tip__why_title": "これらの権限が必要な理由は？",
+  "abc__tip__why_subtitle": "これらの権限により CopyCat がバックグラウンドで正常に動作し、コピーしたコンテンツを検出して中断なくシームレスな体験を提供できます。",
+
+  "abc__tip__support_title": "サポートの制限",
+  "abc__tip__support_subtitle": "1. 現在、テキストクリップのみ対応しています。\n2. HyperOS 1 などの一部の OS はまだ未対応です。",
+
+  "abc__heading__req_perm": "必要な権限",
+
+  "abc__tile__notification_title": "通知アクセス",
+  "abc__tile__notification_subtitle": "CopyCat がバックグラウンドで実行中であることを通知する永続的な通知を表示し、透明性とプライバシーを確保します。",
+
+  "abc__tile__battery_opt_title": "バッテリー最適化",
+  "abc__tile__battery_opt_subtitle": "バックグラウンドで実行中に CopyCat をシステムがシャットダウンするのを防ぎ、シームレスな体験を確保します。",
+
+  "abc__tile__overlay_title": "オーバーレイ権限",
+  "abc__tile__overlay_subtitle": "画面上に透明なウィンドウを一瞬表示してクリップボードを読み取り、直後に閉じることで CopyCat がクリップボードを読み取れるようにします。",
+
+  "abc__tile__acc_title": "アクセシビリティサービス",
+  "abc__tile__acc_subtitle": "CopyCat のバックグラウンドリスナーを起動し、コピーを検出するとともに、再起動後にサービスが自動的に再開されるようにします。",
+
+  "abc__ack__ready": "設定の準備が整いました。",
+  "abc__ack__preparing": "セットアップを準備中です。しばらくお待ちください...",
+
+  "abc__perm_alert_open_setting__button": "設定を開く",
+
+  "abc__overlay_perm_alert__title": "オーバーレイ権限",
+  "abc__overlay_perm_alert__subtitle": "CopyCat Clipboard はバックグラウンドでクリップボードの内容を読み取るために「他のアプリの上に表示」権限が必要です。",
+  "abc__overlay_perm_alert__p1_prefix": "この権限は ",
+  "abc__overlay_perm_alert__p1_bold": "クリップボード検出のみに使用",
+  "abc__overlay_perm_alert__p1_suffix": " バックグラウンドでコピー操作を行う際に使用されます。",
+  "abc__overlay_perm_alert__p2_prefix": "有効にすると、CopyCat は ",
+  "abc__overlay_perm_alert__p2_bold": "0ピクセルの透明なウィンドウを作成し",
+  "abc__overlay_perm_alert__p2_suffix": " クリップボードデータを読み取るため一瞬フォアグラウンドに移動します。",
+  "abc__overlay_perm_alert__p3_prefix": "アプリは ",
+  "abc__overlay_perm_alert__p3_bold": "画面に何も表示しない",
+  "abc__overlay_perm_alert__p3_suffix": " ことに注意してください。",
+  "abc__overlay_perm_alert__p4_prefix": "一部のデバイスでは、CopyCat がクリップボードの内容を読み取る際にシステムが ",
+  "abc__overlay_perm_alert__p4_bold": "「CopyCat がクリップボードからペーストしました」",
+  "abc__overlay_perm_alert__p4_suffix": " というトースト通知を表示することがあります。",
+  "abc__overlay_perm_alert__agree": "この権限を付与することで、上記の使用方法に同意したものとみなされます。",
+
+  "abc__accessibility_perm_alert__title": "アクセシビリティ権限",
+  "abc__accessibility_perm_alert__subtitle": "CopyCat Clipboard はリアルタイムのクリップボード検出と同期のためにバックグラウンドで動作するアクセシビリティサービスが必要です。",
+  "abc__accessibility_perm_alert__p1_prefix": "このサービスは ",
+  "abc__accessibility_perm_alert__p1_bold": "クリップボードコンテンツの検出と同期にのみ使用",
+  "abc__accessibility_perm_alert__p1_suffix": " され、有効にした場合にデバイス間で同期します。",
+  "abc__accessibility_perm_alert__p2_prefix": "除外ルール機能を使用して ",
+  "abc__accessibility_perm_alert__p2_bold": "特定のアプリを除外",
+  "abc__accessibility_perm_alert__p2_suffix": " できます。",
+  "abc__accessibility_perm_alert__p3_prefix": "アプリは ",
+  "abc__accessibility_perm_alert__p3_bold": "クリップボード以外のデータにはアクセスしない",
+  "abc__accessibility_perm_alert__p3_suffix": " ことを保証します。",
+  "abc__accessibility_perm_alert__p4_prefix": "クリップボードデータは ",
+  "abc__accessibility_perm_alert__p4_bold": "外部に共有されない",
+  "abc__accessibility_perm_alert__p4_suffix": " ため、各デバイス内でプライベートに保たれます。",
+  "abc__accessibility_perm_alert__p5_prefix": "クリップボードデータは ",
+  "abc__accessibility_perm_alert__p5_bold": "エンドツーエンド暗号化",
+  "abc__accessibility_perm_alert__p5_suffix": "（有効な場合）により転送中・保存中も暗号化され、デバイス間のプライバシーを確保します。",
+  "abc__accessibility_perm_alert__agree": "アクセシビリティサービスを有効にすることで、上記の利用規約を確認し同意したものとみなされます。",
+
+  "dialog__button__try_fix": "自動修正を試みる",
+  "abc__other_setting__title": "その他の設定",
+  "abc__enhanced_clip_detection__title": "クリップボード検出の強化",
+  "abc__enhanced_clip_detection__subtitle": "より正確なクリップボード検出のためにこのオプションを有効にしてください。すべてのデバイスで動作するとは限りません。"
+}
