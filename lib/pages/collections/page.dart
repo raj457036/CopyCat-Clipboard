@@ -3,6 +3,7 @@ import 'package:clipboard/base/constants/numbers/breakpoints.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/pages/collections/widgets/appbar.dart';
 import 'package:clipboard/pages/collections/widgets/collections_grid.dart';
+import 'package:clipboard/pages/collections/widgets/collections_list.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/appconfig_flag.dart';
 import 'package:clipboard/widgets/layout/custom_scaffold.dart';
@@ -75,7 +76,7 @@ class _CollectionsPageState extends State<CollectionsPage> {
               child: ValueListenableBuilder<String>(
                 valueListenable: _searchQuery,
                 builder: (context, searchQuery, _) {
-                  return CollectionsGrid(
+                  return CollectionsListView(
                     searchQuery: searchQuery,
                     crossAxisCount: crossAxisCount,
                     isMobile: isMobile,

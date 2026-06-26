@@ -17,7 +17,6 @@ import 'package:clipboard/pages/settings/widgets/setting_header.dart';
 import 'package:clipboard/pages/settings/widgets/switches/auto_write_on_receive_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/lan_instant_sync_switch.dart';
 import 'package:clipboard/widgets/settings_menu_dropdown.dart';
-import 'package:clipboard/utils/color_extension.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/pro_tip_banner.dart';

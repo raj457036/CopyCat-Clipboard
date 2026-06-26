@@ -4,19 +4,19 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/utils/collection_actions.dart';
 import 'package:clipboard/utils/utility.dart';
-import 'package:clipboard/widgets/clip_collection_grid_item.dart';
+import 'package:clipboard/widgets/clip_collection_list_item.dart';
 import 'package:clipboard/widgets/menu.dart';
 import 'package:clipboard/widgets/no_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CollectionsGridView extends StatelessWidget {
+class CollectionsListView extends StatelessWidget {
   final String searchQuery;
   final int crossAxisCount;
   final bool isMobile;
 
-  const CollectionsGridView({
+  const CollectionsListView({
     super.key,
     required this.searchQuery,
     required this.crossAxisCount,
@@ -35,6 +35,12 @@ class CollectionsGridView extends StatelessWidget {
               collection.emoji.contains(query);
         })
         .toList(growable: false);
+  }
+
+  int _getPosition(int index, int length) {
+    if (index == 0) return -1; // first
+    if (index == length - 1) return 1; // last
+    return 0; // middle
   }
 
   @override
@@ -70,17 +76,11 @@ class CollectionsGridView extends StatelessWidget {
                     .whereType<int>()
                     .toSet();
 
-                return GridView.builder(
+                return ListView.separated(
                   scrollCacheExtent: const ScrollCacheExtent.pixels(300),
                   padding: isMobile ? const EdgeInsets.all(padding10) : inset12,
                   itemCount: filteredCollections.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    childAspectRatio: 16 / 7,
-                    mainAxisExtent: 100,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                  ),
+                  separatorBuilder: (context, index) => height2,
                   itemBuilder: (context, index) {
                     final collection = filteredCollections[index];
                     final isReadOnly =
@@ -107,10 +107,14 @@ class CollectionsGridView extends StatelessWidget {
                           ),
                         ),
                       ],
-                      child: ClipCollectionGridItem(
+                      child: ClipCollectionListItem(
                         autofocus: isDesktopPlatform && index == 0,
                         collection: collection,
                         isReadOnly: isReadOnly,
+                        position: _getPosition(
+                          index,
+                          filteredCollections.length,
+                        ),
                       ),
                     );
                   },
