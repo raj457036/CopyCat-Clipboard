@@ -663,8 +663,6 @@
   "abc__tile__subtitle": "Hören Sie den Clipboard im Hintergrund",
   "abc__tip__why_title": "Warum werden diese Berechtigungen benötigt?",
   "abc__tip__why_subtitle": "Diese Berechtigungen stellen sicher, dass CopyCat im Hintergrund korrekt funktioniert, kopierte Inhalte erkennt und Ihnen eine nahtlose Erfahrung ohne Unterbrechungen bietet.",
-  "abc__tip__support_title": "Begrenzte Unterstützung",
-  "abc__tip__support_subtitle": "1. Derzeit werden nur Textclips unterstützt.\n2. Einige Betriebssysteme, wie HyperOS 1, werden noch nicht unterstützt.",
   "abc__heading__req_perm": "Erforderliche Berechtigungen",
   "abc__tile__notification_title": "Benachrichtigungszugriff",
   "abc__tile__notification_subtitle": "Zeigt eine persistente Benachrichtigung an, um Sie darüber zu informieren, dass CopyCat im Hintergrund läuft, wodurch Transparenz und Datenschutz gewährleistet werden.",

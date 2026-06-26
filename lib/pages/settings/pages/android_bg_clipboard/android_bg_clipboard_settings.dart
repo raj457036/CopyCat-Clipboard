@@ -400,12 +400,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
             title: context.locale.abc__tip__why_title,
             tip: context.locale.abc__tip__why_subtitle,
           ),
-          // TipTile(
-          //   icon: const Icon(Icons.warning, color: Colors.amber),
-          //   bg: Colors.red.darker(50, isLight),
-          //   title: context.locale.abc__tip__support_title,
-          //   tip: context.locale.abc__tip__support_subtitle,
-          // ),
           height5,
           SettingHeader(name: context.locale.abc__heading__req_perm),
           SwitchListTile(

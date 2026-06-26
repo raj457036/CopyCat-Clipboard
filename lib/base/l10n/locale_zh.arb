@@ -663,8 +663,6 @@
   "abc__tile__subtitle": "在后台监听剪贴板",
   "abc__tip__why_title": "为什么需要这些权限？",
   "abc__tip__why_subtitle": "这些权限确保CopyCat在后台正常运行，能够检测到复制的内容，为您提供无缝体验，避免中断。",
-  "abc__tip__support_title": "有限支持",
-  "abc__tip__support_subtitle": "1. 当前仅支持文本剪辑。\n2. 一些操作系统，如HyperOS 1，尚不支持。",
   "abc__heading__req_perm": "所需权限",
   "abc__tile__notification_title": "通知访问",
   "abc__tile__notification_subtitle": "显示一个持久通知，告知您CopyCat正在后台运行，确保透明度和隐私。",

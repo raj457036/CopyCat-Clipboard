@@ -663,8 +663,6 @@
   "abc__tile__subtitle": "Escucha el portapapeles en segundo plano",
   "abc__tip__why_title": "¿Por qué se necesitan estos permisos?",
   "abc__tip__why_subtitle": "Estos permisos aseguran que CopyCat funcione correctamente en segundo plano, permitiéndole detectar el contenido copiado y brindarle una experiencia fluida sin interrupciones.",
-  "abc__tip__support_title": "Soporte limitado",
-  "abc__tip__support_subtitle": "1. Actualmente, solo se admiten clips de texto.\n2. Algunos sistemas operativos, como HyperOS 1, aún no son compatibles.",
   "abc__heading__req_perm": "Permisos requeridos",
   "abc__tile__notification_title": "Acceso a notificaciones",
   "abc__tile__notification_subtitle": "Muestra una notificación persistente para informarle que CopyCat está funcionando en segundo plano, garantizando transparencia y privacidad.",

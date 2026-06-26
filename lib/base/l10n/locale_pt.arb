@@ -663,8 +663,6 @@
   "abc__tile__subtitle": "Ouça o papel de parede em segundo plano",
   "abc__tip__why_title": "Por que essas permissões são necessárias?",
   "abc__tip__why_subtitle": "Essas permissões garantem que o CopyCat funcione corretamente em segundo plano, permitindo detectar conteúdo copiado e fornecer uma experiência contínua sem interrupções.",
-  "abc__tip__support_title": "Suporte limitado",
-  "abc__tip__support_subtitle": "1. Atualmente, apenas clipes de texto são suportados.\n2. Alguns sistemas operacionais, como o HyperOS 1, ainda não são compatíveis.",
   "abc__heading__req_perm": "Permissões necessárias",
   "abc__tile__notification_title": "Acesso à notificação",
   "abc__tile__notification_subtitle": "Exibe uma notificação persistente para informar que o CopyCat está em execução em segundo plano, garantindo transparência e privacidade.",

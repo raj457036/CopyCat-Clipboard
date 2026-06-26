@@ -1870,13 +1870,6 @@ class AppLocalizationsZh extends AppLocalizations {
       '这些权限确保CopyCat在后台正常运行，能够检测到复制的内容，为您提供无缝体验，避免中断。';
 
   @override
-  String get abc__tip__support_title => '有限支持';
-
-  @override
-  String get abc__tip__support_subtitle =>
-      '1. 当前仅支持文本剪辑。\n2. 一些操作系统，如HyperOS 1，尚不支持。';
-
-  @override
   String get abc__heading__req_perm => '所需权限';
 
   @override

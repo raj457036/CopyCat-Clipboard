@@ -1997,13 +1997,6 @@ class AppLocalizationsPt extends AppLocalizations {
       'Essas permissões garantem que o CopyCat funcione corretamente em segundo plano, permitindo detectar conteúdo copiado e fornecer uma experiência contínua sem interrupções.';
 
   @override
-  String get abc__tip__support_title => 'Suporte limitado';
-
-  @override
-  String get abc__tip__support_subtitle =>
-      '1. Atualmente, apenas clipes de texto são suportados.\n2. Alguns sistemas operacionais, como o HyperOS 1, ainda não são compatíveis.';
-
-  @override
   String get abc__heading__req_perm => 'Permissões necessárias';
 
   @override

@@ -835,8 +835,6 @@
   "abc__tile__subtitle": "Listen to the clipboard in the background",
   "abc__tip__why_title": "Why are these permissions needed?",
   "abc__tip__why_subtitle": "These permissions ensure CopyCat works correctly in the background, allowing it to detect copied content and provide you with a seamless experience without interruptions.",
-  "abc__tip__support_title": "Limited Support",
-  "abc__tip__support_subtitle": "1. Currently, only text clips are supported.\n2. Some operating systems, like HyperOS 1, are not supported yet.",
   "abc__heading__req_perm": "Required Permissions",
   "abc__tile__notification_title": "Notification Access",
   "abc__tile__notification_subtitle": "Displays a persistent notification to inform you that CopyCat is running in the background, ensuring transparency and privacy.",

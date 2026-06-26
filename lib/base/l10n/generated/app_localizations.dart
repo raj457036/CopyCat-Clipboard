@@ -3490,18 +3490,6 @@ abstract class AppLocalizations {
   /// **'These permissions ensure CopyCat works correctly in the background, allowing it to detect copied content and provide you with a seamless experience without interruptions.'**
   String get abc__tip__why_subtitle;
 
-  /// No description provided for @abc__tip__support_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Limited Support'**
-  String get abc__tip__support_title;
-
-  /// No description provided for @abc__tip__support_subtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'1. Currently, only text clips are supported.\n2. Some operating systems, like HyperOS 1, are not supported yet.'**
-  String get abc__tip__support_subtitle;
-
   /// No description provided for @abc__heading__req_perm.
   ///
   /// In en, this message translates to:

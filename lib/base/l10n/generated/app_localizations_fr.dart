@@ -1986,13 +1986,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ces autorisations garantissent que CopyCat fonctionne correctement en arrière-plan, permettant de détecter le contenu copié et de vous offrir une expérience fluide sans interruptions.';
 
   @override
-  String get abc__tip__support_title => 'Support limité';
-
-  @override
-  String get abc__tip__support_subtitle =>
-      '1. Actuellement, seuls les clips texte sont pris en charge.\n2. Certains systèmes d\'exploitation, comme HyperOS 1, ne sont pas encore pris en charge.';
-
-  @override
   String get abc__heading__req_perm => 'Autorisations requises';
 
   @override
