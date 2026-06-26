@@ -21,12 +21,14 @@ class AndroidBgClipboardSettings extends StatefulWidget {
   final AndroidBackgroundClipboard bgService;
   final String deviceId;
   final bool embedInParentScaffold;
+  final bool minimalMode;
 
   const AndroidBgClipboardSettings({
     super.key,
     required this.bgService,
     required this.deviceId,
     this.embedInParentScaffold = false,
+    this.minimalMode = false,
   });
 
   @override
@@ -271,25 +273,28 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                 : (_) => openAccessibilitySetting(),
           ),
           height5,
-          ExpansionTile(
-            tilePadding: EdgeInsets.zero,
-            initiallyExpanded: true,
-            title: SettingHeader(
-              name: context.locale.abc__other_setting__title,
-            ),
-            children: [
-              SwitchListTile(
-                title: Text(context.locale.abc__enhanced_clip_detection__title),
-                subtitle: Text(
-                  context.locale.abc__enhanced_clip_detection__subtitle,
-                ),
-                value: strictCheck,
-                enableFeedback: true,
-                thumbIcon: strictCheck ? checked : unchecked,
-                onChanged: changeStrictCheck,
+          if (!widget.minimalMode)
+            ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              initiallyExpanded: true,
+              title: SettingHeader(
+                name: context.locale.abc__other_setting__title,
               ),
-            ],
-          ),
+              children: [
+                SwitchListTile(
+                  title: Text(
+                    context.locale.abc__enhanced_clip_detection__title,
+                  ),
+                  subtitle: Text(
+                    context.locale.abc__enhanced_clip_detection__subtitle,
+                  ),
+                  value: strictCheck,
+                  enableFeedback: true,
+                  thumbIcon: strictCheck ? checked : unchecked,
+                  onChanged: changeStrictCheck,
+                ),
+              ],
+            ),
         ],
       );
     }

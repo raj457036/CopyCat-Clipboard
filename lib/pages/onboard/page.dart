@@ -5,6 +5,7 @@ import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistanc
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/di/di.dart';
+import 'package:clipboard/pages/onboard/widgets/background_clipboard.dart';
 import 'package:clipboard/pages/onboard/widgets/encryption.dart';
 import 'package:clipboard/pages/onboard/widgets/keyboard_shortcut.dart';
 import 'package:clipboard/pages/onboard/widgets/smart_paste.dart';
@@ -20,10 +21,7 @@ import 'package:go_router/go_router.dart';
 class OnBoardPage extends StatefulWidget {
   final int startingStep;
 
-  const OnBoardPage({
-    super.key,
-    required this.startingStep,
-  });
+  const OnBoardPage({super.key, required this.startingStep});
 
   @override
   State<OnBoardPage> createState() => _OnBoardPageState();
@@ -48,9 +46,11 @@ class _OnBoardPageState extends State<OnBoardPage> {
     context.read<DriveSetupCubit>().fetch();
     context.read<OfflinePersistenceCubit>().startListeners();
     // starts
-    context
-        .read<CollectionSyncManagerCubit>()
-        .syncChanges(null, manual: false, restoration: false);
+    context.read<CollectionSyncManagerCubit>().syncChanges(
+      null,
+      manual: false,
+      restoration: false,
+    );
     context.read<AppConfigCubit>().changeOnBoardStatus(true);
     context.goNamed(RouteConstants.home);
   }
@@ -65,35 +65,30 @@ class _OnBoardPageState extends State<OnBoardPage> {
           child: Padding(
             padding: const EdgeInsets.all(padding16),
             child: switch (currentStep) {
-              0 => WelcomeStep(
-                  onContinue: () => goToPage(1),
-                ),
+              0 => WelcomeStep(onContinue: () => goToPage(1)),
               1 => EncryptionStep(
-                  onContinue: () {
-                    if (isDesktopPlatform) {
-                      goToPage(2);
-                    } else {
-                      goToPage(4);
-                    }
-                  },
-                ),
-              2 => SmartPasteStep(
-                  onContinue: () => goToPage(3),
-                ),
-              3 => KeyboardShortcutStep(
-                  onContinue: () => goToPage(4),
-                ),
-              4 => RestoreCollectionStep(
-                  onContinue: () => goToPage(5),
-                  collectionRepository: sl(),
-                ),
-              5 => RestoreClipsStep(
-                  onContinue: goHome,
-                  clipboardRepository: sl(
-                    instanceName: "remote",
-                  ),
-                  restorationStatusRepository: sl(),
-                ),
+                onContinue: () {
+                  if (isDesktopPlatform) {
+                    goToPage(3);
+                  } else {
+                    goToPage(2);
+                  }
+                },
+              ),
+              2 => AndroidBackgroundClipboardStep(
+                onContinue: () => goToPage(5),
+              ),
+              3 => SmartPasteStep(onContinue: () => goToPage(4)),
+              4 => KeyboardShortcutStep(onContinue: () => goToPage(5)),
+              5 => RestoreCollectionStep(
+                onContinue: () => goToPage(6),
+                collectionRepository: sl(),
+              ),
+              6 => RestoreClipsStep(
+                onContinue: goHome,
+                clipboardRepository: sl(instanceName: "remote"),
+                restorationStatusRepository: sl(),
+              ),
               _ => const SizedBox.shrink(),
             },
           ),
