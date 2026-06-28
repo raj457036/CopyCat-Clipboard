@@ -1,5 +1,6 @@
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart' show isMediaType;
 import 'package:clipboard/widgets/clip_cards/file_clip_card.dart';
 import 'package:clipboard/widgets/clip_cards/media_clip_card.dart';
@@ -14,7 +15,16 @@ class ClipPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (item.encrypted) return EncryptedClipItem(item: item);
+    if (item.encrypted) {
+      final colors = context.colors;
+      return IconTheme(
+        data: IconThemeData(color: colors.onPrimaryContainer),
+        child: DefaultTextStyle(
+          style: TextStyle(color: context.colors.onPrimaryContainer),
+          child: EncryptedClipItem(item: item),
+        ),
+      );
+    }
 
     if (item.type == ClipItemType.text) {
       return TextClipCard(item: item);

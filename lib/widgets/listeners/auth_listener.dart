@@ -102,6 +102,7 @@ class AuthListener extends StatelessWidget {
       listener: (context, state) async {
         switch (state) {
           case AuthenticatedAuthState():
+            // debugPrint("User ID: ${state.user.userId}");
             await _handleAuthenticatedState(context, state);
           case UnauthenticatedAuthState(:final failure):
             context.read<ReviewPromptCubit>().setEnabled(false);

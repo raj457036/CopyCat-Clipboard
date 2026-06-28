@@ -31,6 +31,7 @@ class ClipCardBodyContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final item = ClipItemScope.of(context);
+    final colors = context.colors;
     final textTheme = context.textTheme;
     // NOTE: drag and drop doesn't work in android for now
     final selected = context.select(
@@ -63,6 +64,9 @@ class ClipCardBodyContent extends StatelessWidget {
                           item.displayTitle!,
                           style: textTheme.titleSmall?.copyWith(
                             fontVariations: fontVarW700,
+                            color: item.locked
+                                ? colors.onPrimaryContainer
+                                : null,
                           ),
                           maxLines: 1,
                         ),
