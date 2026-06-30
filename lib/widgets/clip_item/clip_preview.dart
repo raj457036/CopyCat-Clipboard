@@ -1,6 +1,5 @@
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
-import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart' show isMediaType;
 import 'package:clipboard/widgets/clip_cards/file_clip_card.dart';
 import 'package:clipboard/widgets/clip_cards/media_clip_card.dart';
