@@ -1,3 +1,4 @@
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
@@ -16,6 +17,7 @@ import 'package:clipboard/widgets/on_event.dart';
 import 'package:clipboard/widgets/select_clip_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ClipsBuilder extends StatelessWidget {
   final List<ClipboardItem> items;
@@ -80,6 +82,7 @@ class ClipsBuilder extends StatelessWidget {
   Widget buildGridView(
     BuildContext context,
     List<ClipboardItem> selectedClips,
+    bool dragAndDropEnabled,
   ) {
     return GridView.builder(
       scrollCacheExtent: const ScrollCacheExtent.pixels(300),
@@ -104,6 +107,7 @@ class ClipsBuilder extends StatelessWidget {
           selected: isSelected,
           selectionIndex: selectedItemIndex,
           selectionActive: selectedClips.isNotEmpty,
+          dragAndDropEnabled: dragAndDropEnabled,
         );
 
         if (isDesktopPlatform && index < 9) {
@@ -117,6 +121,7 @@ class ClipsBuilder extends StatelessWidget {
   Widget buildListView(
     BuildContext context,
     List<ClipboardItem> selectedClips,
+    bool dragAndDropEnabled,
   ) {
     return ListView.builder(
       scrollCacheExtent: const ScrollCacheExtent.pixels(300),
@@ -141,6 +146,7 @@ class ClipsBuilder extends StatelessWidget {
             selected: isSelected,
             selectionIndex: selectedItemIndex,
             selectionActive: selectedClips.isNotEmpty,
+            dragAndDropEnabled: dragAndDropEnabled,
           ),
         );
 
@@ -174,9 +180,29 @@ class ClipsBuilder extends StatelessWidget {
               return NotificationListener<ScrollNotification>(
                 onNotification: (notification) =>
                     onScrollNotification(notification, hasMore, loading),
-                child: layoutView.layout == AppLayout.grid
-                    ? buildGridView(context, selectedClips)
-                    : buildListView(context, selectedClips),
+                child: BlocSelector<AppConfigCubit, AppConfigState, bool>(
+                  selector: (state) {
+                    switch (state) {
+                      case AppConfigLoaded(:final config):
+                        return config.enableDragNDrop;
+                      default:
+                        return false;
+                    }
+                  },
+                  builder: (context, dragAndDropEnabled) {
+                    return layoutView.layout == AppLayout.grid
+                        ? buildGridView(
+                            context,
+                            selectedClips,
+                            dragAndDropEnabled,
+                          )
+                        : buildListView(
+                            context,
+                            selectedClips,
+                            dragAndDropEnabled,
+                          );
+                  },
+                ),
               );
             },
           );

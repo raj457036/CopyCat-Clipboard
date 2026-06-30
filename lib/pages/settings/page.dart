@@ -93,6 +93,7 @@ class SettingsPage extends StatelessWidget {
                   child: SizedBox(
                     width: 800,
                     child: TabBarView(
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
                         const GeneralSettings(),
                         const CustomizationSettings(),

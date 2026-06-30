@@ -215,6 +215,15 @@ Future<ClipboardItem?> decryptItem(
       NotificationMessage(
         id: "e2ee-no-setup",
         body: context.locale.app__ack__missing_e2e_setup,
+        action: SnackBarAction(
+          label: context.locale.settings__appbar__title,
+          onPressed: () {
+            context.pushNamed(
+              RouteConstants.settings,
+              queryParameters: {"tab": "4"},
+            );
+          },
+        ),
       ),
     );
     return null;

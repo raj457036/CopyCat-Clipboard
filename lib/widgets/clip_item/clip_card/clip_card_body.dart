@@ -19,14 +19,18 @@ import 'package:clipboard/widgets/local_user.dart';
 import 'package:clipboard/widgets/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:universal_io/io.dart';
 
 class ClipCardBodyContent extends StatelessWidget {
   /// If true, the card will be rendered in a simplified way without
   /// loading other interactives.
   final bool liteMode;
+  final bool dragAndDropEnabled;
 
-  const ClipCardBodyContent({super.key, this.liteMode = false});
+  const ClipCardBodyContent({
+    super.key,
+    this.liteMode = false,
+    this.dragAndDropEnabled = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +83,7 @@ class ClipCardBodyContent extends StatelessWidget {
             ],
           );
 
-    if (!Platform.isAndroid && !selected) {
+    if (!selected && dragAndDropEnabled) {
       return DraggableItem(item: item, child: child);
     }
     return child;
@@ -102,6 +106,7 @@ class ClipCardBody extends StatefulWidget {
   final bool selected;
   final int selectionIndex;
   final bool selectionActive;
+  final bool dragAndDropEnabled;
 
   const ClipCardBody({
     super.key,
@@ -110,6 +115,7 @@ class ClipCardBody extends StatefulWidget {
     required this.selected,
     required this.selectionActive,
     required this.selectionIndex,
+    required this.dragAndDropEnabled,
   });
 
   @override
@@ -179,7 +185,9 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       ),
       borderRadius: radius12,
     );
-    const content = HoverScopeProvider(child: ClipCardBodyContent());
+    final content = HoverScopeProvider(
+      child: ClipCardBodyContent(dragAndDropEnabled: widget.dragAndDropEnabled),
+    );
     final bgColor = widget.item.locked
         ? colors.primaryContainer
         : colors.surfaceContainerLowest;
@@ -200,6 +208,9 @@ class _ClipCardBodyState extends State<ClipCardBody> {
         shape: selectedShape,
         clipBehavior: Clip.hardEdge,
         child: InkWell(
+          onLongPress: isMobilePlatform && !widget.dragAndDropEnabled
+              ? () => Menu.of(context)?.openMenu(context)
+              : null,
           mouseCursor: SystemMouseCursors.click,
           focusColor: bgColor,
           customBorder: selectedShape,

@@ -24,6 +24,10 @@ class PostSyncDecryptionService {
   Future<void> decryptAll({
     void Function(int decrypted, int total)? onProgress,
   }) async {
+    if (!EncryptionWorker.instance.isRunning) {
+      _logger.w(() => "Decryption worker is not active, skipping decryption");
+      return;
+    }
     final total = await _localSource.fetchEncryptedCount();
     if (total == 0) return;
 

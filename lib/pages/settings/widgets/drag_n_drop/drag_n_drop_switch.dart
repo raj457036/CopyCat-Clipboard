@@ -5,24 +5,19 @@ import 'package:clipboard/widgets/badges.dart';
 import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:universal_io/io.dart' show Platform;
 
 class DragAndDropSwitchTile extends StatelessWidget {
   const DragAndDropSwitchTile({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // final side = context.mq.size.shortestSide;
-    // final isTablet = side > Breakpoints.sm;
-    bool isDNDSupported = true;
-    if (Platform.isAndroid) isDNDSupported = false;
     final textTheme = context.textTheme;
     final colors = context.colors;
     return BlocSelector<AppConfigCubit, AppConfigState, bool>(
       selector: (state) {
         switch (state) {
           case AppConfigLoaded(:final config):
-            return config.enableDragNDrop && isDNDSupported;
+            return config.enableDragNDrop;
           default:
             return false;
         }
@@ -30,7 +25,7 @@ class DragAndDropSwitchTile extends StatelessWidget {
       builder: (context, enabled) {
         return HasAccessToFeature(
           hasAccess: (subscription) =>
-              subscription.isActive && subscription.dragNdrop && isDNDSupported,
+              subscription.isActive && subscription.dragNdrop,
           builder: (context, hasAccess, _) {
             return SwitchListTile(
               secondary: const Icon(Icons.back_hand_rounded),
@@ -43,19 +38,10 @@ class DragAndDropSwitchTile extends StatelessWidget {
                   context.locale.settings__switch__drag_n_drop__title,
                 ),
               ),
-              subtitle: isDNDSupported
-                  ? Text(
-                      context.locale.settings__switch__drag_n_drop__subtitle,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: colors.outline,
-                      ),
-                    )
-                  : Text(
-                      context.locale.app__feature_unavailable,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: colors.outline,
-                      ),
-                    ),
+              subtitle: Text(
+                context.locale.settings__switch__drag_n_drop__subtitle,
+                style: textTheme.bodyMedium?.copyWith(color: colors.outline),
+              ),
             );
           },
         );

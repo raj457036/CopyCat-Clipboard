@@ -17,7 +17,6 @@ import 'package:clipboard/pages/settings/widgets/setting_header.dart';
 import 'package:clipboard/pages/settings/widgets/switches/auto_write_on_receive_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/lan_instant_sync_switch.dart';
 import 'package:clipboard/widgets/settings_menu_dropdown.dart';
-import 'package:clipboard/utils/color_extension.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/pro_tip_banner.dart';
@@ -27,11 +26,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AndroidBgClipboardSettings extends StatefulWidget {
   final AndroidBackgroundClipboard bgService;
   final String deviceId;
+  final bool liteMode;
 
   const AndroidBgClipboardSettings({
     super.key,
     required this.bgService,
     required this.deviceId,
+    this.liteMode = false,
   });
 
   @override
@@ -464,15 +465,18 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
             outcome: _detectionStatusOutcome,
           ),
           height5,
-          AutoWriteOnReceiveSwitchTile(
-            enabled: !writingConfig && isRunning && accessibility,
-            onChanged: (val) async {
-              await widget.bgService.writeShared("autoWriteOnReceive", val);
-            },
-          ),
-          height5,
-          SettingHeader(name: context.locale.abc__network__header),
-          LanInstantSyncSwitchTile(serviceActive: isRunning && accessibility),
+          if (!widget.liteMode)
+            AutoWriteOnReceiveSwitchTile(
+              enabled: !writingConfig && isRunning && accessibility,
+              onChanged: (val) async {
+                await widget.bgService.writeShared("autoWriteOnReceive", val);
+              },
+            ),
+          if (canChooseMode) height5,
+          if (!widget.liteMode)
+            SettingHeader(name: context.locale.abc__network__header),
+          if (!widget.liteMode)
+            LanInstantSyncSwitchTile(serviceActive: isRunning && accessibility),
         ],
       ),
     );

@@ -16,14 +16,7 @@ class ClipPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (item.encrypted) {
-      final colors = context.colors;
-      return IconTheme(
-        data: IconThemeData(color: colors.onPrimaryContainer),
-        child: DefaultTextStyle(
-          style: TextStyle(color: context.colors.onPrimaryContainer),
-          child: EncryptedClipItem(item: item),
-        ),
-      );
+      return EncryptedClipItem(item: item);
     }
 
     if (item.type == ClipItemType.text) {

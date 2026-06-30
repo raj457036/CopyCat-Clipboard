@@ -1,9 +1,6 @@
-import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/utils/datetime_extension.dart';
 import 'package:clipboard/widgets/clip_item/clip_card/clip_card_body.dart'
     show ClipCardBodyContent;
 import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';

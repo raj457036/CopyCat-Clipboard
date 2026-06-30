@@ -10,6 +10,7 @@ class ClipCard extends StatelessWidget {
   final int selectionIndex;
   final bool selectionActive;
   final ClipboardItem item;
+  final bool dragAndDropEnabled;
 
   const ClipCard({
     super.key,
@@ -18,6 +19,7 @@ class ClipCard extends StatelessWidget {
     this.selected = false,
     this.selectionActive = false,
     required this.selectionIndex,
+    required this.dragAndDropEnabled,
   });
 
   @override
@@ -32,6 +34,7 @@ class ClipCard extends StatelessWidget {
           selected: selected,
           selectionActive: selectionActive,
           selectionIndex: selectionIndex,
+          dragAndDropEnabled: dragAndDropEnabled,
         ),
       ),
     );

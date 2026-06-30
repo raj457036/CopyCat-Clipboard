@@ -54,41 +54,24 @@ class DraggableItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (item.needDownload) return child;
+    if (item.needDownload || item.encrypted) return child;
 
-    // final side = context.mq.size.shortestSide;
-    // final isTablet = side > Breakpoints.sm;
-    if (Platform.isAndroid) return child;
-
-    return BlocSelector<AppConfigCubit, AppConfigState, bool>(
-      selector: (state) {
-        switch (state) {
-          case AppConfigLoaded(:final config):
-            return config.enableDragNDrop;
-          default:
-            return false;
-        }
-      },
-      builder: (context, enabled) {
-        if (!enabled) return child;
-        return HasAccessToFeature(
-          hasAccess: (subscription) =>
-              subscription.isActive && subscription.dragNdrop,
-          fallbackWidget: child,
-          alwaysBuild: false,
-          builder: (context, hasAccess, _) {
-            return DragItemWidget(
-              canAddItemToExistingSession: true,
-              dragItemProvider: dragItemProvider,
-              allowedOperations: () => const [
-                DropOperation.copy,
-                // DropOperation.userCancelled,
-              ],
-              liftBuilder: previewBuilder,
-              dragBuilder: previewBuilder,
-              child: DraggableWidget(child: child),
-            );
-          },
+    return HasAccessToFeature(
+      hasAccess: (subscription) =>
+          subscription.isActive && subscription.dragNdrop,
+      fallbackWidget: child,
+      alwaysBuild: false,
+      builder: (context, hasAccess, _) {
+        return DragItemWidget(
+          canAddItemToExistingSession: true,
+          dragItemProvider: dragItemProvider,
+          allowedOperations: () => const [
+            DropOperation.copy,
+            // DropOperation.userCancelled,
+          ],
+          liftBuilder: previewBuilder,
+          dragBuilder: previewBuilder,
+          child: DraggableWidget(child: child),
         );
       },
     );
