@@ -158,6 +158,7 @@ class AppContent extends StatelessWidget {
             return AnnotatedRegion<SystemUiOverlayStyle>(
               value: getUiOverlay(appConfig.themeMode),
               child: MaterialApp.router(
+                // restorationScopeId: 'app',
                 routerConfig: appRouter,
                 scaffoldMessengerKey:
                     InAppNotificationService.scaffoldMessengerKey,

@@ -174,6 +174,11 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
                 result.success(null)
             }
 
+            "openBatteryOptimizationSetting" -> {
+                Utils.openBatteryOptimizationSetting(applicationContext, applicationActivity)
+                result.success(null)
+            }
+
             "isNotificationPermissionGranted" -> {
                 val granted = Utils.isNotificationPermissionGranted(applicationContext)
                 result.success(granted)
@@ -181,6 +186,11 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
 
             "requestNotificationPermission" -> {
                 Utils.requestNotificationPermission(applicationContext, applicationActivity)
+                result.success(null)
+            }
+
+            "openNotificationSetting" -> {
+                Utils.openNotificationSetting(applicationContext, applicationActivity)
                 result.success(null)
             }
 

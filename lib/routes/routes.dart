@@ -49,6 +49,7 @@ import "package:clipboard/pages/settings/pages/app_lock/app_lock_settings_page.d
 import "package:clipboard/pages/settings/pages/exclusion_rules.dart";
 import "package:clipboard/pages/settings/pages/lan_mesh/lan_mesh_page.dart";
 import "package:clipboard/pages/splash_page.dart";
+import "package:clipboard/widgets/listeners/android_clip_restore_lifecycle_listener.dart";
 import "package:clipboard/widgets/listeners/monetization_listener.dart";
 import "package:clipboard/widgets/page_route/dynamic_page_route.dart";
 import "package:flutter/foundation.dart";
@@ -98,6 +99,7 @@ class _RouteExtraDecoder extends Converter<Object?, Object?> {
 }
 
 final appRouter = GoRouter(
+  // restorationScopeId: 'router',
   debugLogDiagnostics: kDebugMode,
   navigatorKey: rootNavigationKey,
   extraCodec: const _RouteExtraCodec(),
@@ -176,8 +178,13 @@ final appRouter = GoRouter(
               ),
           ],
           child: MonetizationListener(
-            appConfigCubit: context.read(),
-            child: child,
+            appConfigCubit: sl(),
+            child: Platform.isAndroid
+                ? AndroidClipRestoreLifecycleListener(
+                    androidBgClipboardCubit: sl(),
+                    child: child,
+                  )
+                : child,
           ),
         );
       },
@@ -185,8 +192,11 @@ final appRouter = GoRouter(
         GoRoute(
           name: RouteConstants.onboard,
           path: '/onboard',
-          builder: (context, state) =>
-              OnBoardPage(key: state.pageKey, startingStep: 0),
+          builder: (context, state) {
+            final pageIndex =
+                int.tryParse(state.uri.queryParameters['page'] ?? '0') ?? 0;
+            return OnBoardPage(key: state.pageKey, startingStep: pageIndex);
+          },
         ),
         GoRoute(
           name: RouteConstants.preview,

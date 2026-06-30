@@ -70,13 +70,6 @@ class _StateInitializerState extends State<StateInitializer>
     windowCubit?.setup(appConfig.view, appConfig.windowSize);
   }
 
-  Future<void> syncAndroidBgClipboardStates() async {
-    if (!Platform.isAndroid) return;
-    final cubit = context.read<AndroidBgClipboardCubit?>();
-    await Future.delayed(Durations.extralong4);
-    cubit?.syncStates();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -120,7 +113,6 @@ class _StateInitializerState extends State<StateInitializer>
 
     switch (state) {
       case AppLifecycleState.resumed || AppLifecycleState.inactive:
-        syncAndroidBgClipboardStates();
         disableRendering(false);
         _isAppLifecycleBackgrounded = false;
         if (state == AppLifecycleState.resumed) {

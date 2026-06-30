@@ -75,6 +75,11 @@ class MethodChannelAndroidBackgroundClipboard
   }
 
   @override
+  Future<void> openNotificationSetting() async {
+    await methodChannel.invokeMethod<bool>('openNotificationSetting');
+  }
+
+  @override
   Future<void> requestOverlayPermission() async {
     await methodChannel.invokeMethod<bool>('requestOverlayPermission');
   }
@@ -82,6 +87,11 @@ class MethodChannelAndroidBackgroundClipboard
   @override
   Future<void> requestUnrestrictedBatteryAccess() async {
     await methodChannel.invokeMethod<bool>('requestUnrestrictedBatteryAccess');
+  }
+
+  @override
+  Future<void> openBatteryOptimizationSetting() async {
+    await methodChannel.invokeMethod<bool>('openBatteryOptimizationSetting');
   }
 
   @override

@@ -115,6 +115,7 @@ class LocalClipCollectionSource implements ClipCollectionSource {
       }).toList();
       await _clipboardItems.putAll(updatedItems);
       await _collection.delete(collection.id!);
+      return true;
     });
     return result;
   }

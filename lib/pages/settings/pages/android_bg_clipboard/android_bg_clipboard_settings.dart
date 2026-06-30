@@ -41,7 +41,7 @@ class AndroidBgClipboardSettings extends StatefulWidget {
 }
 
 class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, AutomaticKeepAliveClientMixin {
   late final MonetizationCubit monetizationCubit;
   late final AppConfigCubit appConfigCubit;
   String? enc1Key;
@@ -55,7 +55,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   bool batteryOptimization = false;
   bool accessibility = false;
   bool enable = false;
-  bool _awaitingAccessibilityRefresh = false;
   StreamSubscription<Map<String, String>>? _detectionStatusSubscription;
   Map<String, String>? _latestDetectionStatusPayload;
   String _detectionStatusState = 'inactive';
@@ -106,9 +105,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   void didChangeAppLifecycleState(AppLifecycleState appLifecycleState) {
     super.didChangeAppLifecycleState(appLifecycleState);
 
-    if (appLifecycleState == AppLifecycleState.resumed &&
-        _awaitingAccessibilityRefresh) {
-      _awaitingAccessibilityRefresh = false;
+    if (appLifecycleState == AppLifecycleState.resumed) {
       checkStatus();
     }
   }
@@ -122,7 +119,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
     batteryOptimization = !await widget.bgService
         .isBatteryOptimizationEnabled();
     accessibility = await _readAccessibilityStatus();
-    _awaitingAccessibilityRefresh = false;
     isRunning = await widget.bgService.isServiceRunning();
 
     if (!accessibility) {
@@ -155,20 +151,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   }
 
   Future<bool> _readAccessibilityStatus() async {
-    var granted = await widget.bgService.isAccessibilityPermissionGranted();
-    if (granted || !_awaitingAccessibilityRefresh) {
-      return granted;
-    }
-
-    for (var attempt = 0; attempt < 6; attempt++) {
-      await Future<void>.delayed(const Duration(milliseconds: 250));
-      granted = await widget.bgService.isAccessibilityPermissionGranted();
-      if (granted) {
-        return true;
-      }
-    }
-
-    return false;
+    return widget.bgService.isAccessibilityPermissionGranted();
   }
 
   (String, String) _statusForMode(String mode) {
@@ -224,10 +207,20 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   }
 
   Future<void> openNotificationSetting() async {
+    if (notification) {
+      await widget.bgService.openNotificationSetting();
+      return;
+    }
+
     await widget.bgService.requestNotificationPermission();
   }
 
   Future<void> openBatteryOptimizationSetting() async {
+    if (batteryOptimization) {
+      await widget.bgService.openBatteryOptimizationSetting();
+      return;
+    }
+
     await widget.bgService.requestUnrestrictedBatteryAccess();
   }
 
@@ -240,7 +233,6 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
       }
     }
 
-    _awaitingAccessibilityRefresh = true;
     await widget.bgService.openAccessibilityService();
   }
 
@@ -356,14 +348,14 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
 
       if (!mounted) return;
 
-      InAppNotificationService.i.notify(
-        NotificationMessage(
-          id: "detection_mode_updated",
-          body: normalizedMode == 'inactive'
-              ? context.locale.abc__ack__detection_mode_cleared
-              : context.locale.abc__ack__detection_mode_updated,
-        ),
-      );
+      // InAppNotificationService.i.notify(
+      //   NotificationMessage(
+      //     id: "detection_mode_updated",
+      //     body: normalizedMode == 'inactive'
+      //         ? context.locale.abc__ack__detection_mode_cleared
+      //         : context.locale.abc__ack__detection_mode_updated,
+      //   ),
+      // );
     } catch (e) {
       logger.e("Failed to update detection mode: $e");
       if (!mounted) return;
@@ -387,6 +379,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     // final isLight = context.theme.brightness == Brightness.light;
     final textTheme = context.textTheme;
     final colors = context.colors;
@@ -486,4 +479,7 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
       child: loading ? IgnorePointer(child: child) : child,
     );
   }
+
+  @override
+  bool get wantKeepAlive => widget.liteMode;
 }

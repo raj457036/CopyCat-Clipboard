@@ -28,5 +28,5 @@ Future<void> deleteClipCollection(
     message: context.locale.dialog__delete_collection__subtitle,
   ).show(context);
   if (!confirm) return;
-  cubit.delete(collection);
+  await cubit.delete(collection);
 }

@@ -61,6 +61,11 @@ class AndroidBackgroundClipboard {
         .requestUnrestrictedBatteryAccess();
   }
 
+  Future<void> openBatteryOptimizationSetting() async {
+    return AndroidBackgroundClipboardPlatform.instance
+        .openBatteryOptimizationSetting();
+  }
+
   Future<bool> isNotificationPermissionGranted() async {
     return AndroidBackgroundClipboardPlatform.instance
         .isNotificationPermissionGranted();
@@ -69,6 +74,11 @@ class AndroidBackgroundClipboard {
   Future<void> requestNotificationPermission() async {
     return AndroidBackgroundClipboardPlatform.instance
         .requestNotificationPermission();
+  }
+
+  Future<void> openNotificationSetting() async {
+    return AndroidBackgroundClipboardPlatform.instance
+        .openNotificationSetting();
   }
 
   Future<bool> isServiceRunning() async {

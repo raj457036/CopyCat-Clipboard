@@ -12,6 +12,7 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/titlebar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:universal_io/universal_io.dart';
 
 class OnBoardPage extends StatefulWidget {
@@ -24,7 +25,7 @@ class OnBoardPage extends StatefulWidget {
 }
 
 class _OnBoardPageState extends State<OnBoardPage> {
-  late int currentStep;
+  int currentStep = 0;
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _OnBoardPageState extends State<OnBoardPage> {
     setState(() {
       currentStep = step;
     });
+    context.go('/onboard?page=$step');
   }
 
   void finishOnboarding() {

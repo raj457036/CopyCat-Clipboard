@@ -71,11 +71,19 @@ abstract class AndroidBackgroundClipboardPlatform extends PlatformInterface {
     throw UnimplementedError();
   }
 
+  Future<void> openBatteryOptimizationSetting() async {
+    throw UnimplementedError();
+  }
+
   Future<bool> isNotificationPermissionGranted() async {
     throw UnimplementedError();
   }
 
   Future<void> requestNotificationPermission() async {
+    throw UnimplementedError();
+  }
+
+  Future<void> openNotificationSetting() async {
     throw UnimplementedError();
   }
 

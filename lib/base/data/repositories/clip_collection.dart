@@ -50,7 +50,7 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
   FailureOr<bool> delete(ClipCollection collection) async {
     try {
       await local.delete(collection);
-      if (collection.id != null) {
+      if (collection.id != null && collection.deletedAt == null) {
         await outbox.enqueue(
           SyncOutboxEntry(
             entityType: 'collection',

@@ -109,16 +109,14 @@ class Utils {
             val packageName = context.packageName
             val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
 
-            val intent: Intent = if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-                // Request battery optimization exemption for the app
-                Intent(
-                    Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                    Uri.parse("package:$packageName")
-                )
-            } else {
-                // Open general battery optimization settings
-                Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+            if (pm.isIgnoringBatteryOptimizations(packageName)) {
+                return
             }
+
+            val intent = Intent(
+                Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                Uri.parse("package:$packageName")
+            )
 
             if (activity != null) {
                 activity.startActivity(intent)
@@ -128,6 +126,18 @@ class Utils {
             }
         }
 
+        fun openBatteryOptimizationSetting(context: Context, activity: Activity?) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
+
+            val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+
+            if (activity != null) {
+                activity.startActivity(intent)
+            } else {
+                intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
+            }
+        }
 
         fun isNotificationPermissionGranted(context: Context): Boolean {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -160,21 +170,13 @@ class Utils {
                     context,
                     Manifest.permission.POST_NOTIFICATIONS
                 )
-                val notDeclinedYet = ActivityCompat.shouldShowRequestPermissionRationale(
-                    activity,
-                    Manifest.permission.POST_NOTIFICATIONS
-                )
-                if (status != PackageManager.PERMISSION_GRANTED && !notDeclinedYet) {
+                if (status != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(
                         activity,
                         arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                         101
                     ) // random request code
-                } else {
-                    openNotificationSetting(context, activity)
                 }
-            } else {
-                openNotificationSetting(context, activity)
             }
         }
     }
