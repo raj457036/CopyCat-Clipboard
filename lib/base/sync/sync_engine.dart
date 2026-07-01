@@ -118,13 +118,15 @@ class SyncEngine<T extends Syncable> {
 
       // During Restoration, we don't need to pull deleted records
       // because the local database is already wiped clean.
+      DateTime? latestDeletedModified;
       if (!freshPull) {
         // 1. Sync Deleted Items
-        final deleteResult = await _pullDeleted(
+        final (deleteResult, deletedModified) = await _pullDeleted(
           lastSynced,
           excludeDeviceId: excludeDeviceId,
         );
         if (deleteResult == SyncResult.failed) return SyncResult.failed;
+        latestDeletedModified = deletedModified;
       }
 
       // 2. Sync Created/Updated Items
@@ -135,7 +137,17 @@ class SyncEngine<T extends Syncable> {
       if (changesResult == SyncResult.failed) return SyncResult.failed;
 
       // 3. Persist new cursor
-      final nextCursorTime = latestPulledModified ?? lastSynced;
+      DateTime? nextCursorTime = lastSynced;
+      if (latestDeletedModified != null &&
+          (nextCursorTime == null ||
+              latestDeletedModified.isAfter(nextCursorTime))) {
+        nextCursorTime = latestDeletedModified;
+      }
+      if (latestPulledModified != null &&
+          (nextCursorTime == null ||
+              latestPulledModified.isAfter(nextCursorTime))) {
+        nextCursorTime = latestPulledModified;
+      }
       if (nextCursorTime != null) {
         await cursorRepo.upsert(
           SyncCursor(entityType: identity, lastSyncedAt: nextCursorTime),
@@ -156,7 +168,7 @@ class SyncEngine<T extends Syncable> {
     }
   }
 
-  Future<SyncResult> _pullDeleted(
+  Future<(SyncResult, DateTime?)> _pullDeleted(
     DateTime? lastSynced, {
     String? excludeDeviceId,
   }) async {
@@ -186,6 +198,13 @@ class SyncEngine<T extends Syncable> {
 
           final deletedLocally = await adapter.deleteLocally(paginated.results);
 
+          if (deletedLocally.isNotEmpty) {
+            eventBus.emitBatch<T>([
+              for (final item in deletedLocally)
+                (CrossSyncEventType.delete, item),
+            ]);
+          }
+
           // Clear any outbox entries for these deleted items
           for (final item in deletedLocally) {
             if (item.id != null) {
@@ -197,9 +216,9 @@ class SyncEngine<T extends Syncable> {
         },
       );
 
-      if (!success) return SyncResult.failed;
+      if (!success) return (SyncResult.failed, lastModified);
     }
-    return SyncResult.success;
+    return (SyncResult.success, lastModified);
   }
 
   Future<(SyncResult, DateTime?)> _pullChanges(

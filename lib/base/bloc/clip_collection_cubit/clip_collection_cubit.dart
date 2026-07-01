@@ -27,6 +27,7 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
   final MonetizationCubit monetizationCubit;
   late StreamSubscription eventBusSubscription;
   late StreamSubscription<MonetizationState> _monetizationSub;
+  Future<void> _batchSyncQueue = Future.value();
 
   /// Resolves the active collection limit from a [MonetizationState].
   static int _limitFromMonetization(MonetizationState monetizationState) =>
@@ -50,12 +51,19 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
       if (event is TypedSyncEvent<ClipCollection>) {
         onSyncEvent(event.event);
       } else if (event is TypedSyncBatchEvent<ClipCollection>) {
-        onBatchSyncEvent(event.events);
+        _batchSyncQueue = _batchSyncQueue
+            .then((_) => onBatchSyncEvent(event.events))
+            .catchError((error, stackTrace) {
+              logger.e(
+                'ClipCollectionCubit batch sync failed: $error',
+                stackTrace: stackTrace,
+              );
+            });
       }
     });
   }
 
-  void onBatchSyncEvent(List<CollectionCrossSyncEvent> events) {
+  Future<void> onBatchSyncEvent(List<CollectionCrossSyncEvent> events) async {
     if (events.isEmpty) return;
     // Deleted (Treat both true DELETE events and UPDATEs with deletedAt as deletions)
     final deleted = events
@@ -66,72 +74,78 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
         .map((event) => event.$2)
         .toList();
     if (deleted.isNotEmpty) {
-      for (var d in deleted) {
-        delete(d);
-      }
+      await _deleteFromSyncEvents(deleted);
     }
 
-    // Created
-    final created = events
+    final upserts = events
         .where((event) {
           final (type, item) = event;
-          return type == CrossSyncEventType.create && item.deletedAt == null;
+          return (type == CrossSyncEventType.create ||
+                  type == CrossSyncEventType.update) &&
+              item.deletedAt == null;
         })
         .map((event) => event.$2)
         .toList();
-    if (created.isNotEmpty) {
-      emit(state.copyWith(collections: [...created, ...state.collections]));
+    if (upserts.isEmpty) return;
+
+    var collections = List<ClipCollection>.from(state.collections);
+    var changed = false;
+    for (final collection in upserts) {
+      final result = _upsertLocal(collections, collection);
+      collections = result.collections;
+      changed = result.changed || changed;
     }
 
-    // Updates
-    final updated = events
-        .where((event) {
-          final (type, item) = event;
-          return type == CrossSyncEventType.update && item.deletedAt == null;
-        })
-        .map((event) => event.$2)
-        .toList();
-    if (updated.isEmpty) return;
-    final updateIndexMap = <int, int>{};
-    for (var i = 0; i < updated.length; i++) {
-      final collection = updated[i];
-      updateIndexMap[collection.id!] = i;
+    if (changed) {
+      emit(state.copyWith(collections: collections));
     }
-
-    final replaced = <ClipCollection>[];
-    for (var i = 0; i < state.collections.length; i++) {
-      final collection = state.collections[i];
-      final found = updateIndexMap[collection.id];
-      if (found != null) {
-        replaced.add(updated[found]);
-      } else {
-        replaced.add(collection);
-      }
-    }
-    emit(state.copyWith(collections: replaced));
   }
 
   void onSyncEvent(CollectionCrossSyncEvent event) {
     final (type, collection) = event;
     // deleted
     if (collection.deletedAt != null || type == CrossSyncEventType.delete) {
-      delete(collection);
+      unawaited(_deleteFromSyncEvents([collection]));
       return;
     }
 
-    put(collection, isNew: type == CrossSyncEventType.create);
+    final result = _upsertLocal(state.collections, collection);
+    if (result.changed) {
+      emit(state.copyWith(collections: result.collections));
+    }
   }
 
-  void put(ClipCollection collection, {bool isNew = false}) {
-    if (isNew) {
-      emit(state.copyWith(collections: [collection, ...state.collections]));
-    } else {
-      final collections = state.collections.replaceWhere(
-        (it) => it.id == collection.id,
-        collection,
-      );
-      emit(state.copyWith(collections: collections));
+  ({List<ClipCollection> collections, bool changed}) _upsertLocal(
+    List<ClipCollection> collections,
+    ClipCollection collection,
+  ) {
+    final next = List<ClipCollection>.from(collections);
+    final index = next.indexWhere((it) => _isSameCollection(it, collection));
+    if (index == -1) {
+      next.insert(0, collection);
+      return (collections: next, changed: true);
     }
+
+    if (next[index] == collection) {
+      return (collections: next, changed: false);
+    }
+
+    next[index] = collection;
+    return (collections: next, changed: true);
+  }
+
+  bool _isSameCollection(ClipCollection left, ClipCollection right) {
+    if (left.id != null && right.id != null && left.id == right.id) {
+      return true;
+    }
+
+    if (left.serverId != null &&
+        right.serverId != null &&
+        left.serverId == right.serverId) {
+      return true;
+    }
+
+    return false;
   }
 
   // MARK: - Plan limit
@@ -186,11 +200,48 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
           return !isLocallyDeleted && !isRemotelyDeleted;
         }).toList();
 
-        final isDeleted = items.length < loaded.collections.length;
+        final removedCount = loaded.collections.length - items.length;
+        final nextOffset = (loaded.offset - removedCount)
+            .clamp(0, items.length)
+            .toInt();
         emit(
           loaded.copyWith(
             collections: items,
-            offset: isDeleted ? loaded.offset - 1 : loaded.offset,
+            offset: nextOffset,
+            isLoading: false,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteFromSyncEvents(List<ClipCollection> collections) async {
+    if (collections.isEmpty) return;
+    final deletedIds = collections.map((c) => c.id).whereType<int>().toSet();
+    final deletedServerIds = collections
+        .map((c) => c.serverId)
+        .whereType<int>()
+        .toSet();
+
+    await state.mapOrNull(
+      loaded: (loaded) async {
+        emit(loaded.copyWith(isLoading: true));
+        await repo.deleteMany(collections);
+        final items = loaded.collections.where((c) {
+          final isLocallyDeleted = c.id != null && deletedIds.contains(c.id);
+          final isRemotelyDeleted =
+              c.serverId != null && deletedServerIds.contains(c.serverId);
+          return !isLocallyDeleted && !isRemotelyDeleted;
+        }).toList();
+
+        final removedCount = loaded.collections.length - items.length;
+        final nextOffset = (loaded.offset - removedCount)
+            .clamp(0, items.length)
+            .toInt();
+        emit(
+          loaded.copyWith(
+            collections: items,
+            offset: nextOffset,
             isLoading: false,
           ),
         );

@@ -93,8 +93,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
 
   @override
   Future<List<ClipboardItem>> deleteLocally(List<ClipboardItem> items) async {
-    final result = await _clipRepo.deleteMany(items);
-    return result.fold((l) => [], (r) => r);
+    return await _localSource.deleteMany(items, soft: false);
   }
 
   @override

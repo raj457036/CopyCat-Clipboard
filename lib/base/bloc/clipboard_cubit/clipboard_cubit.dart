@@ -116,50 +116,34 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     if (events.isEmpty) return;
 
     final deleted = <ClipboardItem>[];
-    final created = <ClipboardItem>[];
-    final updated = <ClipboardItem>[];
 
     final hasSearch = state.query.isNotEmpty;
     final filter = state.filterState;
+    var changed = false;
 
-    // Single pass: classify each event into deleted / created / updated.
     for (final event in events) {
       final (type, item) = event;
       if (type == CrossSyncEventType.delete || item.deletedAt != null) {
         deleted.add(item);
         continue;
       }
-      if (hasSearch) continue; // create/update processing skipped under search
-      if (type == CrossSyncEventType.create && filter.matchedByFilter(item)) {
-        created.add(item);
-      } else if (type == CrossSyncEventType.update &&
-          filter.matchedByFilter(item)) {
-        updated.add(item);
+      if (hasSearch) continue;
+
+      if (type == CrossSyncEventType.create ||
+          type == CrossSyncEventType.update) {
+        if (!filter.matchedByFilter(item)) continue;
+        changed = _upsertItem(_items, item) || changed;
       }
+    }
+
+    if (changed) {
+      _applySort(_items);
+      emit(state.copyWith(revision: state.revision + 1));
     }
 
     if (deleted.isNotEmpty) {
       deleteItem(deleted);
       fetch(limit: deleted.length);
-    }
-
-    if (created.isNotEmpty) {
-      _items.insertAll(0, created);
-      emit(state.copyWith(revision: state.revision + 1));
-    }
-
-    if (updated.isNotEmpty) {
-      var changed = false;
-      for (final eventItem in updated) {
-        final index = _findItemIndex(_items, eventItem);
-        if (index == -1) continue;
-        if (_items[index] == eventItem) continue;
-        _items[index] = eventItem;
-        changed = true;
-      }
-      if (!changed) return;
-      _applySort(_items);
-      emit(state.copyWith(revision: state.revision + 1));
     }
   }
 
@@ -203,23 +187,30 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     }
   }
 
-  void put(ClipboardItem item, {bool isNew = false}) {
+  void put(ClipboardItem item) {
     final activeCollectionId = state.filterState.collectionId;
     if (activeCollectionId != null && activeCollectionId != item.collectionId) {
       deleteItem([item]);
       return;
     }
 
-    if (isNew) {
-      _items.insert(0, item);
-    } else {
-      final updated = _findItemIndex(_items, item);
-      if (updated != -1) {
-        _items[updated] = item;
-      }
-    }
+    final changed = _upsertItem(_items, item);
+    if (!changed) return;
+
     _applySort(_items);
     emit(state.copyWith(revision: state.revision + 1));
+  }
+
+  bool _upsertItem(List<ClipboardItem> items, ClipboardItem item) {
+    final index = _findItemIndex(items, item);
+    if (index == -1) {
+      items.insert(0, item);
+      return true;
+    }
+
+    if (items[index] == item) return false;
+    items[index] = item;
+    return true;
   }
 
   void _applySort(List<ClipboardItem> items) {

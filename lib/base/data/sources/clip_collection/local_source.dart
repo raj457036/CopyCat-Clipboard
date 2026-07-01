@@ -41,7 +41,8 @@ class LocalClipCollectionSource implements ClipCollectionSource {
     if (search == null) {
       isarResults = await db.txn(
         () async => await _collection
-            .where()
+            .filter()
+            .deletedAtIsNull()
             .sortByCreatedDesc()
             .offset(offset)
             .limit(limit)
@@ -67,6 +68,7 @@ class LocalClipCollectionSource implements ClipCollectionSource {
         }
 
         var query = filter
+            .deletedAtIsNull()
             .titleIsNotEmpty()
             .sortByCreatedDesc()
             .offset(offset)
