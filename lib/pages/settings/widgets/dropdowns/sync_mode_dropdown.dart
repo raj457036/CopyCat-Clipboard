@@ -58,6 +58,7 @@ class SyncModeTile extends StatelessWidget {
               // ),
               trailing: Chip(
                 shape: const StadiumBorder(),
+                side: BorderSide(color: speedBackground),
                 backgroundColor: speedBackground,
                 label: Row(
                   mainAxisSize: MainAxisSize.min,
