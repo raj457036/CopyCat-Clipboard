@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 class ImportE2eeDialog extends StatelessWidget {
   final bool loading;
   final VoidCallback importEnc2Key;
+  final Widget? scanQrEnc2Key;
   final bool invalidImportedKey;
   final Widget? bottom;
 
@@ -14,6 +15,7 @@ class ImportE2eeDialog extends StatelessWidget {
     super.key,
     required this.loading,
     required this.importEnc2Key,
+    required this.scanQrEnc2Key,
     this.bottom,
     this.invalidImportedKey = false,
   });
@@ -70,6 +72,7 @@ class ImportE2eeDialog extends StatelessWidget {
                   ? Text(context.locale.dialog__button__e2e_importing_key)
                   : Text(context.locale.dialog__button__e2e_import_key),
             ),
+            if (scanQrEnc2Key != null) ...[height10, scanQrEnc2Key!],
             if (bottom != null) ...[const Divider(height: 30), bottom!],
           ],
         ),

@@ -2699,4 +2699,42 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get transform__label__extract_numbers => 'Extraire les nombres';
+
+  @override
+  String get transfer__scan_qr => 'Scanner le QR code';
+
+  @override
+  String get transfer__show_qr => 'Afficher le QR code';
+
+  @override
+  String get transfer__enter_passcode => 'Entrer le code d\'accès';
+
+  @override
+  String get transfer__six_digit_passcode => 'Code d\'accès à 6 chiffres';
+
+  @override
+  String get transfer__securely_transfer_via_qr =>
+      'Transférer en toute sécurité vers un appareil proche via QR (Recommandé)';
+
+  @override
+  String get transfer__nearby_device => 'Transférer vers un appareil proche';
+
+  @override
+  String get transfer__scan_qr_and_enter_passcode =>
+      'Scannez ce QR code sur votre autre appareil, puis entrez le code d\'accès.';
+
+  @override
+  String get transfer__enter_passcode_on_other_device =>
+      'Entrez ce code d\'accès sur l\'autre appareil.';
+
+  @override
+  String get transfer__show_passcode => 'Afficher le code d\'accès';
+
+  @override
+  String get transfer__device_has_no_camera_use_file_import =>
+      'Cet appareil n\'a pas de caméra. Utilisez plutôt l\'option d\'importation de fichier.';
+
+  @override
+  String get transfer__scan_qr_from_other_device =>
+      'Scannez le QR code depuis votre autre appareil.';
 }

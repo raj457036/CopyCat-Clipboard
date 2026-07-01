@@ -91,6 +91,8 @@
 		<true />
 		<key>NSFaceIDUsageDescription</key>
 		<string>Used to authenticate and lock access to your clipboard.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Used to scan QR codes for local device-to-device encryption key transfer.</string>
 		<key>UILaunchStoryboardName</key>
 		<string>LaunchScreen</string>
 		<key>UIMainStoryboardFile</key>

@@ -1130,5 +1130,17 @@
   "transform__label__copy_cleaned": "Copy cleaned",
   "transform__label__extract_emails": "Extract emails",
   "transform__label__extract_urls": "Extract URLs",
-  "transform__label__extract_numbers": "Extract numbers"
+  "transform__label__extract_numbers": "Extract numbers",
+  "@@END To End Encryption QR": "End to End Encryption QR Transfer",
+  "transfer__scan_qr": "Scan QR",
+  "transfer__show_qr": "Show QR",
+  "transfer__enter_passcode": "Enter Passcode",
+  "transfer__six_digit_passcode": "6-digit passcode",
+  "transfer__securely_transfer_via_qr": "Securely transfer to nearby device via QR (Recommended)",
+  "transfer__nearby_device": "Transfer to Nearby Device",
+  "transfer__scan_qr_and_enter_passcode": "Scan this QR on your other device, then enter the passcode.",
+  "transfer__enter_passcode_on_other_device": "Enter this passcode on the other device.",
+  "transfer__show_passcode": "Show Passcode",
+  "transfer__device_has_no_camera_use_file_import": "This device does not have a camera. Use the file import option instead.",
+  "transfer__scan_qr_from_other_device": "Scan the QR from your other device."
 }

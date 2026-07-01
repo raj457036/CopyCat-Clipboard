@@ -2653,4 +2653,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get transform__label__extract_numbers => 'Extract numbers';
+
+  @override
+  String get transfer__scan_qr => 'Scan QR';
+
+  @override
+  String get transfer__show_qr => 'Show QR';
+
+  @override
+  String get transfer__enter_passcode => 'Enter Passcode';
+
+  @override
+  String get transfer__six_digit_passcode => '6-digit passcode';
+
+  @override
+  String get transfer__securely_transfer_via_qr =>
+      'Securely transfer to nearby device via QR (Recommended)';
+
+  @override
+  String get transfer__nearby_device => 'Transfer to Nearby Device';
+
+  @override
+  String get transfer__scan_qr_and_enter_passcode =>
+      'Scan this QR on your other device, then enter the passcode.';
+
+  @override
+  String get transfer__enter_passcode_on_other_device =>
+      'Enter this passcode on the other device.';
+
+  @override
+  String get transfer__show_passcode => 'Show Passcode';
+
+  @override
+  String get transfer__device_has_no_camera_use_file_import =>
+      'This device does not have a camera. Use the file import option instead.';
+
+  @override
+  String get transfer__scan_qr_from_other_device =>
+      'Scan the QR from your other device.';
 }

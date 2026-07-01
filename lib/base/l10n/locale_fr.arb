@@ -940,5 +940,17 @@
   "transform__label__copy_cleaned": "Copier nettoyé",
   "transform__label__extract_emails": "Extraire les e-mails",
   "transform__label__extract_urls": "Extraire les URLs",
-  "transform__label__extract_numbers": "Extraire les nombres"
+  "transform__label__extract_numbers": "Extraire les nombres",
+  "@@END To End Encryption QR": "End to End Encryption QR Transfer",
+  "transfer__scan_qr": "Scanner le QR code",
+  "transfer__show_qr": "Afficher le QR code",
+  "transfer__enter_passcode": "Entrer le code d'accès",
+  "transfer__six_digit_passcode": "Code d'accès à 6 chiffres",
+  "transfer__securely_transfer_via_qr": "Transférer en toute sécurité vers un appareil proche via QR (Recommandé)",
+  "transfer__nearby_device": "Transférer vers un appareil proche",
+  "transfer__scan_qr_and_enter_passcode": "Scannez ce QR code sur votre autre appareil, puis entrez le code d'accès.",
+  "transfer__enter_passcode_on_other_device": "Entrez ce code d'accès sur l'autre appareil.",
+  "transfer__show_passcode": "Afficher le code d'accès",
+  "transfer__device_has_no_camera_use_file_import": "Cet appareil n'a pas de caméra. Utilisez plutôt l'option d'importation de fichier.",
+  "transfer__scan_qr_from_other_device": "Scannez le QR code depuis votre autre appareil."
 }

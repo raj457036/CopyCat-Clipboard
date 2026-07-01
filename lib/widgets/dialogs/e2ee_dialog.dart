@@ -1,8 +1,9 @@
-import 'dart:convert' show jsonEncode, jsonDecode, utf8;
+import 'dart:convert' show utf8;
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/data/services/encryption.dart';
+import 'package:clipboard/base/data/services/e2ee_qr_transfer_service.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
@@ -13,8 +14,12 @@ import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialogs/export_e2ee.dart';
+import 'package:clipboard/widgets/dialogs/e2ee_dialogs/e2ee_passcode_prompt_dialog.dart';
+import 'package:clipboard/widgets/dialogs/e2ee_dialogs/e2ee_qr_scan_action_button.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialogs/generate_e2ee.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialogs/import_e2ee.dart';
+import 'package:clipboard/widgets/dialogs/e2ee_dialogs/qr_transfer_e2ee.dart';
+import 'package:clipboard/widgets/dialogs/e2ee_dialogs/scan_qr_e2ee.dart';
 import 'package:clipboard/widgets/encrypted_clip_stat.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +46,6 @@ class E2EESettingDialog extends StatefulWidget {
 class _E2EESettingDialogState extends State<E2EESettingDialog> {
   bool loading = false;
   bool invalidImportedKey = false;
-  String? secret;
 
   late AuthCubit authCubit;
   late AppConfigCubit appConfigCubit;
@@ -67,43 +71,95 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
       if (pickedFile == null) return;
       if (pickedFile.files.first.bytes == null) return;
       final content = utf8.decode(pickedFile.files.first.bytes!);
-      final json = jsonDecode(content);
-      final importedKeyId = json["enc2Id"];
-      final key = json["enc2"];
-
-      if (importedKeyId == null) {
+      final secret = E2EEQrTransferService.decodeKeyFile(content);
+      if (secret == null) {
         setState(() => invalidImportedKey = true);
         return;
       }
 
-      if (key == null) {
-        setState(() => invalidImportedKey = true);
-        return;
-      }
-
-      if (importedKeyId == keyId && key != null) {
-        await appConfigCubit.setE2EEKey(key);
-
-        final enc1 = authCubit.state.maybeWhen(
-          authenticated: (user, _, _, _) => user.enc1,
-          orElse: () => null,
-        );
-
-        final enc1Decrypt = await appConfigCubit.decryptEnc2(enc1);
-        if (enc1Decrypt == null) {
-          setState(() => invalidImportedKey = true);
-          return;
-        }
-        EncryptionWorker.instance.dispose();
-        await EncryptionWorker.instance.start(enc1Decrypt);
-        EncryptionWorker.instance.setEncryption(true);
-        await appConfigCubit.toggleAutoEncrypt(true);
-      } else {
-        setState(() => invalidImportedKey = true);
-      }
+      await _tryImportEnc2Key(
+        keyId: keyId,
+        importedKeyId: secret.enc2Id,
+        key: secret.enc2,
+      );
     } catch (e) {
       setState(() => invalidImportedKey = true);
     }
+  }
+
+  Future<void> importEnc2KeyViaQr(String keyId) async {
+    final payload = await showDialog<String>(
+      context: context,
+      builder: (_) => const ScanQrE2eeDialog(),
+    );
+    if (!mounted || payload == null || payload.isEmpty) return;
+
+    final passcode = await E2EEPasscodePromptDialog.show(context);
+    if (!mounted || passcode == null || passcode.isEmpty) return;
+
+    final secret = E2EEQrTransferService.decryptPayload(
+      payload: payload,
+      passcode: passcode,
+    );
+
+    if (secret == null) {
+      setState(() => invalidImportedKey = true);
+      return;
+    }
+
+    await _tryImportEnc2Key(
+      keyId: keyId,
+      importedKeyId: secret.enc2Id,
+      key: secret.enc2,
+    );
+  }
+
+  Future<void> _tryImportEnc2Key({
+    required String keyId,
+    required String importedKeyId,
+    required String key,
+  }) async {
+    if (importedKeyId != keyId) {
+      setState(() => invalidImportedKey = true);
+      return;
+    }
+
+    await appConfigCubit.setE2EEKey(key);
+
+    final enc1 = authCubit.state.maybeWhen(
+      authenticated: (user, _, _, _) => user.enc1,
+      orElse: () => null,
+    );
+
+    final enc1Decrypt = await appConfigCubit.decryptEnc2(enc1);
+    if (enc1Decrypt == null) {
+      setState(() => invalidImportedKey = true);
+      return;
+    }
+
+    EncryptionWorker.instance.dispose();
+    await EncryptionWorker.instance.start(enc1Decrypt);
+    EncryptionWorker.instance.setEncryption(true);
+    await appConfigCubit.toggleAutoEncrypt(true);
+    if (mounted) {
+      setState(() => invalidImportedKey = false);
+    }
+  }
+
+  Future<void> openQrTransfer(String keyId, String enc2Key) async {
+    final passcode = E2EEQrTransferService.generatePasscode();
+    final payload = E2EEQrTransferService.buildEncryptedPayload(
+      enc2Id: keyId,
+      enc2: enc2Key,
+      passcode: passcode,
+    );
+    if (!mounted) return;
+
+    await showDialog<void>(
+      context: context,
+      builder: (_) =>
+          QrTransferE2eeDialog(payload: payload, passcode: passcode),
+    );
   }
 
   Future<void> exportEnc2Key(
@@ -112,8 +168,10 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
     String enc2Key,
   ) async {
     final windowAction = context.windowAction;
-    final json = {"enc2Id": keyId, "enc2": enc2Key};
-    final content = jsonEncode(json);
+    final content = E2EEQrTransferService.encodeKeyFile(
+      enc2Id: keyId,
+      enc2: enc2Key,
+    );
 
     final path = await FilePicker.saveFile(
       fileName: "copycat-e2ee-vault-key.enc2",
@@ -183,6 +241,10 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
                 if (enc2Key == null) {
                   return ImportE2eeDialog(
                     importEnc2Key: () => importEnc2Key(keyId),
+                    scanQrEnc2Key: E2EEQrScanActionButton(
+                      onPressed: () => importEnc2KeyViaQr(keyId),
+                      label: context.locale.transfer__scan_qr,
+                    ),
                     loading: loading,
                     invalidImportedKey: invalidImportedKey,
                     bottom: EncryptedClipsStat(
@@ -193,6 +255,7 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
                 }
                 return ExportE2eeDialog(
                   exportEnc2Key: () => exportEnc2Key(context, keyId, enc2Key),
+                  transferEnc2KeyViaQr: () => openQrTransfer(keyId, enc2Key),
                   loading: loading,
                   bottom: EncryptedClipsStat(
                     repository: sl(instanceName: "local"),

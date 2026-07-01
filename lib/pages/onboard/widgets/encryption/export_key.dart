@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/e2ee_qr_transfer_service.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
@@ -45,11 +46,10 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
     try {
       final locale = context.locale;
       final windowAction = context.windowAction;
-      final json = {
-        "enc2Id": widget.exportableKeyId,
-        "enc2": widget.exportableEnc2Key,
-      };
-      final content = jsonEncode(json);
+      final content = E2EEQrTransferService.encodeKeyFile(
+        enc2Id: widget.exportableKeyId,
+        enc2: widget.exportableEnc2Key,
+      );
 
       final path = await FilePicker.saveFile(
         fileName: "copycat-e2ee-vault-key.enc2",

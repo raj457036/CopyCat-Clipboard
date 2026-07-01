@@ -52,10 +52,6 @@ class SyncModeTile extends StatelessWidget {
               leading: const Icon(Icons.sync_alt_rounded),
               enabled: enabled,
               title: Text(context.locale.settings__dropdown__sync_mode__title),
-              // subtitle: Text(
-              //   context.locale.settings__dropdown__sync_mode__subtitle,
-              //   style: textTheme.bodyMedium?.copyWith(color: colors.outline),
-              // ),
               trailing: Chip(
                 shape: const StadiumBorder(),
                 side: BorderSide(color: speedBackground),

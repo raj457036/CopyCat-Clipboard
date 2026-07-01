@@ -43,6 +43,8 @@
 		</array>
 		<key>NSAppleEventsUsageDescription</key>
 		<string>Used to read the active window for exclusion rules.</string>
+		<key>NSCameraUsageDescription</key>
+		<string>Used to scan QR codes for local device-to-device encryption key transfer.</string>
 		<key>NSFaceIDUsageDescription</key>
 		<string>Used to authenticate and lock access to your clipboard.</string>
 		<key>FLTEnableImpeller</key>

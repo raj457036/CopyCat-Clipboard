@@ -940,5 +940,17 @@
   "transform__label__copy_cleaned": "复制清理后",
   "transform__label__extract_emails": "提取邮件",
   "transform__label__extract_urls": "提取网址",
-  "transform__label__extract_numbers": "提取数字"
+  "transform__label__extract_numbers": "提取数字",
+  "@@END To End Encryption QR": "End to End Encryption QR Transfer",
+  "transfer__scan_qr": "扫描二维码",
+  "transfer__show_qr": "显示二维码",
+  "transfer__enter_passcode": "输入密码",
+  "transfer__six_digit_passcode": "6位密码",
+  "transfer__securely_transfer_via_qr": "通过二维码安全传输到附近设备（推荐）",
+  "transfer__nearby_device": "传输到附近设备",
+  "transfer__scan_qr_and_enter_passcode": "在另一台设备上扫描此二维码，然后输入密码。",
+  "transfer__enter_passcode_on_other_device": "在另一台设备上输入此密码。",
+  "transfer__show_passcode": "显示密码",
+  "transfer__device_has_no_camera_use_file_import": "此设备没有相机。请改用文件导入选项。",
+  "transfer__scan_qr_from_other_device": "扫描另一台设备上的二维码。"
 }

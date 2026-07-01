@@ -2509,4 +2509,38 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get transform__label__extract_numbers => '提取数字';
+
+  @override
+  String get transfer__scan_qr => '扫描二维码';
+
+  @override
+  String get transfer__show_qr => '显示二维码';
+
+  @override
+  String get transfer__enter_passcode => '输入密码';
+
+  @override
+  String get transfer__six_digit_passcode => '6位密码';
+
+  @override
+  String get transfer__securely_transfer_via_qr => '通过二维码安全传输到附近设备（推荐）';
+
+  @override
+  String get transfer__nearby_device => '传输到附近设备';
+
+  @override
+  String get transfer__scan_qr_and_enter_passcode => '在另一台设备上扫描此二维码，然后输入密码。';
+
+  @override
+  String get transfer__enter_passcode_on_other_device => '在另一台设备上输入此密码。';
+
+  @override
+  String get transfer__show_passcode => '显示密码';
+
+  @override
+  String get transfer__device_has_no_camera_use_file_import =>
+      '此设备没有相机。请改用文件导入选项。';
+
+  @override
+  String get transfer__scan_qr_from_other_device => '扫描另一台设备上的二维码。';
 }

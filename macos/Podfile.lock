@@ -71,6 +71,9 @@ PODS:
     - FlutterMacOS
   - media_kit_video (0.0.1):
     - FlutterMacOS
+  - mobile_scanner (7.0.0):
+    - Flutter
+    - FlutterMacOS
   - no_screenshot (0.10.0):
     - FlutterMacOS
   - open_dir_macos (0.0.1):
@@ -130,6 +133,7 @@ DEPENDENCIES:
   - local_auth_darwin (from `Flutter/ephemeral/.symlinks/plugins/local_auth_darwin/darwin`)
   - media_kit_libs_macos_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_libs_macos_video/macos`)
   - media_kit_video (from `Flutter/ephemeral/.symlinks/plugins/media_kit_video/macos`)
+  - mobile_scanner (from `Flutter/ephemeral/.symlinks/plugins/mobile_scanner/darwin`)
   - no_screenshot (from `Flutter/ephemeral/.symlinks/plugins/no_screenshot/macos`)
   - open_dir_macos (from `Flutter/ephemeral/.symlinks/plugins/open_dir_macos/macos`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
@@ -195,6 +199,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/media_kit_libs_macos_video/macos
   media_kit_video:
     :path: Flutter/ephemeral/.symlinks/plugins/media_kit_video/macos
+  mobile_scanner:
+    :path: Flutter/ephemeral/.symlinks/plugins/mobile_scanner/darwin
   no_screenshot:
     :path: Flutter/ephemeral/.symlinks/plugins/no_screenshot/macos
   open_dir_macos:
@@ -253,6 +259,7 @@ SPEC CHECKSUMS:
   local_auth_darwin: c3ee6cce0a8d56be34c8ccb66ba31f7f180aaebb
   media_kit_libs_macos_video: 85a23e549b5f480e72cae3e5634b5514bc692f65
   media_kit_video: fa6564e3799a0a28bff39442334817088b7ca758
+  mobile_scanner: 9157936403f5a0644ca3779a38ff8404c5434a93
   no_screenshot: 9f52bedf1830389e82d9af7122c16eee32924136
   open_dir_macos: 79810d7921d777f8732bf6358b3a0839a8fad9b5
   package_info_plus: f0052d280d17aa382b932f399edf32507174e870

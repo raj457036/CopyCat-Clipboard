@@ -4,6 +4,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/e2ee_qr_transfer_service.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
@@ -15,7 +16,10 @@ import 'package:clipboard/pages/onboard/widgets/locale_and_logout.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
+import 'package:clipboard/widgets/dialogs/e2ee_dialogs/e2ee_passcode_prompt_dialog.dart';
+import 'package:clipboard/widgets/dialogs/e2ee_dialogs/e2ee_qr_scan_action_button.dart';
 import 'package:clipboard/widgets/dialogs/info_dialog.dart';
+import 'package:clipboard/widgets/dialogs/e2ee_dialogs/scan_qr_e2ee.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,13 +76,10 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
       if (pickedFile == null) return;
       if (pickedFile.files.first.bytes == null) return;
       final content = utf8.decode(pickedFile.files.first.bytes!);
-      final json = jsonDecode(content);
-      final importedKeyId = json["enc2Id"];
-      importedKey = json["enc2"];
+      final secret = E2EEQrTransferService.decodeKeyFile(content);
+      importedKey = secret?.enc2;
 
-      if (importedKeyId == null ||
-          importedKeyId != widget.importableKeyId ||
-          importedKey == null) {
+      if (secret == null || secret.enc2Id != widget.importableKeyId) {
         importedKey = null;
 
         InAppNotificationService.i.notify(
@@ -101,6 +102,58 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
       setState(() {
         importing = false;
       });
+      saveAndContinue();
+    }
+  }
+
+  Future<void> importEnc2KeyFromQr() async {
+    setState(() {
+      importing = true;
+    });
+
+    final locale = context.locale;
+
+    try {
+      final payload = await showDialog<String>(
+        context: context,
+        builder: (_) => const ScanQrE2eeDialog(),
+      );
+      if (!mounted || payload == null || payload.isEmpty) return;
+
+      final passcode = await E2EEPasscodePromptDialog.show(context);
+      if (!mounted || passcode == null || passcode.isEmpty) return;
+
+      final secret = E2EEQrTransferService.decryptPayload(
+        payload: payload,
+        passcode: passcode,
+      );
+
+      if (secret == null || secret.enc2Id != widget.importableKeyId) {
+        importedKey = null;
+        InAppNotificationService.i.notify(
+          NotificationMessage(
+            id: 'invalid_qr_key',
+            body: locale.onboarding__snackbar__invalid_key,
+          ),
+        );
+        return;
+      }
+
+      importedKey = secret.enc2;
+    } catch (e) {
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: 'import_qr_key_failed',
+          body: Failure.fromException(e).message,
+        ),
+      );
+    } finally {
+      await wait(200);
+      if (mounted) {
+        setState(() {
+          importing = false;
+        });
+      }
       saveAndContinue();
     }
   }
@@ -231,7 +284,10 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
                               ),
                               icon: const Icon(Icons.key),
                             ),
-                            width10,
+                            E2EEQrScanActionButton(
+                              onPressed: importEnc2KeyFromQr,
+                              label: context.locale.transfer__scan_qr,
+                            ),
                             TextButton(
                               onPressed: doItLater,
                               child: Text(

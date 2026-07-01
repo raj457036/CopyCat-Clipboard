@@ -8,11 +8,13 @@ class ExportE2eeDialog extends StatelessWidget {
   final bool loading;
   final Widget? bottom;
   final VoidCallback exportEnc2Key;
+  final VoidCallback transferEnc2KeyViaQr;
 
   const ExportE2eeDialog({
     super.key,
     required this.loading,
     required this.exportEnc2Key,
+    required this.transferEnc2KeyViaQr,
     this.bottom,
   });
 
@@ -64,6 +66,18 @@ class ExportE2eeDialog extends StatelessWidget {
               label: Text(context.locale.app__export),
               onPressed: loading ? null : exportEnc2Key,
             ),
+            height10,
+            Text(
+              context.locale.transfer__securely_transfer_via_qr,
+              textAlign: TextAlign.center,
+            ),
+            height5,
+            ElevatedButton.icon(
+              icon: const Icon(Icons.qr_code_2),
+              label: Text(context.locale.transfer__nearby_device),
+              onPressed: loading ? null : transferEnc2KeyViaQr,
+            ),
+
             if (bottom != null) ...[const Divider(height: 30), bottom!],
           ],
         ),

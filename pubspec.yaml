@@ -109,6 +109,8 @@ dependencies:
   archive: ^4.0.9
   statsfl: ^2.3.0
   open_dir: ^0.0.2+1
+  qr_flutter: ^4.1.0
+  mobile_scanner: ^7.1.1
 
 dev_dependencies:
   flutter_test:

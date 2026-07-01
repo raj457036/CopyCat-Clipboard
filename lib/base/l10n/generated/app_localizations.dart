@@ -4689,6 +4689,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Extract numbers'**
   String get transform__label__extract_numbers;
+
+  /// No description provided for @transfer__scan_qr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR'**
+  String get transfer__scan_qr;
+
+  /// No description provided for @transfer__show_qr.
+  ///
+  /// In en, this message translates to:
+  /// **'Show QR'**
+  String get transfer__show_qr;
+
+  /// No description provided for @transfer__enter_passcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Passcode'**
+  String get transfer__enter_passcode;
+
+  /// No description provided for @transfer__six_digit_passcode.
+  ///
+  /// In en, this message translates to:
+  /// **'6-digit passcode'**
+  String get transfer__six_digit_passcode;
+
+  /// No description provided for @transfer__securely_transfer_via_qr.
+  ///
+  /// In en, this message translates to:
+  /// **'Securely transfer to nearby device via QR (Recommended)'**
+  String get transfer__securely_transfer_via_qr;
+
+  /// No description provided for @transfer__nearby_device.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfer to Nearby Device'**
+  String get transfer__nearby_device;
+
+  /// No description provided for @transfer__scan_qr_and_enter_passcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan this QR on your other device, then enter the passcode.'**
+  String get transfer__scan_qr_and_enter_passcode;
+
+  /// No description provided for @transfer__enter_passcode_on_other_device.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter this passcode on the other device.'**
+  String get transfer__enter_passcode_on_other_device;
+
+  /// No description provided for @transfer__show_passcode.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Passcode'**
+  String get transfer__show_passcode;
+
+  /// No description provided for @transfer__device_has_no_camera_use_file_import.
+  ///
+  /// In en, this message translates to:
+  /// **'This device does not have a camera. Use the file import option instead.'**
+  String get transfer__device_has_no_camera_use_file_import;
+
+  /// No description provided for @transfer__scan_qr_from_other_device.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the QR from your other device.'**
+  String get transfer__scan_qr_from_other_device;
 }
 
 class _AppLocalizationsDelegate
