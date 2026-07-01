@@ -143,19 +143,19 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
     AppConfig config,
     Subscription subscription,
   ) {
-    if (subscription.isFree || !subscription.isActive) {
-      config = config.copyWith(
-        syncSpeed: SyncSpeed.balanced,
-        enableDragNDrop: false,
-        enableTypeToSearch: false,
-        lanInstantSync: false,
-        autoWriteOnReceive: false,
-        quickPasteHotkey: null,
-        richDataCapture: false,
-      );
-      return (config, true);
-    }
-    return (config, false);
+    final hasProSync = subscription.isActive && !subscription.isFree;
+    final nextConfig = hasProSync
+        ? config.copyWith(syncSpeed: SyncSpeed.realtime)
+        : config.copyWith(
+            syncSpeed: SyncSpeed.balanced,
+            enableDragNDrop: false,
+            enableTypeToSearch: false,
+            lanInstantSync: false,
+            autoWriteOnReceive: false,
+            quickPasteHotkey: null,
+            richDataCapture: false,
+          );
+    return (nextConfig, nextConfig != config);
   }
 
   Future<AppConfigState> load([Subscription? subscription]) async {

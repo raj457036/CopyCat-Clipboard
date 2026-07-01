@@ -16,7 +16,7 @@ class RealTimeConnectionStatus extends StatelessWidget {
       builder: (context) {
         final isRealTimeActive =
             context.watch<AppConfigCubit>().state.config.syncSpeed ==
-                SyncSpeed.realtime;
+            SyncSpeed.realtime;
 
         if (!isRealTimeActive) {
           return child;
@@ -28,7 +28,7 @@ class RealTimeConnectionStatus extends StatelessWidget {
             message: context.locale.app__realtime_connected,
             child: const Icon(
               Icons.all_inclusive,
-              color: Colors.lightGreen,
+              color: Colors.green,
               size: 16,
             ),
           ),

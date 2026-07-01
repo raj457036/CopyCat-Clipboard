@@ -32,7 +32,7 @@ class SyncingSettings extends StatelessWidget {
             children: [
               const EnableSyncSwitch(),
               const EnableFileSyncSwitch(),
-              const SyncModeDropdown(),
+              const SyncModeTile(),
               ListTile(
                 leading: const Icon(Icons.devices_rounded),
                 title: Text(
