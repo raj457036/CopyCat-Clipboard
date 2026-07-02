@@ -24,4 +24,5 @@ class RouteConstants {
   static const String deviceManagement = "device-management";
   static const String lanMesh = "lan-mesh";
   static const String appLockSettings = "app-lock-settings";
+  static const String personalDrives = "personal-drives";
 }

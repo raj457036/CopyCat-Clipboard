@@ -14,14 +14,18 @@ class DriveAccessToken with _$DriveAccessToken {
     @JsonKey(name: "expires_in") required int expiresIn,
     @JsonKey(name: "issued_at") required DateTime issuedAt,
     @JsonKey(name: "scopes") required List<String> scopes,
+    @JsonKey(name: "display_text") String? displayText,
+    @JsonKey(name: "provider") String? provider,
+    @JsonKey(name: "account_id") String? accountId,
   }) = _DriveAccessToken;
 
   factory DriveAccessToken.fromJson(Map<String, dynamic> json) =>
       _$DriveAccessTokenFromJson(json);
 
-  bool get isExpired => systemTime().isAfter(
-    issuedAt.add(Duration(seconds: expiresIn + 300)),
-  ); // 5 min offset
+  bool get isExpired {
+    final safeLifetime = (expiresIn - 300).clamp(0, expiresIn).toInt();
+    return systemTime().isAfter(issuedAt.add(Duration(seconds: safeLifetime)));
+  }
 
   bool get hasAllGrants => scopes.contains(DriveApi.driveAppdataScope);
 }

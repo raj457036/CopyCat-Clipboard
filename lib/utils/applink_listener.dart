@@ -19,35 +19,49 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ApplinkListener {
   late final StreamSubscription sub;
   final appLink = AppLinks();
+  String? _lastProcessedUri;
 
-  BuildContext get context => rootNavigationKey.currentContext!;
+  BuildContext? get context => rootNavigationKey.currentContext;
+
+  Map<String, String> _parsePayload(Uri uri) {
+    final payloadString = uri.pathSegments.firstOrNull;
+    if (payloadString == null) return uri.queryParameters;
+
+    try {
+      final normalized = base64.normalize(payloadString);
+      final query = utf8.decode(base64.decode(normalized));
+      return Uri.splitQueryString(query);
+    } catch (e) {
+      logger.w(
+        "Failed to parse app link payload. Falling back to query params: $e",
+      );
+      return uri.queryParameters;
+    }
+  }
 
   Future<void> onUri(Uri uri) async {
-    logger.w("🔗 NEW APP LINK: $uri");
-    // return;
+    if (_lastProcessedUri == uri.toString()) return;
+    _lastProcessedUri = uri.toString();
+
+    logger.d("🔗 NEW APP LINK: $uri");
+    final currentContext = context;
+    if (currentContext == null) return;
+
     if (isDesktopPlatform) {
-      await context.windowAction?.show();
+      await currentContext.windowAction?.show();
     }
 
     await Future.delayed(Durations.medium1);
 
-    final payloadString = uri.pathSegments.firstOrNull;
+    final payload = _parsePayload(uri);
 
-    final Map<String, String> payload;
-    if (payloadString != null) {
-      final query = utf8.decode(base64.decode(payloadString));
-      payload = Uri.splitQueryString(query);
-    } else {
-      payload = uri.queryParameters;
-    }
-
-    if (!context.mounted) return;
+    if (!currentContext.mounted) return;
     // clipboard://drive-connect?code=4/0AeaYSHB-QUSzN0WX8F-R7Y-64KkUUgAgT5lrHXVmrgFPr7mJIM9p_aHJJpKg0XXBuytu1Q&scope=https://www.googleapis.com/auth/drive.appdata%20https://www.googleapis.com/auth/drive.file
     if (uri.host == "drive-connect") {
       final code = payload["code"];
-      final scope = payload["scope"];
+      final scope = payload["scope"] ?? payload["scopes"];
 
-      if (code != null && scope != null) {
+      if (code != null && scope != null && scope.trim().isNotEmpty) {
         appRouter.goNamed(
           RouteConstants.driveConnect,
           pathParameters: {"code": code},
@@ -57,12 +71,12 @@ class ApplinkListener {
       }
       final error = payload["error"];
       if (error != null) {
-        context.read<DriveSetupCubit>().setupError(error);
+        currentContext.read<DriveSetupCubit>().setupError(error);
       }
     } else if (uri.host == "reset-password") {
       final code = payload["code"];
       if (code != null) {
-        final (path, failure) = await context
+        final (path, failure) = await currentContext
             .read<AuthCubit>()
             .validateAuthCode(code);
         if (path != null) {
@@ -81,6 +95,18 @@ class ApplinkListener {
   }
 
   void init() {
+    unawaited(
+      appLink
+          .getInitialLink()
+          .then((initialUri) {
+            if (initialUri != null) {
+              return onUri(initialUri);
+            }
+          })
+          .catchError((e) {
+            logger.w("Failed to read initial app link: $e");
+          }),
+    );
     sub = appLink.uriLinkStream.listen(onUri);
   }
 

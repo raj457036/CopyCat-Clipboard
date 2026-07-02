@@ -576,6 +576,7 @@
   "settings__drive__connected": "已连接",
   "settings__drive__loading": "载入中...",
   "settings__drive__authorizing": "授权中...",
+  "settings__drive__connect": "连接",
   "settings__drive__disconnected": "已断开连接",
   "settings__text__cloud__title": "云端驱动",
   "settings__text__cloud__name": "Google Drive",
@@ -952,5 +953,8 @@
   "transfer__enter_passcode_on_other_device": "在另一台设备上输入此密码。",
   "transfer__show_passcode": "显示密码",
   "transfer__device_has_no_camera_use_file_import": "此设备没有相机。请改用文件导入选项。",
-  "transfer__scan_qr_from_other_device": "扫描另一台设备上的二维码。"
+  "transfer__scan_qr_from_other_device": "扫描另一台设备上的二维码。",
+  "@@Personal Drive": "Personal Drive",
+  "settings__personal_drive__title": "个人云盘",
+  "settings__personal_drive__subtitle": "将您的文件剪辑同步到个人云盘，以实现安全备份和跨设备访问。"
 }

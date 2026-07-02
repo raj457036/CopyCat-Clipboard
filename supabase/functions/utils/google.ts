@@ -1,4 +1,5 @@
 import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.42.4";
+import { parseJwt } from "./utils.ts";
 
 export type GTokenResponse = {
   access_token: string;
@@ -6,6 +7,7 @@ export type GTokenResponse = {
   refresh_token: string;
   scope: string;
   token_type: string;
+  id_token: string;
 };
 
 export async function refreshGoogleToken(
@@ -13,9 +15,11 @@ export async function refreshGoogleToken(
   userId: string,
 ) {
   try {
-    const { data: cred, error: credError } = await client.from(
-      "drive_credentials",
-    ).select("refresh_token").eq("userId", userId).limit(1);
+    const { data: cred, error: credError } = await client
+      .from("drive_credentials")
+      .select("refresh_token")
+      .eq("userId", userId)
+      .limit(1);
 
     if (credError) {
       console.error(credError);
@@ -32,10 +36,10 @@ export async function refreshGoogleToken(
     const url = "https://www.googleapis.com/oauth2/v4/token";
 
     const payload = new URLSearchParams({
-      "client_id": Deno.env.get("GOOGLE_CLIENT_ID") ?? "",
-      "client_secret": Deno.env.get("GOOGLE_CLIENT_SECRET") ?? "",
-      "grant_type": "refresh_token",
-      "refresh_token": refreshToken,
+      client_id: Deno.env.get("GOOGLE_CLIENT_ID") ?? "",
+      client_secret: Deno.env.get("GOOGLE_CLIENT_SECRET") ?? "",
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
     });
 
     const response = await fetch(url, {
@@ -47,7 +51,6 @@ export async function refreshGoogleToken(
     });
 
     const responseJson = await response.json();
-    console.log(response.status);
 
     if (response.status !== 200) {
       return {
@@ -56,24 +59,37 @@ export async function refreshGoogleToken(
       };
     }
 
-    const { access_token, expires_in, scope } = responseJson as GTokenResponse;
+    const { access_token, expires_in, scope, id_token } =
+      responseJson as GTokenResponse;
 
     const issued_at = new Date().toISOString();
-    const result = await client.from("drive_credentials").update({
-      "access_token": access_token,
-      "expires_in": expires_in,
-      "scopes": scope.split(" "),
-    }).eq("userId", userId);
+    const id_token_payload = parseJwt(id_token);
+    const user_id = id_token_payload.sub;
+    const user_email = id_token_payload.email;
+    const result = await client
+      .from("drive_credentials")
+      .update({
+        access_token: access_token,
+        expires_in: expires_in,
+        scopes: scope.split(" "),
+        provider: "google-drive",
+        account_id: user_id,
+        display_text: user_email,
+      })
+      .eq("userId", userId);
 
     const { data: _, error: saveError } = result;
 
     return {
-      "access_token": access_token,
-      "expires_in": expires_in,
-      "issued_at": issued_at,
-      "scopes": scope.split(" "),
-      "error": saveError,
-      "status": saveError ? 400 : 200,
+      access_token: access_token,
+      expires_in: expires_in,
+      issued_at: issued_at,
+      scopes: scope.split(" "),
+      provider: "google-drive",
+      account_id: user_id,
+      display_text: user_email,
+      error: saveError,
+      status: saveError ? 400 : 200,
     };
   } catch (error) {
     return {
@@ -85,13 +101,12 @@ export async function refreshGoogleToken(
 
 export async function deleteDriveFile(fileId: string, accessToken: string) {
   try {
-    const url =
-      `https://www.googleapis.com/drive/v3/files/${fileId}?supportsAllDrives=true`;
+    const url = `https://www.googleapis.com/drive/v3/files/${fileId}?supportsAllDrives=true`;
 
     const response = await fetch(url, {
       method: "DELETE",
       headers: {
-        "Authorization": `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 

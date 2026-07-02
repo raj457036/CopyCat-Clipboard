@@ -5,16 +5,17 @@ import { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.42.4";
 import { corsHeaders } from "../utils/cors.ts";
 import { GTokenResponse, refreshGoogleToken } from "../utils/google.ts";
 import { getSupabaseClient } from "../utils/supabase.ts";
+import { parseJwt } from "../utils/utils.ts";
 
 type SetupTokenPayload = {
   code?: string;
 };
 
-async function setupTokens(
-  client: SupabaseClient,
-  code: string,
-) {
-  const { data: { user }, error: authError } = await client.auth.getUser();
+async function setupTokens(client: SupabaseClient, code: string) {
+  const {
+    data: { user },
+    error: authError,
+  } = await client.auth.getUser();
 
   if (authError) {
     console.error(authError);
@@ -24,11 +25,11 @@ async function setupTokens(
   const url = "https://www.googleapis.com/oauth2/v4/token";
 
   const payload = new URLSearchParams({
-    "client_id": Deno.env.get("GOOGLE_CLIENT_ID") ?? "",
-    "client_secret": Deno.env.get("GOOGLE_CLIENT_SECRET") ?? "",
-    "redirect_uri": "https://connect.entilitystudio.com",
-    "grant_type": "authorization_code",
-    "code": code,
+    client_id: Deno.env.get("GOOGLE_CLIENT_ID") ?? "",
+    client_secret: Deno.env.get("GOOGLE_CLIENT_SECRET") ?? "",
+    redirect_uri: "https://connect.entilitystudio.com",
+    grant_type: "authorization_code",
+    code: code,
   });
 
   const response = await fetch(url, {
@@ -48,30 +49,46 @@ async function setupTokens(
     });
   }
 
-  const { access_token, expires_in, refresh_token, scope } =
+  const { access_token, expires_in, refresh_token, scope, id_token } =
     responseJson as GTokenResponse;
+
+  const id_token_payload = parseJwt(id_token);
+  const drive_user_id = id_token_payload.sub;
+  const drive_user_email = id_token_payload.email;
 
   const userId = user!.id;
   const issued_at = new Date().toISOString();
-  const result = await client.from("drive_credentials").upsert({
-    "userId": userId,
-    "access_token": access_token,
-    "refresh_token": refresh_token,
-    "expires_in": expires_in,
-    "scopes": scope.split(" "),
-  }, {
-    onConflict: "userId",
-  }).select();
+  const result = await client
+    .from("drive_credentials")
+    .upsert(
+      {
+        userId: userId,
+        access_token: access_token,
+        refresh_token: refresh_token,
+        expires_in: expires_in,
+        scopes: scope.split(" "),
+        provider: "google-drive",
+        account_id: drive_user_id,
+        display_text: drive_user_email,
+      },
+      {
+        onConflict: "userId",
+      },
+    )
+    .select();
 
   const { data: _, error: credError } = result;
 
   return new Response(
     JSON.stringify({
-      "access_token": access_token,
-      "expires_in": expires_in,
-      "issued_at": issued_at,
-      "scopes": scope.split(" "),
-      "error": credError,
+      access_token: access_token,
+      expires_in: expires_in,
+      issued_at: issued_at,
+      scopes: scope.split(" "),
+      provider: "google-drive",
+      account_id: drive_user_id,
+      display_text: drive_user_email,
+      error: credError,
     }),
     { status: credError ? 400 : 200 },
   );
@@ -100,25 +117,24 @@ Deno.serve(async (req) => {
     // call relevant method based on method and id
     switch (true) {
       case method === "GET": {
-        const { data: { user }, error: authError } = await supabaseClient.auth
-          .getUser();
+        const {
+          data: { user },
+          error: authError,
+        } = await supabaseClient.auth.getUser();
 
         if (authError) {
           console.error(authError);
           return new Response(JSON.stringify(authError), { status: 401 });
         }
         const result = await refreshGoogleToken(supabaseClient, user!.id);
-        return new Response(
-          JSON.stringify(result),
-          {
-            status: result.status,
-          },
-        );
+        return new Response(JSON.stringify(result), {
+          status: result.status,
+        });
       }
       case payload && method === "POST":
         return setupTokens(supabaseClient, payload.code!);
       default:
-        return new Response(JSON.stringify({ "error": "not-supported" }));
+        return new Response(JSON.stringify({ error: "not-supported" }));
     }
   } catch (error) {
     console.error(error);

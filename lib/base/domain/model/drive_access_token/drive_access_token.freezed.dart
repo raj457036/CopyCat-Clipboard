@@ -29,6 +29,12 @@ mixin _$DriveAccessToken {
   DateTime get issuedAt => throw _privateConstructorUsedError;
   @JsonKey(name: "scopes")
   List<String> get scopes => throw _privateConstructorUsedError;
+  @JsonKey(name: "display_text")
+  String? get displayText => throw _privateConstructorUsedError;
+  @JsonKey(name: "provider")
+  String? get provider => throw _privateConstructorUsedError;
+  @JsonKey(name: "account_id")
+  String? get accountId => throw _privateConstructorUsedError;
 
   /// Serializes this DriveAccessToken to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -52,6 +58,9 @@ abstract class $DriveAccessTokenCopyWith<$Res> {
     @JsonKey(name: "expires_in") int expiresIn,
     @JsonKey(name: "issued_at") DateTime issuedAt,
     @JsonKey(name: "scopes") List<String> scopes,
+    @JsonKey(name: "display_text") String? displayText,
+    @JsonKey(name: "provider") String? provider,
+    @JsonKey(name: "account_id") String? accountId,
   });
 }
 
@@ -74,6 +83,9 @@ class _$DriveAccessTokenCopyWithImpl<$Res, $Val extends DriveAccessToken>
     Object? expiresIn = null,
     Object? issuedAt = null,
     Object? scopes = null,
+    Object? displayText = freezed,
+    Object? provider = freezed,
+    Object? accountId = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -93,6 +105,18 @@ class _$DriveAccessTokenCopyWithImpl<$Res, $Val extends DriveAccessToken>
                 ? _value.scopes
                 : scopes // ignore: cast_nullable_to_non_nullable
                       as List<String>,
+            displayText: freezed == displayText
+                ? _value.displayText
+                : displayText // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            provider: freezed == provider
+                ? _value.provider
+                : provider // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            accountId: freezed == accountId
+                ? _value.accountId
+                : accountId // ignore: cast_nullable_to_non_nullable
+                      as String?,
           )
           as $Val,
     );
@@ -113,6 +137,9 @@ abstract class _$$DriveAccessTokenImplCopyWith<$Res>
     @JsonKey(name: "expires_in") int expiresIn,
     @JsonKey(name: "issued_at") DateTime issuedAt,
     @JsonKey(name: "scopes") List<String> scopes,
+    @JsonKey(name: "display_text") String? displayText,
+    @JsonKey(name: "provider") String? provider,
+    @JsonKey(name: "account_id") String? accountId,
   });
 }
 
@@ -134,6 +161,9 @@ class __$$DriveAccessTokenImplCopyWithImpl<$Res>
     Object? expiresIn = null,
     Object? issuedAt = null,
     Object? scopes = null,
+    Object? displayText = freezed,
+    Object? provider = freezed,
+    Object? accountId = freezed,
   }) {
     return _then(
       _$DriveAccessTokenImpl(
@@ -153,6 +183,18 @@ class __$$DriveAccessTokenImplCopyWithImpl<$Res>
             ? _value._scopes
             : scopes // ignore: cast_nullable_to_non_nullable
                   as List<String>,
+        displayText: freezed == displayText
+            ? _value.displayText
+            : displayText // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        provider: freezed == provider
+            ? _value.provider
+            : provider // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        accountId: freezed == accountId
+            ? _value.accountId
+            : accountId // ignore: cast_nullable_to_non_nullable
+                  as String?,
       ),
     );
   }
@@ -166,6 +208,9 @@ class _$DriveAccessTokenImpl extends _DriveAccessToken {
     @JsonKey(name: "expires_in") required this.expiresIn,
     @JsonKey(name: "issued_at") required this.issuedAt,
     @JsonKey(name: "scopes") required final List<String> scopes,
+    @JsonKey(name: "display_text") this.displayText,
+    @JsonKey(name: "provider") this.provider,
+    @JsonKey(name: "account_id") this.accountId,
   }) : _scopes = scopes,
        super._();
 
@@ -191,8 +236,18 @@ class _$DriveAccessTokenImpl extends _DriveAccessToken {
   }
 
   @override
+  @JsonKey(name: "display_text")
+  final String? displayText;
+  @override
+  @JsonKey(name: "provider")
+  final String? provider;
+  @override
+  @JsonKey(name: "account_id")
+  final String? accountId;
+
+  @override
   String toString() {
-    return 'DriveAccessToken(accessToken: $accessToken, expiresIn: $expiresIn, issuedAt: $issuedAt, scopes: $scopes)';
+    return 'DriveAccessToken(accessToken: $accessToken, expiresIn: $expiresIn, issuedAt: $issuedAt, scopes: $scopes, displayText: $displayText, provider: $provider, accountId: $accountId)';
   }
 
   @override
@@ -206,7 +261,13 @@ class _$DriveAccessTokenImpl extends _DriveAccessToken {
                 other.expiresIn == expiresIn) &&
             (identical(other.issuedAt, issuedAt) ||
                 other.issuedAt == issuedAt) &&
-            const DeepCollectionEquality().equals(other._scopes, _scopes));
+            const DeepCollectionEquality().equals(other._scopes, _scopes) &&
+            (identical(other.displayText, displayText) ||
+                other.displayText == displayText) &&
+            (identical(other.provider, provider) ||
+                other.provider == provider) &&
+            (identical(other.accountId, accountId) ||
+                other.accountId == accountId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -217,6 +278,9 @@ class _$DriveAccessTokenImpl extends _DriveAccessToken {
     expiresIn,
     issuedAt,
     const DeepCollectionEquality().hash(_scopes),
+    displayText,
+    provider,
+    accountId,
   );
 
   /// Create a copy of DriveAccessToken
@@ -242,6 +306,9 @@ abstract class _DriveAccessToken extends DriveAccessToken {
     @JsonKey(name: "expires_in") required final int expiresIn,
     @JsonKey(name: "issued_at") required final DateTime issuedAt,
     @JsonKey(name: "scopes") required final List<String> scopes,
+    @JsonKey(name: "display_text") final String? displayText,
+    @JsonKey(name: "provider") final String? provider,
+    @JsonKey(name: "account_id") final String? accountId,
   }) = _$DriveAccessTokenImpl;
   _DriveAccessToken._() : super._();
 
@@ -260,6 +327,15 @@ abstract class _DriveAccessToken extends DriveAccessToken {
   @override
   @JsonKey(name: "scopes")
   List<String> get scopes;
+  @override
+  @JsonKey(name: "display_text")
+  String? get displayText;
+  @override
+  @JsonKey(name: "provider")
+  String? get provider;
+  @override
+  @JsonKey(name: "account_id")
+  String? get accountId;
 
   /// Create a copy of DriveAccessToken
   /// with the given fields replaced by the non-null parameter values.

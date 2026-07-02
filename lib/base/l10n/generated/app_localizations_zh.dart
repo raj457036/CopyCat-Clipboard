@@ -1608,6 +1608,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__drive__authorizing => '授权中...';
 
   @override
+  String get settings__drive__connect => '连接';
+
+  @override
   String get settings__drive__disconnected => '已断开连接';
 
   @override
@@ -2543,4 +2546,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get transfer__scan_qr_from_other_device => '扫描另一台设备上的二维码。';
+
+  @override
+  String get settings__personal_drive__title => '个人云盘';
+
+  @override
+  String get settings__personal_drive__subtitle =>
+      '将您的文件剪辑同步到个人云盘，以实现安全备份和跨设备访问。';
 }

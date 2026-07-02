@@ -576,6 +576,7 @@
   "settings__drive__connected": "Connecté",
   "settings__drive__loading": "Chargement...",
   "settings__drive__authorizing": "Autorisation...",
+  "settings__drive__connect": "Connecter",
   "settings__drive__disconnected": "Déconnecté",
   "settings__text__cloud__title": "Cloud Drive",
   "settings__text__cloud__name": "Google Drive",
@@ -952,5 +953,8 @@
   "transfer__enter_passcode_on_other_device": "Entrez ce code d'accès sur l'autre appareil.",
   "transfer__show_passcode": "Afficher le code d'accès",
   "transfer__device_has_no_camera_use_file_import": "Cet appareil n'a pas de caméra. Utilisez plutôt l'option d'importation de fichier.",
-  "transfer__scan_qr_from_other_device": "Scannez le QR code depuis votre autre appareil."
+  "transfer__scan_qr_from_other_device": "Scannez le QR code depuis votre autre appareil.",
+  "@@Personal Drive": "Stockage Personnel",
+  "settings__personal_drive__title": "Stockage Personnel",
+  "settings__personal_drive__subtitle": "Synchronisez vos clips de fichiers vers votre cloud personnel pour une sauvegarde sécurisée et un accès multi-appareils."
 }

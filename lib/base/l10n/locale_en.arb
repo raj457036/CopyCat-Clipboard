@@ -699,6 +699,7 @@
   "settings__drive__connected": "Connected",
   "settings__drive__loading": "Loading...",
   "settings__drive__authorizing": "Authorizing...",
+  "settings__drive__connect": "Connect",
   "settings__drive__disconnected": "Disconnected",
   "settings__text__cloud__title": "Cloud Drive",
   "settings__text__cloud__name": "Google Drive",
@@ -1142,5 +1143,8 @@
   "transfer__enter_passcode_on_other_device": "Enter this passcode on the other device.",
   "transfer__show_passcode": "Show Passcode",
   "transfer__device_has_no_camera_use_file_import": "This device does not have a camera. Use the file import option instead.",
-  "transfer__scan_qr_from_other_device": "Scan the QR from your other device."
+  "transfer__scan_qr_from_other_device": "Scan the QR from your other device.",
+  "@@Personal Drive": "Personal Drive",
+  "settings__personal_drive__title": "Personal Drive",
+  "settings__personal_drive__subtitle": "Sync your file clips to your personal cloud for secure backup and access across devices."
 }

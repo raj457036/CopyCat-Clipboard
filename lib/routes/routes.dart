@@ -48,6 +48,7 @@ import "package:clipboard/pages/settings/pages/decrypt_clips.dart";
 import "package:clipboard/pages/settings/pages/app_lock/app_lock_settings_page.dart";
 import "package:clipboard/pages/settings/pages/exclusion_rules.dart";
 import "package:clipboard/pages/settings/pages/lan_mesh/lan_mesh_page.dart";
+import "package:clipboard/pages/settings/pages/personal_drives/page.dart";
 import "package:clipboard/pages/splash_page.dart";
 import "package:clipboard/widgets/listeners/android_clip_restore_lifecycle_listener.dart";
 import "package:clipboard/widgets/listeners/monetization_listener.dart";
@@ -345,21 +346,6 @@ final appRouter = GoRouter(
                   ],
                 ),
                 GoRoute(
-                  name: RouteConstants.driveConnect,
-                  path: 'drive-connect/:code',
-                  builder: (context, state) {
-                    final code = state.pathParameters["code"]!;
-                    final scopes = state.uri.queryParameters["scopes"]!.split(
-                      " ",
-                    );
-                    context.read<DriveSetupCubit>().verifyAuthCodeAndSetup(
-                      code,
-                      scopes,
-                    );
-                    return DriveSetupPage(key: state.pageKey);
-                  },
-                ),
-                GoRoute(
                   name: RouteConstants.resetPassword,
                   path: 'reset-password',
                   builder: (context, state) {
@@ -401,6 +387,32 @@ final appRouter = GoRouter(
                   name: RouteConstants.lanMesh,
                   path: 'lan-mesh',
                   builder: (context, state) => LanMeshPage(key: state.pageKey),
+                ),
+                GoRoute(
+                  name: RouteConstants.personalDrives,
+                  path: 'personal-drives',
+                  builder: (context, state) =>
+                      PersonalDrivesPage(key: state.pageKey),
+                  routes: [
+                    GoRoute(
+                      name: RouteConstants.driveConnect,
+                      path: 'drive-connect/:code',
+                      builder: (context, state) {
+                        final code = state.pathParameters["code"];
+                        final scopesParam = state.uri.queryParameters["scopes"];
+                        final scopes = scopesParam
+                            ?.split(RegExp(r'\s+'))
+                            .where((s) => s.isNotEmpty)
+                            .toList();
+
+                        return DriveSetupPage(
+                          key: state.pageKey,
+                          code: code,
+                          scopes: scopes,
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

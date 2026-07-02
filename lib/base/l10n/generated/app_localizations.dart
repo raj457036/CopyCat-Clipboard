@@ -3028,6 +3028,12 @@ abstract class AppLocalizations {
   /// **'Authorizing...'**
   String get settings__drive__authorizing;
 
+  /// No description provided for @settings__drive__connect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get settings__drive__connect;
+
   /// No description provided for @settings__drive__disconnected.
   ///
   /// In en, this message translates to:
@@ -4755,6 +4761,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scan the QR from your other device.'**
   String get transfer__scan_qr_from_other_device;
+
+  /// No description provided for @settings__personal_drive__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Drive'**
+  String get settings__personal_drive__title;
+
+  /// No description provided for @settings__personal_drive__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync your file clips to your personal cloud for secure backup and access across devices.'**
+  String get settings__personal_drive__subtitle;
 }
 
 class _AppLocalizationsDelegate

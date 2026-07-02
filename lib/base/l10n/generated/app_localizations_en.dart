@@ -1684,6 +1684,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings__drive__authorizing => 'Authorizing...';
 
   @override
+  String get settings__drive__connect => 'Connect';
+
+  @override
   String get settings__drive__disconnected => 'Disconnected';
 
   @override
@@ -2691,4 +2694,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get transfer__scan_qr_from_other_device =>
       'Scan the QR from your other device.';
+
+  @override
+  String get settings__personal_drive__title => 'Personal Drive';
+
+  @override
+  String get settings__personal_drive__subtitle =>
+      'Sync your file clips to your personal cloud for secure backup and access across devices.';
 }

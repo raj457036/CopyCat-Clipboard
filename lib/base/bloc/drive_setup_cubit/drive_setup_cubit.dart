@@ -19,9 +19,22 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
   final DriveCredentialRepository repo;
 
   Timer? _refreshTimer;
+  DriveSetupState _lastStableState = const DriveSetupState.setupError(
+    failure: driveFailure,
+  );
+  bool _ignoreNextAuthCallback = false;
 
   DriveSetupCubit(this.repo, @Named("google_drive") this._drive)
     : super(const DriveSetupState.unknown());
+
+  void _applyToken(DriveAccessToken token) {
+    _drive.accessToken = token.accessToken;
+    final nextState = DriveSetupState.setupDone(token: token);
+    _lastStableState = nextState;
+    _ignoreNextAuthCallback = false;
+    emit(nextState);
+    _doRestoreIn(token.expiresIn);
+  }
 
   void _readyNow() {
     if (readyState != null) {
@@ -95,9 +108,7 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
           emit(const DriveSetupState.setupError(failure: driveFailure));
           return false;
         } else {
-          emit(DriveSetupState.setupDone(token: result));
-          _drive.accessToken = result.accessToken;
-          _doRestoreIn(result.expiresIn); // Refresh 5 minutes before expiry
+          _applyToken(result);
           return true;
         }
       } else {
@@ -109,6 +120,13 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
   }
 
   Future<void> startSetup({bool force = false}) async {
+    switch (state) {
+      case DriveSetupDone() || DriveSetupError():
+        _lastStableState = state;
+      default:
+    }
+    _ignoreNextAuthCallback = false;
+
     emit(const DriveSetupState.unknown());
     final foundAlready = force ? false : await fetch();
     if (foundAlready) return;
@@ -120,28 +138,38 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
     );
   }
 
+  void cancelPendingSetup() {
+    if (state case DriveSetupUnknown(waiting: true)) {
+      _ignoreNextAuthCallback = true;
+      emit(_lastStableState);
+      _readyNow();
+    }
+  }
+
   Future<void> verifyAuthCodeAndSetup(String code, List<String> scopes) async {
     try {
+      if (_ignoreNextAuthCallback && state is! DriveSetupUnknown) {
+        _ignoreNextAuthCallback = false;
+        return;
+      }
+
       if (!scopes.contains(DriveApi.driveAppdataScope)) {
-        emit(
-          const DriveSetupState.setupError(
-            failure: Failure(
-              message: "Permission not granted!",
-              code: "drive-perm-not-granted",
-            ),
-          ),
+        const failure = Failure(
+          message: "Permission not granted!",
+          code: "drive-perm-not-granted",
         );
+        _lastStableState = const DriveSetupState.setupError(failure: failure);
+        emit(_lastStableState);
         return;
       }
 
       emit(DriveSetupState.verifyingCode(code: code, scopes: scopes));
 
       final result = await repo.setupDrive(code);
-      final newState = result.fold(
-        (l) => DriveSetupState.setupError(failure: l),
-        (r) => DriveSetupState.setupDone(token: r),
-      );
-      emit(newState);
+      result.fold((l) {
+        _lastStableState = DriveSetupState.setupError(failure: l);
+        emit(_lastStableState);
+      }, _applyToken);
     } finally {
       _readyNow();
     }
@@ -151,26 +179,32 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
     if (isClosed) return null;
     emit(const DriveSetupState.refreshingToken());
     final result = await repo.refreshAccessToken();
-    result.fold(
+    final token = result.fold<DriveAccessToken?>(
       (l) {
-        emit(DriveSetupState.setupError(failure: l));
+        _lastStableState = DriveSetupState.setupError(failure: l);
+        emit(_lastStableState);
         return null;
       },
       (r) {
-        emit(DriveSetupState.setupDone(token: r));
+        _applyToken(r);
         return r;
       },
     );
     _readyNow();
-    return null;
+    return token;
   }
 
   void setupError(String code) async {
-    emit(
-      DriveSetupState.setupError(
-        failure: Failure(code: code, message: "Failed to setup drive."),
-      ),
+    _lastStableState = DriveSetupState.setupError(
+      failure: Failure(code: code, message: "Failed to setup drive."),
     );
+    emit(_lastStableState);
     _readyNow();
+  }
+
+  @override
+  Future<void> close() {
+    _refreshTimer?.cancel();
+    return super.close();
   }
 }

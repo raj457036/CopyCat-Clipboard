@@ -5,6 +5,7 @@ import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/model/drive_access_token/drive_access_token.dart';
 import 'package:clipboard/base/domain/repositories/drive_credential.dart';
 import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:dartz/dartz.dart';
 import 'package:googleapis/drive/v3.dart';
 import 'package:injectable/injectable.dart';
@@ -31,7 +32,11 @@ class DriveCredentialRepositoryImpl implements DriveCredentialRepository {
       'response_type': 'code',
       'client_id': clientId,
       'redirect_uri': redirectUrl,
-      'scope': [DriveApi.driveAppdataScope].join(" "),
+      'scope': [
+        DriveApi.driveAppdataScope, // appdata
+        'openid', // for internal identification of the drive account to map clips to a particular drive account
+        'email', // to show on UI which account is connected
+      ].join(" "),
       "access_type": "offline",
       "prompt": "consent",
       "state":
@@ -58,7 +63,14 @@ class DriveCredentialRepositoryImpl implements DriveCredentialRepository {
       final query = db
           .from(table)
           .select(
-            ["access_token", "issued_at", "expires_in", "scopes"].join(","),
+            [
+              "access_token",
+              "issued_at",
+              "expires_in",
+              "scopes",
+              "account_id",
+              "display_text",
+            ].join(","),
           )
           .eq("userId", userId);
       final doc = await query.limit(1).maybeSingle();
@@ -86,6 +98,7 @@ class DriveCredentialRepositoryImpl implements DriveCredentialRepository {
       );
       return Right(DriveAccessToken.fromJson(jsonDecode(result.data)));
     } catch (e) {
+      logger.e("Failed to setup drive with auth code: $e");
       return const Left(
         Failure(
           message: "Failed to connect, please try again later!",
