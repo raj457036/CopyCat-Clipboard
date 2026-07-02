@@ -49,7 +49,7 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
   @override
   FailureOr<bool> delete(ClipCollection collection) async {
     try {
-      await local.delete(collection);
+      await local.delete(collection, soft: true);
       if (collection.id != null && collection.deletedAt == null) {
         await outbox.enqueue(
           SyncOutboxEntry(
@@ -60,9 +60,6 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
           ),
         );
       }
-      try {
-        await remote.delete(collection);
-      } catch (_) {}
       return const Right(true);
     } catch (e) {
       return Left(Failure.fromException(e));
@@ -145,7 +142,20 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
   @override
   FailureOr<List<ClipCollection>> deleteMany(List<ClipCollection> items) async {
     try {
-      final result = await local.deleteMany(items);
+      final result = await local.deleteMany(items, soft: true);
+      final queuedLocalIds = <int>{};
+      for (final item in items) {
+        final localId = item.id;
+        if (localId == null || !queuedLocalIds.add(localId)) continue;
+        await outbox.enqueue(
+          SyncOutboxEntry(
+            entityType: 'collection',
+            localId: localId,
+            action: SyncOutboxAction.delete,
+            createdAt: systemTime(),
+          ),
+        );
+      }
       return Right(result);
     } catch (e) {
       return Left(Failure.fromException(e));

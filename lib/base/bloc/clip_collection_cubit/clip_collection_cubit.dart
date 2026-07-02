@@ -226,7 +226,6 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
     await state.mapOrNull(
       loaded: (loaded) async {
         emit(loaded.copyWith(isLoading: true));
-        await repo.deleteMany(collections);
         final items = loaded.collections.where((c) {
           final isLocallyDeleted = c.id != null && deletedIds.contains(c.id);
           final isRemotelyDeleted =

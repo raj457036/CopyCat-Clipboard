@@ -32,15 +32,17 @@ class RemoteClipCollectionSource implements ClipCollectionSource {
   }
 
   @override
-  Future<bool> delete(ClipCollection collection) async {
+  Future<bool> delete(ClipCollection collection, {bool soft = false}) async {
     if (collection.serverId == null || collection.userId == kLocalUserId) {
       return true;
     }
 
+    // Remote delete always writes a tombstone update.
     collection = collection.copyWith(
       deletedAt: systemTime(),
       modified: systemTime(),
     );
+
     await db
         .from(clipCollectionTable)
         .update(collection.toJson())
@@ -108,8 +110,26 @@ class RemoteClipCollectionSource implements ClipCollectionSource {
   }
 
   @override
-  Future<List<ClipCollection>> deleteMany(List<ClipCollection> items) {
-    throw UnimplementedError();
+  Future<List<ClipCollection>> deleteMany(
+    List<ClipCollection> items, {
+    bool soft = false,
+  }) async {
+    // Remote deleteMany always writes tombstone updates.
+    final deduped = <int, ClipCollection>{};
+    for (final item in items) {
+      final serverId = item.serverId;
+      if (serverId == null || item.userId == kLocalUserId) continue;
+      deduped[serverId] = item;
+    }
+
+    final items_ = deduped.values.map((item) {
+      final json = item
+          .copyWith(deletedAt: systemTime(), modified: systemTime())
+          .toJson();
+      return {...json, "id": item.serverId};
+    }).toList();
+    await db.from(clipCollectionTable).upsert(items_);
+    return items;
   }
 
   @override

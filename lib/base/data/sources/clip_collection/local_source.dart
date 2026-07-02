@@ -102,7 +102,7 @@ class LocalClipCollectionSource implements ClipCollectionSource {
   }
 
   @override
-  Future<bool> delete(ClipCollection collection) async {
+  Future<bool> delete(ClipCollection collection, {bool soft = true}) async {
     if (collection.id == null) return false;
     final result = await db.writeTxn(() async {
       final items = await _clipboardItems
@@ -116,7 +116,18 @@ class LocalClipCollectionSource implements ClipCollectionSource {
         );
       }).toList();
       await _clipboardItems.putAll(updatedItems);
-      await _collection.delete(collection.id!);
+      if (soft) {
+        await _collection.put(
+          IsarClipCollection.fromDomain(
+            collection.copyWith(
+              deletedAt: systemTime(),
+              modified: systemTime(),
+            ),
+          ),
+        );
+      } else {
+        await _collection.delete(collection.id!);
+      }
       return true;
     });
     return result;
@@ -179,7 +190,10 @@ class LocalClipCollectionSource implements ClipCollectionSource {
   }
 
   @override
-  Future<List<ClipCollection>> deleteMany(List<ClipCollection> items) async {
+  Future<List<ClipCollection>> deleteMany(
+    List<ClipCollection> items, {
+    bool soft = true,
+  }) async {
     final result = await db.writeTxn(() async {
       final q = _collection
           .filter()
@@ -195,7 +209,19 @@ class LocalClipCollectionSource implements ClipCollectionSource {
       // Find all items to delete at once
       final deleted = await q.findAll();
 
-      await q.deleteAll();
+      if (soft) {
+        final now = systemTime();
+        final updated = deleted
+            .map(
+              (c) => IsarClipCollection.fromDomain(
+                c.toDomain().copyWith(deletedAt: now, modified: now),
+              ),
+            )
+            .toList();
+        await _collection.putAll(updated);
+      } else {
+        await q.deleteAll();
+      }
 
       return deleted.map((e) => e.toDomain()).toList();
     });

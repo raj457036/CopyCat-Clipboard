@@ -433,7 +433,7 @@ class EncryptionWorker {
               onInit: _initializeWorkerSecret,
               initData: secret,
             ),
-            workerName: "Encryptor Worker",
+            workerName: "E2EE Worker",
           );
 
       _subscription = _encryptor?.onMessage((message) {

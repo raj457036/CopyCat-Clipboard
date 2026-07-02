@@ -15,6 +15,7 @@ import 'package:injectable/injectable.dart';
 class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
   final SyncRepository _syncRepo;
   final ClipCollectionRepository _collectionRepo;
+  final ClipCollectionSource _localSource;
   final ClipCollectionSource _remoteSource;
   final ClipCollectionCubit _collectionCubit;
   final CollectionCrossSyncListener _realtimeListener;
@@ -22,6 +23,7 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
   CollectionSyncAdapter(
     this._syncRepo,
     this._collectionRepo,
+    @Named("local") this._localSource,
     @Named("remote") this._remoteSource,
     this._collectionCubit,
     this._realtimeListener,
@@ -110,8 +112,7 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
 
   @override
   Future<List<ClipCollection>> deleteLocally(List<ClipCollection> items) async {
-    final result = await _collectionRepo.deleteMany(items);
-    return result.fold((l) => [], (r) => r);
+    return await _localSource.deleteMany(items, soft: false);
   }
 
   @override
@@ -145,9 +146,11 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
   @override
   FailureOr<bool> deleteFromRemote(ClipCollection item) async {
     try {
-      await _remoteSource.delete(item);
+      await _remoteSource.delete(item, soft: true);
+      await _removeFromLocal([item]);
       return const Right(true);
     } catch (e) {
+      await _recoverLocalItemAfterServerDeleteFailure([item]);
       return Left(Failure.fromException(e));
     }
   }
@@ -165,11 +168,28 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
     if (items.isEmpty) return const Right(true);
 
     try {
-      await _remoteSource.deleteMany(items);
+      await _remoteSource.deleteMany(items, soft: true);
+      await _removeFromLocal(items);
       return const Right(true);
     } catch (e) {
       return Left(Failure.fromException(e));
     }
+  }
+
+  Future<void> _removeFromLocal(List<ClipCollection> items) async {
+    try {
+      await _localSource.deleteMany(items, soft: false);
+    } catch (_) {}
+  }
+
+  Future<void> _recoverLocalItemAfterServerDeleteFailure(
+    List<ClipCollection> items,
+  ) async {
+    try {
+      await _localSource.updateMany(
+        items.map((item) => item.copyWith(deletedAt: null)).toList(),
+      );
+    } catch (_) {}
   }
 
   @override
