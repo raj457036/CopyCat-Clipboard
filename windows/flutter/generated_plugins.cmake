@@ -17,6 +17,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   media_kit_video
   no_screenshot
   open_dir_windows
+  pdfx
   quick_paste_popup
   screen_retriever_windows
   share_plus

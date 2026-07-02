@@ -68,9 +68,6 @@ dependencies:
   no_screenshot: ^1.1.0
   flutter_secure_storage: ^9.2.4
   local_auth: ^3.0.1
-  flutter_svg_provider:
-    git:
-      url: https://github.com/raj457036/flutter_svg_provider.git
   android_background_clipboard:
     path: packages/android_background_clipboard
   animate_do: ^5.1.0
@@ -111,6 +108,7 @@ dependencies:
   open_dir: ^0.0.2+1
   qr_flutter: ^4.1.0
   mobile_scanner: ^7.1.1
+  thumbnailer: ^3.3.0
 
 dev_dependencies:
   flutter_test:

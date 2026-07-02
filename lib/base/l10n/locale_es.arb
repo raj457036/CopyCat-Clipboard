@@ -26,6 +26,7 @@
   "app__preview": "Vista Previa",
   "app__open_file": "Abrir archivo",
   "app__change_collection": "Cambiar Colección",
+  "app__no_name": "Sin Nombre",
   "app__share": "Compartir",
   "app__uploading": "Subiendo...",
   "app__syncing": "Sincronizando...",

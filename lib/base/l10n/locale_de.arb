@@ -26,6 +26,7 @@
   "app__preview": "Vorschau",
   "app__open_file": "Datei öffnen",
   "app__change_collection": "Sammlung ändern",
+  "app__no_name": "Kein Name",
   "app__share": "Teilen",
   "app__uploading": "Hochladen...",
   "app__syncing": "Synchronisieren...",

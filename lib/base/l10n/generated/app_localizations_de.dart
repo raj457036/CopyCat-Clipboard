@@ -64,6 +64,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get app__change_collection => 'Sammlung ändern';
 
   @override
+  String get app__no_name => 'Kein Name';
+
+  @override
   String get app__share => 'Teilen';
 
   @override

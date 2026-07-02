@@ -488,9 +488,18 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i220.CollectionSyncAdapter(
         gh<_i61.SyncRepository>(),
         gh<_i276.ClipCollectionRepository>(),
+        gh<_i670.ClipCollectionSource>(instanceName: 'local'),
         gh<_i670.ClipCollectionSource>(instanceName: 'remote'),
         gh<_i620.ClipCollectionCubit>(),
         gh<_i543.CollectionCrossSyncListener>(),
+      ),
+    );
+    gh.factory<_i554.PasteStackCubit>(
+      () => _i554.PasteStackCubit(
+        gh<_i542.AppConfigCubit>(),
+        gh<_i657.WindowActionCubit>(),
+        gh<_i246.MonetizationCubit>(),
+        gh<_i706.OfflinePersistenceCubit>(),
       ),
     );
     gh.singleton<_i443.SyncOrchestrator>(
@@ -516,14 +525,6 @@ extension GetItInjectableX on _i174.GetIt {
         syncOrchestrator: gh<_i443.SyncOrchestrator>(),
         appConfigCubit: gh<_i542.AppConfigCubit>(),
         monetizationCubit: gh<_i246.MonetizationCubit>(),
-      ),
-    );
-    gh.factory<_i554.PasteStackCubit>(
-      () => _i554.PasteStackCubit(
-        gh<_i542.AppConfigCubit>(),
-        gh<_i657.WindowActionCubit>(),
-        gh<_i246.MonetizationCubit>(),
-        gh<_i706.OfflinePersistenceCubit>(),
       ),
     );
     gh.lazySingleton<_i891.SyncStatusCubit>(

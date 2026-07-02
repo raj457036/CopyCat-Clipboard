@@ -26,6 +26,7 @@
   "app__preview": "Preview",
   "app__open_file": "Open file",
   "app__change_collection": "Change Collection",
+  "app__no_name": "No Name",
   "app__share": "Share",
   "app__loading": "Loading...",
   "app__uploading": "Uploading...",

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io' as io;
 
-import 'package:clipboard/base/constants/numbers/file_sizes.dart';
 import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_services.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/common/failure.dart';

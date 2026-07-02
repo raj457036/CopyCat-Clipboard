@@ -64,6 +64,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get app__change_collection => 'Changer de collection';
 
   @override
+  String get app__no_name => 'Sans nom';
+
+  @override
   String get app__share => 'Partager';
 
   @override

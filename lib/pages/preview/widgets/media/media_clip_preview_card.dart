@@ -5,11 +5,12 @@ import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:clipboard/pages/preview/widgets/media/media_audio_preview.dart';
 import 'package:clipboard/pages/preview/widgets/media/media_image_preview.dart';
+import 'package:clipboard/pages/preview/widgets/media/media_svg_preview.dart';
 import 'package:clipboard/pages/preview/widgets/media/media_video_preview.dart';
 import 'package:clipboard/utils/blur_hash.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:universal_io/io.dart';
 
 class MediaClipPreviewCard extends StatefulWidget {
@@ -48,9 +49,6 @@ class _MediaClipPreviewCardState extends State<MediaClipPreviewCard> {
 
   ImageProvider? _getPreview() {
     if (widget.item.localPath != null) {
-      if (widget.item.fileMimeType!.contains('svg')) {
-        return Svg(widget.item.localPath!, source: SvgSource.file);
-      }
       return FileImage(File(widget.item.localPath!));
     }
     if (_blurHashBytes != null) return MemoryImage(_blurHashBytes!);
@@ -79,6 +77,15 @@ class _MediaClipPreviewCardState extends State<MediaClipPreviewCard> {
     if (mimeType.startsWith('audio')) {
       return MediaAudioPreview(item: widget.item, shape: config?.shape);
     }
+
+    if (mimeType.contains('svg')) {
+      return MediaSVGImagePreview(
+        item: widget.item,
+        shape: config?.shape,
+        preview: SvgPicture.file(File(widget.item.localPath!)),
+      );
+    }
+
     return MediaImagePreview(
       item: widget.item,
       shape: config?.shape,

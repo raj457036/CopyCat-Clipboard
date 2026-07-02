@@ -213,6 +213,12 @@ abstract class AppLocalizations {
   /// **'Change Collection'**
   String get app__change_collection;
 
+  /// No description provided for @app__no_name.
+  ///
+  /// In en, this message translates to:
+  /// **'No Name'**
+  String get app__no_name;
+
   /// No description provided for @app__share.
   ///
   /// In en, this message translates to:

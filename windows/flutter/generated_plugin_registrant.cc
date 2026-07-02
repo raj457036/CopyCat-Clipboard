@@ -20,6 +20,7 @@
 #include <media_kit_video/media_kit_video_plugin_c_api.h>
 #include <no_screenshot/no_screenshot_plugin_c_api.h>
 #include <open_dir_windows/open_dir_windows_plugin_c_api.h>
+#include <pdfx/pdfx_plugin.h>
 #include <quick_paste_popup/quick_paste_popup_plugin_c_api.h>
 #include <screen_retriever_windows/screen_retriever_windows_plugin_c_api.h>
 #include <share_plus/share_plus_windows_plugin_c_api.h>
@@ -57,6 +58,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("NoScreenshotPluginCApi"));
   OpenDirWindowsPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("OpenDirWindowsPluginCApi"));
+  PdfxPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("PdfxPlugin"));
   QuickPastePopupPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("QuickPastePopupPluginCApi"));
   ScreenRetrieverWindowsPluginCApiRegisterWithRegistrar(

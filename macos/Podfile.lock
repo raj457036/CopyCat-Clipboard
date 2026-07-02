@@ -80,6 +80,8 @@ PODS:
     - FlutterMacOS
   - package_info_plus (0.0.1):
     - FlutterMacOS
+  - pdfx (1.0.0):
+    - FlutterMacOS
   - PromisesObjC (2.4.0)
   - purchases_flutter (10.1.0):
     - FlutterMacOS
@@ -137,6 +139,7 @@ DEPENDENCIES:
   - no_screenshot (from `Flutter/ephemeral/.symlinks/plugins/no_screenshot/macos`)
   - open_dir_macos (from `Flutter/ephemeral/.symlinks/plugins/open_dir_macos/macos`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
+  - pdfx (from `Flutter/ephemeral/.symlinks/plugins/pdfx/macos`)
   - purchases_flutter (from `Flutter/ephemeral/.symlinks/plugins/purchases_flutter/macos`)
   - quick_paste_popup (from `Flutter/ephemeral/.symlinks/plugins/quick_paste_popup/macos`)
   - screen_retriever_macos (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos`)
@@ -207,6 +210,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/open_dir_macos/macos
   package_info_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
+  pdfx:
+    :path: Flutter/ephemeral/.symlinks/plugins/pdfx/macos
   purchases_flutter:
     :path: Flutter/ephemeral/.symlinks/plugins/purchases_flutter/macos
   quick_paste_popup:
@@ -263,6 +268,7 @@ SPEC CHECKSUMS:
   no_screenshot: 9f52bedf1830389e82d9af7122c16eee32924136
   open_dir_macos: 79810d7921d777f8732bf6358b3a0839a8fad9b5
   package_info_plus: f0052d280d17aa382b932f399edf32507174e870
+  pdfx: 1e79f57f7a6ce2f4a4c30f21fa54d3dc82441b51
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   purchases_flutter: 1996c53360a6521e28749639ed840acfbb834415
   PurchasesHybridCommon: 89a3ddba365c20457a4712bc3d6377b0ea3c9b4f

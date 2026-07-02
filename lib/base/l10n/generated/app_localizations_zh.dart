@@ -63,6 +63,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app__change_collection => '更改收藏';
 
   @override
+  String get app__no_name => '无名称';
+
+  @override
   String get app__share => '分享';
 
   @override

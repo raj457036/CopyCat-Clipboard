@@ -5,6 +5,7 @@ import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/file_thumbnail.dart';
 import 'package:flutter/material.dart';
 
 class FileClipPreviewCard extends StatelessWidget {
@@ -20,6 +21,10 @@ class FileClipPreviewCard extends StatelessWidget {
     final textTheme = context.textTheme;
     final colors = context.colors;
     final config = ClipPreviewConfig.of(context);
+    final canShowThumbnail =
+        item.inCache &&
+        item.localPath != null &&
+        item.fileMimeType?.trim().isNotEmpty == true;
 
     return Card.filled(
       margin: EdgeInsets.zero,
@@ -31,10 +36,12 @@ class FileClipPreviewCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
+            spacing: padding12,
             children: [
+              if (canShowThumbnail) FileThumbnail(item: item, widgetSize: 350),
               Text.rich(
                 TextSpan(
-                  text: item.fileName?.sub(end: 10),
+                  text: item.fileName,
                   children: [
                     if (item.fileMimeType != null)
                       TextSpan(

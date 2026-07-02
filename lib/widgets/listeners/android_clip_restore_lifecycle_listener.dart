@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universal_io/io.dart';
 
 class AndroidClipRestoreLifecycleListener extends StatefulWidget {

@@ -505,6 +505,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.8"
+  extension:
+    dependency: transitive
+    description:
+      name: extension
+      sha256: be3a6b7f8adad2f6e2e8c63c895d19811fcf203e23466c6296267941d0ff4f24
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
   fake_async:
     dependency: transitive
     description:
@@ -667,15 +675,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.4"
-  flutter_svg_provider:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "7fac97f0e54634a0fbfb12c692e762bf247793c0"
-      url: "https://github.com/raj457036/flutter_svg_provider.git"
-    source: git
-    version: "1.0.8"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -693,6 +692,14 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  font_awesome_flutter:
+    dependency: transitive
+    description:
+      name: font_awesome_flutter
+      sha256: "09dcde8ab90ffae1a7d65ff2ef96fc62a17ad9d0ce7c127b317ded676b0d5935"
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.0.0"
   form_validator:
     dependency: "direct main"
     description:
@@ -1494,6 +1501,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  pdfx:
+    dependency: transitive
+    description:
+      name: pdfx
+      sha256: "29db9b71d46bf2335e001f91693f2c3fbbf0760e4c2eb596bf4bafab211471c1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.9.2"
   petitparser:
     dependency: transitive
     description:
@@ -1502,6 +1517,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.2"
+  photo_view:
+    dependency: transitive
+    description:
+      name: photo_view
+      sha256: "1fc3d970a91295fbd1364296575f854c9863f225505c28c46e0a03e48960c75e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.0"
   pixel_snap:
     dependency: transitive
     description:
@@ -2033,6 +2056,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.0"
+  table_parser:
+    dependency: transitive
+    description:
+      name: table_parser
+      sha256: "001df045a28bf661df1417958ab4cee3588d142c0d57c5c5dfee6fc986246cd5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   term_glyph:
     dependency: transitive
     description:
@@ -2049,6 +2080,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.11"
+  thumbnailer:
+    dependency: "direct main"
+    description:
+      name: thumbnailer
+      sha256: "3d46348419781d18e67b3036a7cae3c93926d52a792ed80f781a2c8bbaf8b1df"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.0"
   time:
     dependency: transitive
     description:

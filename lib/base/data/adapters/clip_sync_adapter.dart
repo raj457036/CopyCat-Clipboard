@@ -228,6 +228,15 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   FailureOr<bool> deleteBatchFromRemote(List<ClipboardItem> items) async {
     if (items.isEmpty) return const Right(true);
 
+    for (final item in items) {
+      if (item.driveFileId == null) continue;
+      final fileDeleteResult = await _fileCloudService.delete(item);
+      final fileDeleteFailure = fileDeleteResult.fold((f) => f, (_) => null);
+      if (fileDeleteFailure != null) {
+        return Left(fileDeleteFailure);
+      }
+    }
+
     final remoteDelete = await _remoteRepo.deleteMany(items);
     final failed = remoteDelete.fold((failure) => failure, (_) => null);
     if (failed != null) {
