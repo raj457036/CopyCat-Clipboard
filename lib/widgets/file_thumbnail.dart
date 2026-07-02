@@ -8,10 +8,14 @@ class FileThumbnail extends StatelessWidget {
   final ClipboardItem item;
   final double widgetSize;
 
+  /// This is used by the custom thumbnail generation
+  final String? modifier;
+
   const FileThumbnail({
     super.key,
     required this.item,
     required this.widgetSize,
+    this.modifier,
   });
 
   bool get _canShowThumbnail {
@@ -37,7 +41,7 @@ class FileThumbnail extends StatelessWidget {
       onlyIcon: _useIconOnly,
       useWrapper: false,
       useWaterMark: false,
-      name: item.fileName,
+      name: modifier,
       decoration: WidgetDecoration(
         backgroundColor: context.colors.surfaceContainer,
         iconColor: context.colors.onSurface,

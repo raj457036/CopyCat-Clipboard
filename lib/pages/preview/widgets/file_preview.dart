@@ -38,7 +38,12 @@ class FileClipPreviewCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             spacing: padding12,
             children: [
-              if (canShowThumbnail) FileThumbnail(item: item, widgetSize: 350),
+              if (canShowThumbnail)
+                FileThumbnail(
+                  item: item,
+                  widgetSize: 350,
+                  modifier: "full_view",
+                ),
               Text.rich(
                 TextSpan(
                   text: item.fileName,

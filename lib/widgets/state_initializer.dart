@@ -19,11 +19,13 @@ import 'package:clipboard/utils/applink_listener.dart';
 import 'package:clipboard/utils/debounce.dart';
 import 'package:clipboard/utils/share_listener.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/custom_thumbnailer_generations.dart';
 import 'package:clipboard/widgets/dialogs/in_app_review_dialog.dart';
 import 'package:clipboard/widgets/in_background_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thumbnailer/thumbnailer.dart';
 import 'package:universal_io/io.dart';
 
 class StateInitializer extends StatefulWidget {
@@ -89,6 +91,8 @@ class _StateInitializerState extends State<StateInitializer>
         (_) => _trackMobileAppLaunch(),
       );
     }
+
+    Thumbnailer.addCustomGenerationStrategies(customGenerationStrategies);
   }
 
   Future<void> _trackMobileAppLaunch() async {
