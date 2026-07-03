@@ -12,12 +12,9 @@ class RealTimeConnectionStatus extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return Builder(
-      builder: (context) {
-        final isRealTimeActive =
-            context.watch<AppConfigCubit>().state.config.syncSpeed ==
-            SyncSpeed.realtime;
-
+    return BlocSelector<AppConfigCubit, AppConfigState, bool>(
+      selector: (state) => state.config.syncSpeed == SyncSpeed.realtime,
+      builder: (context, isRealTimeActive) {
         if (!isRealTimeActive) {
           return child;
         }

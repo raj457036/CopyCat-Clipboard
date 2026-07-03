@@ -5,8 +5,10 @@ import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_state.dart';
 import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart';
+import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/model/sync/user_device_access.dart';
 import 'package:clipboard/base/domain/repositories/user_devices.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:injectable/injectable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -54,30 +56,10 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
             accessStatus: DeviceAccessStatus.verificationFailed,
           ),
         );
-        syncOrchestrator.stop();
-        InAppNotificationService.i.notify(
-          NotificationMessage.builder(
-            id: 'sync_device_verification_failed',
-            builder: (context) => NotificationContent(
-              body:
-                  'Sync device access could not be verified right now. Please check your internet connection and try again.',
-            ),
-          ),
-        );
         return DeviceAccessStatus.verificationFailed;
       },
       (registration) async {
         if (registration.allowed) {
-          final cadence =
-              monetizationCubit.active?.syncInterval ??
-              defaultBestEffortSyncInterval;
-          final config = appConfigCubit.state.config;
-          if (config.enableSync) {
-            syncOrchestrator.start(
-              syncSpeed: config.syncSpeed,
-              intervalSeconds: cadence,
-            );
-          }
           emit(
             state.copyWith(
               isRegistering: false,
@@ -88,17 +70,6 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
           return DeviceAccessStatus.allowed;
         }
 
-        syncOrchestrator.stop();
-        await appConfigCubit.changeSync(false);
-        InAppNotificationService.i.notify(
-          NotificationMessage.builder(
-            id: 'sync_device_limit_reached',
-            builder: (context) => NotificationContent(
-              body:
-                  'Sync is disabled on this device because your plan device limit is reached. Remove another device from Settings > Syncing > Manage Sync Devices.',
-            ),
-          ),
-        );
         emit(
           state.copyWith(
             isRegistering: false,
@@ -109,6 +80,55 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
         return DeviceAccessStatus.limitReached;
       },
     );
+  }
+
+  Future<void> setupSyncOrchestrator({
+    required DeviceAccessStatus accessStatus,
+    required Subscription subscription,
+    int? syncInterval,
+  }) async {
+    final active = monetizationCubit.active;
+    if (active == null || !active.isSameAs(subscription)) return;
+
+    switch (accessStatus) {
+      case DeviceAccessStatus.allowed:
+        final config = appConfigCubit.state.config;
+        if (!config.enableSync) return;
+        final cadence =
+            syncInterval ??
+            monetizationCubit.active?.syncInterval ??
+            defaultBestEffortSyncInterval;
+        syncOrchestrator.start(
+          syncSpeed: config.syncSpeed,
+          intervalSeconds: cadence,
+        );
+        return;
+      case DeviceAccessStatus.verificationFailed:
+        syncOrchestrator.stop();
+        InAppNotificationService.i.notify(
+          NotificationMessage.builder(
+            id: 'sync_device_verification_failed',
+            builder: (context) => NotificationContent(
+              body: context.locale.device_mgmt_verification_failed,
+            ),
+          ),
+        );
+        return;
+      case DeviceAccessStatus.limitReached:
+        syncOrchestrator.stop();
+        await appConfigCubit.changeSync(false);
+        InAppNotificationService.i.notify(
+          NotificationMessage.builder(
+            id: 'sync_device_limit_reached',
+            builder: (context) => NotificationContent(
+              body: context.locale.device_mgmt_limit_reached,
+            ),
+          ),
+        );
+        return;
+      case DeviceAccessStatus.unknown:
+        return;
+    }
   }
 
   Future<void> fetchDevices({bool force = false}) async {

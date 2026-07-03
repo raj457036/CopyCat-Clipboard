@@ -634,6 +634,8 @@
   "@@DEVICE_CARD": "设备卡片",
   "settings__device_card__last_seen": "上次在线：{time}",
   "settings__device_card__revoke": "撤销",
+  "device_mgmt_verification_failed": "无法验证同步设备的访问权限。请检查您的网络连接并重试。",
+  "device_mgmt_limit_reached": "由于已达到您的计划设备限制，此设备上的同步已被禁用。请从设置 > 同步 > 管理同步设备中移除其他设备。",
   "@@CUSTOM_EXCLUSION_RULES": "自定义排除规则界面",
   "custom_er__nav__1": "应用",
   "custom_er__nav__2": "窗口标题",

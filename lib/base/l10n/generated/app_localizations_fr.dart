@@ -1900,6 +1900,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settings__device_card__revoke => 'Révoquer';
 
   @override
+  String get device_mgmt_verification_failed =>
+      'Impossible de vérifier l\'accès à l\'appareil de synchronisation pour le moment. Veuillez vérifier votre connexion Internet et réessayer.';
+
+  @override
+  String get device_mgmt_limit_reached =>
+      'La synchronisation est désactivée sur cet appareil car la limite d\'appareils de votre abonnement est atteinte. Supprimez un autre appareil dans Paramètres > Synchronisation > Gérer les appareils de synchronisation.';
+
+  @override
   String get custom_er__nav__1 => 'Application';
 
   @override

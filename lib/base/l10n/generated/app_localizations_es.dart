@@ -1895,6 +1895,14 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settings__device_card__revoke => 'Revocar';
 
   @override
+  String get device_mgmt_verification_failed =>
+      'No se pudo verificar el acceso al dispositivo de sincronización en este momento. Por favor, verifica tu conexión a Internet e inténtalo de nuevo.';
+
+  @override
+  String get device_mgmt_limit_reached =>
+      'La sincronización está deshabilitada en este dispositivo porque se ha alcanzado el límite de dispositivos de tu plan. Elimina otro dispositivo en Configuración > Sincronización > Administrar dispositivos de sincronización.';
+
+  @override
   String get custom_er__nav__1 => 'Aplicación';
 
   @override

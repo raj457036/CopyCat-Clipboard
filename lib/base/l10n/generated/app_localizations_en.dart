@@ -1879,6 +1879,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings__device_card__revoke => 'Revoke';
 
   @override
+  String get device_mgmt_verification_failed =>
+      'Sync device access could not be verified right now. Please check your internet connection and try again.';
+
+  @override
+  String get device_mgmt_limit_reached =>
+      'Sync is disabled on this device because your plan device limit is reached. Remove another device from Settings > Syncing > Manage Sync Devices.';
+
+  @override
   String get custom_er__nav__1 => 'App';
 
   @override

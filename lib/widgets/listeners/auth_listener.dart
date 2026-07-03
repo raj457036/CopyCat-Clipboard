@@ -69,6 +69,7 @@ class AuthListener extends StatelessWidget {
   ) async {
     final reviewPromptCubit = context.read<ReviewPromptCubit>();
     final monetizationCubit = sl<MonetizationCubit>();
+    await monetizationCubit.login(state.user.userId);
 
     if (state.isEncryptionKeySetup) {
       unawaited(initEncryptionWorker(state));
@@ -92,7 +93,6 @@ class AuthListener extends StatelessWidget {
       sl<SyncStatusCubit>().markDisabled();
     }
     appRouter.goNamed(RouteConstants.home);
-    await monetizationCubit.login(state.user.userId);
     sl<AppLockCubit>().onAppForeground();
   }
 

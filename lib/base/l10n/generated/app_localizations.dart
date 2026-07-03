@@ -3334,6 +3334,18 @@ abstract class AppLocalizations {
   /// **'Revoke'**
   String get settings__device_card__revoke;
 
+  /// No description provided for @device_mgmt_verification_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync device access could not be verified right now. Please check your internet connection and try again.'**
+  String get device_mgmt_verification_failed;
+
+  /// No description provided for @device_mgmt_limit_reached.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync is disabled on this device because your plan device limit is reached. Remove another device from Settings > Syncing > Manage Sync Devices.'**
+  String get device_mgmt_limit_reached;
+
   /// No description provided for @custom_er__nav__1.
   ///
   /// In en, this message translates to:

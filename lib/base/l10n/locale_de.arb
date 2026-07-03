@@ -634,6 +634,8 @@
   "@@DEVICE_CARD": "Gerätekarten-Widget",
   "settings__device_card__last_seen": "Zuletzt gesehen: {time}",
   "settings__device_card__revoke": "Widerrufen",
+  "device_mgmt_verification_failed": "Der Zugriff auf das Synchronisierungsgerät konnte derzeit nicht überprüft werden. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.",
+  "device_mgmt_limit_reached": "Die Synchronisierung ist auf diesem Gerät deaktiviert, da das Geräte-Limit Ihres Plans erreicht ist. Entfernen Sie ein anderes Gerät unter Einstellungen > Synchronisierung > Synchronisierungsgeräte verwalten.",
   "@@CUSTOM_EXCLUSION_RULES": "Benutzerdefinierte Ausschlussregeln Bildschirm",
   "custom_er__nav__1": "App",
   "custom_er__nav__2": "Fenstertitel",

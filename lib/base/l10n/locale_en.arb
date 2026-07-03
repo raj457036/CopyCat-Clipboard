@@ -806,6 +806,8 @@
     }
   },
   "settings__device_card__revoke": "Revoke",
+  "device_mgmt_verification_failed": "Sync device access could not be verified right now. Please check your internet connection and try again.",
+  "device_mgmt_limit_reached": "Sync is disabled on this device because your plan device limit is reached. Remove another device from Settings > Syncing > Manage Sync Devices.",
   "@@CUSTOM_EXCLUSION_RULES": "Custom Exclusion Rules Screen",
   "custom_er__nav__1": "App",
   "custom_er__nav__2": "Window Title",

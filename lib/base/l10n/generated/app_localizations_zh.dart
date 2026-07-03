@@ -1791,6 +1791,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__device_card__revoke => '撤销';
 
   @override
+  String get device_mgmt_verification_failed => '无法验证同步设备的访问权限。请检查您的网络连接并重试。';
+
+  @override
+  String get device_mgmt_limit_reached =>
+      '由于已达到您的计划设备限制，此设备上的同步已被禁用。请从设置 > 同步 > 管理同步设备中移除其他设备。';
+
+  @override
   String get custom_er__nav__1 => '应用';
 
   @override

@@ -1893,6 +1893,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings__device_card__revoke => 'Widerrufen';
 
   @override
+  String get device_mgmt_verification_failed =>
+      'Der Zugriff auf das Synchronisierungsgerät konnte derzeit nicht überprüft werden. Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.';
+
+  @override
+  String get device_mgmt_limit_reached =>
+      'Die Synchronisierung ist auf diesem Gerät deaktiviert, da das Geräte-Limit Ihres Plans erreicht ist. Entfernen Sie ein anderes Gerät unter Einstellungen > Synchronisierung > Synchronisierungsgeräte verwalten.';
+
+  @override
   String get custom_er__nav__1 => 'App';
 
   @override

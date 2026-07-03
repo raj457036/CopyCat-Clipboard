@@ -634,6 +634,8 @@
   "@@DEVICE_CARD": "Widget Tarjeta de dispositivo",
   "settings__device_card__last_seen": "Visto por última vez: {time}",
   "settings__device_card__revoke": "Revocar",
+  "device_mgmt_verification_failed": "No se pudo verificar el acceso al dispositivo de sincronización en este momento. Por favor, verifica tu conexión a Internet e inténtalo de nuevo.",
+  "device_mgmt_limit_reached": "La sincronización está deshabilitada en este dispositivo porque se ha alcanzado el límite de dispositivos de tu plan. Elimina otro dispositivo en Configuración > Sincronización > Administrar dispositivos de sincronización.",
   "@@CUSTOM_EXCLUSION_RULES": "Pantalla de Reglas de Exclusión Personalizadas",
   "custom_er__nav__1": "Aplicación",
   "custom_er__nav__2": "Título de Ventana",

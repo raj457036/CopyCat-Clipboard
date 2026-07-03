@@ -17,18 +17,17 @@ class MonetizationListener extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<MonetizationCubit, MonetizationState>(
-      listenWhen: (previous, current) {
-        if (previous is MonetizationActive && current is MonetizationActive) {
-          return !previous.subscription.isSameAs(current.subscription);
-        }
-        return true;
-      },
       listener: (context, state) async {
         state.whenOrNull(
           active: (subscription) async {
             final deviceCubit = context.read<UserDevicesCubit>();
             await appConfigCubit.load(subscription);
-            await deviceCubit.registerCurrentDevice();
+            final accessStatus = await deviceCubit.registerCurrentDevice();
+            await deviceCubit.setupSyncOrchestrator(
+              accessStatus: accessStatus,
+              subscription: subscription,
+              syncInterval: subscription.syncInterval,
+            );
           },
         );
       },

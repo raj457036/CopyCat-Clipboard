@@ -35,6 +35,8 @@ class SyncOrchestrator {
   StreamSubscription? _outboxStreamSub;
 
   bool _isRunning = false;
+  SyncSpeed? _activeSyncSpeed;
+  int? _activeIntervalSeconds;
 
   bool get isRunning => _isRunning;
 
@@ -209,7 +211,23 @@ class SyncOrchestrator {
   ///   for instant push on every new entry.
   /// - [SyncSpeed.balanced]: Polls the outbox every [AppConfig.pollingIntervalSeconds] seconds.
   void start({SyncSpeed syncSpeed = SyncSpeed.balanced, int? intervalSeconds}) {
-    _logger.d(() => 'start() called with syncSpeed=$syncSpeed');
+    final effectiveInterval = _effectiveIntervalSeconds(
+      syncSpeed,
+      intervalSeconds,
+    );
+
+    _logger.d(
+      () =>
+          'start() called with syncSpeed=$syncSpeed interval=$effectiveInterval',
+    );
+
+    if (_isRunning &&
+        _activeSyncSpeed == syncSpeed &&
+        _activeIntervalSeconds == effectiveInterval) {
+      _logger.d('start() no-op: sync runtime already matches config');
+      return;
+    }
+
     _teardownEngines();
     _startOutboxProcessor(syncSpeed, intervalSeconds: intervalSeconds);
     switch (syncSpeed) {
@@ -218,6 +236,9 @@ class SyncOrchestrator {
       case SyncSpeed.balanced:
         _startPolling(intervalSeconds: intervalSeconds);
     }
+
+    _activeSyncSpeed = syncSpeed;
+    _activeIntervalSeconds = effectiveInterval;
     _isRunning = true;
   }
 
@@ -229,7 +250,18 @@ class SyncOrchestrator {
     _outboxStreamSub = null;
 
     _teardownEngines();
+    _activeSyncSpeed = null;
+    _activeIntervalSeconds = null;
     _isRunning = false;
+  }
+
+  int? _effectiveIntervalSeconds(SyncSpeed syncSpeed, int? intervalSeconds) {
+    switch (syncSpeed) {
+      case SyncSpeed.realtime:
+        return null;
+      case SyncSpeed.balanced:
+        return intervalSeconds ?? defaultBestEffortSyncInterval;
+    }
   }
 
   void _startRealtime() {
