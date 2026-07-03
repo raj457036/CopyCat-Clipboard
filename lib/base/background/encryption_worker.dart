@@ -351,7 +351,7 @@ class EncryptionException implements Exception {
 
 class EncryptionWorker {
   static const Duration _workerTimeout = Duration(minutes: 2);
-  static const _logger = AppLogger.scoped("Encryption Worker");
+  static const _logger = AppLogger.scoped("E2EE Worker");
 
   Completer<void>? _completer;
   final Map<String, Completer<EncryptionResponse>> _tasks =

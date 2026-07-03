@@ -18,8 +18,11 @@ class MonetizationCubit extends Cubit<MonetizationState>
   bool _isListenersSetUp = false;
 
   MonetizationCubit({required this.repo})
-    : super(const MonetizationState.unknown()) {
-    onSubscriptionAvailable = onSubscriptionChange;
+    : super(const MonetizationState.unknown());
+
+  @override
+  Future<void> onSubscriptionAvailable(Subscription subscription) async {
+    onSubscriptionChange(subscription);
   }
 
   @override
@@ -50,16 +53,21 @@ class MonetizationCubit extends Cubit<MonetizationState>
     final done = await setUser(userId);
     if (!done) {
       final result = await repo.get(userId: userId);
-      result.fold((l) => logger.e(l), (subscription) {
-        if (subscription == null) return;
-        onSubscriptionChange(subscription);
-      });
+      return result.fold(
+        (l) {
+          logger.e(l);
+          return null;
+        },
+        (subscription) {
+          if (subscription == null) return null;
+          onSubscriptionChange(subscription);
+        },
+      );
     }
     _isListenersSetUp = true;
   }
 
   Future<void> logout() async {
-    if (!_isListenersSetUp) return;
     emit(const MonetizationState.unknown());
     stopListeners();
     _isListenersSetUp = false;

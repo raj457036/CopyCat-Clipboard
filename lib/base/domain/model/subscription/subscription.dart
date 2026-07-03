@@ -87,7 +87,8 @@ class Subscription with _$Subscription, Identifiable {
         maxSyncDevices == other.maxSyncDevices &&
         customExclusionRules == other.customExclusionRules &&
         tkn == other.tkn &&
-        grants == other.grants;
+        grants == other.grants &&
+        userId == other.userId;
   }
 
   factory Subscription.fromJson(Map<String, dynamic> json) =>

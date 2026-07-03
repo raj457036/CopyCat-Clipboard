@@ -60,6 +60,7 @@ class AuthListener extends StatelessWidget {
     sl<UserDevicesCubit>().clear();
     sl<AppConfigCubit>().reset();
     sl<SyncOrchestrator>().stop();
+    sl<MonetizationCubit>().logout();
   }
 
   Future<void> _handleAuthenticatedState(
@@ -67,9 +68,7 @@ class AuthListener extends StatelessWidget {
     AuthenticatedAuthState state,
   ) async {
     final reviewPromptCubit = context.read<ReviewPromptCubit>();
-
     final monetizationCubit = sl<MonetizationCubit>();
-    unawaited(monetizationCubit.login(state.user.userId));
 
     if (state.isEncryptionKeySetup) {
       unawaited(initEncryptionWorker(state));
@@ -86,13 +85,14 @@ class AuthListener extends StatelessWidget {
     unawaited(sl<OfflinePersistenceCubit>().startListeners());
 
     final appConfigCubit = sl<AppConfigCubit>();
+
     if (appConfigCubit.isSyncEnabled) {
       unawaited(sl<SyncStatusCubit>().syncAll(const SyncAllParams()));
     } else {
       sl<SyncStatusCubit>().markDisabled();
     }
-    unawaited(sl<UserDevicesCubit>().registerCurrentDevice());
     appRouter.goNamed(RouteConstants.home);
+    await monetizationCubit.login(state.user.userId);
     sl<AppLockCubit>().onAppForeground();
   }
 

@@ -178,15 +178,12 @@ final appRouter = GoRouter(
                 },
               ),
           ],
-          child: MonetizationListener(
-            appConfigCubit: sl(),
-            child: Platform.isAndroid
-                ? AndroidClipRestoreLifecycleListener(
-                    androidBgClipboardCubit: sl(),
-                    child: child,
-                  )
-                : child,
-          ),
+          child: Platform.isAndroid
+              ? AndroidClipRestoreLifecycleListener(
+                  androidBgClipboardCubit: sl(),
+                  child: child,
+                )
+              : child,
         );
       },
       routes: [

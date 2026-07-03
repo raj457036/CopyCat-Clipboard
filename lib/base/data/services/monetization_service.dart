@@ -10,7 +10,12 @@ import 'package:universal_io/io.dart';
 mixin MonetizationService {
   bool _setupDone = false;
   bool _listenersSetup = false;
-  Function(Subscription subscription)? onSubscriptionAvailable;
+
+  Future<void> onSubscriptionAvailable(Subscription subscription) {
+    throw UnimplementedError(
+      "onSubscriptionAvailable must be implemented in the class that mixes in MonetizationService",
+    );
+  }
 
   void setupListeners() {
     if (iapCatSupportedPlatform && !_listenersSetup) {
@@ -24,12 +29,12 @@ mixin MonetizationService {
       Purchases.removeCustomerInfoUpdateListener(onCustomerInfoUpdate);
       _listenersSetup = false;
     }
-    onSubscriptionAvailable = null;
   }
 
   void onCustomerInfoUpdate(CustomerInfo info) {
+    if (!_listenersSetup) return;
     final subscription = info.toSubscription();
-    onSubscriptionAvailable?.call(subscription);
+    onSubscriptionAvailable(subscription);
   }
 
   Future<void> setupRevenuCat(String userId) async {
@@ -57,12 +62,13 @@ mixin MonetizationService {
 
       if (!_setupDone) return false;
 
-      await Purchases.logIn(userId);
       try {
-        final result = await Purchases.getCustomerInfo();
+        final loginResult = await Purchases.logIn(userId);
+        final result = loginResult.customerInfo;
         onCustomerInfoUpdate(result);
       } catch (e) {
         logger.e("Couldn't get customer info", error: e);
+        return false;
       }
       return true;
     }

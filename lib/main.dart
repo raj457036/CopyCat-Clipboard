@@ -27,6 +27,7 @@ import 'package:clipboard/widgets/app_lock_overlay.dart';
 import 'package:clipboard/widgets/debug/gizmo_overlay.dart';
 import 'package:clipboard/widgets/keyboard_shortcuts/actions/select_all.dart';
 import 'package:clipboard/widgets/listeners/auth_listener.dart';
+import 'package:clipboard/widgets/listeners/monetization_listener.dart';
 import 'package:clipboard/widgets/state_initializer.dart';
 import 'package:clipboard/widgets/system_shortcut_listeners.dart';
 import 'package:clipboard/widgets/tray_manager.dart';
@@ -147,76 +148,84 @@ class AppContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AuthListener(
-      child: StateInitializer(
-        child: ThemeManager(
-          builder: (context, theme, darkTheme, appConfig) {
-            updateValidatorLanguage(appConfig.locale);
-            final locale = Locale(
-              appConfig.locale.isEmpty ? Platform.localeName : appConfig.locale,
-            );
-            return AnnotatedRegion<SystemUiOverlayStyle>(
-              value: getUiOverlay(appConfig.themeMode),
-              child: MaterialApp.router(
-                // restorationScopeId: 'app',
-                routerConfig: appRouter,
-                scaffoldMessengerKey:
-                    InAppNotificationService.scaffoldMessengerKey,
-                scrollBehavior: ClampingScrollBehavior(),
-                themeMode: appConfig.themeMode,
-                shortcuts: {
-                  ...WidgetsApp.defaultShortcuts,
-                  NavigateToHomePageIntent.activator:
-                      const NavigateToHomePageIntent(),
-                  NavigateToCollectionPageIntent.activator:
-                      const NavigateToCollectionPageIntent(),
-                  FocusOnSearchFieldIntent.activator:
-                      const FocusOnSearchFieldIntent(),
-                  CreateNewClipNoteIntent.activator:
-                      const CreateNewClipNoteIntent(),
-                  SyncIntent.activator: const SyncIntent(),
-                  PasteIntent.activator: const PasteIntent(),
-                  DeleteItemIntent.activator: const DeleteItemIntent(),
-                  if (appConfig.view == AppView.windowed)
-                    NavigateToSettingPageIntent.activator:
-                        const NavigateToSettingPageIntent(),
-                  if (isDesktopPlatform)
-                    PopRouteIntent.activator: const PopRouteIntent(),
-                  PasteByClipIndexIntent.i.activator: PasteByClipIndexIntent.i,
-                  SelectAllIntent.activator: const SelectAllIntent(),
-                },
-                actions: {
-                  ...WidgetsApp.defaultActions,
-                  NavigateToHomePageIntent: NavigateToHomePageAction(),
-                  NavigateToCollectionPageIntent:
-                      NavigateToCollectionPageAction(),
-                  FocusOnSearchFieldIntent: FocusOnSearchFieldAction(),
-                  SyncIntent: SyncAction(),
-                  CreateNewClipNoteIntent: CreateNewClipNoteAction(),
-                  PasteIntent: PasteAction(),
-                  DeleteItemIntent: DeleteSelectedItemsAction(),
-                  if (isDesktopPlatform) PopRouteIntent: HideWindowAction(),
-                  if (appConfig.view == AppView.windowed)
-                    NavigateToSettingPageIntent: NavigateToSettingPageAction(),
-                  PasteByClipIndexIntent: PasteByClipIndexAction(),
-                  SelectAllIntent: SelectAllAction(),
-                },
-                theme: theme,
-                darkTheme: darkTheme,
-                debugShowCheckedModeBanner: false,
-                locale: locale,
-                localizationsDelegates: AppLocalizations.localizationsDelegates,
-                supportedLocales: AppLocalizations.supportedLocales,
-                builder: (context, child) {
-                  return AppLockOverlay(
-                    child: TrayManager.forPlatform(
-                      child: UpgraderBuilder(child: child),
-                    ),
-                  );
-                },
-              ),
-            );
-          },
+    return MonetizationListener(
+      appConfigCubit: sl(),
+      child: AuthListener(
+        child: StateInitializer(
+          child: ThemeManager(
+            builder: (context, theme, darkTheme, appConfig) {
+              updateValidatorLanguage(appConfig.locale);
+              final locale = Locale(
+                appConfig.locale.isEmpty
+                    ? Platform.localeName
+                    : appConfig.locale,
+              );
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: getUiOverlay(appConfig.themeMode),
+                child: MaterialApp.router(
+                  // restorationScopeId: 'app',
+                  routerConfig: appRouter,
+                  scaffoldMessengerKey:
+                      InAppNotificationService.scaffoldMessengerKey,
+                  scrollBehavior: ClampingScrollBehavior(),
+                  themeMode: appConfig.themeMode,
+                  shortcuts: {
+                    ...WidgetsApp.defaultShortcuts,
+                    NavigateToHomePageIntent.activator:
+                        const NavigateToHomePageIntent(),
+                    NavigateToCollectionPageIntent.activator:
+                        const NavigateToCollectionPageIntent(),
+                    FocusOnSearchFieldIntent.activator:
+                        const FocusOnSearchFieldIntent(),
+                    CreateNewClipNoteIntent.activator:
+                        const CreateNewClipNoteIntent(),
+                    SyncIntent.activator: const SyncIntent(),
+                    PasteIntent.activator: const PasteIntent(),
+                    DeleteItemIntent.activator: const DeleteItemIntent(),
+                    if (appConfig.view == AppView.windowed)
+                      NavigateToSettingPageIntent.activator:
+                          const NavigateToSettingPageIntent(),
+                    if (isDesktopPlatform)
+                      PopRouteIntent.activator: const PopRouteIntent(),
+                    PasteByClipIndexIntent.i.activator:
+                        PasteByClipIndexIntent.i,
+                    SelectAllIntent.activator: const SelectAllIntent(),
+                  },
+                  actions: {
+                    ...WidgetsApp.defaultActions,
+                    NavigateToHomePageIntent: NavigateToHomePageAction(),
+                    NavigateToCollectionPageIntent:
+                        NavigateToCollectionPageAction(),
+                    FocusOnSearchFieldIntent: FocusOnSearchFieldAction(),
+                    SyncIntent: SyncAction(),
+                    CreateNewClipNoteIntent: CreateNewClipNoteAction(),
+                    PasteIntent: PasteAction(),
+                    DeleteItemIntent: DeleteSelectedItemsAction(),
+                    if (isDesktopPlatform) PopRouteIntent: HideWindowAction(),
+                    if (appConfig.view == AppView.windowed)
+                      NavigateToSettingPageIntent:
+                          NavigateToSettingPageAction(),
+                    PasteByClipIndexIntent: PasteByClipIndexAction(),
+                    SelectAllIntent: SelectAllAction(),
+                  },
+                  theme: theme,
+                  darkTheme: darkTheme,
+                  debugShowCheckedModeBanner: false,
+                  locale: locale,
+                  localizationsDelegates:
+                      AppLocalizations.localizationsDelegates,
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  builder: (context, child) {
+                    return AppLockOverlay(
+                      child: TrayManager.forPlatform(
+                        child: UpgraderBuilder(child: child),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

@@ -401,6 +401,8 @@ class SyncEngine<T extends Syncable> {
       return;
     }
 
+    await adapter.deleteLocally(items);
+
     for (final entry in entries) {
       if (entry.id != null) {
         await outboxRepo.markCompleted(entry.id!);
@@ -477,6 +479,10 @@ class SyncEngine<T extends Syncable> {
         await _handleOutboxFailure(entry, failure);
       },
       (result) async {
+        if (entry.action == SyncOutboxAction.delete && item != null) {
+          await adapter.deleteLocally([item]);
+        }
+
         logger.d(
           () =>
               '[SyncEngine:${adapter.entityType}] Push SUCCESS for entry id=${entry.id}. Marking completed.',
@@ -596,7 +602,7 @@ class SyncEngine<T extends Syncable> {
       logger.d(() => "Received realtime event: $event");
       final (type, item) = event;
 
-      if (type == CrossSyncEventType.delete) {
+      if (type == CrossSyncEventType.delete || item.deletedAt != null) {
         final deleted = await adapter.deleteLocally([item]);
         if (deleted.isEmpty) {
           eventBus.emit<T>((CrossSyncEventType.delete, item));

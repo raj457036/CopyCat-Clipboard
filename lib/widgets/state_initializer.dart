@@ -143,7 +143,7 @@ class _StateInitializerState extends State<StateInitializer>
 
   Future<void> _runResumeSyncCatchUp() async {
     if (!mounted || _resumeSyncInProgress) return;
-    if (!Platform.isAndroid) return;
+    if (isDesktopPlatform) return;
     if (!appConfigCubit.isSyncEnabled || !_isSyncEligibleAuthState()) return;
 
     final intervalSeconds =

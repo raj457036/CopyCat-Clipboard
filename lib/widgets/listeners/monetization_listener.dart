@@ -1,5 +1,6 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,16 +17,18 @@ class MonetizationListener extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<MonetizationCubit, MonetizationState>(
-      listenWhen: (prev, current) {
-        if (current is MonetizationActive && prev is MonetizationActive) {
-          return !current.subscription.isSameAs(prev.subscription);
+      listenWhen: (previous, current) {
+        if (previous is MonetizationActive && current is MonetizationActive) {
+          return !previous.subscription.isSameAs(current.subscription);
         }
         return true;
       },
       listener: (context, state) async {
         state.whenOrNull(
-          active: (appConfig) {
-            appConfigCubit.load(appConfig);
+          active: (subscription) async {
+            final deviceCubit = context.read<UserDevicesCubit>();
+            await appConfigCubit.load(subscription);
+            await deviceCubit.registerCurrentDevice();
           },
         );
       },
