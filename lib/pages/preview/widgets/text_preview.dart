@@ -54,12 +54,7 @@ class TextClipPreviewCard extends StatelessWidget {
       shape: config?.shape,
       child: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.only(
-            left: padding16,
-            right: padding16,
-            top: padding16,
-            bottom: padding38 * 2.5,
-          ),
+          padding: const EdgeInsets.all(padding16),
           child: SelectableText(
             item.text ?? context.locale.preview__card__missing_text,
             style: TextStyle(color: getFG(context, bg), fontFamily: fontFamily),

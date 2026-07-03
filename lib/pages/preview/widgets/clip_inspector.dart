@@ -819,7 +819,11 @@ class _InspectorInfoRow extends StatelessWidget {
           width12,
           Expanded(
             flex: 6,
-            child: SelectableText(value, style: textTheme.bodyMedium),
+            child: SelectableText(
+              value,
+              style: textTheme.bodyMedium,
+              maxLines: 1,
+            ),
           ),
         ],
       ),
@@ -846,7 +850,7 @@ class _InspectorSourceAppRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             flex: 4,
@@ -864,12 +868,13 @@ class _InspectorSourceAppRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
+              spacing: padding8,
               children: [
                 SourceAppIcon(
                   sourceId: sourceId,
                   sourceOs: sourceOs,
-                  padding: const EdgeInsets.only(right: padding8),
-                  radius: 14,
+                  height: 30,
+                  width: 30,
                 ),
                 Expanded(
                   child: SelectableText(sourceApp, style: textTheme.bodyMedium),

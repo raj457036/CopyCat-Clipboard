@@ -15,9 +15,9 @@ class TextPreviewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final body = Padding(padding: const EdgeInsets.all(padding8), child: child);
+    final body = Padding(padding: clipCardContentPadding, child: child);
     if (bg != null) {
-      return Material(type: MaterialType.card, color: bg, child: body);
+      return Ink(color: bg!, child: body);
     }
     return body;
   }
@@ -36,65 +36,54 @@ class TextClipCard extends StatelessWidget {
     switch (item.textCategory) {
       case TextCategory.color:
         final bg = textToColor(item);
-        return SizedBox(
-          width: double.infinity,
-          child: TextPreviewBody(
-            bg: bg,
-            child: Center(
-              child: Text(
-                item.text!,
-                style: textTheme.titleMedium?.copyWith(
-                  color: getFg(bg),
-                  fontVariations: fontVarW500,
-                ),
+        return TextPreviewBody(
+          bg: bg,
+          child: Center(
+            child: Text(
+              item.text!,
+              style: textTheme.titleMedium?.copyWith(
+                color: getFg(bg),
+                fontVariations: fontVarW500,
               ),
             ),
           ),
         );
-      case TextCategory.email:
-      case TextCategory.phone:
-        return SizedBox(
-          width: double.infinity,
-          child: TextPreviewBody(
-            bg: colors.secondaryContainer,
-            child: Align(
-              heightFactor: 1,
-              child: Text(
-                item.text!,
-                textAlign: TextAlign.center,
-                style: textTheme.titleMedium?.copyWith(
-                  fontVariations: fontVarW500,
-                ),
-                maxLines: 3,
-                overflow: TextOverflow.fade,
+      case TextCategory.email || TextCategory.phone:
+        return TextPreviewBody(
+          bg: colors.surfaceContainerHighest,
+          child: Align(
+            heightFactor: 1,
+            child: Text(
+              item.text!,
+              textAlign: TextAlign.center,
+              style: textTheme.titleMedium?.copyWith(
+                fontVariations: fontVarW500,
               ),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         );
       case TextCategory.struct:
-        return SizedBox(
-          width: double.infinity,
-          child: TextPreviewBody(
-            bg: colors.tertiaryContainer,
-            child: Text(
-              item.text!,
-              overflow: TextOverflow.fade,
-              style: textTheme.bodyMedium?.copyWith(
-                fontFamily: jetBrainsMonoFont,
-                color: colors.onTertiaryContainer,
-              ),
+        return TextPreviewBody(
+          bg: colors.tertiaryContainer,
+          child: Text(
+            item.text!,
+            softWrap: false,
+            overflow: TextOverflow.visible,
+            style: textTheme.bodySmall?.copyWith(
+              fontFamily: jetBrainsMonoFont,
+              color: colors.onTertiaryContainer,
             ),
           ),
         );
       default:
-        return SizedBox(
-          width: double.infinity,
-          child: TextPreviewBody(
-            child: Text(
-              item.text!,
-              overflow: TextOverflow.fade,
-              style: textTheme.bodyMedium,
-            ),
+        return TextPreviewBody(
+          child: Text(
+            item.text!,
+            overflow: TextOverflow.ellipsis,
+            style: textTheme.bodyMedium,
+            maxLines: 12,
           ),
         );
     }

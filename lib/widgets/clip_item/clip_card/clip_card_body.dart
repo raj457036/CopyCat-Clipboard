@@ -35,53 +35,34 @@ class ClipCardBodyContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final item = ClipItemScope.of(context);
-    final colors = context.colors;
-    final textTheme = context.textTheme;
-    // NOTE: drag and drop doesn't work in android for now
     final selected = context.select(
       (SelectedClipsCubit cubit) => cubit.isSelected(item),
     );
     final syncActive = context.select(
       (AppConfigCubit cubit) => cubit.state.config.enableSync,
     );
-    final child = liteMode
-        ? ClipPreview(item: item)
-        : Column(
-            mainAxisSize: MainAxisSize.min,
+    if (liteMode) return ClipPreview(item: item);
+
+    final child = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Expanded(
+          child: Stack(
             children: [
-              const ClipCardOptionsHeader(),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (item.displayTitle != null &&
-                        item.displayTitle!.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: padding8,
-                          right: padding8,
-                          top: padding2,
-                          bottom: padding8,
-                        ),
-                        child: Text(
-                          item.displayTitle!,
-                          style: textTheme.titleSmall?.copyWith(
-                            fontVariations: fontVarW700,
-                            color: item.locked
-                                ? colors.onPrimaryContainer
-                                : null,
-                          ),
-                          maxLines: 1,
-                        ),
-                      ),
-                    Expanded(child: ClipPreview(item: item)),
-                  ],
-                ),
+              Positioned.fill(child: ClipPreview(item: item)),
+              const Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: padding44,
+                child: ClipCardOptionsHeader(),
               ),
-              if (!selected && syncActive) const _SyncStatusFooter(),
             ],
-          );
+          ),
+        ),
+        if (!selected && syncActive) const _SyncStatusFooter(),
+      ],
+    );
 
     if (!selected && dragAndDropEnabled) {
       return DraggableItem(item: item, child: child);
@@ -204,20 +185,19 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       onShiftC: (context) => onShiftC(context, widget.item),
       child: Card(
         color: bgColor,
-        elevation: highlighted ? 2 : 0,
+        elevation: highlighted ? 3 : 0,
         shape: selectedShape,
         clipBehavior: Clip.hardEdge,
         child: InkWell(
           onLongPress: isMobilePlatform && !widget.dragAndDropEnabled
               ? () => Menu.of(context)?.openMenu(context)
               : null,
+          focusColor: Colors.transparent,
           mouseCursor: SystemMouseCursors.click,
-          focusColor: bgColor,
           customBorder: selectedShape,
           onTap: !widget.selectionActive
               ? () => performPrimaryActionOnClip(context, widget.item, canPaste)
               : () => toggleSelect(context),
-          // onLongPress: () => menu.openOptionDialog(context),
           onSecondaryTapUp: !widget.selectionActive
               ? (detail) async {
                   final menu = Menu.of(context);

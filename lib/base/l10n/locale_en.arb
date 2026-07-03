@@ -10,6 +10,7 @@
   "@app__slogan": {
     "description": "CopyCat Clipboard Slogan"
   },
+  "app__image_not_found": "Image not found",
   "app__unknown_error": "An unexpected error occurred",
   "app__downloading": "Downloading...",
   "app__download": "Download",

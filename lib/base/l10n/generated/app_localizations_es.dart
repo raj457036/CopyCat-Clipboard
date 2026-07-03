@@ -15,6 +15,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get app__slogan => 'Un Portapapeles, Posibilidades Ilimitadas';
 
   @override
+  String get app__image_not_found => 'Imagen no encontrada';
+
+  @override
   String get app__unknown_error => 'Ocurrió un error inesperado';
 
   @override

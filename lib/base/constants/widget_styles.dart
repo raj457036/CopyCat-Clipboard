@@ -12,6 +12,15 @@ const padding16 = 16.0;
 const padding20 = 20.0;
 const padding28 = 28.0;
 const padding38 = 38.0;
+const padding44 = 44.0;
+const padding52 = 52.0;
+
+const clipCardContentPadding = EdgeInsets.only(
+  left: padding8,
+  right: padding8,
+  top: padding52,
+  bottom: padding8,
+);
 
 // Widths
 const width2 = SizedBox(width: 2);

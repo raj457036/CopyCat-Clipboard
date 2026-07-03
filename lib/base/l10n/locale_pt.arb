@@ -10,6 +10,7 @@
   "@app__slogan": {
     "description": "Slogan do CopyCat Clipboard"
   },
+  "app__image_not_found": "Imagem não encontrada",
   "app__unknown_error": "Ocorreu um erro inesperado",
   "app__downloading": "Baixando...",
   "app__download": "Baixar",

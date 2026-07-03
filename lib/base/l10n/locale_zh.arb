@@ -10,6 +10,7 @@
   "@app__slogan": {
     "description": "CopyCat 剪贴板宣传语"
   },
+  "app__image_not_found": "未找到图片",
   "app__unknown_error": "发生意外错误",
   "app__downloading": "下载中...",
   "app__download": "下载",

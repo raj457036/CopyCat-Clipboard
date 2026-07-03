@@ -10,6 +10,7 @@
   "@app__slogan": {
     "description": "Eslogan del Portapapeles CopyCat"
   },
+  "app__image_not_found": "Imagen no encontrada",
   "app__unknown_error": "Ocurrió un error inesperado",
   "app__downloading": "Descargando...",
   "app__download": "Descargar",

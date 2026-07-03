@@ -26,7 +26,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thumbnailer/thumbnailer.dart';
-import 'package:universal_io/io.dart';
 
 class StateInitializer extends StatefulWidget {
   final Widget child;

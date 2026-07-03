@@ -15,6 +15,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get app__slogan => 'Un presse-papiers, des possibilités illimitées';
 
   @override
+  String get app__image_not_found => 'Image introuvable';
+
+  @override
   String get app__unknown_error => 'Une erreur inattendue est survenue';
 
   @override

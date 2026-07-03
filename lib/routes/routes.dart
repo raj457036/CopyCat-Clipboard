@@ -51,7 +51,6 @@ import "package:clipboard/pages/settings/pages/lan_mesh/lan_mesh_page.dart";
 import "package:clipboard/pages/settings/pages/personal_drives/page.dart";
 import "package:clipboard/pages/splash_page.dart";
 import "package:clipboard/widgets/listeners/android_clip_restore_lifecycle_listener.dart";
-import "package:clipboard/widgets/listeners/monetization_listener.dart";
 import "package:clipboard/widgets/page_route/dynamic_page_route.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";

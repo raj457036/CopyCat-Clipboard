@@ -117,6 +117,12 @@ abstract class AppLocalizations {
   /// **'One Clipboard, Limitless Possibility'**
   String get app__slogan;
 
+  /// No description provided for @app__image_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'Image not found'**
+  String get app__image_not_found;
+
   /// No description provided for @app__unknown_error.
   ///
   /// In en, this message translates to:

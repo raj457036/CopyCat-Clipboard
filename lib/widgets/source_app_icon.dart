@@ -8,15 +8,15 @@ import 'package:universal_io/io.dart';
 class SourceAppIcon extends StatelessWidget {
   final String? sourceId;
   final PlatformOS? sourceOs;
-  final double radius;
-  final EdgeInsetsGeometry padding;
+  final double? width;
+  final double? height;
 
   const SourceAppIcon({
     super.key,
     required this.sourceId,
     this.sourceOs,
-    this.radius = 10,
-    this.padding = EdgeInsets.zero,
+    this.width,
+    this.height,
   });
 
   @override
@@ -43,15 +43,13 @@ class SourceAppIcon extends StatelessWidget {
             ? CachedNetworkImageProvider(iconPath)
             : FileImage(File(iconPath));
 
-        return Padding(
-          padding: padding,
-          child: Image(
-            image: image,
-            width: radius * 2,
-            height: radius * 2,
-            gaplessPlayback: true,
-            semanticLabel: "Source application icon",
-          ),
+        return Image(
+          image: image,
+          width: width,
+          height: height,
+          gaplessPlayback: true,
+          fit: BoxFit.cover,
+          semanticLabel: "Source application icon",
         );
       },
     );

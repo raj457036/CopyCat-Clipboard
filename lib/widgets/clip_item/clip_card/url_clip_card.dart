@@ -1,4 +1,3 @@
-import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/link_preview.dart';
@@ -14,27 +13,18 @@ class UrlClipCard extends StatelessWidget {
     final textTheme = context.textTheme;
     final url = item.url ?? "https://example.com";
 
-    final child = LayoutBuilder(
-      builder: (context, constriants) {
-        return Column(
-          spacing: 10,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: LinkPreview(url: url, maxTitleLines: 1, maxDescLines: 1),
-            ),
-            Text(
-              url,
-              overflow: TextOverflow.ellipsis,
-              style: textTheme.bodyMedium,
-            ),
-          ],
-        );
-      },
-    );
-
-    return SizedBox.expand(
-      child: Padding(padding: const EdgeInsets.all(padding8), child: child),
+    return LinkPreview(
+      url: url,
+      maxTitleLines: 1,
+      maxDescLines: 1,
+      flat: true,
+      bottom: Text(
+        url,
+        overflow: TextOverflow.ellipsis,
+        style: textTheme.bodySmall?.copyWith(
+          color: context.colors.onSurface.withValues(alpha: 0.6),
+        ),
+      ),
     );
   }
 }

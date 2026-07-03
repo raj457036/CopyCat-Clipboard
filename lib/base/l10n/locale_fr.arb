@@ -10,6 +10,7 @@
   "@app__slogan": {
     "description": "Slogan du Presse-papiers CopyCat"
   },
+  "app__image_not_found": "Image introuvable",
   "app__unknown_error": "Une erreur inattendue est survenue",
   "app__downloading": "Téléchargement...",
   "app__download": "Télécharger",

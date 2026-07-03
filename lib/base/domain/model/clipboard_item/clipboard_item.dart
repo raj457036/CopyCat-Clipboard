@@ -378,9 +378,35 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
 
   bool get isSyncing => (uploading || downloading) && driveFileId == null;
 
+  String get contentType {
+    if (type == ClipItemType.text) {
+      if (textCategory == TextCategory.color) {
+        return "Color";
+      } else if (textCategory == TextCategory.email) {
+        return "Email";
+      } else if (textCategory == TextCategory.phone) {
+        return "Phone";
+      } else if (textCategory == TextCategory.struct) {
+        return "Struct";
+      } else {
+        return "Text";
+      }
+    } else if (type == ClipItemType.url) {
+      return "Link";
+    } else if (type == ClipItemType.media) {
+      return "Media";
+    } else if (type == ClipItemType.file) {
+      return "File";
+    } else {
+      return "Clip";
+    }
+  }
+
   String? get displayTitle {
-    if (title != null && title!.isNotEmpty) return title;
-    if (fileName != null && fileName!.isNotEmpty) return fileName;
+    if (title != null && title!.isNotEmpty) return title!;
+    if (fileName != null && fileName!.isNotEmpty) {
+      return fileName!;
+    }
     return null;
   }
 

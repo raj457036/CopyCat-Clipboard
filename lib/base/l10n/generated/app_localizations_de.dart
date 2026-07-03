@@ -15,6 +15,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get app__slogan => 'Eine Zwischenablage, unbegrenzte Möglichkeiten';
 
   @override
+  String get app__image_not_found => 'Bild nicht gefunden';
+
+  @override
   String get app__unknown_error => 'Ein unerwarteter Fehler ist aufgetreten';
 
   @override

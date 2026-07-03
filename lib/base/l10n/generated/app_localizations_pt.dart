@@ -15,6 +15,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get app__slogan => 'Um Clipboard, Possibilidades Ilimitadas';
 
   @override
+  String get app__image_not_found => 'Imagem não encontrada';
+
+  @override
   String get app__unknown_error => 'Ocorreu um erro inesperado';
 
   @override

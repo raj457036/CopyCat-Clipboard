@@ -23,6 +23,7 @@ class _TransformContext {
   final bool isPhone;
   final bool isHexColor;
   final bool isRgbColor;
+  final bool isHslColor;
   final bool isStruct;
   final String? structuredKind;
 
@@ -35,6 +36,7 @@ class _TransformContext {
     required this.isPhone,
     required this.isHexColor,
     required this.isRgbColor,
+    required this.isHslColor,
     required this.isStruct,
     required this.structuredKind,
   });
@@ -57,6 +59,7 @@ class _TransformContext {
     final isPhone = TextAnalysis.isPhoneLike(trimmed);
     final isHexColor = TextAnalysis.isHexColor(trimmed);
     final isRgbColor = TextAnalysis.isRgbColor(trimmed);
+    final isHslColor = TextAnalysis.isHslColor(trimmed);
     final structuredKind = TextAnalysis.detectStructuredKind(trimmed);
     final isStruct =
         item.textCategory == TextCategory.struct || structuredKind != null;
@@ -70,6 +73,7 @@ class _TransformContext {
       isPhone: isPhone,
       isHexColor: isHexColor,
       isRgbColor: isRgbColor,
+      isHslColor: isHslColor,
       isStruct: isStruct,
       structuredKind: structuredKind,
     );
@@ -155,13 +159,33 @@ String _extractDomain(String input) {
 /// RGB format (e.g. rgb(255, 0, 0)).
 String _hexToRgb(String hex) {
   var v = hex.trim().replaceFirst('#', '');
+
   if (v.length == 3) {
     v = '${v[0]}${v[0]}${v[1]}${v[1]}${v[2]}${v[2]}';
+    v = 'FF$v';
+  } else if (v.length == 4) {
+    v =
+        '${v[0]}${v[0]}'
+        '${v[1]}${v[1]}'
+        '${v[2]}${v[2]}'
+        '${v[3]}${v[3]}';
+  } else if (v.length == 6) {
+    v = 'FF$v';
+  } else if (v.length != 8) {
+    return hex;
   }
-  final r = int.parse(v.substring(0, 2), radix: 16);
-  final g = int.parse(v.substring(2, 4), radix: 16);
-  final b = int.parse(v.substring(4, 6), radix: 16);
-  return 'rgb($r, $g, $b)';
+
+  try {
+    final color = Color(int.parse(v, radix: 16));
+
+    final r = (color.r * 255).round();
+    final g = (color.g * 255).round();
+    final b = (color.b * 255).round();
+
+    return 'rgb($r, $g, $b)';
+  } catch (_) {
+    return hex;
+  }
 }
 
 /// Converts an RGB color (e.g. rgb(255, 0, 0)) to
@@ -169,44 +193,48 @@ String _hexToRgb(String hex) {
 String _rgbToHex(String rgb) {
   final parsed = TextAnalysis.parseRgbColor(rgb);
   if (parsed == null) return rgb;
-  final r = parsed.r;
-  final g = parsed.g;
-  final b = parsed.b;
-  String toHex(int n) =>
-      n.clamp(0, 255).toRadixString(16).padLeft(2, '0').toUpperCase();
-  return '#${toHex(r)}${toHex(g)}${toHex(b)}';
+
+  final color = Color.from(
+    alpha: 1.0,
+    red: parsed.r / 255,
+    green: parsed.g / 255,
+    blue: parsed.b / 255,
+  );
+
+  return '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}';
+}
+
+String _hslToHex(String hsl) {
+  final parsed = TextAnalysis.parseHslColor(hsl);
+  if (parsed == null) return hsl;
+
+  final color = HSLColor.fromAHSL(
+    1.0,
+    parsed.h,
+    parsed.s / 100,
+    parsed.l / 100,
+  ).toColor();
+
+  final hex = color.toARGB32().toRadixString(16).padLeft(8, '0');
+
+  // remove alpha (first 2 chars)
+  return '#${hex.substring(2).toUpperCase()}';
 }
 
 /// Converts a HEX color to HSL format (e.g. hsl(0, 100%, 50%)).
 String _hexToHsl(String hex) {
   var v = hex.trim().replaceFirst('#', '');
+
   if (v.length == 3) {
     v = '${v[0]}${v[0]}${v[1]}${v[1]}${v[2]}${v[2]}';
   }
-  final r = int.parse(v.substring(0, 2), radix: 16) / 255.0;
-  final g = int.parse(v.substring(2, 4), radix: 16) / 255.0;
-  final b = int.parse(v.substring(4, 6), radix: 16) / 255.0;
 
-  final maxVal = [r, g, b].reduce((a, b) => a > b ? a : b);
-  final minVal = [r, g, b].reduce((a, b) => a < b ? a : b);
-  final l = (maxVal + minVal) / 2;
+  final color = Color(int.parse('FF$v', radix: 16));
+  final hsl = HSLColor.fromColor(color);
 
-  if (maxVal == minVal) {
-    return 'hsl(0, 0%, ${(l * 100).round()}%)';
-  }
-
-  final d = maxVal - minVal;
-  final s = l > 0.5 ? d / (2 - maxVal - minVal) : d / (maxVal + minVal);
-  double h;
-  if (maxVal == r) {
-    h = ((g - b) / d + (g < b ? 6 : 0));
-  } else if (maxVal == g) {
-    h = ((b - r) / d + 2);
-  } else {
-    h = ((r - g) / d + 4);
-  }
-  h /= 6;
-  return 'hsl(${(h * 360).round()}, ${(s * 100).round()}%, ${(l * 100).round()}%)';
+  return 'hsl(${hsl.hue.round()}, '
+      '${(hsl.saturation * 100).round()}%, '
+      '${(hsl.lightness * 100).round()}%)';
 }
 
 /// Cleans an email or phone number by removing spaces,
@@ -420,7 +448,6 @@ List<_TransformAction> _definitions(AppLocalizations l) => [
     run: (context, tx) =>
         _copyOrPasteResult(context, tx, _extractDomain(tx.trimmed), ''),
   ),
-
   _TransformAction(
     label: l.transform__label__hex_to_rgb,
     section: l.transform__section__colors,
@@ -448,7 +475,33 @@ List<_TransformAction> _definitions(AppLocalizations l) => [
     run: (context, tx) =>
         _copyOrPasteResult(context, tx, _hexToHsl(tx.trimmed), ''),
   ),
-
+  _TransformAction(
+    label: "HSL → HEX",
+    section: l.transform__section__colors,
+    icon: Icons.format_paint_outlined,
+    priority: 53,
+    when: (tx) => tx.isColorCategory && tx.isHslColor,
+    run: (context, tx) =>
+        _copyOrPasteResult(context, tx, _hslToHex(tx.trimmed), ''),
+  ),
+  _TransformAction(
+    label: "HSL → RGB",
+    section: l.transform__section__colors,
+    icon: Icons.format_paint_outlined,
+    priority: 53,
+    when: (tx) => tx.isColorCategory && tx.isHslColor,
+    run: (context, tx) =>
+        _copyOrPasteResult(context, tx, _hexToRgb(_hslToHex(tx.trimmed)), ''),
+  ),
+  _TransformAction(
+    label: "RGB → HSL",
+    section: l.transform__section__colors,
+    icon: Icons.format_paint_outlined,
+    priority: 53,
+    when: (tx) => tx.isColorCategory && tx.isRgbColor,
+    run: (context, tx) =>
+        _copyOrPasteResult(context, tx, _hexToHsl(_rgbToHex(tx.trimmed)), ''),
+  ),
   _TransformAction(
     label: l.transform__label__copy_cleaned,
     section: l.transform__section__emails_phones,

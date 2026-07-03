@@ -1,8 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_item/clip_card/hover_state_builder.dart'
     show HoverScope;
+import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
 import 'package:clipboard/widgets/clip_item/leading_option.dart';
 import 'package:clipboard/widgets/clip_item/primary_clip_action_button.dart';
 import 'package:clipboard/widgets/clip_item/primary_hover_action_button.dart';
@@ -21,9 +23,11 @@ class ClipCardOptionsHeader extends StatelessWidget {
     );
     final hovered = HoverScope.of(context);
 
+    final Color color = context.colors.surface.withValues(alpha: 0.8);
+
     return ExcludeFocus(
-      child: SizedBox(
-        height: 36,
+      child: ColoredBox(
+        color: color,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

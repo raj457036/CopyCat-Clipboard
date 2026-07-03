@@ -15,6 +15,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app__slogan => 'One Clipboard, Limitless Possibility';
 
   @override
+  String get app__image_not_found => 'Image not found';
+
+  @override
   String get app__unknown_error => 'An unexpected error occurred';
 
   @override

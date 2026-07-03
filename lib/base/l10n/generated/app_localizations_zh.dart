@@ -15,6 +15,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app__slogan => '一个剪贴板，无限可能';
 
   @override
+  String get app__image_not_found => '未找到图片';
+
+  @override
   String get app__unknown_error => '发生意外错误';
 
   @override

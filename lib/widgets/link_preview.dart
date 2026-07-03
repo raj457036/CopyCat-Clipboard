@@ -24,7 +24,7 @@ class LinkPreviewImage extends StatelessWidget {
       if (isSvg) {
         return SvgPicture.network(
           networkImage.url,
-          fit: BoxFit.fitWidth,
+          fit: BoxFit.contain,
           headers: networkImage.headers,
           placeholderBuilder: (context) =>
               const Center(child: CircularProgressIndicator()),
@@ -34,14 +34,14 @@ class LinkPreviewImage extends StatelessWidget {
       return CachedNetworkImage(
         imageUrl: networkImage.url,
         httpHeaders: networkImage.headers,
-        fit: BoxFit.fitWidth,
+        fit: BoxFit.cover,
         errorWidget: (context, error, stackTrace) => const ImageNotFound(),
       );
     }
 
     return Image(
       image: provider,
-      fit: BoxFit.fitWidth,
+      fit: BoxFit.cover,
       errorBuilder: (context, error, stackTrace) => const ImageNotFound(),
     );
   }
@@ -54,6 +54,8 @@ class LinkPreview extends StatelessWidget {
   final int maxDescLines;
   final bool withShadow;
   final VoidCallback? onTap;
+  final bool flat;
+  final Widget? bottom;
 
   const LinkPreview({
     super.key,
@@ -62,86 +64,99 @@ class LinkPreview extends StatelessWidget {
     this.maxDescLines = 4,
     this.withShadow = false,
     this.onTap,
+    this.flat = false,
+    this.bottom,
   });
 
   @override
   Widget build(BuildContext context) {
     final isValidUrl = AnyLinkPreview.isValidLink(url);
     if (!isValidUrl) {
-      return const SizedBox.expand(child: ImageNotFound());
+      return const SizedBox.expand(
+        child: Padding(
+          padding: EdgeInsets.only(top: padding44),
+          child: ImageNotFound(),
+        ),
+      );
     }
 
-    return Card.filled(
-      elevation: withShadow ? 0.5 : 0,
-      margin: EdgeInsets.zero,
-      clipBehavior: Clip.hardEdge,
-      shape: const RoundedRectangleBorder(
-        borderRadius: radius8,
-        side: BorderSide.none,
+    return AnyLinkPreview.builder(
+      link: url,
+      placeholderWidget: const Shimmer(),
+      errorWidget: const SizedBox.expand(
+        child: Padding(
+          padding: EdgeInsets.only(top: padding44),
+          child: ImageNotFound(),
+        ),
       ),
-
-      child: AnyLinkPreview.builder(
-        link: url,
-        placeholderWidget: const Shimmer(),
-        errorWidget: const SizedBox.expand(child: ImageNotFound()),
-        cache: const Duration(days: 30),
-        itemBuilder: (context, meta, provider, svg) {
-          if (meta.title == null && meta.desc == null && provider == null) {
-            return const ImageNotFound();
-          }
-
-          final colors = context.colors;
-          final body = Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: padding2,
-            children: [
-              if (provider != null)
-                Expanded(child: LinkPreviewImage(provider: provider)),
-              if (meta.title != null && meta.title!.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: padding6,
-                    right: padding6,
-                    top: padding6,
-                  ),
-                  child: Text(
-                    meta.title!,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: maxTitleLines,
-                    style: context.textTheme.labelMedium,
-                  ),
-                ),
-              if (meta.desc != null && meta.desc!.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: padding6,
-                    right: padding6,
-                    bottom: padding6,
-                  ),
-                  child: Text(
-                    meta.desc!,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: maxDescLines,
-                    style: context.textTheme.bodySmall?.copyWith(
-                      color: colors.outline,
-                    ),
-                  ),
-                ),
-            ],
+      cache: const Duration(days: 30),
+      itemBuilder: (context, meta, provider, svg) {
+        if (meta.title == null && meta.desc == null && provider == null) {
+          return const Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(top: padding44),
+              child: ImageNotFound(),
+            ),
           );
+        }
 
-          if (onTap != null) {
-            return InkWell(
-              mouseCursor: SystemMouseCursors.click,
-              borderRadius: radius8,
-              onTap: onTap,
-              child: body,
-            );
-          }
-          return body;
-        },
-      ),
+        final colors = context.colors;
+        final body = Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: padding2,
+          children: [
+            if (provider != null)
+              Expanded(child: LinkPreviewImage(provider: provider))
+            else
+              const Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(top: padding44),
+                  child: ImageNotFound(),
+                ),
+              ),
+            height4,
+            if (meta.title != null && meta.title!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: padding8),
+                child: Text(
+                  meta.title!,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: maxTitleLines,
+                  style: context.textTheme.labelMedium,
+                ),
+              ),
+            if (meta.desc != null && meta.desc!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: padding8),
+                child: Text(
+                  meta.desc!,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: maxDescLines,
+                  style: context.textTheme.bodySmall?.copyWith(
+                    color: colors.outline,
+                  ),
+                ),
+              ),
+            if (bottom != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: padding8),
+                child: bottom,
+              ),
+            height8,
+          ],
+        );
+
+        if (onTap != null) {
+          return InkWell(
+            mouseCursor: SystemMouseCursors.click,
+            borderRadius: radius8,
+            onTap: onTap,
+            child: body,
+          );
+        }
+        return Ink(color: colors.surface, child: body);
+      },
     );
   }
 }

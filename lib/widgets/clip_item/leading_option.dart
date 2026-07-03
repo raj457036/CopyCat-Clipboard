@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/widgets/clip_item/clip_create_time.dart';
 import 'package:clipboard/base/bloc/selected_clips_cubit/selected_clips_cubit.dart';
@@ -53,46 +54,75 @@ class LeadingClipboardOption extends StatelessWidget {
     final order = selectionIndex + 1;
     final orderLabel = selectedOrderLabel(selectionIndex);
     if (hovered || selected) {
-      return SizedBox.square(
-        dimension: iconSize * 1.44,
-        child: IconButton(
-          isSelected: selected,
-          style: IconButton.styleFrom(padding: EdgeInsets.zero),
-          iconSize: iconSize,
-          tooltip: selected
-              ? "${context.locale.app__select} #$order"
-              : context.locale.app__select,
-          onPressed: () => toggleSelect(context, selected),
-          selectedIcon: _SelectionOrderBadge(
-            label: orderLabel,
-            compact: order > 99,
-            backgroundColor: colors.primary,
-            foregroundColor: colors.onPrimary,
+      return FadeIn(
+        child: SizedBox.square(
+          dimension: iconSize * 1.44,
+          child: IconButton(
+            isSelected: selected,
+            style: IconButton.styleFrom(padding: EdgeInsets.zero),
+            iconSize: iconSize,
+            tooltip: selected
+                ? "${context.locale.app__select} #$order"
+                : context.locale.app__select,
+            onPressed: () => toggleSelect(context, selected),
+            selectedIcon: _SelectionOrderBadge(
+              label: orderLabel,
+              compact: order > 99,
+              backgroundColor: colors.primary,
+              foregroundColor: colors.onPrimary,
+            ),
+            icon: const Icon(Icons.circle_outlined),
           ),
-          icon: const Icon(Icons.circle_outlined),
         ),
       );
     }
 
     final createTime = ClipCreateTime(
       created: item.created,
-      padding: createdPadding,
+      contentType: item.contentType,
     );
 
     if (item.sourceId?.trim().isEmpty ?? true) {
-      return createTime;
+      return Padding(
+        padding: const EdgeInsets.only(left: padding8),
+        child: createTime,
+      );
     }
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SourceAppIcon(
-          sourceId: item.sourceId,
-          sourceOs: item.os,
-          padding: const EdgeInsets.only(left: padding6),
-        ),
-        createTime,
-      ],
+    return FadeIn(
+      key: const ValueKey('default'),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          width2,
+          SourceAppIcon(
+            sourceId: item.sourceId,
+            sourceOs: item.os,
+            width: 40,
+            // height: 35,
+          ),
+          width2,
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (item.displayTitle != null)
+                  Text(
+                    item.displayTitle!,
+                    style: context.textTheme.labelSmall,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    softWrap: false,
+                  ),
+                createTime,
+              ],
+            ),
+          ),
+          width8,
+        ],
+      ),
     );
   }
 }

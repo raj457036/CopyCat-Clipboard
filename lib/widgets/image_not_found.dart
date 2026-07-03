@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -25,8 +26,8 @@ class ImageNotFound extends StatelessWidget {
           }
           return FadeIn(
             duration: Durations.short3,
-            child: Card.filled(
-              shape: const RoundedRectangleBorder(
+            child: Ink(
+              decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(6)),
               ),
               child: Padding(
@@ -41,7 +42,7 @@ class ImageNotFound extends StatelessWidget {
                       color: colors.outline,
                     ),
                     Text(
-                      "Image not found",
+                      context.locale.app__image_not_found,
                       style: TextStyle(color: colors.outline),
                     ),
                   ],
