@@ -1,3 +1,5 @@
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/pages/home/widgets/appbar.dart';
 import 'package:clipboard/pages/home/widgets/home_body.dart';
 import 'package:clipboard/widgets/drag_drop/drop_region.dart';
@@ -5,6 +7,7 @@ import 'package:clipboard/widgets/keyboard_shortcuts/seq_selection_listener.dart
 import 'package:clipboard/widgets/layout/custom_scaffold.dart';
 import 'package:clipboard/widgets/scaffold_body.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universal_io/io.dart';
 
 class HomePage extends StatelessWidget {
@@ -12,10 +15,14 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget scaffold = const CustomScaffold(
+    final view = context.select(
+      (AppConfigCubit cubit) => cubit.state.config.view,
+    );
+
+    Widget scaffold = CustomScaffold(
       activeIndex: 0,
-      appBar: HomeAppbar(),
-      body: ScaffoldBody(child: HomePageBody()),
+      appBar: view == AppView.windowed ? const HomeAppbar() : null,
+      body: const ScaffoldBody(child: HomePageBody()),
     );
 
     // NOTE: drag and drop doesn't work in android for now

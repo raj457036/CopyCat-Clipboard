@@ -53,21 +53,6 @@ class ClipsBuilder extends StatelessWidget {
     }
   }
 
-  SliverGridDelegate get delegate {
-    switch (layoutView.view) {
-      case AppView.bottomDocked || AppView.topDocked:
-        return const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 1,
-          childAspectRatio: 9 / 20,
-        );
-      case AppView.windowed || AppView.leftDocked || AppView.rightDocked:
-        return const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: gridMaxExtent,
-          childAspectRatio: 1,
-        );
-    }
-  }
-
   bool onScrollNotification(
     ScrollNotification notification,
     bool hasMore,
@@ -94,7 +79,10 @@ class ClipsBuilder extends StatelessWidget {
               bottom: padding8,
             ),
       scrollDirection: scrollDirection,
-      gridDelegate: delegate,
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: gridMaxExtent,
+        childAspectRatio: 1,
+      ),
       itemCount: items.length,
       itemBuilder: (context, index) {
         final item = items[index];

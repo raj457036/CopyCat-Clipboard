@@ -82,13 +82,6 @@ class LeadingClipboardOption extends StatelessWidget {
       contentType: item.contentType,
     );
 
-    if (item.sourceId?.trim().isEmpty ?? true) {
-      return Padding(
-        padding: const EdgeInsets.only(left: padding8),
-        child: createTime,
-      );
-    }
-
     return FadeIn(
       key: const ValueKey('default'),
       child: Row(
@@ -101,7 +94,7 @@ class LeadingClipboardOption extends StatelessWidget {
             width: 40,
             // height: 35,
           ),
-          width2,
+          item.sourceId == null ? width6 : width2,
           Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,

@@ -107,7 +107,7 @@ class CollectionFilterChips extends StatelessWidget {
                 }
 
                 return SizedBox(
-                  height: 64,
+                  height: 50,
                   child: ChipTheme(
                     data: ChipThemeData(
                       backgroundColor: colorScheme.surfaceContainerHighest,

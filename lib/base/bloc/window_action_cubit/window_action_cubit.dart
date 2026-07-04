@@ -103,12 +103,12 @@ class WindowActionCubit extends Cubit<WindowActionState> {
   Future<void> setDockedView(AppView view, [Size? size]) async {
     if (!isDesktopPlatform) return;
     assert(view != AppView.windowed, "Only docked views allowed");
-
+    final paddingRatio = padding10 / displayHeight;
     final Alignment alignment = switch (view) {
       AppView.leftDocked => Alignment.centerLeft,
       AppView.rightDocked => Alignment.topRight,
-      AppView.topDocked => Alignment.topCenter,
-      AppView.bottomDocked => Alignment.bottomCenter,
+      AppView.topDocked => Alignment(0.0, -1.0 + paddingRatio),
+      AppView.bottomDocked => Alignment(0.0, 1.0 - paddingRatio),
       _ => Alignment.center,
     };
 
@@ -116,7 +116,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
       AppView.leftDocked ||
       AppView.rightDocked => Size(dockedLRMaxWidth, displayHeight),
       AppView.topDocked ||
-      AppView.bottomDocked => Size(displayWidth, dockedTBMaxHeight),
+      AppView.bottomDocked => Size(displayWidth - padding6, dockedTBMaxHeight),
       _ => initialWindowSize,
     };
 
@@ -124,7 +124,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
       AppView.leftDocked ||
       AppView.rightDocked => Size(dockedLRMinWidth, displayHeight),
       AppView.topDocked ||
-      AppView.bottomDocked => Size(displayWidth, dockedTBMinHeight),
+      AppView.bottomDocked => Size(displayWidth - padding6, dockedTBMinHeight),
       _ => initialWindowSize,
     };
 
@@ -142,7 +142,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     await windowManager.setAlwaysOnTop(true);
     final position = await calcWindowPosition(dockedMinSize, alignment);
     await windowManager.setSize(dockedMinSize);
-    await windowManager.setPosition(position, animate: true);
+    await windowManager.setPosition(position);
     emit(state.copyWith(view: view));
   }
 
