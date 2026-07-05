@@ -1,7 +1,7 @@
 part of 'event_bus_cubit.dart';
 
 @freezed
-class EventBusState with _$EventBusState {
+abstract class EventBusState with _$EventBusState {
   // empty event bus
   const factory EventBusState.empty() = _Empty;
 

@@ -28,7 +28,7 @@ class URLClipPreviewCard extends StatelessWidget {
             SizedBox.fromSize(
               size: const Size(280, 240),
               child: LinkPreview(
-                url: item.url!,
+                item: item,
                 onTap: () => launchUrl(item),
                 maxTitleLines: 3,
                 maxDescLines: 5,

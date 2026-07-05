@@ -6,8 +6,8 @@ part of 'clipcollection.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ClipCollectionImpl _$$ClipCollectionImplFromJson(Map<String, dynamic> json) =>
-    _$ClipCollectionImpl(
+_ClipCollection _$ClipCollectionFromJson(Map<String, dynamic> json) =>
+    _ClipCollection(
       serverId: (json['id'] as num?)?.toInt(),
       created: const DateTimeConverter().fromJson(json['created'] as String),
       modified: const DateTimeConverter().fromJson(json['modified'] as String),
@@ -22,21 +22,20 @@ _$ClipCollectionImpl _$$ClipCollectionImplFromJson(Map<String, dynamic> json) =>
       emoji: json['emoji'] as String,
     );
 
-Map<String, dynamic> _$$ClipCollectionImplToJson(
-  _$ClipCollectionImpl instance,
-) => <String, dynamic>{
-  'created': const DateTimeConverter().toJson(instance.created),
-  'modified': const DateTimeConverter().toJson(instance.modified),
-  'userId': instance.userId,
-  'deletedAt': _$JsonConverterToJson<String, DateTime>(
-    instance.deletedAt,
-    const DateTimeConverter().toJson,
-  ),
-  'deviceId': instance.deviceId,
-  'title': instance.title,
-  'description': instance.description,
-  'emoji': instance.emoji,
-};
+Map<String, dynamic> _$ClipCollectionToJson(_ClipCollection instance) =>
+    <String, dynamic>{
+      'created': const DateTimeConverter().toJson(instance.created),
+      'modified': const DateTimeConverter().toJson(instance.modified),
+      'userId': instance.userId,
+      'deletedAt': _$JsonConverterToJson<String, DateTime>(
+        instance.deletedAt,
+        const DateTimeConverter().toJson,
+      ),
+      'deviceId': instance.deviceId,
+      'title': instance.title,
+      'description': instance.description,
+      'emoji': instance.emoji,
+    };
 
 Value? _$JsonConverterFromJson<Json, Value>(
   Object? json,

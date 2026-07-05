@@ -6,8 +6,8 @@ part of 'subscription.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SubscriptionImpl _$$SubscriptionImplFromJson(Map<String, dynamic> json) =>
-    _$SubscriptionImpl(
+_Subscription _$SubscriptionFromJson(Map<String, dynamic> json) =>
+    _Subscription(
       serverId: (json['id'] as num?)?.toInt(),
       created: const DateTimeConverter().fromJson(json['created'] as String),
       modified: const DateTimeConverter().fromJson(json['modified'] as String),
@@ -48,7 +48,7 @@ _$SubscriptionImpl _$$SubscriptionImplFromJson(Map<String, dynamic> json) =>
       tkn: json['tkn'] as String?,
     );
 
-Map<String, dynamic> _$$SubscriptionImplToJson(_$SubscriptionImpl instance) =>
+Map<String, dynamic> _$SubscriptionToJson(_Subscription instance) =>
     <String, dynamic>{
       'created': const DateTimeConverter().toJson(instance.created),
       'modified': const DateTimeConverter().toJson(instance.modified),

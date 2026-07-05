@@ -19,7 +19,7 @@ part 'clipboard_item.g.dart';
 final specialSymbols = RegExp(r"[-_|]");
 
 @freezed
-class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
+abstract class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
   ClipboardItem._();
 
   factory ClipboardItem({
@@ -44,6 +44,15 @@ class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
     @JsonKey(name: "p_data") String? richData,
     String? url,
     TextCategory? textCategory,
+
+    // Local-only link preview cache
+    @JsonKey(includeFromJson: false, includeToJson: false)
+    String? linkPreviewTitle,
+    @JsonKey(includeFromJson: false, includeToJson: false)
+    String? linkPreviewDescription,
+    @JsonKey(includeFromJson: false, includeToJson: false)
+    String? linkPreviewImageUrl,
+
     // Files related
     String? fileName,
     String? fileMimeType,

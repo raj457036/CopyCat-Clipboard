@@ -38,6 +38,9 @@ class IsarClipboardItem {
   @Enumerated(EnumType.name)
   @Index()
   TextCategory? textCategory;
+  String? linkPreviewTitle;
+  String? linkPreviewDescription;
+  String? linkPreviewImageUrl;
   // Files related
   String? fileName;
   String? fileMimeType;
@@ -74,6 +77,8 @@ class IsarClipboardItem {
       description,
       url,
       text,
+      linkPreviewTitle,
+      linkPreviewDescription,
       fileMimeType,
       sourceApp,
       sourceUrl,
@@ -106,6 +111,9 @@ class IsarClipboardItem {
     richData: richData,
     url: url,
     textCategory: textCategory,
+    linkPreviewTitle: linkPreviewTitle,
+    linkPreviewDescription: linkPreviewDescription,
+    linkPreviewImageUrl: linkPreviewImageUrl,
     fileName: fileName,
     fileMimeType: fileMimeType,
     fileExtension: fileExtension,
@@ -145,6 +153,9 @@ class IsarClipboardItem {
     ..richData = item.richData
     ..url = item.url
     ..textCategory = item.textCategory
+    ..linkPreviewTitle = item.linkPreviewTitle
+    ..linkPreviewDescription = item.linkPreviewDescription
+    ..linkPreviewImageUrl = item.linkPreviewImageUrl
     ..fileName = item.fileName
     ..fileMimeType = item.fileMimeType
     ..fileExtension = item.fileExtension

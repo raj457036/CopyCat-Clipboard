@@ -5,7 +5,7 @@ part 'syncstatus.freezed.dart';
 
 /// This is use for restoring the clips, if restoration failed.
 @freezed
-class SyncStatus with _$SyncStatus, Identifiable {
+abstract class SyncStatus with _$SyncStatus, Identifiable {
   SyncStatus._();
   factory SyncStatus({
     @JsonKey(includeToJson: false, includeFromJson: false) int? id,

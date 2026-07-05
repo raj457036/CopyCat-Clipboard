@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,204 +9,275 @@ part of 'sync_cursor.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
 /// @nodoc
 mixin _$SyncCursor {
-  /// Unique identifier for the entity type (e.g., 'clip', 'collection').
-  String get entityType => throw _privateConstructorUsedError;
 
-  /// The timestamp of the last successful pull sync.
-  DateTime get lastSyncedAt => throw _privateConstructorUsedError;
+/// Unique identifier for the entity type (e.g., 'clip', 'collection').
+ String get entityType;/// The timestamp of the last successful pull sync.
+ DateTime get lastSyncedAt;/// Offset for pagination, useful if the sync stopped mid-batch.
+ int get lastOffset;
+/// Create a copy of SyncCursor
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SyncCursorCopyWith<SyncCursor> get copyWith => _$SyncCursorCopyWithImpl<SyncCursor>(this as SyncCursor, _$identity);
 
-  /// Offset for pagination, useful if the sync stopped mid-batch.
-  int get lastOffset => throw _privateConstructorUsedError;
 
-  /// Create a copy of SyncCursor
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SyncCursorCopyWith<SyncCursor> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SyncCursor&&(identical(other.entityType, entityType) || other.entityType == entityType)&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt)&&(identical(other.lastOffset, lastOffset) || other.lastOffset == lastOffset));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,entityType,lastSyncedAt,lastOffset);
+
+@override
+String toString() {
+  return 'SyncCursor(entityType: $entityType, lastSyncedAt: $lastSyncedAt, lastOffset: $lastOffset)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $SyncCursorCopyWith<$Res> {
-  factory $SyncCursorCopyWith(
-    SyncCursor value,
-    $Res Function(SyncCursor) then,
-  ) = _$SyncCursorCopyWithImpl<$Res, SyncCursor>;
-  @useResult
-  $Res call({String entityType, DateTime lastSyncedAt, int lastOffset});
-}
+abstract mixin class $SyncCursorCopyWith<$Res>  {
+  factory $SyncCursorCopyWith(SyncCursor value, $Res Function(SyncCursor) _then) = _$SyncCursorCopyWithImpl;
+@useResult
+$Res call({
+ String entityType, DateTime lastSyncedAt, int lastOffset
+});
 
+
+
+
+}
 /// @nodoc
-class _$SyncCursorCopyWithImpl<$Res, $Val extends SyncCursor>
+class _$SyncCursorCopyWithImpl<$Res>
     implements $SyncCursorCopyWith<$Res> {
-  _$SyncCursorCopyWithImpl(this._value, this._then);
+  _$SyncCursorCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SyncCursor _self;
+  final $Res Function(SyncCursor) _then;
 
-  /// Create a copy of SyncCursor
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? entityType = null,
-    Object? lastSyncedAt = null,
-    Object? lastOffset = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            entityType: null == entityType
-                ? _value.entityType
-                : entityType // ignore: cast_nullable_to_non_nullable
-                      as String,
-            lastSyncedAt: null == lastSyncedAt
-                ? _value.lastSyncedAt
-                : lastSyncedAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            lastOffset: null == lastOffset
-                ? _value.lastOffset
-                : lastOffset // ignore: cast_nullable_to_non_nullable
-                      as int,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of SyncCursor
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? entityType = null,Object? lastSyncedAt = null,Object? lastOffset = null,}) {
+  return _then(_self.copyWith(
+entityType: null == entityType ? _self.entityType : entityType // ignore: cast_nullable_to_non_nullable
+as String,lastSyncedAt: null == lastSyncedAt ? _self.lastSyncedAt : lastSyncedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,lastOffset: null == lastOffset ? _self.lastOffset : lastOffset // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SyncCursor].
+extension SyncCursorPatterns on SyncCursor {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SyncCursor value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SyncCursor() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SyncCursor value)  $default,){
+final _that = this;
+switch (_that) {
+case _SyncCursor():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SyncCursor value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SyncCursor() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String entityType,  DateTime lastSyncedAt,  int lastOffset)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SyncCursor() when $default != null:
+return $default(_that.entityType,_that.lastSyncedAt,_that.lastOffset);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String entityType,  DateTime lastSyncedAt,  int lastOffset)  $default,) {final _that = this;
+switch (_that) {
+case _SyncCursor():
+return $default(_that.entityType,_that.lastSyncedAt,_that.lastOffset);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String entityType,  DateTime lastSyncedAt,  int lastOffset)?  $default,) {final _that = this;
+switch (_that) {
+case _SyncCursor() when $default != null:
+return $default(_that.entityType,_that.lastSyncedAt,_that.lastOffset);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$SyncCursorImplCopyWith<$Res>
-    implements $SyncCursorCopyWith<$Res> {
-  factory _$$SyncCursorImplCopyWith(
-    _$SyncCursorImpl value,
-    $Res Function(_$SyncCursorImpl) then,
-  ) = __$$SyncCursorImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String entityType, DateTime lastSyncedAt, int lastOffset});
+
+
+class _SyncCursor implements SyncCursor {
+  const _SyncCursor({required this.entityType, required this.lastSyncedAt, this.lastOffset = 0});
+  
+
+/// Unique identifier for the entity type (e.g., 'clip', 'collection').
+@override final  String entityType;
+/// The timestamp of the last successful pull sync.
+@override final  DateTime lastSyncedAt;
+/// Offset for pagination, useful if the sync stopped mid-batch.
+@override@JsonKey() final  int lastOffset;
+
+/// Create a copy of SyncCursor
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SyncCursorCopyWith<_SyncCursor> get copyWith => __$SyncCursorCopyWithImpl<_SyncCursor>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SyncCursor&&(identical(other.entityType, entityType) || other.entityType == entityType)&&(identical(other.lastSyncedAt, lastSyncedAt) || other.lastSyncedAt == lastSyncedAt)&&(identical(other.lastOffset, lastOffset) || other.lastOffset == lastOffset));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,entityType,lastSyncedAt,lastOffset);
+
+@override
+String toString() {
+  return 'SyncCursor(entityType: $entityType, lastSyncedAt: $lastSyncedAt, lastOffset: $lastOffset)';
+}
+
+
 }
 
 /// @nodoc
-class __$$SyncCursorImplCopyWithImpl<$Res>
-    extends _$SyncCursorCopyWithImpl<$Res, _$SyncCursorImpl>
-    implements _$$SyncCursorImplCopyWith<$Res> {
-  __$$SyncCursorImplCopyWithImpl(
-    _$SyncCursorImpl _value,
-    $Res Function(_$SyncCursorImpl) _then,
-  ) : super(_value, _then);
+abstract mixin class _$SyncCursorCopyWith<$Res> implements $SyncCursorCopyWith<$Res> {
+  factory _$SyncCursorCopyWith(_SyncCursor value, $Res Function(_SyncCursor) _then) = __$SyncCursorCopyWithImpl;
+@override @useResult
+$Res call({
+ String entityType, DateTime lastSyncedAt, int lastOffset
+});
 
-  /// Create a copy of SyncCursor
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? entityType = null,
-    Object? lastSyncedAt = null,
-    Object? lastOffset = null,
-  }) {
-    return _then(
-      _$SyncCursorImpl(
-        entityType: null == entityType
-            ? _value.entityType
-            : entityType // ignore: cast_nullable_to_non_nullable
-                  as String,
-        lastSyncedAt: null == lastSyncedAt
-            ? _value.lastSyncedAt
-            : lastSyncedAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        lastOffset: null == lastOffset
-            ? _value.lastOffset
-            : lastOffset // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
-  }
+
+
+
 }
-
 /// @nodoc
+class __$SyncCursorCopyWithImpl<$Res>
+    implements _$SyncCursorCopyWith<$Res> {
+  __$SyncCursorCopyWithImpl(this._self, this._then);
 
-class _$SyncCursorImpl implements _SyncCursor {
-  const _$SyncCursorImpl({
-    required this.entityType,
-    required this.lastSyncedAt,
-    this.lastOffset = 0,
-  });
+  final _SyncCursor _self;
+  final $Res Function(_SyncCursor) _then;
 
-  /// Unique identifier for the entity type (e.g., 'clip', 'collection').
-  @override
-  final String entityType;
-
-  /// The timestamp of the last successful pull sync.
-  @override
-  final DateTime lastSyncedAt;
-
-  /// Offset for pagination, useful if the sync stopped mid-batch.
-  @override
-  @JsonKey()
-  final int lastOffset;
-
-  @override
-  String toString() {
-    return 'SyncCursor(entityType: $entityType, lastSyncedAt: $lastSyncedAt, lastOffset: $lastOffset)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SyncCursorImpl &&
-            (identical(other.entityType, entityType) ||
-                other.entityType == entityType) &&
-            (identical(other.lastSyncedAt, lastSyncedAt) ||
-                other.lastSyncedAt == lastSyncedAt) &&
-            (identical(other.lastOffset, lastOffset) ||
-                other.lastOffset == lastOffset));
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, entityType, lastSyncedAt, lastOffset);
-
-  /// Create a copy of SyncCursor
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SyncCursorImplCopyWith<_$SyncCursorImpl> get copyWith =>
-      __$$SyncCursorImplCopyWithImpl<_$SyncCursorImpl>(this, _$identity);
+/// Create a copy of SyncCursor
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? entityType = null,Object? lastSyncedAt = null,Object? lastOffset = null,}) {
+  return _then(_SyncCursor(
+entityType: null == entityType ? _self.entityType : entityType // ignore: cast_nullable_to_non_nullable
+as String,lastSyncedAt: null == lastSyncedAt ? _self.lastSyncedAt : lastSyncedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,lastOffset: null == lastOffset ? _self.lastOffset : lastOffset // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
 }
 
-abstract class _SyncCursor implements SyncCursor {
-  const factory _SyncCursor({
-    required final String entityType,
-    required final DateTime lastSyncedAt,
-    final int lastOffset,
-  }) = _$SyncCursorImpl;
 
-  /// Unique identifier for the entity type (e.g., 'clip', 'collection').
-  @override
-  String get entityType;
-
-  /// The timestamp of the last successful pull sync.
-  @override
-  DateTime get lastSyncedAt;
-
-  /// Offset for pagination, useful if the sync stopped mid-batch.
-  @override
-  int get lastOffset;
-
-  /// Create a copy of SyncCursor
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SyncCursorImplCopyWith<_$SyncCursorImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
+
+// dart format on

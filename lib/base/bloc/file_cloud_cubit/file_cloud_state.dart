@@ -1,7 +1,7 @@
 part of 'file_cloud_cubit.dart';
 
 @freezed
-class FileCloudState with _$FileCloudState {
+abstract class FileCloudState with _$FileCloudState {
   const factory FileCloudState.initial() = FileCloudInitial;
   const factory FileCloudState.downloading(ClipboardItem item) =
       FileCloudDownloading;

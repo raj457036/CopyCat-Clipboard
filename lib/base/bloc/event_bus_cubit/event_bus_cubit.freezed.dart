@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,490 +9,342 @@ part of 'event_bus_cubit.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
 /// @nodoc
 mixin _$EventBusState {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() empty,
-    required TResult Function(KeyboardShortcutEvent event) keyboard,
-    required TResult Function(int index) indexPaste,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? empty,
-    TResult? Function(KeyboardShortcutEvent event)? keyboard,
-    TResult? Function(int index)? indexPaste,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? empty,
-    TResult Function(KeyboardShortcutEvent event)? keyboard,
-    TResult Function(int index)? indexPaste,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Empty value) empty,
-    required TResult Function(EventBusKeyboardEvent value) keyboard,
-    required TResult Function(EventBusIndexPasteEvent value) indexPaste,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Empty value)? empty,
-    TResult? Function(EventBusKeyboardEvent value)? keyboard,
-    TResult? Function(EventBusIndexPasteEvent value)? indexPaste,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Empty value)? empty,
-    TResult Function(EventBusKeyboardEvent value)? keyboard,
-    TResult Function(EventBusIndexPasteEvent value)? indexPaste,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EventBusState);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'EventBusState()';
+}
+
+
 }
 
 /// @nodoc
-abstract class $EventBusStateCopyWith<$Res> {
-  factory $EventBusStateCopyWith(
-    EventBusState value,
-    $Res Function(EventBusState) then,
-  ) = _$EventBusStateCopyWithImpl<$Res, EventBusState>;
+class $EventBusStateCopyWith<$Res>  {
+$EventBusStateCopyWith(EventBusState _, $Res Function(EventBusState) __);
 }
 
-/// @nodoc
-class _$EventBusStateCopyWithImpl<$Res, $Val extends EventBusState>
-    implements $EventBusStateCopyWith<$Res> {
-  _$EventBusStateCopyWithImpl(this._value, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+/// Adds pattern-matching-related methods to [EventBusState].
+extension EventBusStatePatterns on EventBusState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  /// Create a copy of EventBusState
-  /// with the given fields replaced by the non-null parameter values.
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Empty value)?  empty,TResult Function( EventBusKeyboardEvent value)?  keyboard,TResult Function( EventBusIndexPasteEvent value)?  indexPaste,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Empty() when empty != null:
+return empty(_that);case EventBusKeyboardEvent() when keyboard != null:
+return keyboard(_that);case EventBusIndexPasteEvent() when indexPaste != null:
+return indexPaste(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Empty value)  empty,required TResult Function( EventBusKeyboardEvent value)  keyboard,required TResult Function( EventBusIndexPasteEvent value)  indexPaste,}){
+final _that = this;
+switch (_that) {
+case _Empty():
+return empty(_that);case EventBusKeyboardEvent():
+return keyboard(_that);case EventBusIndexPasteEvent():
+return indexPaste(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Empty value)?  empty,TResult? Function( EventBusKeyboardEvent value)?  keyboard,TResult? Function( EventBusIndexPasteEvent value)?  indexPaste,}){
+final _that = this;
+switch (_that) {
+case _Empty() when empty != null:
+return empty(_that);case EventBusKeyboardEvent() when keyboard != null:
+return keyboard(_that);case EventBusIndexPasteEvent() when indexPaste != null:
+return indexPaste(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  empty,TResult Function( KeyboardShortcutEvent event)?  keyboard,TResult Function( int index)?  indexPaste,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Empty() when empty != null:
+return empty();case EventBusKeyboardEvent() when keyboard != null:
+return keyboard(_that.event);case EventBusIndexPasteEvent() when indexPaste != null:
+return indexPaste(_that.index);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  empty,required TResult Function( KeyboardShortcutEvent event)  keyboard,required TResult Function( int index)  indexPaste,}) {final _that = this;
+switch (_that) {
+case _Empty():
+return empty();case EventBusKeyboardEvent():
+return keyboard(_that.event);case EventBusIndexPasteEvent():
+return indexPaste(_that.index);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  empty,TResult? Function( KeyboardShortcutEvent event)?  keyboard,TResult? Function( int index)?  indexPaste,}) {final _that = this;
+switch (_that) {
+case _Empty() when empty != null:
+return empty();case EventBusKeyboardEvent() when keyboard != null:
+return keyboard(_that.event);case EventBusIndexPasteEvent() when indexPaste != null:
+return indexPaste(_that.index);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-abstract class _$$EmptyImplCopyWith<$Res> {
-  factory _$$EmptyImplCopyWith(
-    _$EmptyImpl value,
-    $Res Function(_$EmptyImpl) then,
-  ) = __$$EmptyImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$EmptyImplCopyWithImpl<$Res>
-    extends _$EventBusStateCopyWithImpl<$Res, _$EmptyImpl>
-    implements _$$EmptyImplCopyWith<$Res> {
-  __$$EmptyImplCopyWithImpl(
-    _$EmptyImpl _value,
-    $Res Function(_$EmptyImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of EventBusState
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$EmptyImpl implements _Empty {
-  const _$EmptyImpl();
-
-  @override
-  String toString() {
-    return 'EventBusState.empty()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$EmptyImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() empty,
-    required TResult Function(KeyboardShortcutEvent event) keyboard,
-    required TResult Function(int index) indexPaste,
-  }) {
-    return empty();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? empty,
-    TResult? Function(KeyboardShortcutEvent event)? keyboard,
-    TResult? Function(int index)? indexPaste,
-  }) {
-    return empty?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? empty,
-    TResult Function(KeyboardShortcutEvent event)? keyboard,
-    TResult Function(int index)? indexPaste,
-    required TResult orElse(),
-  }) {
-    if (empty != null) {
-      return empty();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Empty value) empty,
-    required TResult Function(EventBusKeyboardEvent value) keyboard,
-    required TResult Function(EventBusIndexPasteEvent value) indexPaste,
-  }) {
-    return empty(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Empty value)? empty,
-    TResult? Function(EventBusKeyboardEvent value)? keyboard,
-    TResult? Function(EventBusIndexPasteEvent value)? indexPaste,
-  }) {
-    return empty?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Empty value)? empty,
-    TResult Function(EventBusKeyboardEvent value)? keyboard,
-    TResult Function(EventBusIndexPasteEvent value)? indexPaste,
-    required TResult orElse(),
-  }) {
-    if (empty != null) {
-      return empty(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _Empty implements EventBusState {
-  const factory _Empty() = _$EmptyImpl;
-}
-
-/// @nodoc
-abstract class _$$EventBusKeyboardEventImplCopyWith<$Res> {
-  factory _$$EventBusKeyboardEventImplCopyWith(
-    _$EventBusKeyboardEventImpl value,
-    $Res Function(_$EventBusKeyboardEventImpl) then,
-  ) = __$$EventBusKeyboardEventImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({KeyboardShortcutEvent event});
-}
-
-/// @nodoc
-class __$$EventBusKeyboardEventImplCopyWithImpl<$Res>
-    extends _$EventBusStateCopyWithImpl<$Res, _$EventBusKeyboardEventImpl>
-    implements _$$EventBusKeyboardEventImplCopyWith<$Res> {
-  __$$EventBusKeyboardEventImplCopyWithImpl(
-    _$EventBusKeyboardEventImpl _value,
-    $Res Function(_$EventBusKeyboardEventImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of EventBusState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? event = null}) {
-    return _then(
-      _$EventBusKeyboardEventImpl(
-        null == event
-            ? _value.event
-            : event // ignore: cast_nullable_to_non_nullable
-                  as KeyboardShortcutEvent,
-      ),
-    );
-  }
 }
 
 /// @nodoc
 
-class _$EventBusKeyboardEventImpl implements EventBusKeyboardEvent {
-  const _$EventBusKeyboardEventImpl(this.event);
 
-  @override
-  final KeyboardShortcutEvent event;
+class _Empty implements EventBusState {
+  const _Empty();
+  
 
-  @override
-  String toString() {
-    return 'EventBusState.keyboard(event: $event)';
-  }
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$EventBusKeyboardEventImpl &&
-            (identical(other.event, event) || other.event == event));
-  }
 
-  @override
-  int get hashCode => Object.hash(runtimeType, event);
 
-  /// Create a copy of EventBusState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$EventBusKeyboardEventImplCopyWith<_$EventBusKeyboardEventImpl>
-  get copyWith =>
-      __$$EventBusKeyboardEventImplCopyWithImpl<_$EventBusKeyboardEventImpl>(
-        this,
-        _$identity,
-      );
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() empty,
-    required TResult Function(KeyboardShortcutEvent event) keyboard,
-    required TResult Function(int index) indexPaste,
-  }) {
-    return keyboard(event);
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? empty,
-    TResult? Function(KeyboardShortcutEvent event)? keyboard,
-    TResult? Function(int index)? indexPaste,
-  }) {
-    return keyboard?.call(event);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? empty,
-    TResult Function(KeyboardShortcutEvent event)? keyboard,
-    TResult Function(int index)? indexPaste,
-    required TResult orElse(),
-  }) {
-    if (keyboard != null) {
-      return keyboard(event);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Empty value) empty,
-    required TResult Function(EventBusKeyboardEvent value) keyboard,
-    required TResult Function(EventBusIndexPasteEvent value) indexPaste,
-  }) {
-    return keyboard(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Empty value)? empty,
-    TResult? Function(EventBusKeyboardEvent value)? keyboard,
-    TResult? Function(EventBusIndexPasteEvent value)? indexPaste,
-  }) {
-    return keyboard?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Empty value)? empty,
-    TResult Function(EventBusKeyboardEvent value)? keyboard,
-    TResult Function(EventBusIndexPasteEvent value)? indexPaste,
-    required TResult orElse(),
-  }) {
-    if (keyboard != null) {
-      return keyboard(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Empty);
 }
 
-abstract class EventBusKeyboardEvent implements EventBusState {
-  const factory EventBusKeyboardEvent(final KeyboardShortcutEvent event) =
-      _$EventBusKeyboardEventImpl;
 
-  KeyboardShortcutEvent get event;
+@override
+int get hashCode => runtimeType.hashCode;
 
-  /// Create a copy of EventBusState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$EventBusKeyboardEventImplCopyWith<_$EventBusKeyboardEventImpl>
-  get copyWith => throw _privateConstructorUsedError;
+@override
+String toString() {
+  return 'EventBusState.empty()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class EventBusKeyboardEvent implements EventBusState {
+  const EventBusKeyboardEvent(this.event);
+  
+
+ final  KeyboardShortcutEvent event;
+
+/// Create a copy of EventBusState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$EventBusKeyboardEventCopyWith<EventBusKeyboardEvent> get copyWith => _$EventBusKeyboardEventCopyWithImpl<EventBusKeyboardEvent>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EventBusKeyboardEvent&&(identical(other.event, event) || other.event == event));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,event);
+
+@override
+String toString() {
+  return 'EventBusState.keyboard(event: $event)';
+}
+
+
 }
 
 /// @nodoc
-abstract class _$$EventBusIndexPasteEventImplCopyWith<$Res> {
-  factory _$$EventBusIndexPasteEventImplCopyWith(
-    _$EventBusIndexPasteEventImpl value,
-    $Res Function(_$EventBusIndexPasteEventImpl) then,
-  ) = __$$EventBusIndexPasteEventImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({int index});
+abstract mixin class $EventBusKeyboardEventCopyWith<$Res> implements $EventBusStateCopyWith<$Res> {
+  factory $EventBusKeyboardEventCopyWith(EventBusKeyboardEvent value, $Res Function(EventBusKeyboardEvent) _then) = _$EventBusKeyboardEventCopyWithImpl;
+@useResult
+$Res call({
+ KeyboardShortcutEvent event
+});
+
+
+
+
+}
+/// @nodoc
+class _$EventBusKeyboardEventCopyWithImpl<$Res>
+    implements $EventBusKeyboardEventCopyWith<$Res> {
+  _$EventBusKeyboardEventCopyWithImpl(this._self, this._then);
+
+  final EventBusKeyboardEvent _self;
+  final $Res Function(EventBusKeyboardEvent) _then;
+
+/// Create a copy of EventBusState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? event = null,}) {
+  return _then(EventBusKeyboardEvent(
+null == event ? _self.event : event // ignore: cast_nullable_to_non_nullable
+as KeyboardShortcutEvent,
+  ));
 }
 
-/// @nodoc
-class __$$EventBusIndexPasteEventImplCopyWithImpl<$Res>
-    extends _$EventBusStateCopyWithImpl<$Res, _$EventBusIndexPasteEventImpl>
-    implements _$$EventBusIndexPasteEventImplCopyWith<$Res> {
-  __$$EventBusIndexPasteEventImplCopyWithImpl(
-    _$EventBusIndexPasteEventImpl _value,
-    $Res Function(_$EventBusIndexPasteEventImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of EventBusState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? index = null}) {
-    return _then(
-      _$EventBusIndexPasteEventImpl(
-        null == index
-            ? _value.index
-            : index // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
-  }
 }
 
 /// @nodoc
 
-class _$EventBusIndexPasteEventImpl implements EventBusIndexPasteEvent {
-  const _$EventBusIndexPasteEventImpl(this.index);
 
-  @override
-  final int index;
+class EventBusIndexPasteEvent implements EventBusState {
+  const EventBusIndexPasteEvent(this.index);
+  
 
-  @override
-  String toString() {
-    return 'EventBusState.indexPaste(index: $index)';
-  }
+ final  int index;
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$EventBusIndexPasteEventImpl &&
-            (identical(other.index, index) || other.index == index));
-  }
+/// Create a copy of EventBusState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$EventBusIndexPasteEventCopyWith<EventBusIndexPasteEvent> get copyWith => _$EventBusIndexPasteEventCopyWithImpl<EventBusIndexPasteEvent>(this, _$identity);
 
-  @override
-  int get hashCode => Object.hash(runtimeType, index);
 
-  /// Create a copy of EventBusState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$EventBusIndexPasteEventImplCopyWith<_$EventBusIndexPasteEventImpl>
-  get copyWith =>
-      __$$EventBusIndexPasteEventImplCopyWithImpl<
-        _$EventBusIndexPasteEventImpl
-      >(this, _$identity);
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() empty,
-    required TResult Function(KeyboardShortcutEvent event) keyboard,
-    required TResult Function(int index) indexPaste,
-  }) {
-    return indexPaste(index);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? empty,
-    TResult? Function(KeyboardShortcutEvent event)? keyboard,
-    TResult? Function(int index)? indexPaste,
-  }) {
-    return indexPaste?.call(index);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? empty,
-    TResult Function(KeyboardShortcutEvent event)? keyboard,
-    TResult Function(int index)? indexPaste,
-    required TResult orElse(),
-  }) {
-    if (indexPaste != null) {
-      return indexPaste(index);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Empty value) empty,
-    required TResult Function(EventBusKeyboardEvent value) keyboard,
-    required TResult Function(EventBusIndexPasteEvent value) indexPaste,
-  }) {
-    return indexPaste(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Empty value)? empty,
-    TResult? Function(EventBusKeyboardEvent value)? keyboard,
-    TResult? Function(EventBusIndexPasteEvent value)? indexPaste,
-  }) {
-    return indexPaste?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Empty value)? empty,
-    TResult Function(EventBusKeyboardEvent value)? keyboard,
-    TResult Function(EventBusIndexPasteEvent value)? indexPaste,
-    required TResult orElse(),
-  }) {
-    if (indexPaste != null) {
-      return indexPaste(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EventBusIndexPasteEvent&&(identical(other.index, index) || other.index == index));
 }
 
-abstract class EventBusIndexPasteEvent implements EventBusState {
-  const factory EventBusIndexPasteEvent(final int index) =
-      _$EventBusIndexPasteEventImpl;
 
-  int get index;
+@override
+int get hashCode => Object.hash(runtimeType,index);
 
-  /// Create a copy of EventBusState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$EventBusIndexPasteEventImplCopyWith<_$EventBusIndexPasteEventImpl>
-  get copyWith => throw _privateConstructorUsedError;
+@override
+String toString() {
+  return 'EventBusState.indexPaste(index: $index)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class $EventBusIndexPasteEventCopyWith<$Res> implements $EventBusStateCopyWith<$Res> {
+  factory $EventBusIndexPasteEventCopyWith(EventBusIndexPasteEvent value, $Res Function(EventBusIndexPasteEvent) _then) = _$EventBusIndexPasteEventCopyWithImpl;
+@useResult
+$Res call({
+ int index
+});
+
+
+
+
+}
+/// @nodoc
+class _$EventBusIndexPasteEventCopyWithImpl<$Res>
+    implements $EventBusIndexPasteEventCopyWith<$Res> {
+  _$EventBusIndexPasteEventCopyWithImpl(this._self, this._then);
+
+  final EventBusIndexPasteEvent _self;
+  final $Res Function(EventBusIndexPasteEvent) _then;
+
+/// Create a copy of EventBusState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? index = null,}) {
+  return _then(EventBusIndexPasteEvent(
+null == index ? _self.index : index // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+// dart format on

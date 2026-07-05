@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'exclusion_rules.freezed.dart';
 
 @freezed
-class AppInfo with _$AppInfo {
+abstract class AppInfo with _$AppInfo {
   const AppInfo._();
 
   factory AppInfo({
@@ -14,7 +14,7 @@ class AppInfo with _$AppInfo {
 }
 
 @freezed
-class ExclusionRules with _$ExclusionRules {
+abstract class ExclusionRules with _$ExclusionRules {
   const ExclusionRules._();
   factory ExclusionRules({
     /// including password patterns and password managers

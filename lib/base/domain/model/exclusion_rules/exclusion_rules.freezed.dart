@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,571 +9,589 @@ part of 'exclusion_rules.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
 /// @nodoc
 mixin _$AppInfo {
-  String get name => throw _privateConstructorUsedError;
-  String? get path => throw _privateConstructorUsedError;
-  String? get identifier => throw _privateConstructorUsedError;
 
-  /// Create a copy of AppInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $AppInfoCopyWith<AppInfo> get copyWith => throw _privateConstructorUsedError;
+ String get name; String? get path; String? get identifier;
+/// Create a copy of AppInfo
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AppInfoCopyWith<AppInfo> get copyWith => _$AppInfoCopyWithImpl<AppInfo>(this as AppInfo, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppInfo&&(identical(other.name, name) || other.name == name)&&(identical(other.path, path) || other.path == path)&&(identical(other.identifier, identifier) || other.identifier == identifier));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,name,path,identifier);
+
+@override
+String toString() {
+  return 'AppInfo(name: $name, path: $path, identifier: $identifier)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $AppInfoCopyWith<$Res> {
-  factory $AppInfoCopyWith(AppInfo value, $Res Function(AppInfo) then) =
-      _$AppInfoCopyWithImpl<$Res, AppInfo>;
-  @useResult
-  $Res call({String name, String? path, String? identifier});
-}
+abstract mixin class $AppInfoCopyWith<$Res>  {
+  factory $AppInfoCopyWith(AppInfo value, $Res Function(AppInfo) _then) = _$AppInfoCopyWithImpl;
+@useResult
+$Res call({
+ String name, String? path, String? identifier
+});
 
+
+
+
+}
 /// @nodoc
-class _$AppInfoCopyWithImpl<$Res, $Val extends AppInfo>
+class _$AppInfoCopyWithImpl<$Res>
     implements $AppInfoCopyWith<$Res> {
-  _$AppInfoCopyWithImpl(this._value, this._then);
+  _$AppInfoCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final AppInfo _self;
+  final $Res Function(AppInfo) _then;
 
-  /// Create a copy of AppInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? name = null,
-    Object? path = freezed,
-    Object? identifier = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            name: null == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
-                      as String,
-            path: freezed == path
-                ? _value.path
-                : path // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            identifier: freezed == identifier
-                ? _value.identifier
-                : identifier // ignore: cast_nullable_to_non_nullable
-                      as String?,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of AppInfo
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? path = freezed,Object? identifier = freezed,}) {
+  return _then(_self.copyWith(
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,path: freezed == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
+as String?,identifier: freezed == identifier ? _self.identifier : identifier // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [AppInfo].
+extension AppInfoPatterns on AppInfo {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AppInfo value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AppInfo() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AppInfo value)  $default,){
+final _that = this;
+switch (_that) {
+case _AppInfo():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AppInfo value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AppInfo() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String? path,  String? identifier)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AppInfo() when $default != null:
+return $default(_that.name,_that.path,_that.identifier);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String? path,  String? identifier)  $default,) {final _that = this;
+switch (_that) {
+case _AppInfo():
+return $default(_that.name,_that.path,_that.identifier);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String? path,  String? identifier)?  $default,) {final _that = this;
+switch (_that) {
+case _AppInfo() when $default != null:
+return $default(_that.name,_that.path,_that.identifier);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$AppInfoImplCopyWith<$Res> implements $AppInfoCopyWith<$Res> {
-  factory _$$AppInfoImplCopyWith(
-    _$AppInfoImpl value,
-    $Res Function(_$AppInfoImpl) then,
-  ) = __$$AppInfoImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String name, String? path, String? identifier});
+
+
+class _AppInfo extends AppInfo {
+   _AppInfo({this.name = '', this.path, this.identifier}): super._();
+  
+
+@override@JsonKey() final  String name;
+@override final  String? path;
+@override final  String? identifier;
+
+/// Create a copy of AppInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AppInfoCopyWith<_AppInfo> get copyWith => __$AppInfoCopyWithImpl<_AppInfo>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppInfo&&(identical(other.name, name) || other.name == name)&&(identical(other.path, path) || other.path == path)&&(identical(other.identifier, identifier) || other.identifier == identifier));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,name,path,identifier);
+
+@override
+String toString() {
+  return 'AppInfo(name: $name, path: $path, identifier: $identifier)';
+}
+
+
 }
 
 /// @nodoc
-class __$$AppInfoImplCopyWithImpl<$Res>
-    extends _$AppInfoCopyWithImpl<$Res, _$AppInfoImpl>
-    implements _$$AppInfoImplCopyWith<$Res> {
-  __$$AppInfoImplCopyWithImpl(
-    _$AppInfoImpl _value,
-    $Res Function(_$AppInfoImpl) _then,
-  ) : super(_value, _then);
+abstract mixin class _$AppInfoCopyWith<$Res> implements $AppInfoCopyWith<$Res> {
+  factory _$AppInfoCopyWith(_AppInfo value, $Res Function(_AppInfo) _then) = __$AppInfoCopyWithImpl;
+@override @useResult
+$Res call({
+ String name, String? path, String? identifier
+});
 
-  /// Create a copy of AppInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? name = null,
-    Object? path = freezed,
-    Object? identifier = freezed,
-  }) {
-    return _then(
-      _$AppInfoImpl(
-        name: null == name
-            ? _value.name
-            : name // ignore: cast_nullable_to_non_nullable
-                  as String,
-        path: freezed == path
-            ? _value.path
-            : path // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        identifier: freezed == identifier
-            ? _value.identifier
-            : identifier // ignore: cast_nullable_to_non_nullable
-                  as String?,
-      ),
-    );
-  }
+
+
+
 }
-
 /// @nodoc
+class __$AppInfoCopyWithImpl<$Res>
+    implements _$AppInfoCopyWith<$Res> {
+  __$AppInfoCopyWithImpl(this._self, this._then);
 
-class _$AppInfoImpl extends _AppInfo {
-  _$AppInfoImpl({this.name = '', this.path, this.identifier}) : super._();
+  final _AppInfo _self;
+  final $Res Function(_AppInfo) _then;
 
-  @override
-  @JsonKey()
-  final String name;
-  @override
-  final String? path;
-  @override
-  final String? identifier;
-
-  @override
-  String toString() {
-    return 'AppInfo(name: $name, path: $path, identifier: $identifier)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AppInfoImpl &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.path, path) || other.path == path) &&
-            (identical(other.identifier, identifier) ||
-                other.identifier == identifier));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, name, path, identifier);
-
-  /// Create a copy of AppInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$AppInfoImplCopyWith<_$AppInfoImpl> get copyWith =>
-      __$$AppInfoImplCopyWithImpl<_$AppInfoImpl>(this, _$identity);
+/// Create a copy of AppInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? path = freezed,Object? identifier = freezed,}) {
+  return _then(_AppInfo(
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,path: freezed == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
+as String?,identifier: freezed == identifier ? _self.identifier : identifier // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-abstract class _AppInfo extends AppInfo {
-  factory _AppInfo({
-    final String name,
-    final String? path,
-    final String? identifier,
-  }) = _$AppInfoImpl;
-  _AppInfo._() : super._();
 
-  @override
-  String get name;
-  @override
-  String? get path;
-  @override
-  String? get identifier;
-
-  /// Create a copy of AppInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AppInfoImplCopyWith<_$AppInfoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 mixin _$ExclusionRules {
-  /// including password patterns and password managers
-  bool get enable => throw _privateConstructorUsedError; // Exclude credit card
-  bool get creditCard =>
-      throw _privateConstructorUsedError; // Exclude phone number
-  bool get phone =>
-      throw _privateConstructorUsedError; // Exclude password managers
-  bool get passwordManager =>
-      throw _privateConstructorUsedError; // Exclude emails
-  bool get email =>
-      throw _privateConstructorUsedError; // Exclude sensitive urls
-  bool get sensitiveUrls => throw _privateConstructorUsedError;
-  List<String> get patterns => throw _privateConstructorUsedError;
-  List<String> get titles => throw _privateConstructorUsedError;
-  List<String> get urls => throw _privateConstructorUsedError;
-  List<AppInfo> get apps => throw _privateConstructorUsedError;
 
-  /// Create a copy of ExclusionRules
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ExclusionRulesCopyWith<ExclusionRules> get copyWith =>
-      throw _privateConstructorUsedError;
+/// including password patterns and password managers
+ bool get enable;// Exclude credit card
+ bool get creditCard;// Exclude phone number
+ bool get phone;// Exclude password managers
+ bool get passwordManager;// Exclude emails
+ bool get email;// Exclude sensitive urls
+ bool get sensitiveUrls; List<String> get patterns; List<String> get titles; List<String> get urls; List<AppInfo> get apps;
+/// Create a copy of ExclusionRules
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ExclusionRulesCopyWith<ExclusionRules> get copyWith => _$ExclusionRulesCopyWithImpl<ExclusionRules>(this as ExclusionRules, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExclusionRules&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.creditCard, creditCard) || other.creditCard == creditCard)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.passwordManager, passwordManager) || other.passwordManager == passwordManager)&&(identical(other.email, email) || other.email == email)&&(identical(other.sensitiveUrls, sensitiveUrls) || other.sensitiveUrls == sensitiveUrls)&&const DeepCollectionEquality().equals(other.patterns, patterns)&&const DeepCollectionEquality().equals(other.titles, titles)&&const DeepCollectionEquality().equals(other.urls, urls)&&const DeepCollectionEquality().equals(other.apps, apps));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,enable,creditCard,phone,passwordManager,email,sensitiveUrls,const DeepCollectionEquality().hash(patterns),const DeepCollectionEquality().hash(titles),const DeepCollectionEquality().hash(urls),const DeepCollectionEquality().hash(apps));
+
+@override
+String toString() {
+  return 'ExclusionRules(enable: $enable, creditCard: $creditCard, phone: $phone, passwordManager: $passwordManager, email: $email, sensitiveUrls: $sensitiveUrls, patterns: $patterns, titles: $titles, urls: $urls, apps: $apps)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ExclusionRulesCopyWith<$Res> {
-  factory $ExclusionRulesCopyWith(
-    ExclusionRules value,
-    $Res Function(ExclusionRules) then,
-  ) = _$ExclusionRulesCopyWithImpl<$Res, ExclusionRules>;
-  @useResult
-  $Res call({
-    bool enable,
-    bool creditCard,
-    bool phone,
-    bool passwordManager,
-    bool email,
-    bool sensitiveUrls,
-    List<String> patterns,
-    List<String> titles,
-    List<String> urls,
-    List<AppInfo> apps,
-  });
-}
+abstract mixin class $ExclusionRulesCopyWith<$Res>  {
+  factory $ExclusionRulesCopyWith(ExclusionRules value, $Res Function(ExclusionRules) _then) = _$ExclusionRulesCopyWithImpl;
+@useResult
+$Res call({
+ bool enable, bool creditCard, bool phone, bool passwordManager, bool email, bool sensitiveUrls, List<String> patterns, List<String> titles, List<String> urls, List<AppInfo> apps
+});
 
+
+
+
+}
 /// @nodoc
-class _$ExclusionRulesCopyWithImpl<$Res, $Val extends ExclusionRules>
+class _$ExclusionRulesCopyWithImpl<$Res>
     implements $ExclusionRulesCopyWith<$Res> {
-  _$ExclusionRulesCopyWithImpl(this._value, this._then);
+  _$ExclusionRulesCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ExclusionRules _self;
+  final $Res Function(ExclusionRules) _then;
 
-  /// Create a copy of ExclusionRules
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? enable = null,
-    Object? creditCard = null,
-    Object? phone = null,
-    Object? passwordManager = null,
-    Object? email = null,
-    Object? sensitiveUrls = null,
-    Object? patterns = null,
-    Object? titles = null,
-    Object? urls = null,
-    Object? apps = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            enable: null == enable
-                ? _value.enable
-                : enable // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            creditCard: null == creditCard
-                ? _value.creditCard
-                : creditCard // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            phone: null == phone
-                ? _value.phone
-                : phone // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            passwordManager: null == passwordManager
-                ? _value.passwordManager
-                : passwordManager // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            email: null == email
-                ? _value.email
-                : email // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            sensitiveUrls: null == sensitiveUrls
-                ? _value.sensitiveUrls
-                : sensitiveUrls // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            patterns: null == patterns
-                ? _value.patterns
-                : patterns // ignore: cast_nullable_to_non_nullable
-                      as List<String>,
-            titles: null == titles
-                ? _value.titles
-                : titles // ignore: cast_nullable_to_non_nullable
-                      as List<String>,
-            urls: null == urls
-                ? _value.urls
-                : urls // ignore: cast_nullable_to_non_nullable
-                      as List<String>,
-            apps: null == apps
-                ? _value.apps
-                : apps // ignore: cast_nullable_to_non_nullable
-                      as List<AppInfo>,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of ExclusionRules
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? enable = null,Object? creditCard = null,Object? phone = null,Object? passwordManager = null,Object? email = null,Object? sensitiveUrls = null,Object? patterns = null,Object? titles = null,Object? urls = null,Object? apps = null,}) {
+  return _then(_self.copyWith(
+enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
+as bool,creditCard: null == creditCard ? _self.creditCard : creditCard // ignore: cast_nullable_to_non_nullable
+as bool,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as bool,passwordManager: null == passwordManager ? _self.passwordManager : passwordManager // ignore: cast_nullable_to_non_nullable
+as bool,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as bool,sensitiveUrls: null == sensitiveUrls ? _self.sensitiveUrls : sensitiveUrls // ignore: cast_nullable_to_non_nullable
+as bool,patterns: null == patterns ? _self.patterns : patterns // ignore: cast_nullable_to_non_nullable
+as List<String>,titles: null == titles ? _self.titles : titles // ignore: cast_nullable_to_non_nullable
+as List<String>,urls: null == urls ? _self.urls : urls // ignore: cast_nullable_to_non_nullable
+as List<String>,apps: null == apps ? _self.apps : apps // ignore: cast_nullable_to_non_nullable
+as List<AppInfo>,
+  ));
 }
 
-/// @nodoc
-abstract class _$$ExclusionRulesImplCopyWith<$Res>
-    implements $ExclusionRulesCopyWith<$Res> {
-  factory _$$ExclusionRulesImplCopyWith(
-    _$ExclusionRulesImpl value,
-    $Res Function(_$ExclusionRulesImpl) then,
-  ) = __$$ExclusionRulesImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    bool enable,
-    bool creditCard,
-    bool phone,
-    bool passwordManager,
-    bool email,
-    bool sensitiveUrls,
-    List<String> patterns,
-    List<String> titles,
-    List<String> urls,
-    List<AppInfo> apps,
-  });
 }
 
-/// @nodoc
-class __$$ExclusionRulesImplCopyWithImpl<$Res>
-    extends _$ExclusionRulesCopyWithImpl<$Res, _$ExclusionRulesImpl>
-    implements _$$ExclusionRulesImplCopyWith<$Res> {
-  __$$ExclusionRulesImplCopyWithImpl(
-    _$ExclusionRulesImpl _value,
-    $Res Function(_$ExclusionRulesImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of ExclusionRules
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? enable = null,
-    Object? creditCard = null,
-    Object? phone = null,
-    Object? passwordManager = null,
-    Object? email = null,
-    Object? sensitiveUrls = null,
-    Object? patterns = null,
-    Object? titles = null,
-    Object? urls = null,
-    Object? apps = null,
-  }) {
-    return _then(
-      _$ExclusionRulesImpl(
-        enable: null == enable
-            ? _value.enable
-            : enable // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        creditCard: null == creditCard
-            ? _value.creditCard
-            : creditCard // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        phone: null == phone
-            ? _value.phone
-            : phone // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        passwordManager: null == passwordManager
-            ? _value.passwordManager
-            : passwordManager // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        email: null == email
-            ? _value.email
-            : email // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        sensitiveUrls: null == sensitiveUrls
-            ? _value.sensitiveUrls
-            : sensitiveUrls // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        patterns: null == patterns
-            ? _value._patterns
-            : patterns // ignore: cast_nullable_to_non_nullable
-                  as List<String>,
-        titles: null == titles
-            ? _value._titles
-            : titles // ignore: cast_nullable_to_non_nullable
-                  as List<String>,
-        urls: null == urls
-            ? _value._urls
-            : urls // ignore: cast_nullable_to_non_nullable
-                  as List<String>,
-        apps: null == apps
-            ? _value._apps
-            : apps // ignore: cast_nullable_to_non_nullable
-                  as List<AppInfo>,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [ExclusionRules].
+extension ExclusionRulesPatterns on ExclusionRules {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ExclusionRules value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ExclusionRules() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ExclusionRules value)  $default,){
+final _that = this;
+switch (_that) {
+case _ExclusionRules():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ExclusionRules value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ExclusionRules() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enable,  bool creditCard,  bool phone,  bool passwordManager,  bool email,  bool sensitiveUrls,  List<String> patterns,  List<String> titles,  List<String> urls,  List<AppInfo> apps)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ExclusionRules() when $default != null:
+return $default(_that.enable,_that.creditCard,_that.phone,_that.passwordManager,_that.email,_that.sensitiveUrls,_that.patterns,_that.titles,_that.urls,_that.apps);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enable,  bool creditCard,  bool phone,  bool passwordManager,  bool email,  bool sensitiveUrls,  List<String> patterns,  List<String> titles,  List<String> urls,  List<AppInfo> apps)  $default,) {final _that = this;
+switch (_that) {
+case _ExclusionRules():
+return $default(_that.enable,_that.creditCard,_that.phone,_that.passwordManager,_that.email,_that.sensitiveUrls,_that.patterns,_that.titles,_that.urls,_that.apps);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enable,  bool creditCard,  bool phone,  bool passwordManager,  bool email,  bool sensitiveUrls,  List<String> patterns,  List<String> titles,  List<String> urls,  List<AppInfo> apps)?  $default,) {final _that = this;
+switch (_that) {
+case _ExclusionRules() when $default != null:
+return $default(_that.enable,_that.creditCard,_that.phone,_that.passwordManager,_that.email,_that.sensitiveUrls,_that.patterns,_that.titles,_that.urls,_that.apps);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
-class _$ExclusionRulesImpl extends _ExclusionRules {
-  _$ExclusionRulesImpl({
-    this.enable = false,
-    this.creditCard = true,
-    this.phone = true,
-    this.passwordManager = true,
-    this.email = true,
-    this.sensitiveUrls = true,
-    final List<String> patterns = const [],
-    final List<String> titles = const [],
-    final List<String> urls = const [],
-    final List<AppInfo> apps = const [],
-  }) : _patterns = patterns,
-       _titles = titles,
-       _urls = urls,
-       _apps = apps,
-       super._();
 
-  /// including password patterns and password managers
-  @override
-  @JsonKey()
-  final bool enable;
-  // Exclude credit card
-  @override
-  @JsonKey()
-  final bool creditCard;
-  // Exclude phone number
-  @override
-  @JsonKey()
-  final bool phone;
-  // Exclude password managers
-  @override
-  @JsonKey()
-  final bool passwordManager;
-  // Exclude emails
-  @override
-  @JsonKey()
-  final bool email;
-  // Exclude sensitive urls
-  @override
-  @JsonKey()
-  final bool sensitiveUrls;
-  final List<String> _patterns;
-  @override
-  @JsonKey()
-  List<String> get patterns {
-    if (_patterns is EqualUnmodifiableListView) return _patterns;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_patterns);
-  }
+class _ExclusionRules extends ExclusionRules {
+   _ExclusionRules({this.enable = false, this.creditCard = true, this.phone = true, this.passwordManager = true, this.email = true, this.sensitiveUrls = true, final  List<String> patterns = const [], final  List<String> titles = const [], final  List<String> urls = const [], final  List<AppInfo> apps = const []}): _patterns = patterns,_titles = titles,_urls = urls,_apps = apps,super._();
+  
 
-  final List<String> _titles;
-  @override
-  @JsonKey()
-  List<String> get titles {
-    if (_titles is EqualUnmodifiableListView) return _titles;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_titles);
-  }
-
-  final List<String> _urls;
-  @override
-  @JsonKey()
-  List<String> get urls {
-    if (_urls is EqualUnmodifiableListView) return _urls;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_urls);
-  }
-
-  final List<AppInfo> _apps;
-  @override
-  @JsonKey()
-  List<AppInfo> get apps {
-    if (_apps is EqualUnmodifiableListView) return _apps;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_apps);
-  }
-
-  @override
-  String toString() {
-    return 'ExclusionRules(enable: $enable, creditCard: $creditCard, phone: $phone, passwordManager: $passwordManager, email: $email, sensitiveUrls: $sensitiveUrls, patterns: $patterns, titles: $titles, urls: $urls, apps: $apps)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ExclusionRulesImpl &&
-            (identical(other.enable, enable) || other.enable == enable) &&
-            (identical(other.creditCard, creditCard) ||
-                other.creditCard == creditCard) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
-            (identical(other.passwordManager, passwordManager) ||
-                other.passwordManager == passwordManager) &&
-            (identical(other.email, email) || other.email == email) &&
-            (identical(other.sensitiveUrls, sensitiveUrls) ||
-                other.sensitiveUrls == sensitiveUrls) &&
-            const DeepCollectionEquality().equals(other._patterns, _patterns) &&
-            const DeepCollectionEquality().equals(other._titles, _titles) &&
-            const DeepCollectionEquality().equals(other._urls, _urls) &&
-            const DeepCollectionEquality().equals(other._apps, _apps));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    enable,
-    creditCard,
-    phone,
-    passwordManager,
-    email,
-    sensitiveUrls,
-    const DeepCollectionEquality().hash(_patterns),
-    const DeepCollectionEquality().hash(_titles),
-    const DeepCollectionEquality().hash(_urls),
-    const DeepCollectionEquality().hash(_apps),
-  );
-
-  /// Create a copy of ExclusionRules
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ExclusionRulesImplCopyWith<_$ExclusionRulesImpl> get copyWith =>
-      __$$ExclusionRulesImplCopyWithImpl<_$ExclusionRulesImpl>(
-        this,
-        _$identity,
-      );
+/// including password patterns and password managers
+@override@JsonKey() final  bool enable;
+// Exclude credit card
+@override@JsonKey() final  bool creditCard;
+// Exclude phone number
+@override@JsonKey() final  bool phone;
+// Exclude password managers
+@override@JsonKey() final  bool passwordManager;
+// Exclude emails
+@override@JsonKey() final  bool email;
+// Exclude sensitive urls
+@override@JsonKey() final  bool sensitiveUrls;
+ final  List<String> _patterns;
+@override@JsonKey() List<String> get patterns {
+  if (_patterns is EqualUnmodifiableListView) return _patterns;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_patterns);
 }
 
-abstract class _ExclusionRules extends ExclusionRules {
-  factory _ExclusionRules({
-    final bool enable,
-    final bool creditCard,
-    final bool phone,
-    final bool passwordManager,
-    final bool email,
-    final bool sensitiveUrls,
-    final List<String> patterns,
-    final List<String> titles,
-    final List<String> urls,
-    final List<AppInfo> apps,
-  }) = _$ExclusionRulesImpl;
-  _ExclusionRules._() : super._();
-
-  /// including password patterns and password managers
-  @override
-  bool get enable; // Exclude credit card
-  @override
-  bool get creditCard; // Exclude phone number
-  @override
-  bool get phone; // Exclude password managers
-  @override
-  bool get passwordManager; // Exclude emails
-  @override
-  bool get email; // Exclude sensitive urls
-  @override
-  bool get sensitiveUrls;
-  @override
-  List<String> get patterns;
-  @override
-  List<String> get titles;
-  @override
-  List<String> get urls;
-  @override
-  List<AppInfo> get apps;
-
-  /// Create a copy of ExclusionRules
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ExclusionRulesImplCopyWith<_$ExclusionRulesImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+ final  List<String> _titles;
+@override@JsonKey() List<String> get titles {
+  if (_titles is EqualUnmodifiableListView) return _titles;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_titles);
 }
+
+ final  List<String> _urls;
+@override@JsonKey() List<String> get urls {
+  if (_urls is EqualUnmodifiableListView) return _urls;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_urls);
+}
+
+ final  List<AppInfo> _apps;
+@override@JsonKey() List<AppInfo> get apps {
+  if (_apps is EqualUnmodifiableListView) return _apps;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_apps);
+}
+
+
+/// Create a copy of ExclusionRules
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ExclusionRulesCopyWith<_ExclusionRules> get copyWith => __$ExclusionRulesCopyWithImpl<_ExclusionRules>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExclusionRules&&(identical(other.enable, enable) || other.enable == enable)&&(identical(other.creditCard, creditCard) || other.creditCard == creditCard)&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.passwordManager, passwordManager) || other.passwordManager == passwordManager)&&(identical(other.email, email) || other.email == email)&&(identical(other.sensitiveUrls, sensitiveUrls) || other.sensitiveUrls == sensitiveUrls)&&const DeepCollectionEquality().equals(other._patterns, _patterns)&&const DeepCollectionEquality().equals(other._titles, _titles)&&const DeepCollectionEquality().equals(other._urls, _urls)&&const DeepCollectionEquality().equals(other._apps, _apps));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,enable,creditCard,phone,passwordManager,email,sensitiveUrls,const DeepCollectionEquality().hash(_patterns),const DeepCollectionEquality().hash(_titles),const DeepCollectionEquality().hash(_urls),const DeepCollectionEquality().hash(_apps));
+
+@override
+String toString() {
+  return 'ExclusionRules(enable: $enable, creditCard: $creditCard, phone: $phone, passwordManager: $passwordManager, email: $email, sensitiveUrls: $sensitiveUrls, patterns: $patterns, titles: $titles, urls: $urls, apps: $apps)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ExclusionRulesCopyWith<$Res> implements $ExclusionRulesCopyWith<$Res> {
+  factory _$ExclusionRulesCopyWith(_ExclusionRules value, $Res Function(_ExclusionRules) _then) = __$ExclusionRulesCopyWithImpl;
+@override @useResult
+$Res call({
+ bool enable, bool creditCard, bool phone, bool passwordManager, bool email, bool sensitiveUrls, List<String> patterns, List<String> titles, List<String> urls, List<AppInfo> apps
+});
+
+
+
+
+}
+/// @nodoc
+class __$ExclusionRulesCopyWithImpl<$Res>
+    implements _$ExclusionRulesCopyWith<$Res> {
+  __$ExclusionRulesCopyWithImpl(this._self, this._then);
+
+  final _ExclusionRules _self;
+  final $Res Function(_ExclusionRules) _then;
+
+/// Create a copy of ExclusionRules
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? enable = null,Object? creditCard = null,Object? phone = null,Object? passwordManager = null,Object? email = null,Object? sensitiveUrls = null,Object? patterns = null,Object? titles = null,Object? urls = null,Object? apps = null,}) {
+  return _then(_ExclusionRules(
+enable: null == enable ? _self.enable : enable // ignore: cast_nullable_to_non_nullable
+as bool,creditCard: null == creditCard ? _self.creditCard : creditCard // ignore: cast_nullable_to_non_nullable
+as bool,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as bool,passwordManager: null == passwordManager ? _self.passwordManager : passwordManager // ignore: cast_nullable_to_non_nullable
+as bool,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as bool,sensitiveUrls: null == sensitiveUrls ? _self.sensitiveUrls : sensitiveUrls // ignore: cast_nullable_to_non_nullable
+as bool,patterns: null == patterns ? _self._patterns : patterns // ignore: cast_nullable_to_non_nullable
+as List<String>,titles: null == titles ? _self._titles : titles // ignore: cast_nullable_to_non_nullable
+as List<String>,urls: null == urls ? _self._urls : urls // ignore: cast_nullable_to_non_nullable
+as List<String>,apps: null == apps ? _self._apps : apps // ignore: cast_nullable_to_non_nullable
+as List<AppInfo>,
+  ));
+}
+
+
+}
+
+// dart format on

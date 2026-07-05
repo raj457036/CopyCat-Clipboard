@@ -4,7 +4,6 @@ import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_item/clip_card/hover_state_builder.dart'
     show HoverScope;
-import 'package:clipboard/widgets/clip_item/clip_item_scope.dart';
 import 'package:clipboard/widgets/clip_item/leading_option.dart';
 import 'package:clipboard/widgets/clip_item/primary_clip_action_button.dart';
 import 'package:clipboard/widgets/clip_item/primary_hover_action_button.dart';

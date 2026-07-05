@@ -1,7 +1,7 @@
 part of 'clipboard_cubit.dart';
 
 @freezed
-class ClipboardState with _$ClipboardState {
+abstract class ClipboardState with _$ClipboardState {
   const factory ClipboardState.loaded({
     @Default(0) int revision,
     @Default('') String query,

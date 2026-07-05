@@ -502,6 +502,31 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     }
   }
 
+  Future<ClipboardItem?> persistLocalLinkPreview(
+    ClipboardItem item, {
+    String? title,
+    String? description,
+    String? imageUrl,
+  }) async {
+    final next = item.copyWith(
+      linkPreviewTitle: title,
+      linkPreviewDescription: description,
+      linkPreviewImageUrl: imageUrl,
+    );
+
+    if (next.linkPreviewTitle == item.linkPreviewTitle &&
+        next.linkPreviewDescription == item.linkPreviewDescription &&
+        next.linkPreviewImageUrl == item.linkPreviewImageUrl) {
+      return item;
+    }
+
+    final result = await repo.update(next);
+    return result.fold((failure) {
+      logger.w('Failed to persist local link preview: $failure');
+      return null;
+    }, (updated) => updated);
+  }
+
   Future<void> delete(List<ClipboardItem> items) async {
     final items_ = items.map((item) => item.copyWith(deviceId: deviceId));
     await repo.deleteMany(items_.toList());

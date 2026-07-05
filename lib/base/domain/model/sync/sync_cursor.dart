@@ -7,7 +7,7 @@ part 'sync_cursor.freezed.dart';
 /// This serves as a persistent cursor so that the sync engine knows exactly
 /// where to resume fetching from the server, even across app restarts.
 @freezed
-class SyncCursor with _$SyncCursor {
+abstract class SyncCursor with _$SyncCursor {
   const factory SyncCursor({
     /// Unique identifier for the entity type (e.g., 'clip', 'collection').
     required String entityType,

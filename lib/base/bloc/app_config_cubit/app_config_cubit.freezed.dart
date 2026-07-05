@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,300 +9,287 @@ part of 'app_config_cubit.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
 /// @nodoc
 mixin _$AppConfigState {
-  AppConfig get config => throw _privateConstructorUsedError;
-  bool get isLoading => throw _privateConstructorUsedError;
-  Failure? get failure => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(
-      AppConfig config,
-      bool isLoading,
-      Failure? failure,
-    )
-    loaded,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(AppConfig config, bool isLoading, Failure? failure)?
-    loaded,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(AppConfig config, bool isLoading, Failure? failure)?
-    loaded,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(AppConfigLoaded value) loaded,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(AppConfigLoaded value)? loaded,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(AppConfigLoaded value)? loaded,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
 
-  /// Create a copy of AppConfigState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $AppConfigStateCopyWith<AppConfigState> get copyWith =>
-      throw _privateConstructorUsedError;
+ AppConfig get config; bool get isLoading; Failure? get failure;
+/// Create a copy of AppConfigState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AppConfigStateCopyWith<AppConfigState> get copyWith => _$AppConfigStateCopyWithImpl<AppConfigState>(this as AppConfigState, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppConfigState&&(identical(other.config, config) || other.config == config)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.failure, failure) || other.failure == failure));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,config,isLoading,failure);
+
+@override
+String toString() {
+  return 'AppConfigState(config: $config, isLoading: $isLoading, failure: $failure)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $AppConfigStateCopyWith<$Res> {
-  factory $AppConfigStateCopyWith(
-    AppConfigState value,
-    $Res Function(AppConfigState) then,
-  ) = _$AppConfigStateCopyWithImpl<$Res, AppConfigState>;
-  @useResult
-  $Res call({AppConfig config, bool isLoading, Failure? failure});
+abstract mixin class $AppConfigStateCopyWith<$Res>  {
+  factory $AppConfigStateCopyWith(AppConfigState value, $Res Function(AppConfigState) _then) = _$AppConfigStateCopyWithImpl;
+@useResult
+$Res call({
+ AppConfig config, bool isLoading, Failure? failure
+});
 
-  $AppConfigCopyWith<$Res> get config;
+
+$AppConfigCopyWith<$Res> get config;
+
 }
-
 /// @nodoc
-class _$AppConfigStateCopyWithImpl<$Res, $Val extends AppConfigState>
+class _$AppConfigStateCopyWithImpl<$Res>
     implements $AppConfigStateCopyWith<$Res> {
-  _$AppConfigStateCopyWithImpl(this._value, this._then);
+  _$AppConfigStateCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final AppConfigState _self;
+  final $Res Function(AppConfigState) _then;
 
-  /// Create a copy of AppConfigState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? config = null,
-    Object? isLoading = null,
-    Object? failure = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            config: null == config
-                ? _value.config
-                : config // ignore: cast_nullable_to_non_nullable
-                      as AppConfig,
-            isLoading: null == isLoading
-                ? _value.isLoading
-                : isLoading // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            failure: freezed == failure
-                ? _value.failure
-                : failure // ignore: cast_nullable_to_non_nullable
-                      as Failure?,
-          )
-          as $Val,
-    );
-  }
-
-  /// Create a copy of AppConfigState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $AppConfigCopyWith<$Res> get config {
-    return $AppConfigCopyWith<$Res>(_value.config, (value) {
-      return _then(_value.copyWith(config: value) as $Val);
-    });
-  }
+/// Create a copy of AppConfigState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? config = null,Object? isLoading = null,Object? failure = freezed,}) {
+  return _then(_self.copyWith(
+config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
+as AppConfig,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as bool,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
+as Failure?,
+  ));
 }
-
-/// @nodoc
-abstract class _$$AppConfigLoadedImplCopyWith<$Res>
-    implements $AppConfigStateCopyWith<$Res> {
-  factory _$$AppConfigLoadedImplCopyWith(
-    _$AppConfigLoadedImpl value,
-    $Res Function(_$AppConfigLoadedImpl) then,
-  ) = __$$AppConfigLoadedImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({AppConfig config, bool isLoading, Failure? failure});
-
-  @override
-  $AppConfigCopyWith<$Res> get config;
-}
-
-/// @nodoc
-class __$$AppConfigLoadedImplCopyWithImpl<$Res>
-    extends _$AppConfigStateCopyWithImpl<$Res, _$AppConfigLoadedImpl>
-    implements _$$AppConfigLoadedImplCopyWith<$Res> {
-  __$$AppConfigLoadedImplCopyWithImpl(
-    _$AppConfigLoadedImpl _value,
-    $Res Function(_$AppConfigLoadedImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of AppConfigState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? config = null,
-    Object? isLoading = null,
-    Object? failure = freezed,
-  }) {
-    return _then(
-      _$AppConfigLoadedImpl(
-        config: null == config
-            ? _value.config
-            : config // ignore: cast_nullable_to_non_nullable
-                  as AppConfig,
-        isLoading: null == isLoading
-            ? _value.isLoading
-            : isLoading // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        failure: freezed == failure
-            ? _value.failure
-            : failure // ignore: cast_nullable_to_non_nullable
-                  as Failure?,
-      ),
-    );
-  }
-}
-
-/// @nodoc
-
-class _$AppConfigLoadedImpl implements AppConfigLoaded {
-  const _$AppConfigLoadedImpl({
-    required this.config,
-    this.isLoading = false,
-    this.failure,
+/// Create a copy of AppConfigState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AppConfigCopyWith<$Res> get config {
+  
+  return $AppConfigCopyWith<$Res>(_self.config, (value) {
+    return _then(_self.copyWith(config: value));
   });
-
-  @override
-  final AppConfig config;
-  @override
-  @JsonKey()
-  final bool isLoading;
-  @override
-  final Failure? failure;
-
-  @override
-  String toString() {
-    return 'AppConfigState.loaded(config: $config, isLoading: $isLoading, failure: $failure)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AppConfigLoadedImpl &&
-            (identical(other.config, config) || other.config == config) &&
-            (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading) &&
-            (identical(other.failure, failure) || other.failure == failure));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, config, isLoading, failure);
-
-  /// Create a copy of AppConfigState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$AppConfigLoadedImplCopyWith<_$AppConfigLoadedImpl> get copyWith =>
-      __$$AppConfigLoadedImplCopyWithImpl<_$AppConfigLoadedImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(
-      AppConfig config,
-      bool isLoading,
-      Failure? failure,
-    )
-    loaded,
-  }) {
-    return loaded(config, isLoading, failure);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(AppConfig config, bool isLoading, Failure? failure)?
-    loaded,
-  }) {
-    return loaded?.call(config, isLoading, failure);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(AppConfig config, bool isLoading, Failure? failure)?
-    loaded,
-    required TResult orElse(),
-  }) {
-    if (loaded != null) {
-      return loaded(config, isLoading, failure);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(AppConfigLoaded value) loaded,
-  }) {
-    return loaded(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(AppConfigLoaded value)? loaded,
-  }) {
-    return loaded?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(AppConfigLoaded value)? loaded,
-    required TResult orElse(),
-  }) {
-    if (loaded != null) {
-      return loaded(this);
-    }
-    return orElse();
-  }
+}
 }
 
-abstract class AppConfigLoaded implements AppConfigState {
-  const factory AppConfigLoaded({
-    required final AppConfig config,
-    final bool isLoading,
-    final Failure? failure,
-  }) = _$AppConfigLoadedImpl;
 
-  @override
-  AppConfig get config;
-  @override
-  bool get isLoading;
-  @override
-  Failure? get failure;
+/// Adds pattern-matching-related methods to [AppConfigState].
+extension AppConfigStatePatterns on AppConfigState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  /// Create a copy of AppConfigState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AppConfigLoadedImplCopyWith<_$AppConfigLoadedImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AppConfigLoaded value)?  loaded,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case AppConfigLoaded() when loaded != null:
+return loaded(_that);case _:
+  return orElse();
+
 }
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AppConfigLoaded value)  loaded,}){
+final _that = this;
+switch (_that) {
+case AppConfigLoaded():
+return loaded(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AppConfigLoaded value)?  loaded,}){
+final _that = this;
+switch (_that) {
+case AppConfigLoaded() when loaded != null:
+return loaded(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( AppConfig config,  bool isLoading,  Failure? failure)?  loaded,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case AppConfigLoaded() when loaded != null:
+return loaded(_that.config,_that.isLoading,_that.failure);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( AppConfig config,  bool isLoading,  Failure? failure)  loaded,}) {final _that = this;
+switch (_that) {
+case AppConfigLoaded():
+return loaded(_that.config,_that.isLoading,_that.failure);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( AppConfig config,  bool isLoading,  Failure? failure)?  loaded,}) {final _that = this;
+switch (_that) {
+case AppConfigLoaded() when loaded != null:
+return loaded(_that.config,_that.isLoading,_that.failure);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class AppConfigLoaded implements AppConfigState {
+  const AppConfigLoaded({required this.config, this.isLoading = false, this.failure});
+  
+
+@override final  AppConfig config;
+@override@JsonKey() final  bool isLoading;
+@override final  Failure? failure;
+
+/// Create a copy of AppConfigState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AppConfigLoadedCopyWith<AppConfigLoaded> get copyWith => _$AppConfigLoadedCopyWithImpl<AppConfigLoaded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppConfigLoaded&&(identical(other.config, config) || other.config == config)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.failure, failure) || other.failure == failure));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,config,isLoading,failure);
+
+@override
+String toString() {
+  return 'AppConfigState.loaded(config: $config, isLoading: $isLoading, failure: $failure)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AppConfigLoadedCopyWith<$Res> implements $AppConfigStateCopyWith<$Res> {
+  factory $AppConfigLoadedCopyWith(AppConfigLoaded value, $Res Function(AppConfigLoaded) _then) = _$AppConfigLoadedCopyWithImpl;
+@override @useResult
+$Res call({
+ AppConfig config, bool isLoading, Failure? failure
+});
+
+
+@override $AppConfigCopyWith<$Res> get config;
+
+}
+/// @nodoc
+class _$AppConfigLoadedCopyWithImpl<$Res>
+    implements $AppConfigLoadedCopyWith<$Res> {
+  _$AppConfigLoadedCopyWithImpl(this._self, this._then);
+
+  final AppConfigLoaded _self;
+  final $Res Function(AppConfigLoaded) _then;
+
+/// Create a copy of AppConfigState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? config = null,Object? isLoading = null,Object? failure = freezed,}) {
+  return _then(AppConfigLoaded(
+config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
+as AppConfig,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as bool,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
+as Failure?,
+  ));
+}
+
+/// Create a copy of AppConfigState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AppConfigCopyWith<$Res> get config {
+  
+  return $AppConfigCopyWith<$Res>(_self.config, (value) {
+    return _then(_self.copyWith(config: value));
+  });
+}
+}
+
+// dart format on

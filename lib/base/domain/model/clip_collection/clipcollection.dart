@@ -8,7 +8,7 @@ part 'clipcollection.freezed.dart';
 part 'clipcollection.g.dart';
 
 @freezed
-class ClipCollection with _$ClipCollection, Identifiable, Syncable {
+abstract class ClipCollection with _$ClipCollection, Identifiable, Syncable {
   ClipCollection._();
 
   factory ClipCollection({

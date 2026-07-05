@@ -11,10 +11,10 @@ class UrlClipCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
-    final url = item.url ?? "https://example.com";
+    final url = item.url ?? "-";
 
     return LinkPreview(
-      url: url,
+      item: item,
       maxTitleLines: 1,
       maxDescLines: 1,
       flat: true,

@@ -18,7 +18,7 @@ class SyncEntityType {
 /// enqueued. The SyncEngine asynchronously processes the outbox to push
 /// changes to the server.
 @freezed
-class SyncOutboxEntry with _$SyncOutboxEntry {
+abstract class SyncOutboxEntry with _$SyncOutboxEntry {
   const factory SyncOutboxEntry({
     /// Local database ID of the outbox entry (not the entity).
     @JsonKey(includeToJson: false, includeFromJson: false) int? id,

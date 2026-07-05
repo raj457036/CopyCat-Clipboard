@@ -1,7 +1,7 @@
 part of 'drive_setup_cubit.dart';
 
 @freezed
-class DriveSetupState with _$DriveSetupState {
+abstract class DriveSetupState with _$DriveSetupState {
   const factory DriveSetupState.unknown({@Default(false) bool waiting}) =
       DriveSetupUnknown;
   const factory DriveSetupState.fetching() = DriveSetupFetching;

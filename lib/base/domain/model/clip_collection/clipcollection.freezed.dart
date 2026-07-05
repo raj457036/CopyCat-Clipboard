@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,424 +9,299 @@ part of 'clipcollection.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
-ClipCollection _$ClipCollectionFromJson(Map<String, dynamic> json) {
-  return _ClipCollection.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ClipCollection {
-  @JsonKey(includeToJson: false, includeFromJson: false)
-  int? get id => throw _privateConstructorUsedError;
-  @JsonKey(name: "id", includeToJson: false)
-  int? get serverId => throw _privateConstructorUsedError;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  DateTime? get lastSynced => throw _privateConstructorUsedError;
-  @JsonKey(name: "created")
-  @DateTimeConverter()
-  DateTime get created => throw _privateConstructorUsedError;
-  @JsonKey(name: "modified")
-  @DateTimeConverter()
-  DateTime get modified => throw _privateConstructorUsedError;
-  String get userId => throw _privateConstructorUsedError;
-  @DateTimeConverter()
-  DateTime? get deletedAt => throw _privateConstructorUsedError;
-  String? get deviceId => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
-  String? get description => throw _privateConstructorUsedError;
-  String get emoji => throw _privateConstructorUsedError;
+
+@JsonKey(includeToJson: false, includeFromJson: false) int? get id;@JsonKey(name: "id", includeToJson: false) int? get serverId;@JsonKey(includeFromJson: false, includeToJson: false) DateTime? get lastSynced;@JsonKey(name: "created")@DateTimeConverter() DateTime get created;@JsonKey(name: "modified")@DateTimeConverter() DateTime get modified; String get userId;@DateTimeConverter() DateTime? get deletedAt; String? get deviceId; String get title; String? get description; String get emoji;
+/// Create a copy of ClipCollection
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ClipCollectionCopyWith<ClipCollection> get copyWith => _$ClipCollectionCopyWithImpl<ClipCollection>(this as ClipCollection, _$identity);
 
   /// Serializes this ClipCollection to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of ClipCollection
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ClipCollectionCopyWith<ClipCollection> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClipCollection&&(identical(other.id, id) || other.id == id)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.lastSynced, lastSynced) || other.lastSynced == lastSynced)&&(identical(other.created, created) || other.created == created)&&(identical(other.modified, modified) || other.modified == modified)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.emoji, emoji) || other.emoji == emoji));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,serverId,lastSynced,created,modified,userId,deletedAt,deviceId,title,description,emoji);
+
+@override
+String toString() {
+  return 'ClipCollection(id: $id, serverId: $serverId, lastSynced: $lastSynced, created: $created, modified: $modified, userId: $userId, deletedAt: $deletedAt, deviceId: $deviceId, title: $title, description: $description, emoji: $emoji)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ClipCollectionCopyWith<$Res> {
-  factory $ClipCollectionCopyWith(
-    ClipCollection value,
-    $Res Function(ClipCollection) then,
-  ) = _$ClipCollectionCopyWithImpl<$Res, ClipCollection>;
-  @useResult
-  $Res call({
-    @JsonKey(includeToJson: false, includeFromJson: false) int? id,
-    @JsonKey(name: "id", includeToJson: false) int? serverId,
-    @JsonKey(includeFromJson: false, includeToJson: false) DateTime? lastSynced,
-    @JsonKey(name: "created") @DateTimeConverter() DateTime created,
-    @JsonKey(name: "modified") @DateTimeConverter() DateTime modified,
-    String userId,
-    @DateTimeConverter() DateTime? deletedAt,
-    String? deviceId,
-    String title,
-    String? description,
-    String emoji,
-  });
-}
+abstract mixin class $ClipCollectionCopyWith<$Res>  {
+  factory $ClipCollectionCopyWith(ClipCollection value, $Res Function(ClipCollection) _then) = _$ClipCollectionCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(includeToJson: false, includeFromJson: false) int? id,@JsonKey(name: "id", includeToJson: false) int? serverId,@JsonKey(includeFromJson: false, includeToJson: false) DateTime? lastSynced,@JsonKey(name: "created")@DateTimeConverter() DateTime created,@JsonKey(name: "modified")@DateTimeConverter() DateTime modified, String userId,@DateTimeConverter() DateTime? deletedAt, String? deviceId, String title, String? description, String emoji
+});
 
+
+
+
+}
 /// @nodoc
-class _$ClipCollectionCopyWithImpl<$Res, $Val extends ClipCollection>
+class _$ClipCollectionCopyWithImpl<$Res>
     implements $ClipCollectionCopyWith<$Res> {
-  _$ClipCollectionCopyWithImpl(this._value, this._then);
+  _$ClipCollectionCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ClipCollection _self;
+  final $Res Function(ClipCollection) _then;
 
-  /// Create a copy of ClipCollection
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = freezed,
-    Object? serverId = freezed,
-    Object? lastSynced = freezed,
-    Object? created = null,
-    Object? modified = null,
-    Object? userId = null,
-    Object? deletedAt = freezed,
-    Object? deviceId = freezed,
-    Object? title = null,
-    Object? description = freezed,
-    Object? emoji = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            id: freezed == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            serverId: freezed == serverId
-                ? _value.serverId
-                : serverId // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            lastSynced: freezed == lastSynced
-                ? _value.lastSynced
-                : lastSynced // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-            created: null == created
-                ? _value.created
-                : created // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            modified: null == modified
-                ? _value.modified
-                : modified // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            userId: null == userId
-                ? _value.userId
-                : userId // ignore: cast_nullable_to_non_nullable
-                      as String,
-            deletedAt: freezed == deletedAt
-                ? _value.deletedAt
-                : deletedAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-            deviceId: freezed == deviceId
-                ? _value.deviceId
-                : deviceId // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            title: null == title
-                ? _value.title
-                : title // ignore: cast_nullable_to_non_nullable
-                      as String,
-            description: freezed == description
-                ? _value.description
-                : description // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            emoji: null == emoji
-                ? _value.emoji
-                : emoji // ignore: cast_nullable_to_non_nullable
-                      as String,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of ClipCollection
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? serverId = freezed,Object? lastSynced = freezed,Object? created = null,Object? modified = null,Object? userId = null,Object? deletedAt = freezed,Object? deviceId = freezed,Object? title = null,Object? description = freezed,Object? emoji = null,}) {
+  return _then(_self.copyWith(
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,serverId: freezed == serverId ? _self.serverId : serverId // ignore: cast_nullable_to_non_nullable
+as int?,lastSynced: freezed == lastSynced ? _self.lastSynced : lastSynced // ignore: cast_nullable_to_non_nullable
+as DateTime?,created: null == created ? _self.created : created // ignore: cast_nullable_to_non_nullable
+as DateTime,modified: null == modified ? _self.modified : modified // ignore: cast_nullable_to_non_nullable
+as DateTime,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,deviceId: freezed == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
+as String?,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,emoji: null == emoji ? _self.emoji : emoji // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$ClipCollectionImplCopyWith<$Res>
-    implements $ClipCollectionCopyWith<$Res> {
-  factory _$$ClipCollectionImplCopyWith(
-    _$ClipCollectionImpl value,
-    $Res Function(_$ClipCollectionImpl) then,
-  ) = __$$ClipCollectionImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    @JsonKey(includeToJson: false, includeFromJson: false) int? id,
-    @JsonKey(name: "id", includeToJson: false) int? serverId,
-    @JsonKey(includeFromJson: false, includeToJson: false) DateTime? lastSynced,
-    @JsonKey(name: "created") @DateTimeConverter() DateTime created,
-    @JsonKey(name: "modified") @DateTimeConverter() DateTime modified,
-    String userId,
-    @DateTimeConverter() DateTime? deletedAt,
-    String? deviceId,
-    String title,
-    String? description,
-    String emoji,
-  });
 }
 
-/// @nodoc
-class __$$ClipCollectionImplCopyWithImpl<$Res>
-    extends _$ClipCollectionCopyWithImpl<$Res, _$ClipCollectionImpl>
-    implements _$$ClipCollectionImplCopyWith<$Res> {
-  __$$ClipCollectionImplCopyWithImpl(
-    _$ClipCollectionImpl _value,
-    $Res Function(_$ClipCollectionImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of ClipCollection
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = freezed,
-    Object? serverId = freezed,
-    Object? lastSynced = freezed,
-    Object? created = null,
-    Object? modified = null,
-    Object? userId = null,
-    Object? deletedAt = freezed,
-    Object? deviceId = freezed,
-    Object? title = null,
-    Object? description = freezed,
-    Object? emoji = null,
-  }) {
-    return _then(
-      _$ClipCollectionImpl(
-        id: freezed == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        serverId: freezed == serverId
-            ? _value.serverId
-            : serverId // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        lastSynced: freezed == lastSynced
-            ? _value.lastSynced
-            : lastSynced // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-        created: null == created
-            ? _value.created
-            : created // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        modified: null == modified
-            ? _value.modified
-            : modified // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        userId: null == userId
-            ? _value.userId
-            : userId // ignore: cast_nullable_to_non_nullable
-                  as String,
-        deletedAt: freezed == deletedAt
-            ? _value.deletedAt
-            : deletedAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-        deviceId: freezed == deviceId
-            ? _value.deviceId
-            : deviceId // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        title: null == title
-            ? _value.title
-            : title // ignore: cast_nullable_to_non_nullable
-                  as String,
-        description: freezed == description
-            ? _value.description
-            : description // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        emoji: null == emoji
-            ? _value.emoji
-            : emoji // ignore: cast_nullable_to_non_nullable
-                  as String,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [ClipCollection].
+extension ClipCollectionPatterns on ClipCollection {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ClipCollection value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ClipCollection() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ClipCollection value)  $default,){
+final _that = this;
+switch (_that) {
+case _ClipCollection():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ClipCollection value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ClipCollection() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id, @JsonKey(name: "id", includeToJson: false)  int? serverId, @JsonKey(includeFromJson: false, includeToJson: false)  DateTime? lastSynced, @JsonKey(name: "created")@DateTimeConverter()  DateTime created, @JsonKey(name: "modified")@DateTimeConverter()  DateTime modified,  String userId, @DateTimeConverter()  DateTime? deletedAt,  String? deviceId,  String title,  String? description,  String emoji)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ClipCollection() when $default != null:
+return $default(_that.id,_that.serverId,_that.lastSynced,_that.created,_that.modified,_that.userId,_that.deletedAt,_that.deviceId,_that.title,_that.description,_that.emoji);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id, @JsonKey(name: "id", includeToJson: false)  int? serverId, @JsonKey(includeFromJson: false, includeToJson: false)  DateTime? lastSynced, @JsonKey(name: "created")@DateTimeConverter()  DateTime created, @JsonKey(name: "modified")@DateTimeConverter()  DateTime modified,  String userId, @DateTimeConverter()  DateTime? deletedAt,  String? deviceId,  String title,  String? description,  String emoji)  $default,) {final _that = this;
+switch (_that) {
+case _ClipCollection():
+return $default(_that.id,_that.serverId,_that.lastSynced,_that.created,_that.modified,_that.userId,_that.deletedAt,_that.deviceId,_that.title,_that.description,_that.emoji);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id, @JsonKey(name: "id", includeToJson: false)  int? serverId, @JsonKey(includeFromJson: false, includeToJson: false)  DateTime? lastSynced, @JsonKey(name: "created")@DateTimeConverter()  DateTime created, @JsonKey(name: "modified")@DateTimeConverter()  DateTime modified,  String userId, @DateTimeConverter()  DateTime? deletedAt,  String? deviceId,  String title,  String? description,  String emoji)?  $default,) {final _that = this;
+switch (_that) {
+case _ClipCollection() when $default != null:
+return $default(_that.id,_that.serverId,_that.lastSynced,_that.created,_that.modified,_that.userId,_that.deletedAt,_that.deviceId,_that.title,_that.description,_that.emoji);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$ClipCollectionImpl extends _ClipCollection {
-  _$ClipCollectionImpl({
-    @JsonKey(includeToJson: false, includeFromJson: false) this.id,
-    @JsonKey(name: "id", includeToJson: false) this.serverId,
-    @JsonKey(includeFromJson: false, includeToJson: false) this.lastSynced,
-    @JsonKey(name: "created") @DateTimeConverter() required this.created,
-    @JsonKey(name: "modified") @DateTimeConverter() required this.modified,
-    this.userId = kLocalUserId,
-    @DateTimeConverter() this.deletedAt,
-    this.deviceId,
-    required this.title,
-    this.description,
-    required this.emoji,
-  }) : super._();
 
-  factory _$ClipCollectionImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ClipCollectionImplFromJson(json);
+class _ClipCollection extends ClipCollection {
+   _ClipCollection({@JsonKey(includeToJson: false, includeFromJson: false) this.id, @JsonKey(name: "id", includeToJson: false) this.serverId, @JsonKey(includeFromJson: false, includeToJson: false) this.lastSynced, @JsonKey(name: "created")@DateTimeConverter() required this.created, @JsonKey(name: "modified")@DateTimeConverter() required this.modified, this.userId = kLocalUserId, @DateTimeConverter() this.deletedAt, this.deviceId, required this.title, this.description, required this.emoji}): super._();
+  factory _ClipCollection.fromJson(Map<String, dynamic> json) => _$ClipCollectionFromJson(json);
 
-  @override
-  @JsonKey(includeToJson: false, includeFromJson: false)
-  final int? id;
-  @override
-  @JsonKey(name: "id", includeToJson: false)
-  final int? serverId;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  final DateTime? lastSynced;
-  @override
-  @JsonKey(name: "created")
-  @DateTimeConverter()
-  final DateTime created;
-  @override
-  @JsonKey(name: "modified")
-  @DateTimeConverter()
-  final DateTime modified;
-  @override
-  @JsonKey()
-  final String userId;
-  @override
-  @DateTimeConverter()
-  final DateTime? deletedAt;
-  @override
-  final String? deviceId;
-  @override
-  final String title;
-  @override
-  final String? description;
-  @override
-  final String emoji;
+@override@JsonKey(includeToJson: false, includeFromJson: false) final  int? id;
+@override@JsonKey(name: "id", includeToJson: false) final  int? serverId;
+@override@JsonKey(includeFromJson: false, includeToJson: false) final  DateTime? lastSynced;
+@override@JsonKey(name: "created")@DateTimeConverter() final  DateTime created;
+@override@JsonKey(name: "modified")@DateTimeConverter() final  DateTime modified;
+@override@JsonKey() final  String userId;
+@override@DateTimeConverter() final  DateTime? deletedAt;
+@override final  String? deviceId;
+@override final  String title;
+@override final  String? description;
+@override final  String emoji;
 
-  @override
-  String toString() {
-    return 'ClipCollection(id: $id, serverId: $serverId, lastSynced: $lastSynced, created: $created, modified: $modified, userId: $userId, deletedAt: $deletedAt, deviceId: $deviceId, title: $title, description: $description, emoji: $emoji)';
-  }
+/// Create a copy of ClipCollection
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ClipCollectionCopyWith<_ClipCollection> get copyWith => __$ClipCollectionCopyWithImpl<_ClipCollection>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ClipCollectionImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.serverId, serverId) ||
-                other.serverId == serverId) &&
-            (identical(other.lastSynced, lastSynced) ||
-                other.lastSynced == lastSynced) &&
-            (identical(other.created, created) || other.created == created) &&
-            (identical(other.modified, modified) ||
-                other.modified == modified) &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.deletedAt, deletedAt) ||
-                other.deletedAt == deletedAt) &&
-            (identical(other.deviceId, deviceId) ||
-                other.deviceId == deviceId) &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            (identical(other.emoji, emoji) || other.emoji == emoji));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    serverId,
-    lastSynced,
-    created,
-    modified,
-    userId,
-    deletedAt,
-    deviceId,
-    title,
-    description,
-    emoji,
-  );
-
-  /// Create a copy of ClipCollection
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ClipCollectionImplCopyWith<_$ClipCollectionImpl> get copyWith =>
-      __$$ClipCollectionImplCopyWithImpl<_$ClipCollectionImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ClipCollectionImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$ClipCollectionToJson(this, );
 }
 
-abstract class _ClipCollection extends ClipCollection {
-  factory _ClipCollection({
-    @JsonKey(includeToJson: false, includeFromJson: false) final int? id,
-    @JsonKey(name: "id", includeToJson: false) final int? serverId,
-    @JsonKey(includeFromJson: false, includeToJson: false)
-    final DateTime? lastSynced,
-    @JsonKey(name: "created")
-    @DateTimeConverter()
-    required final DateTime created,
-    @JsonKey(name: "modified")
-    @DateTimeConverter()
-    required final DateTime modified,
-    final String userId,
-    @DateTimeConverter() final DateTime? deletedAt,
-    final String? deviceId,
-    required final String title,
-    final String? description,
-    required final String emoji,
-  }) = _$ClipCollectionImpl;
-  _ClipCollection._() : super._();
-
-  factory _ClipCollection.fromJson(Map<String, dynamic> json) =
-      _$ClipCollectionImpl.fromJson;
-
-  @override
-  @JsonKey(includeToJson: false, includeFromJson: false)
-  int? get id;
-  @override
-  @JsonKey(name: "id", includeToJson: false)
-  int? get serverId;
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  DateTime? get lastSynced;
-  @override
-  @JsonKey(name: "created")
-  @DateTimeConverter()
-  DateTime get created;
-  @override
-  @JsonKey(name: "modified")
-  @DateTimeConverter()
-  DateTime get modified;
-  @override
-  String get userId;
-  @override
-  @DateTimeConverter()
-  DateTime? get deletedAt;
-  @override
-  String? get deviceId;
-  @override
-  String get title;
-  @override
-  String? get description;
-  @override
-  String get emoji;
-
-  /// Create a copy of ClipCollection
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ClipCollectionImplCopyWith<_$ClipCollectionImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClipCollection&&(identical(other.id, id) || other.id == id)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.lastSynced, lastSynced) || other.lastSynced == lastSynced)&&(identical(other.created, created) || other.created == created)&&(identical(other.modified, modified) || other.modified == modified)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.emoji, emoji) || other.emoji == emoji));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,serverId,lastSynced,created,modified,userId,deletedAt,deviceId,title,description,emoji);
+
+@override
+String toString() {
+  return 'ClipCollection(id: $id, serverId: $serverId, lastSynced: $lastSynced, created: $created, modified: $modified, userId: $userId, deletedAt: $deletedAt, deviceId: $deviceId, title: $title, description: $description, emoji: $emoji)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ClipCollectionCopyWith<$Res> implements $ClipCollectionCopyWith<$Res> {
+  factory _$ClipCollectionCopyWith(_ClipCollection value, $Res Function(_ClipCollection) _then) = __$ClipCollectionCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(includeToJson: false, includeFromJson: false) int? id,@JsonKey(name: "id", includeToJson: false) int? serverId,@JsonKey(includeFromJson: false, includeToJson: false) DateTime? lastSynced,@JsonKey(name: "created")@DateTimeConverter() DateTime created,@JsonKey(name: "modified")@DateTimeConverter() DateTime modified, String userId,@DateTimeConverter() DateTime? deletedAt, String? deviceId, String title, String? description, String emoji
+});
+
+
+
+
+}
+/// @nodoc
+class __$ClipCollectionCopyWithImpl<$Res>
+    implements _$ClipCollectionCopyWith<$Res> {
+  __$ClipCollectionCopyWithImpl(this._self, this._then);
+
+  final _ClipCollection _self;
+  final $Res Function(_ClipCollection) _then;
+
+/// Create a copy of ClipCollection
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? serverId = freezed,Object? lastSynced = freezed,Object? created = null,Object? modified = null,Object? userId = null,Object? deletedAt = freezed,Object? deviceId = freezed,Object? title = null,Object? description = freezed,Object? emoji = null,}) {
+  return _then(_ClipCollection(
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,serverId: freezed == serverId ? _self.serverId : serverId // ignore: cast_nullable_to_non_nullable
+as int?,lastSynced: freezed == lastSynced ? _self.lastSynced : lastSynced // ignore: cast_nullable_to_non_nullable
+as DateTime?,created: null == created ? _self.created : created // ignore: cast_nullable_to_non_nullable
+as DateTime,modified: null == modified ? _self.modified : modified // ignore: cast_nullable_to_non_nullable
+as DateTime,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,deviceId: freezed == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
+as String?,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,emoji: null == emoji ? _self.emoji : emoji // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+// dart format on

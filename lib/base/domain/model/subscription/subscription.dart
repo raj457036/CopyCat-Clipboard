@@ -15,7 +15,7 @@ part 'subscription.freezed.dart';
 part 'subscription.g.dart';
 
 @freezed
-class Subscription with _$Subscription, Identifiable {
+abstract class Subscription with _$Subscription, Identifiable {
   Subscription._();
 
   factory Subscription({

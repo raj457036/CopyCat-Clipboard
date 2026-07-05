@@ -1,4 +1,3 @@
-import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/datetime_extension.dart';

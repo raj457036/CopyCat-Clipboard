@@ -6,9 +6,7 @@ part of 'appconfig.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AppConfigImpl _$$AppConfigImplFromJson(
-  Map<String, dynamic> json,
-) => _$AppConfigImpl(
+_AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => _AppConfig(
   themeMode:
       $enumDecodeNullable(_$ThemeModeEnumMap, json['themeMode']) ??
       ThemeMode.system,
@@ -74,7 +72,7 @@ _$AppConfigImpl _$$AppConfigImplFromJson(
   reviewNeverAsk: json['reviewNeverAsk'] as bool? ?? false,
 );
 
-Map<String, dynamic> _$$AppConfigImplToJson(_$AppConfigImpl instance) =>
+Map<String, dynamic> _$AppConfigToJson(_AppConfig instance) =>
     <String, dynamic>{
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
       'enableSync': instance.enableSync,

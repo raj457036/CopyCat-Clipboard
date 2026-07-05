@@ -19,7 +19,7 @@ class SyncProgress {
 }
 
 @freezed
-class SyncStatusState with _$SyncStatusState {
+abstract class SyncStatusState with _$SyncStatusState {
   const factory SyncStatusState.unknown() = SyncStatusUnknown;
   const factory SyncStatusState.syncing({
     @Default(<String, SyncProgress>{}) Map<String, SyncProgress> progress,

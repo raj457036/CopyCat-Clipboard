@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,754 +9,343 @@ part of 'subscription.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
-Subscription _$SubscriptionFromJson(Map<String, dynamic> json) {
-  return _Subscription.fromJson(json);
-}
 
 /// @nodoc
 mixin _$Subscription {
-  @JsonKey(includeToJson: false, includeFromJson: false)
-  int? get id => throw _privateConstructorUsedError;
-  @JsonKey(name: "id", includeToJson: false)
-  int? get serverId => throw _privateConstructorUsedError;
-  @JsonKey(name: "created")
-  @DateTimeConverter()
-  DateTime get created => throw _privateConstructorUsedError;
-  @JsonKey(name: "modified")
-  @DateTimeConverter()
-  DateTime get modified => throw _privateConstructorUsedError;
-  String get userId => throw _privateConstructorUsedError;
-  String get planName => throw _privateConstructorUsedError;
-  String get subId => throw _privateConstructorUsedError;
-  String get source => throw _privateConstructorUsedError;
-  @DateTimeConverter()
-  DateTime? get trialStart => throw _privateConstructorUsedError;
-  @DateTimeConverter()
-  DateTime? get trialEnd => throw _privateConstructorUsedError;
-  int get collections => throw _privateConstructorUsedError;
-  int get itemsPerCollection => throw _privateConstructorUsedError;
-  bool get dragNdrop => throw _privateConstructorUsedError;
-  bool get theming => throw _privateConstructorUsedError;
-  @JsonKey(name: "syncHr")
-  int get syncHours => throw _privateConstructorUsedError;
-  bool get ads => throw _privateConstructorUsedError;
-  @JsonKey(name: "syncInt")
-  int get syncInterval => throw _privateConstructorUsedError;
-  bool get edit => throw _privateConstructorUsedError;
-  @DateTimeConverter()
-  DateTime? get activeTill => throw _privateConstructorUsedError;
-  @JsonKey(name: "devices")
-  int get maxSyncDevices => throw _privateConstructorUsedError;
-  @JsonKey(name: "cers")
-  bool get customExclusionRules => throw _privateConstructorUsedError;
-  @JsonKey(name: "ps_limit")
-  int get pasteStackLimit => throw _privateConstructorUsedError;
-  int get grants => throw _privateConstructorUsedError;
-  String? get tkn => throw _privateConstructorUsedError; // local state
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  String? get managementUrl => throw _privateConstructorUsedError;
+
+@JsonKey(includeToJson: false, includeFromJson: false) int? get id;@JsonKey(name: "id", includeToJson: false) int? get serverId;@JsonKey(name: "created")@DateTimeConverter() DateTime get created;@JsonKey(name: "modified")@DateTimeConverter() DateTime get modified; String get userId; String get planName; String get subId; String get source;@DateTimeConverter() DateTime? get trialStart;@DateTimeConverter() DateTime? get trialEnd; int get collections; int get itemsPerCollection; bool get dragNdrop; bool get theming;@JsonKey(name: "syncHr") int get syncHours; bool get ads;@JsonKey(name: "syncInt") int get syncInterval; bool get edit;@DateTimeConverter() DateTime? get activeTill;@JsonKey(name: "devices") int get maxSyncDevices;@JsonKey(name: "cers") bool get customExclusionRules;@JsonKey(name: "ps_limit") int get pasteStackLimit; int get grants; String? get tkn;// local state
+@JsonKey(includeFromJson: false, includeToJson: false) String? get managementUrl;
+/// Create a copy of Subscription
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SubscriptionCopyWith<Subscription> get copyWith => _$SubscriptionCopyWithImpl<Subscription>(this as Subscription, _$identity);
 
   /// Serializes this Subscription to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of Subscription
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SubscriptionCopyWith<Subscription> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Subscription&&(identical(other.id, id) || other.id == id)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.created, created) || other.created == created)&&(identical(other.modified, modified) || other.modified == modified)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.planName, planName) || other.planName == planName)&&(identical(other.subId, subId) || other.subId == subId)&&(identical(other.source, source) || other.source == source)&&(identical(other.trialStart, trialStart) || other.trialStart == trialStart)&&(identical(other.trialEnd, trialEnd) || other.trialEnd == trialEnd)&&(identical(other.collections, collections) || other.collections == collections)&&(identical(other.itemsPerCollection, itemsPerCollection) || other.itemsPerCollection == itemsPerCollection)&&(identical(other.dragNdrop, dragNdrop) || other.dragNdrop == dragNdrop)&&(identical(other.theming, theming) || other.theming == theming)&&(identical(other.syncHours, syncHours) || other.syncHours == syncHours)&&(identical(other.ads, ads) || other.ads == ads)&&(identical(other.syncInterval, syncInterval) || other.syncInterval == syncInterval)&&(identical(other.edit, edit) || other.edit == edit)&&(identical(other.activeTill, activeTill) || other.activeTill == activeTill)&&(identical(other.maxSyncDevices, maxSyncDevices) || other.maxSyncDevices == maxSyncDevices)&&(identical(other.customExclusionRules, customExclusionRules) || other.customExclusionRules == customExclusionRules)&&(identical(other.pasteStackLimit, pasteStackLimit) || other.pasteStackLimit == pasteStackLimit)&&(identical(other.grants, grants) || other.grants == grants)&&(identical(other.tkn, tkn) || other.tkn == tkn)&&(identical(other.managementUrl, managementUrl) || other.managementUrl == managementUrl));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hashAll([runtimeType,id,serverId,created,modified,userId,planName,subId,source,trialStart,trialEnd,collections,itemsPerCollection,dragNdrop,theming,syncHours,ads,syncInterval,edit,activeTill,maxSyncDevices,customExclusionRules,pasteStackLimit,grants,tkn,managementUrl]);
+
+@override
+String toString() {
+  return 'Subscription(id: $id, serverId: $serverId, created: $created, modified: $modified, userId: $userId, planName: $planName, subId: $subId, source: $source, trialStart: $trialStart, trialEnd: $trialEnd, collections: $collections, itemsPerCollection: $itemsPerCollection, dragNdrop: $dragNdrop, theming: $theming, syncHours: $syncHours, ads: $ads, syncInterval: $syncInterval, edit: $edit, activeTill: $activeTill, maxSyncDevices: $maxSyncDevices, customExclusionRules: $customExclusionRules, pasteStackLimit: $pasteStackLimit, grants: $grants, tkn: $tkn, managementUrl: $managementUrl)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $SubscriptionCopyWith<$Res> {
-  factory $SubscriptionCopyWith(
-    Subscription value,
-    $Res Function(Subscription) then,
-  ) = _$SubscriptionCopyWithImpl<$Res, Subscription>;
-  @useResult
-  $Res call({
-    @JsonKey(includeToJson: false, includeFromJson: false) int? id,
-    @JsonKey(name: "id", includeToJson: false) int? serverId,
-    @JsonKey(name: "created") @DateTimeConverter() DateTime created,
-    @JsonKey(name: "modified") @DateTimeConverter() DateTime modified,
-    String userId,
-    String planName,
-    String subId,
-    String source,
-    @DateTimeConverter() DateTime? trialStart,
-    @DateTimeConverter() DateTime? trialEnd,
-    int collections,
-    int itemsPerCollection,
-    bool dragNdrop,
-    bool theming,
-    @JsonKey(name: "syncHr") int syncHours,
-    bool ads,
-    @JsonKey(name: "syncInt") int syncInterval,
-    bool edit,
-    @DateTimeConverter() DateTime? activeTill,
-    @JsonKey(name: "devices") int maxSyncDevices,
-    @JsonKey(name: "cers") bool customExclusionRules,
-    @JsonKey(name: "ps_limit") int pasteStackLimit,
-    int grants,
-    String? tkn,
-    @JsonKey(includeFromJson: false, includeToJson: false)
-    String? managementUrl,
-  });
-}
+abstract mixin class $SubscriptionCopyWith<$Res>  {
+  factory $SubscriptionCopyWith(Subscription value, $Res Function(Subscription) _then) = _$SubscriptionCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(includeToJson: false, includeFromJson: false) int? id,@JsonKey(name: "id", includeToJson: false) int? serverId,@JsonKey(name: "created")@DateTimeConverter() DateTime created,@JsonKey(name: "modified")@DateTimeConverter() DateTime modified, String userId, String planName, String subId, String source,@DateTimeConverter() DateTime? trialStart,@DateTimeConverter() DateTime? trialEnd, int collections, int itemsPerCollection, bool dragNdrop, bool theming,@JsonKey(name: "syncHr") int syncHours, bool ads,@JsonKey(name: "syncInt") int syncInterval, bool edit,@DateTimeConverter() DateTime? activeTill,@JsonKey(name: "devices") int maxSyncDevices,@JsonKey(name: "cers") bool customExclusionRules,@JsonKey(name: "ps_limit") int pasteStackLimit, int grants, String? tkn,@JsonKey(includeFromJson: false, includeToJson: false) String? managementUrl
+});
 
+
+
+
+}
 /// @nodoc
-class _$SubscriptionCopyWithImpl<$Res, $Val extends Subscription>
+class _$SubscriptionCopyWithImpl<$Res>
     implements $SubscriptionCopyWith<$Res> {
-  _$SubscriptionCopyWithImpl(this._value, this._then);
+  _$SubscriptionCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final Subscription _self;
+  final $Res Function(Subscription) _then;
 
-  /// Create a copy of Subscription
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = freezed,
-    Object? serverId = freezed,
-    Object? created = null,
-    Object? modified = null,
-    Object? userId = null,
-    Object? planName = null,
-    Object? subId = null,
-    Object? source = null,
-    Object? trialStart = freezed,
-    Object? trialEnd = freezed,
-    Object? collections = null,
-    Object? itemsPerCollection = null,
-    Object? dragNdrop = null,
-    Object? theming = null,
-    Object? syncHours = null,
-    Object? ads = null,
-    Object? syncInterval = null,
-    Object? edit = null,
-    Object? activeTill = freezed,
-    Object? maxSyncDevices = null,
-    Object? customExclusionRules = null,
-    Object? pasteStackLimit = null,
-    Object? grants = null,
-    Object? tkn = freezed,
-    Object? managementUrl = freezed,
-  }) {
-    return _then(
-      _value.copyWith(
-            id: freezed == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            serverId: freezed == serverId
-                ? _value.serverId
-                : serverId // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            created: null == created
-                ? _value.created
-                : created // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            modified: null == modified
-                ? _value.modified
-                : modified // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            userId: null == userId
-                ? _value.userId
-                : userId // ignore: cast_nullable_to_non_nullable
-                      as String,
-            planName: null == planName
-                ? _value.planName
-                : planName // ignore: cast_nullable_to_non_nullable
-                      as String,
-            subId: null == subId
-                ? _value.subId
-                : subId // ignore: cast_nullable_to_non_nullable
-                      as String,
-            source: null == source
-                ? _value.source
-                : source // ignore: cast_nullable_to_non_nullable
-                      as String,
-            trialStart: freezed == trialStart
-                ? _value.trialStart
-                : trialStart // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-            trialEnd: freezed == trialEnd
-                ? _value.trialEnd
-                : trialEnd // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-            collections: null == collections
-                ? _value.collections
-                : collections // ignore: cast_nullable_to_non_nullable
-                      as int,
-            itemsPerCollection: null == itemsPerCollection
-                ? _value.itemsPerCollection
-                : itemsPerCollection // ignore: cast_nullable_to_non_nullable
-                      as int,
-            dragNdrop: null == dragNdrop
-                ? _value.dragNdrop
-                : dragNdrop // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            theming: null == theming
-                ? _value.theming
-                : theming // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            syncHours: null == syncHours
-                ? _value.syncHours
-                : syncHours // ignore: cast_nullable_to_non_nullable
-                      as int,
-            ads: null == ads
-                ? _value.ads
-                : ads // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            syncInterval: null == syncInterval
-                ? _value.syncInterval
-                : syncInterval // ignore: cast_nullable_to_non_nullable
-                      as int,
-            edit: null == edit
-                ? _value.edit
-                : edit // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            activeTill: freezed == activeTill
-                ? _value.activeTill
-                : activeTill // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-            maxSyncDevices: null == maxSyncDevices
-                ? _value.maxSyncDevices
-                : maxSyncDevices // ignore: cast_nullable_to_non_nullable
-                      as int,
-            customExclusionRules: null == customExclusionRules
-                ? _value.customExclusionRules
-                : customExclusionRules // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            pasteStackLimit: null == pasteStackLimit
-                ? _value.pasteStackLimit
-                : pasteStackLimit // ignore: cast_nullable_to_non_nullable
-                      as int,
-            grants: null == grants
-                ? _value.grants
-                : grants // ignore: cast_nullable_to_non_nullable
-                      as int,
-            tkn: freezed == tkn
-                ? _value.tkn
-                : tkn // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            managementUrl: freezed == managementUrl
-                ? _value.managementUrl
-                : managementUrl // ignore: cast_nullable_to_non_nullable
-                      as String?,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of Subscription
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? serverId = freezed,Object? created = null,Object? modified = null,Object? userId = null,Object? planName = null,Object? subId = null,Object? source = null,Object? trialStart = freezed,Object? trialEnd = freezed,Object? collections = null,Object? itemsPerCollection = null,Object? dragNdrop = null,Object? theming = null,Object? syncHours = null,Object? ads = null,Object? syncInterval = null,Object? edit = null,Object? activeTill = freezed,Object? maxSyncDevices = null,Object? customExclusionRules = null,Object? pasteStackLimit = null,Object? grants = null,Object? tkn = freezed,Object? managementUrl = freezed,}) {
+  return _then(_self.copyWith(
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,serverId: freezed == serverId ? _self.serverId : serverId // ignore: cast_nullable_to_non_nullable
+as int?,created: null == created ? _self.created : created // ignore: cast_nullable_to_non_nullable
+as DateTime,modified: null == modified ? _self.modified : modified // ignore: cast_nullable_to_non_nullable
+as DateTime,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,planName: null == planName ? _self.planName : planName // ignore: cast_nullable_to_non_nullable
+as String,subId: null == subId ? _self.subId : subId // ignore: cast_nullable_to_non_nullable
+as String,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as String,trialStart: freezed == trialStart ? _self.trialStart : trialStart // ignore: cast_nullable_to_non_nullable
+as DateTime?,trialEnd: freezed == trialEnd ? _self.trialEnd : trialEnd // ignore: cast_nullable_to_non_nullable
+as DateTime?,collections: null == collections ? _self.collections : collections // ignore: cast_nullable_to_non_nullable
+as int,itemsPerCollection: null == itemsPerCollection ? _self.itemsPerCollection : itemsPerCollection // ignore: cast_nullable_to_non_nullable
+as int,dragNdrop: null == dragNdrop ? _self.dragNdrop : dragNdrop // ignore: cast_nullable_to_non_nullable
+as bool,theming: null == theming ? _self.theming : theming // ignore: cast_nullable_to_non_nullable
+as bool,syncHours: null == syncHours ? _self.syncHours : syncHours // ignore: cast_nullable_to_non_nullable
+as int,ads: null == ads ? _self.ads : ads // ignore: cast_nullable_to_non_nullable
+as bool,syncInterval: null == syncInterval ? _self.syncInterval : syncInterval // ignore: cast_nullable_to_non_nullable
+as int,edit: null == edit ? _self.edit : edit // ignore: cast_nullable_to_non_nullable
+as bool,activeTill: freezed == activeTill ? _self.activeTill : activeTill // ignore: cast_nullable_to_non_nullable
+as DateTime?,maxSyncDevices: null == maxSyncDevices ? _self.maxSyncDevices : maxSyncDevices // ignore: cast_nullable_to_non_nullable
+as int,customExclusionRules: null == customExclusionRules ? _self.customExclusionRules : customExclusionRules // ignore: cast_nullable_to_non_nullable
+as bool,pasteStackLimit: null == pasteStackLimit ? _self.pasteStackLimit : pasteStackLimit // ignore: cast_nullable_to_non_nullable
+as int,grants: null == grants ? _self.grants : grants // ignore: cast_nullable_to_non_nullable
+as int,tkn: freezed == tkn ? _self.tkn : tkn // ignore: cast_nullable_to_non_nullable
+as String?,managementUrl: freezed == managementUrl ? _self.managementUrl : managementUrl // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$SubscriptionImplCopyWith<$Res>
-    implements $SubscriptionCopyWith<$Res> {
-  factory _$$SubscriptionImplCopyWith(
-    _$SubscriptionImpl value,
-    $Res Function(_$SubscriptionImpl) then,
-  ) = __$$SubscriptionImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    @JsonKey(includeToJson: false, includeFromJson: false) int? id,
-    @JsonKey(name: "id", includeToJson: false) int? serverId,
-    @JsonKey(name: "created") @DateTimeConverter() DateTime created,
-    @JsonKey(name: "modified") @DateTimeConverter() DateTime modified,
-    String userId,
-    String planName,
-    String subId,
-    String source,
-    @DateTimeConverter() DateTime? trialStart,
-    @DateTimeConverter() DateTime? trialEnd,
-    int collections,
-    int itemsPerCollection,
-    bool dragNdrop,
-    bool theming,
-    @JsonKey(name: "syncHr") int syncHours,
-    bool ads,
-    @JsonKey(name: "syncInt") int syncInterval,
-    bool edit,
-    @DateTimeConverter() DateTime? activeTill,
-    @JsonKey(name: "devices") int maxSyncDevices,
-    @JsonKey(name: "cers") bool customExclusionRules,
-    @JsonKey(name: "ps_limit") int pasteStackLimit,
-    int grants,
-    String? tkn,
-    @JsonKey(includeFromJson: false, includeToJson: false)
-    String? managementUrl,
-  });
 }
 
-/// @nodoc
-class __$$SubscriptionImplCopyWithImpl<$Res>
-    extends _$SubscriptionCopyWithImpl<$Res, _$SubscriptionImpl>
-    implements _$$SubscriptionImplCopyWith<$Res> {
-  __$$SubscriptionImplCopyWithImpl(
-    _$SubscriptionImpl _value,
-    $Res Function(_$SubscriptionImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of Subscription
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = freezed,
-    Object? serverId = freezed,
-    Object? created = null,
-    Object? modified = null,
-    Object? userId = null,
-    Object? planName = null,
-    Object? subId = null,
-    Object? source = null,
-    Object? trialStart = freezed,
-    Object? trialEnd = freezed,
-    Object? collections = null,
-    Object? itemsPerCollection = null,
-    Object? dragNdrop = null,
-    Object? theming = null,
-    Object? syncHours = null,
-    Object? ads = null,
-    Object? syncInterval = null,
-    Object? edit = null,
-    Object? activeTill = freezed,
-    Object? maxSyncDevices = null,
-    Object? customExclusionRules = null,
-    Object? pasteStackLimit = null,
-    Object? grants = null,
-    Object? tkn = freezed,
-    Object? managementUrl = freezed,
-  }) {
-    return _then(
-      _$SubscriptionImpl(
-        id: freezed == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        serverId: freezed == serverId
-            ? _value.serverId
-            : serverId // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        created: null == created
-            ? _value.created
-            : created // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        modified: null == modified
-            ? _value.modified
-            : modified // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        userId: null == userId
-            ? _value.userId
-            : userId // ignore: cast_nullable_to_non_nullable
-                  as String,
-        planName: null == planName
-            ? _value.planName
-            : planName // ignore: cast_nullable_to_non_nullable
-                  as String,
-        subId: null == subId
-            ? _value.subId
-            : subId // ignore: cast_nullable_to_non_nullable
-                  as String,
-        source: null == source
-            ? _value.source
-            : source // ignore: cast_nullable_to_non_nullable
-                  as String,
-        trialStart: freezed == trialStart
-            ? _value.trialStart
-            : trialStart // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-        trialEnd: freezed == trialEnd
-            ? _value.trialEnd
-            : trialEnd // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-        collections: null == collections
-            ? _value.collections
-            : collections // ignore: cast_nullable_to_non_nullable
-                  as int,
-        itemsPerCollection: null == itemsPerCollection
-            ? _value.itemsPerCollection
-            : itemsPerCollection // ignore: cast_nullable_to_non_nullable
-                  as int,
-        dragNdrop: null == dragNdrop
-            ? _value.dragNdrop
-            : dragNdrop // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        theming: null == theming
-            ? _value.theming
-            : theming // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        syncHours: null == syncHours
-            ? _value.syncHours
-            : syncHours // ignore: cast_nullable_to_non_nullable
-                  as int,
-        ads: null == ads
-            ? _value.ads
-            : ads // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        syncInterval: null == syncInterval
-            ? _value.syncInterval
-            : syncInterval // ignore: cast_nullable_to_non_nullable
-                  as int,
-        edit: null == edit
-            ? _value.edit
-            : edit // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        activeTill: freezed == activeTill
-            ? _value.activeTill
-            : activeTill // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-        maxSyncDevices: null == maxSyncDevices
-            ? _value.maxSyncDevices
-            : maxSyncDevices // ignore: cast_nullable_to_non_nullable
-                  as int,
-        customExclusionRules: null == customExclusionRules
-            ? _value.customExclusionRules
-            : customExclusionRules // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        pasteStackLimit: null == pasteStackLimit
-            ? _value.pasteStackLimit
-            : pasteStackLimit // ignore: cast_nullable_to_non_nullable
-                  as int,
-        grants: null == grants
-            ? _value.grants
-            : grants // ignore: cast_nullable_to_non_nullable
-                  as int,
-        tkn: freezed == tkn
-            ? _value.tkn
-            : tkn // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        managementUrl: freezed == managementUrl
-            ? _value.managementUrl
-            : managementUrl // ignore: cast_nullable_to_non_nullable
-                  as String?,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [Subscription].
+extension SubscriptionPatterns on Subscription {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Subscription value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Subscription() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Subscription value)  $default,){
+final _that = this;
+switch (_that) {
+case _Subscription():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Subscription value)?  $default,){
+final _that = this;
+switch (_that) {
+case _Subscription() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id, @JsonKey(name: "id", includeToJson: false)  int? serverId, @JsonKey(name: "created")@DateTimeConverter()  DateTime created, @JsonKey(name: "modified")@DateTimeConverter()  DateTime modified,  String userId,  String planName,  String subId,  String source, @DateTimeConverter()  DateTime? trialStart, @DateTimeConverter()  DateTime? trialEnd,  int collections,  int itemsPerCollection,  bool dragNdrop,  bool theming, @JsonKey(name: "syncHr")  int syncHours,  bool ads, @JsonKey(name: "syncInt")  int syncInterval,  bool edit, @DateTimeConverter()  DateTime? activeTill, @JsonKey(name: "devices")  int maxSyncDevices, @JsonKey(name: "cers")  bool customExclusionRules, @JsonKey(name: "ps_limit")  int pasteStackLimit,  int grants,  String? tkn, @JsonKey(includeFromJson: false, includeToJson: false)  String? managementUrl)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Subscription() when $default != null:
+return $default(_that.id,_that.serverId,_that.created,_that.modified,_that.userId,_that.planName,_that.subId,_that.source,_that.trialStart,_that.trialEnd,_that.collections,_that.itemsPerCollection,_that.dragNdrop,_that.theming,_that.syncHours,_that.ads,_that.syncInterval,_that.edit,_that.activeTill,_that.maxSyncDevices,_that.customExclusionRules,_that.pasteStackLimit,_that.grants,_that.tkn,_that.managementUrl);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id, @JsonKey(name: "id", includeToJson: false)  int? serverId, @JsonKey(name: "created")@DateTimeConverter()  DateTime created, @JsonKey(name: "modified")@DateTimeConverter()  DateTime modified,  String userId,  String planName,  String subId,  String source, @DateTimeConverter()  DateTime? trialStart, @DateTimeConverter()  DateTime? trialEnd,  int collections,  int itemsPerCollection,  bool dragNdrop,  bool theming, @JsonKey(name: "syncHr")  int syncHours,  bool ads, @JsonKey(name: "syncInt")  int syncInterval,  bool edit, @DateTimeConverter()  DateTime? activeTill, @JsonKey(name: "devices")  int maxSyncDevices, @JsonKey(name: "cers")  bool customExclusionRules, @JsonKey(name: "ps_limit")  int pasteStackLimit,  int grants,  String? tkn, @JsonKey(includeFromJson: false, includeToJson: false)  String? managementUrl)  $default,) {final _that = this;
+switch (_that) {
+case _Subscription():
+return $default(_that.id,_that.serverId,_that.created,_that.modified,_that.userId,_that.planName,_that.subId,_that.source,_that.trialStart,_that.trialEnd,_that.collections,_that.itemsPerCollection,_that.dragNdrop,_that.theming,_that.syncHours,_that.ads,_that.syncInterval,_that.edit,_that.activeTill,_that.maxSyncDevices,_that.customExclusionRules,_that.pasteStackLimit,_that.grants,_that.tkn,_that.managementUrl);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id, @JsonKey(name: "id", includeToJson: false)  int? serverId, @JsonKey(name: "created")@DateTimeConverter()  DateTime created, @JsonKey(name: "modified")@DateTimeConverter()  DateTime modified,  String userId,  String planName,  String subId,  String source, @DateTimeConverter()  DateTime? trialStart, @DateTimeConverter()  DateTime? trialEnd,  int collections,  int itemsPerCollection,  bool dragNdrop,  bool theming, @JsonKey(name: "syncHr")  int syncHours,  bool ads, @JsonKey(name: "syncInt")  int syncInterval,  bool edit, @DateTimeConverter()  DateTime? activeTill, @JsonKey(name: "devices")  int maxSyncDevices, @JsonKey(name: "cers")  bool customExclusionRules, @JsonKey(name: "ps_limit")  int pasteStackLimit,  int grants,  String? tkn, @JsonKey(includeFromJson: false, includeToJson: false)  String? managementUrl)?  $default,) {final _that = this;
+switch (_that) {
+case _Subscription() when $default != null:
+return $default(_that.id,_that.serverId,_that.created,_that.modified,_that.userId,_that.planName,_that.subId,_that.source,_that.trialStart,_that.trialEnd,_that.collections,_that.itemsPerCollection,_that.dragNdrop,_that.theming,_that.syncHours,_that.ads,_that.syncInterval,_that.edit,_that.activeTill,_that.maxSyncDevices,_that.customExclusionRules,_that.pasteStackLimit,_that.grants,_that.tkn,_that.managementUrl);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$SubscriptionImpl extends _Subscription {
-  _$SubscriptionImpl({
-    @JsonKey(includeToJson: false, includeFromJson: false) this.id,
-    @JsonKey(name: "id", includeToJson: false) this.serverId,
-    @JsonKey(name: "created") @DateTimeConverter() required this.created,
-    @JsonKey(name: "modified") @DateTimeConverter() required this.modified,
-    required this.userId,
-    required this.planName,
-    required this.subId,
-    required this.source,
-    @DateTimeConverter() this.trialStart,
-    @DateTimeConverter() this.trialEnd,
-    this.collections = defaultCollectionCount,
-    this.itemsPerCollection = defaultMaxItemPerCollection,
-    this.dragNdrop = false,
-    this.theming = false,
-    @JsonKey(name: "syncHr") this.syncHours = defaultSyncHourOffset,
-    this.ads = true,
-    @JsonKey(name: "syncInt") this.syncInterval = defaultBestEffortSyncInterval,
-    this.edit = false,
-    @DateTimeConverter() this.activeTill,
-    @JsonKey(name: "devices") this.maxSyncDevices = defaultNoOfSyncedDevices,
-    @JsonKey(name: "cers") this.customExclusionRules = false,
-    @JsonKey(name: "ps_limit") this.pasteStackLimit = defaultPasteStackLimit,
-    this.grants = 0,
-    this.tkn,
-    @JsonKey(includeFromJson: false, includeToJson: false) this.managementUrl,
-  }) : super._();
 
-  factory _$SubscriptionImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SubscriptionImplFromJson(json);
+class _Subscription extends Subscription {
+   _Subscription({@JsonKey(includeToJson: false, includeFromJson: false) this.id, @JsonKey(name: "id", includeToJson: false) this.serverId, @JsonKey(name: "created")@DateTimeConverter() required this.created, @JsonKey(name: "modified")@DateTimeConverter() required this.modified, required this.userId, required this.planName, required this.subId, required this.source, @DateTimeConverter() this.trialStart, @DateTimeConverter() this.trialEnd, this.collections = defaultCollectionCount, this.itemsPerCollection = defaultMaxItemPerCollection, this.dragNdrop = false, this.theming = false, @JsonKey(name: "syncHr") this.syncHours = defaultSyncHourOffset, this.ads = true, @JsonKey(name: "syncInt") this.syncInterval = defaultBestEffortSyncInterval, this.edit = false, @DateTimeConverter() this.activeTill, @JsonKey(name: "devices") this.maxSyncDevices = defaultNoOfSyncedDevices, @JsonKey(name: "cers") this.customExclusionRules = false, @JsonKey(name: "ps_limit") this.pasteStackLimit = defaultPasteStackLimit, this.grants = 0, this.tkn, @JsonKey(includeFromJson: false, includeToJson: false) this.managementUrl}): super._();
+  factory _Subscription.fromJson(Map<String, dynamic> json) => _$SubscriptionFromJson(json);
 
-  @override
-  @JsonKey(includeToJson: false, includeFromJson: false)
-  final int? id;
-  @override
-  @JsonKey(name: "id", includeToJson: false)
-  final int? serverId;
-  @override
-  @JsonKey(name: "created")
-  @DateTimeConverter()
-  final DateTime created;
-  @override
-  @JsonKey(name: "modified")
-  @DateTimeConverter()
-  final DateTime modified;
-  @override
-  final String userId;
-  @override
-  final String planName;
-  @override
-  final String subId;
-  @override
-  final String source;
-  @override
-  @DateTimeConverter()
-  final DateTime? trialStart;
-  @override
-  @DateTimeConverter()
-  final DateTime? trialEnd;
-  @override
-  @JsonKey()
-  final int collections;
-  @override
-  @JsonKey()
-  final int itemsPerCollection;
-  @override
-  @JsonKey()
-  final bool dragNdrop;
-  @override
-  @JsonKey()
-  final bool theming;
-  @override
-  @JsonKey(name: "syncHr")
-  final int syncHours;
-  @override
-  @JsonKey()
-  final bool ads;
-  @override
-  @JsonKey(name: "syncInt")
-  final int syncInterval;
-  @override
-  @JsonKey()
-  final bool edit;
-  @override
-  @DateTimeConverter()
-  final DateTime? activeTill;
-  @override
-  @JsonKey(name: "devices")
-  final int maxSyncDevices;
-  @override
-  @JsonKey(name: "cers")
-  final bool customExclusionRules;
-  @override
-  @JsonKey(name: "ps_limit")
-  final int pasteStackLimit;
-  @override
-  @JsonKey()
-  final int grants;
-  @override
-  final String? tkn;
-  // local state
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  final String? managementUrl;
+@override@JsonKey(includeToJson: false, includeFromJson: false) final  int? id;
+@override@JsonKey(name: "id", includeToJson: false) final  int? serverId;
+@override@JsonKey(name: "created")@DateTimeConverter() final  DateTime created;
+@override@JsonKey(name: "modified")@DateTimeConverter() final  DateTime modified;
+@override final  String userId;
+@override final  String planName;
+@override final  String subId;
+@override final  String source;
+@override@DateTimeConverter() final  DateTime? trialStart;
+@override@DateTimeConverter() final  DateTime? trialEnd;
+@override@JsonKey() final  int collections;
+@override@JsonKey() final  int itemsPerCollection;
+@override@JsonKey() final  bool dragNdrop;
+@override@JsonKey() final  bool theming;
+@override@JsonKey(name: "syncHr") final  int syncHours;
+@override@JsonKey() final  bool ads;
+@override@JsonKey(name: "syncInt") final  int syncInterval;
+@override@JsonKey() final  bool edit;
+@override@DateTimeConverter() final  DateTime? activeTill;
+@override@JsonKey(name: "devices") final  int maxSyncDevices;
+@override@JsonKey(name: "cers") final  bool customExclusionRules;
+@override@JsonKey(name: "ps_limit") final  int pasteStackLimit;
+@override@JsonKey() final  int grants;
+@override final  String? tkn;
+// local state
+@override@JsonKey(includeFromJson: false, includeToJson: false) final  String? managementUrl;
 
-  @override
-  String toString() {
-    return 'Subscription(id: $id, serverId: $serverId, created: $created, modified: $modified, userId: $userId, planName: $planName, subId: $subId, source: $source, trialStart: $trialStart, trialEnd: $trialEnd, collections: $collections, itemsPerCollection: $itemsPerCollection, dragNdrop: $dragNdrop, theming: $theming, syncHours: $syncHours, ads: $ads, syncInterval: $syncInterval, edit: $edit, activeTill: $activeTill, maxSyncDevices: $maxSyncDevices, customExclusionRules: $customExclusionRules, pasteStackLimit: $pasteStackLimit, grants: $grants, tkn: $tkn, managementUrl: $managementUrl)';
-  }
+/// Create a copy of Subscription
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SubscriptionCopyWith<_Subscription> get copyWith => __$SubscriptionCopyWithImpl<_Subscription>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SubscriptionImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.serverId, serverId) ||
-                other.serverId == serverId) &&
-            (identical(other.created, created) || other.created == created) &&
-            (identical(other.modified, modified) ||
-                other.modified == modified) &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.planName, planName) ||
-                other.planName == planName) &&
-            (identical(other.subId, subId) || other.subId == subId) &&
-            (identical(other.source, source) || other.source == source) &&
-            (identical(other.trialStart, trialStart) ||
-                other.trialStart == trialStart) &&
-            (identical(other.trialEnd, trialEnd) ||
-                other.trialEnd == trialEnd) &&
-            (identical(other.collections, collections) ||
-                other.collections == collections) &&
-            (identical(other.itemsPerCollection, itemsPerCollection) ||
-                other.itemsPerCollection == itemsPerCollection) &&
-            (identical(other.dragNdrop, dragNdrop) ||
-                other.dragNdrop == dragNdrop) &&
-            (identical(other.theming, theming) || other.theming == theming) &&
-            (identical(other.syncHours, syncHours) ||
-                other.syncHours == syncHours) &&
-            (identical(other.ads, ads) || other.ads == ads) &&
-            (identical(other.syncInterval, syncInterval) ||
-                other.syncInterval == syncInterval) &&
-            (identical(other.edit, edit) || other.edit == edit) &&
-            (identical(other.activeTill, activeTill) ||
-                other.activeTill == activeTill) &&
-            (identical(other.maxSyncDevices, maxSyncDevices) ||
-                other.maxSyncDevices == maxSyncDevices) &&
-            (identical(other.customExclusionRules, customExclusionRules) ||
-                other.customExclusionRules == customExclusionRules) &&
-            (identical(other.pasteStackLimit, pasteStackLimit) ||
-                other.pasteStackLimit == pasteStackLimit) &&
-            (identical(other.grants, grants) || other.grants == grants) &&
-            (identical(other.tkn, tkn) || other.tkn == tkn) &&
-            (identical(other.managementUrl, managementUrl) ||
-                other.managementUrl == managementUrl));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hashAll([
-    runtimeType,
-    id,
-    serverId,
-    created,
-    modified,
-    userId,
-    planName,
-    subId,
-    source,
-    trialStart,
-    trialEnd,
-    collections,
-    itemsPerCollection,
-    dragNdrop,
-    theming,
-    syncHours,
-    ads,
-    syncInterval,
-    edit,
-    activeTill,
-    maxSyncDevices,
-    customExclusionRules,
-    pasteStackLimit,
-    grants,
-    tkn,
-    managementUrl,
-  ]);
-
-  /// Create a copy of Subscription
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SubscriptionImplCopyWith<_$SubscriptionImpl> get copyWith =>
-      __$$SubscriptionImplCopyWithImpl<_$SubscriptionImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SubscriptionImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$SubscriptionToJson(this, );
 }
 
-abstract class _Subscription extends Subscription {
-  factory _Subscription({
-    @JsonKey(includeToJson: false, includeFromJson: false) final int? id,
-    @JsonKey(name: "id", includeToJson: false) final int? serverId,
-    @JsonKey(name: "created")
-    @DateTimeConverter()
-    required final DateTime created,
-    @JsonKey(name: "modified")
-    @DateTimeConverter()
-    required final DateTime modified,
-    required final String userId,
-    required final String planName,
-    required final String subId,
-    required final String source,
-    @DateTimeConverter() final DateTime? trialStart,
-    @DateTimeConverter() final DateTime? trialEnd,
-    final int collections,
-    final int itemsPerCollection,
-    final bool dragNdrop,
-    final bool theming,
-    @JsonKey(name: "syncHr") final int syncHours,
-    final bool ads,
-    @JsonKey(name: "syncInt") final int syncInterval,
-    final bool edit,
-    @DateTimeConverter() final DateTime? activeTill,
-    @JsonKey(name: "devices") final int maxSyncDevices,
-    @JsonKey(name: "cers") final bool customExclusionRules,
-    @JsonKey(name: "ps_limit") final int pasteStackLimit,
-    final int grants,
-    final String? tkn,
-    @JsonKey(includeFromJson: false, includeToJson: false)
-    final String? managementUrl,
-  }) = _$SubscriptionImpl;
-  _Subscription._() : super._();
-
-  factory _Subscription.fromJson(Map<String, dynamic> json) =
-      _$SubscriptionImpl.fromJson;
-
-  @override
-  @JsonKey(includeToJson: false, includeFromJson: false)
-  int? get id;
-  @override
-  @JsonKey(name: "id", includeToJson: false)
-  int? get serverId;
-  @override
-  @JsonKey(name: "created")
-  @DateTimeConverter()
-  DateTime get created;
-  @override
-  @JsonKey(name: "modified")
-  @DateTimeConverter()
-  DateTime get modified;
-  @override
-  String get userId;
-  @override
-  String get planName;
-  @override
-  String get subId;
-  @override
-  String get source;
-  @override
-  @DateTimeConverter()
-  DateTime? get trialStart;
-  @override
-  @DateTimeConverter()
-  DateTime? get trialEnd;
-  @override
-  int get collections;
-  @override
-  int get itemsPerCollection;
-  @override
-  bool get dragNdrop;
-  @override
-  bool get theming;
-  @override
-  @JsonKey(name: "syncHr")
-  int get syncHours;
-  @override
-  bool get ads;
-  @override
-  @JsonKey(name: "syncInt")
-  int get syncInterval;
-  @override
-  bool get edit;
-  @override
-  @DateTimeConverter()
-  DateTime? get activeTill;
-  @override
-  @JsonKey(name: "devices")
-  int get maxSyncDevices;
-  @override
-  @JsonKey(name: "cers")
-  bool get customExclusionRules;
-  @override
-  @JsonKey(name: "ps_limit")
-  int get pasteStackLimit;
-  @override
-  int get grants;
-  @override
-  String? get tkn; // local state
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  String? get managementUrl;
-
-  /// Create a copy of Subscription
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SubscriptionImplCopyWith<_$SubscriptionImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Subscription&&(identical(other.id, id) || other.id == id)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.created, created) || other.created == created)&&(identical(other.modified, modified) || other.modified == modified)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.planName, planName) || other.planName == planName)&&(identical(other.subId, subId) || other.subId == subId)&&(identical(other.source, source) || other.source == source)&&(identical(other.trialStart, trialStart) || other.trialStart == trialStart)&&(identical(other.trialEnd, trialEnd) || other.trialEnd == trialEnd)&&(identical(other.collections, collections) || other.collections == collections)&&(identical(other.itemsPerCollection, itemsPerCollection) || other.itemsPerCollection == itemsPerCollection)&&(identical(other.dragNdrop, dragNdrop) || other.dragNdrop == dragNdrop)&&(identical(other.theming, theming) || other.theming == theming)&&(identical(other.syncHours, syncHours) || other.syncHours == syncHours)&&(identical(other.ads, ads) || other.ads == ads)&&(identical(other.syncInterval, syncInterval) || other.syncInterval == syncInterval)&&(identical(other.edit, edit) || other.edit == edit)&&(identical(other.activeTill, activeTill) || other.activeTill == activeTill)&&(identical(other.maxSyncDevices, maxSyncDevices) || other.maxSyncDevices == maxSyncDevices)&&(identical(other.customExclusionRules, customExclusionRules) || other.customExclusionRules == customExclusionRules)&&(identical(other.pasteStackLimit, pasteStackLimit) || other.pasteStackLimit == pasteStackLimit)&&(identical(other.grants, grants) || other.grants == grants)&&(identical(other.tkn, tkn) || other.tkn == tkn)&&(identical(other.managementUrl, managementUrl) || other.managementUrl == managementUrl));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hashAll([runtimeType,id,serverId,created,modified,userId,planName,subId,source,trialStart,trialEnd,collections,itemsPerCollection,dragNdrop,theming,syncHours,ads,syncInterval,edit,activeTill,maxSyncDevices,customExclusionRules,pasteStackLimit,grants,tkn,managementUrl]);
+
+@override
+String toString() {
+  return 'Subscription(id: $id, serverId: $serverId, created: $created, modified: $modified, userId: $userId, planName: $planName, subId: $subId, source: $source, trialStart: $trialStart, trialEnd: $trialEnd, collections: $collections, itemsPerCollection: $itemsPerCollection, dragNdrop: $dragNdrop, theming: $theming, syncHours: $syncHours, ads: $ads, syncInterval: $syncInterval, edit: $edit, activeTill: $activeTill, maxSyncDevices: $maxSyncDevices, customExclusionRules: $customExclusionRules, pasteStackLimit: $pasteStackLimit, grants: $grants, tkn: $tkn, managementUrl: $managementUrl)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SubscriptionCopyWith<$Res> implements $SubscriptionCopyWith<$Res> {
+  factory _$SubscriptionCopyWith(_Subscription value, $Res Function(_Subscription) _then) = __$SubscriptionCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(includeToJson: false, includeFromJson: false) int? id,@JsonKey(name: "id", includeToJson: false) int? serverId,@JsonKey(name: "created")@DateTimeConverter() DateTime created,@JsonKey(name: "modified")@DateTimeConverter() DateTime modified, String userId, String planName, String subId, String source,@DateTimeConverter() DateTime? trialStart,@DateTimeConverter() DateTime? trialEnd, int collections, int itemsPerCollection, bool dragNdrop, bool theming,@JsonKey(name: "syncHr") int syncHours, bool ads,@JsonKey(name: "syncInt") int syncInterval, bool edit,@DateTimeConverter() DateTime? activeTill,@JsonKey(name: "devices") int maxSyncDevices,@JsonKey(name: "cers") bool customExclusionRules,@JsonKey(name: "ps_limit") int pasteStackLimit, int grants, String? tkn,@JsonKey(includeFromJson: false, includeToJson: false) String? managementUrl
+});
+
+
+
+
+}
+/// @nodoc
+class __$SubscriptionCopyWithImpl<$Res>
+    implements _$SubscriptionCopyWith<$Res> {
+  __$SubscriptionCopyWithImpl(this._self, this._then);
+
+  final _Subscription _self;
+  final $Res Function(_Subscription) _then;
+
+/// Create a copy of Subscription
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? serverId = freezed,Object? created = null,Object? modified = null,Object? userId = null,Object? planName = null,Object? subId = null,Object? source = null,Object? trialStart = freezed,Object? trialEnd = freezed,Object? collections = null,Object? itemsPerCollection = null,Object? dragNdrop = null,Object? theming = null,Object? syncHours = null,Object? ads = null,Object? syncInterval = null,Object? edit = null,Object? activeTill = freezed,Object? maxSyncDevices = null,Object? customExclusionRules = null,Object? pasteStackLimit = null,Object? grants = null,Object? tkn = freezed,Object? managementUrl = freezed,}) {
+  return _then(_Subscription(
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,serverId: freezed == serverId ? _self.serverId : serverId // ignore: cast_nullable_to_non_nullable
+as int?,created: null == created ? _self.created : created // ignore: cast_nullable_to_non_nullable
+as DateTime,modified: null == modified ? _self.modified : modified // ignore: cast_nullable_to_non_nullable
+as DateTime,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,planName: null == planName ? _self.planName : planName // ignore: cast_nullable_to_non_nullable
+as String,subId: null == subId ? _self.subId : subId // ignore: cast_nullable_to_non_nullable
+as String,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as String,trialStart: freezed == trialStart ? _self.trialStart : trialStart // ignore: cast_nullable_to_non_nullable
+as DateTime?,trialEnd: freezed == trialEnd ? _self.trialEnd : trialEnd // ignore: cast_nullable_to_non_nullable
+as DateTime?,collections: null == collections ? _self.collections : collections // ignore: cast_nullable_to_non_nullable
+as int,itemsPerCollection: null == itemsPerCollection ? _self.itemsPerCollection : itemsPerCollection // ignore: cast_nullable_to_non_nullable
+as int,dragNdrop: null == dragNdrop ? _self.dragNdrop : dragNdrop // ignore: cast_nullable_to_non_nullable
+as bool,theming: null == theming ? _self.theming : theming // ignore: cast_nullable_to_non_nullable
+as bool,syncHours: null == syncHours ? _self.syncHours : syncHours // ignore: cast_nullable_to_non_nullable
+as int,ads: null == ads ? _self.ads : ads // ignore: cast_nullable_to_non_nullable
+as bool,syncInterval: null == syncInterval ? _self.syncInterval : syncInterval // ignore: cast_nullable_to_non_nullable
+as int,edit: null == edit ? _self.edit : edit // ignore: cast_nullable_to_non_nullable
+as bool,activeTill: freezed == activeTill ? _self.activeTill : activeTill // ignore: cast_nullable_to_non_nullable
+as DateTime?,maxSyncDevices: null == maxSyncDevices ? _self.maxSyncDevices : maxSyncDevices // ignore: cast_nullable_to_non_nullable
+as int,customExclusionRules: null == customExclusionRules ? _self.customExclusionRules : customExclusionRules // ignore: cast_nullable_to_non_nullable
+as bool,pasteStackLimit: null == pasteStackLimit ? _self.pasteStackLimit : pasteStackLimit // ignore: cast_nullable_to_non_nullable
+as int,grants: null == grants ? _self.grants : grants // ignore: cast_nullable_to_non_nullable
+as int,tkn: freezed == tkn ? _self.tkn : tkn // ignore: cast_nullable_to_non_nullable
+as String?,managementUrl: freezed == managementUrl ? _self.managementUrl : managementUrl // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+// dart format on

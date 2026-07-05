@@ -6,8 +6,8 @@ part of 'clipboard_item.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ClipboardItemImpl _$$ClipboardItemImplFromJson(Map<String, dynamic> json) =>
-    _$ClipboardItemImpl(
+_ClipboardItem _$ClipboardItemFromJson(Map<String, dynamic> json) =>
+    _ClipboardItem(
       serverId: (json['id'] as num?)?.toInt(),
       created: const DateTimeConverter().fromJson(json['created'] as String),
       modified: const DateTimeConverter().fromJson(json['modified'] as String),
@@ -50,7 +50,7 @@ _$ClipboardItemImpl _$$ClipboardItemImplFromJson(Map<String, dynamic> json) =>
       originId: json['origin_id'] as String?,
     );
 
-Map<String, dynamic> _$$ClipboardItemImplToJson(_$ClipboardItemImpl instance) =>
+Map<String, dynamic> _$ClipboardItemToJson(_ClipboardItem instance) =>
     <String, dynamic>{
       'created': const DateTimeConverter().toJson(instance.created),
       'modified': const DateTimeConverter().toJson(instance.modified),

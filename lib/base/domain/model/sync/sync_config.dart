@@ -4,7 +4,7 @@ part 'sync_config.freezed.dart';
 
 /// Centralized configuration parameters for the generic sync engine.
 @freezed
-class SyncConfig with _$SyncConfig {
+abstract class SyncConfig with _$SyncConfig {
   const factory SyncConfig({
     /// Normal polling interval.
     @Default(45) int pollingIntervalSeconds,

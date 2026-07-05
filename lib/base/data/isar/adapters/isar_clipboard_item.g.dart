@@ -90,80 +90,95 @@ const IsarClipboardItemSchema = CollectionSchema(
       name: r'lastSynced',
       type: IsarType.dateTime,
     ),
-    r'localOnly': PropertySchema(
+    r'linkPreviewDescription': PropertySchema(
       id: 17,
+      name: r'linkPreviewDescription',
+      type: IsarType.string,
+    ),
+    r'linkPreviewImageUrl': PropertySchema(
+      id: 18,
+      name: r'linkPreviewImageUrl',
+      type: IsarType.string,
+    ),
+    r'linkPreviewTitle': PropertySchema(
+      id: 19,
+      name: r'linkPreviewTitle',
+      type: IsarType.string,
+    ),
+    r'localOnly': PropertySchema(
+      id: 20,
       name: r'localOnly',
       type: IsarType.bool,
     ),
     r'localPath': PropertySchema(
-      id: 18,
+      id: 21,
       name: r'localPath',
       type: IsarType.string,
     ),
-    r'locked': PropertySchema(id: 19, name: r'locked', type: IsarType.bool),
+    r'locked': PropertySchema(id: 22, name: r'locked', type: IsarType.bool),
     r'modified': PropertySchema(
-      id: 20,
+      id: 23,
       name: r'modified',
       type: IsarType.dateTime,
     ),
     r'originId': PropertySchema(
-      id: 21,
+      id: 24,
       name: r'originId',
       type: IsarType.string,
     ),
     r'os': PropertySchema(
-      id: 22,
+      id: 25,
       name: r'os',
       type: IsarType.string,
       enumMap: _IsarClipboardItemosEnumValueMap,
     ),
     r'richData': PropertySchema(
-      id: 23,
+      id: 26,
       name: r'richData',
       type: IsarType.string,
     ),
     r'searchTokens': PropertySchema(
-      id: 24,
+      id: 27,
       name: r'searchTokens',
       type: IsarType.stringList,
     ),
     r'serverCollectionId': PropertySchema(
-      id: 25,
+      id: 28,
       name: r'serverCollectionId',
       type: IsarType.long,
     ),
-    r'serverId': PropertySchema(id: 26, name: r'serverId', type: IsarType.long),
+    r'serverId': PropertySchema(id: 29, name: r'serverId', type: IsarType.long),
     r'sourceApp': PropertySchema(
-      id: 27,
+      id: 30,
       name: r'sourceApp',
       type: IsarType.string,
     ),
     r'sourceId': PropertySchema(
-      id: 28,
+      id: 31,
       name: r'sourceId',
       type: IsarType.string,
     ),
     r'sourceUrl': PropertySchema(
-      id: 29,
+      id: 32,
       name: r'sourceUrl',
       type: IsarType.string,
     ),
-    r'text': PropertySchema(id: 30, name: r'text', type: IsarType.string),
+    r'text': PropertySchema(id: 33, name: r'text', type: IsarType.string),
     r'textCategory': PropertySchema(
-      id: 31,
+      id: 34,
       name: r'textCategory',
       type: IsarType.string,
       enumMap: _IsarClipboardItemtextCategoryEnumValueMap,
     ),
-    r'title': PropertySchema(id: 32, name: r'title', type: IsarType.string),
+    r'title': PropertySchema(id: 35, name: r'title', type: IsarType.string),
     r'type': PropertySchema(
-      id: 33,
+      id: 36,
       name: r'type',
       type: IsarType.string,
       enumMap: _IsarClipboardItemtypeEnumValueMap,
     ),
-    r'url': PropertySchema(id: 34, name: r'url', type: IsarType.string),
-    r'userId': PropertySchema(id: 35, name: r'userId', type: IsarType.string),
+    r'url': PropertySchema(id: 37, name: r'url', type: IsarType.string),
+    r'userId': PropertySchema(id: 38, name: r'userId', type: IsarType.string),
   },
 
   estimateSize: _isarClipboardItemEstimateSize,
@@ -386,6 +401,24 @@ int _isarClipboardItemEstimateSize(
     }
   }
   {
+    final value = object.linkPreviewDescription;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.linkPreviewImageUrl;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.linkPreviewTitle;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
     final value = object.localPath;
     if (value != null) {
       bytesCount += 3 + value.length * 3;
@@ -481,25 +514,28 @@ void _isarClipboardItemSerialize(
   writer.writeString(offsets[14], object.iv);
   writer.writeDateTime(offsets[15], object.lastCopied);
   writer.writeDateTime(offsets[16], object.lastSynced);
-  writer.writeBool(offsets[17], object.localOnly);
-  writer.writeString(offsets[18], object.localPath);
-  writer.writeBool(offsets[19], object.locked);
-  writer.writeDateTime(offsets[20], object.modified);
-  writer.writeString(offsets[21], object.originId);
-  writer.writeString(offsets[22], object.os.name);
-  writer.writeString(offsets[23], object.richData);
-  writer.writeStringList(offsets[24], object.searchTokens);
-  writer.writeLong(offsets[25], object.serverCollectionId);
-  writer.writeLong(offsets[26], object.serverId);
-  writer.writeString(offsets[27], object.sourceApp);
-  writer.writeString(offsets[28], object.sourceId);
-  writer.writeString(offsets[29], object.sourceUrl);
-  writer.writeString(offsets[30], object.text);
-  writer.writeString(offsets[31], object.textCategory?.name);
-  writer.writeString(offsets[32], object.title);
-  writer.writeString(offsets[33], object.type.name);
-  writer.writeString(offsets[34], object.url);
-  writer.writeString(offsets[35], object.userId);
+  writer.writeString(offsets[17], object.linkPreviewDescription);
+  writer.writeString(offsets[18], object.linkPreviewImageUrl);
+  writer.writeString(offsets[19], object.linkPreviewTitle);
+  writer.writeBool(offsets[20], object.localOnly);
+  writer.writeString(offsets[21], object.localPath);
+  writer.writeBool(offsets[22], object.locked);
+  writer.writeDateTime(offsets[23], object.modified);
+  writer.writeString(offsets[24], object.originId);
+  writer.writeString(offsets[25], object.os.name);
+  writer.writeString(offsets[26], object.richData);
+  writer.writeStringList(offsets[27], object.searchTokens);
+  writer.writeLong(offsets[28], object.serverCollectionId);
+  writer.writeLong(offsets[29], object.serverId);
+  writer.writeString(offsets[30], object.sourceApp);
+  writer.writeString(offsets[31], object.sourceId);
+  writer.writeString(offsets[32], object.sourceUrl);
+  writer.writeString(offsets[33], object.text);
+  writer.writeString(offsets[34], object.textCategory?.name);
+  writer.writeString(offsets[35], object.title);
+  writer.writeString(offsets[36], object.type.name);
+  writer.writeString(offsets[37], object.url);
+  writer.writeString(offsets[38], object.userId);
 }
 
 IsarClipboardItem _isarClipboardItemDeserialize(
@@ -527,33 +563,36 @@ IsarClipboardItem _isarClipboardItemDeserialize(
   object.iv = reader.readStringOrNull(offsets[14]);
   object.lastCopied = reader.readDateTimeOrNull(offsets[15]);
   object.lastSynced = reader.readDateTimeOrNull(offsets[16]);
-  object.localOnly = reader.readBool(offsets[17]);
-  object.localPath = reader.readStringOrNull(offsets[18]);
-  object.locked = reader.readBool(offsets[19]);
-  object.modified = reader.readDateTime(offsets[20]);
-  object.originId = reader.readStringOrNull(offsets[21]);
+  object.linkPreviewDescription = reader.readStringOrNull(offsets[17]);
+  object.linkPreviewImageUrl = reader.readStringOrNull(offsets[18]);
+  object.linkPreviewTitle = reader.readStringOrNull(offsets[19]);
+  object.localOnly = reader.readBool(offsets[20]);
+  object.localPath = reader.readStringOrNull(offsets[21]);
+  object.locked = reader.readBool(offsets[22]);
+  object.modified = reader.readDateTime(offsets[23]);
+  object.originId = reader.readStringOrNull(offsets[24]);
   object.os =
-      _IsarClipboardItemosValueEnumMap[reader.readStringOrNull(offsets[22])] ??
+      _IsarClipboardItemosValueEnumMap[reader.readStringOrNull(offsets[25])] ??
       PlatformOS.android;
-  object.richData = reader.readStringOrNull(offsets[23]);
-  object.serverCollectionId = reader.readLongOrNull(offsets[25]);
-  object.serverId = reader.readLongOrNull(offsets[26]);
-  object.sourceApp = reader.readStringOrNull(offsets[27]);
-  object.sourceId = reader.readStringOrNull(offsets[28]);
-  object.sourceUrl = reader.readStringOrNull(offsets[29]);
-  object.text = reader.readStringOrNull(offsets[30]);
+  object.richData = reader.readStringOrNull(offsets[26]);
+  object.serverCollectionId = reader.readLongOrNull(offsets[28]);
+  object.serverId = reader.readLongOrNull(offsets[29]);
+  object.sourceApp = reader.readStringOrNull(offsets[30]);
+  object.sourceId = reader.readStringOrNull(offsets[31]);
+  object.sourceUrl = reader.readStringOrNull(offsets[32]);
+  object.text = reader.readStringOrNull(offsets[33]);
   object.textCategory =
       _IsarClipboardItemtextCategoryValueEnumMap[reader.readStringOrNull(
-        offsets[31],
+        offsets[34],
       )];
-  object.title = reader.readStringOrNull(offsets[32]);
+  object.title = reader.readStringOrNull(offsets[35]);
   object.type =
       _IsarClipboardItemtypeValueEnumMap[reader.readStringOrNull(
-        offsets[33],
+        offsets[36],
       )] ??
       ClipItemType.text;
-  object.url = reader.readStringOrNull(offsets[34]);
-  object.userId = reader.readString(offsets[35]);
+  object.url = reader.readStringOrNull(offsets[37]);
+  object.userId = reader.readString(offsets[38]);
   return object;
 }
 
@@ -599,52 +638,58 @@ P _isarClipboardItemDeserializeProp<P>(
     case 16:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 17:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 18:
       return (reader.readStringOrNull(offset)) as P;
     case 19:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 20:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 21:
       return (reader.readStringOrNull(offset)) as P;
     case 22:
+      return (reader.readBool(offset)) as P;
+    case 23:
+      return (reader.readDateTime(offset)) as P;
+    case 24:
+      return (reader.readStringOrNull(offset)) as P;
+    case 25:
       return (_IsarClipboardItemosValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               PlatformOS.android)
           as P;
-    case 23:
-      return (reader.readStringOrNull(offset)) as P;
-    case 24:
-      return (reader.readStringList(offset) ?? []) as P;
-    case 25:
-      return (reader.readLongOrNull(offset)) as P;
     case 26:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 27:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringList(offset) ?? []) as P;
     case 28:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 29:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 30:
       return (reader.readStringOrNull(offset)) as P;
     case 31:
-      return (_IsarClipboardItemtextCategoryValueEnumMap[reader
-              .readStringOrNull(offset)])
-          as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 32:
       return (reader.readStringOrNull(offset)) as P;
     case 33:
+      return (reader.readStringOrNull(offset)) as P;
+    case 34:
+      return (_IsarClipboardItemtextCategoryValueEnumMap[reader
+              .readStringOrNull(offset)])
+          as P;
+    case 35:
+      return (reader.readStringOrNull(offset)) as P;
+    case 36:
       return (_IsarClipboardItemtypeValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               ClipItemType.text)
           as P;
-    case 34:
+    case 37:
       return (reader.readStringOrNull(offset)) as P;
-    case 35:
+    case 38:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -3874,6 +3919,489 @@ extension IsarClipboardItemQueryFilter
   }
 
   QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewDescriptionIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'linkPreviewDescription'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewDescriptionIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'linkPreviewDescription'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewDescriptionEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'linkPreviewDescription',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewDescriptionGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'linkPreviewDescription',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewDescriptionLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'linkPreviewDescription',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewDescriptionBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'linkPreviewDescription',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewDescriptionStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'linkPreviewDescription',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewDescriptionEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'linkPreviewDescription',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewDescriptionContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'linkPreviewDescription',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewDescriptionMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'linkPreviewDescription',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewDescriptionIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'linkPreviewDescription', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewDescriptionIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          property: r'linkPreviewDescription',
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewImageUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'linkPreviewImageUrl'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewImageUrlIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'linkPreviewImageUrl'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewImageUrlEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'linkPreviewImageUrl',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewImageUrlGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'linkPreviewImageUrl',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewImageUrlLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'linkPreviewImageUrl',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewImageUrlBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'linkPreviewImageUrl',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewImageUrlStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'linkPreviewImageUrl',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewImageUrlEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'linkPreviewImageUrl',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewImageUrlContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'linkPreviewImageUrl',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewImageUrlMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'linkPreviewImageUrl',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewImageUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'linkPreviewImageUrl', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewImageUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          property: r'linkPreviewImageUrl',
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewTitleIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'linkPreviewTitle'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewTitleIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'linkPreviewTitle'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewTitleEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'linkPreviewTitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewTitleGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'linkPreviewTitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewTitleLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'linkPreviewTitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewTitleBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'linkPreviewTitle',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewTitleStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'linkPreviewTitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewTitleEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'linkPreviewTitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewTitleContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'linkPreviewTitle',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewTitleMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'linkPreviewTitle',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewTitleIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'linkPreviewTitle', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
+  linkPreviewTitleIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'linkPreviewTitle', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterFilterCondition>
   localOnlyEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -6546,6 +7074,48 @@ extension IsarClipboardItemQuerySortBy
   }
 
   QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  sortByLinkPreviewDescription() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linkPreviewDescription', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  sortByLinkPreviewDescriptionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linkPreviewDescription', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  sortByLinkPreviewImageUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linkPreviewImageUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  sortByLinkPreviewImageUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linkPreviewImageUrl', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  sortByLinkPreviewTitle() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linkPreviewTitle', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  sortByLinkPreviewTitleDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linkPreviewTitle', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
   sortByLocalOnly() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'localOnly', Sort.asc);
@@ -7050,6 +7620,48 @@ extension IsarClipboardItemQuerySortThenBy
   }
 
   QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  thenByLinkPreviewDescription() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linkPreviewDescription', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  thenByLinkPreviewDescriptionDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linkPreviewDescription', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  thenByLinkPreviewImageUrl() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linkPreviewImageUrl', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  thenByLinkPreviewImageUrlDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linkPreviewImageUrl', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  thenByLinkPreviewTitle() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linkPreviewTitle', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
+  thenByLinkPreviewTitleDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'linkPreviewTitle', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QAfterSortBy>
   thenByLocalOnly() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'localOnly', Sort.asc);
@@ -7426,6 +8038,36 @@ extension IsarClipboardItemQueryWhereDistinct
   }
 
   QueryBuilder<IsarClipboardItem, IsarClipboardItem, QDistinct>
+  distinctByLinkPreviewDescription({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(
+        r'linkPreviewDescription',
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QDistinct>
+  distinctByLinkPreviewImageUrl({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(
+        r'linkPreviewImageUrl',
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QDistinct>
+  distinctByLinkPreviewTitle({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(
+        r'linkPreviewTitle',
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, IsarClipboardItem, QDistinct>
   distinctByLocalOnly() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'localOnly');
@@ -7682,6 +8324,27 @@ extension IsarClipboardItemQueryProperty
   lastSyncedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastSynced');
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, String?, QQueryOperations>
+  linkPreviewDescriptionProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'linkPreviewDescription');
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, String?, QQueryOperations>
+  linkPreviewImageUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'linkPreviewImageUrl');
+    });
+  }
+
+  QueryBuilder<IsarClipboardItem, String?, QQueryOperations>
+  linkPreviewTitleProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'linkPreviewTitle');
     });
   }
 

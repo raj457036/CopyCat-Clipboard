@@ -21,7 +21,7 @@ enum SyncSpeed { realtime, balanced }
 enum AppView { topDocked, bottomDocked, leftDocked, rightDocked, windowed }
 
 @freezed
-class AppConfig with _$AppConfig, Identifiable {
+abstract class AppConfig with _$AppConfig, Identifiable {
   AppConfig._();
 
   factory AppConfig({

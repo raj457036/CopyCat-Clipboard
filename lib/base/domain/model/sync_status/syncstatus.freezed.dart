@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,274 +9,282 @@ part of 'syncstatus.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
 /// @nodoc
 mixin _$SyncStatus {
-  @JsonKey(includeToJson: false, includeFromJson: false)
-  int? get id => throw _privateConstructorUsedError;
-  DateTime? get lastSyncPoint =>
-      throw _privateConstructorUsedError; // . . . ->* . . |<- it stores the last sync end point in time.
-  DateTime? get lastSyncStartPoint =>
-      throw _privateConstructorUsedError; // . . . ->| . . *<- it stores the last sync start point in time.
-  int? get lastKnownSyncCount => throw _privateConstructorUsedError;
-  int? get lastKnownTotalCount => throw _privateConstructorUsedError;
-  bool get restorationPending => throw _privateConstructorUsedError;
 
-  /// Create a copy of SyncStatus
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SyncStatusCopyWith<SyncStatus> get copyWith =>
-      throw _privateConstructorUsedError;
+@JsonKey(includeToJson: false, includeFromJson: false) int? get id; DateTime? get lastSyncPoint;// . . . ->* . . |<- it stores the last sync end point in time.
+ DateTime? get lastSyncStartPoint;// . . . ->| . . *<- it stores the last sync start point in time.
+ int? get lastKnownSyncCount; int? get lastKnownTotalCount; bool get restorationPending;
+/// Create a copy of SyncStatus
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SyncStatusCopyWith<SyncStatus> get copyWith => _$SyncStatusCopyWithImpl<SyncStatus>(this as SyncStatus, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SyncStatus&&(identical(other.id, id) || other.id == id)&&(identical(other.lastSyncPoint, lastSyncPoint) || other.lastSyncPoint == lastSyncPoint)&&(identical(other.lastSyncStartPoint, lastSyncStartPoint) || other.lastSyncStartPoint == lastSyncStartPoint)&&(identical(other.lastKnownSyncCount, lastKnownSyncCount) || other.lastKnownSyncCount == lastKnownSyncCount)&&(identical(other.lastKnownTotalCount, lastKnownTotalCount) || other.lastKnownTotalCount == lastKnownTotalCount)&&(identical(other.restorationPending, restorationPending) || other.restorationPending == restorationPending));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,lastSyncPoint,lastSyncStartPoint,lastKnownSyncCount,lastKnownTotalCount,restorationPending);
+
+@override
+String toString() {
+  return 'SyncStatus(id: $id, lastSyncPoint: $lastSyncPoint, lastSyncStartPoint: $lastSyncStartPoint, lastKnownSyncCount: $lastKnownSyncCount, lastKnownTotalCount: $lastKnownTotalCount, restorationPending: $restorationPending)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $SyncStatusCopyWith<$Res> {
-  factory $SyncStatusCopyWith(
-    SyncStatus value,
-    $Res Function(SyncStatus) then,
-  ) = _$SyncStatusCopyWithImpl<$Res, SyncStatus>;
-  @useResult
-  $Res call({
-    @JsonKey(includeToJson: false, includeFromJson: false) int? id,
-    DateTime? lastSyncPoint,
-    DateTime? lastSyncStartPoint,
-    int? lastKnownSyncCount,
-    int? lastKnownTotalCount,
-    bool restorationPending,
-  });
-}
+abstract mixin class $SyncStatusCopyWith<$Res>  {
+  factory $SyncStatusCopyWith(SyncStatus value, $Res Function(SyncStatus) _then) = _$SyncStatusCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(includeToJson: false, includeFromJson: false) int? id, DateTime? lastSyncPoint, DateTime? lastSyncStartPoint, int? lastKnownSyncCount, int? lastKnownTotalCount, bool restorationPending
+});
 
+
+
+
+}
 /// @nodoc
-class _$SyncStatusCopyWithImpl<$Res, $Val extends SyncStatus>
+class _$SyncStatusCopyWithImpl<$Res>
     implements $SyncStatusCopyWith<$Res> {
-  _$SyncStatusCopyWithImpl(this._value, this._then);
+  _$SyncStatusCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SyncStatus _self;
+  final $Res Function(SyncStatus) _then;
 
-  /// Create a copy of SyncStatus
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = freezed,
-    Object? lastSyncPoint = freezed,
-    Object? lastSyncStartPoint = freezed,
-    Object? lastKnownSyncCount = freezed,
-    Object? lastKnownTotalCount = freezed,
-    Object? restorationPending = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            id: freezed == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            lastSyncPoint: freezed == lastSyncPoint
-                ? _value.lastSyncPoint
-                : lastSyncPoint // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-            lastSyncStartPoint: freezed == lastSyncStartPoint
-                ? _value.lastSyncStartPoint
-                : lastSyncStartPoint // ignore: cast_nullable_to_non_nullable
-                      as DateTime?,
-            lastKnownSyncCount: freezed == lastKnownSyncCount
-                ? _value.lastKnownSyncCount
-                : lastKnownSyncCount // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            lastKnownTotalCount: freezed == lastKnownTotalCount
-                ? _value.lastKnownTotalCount
-                : lastKnownTotalCount // ignore: cast_nullable_to_non_nullable
-                      as int?,
-            restorationPending: null == restorationPending
-                ? _value.restorationPending
-                : restorationPending // ignore: cast_nullable_to_non_nullable
-                      as bool,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of SyncStatus
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? lastSyncPoint = freezed,Object? lastSyncStartPoint = freezed,Object? lastKnownSyncCount = freezed,Object? lastKnownTotalCount = freezed,Object? restorationPending = null,}) {
+  return _then(_self.copyWith(
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,lastSyncPoint: freezed == lastSyncPoint ? _self.lastSyncPoint : lastSyncPoint // ignore: cast_nullable_to_non_nullable
+as DateTime?,lastSyncStartPoint: freezed == lastSyncStartPoint ? _self.lastSyncStartPoint : lastSyncStartPoint // ignore: cast_nullable_to_non_nullable
+as DateTime?,lastKnownSyncCount: freezed == lastKnownSyncCount ? _self.lastKnownSyncCount : lastKnownSyncCount // ignore: cast_nullable_to_non_nullable
+as int?,lastKnownTotalCount: freezed == lastKnownTotalCount ? _self.lastKnownTotalCount : lastKnownTotalCount // ignore: cast_nullable_to_non_nullable
+as int?,restorationPending: null == restorationPending ? _self.restorationPending : restorationPending // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SyncStatus].
+extension SyncStatusPatterns on SyncStatus {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SyncStatus value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SyncStatus() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SyncStatus value)  $default,){
+final _that = this;
+switch (_that) {
+case _SyncStatus():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SyncStatus value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SyncStatus() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id,  DateTime? lastSyncPoint,  DateTime? lastSyncStartPoint,  int? lastKnownSyncCount,  int? lastKnownTotalCount,  bool restorationPending)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SyncStatus() when $default != null:
+return $default(_that.id,_that.lastSyncPoint,_that.lastSyncStartPoint,_that.lastKnownSyncCount,_that.lastKnownTotalCount,_that.restorationPending);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id,  DateTime? lastSyncPoint,  DateTime? lastSyncStartPoint,  int? lastKnownSyncCount,  int? lastKnownTotalCount,  bool restorationPending)  $default,) {final _that = this;
+switch (_that) {
+case _SyncStatus():
+return $default(_that.id,_that.lastSyncPoint,_that.lastSyncStartPoint,_that.lastKnownSyncCount,_that.lastKnownTotalCount,_that.restorationPending);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id,  DateTime? lastSyncPoint,  DateTime? lastSyncStartPoint,  int? lastKnownSyncCount,  int? lastKnownTotalCount,  bool restorationPending)?  $default,) {final _that = this;
+switch (_that) {
+case _SyncStatus() when $default != null:
+return $default(_that.id,_that.lastSyncPoint,_that.lastSyncStartPoint,_that.lastKnownSyncCount,_that.lastKnownTotalCount,_that.restorationPending);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$SyncStatusImplCopyWith<$Res>
-    implements $SyncStatusCopyWith<$Res> {
-  factory _$$SyncStatusImplCopyWith(
-    _$SyncStatusImpl value,
-    $Res Function(_$SyncStatusImpl) then,
-  ) = __$$SyncStatusImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    @JsonKey(includeToJson: false, includeFromJson: false) int? id,
-    DateTime? lastSyncPoint,
-    DateTime? lastSyncStartPoint,
-    int? lastKnownSyncCount,
-    int? lastKnownTotalCount,
-    bool restorationPending,
-  });
+
+
+class _SyncStatus extends SyncStatus {
+   _SyncStatus({@JsonKey(includeToJson: false, includeFromJson: false) this.id, this.lastSyncPoint, this.lastSyncStartPoint, this.lastKnownSyncCount, this.lastKnownTotalCount, this.restorationPending = true}): super._();
+  
+
+@override@JsonKey(includeToJson: false, includeFromJson: false) final  int? id;
+@override final  DateTime? lastSyncPoint;
+// . . . ->* . . |<- it stores the last sync end point in time.
+@override final  DateTime? lastSyncStartPoint;
+// . . . ->| . . *<- it stores the last sync start point in time.
+@override final  int? lastKnownSyncCount;
+@override final  int? lastKnownTotalCount;
+@override@JsonKey() final  bool restorationPending;
+
+/// Create a copy of SyncStatus
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SyncStatusCopyWith<_SyncStatus> get copyWith => __$SyncStatusCopyWithImpl<_SyncStatus>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SyncStatus&&(identical(other.id, id) || other.id == id)&&(identical(other.lastSyncPoint, lastSyncPoint) || other.lastSyncPoint == lastSyncPoint)&&(identical(other.lastSyncStartPoint, lastSyncStartPoint) || other.lastSyncStartPoint == lastSyncStartPoint)&&(identical(other.lastKnownSyncCount, lastKnownSyncCount) || other.lastKnownSyncCount == lastKnownSyncCount)&&(identical(other.lastKnownTotalCount, lastKnownTotalCount) || other.lastKnownTotalCount == lastKnownTotalCount)&&(identical(other.restorationPending, restorationPending) || other.restorationPending == restorationPending));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,id,lastSyncPoint,lastSyncStartPoint,lastKnownSyncCount,lastKnownTotalCount,restorationPending);
+
+@override
+String toString() {
+  return 'SyncStatus(id: $id, lastSyncPoint: $lastSyncPoint, lastSyncStartPoint: $lastSyncStartPoint, lastKnownSyncCount: $lastKnownSyncCount, lastKnownTotalCount: $lastKnownTotalCount, restorationPending: $restorationPending)';
+}
+
+
 }
 
 /// @nodoc
-class __$$SyncStatusImplCopyWithImpl<$Res>
-    extends _$SyncStatusCopyWithImpl<$Res, _$SyncStatusImpl>
-    implements _$$SyncStatusImplCopyWith<$Res> {
-  __$$SyncStatusImplCopyWithImpl(
-    _$SyncStatusImpl _value,
-    $Res Function(_$SyncStatusImpl) _then,
-  ) : super(_value, _then);
+abstract mixin class _$SyncStatusCopyWith<$Res> implements $SyncStatusCopyWith<$Res> {
+  factory _$SyncStatusCopyWith(_SyncStatus value, $Res Function(_SyncStatus) _then) = __$SyncStatusCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(includeToJson: false, includeFromJson: false) int? id, DateTime? lastSyncPoint, DateTime? lastSyncStartPoint, int? lastKnownSyncCount, int? lastKnownTotalCount, bool restorationPending
+});
 
-  /// Create a copy of SyncStatus
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = freezed,
-    Object? lastSyncPoint = freezed,
-    Object? lastSyncStartPoint = freezed,
-    Object? lastKnownSyncCount = freezed,
-    Object? lastKnownTotalCount = freezed,
-    Object? restorationPending = null,
-  }) {
-    return _then(
-      _$SyncStatusImpl(
-        id: freezed == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        lastSyncPoint: freezed == lastSyncPoint
-            ? _value.lastSyncPoint
-            : lastSyncPoint // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-        lastSyncStartPoint: freezed == lastSyncStartPoint
-            ? _value.lastSyncStartPoint
-            : lastSyncStartPoint // ignore: cast_nullable_to_non_nullable
-                  as DateTime?,
-        lastKnownSyncCount: freezed == lastKnownSyncCount
-            ? _value.lastKnownSyncCount
-            : lastKnownSyncCount // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        lastKnownTotalCount: freezed == lastKnownTotalCount
-            ? _value.lastKnownTotalCount
-            : lastKnownTotalCount // ignore: cast_nullable_to_non_nullable
-                  as int?,
-        restorationPending: null == restorationPending
-            ? _value.restorationPending
-            : restorationPending // ignore: cast_nullable_to_non_nullable
-                  as bool,
-      ),
-    );
-  }
+
+
+
 }
-
 /// @nodoc
+class __$SyncStatusCopyWithImpl<$Res>
+    implements _$SyncStatusCopyWith<$Res> {
+  __$SyncStatusCopyWithImpl(this._self, this._then);
 
-class _$SyncStatusImpl extends _SyncStatus {
-  _$SyncStatusImpl({
-    @JsonKey(includeToJson: false, includeFromJson: false) this.id,
-    this.lastSyncPoint,
-    this.lastSyncStartPoint,
-    this.lastKnownSyncCount,
-    this.lastKnownTotalCount,
-    this.restorationPending = true,
-  }) : super._();
+  final _SyncStatus _self;
+  final $Res Function(_SyncStatus) _then;
 
-  @override
-  @JsonKey(includeToJson: false, includeFromJson: false)
-  final int? id;
-  @override
-  final DateTime? lastSyncPoint;
-  // . . . ->* . . |<- it stores the last sync end point in time.
-  @override
-  final DateTime? lastSyncStartPoint;
-  // . . . ->| . . *<- it stores the last sync start point in time.
-  @override
-  final int? lastKnownSyncCount;
-  @override
-  final int? lastKnownTotalCount;
-  @override
-  @JsonKey()
-  final bool restorationPending;
-
-  @override
-  String toString() {
-    return 'SyncStatus(id: $id, lastSyncPoint: $lastSyncPoint, lastSyncStartPoint: $lastSyncStartPoint, lastKnownSyncCount: $lastKnownSyncCount, lastKnownTotalCount: $lastKnownTotalCount, restorationPending: $restorationPending)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SyncStatusImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.lastSyncPoint, lastSyncPoint) ||
-                other.lastSyncPoint == lastSyncPoint) &&
-            (identical(other.lastSyncStartPoint, lastSyncStartPoint) ||
-                other.lastSyncStartPoint == lastSyncStartPoint) &&
-            (identical(other.lastKnownSyncCount, lastKnownSyncCount) ||
-                other.lastKnownSyncCount == lastKnownSyncCount) &&
-            (identical(other.lastKnownTotalCount, lastKnownTotalCount) ||
-                other.lastKnownTotalCount == lastKnownTotalCount) &&
-            (identical(other.restorationPending, restorationPending) ||
-                other.restorationPending == restorationPending));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    lastSyncPoint,
-    lastSyncStartPoint,
-    lastKnownSyncCount,
-    lastKnownTotalCount,
-    restorationPending,
-  );
-
-  /// Create a copy of SyncStatus
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SyncStatusImplCopyWith<_$SyncStatusImpl> get copyWith =>
-      __$$SyncStatusImplCopyWithImpl<_$SyncStatusImpl>(this, _$identity);
+/// Create a copy of SyncStatus
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? lastSyncPoint = freezed,Object? lastSyncStartPoint = freezed,Object? lastKnownSyncCount = freezed,Object? lastKnownTotalCount = freezed,Object? restorationPending = null,}) {
+  return _then(_SyncStatus(
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,lastSyncPoint: freezed == lastSyncPoint ? _self.lastSyncPoint : lastSyncPoint // ignore: cast_nullable_to_non_nullable
+as DateTime?,lastSyncStartPoint: freezed == lastSyncStartPoint ? _self.lastSyncStartPoint : lastSyncStartPoint // ignore: cast_nullable_to_non_nullable
+as DateTime?,lastKnownSyncCount: freezed == lastKnownSyncCount ? _self.lastKnownSyncCount : lastKnownSyncCount // ignore: cast_nullable_to_non_nullable
+as int?,lastKnownTotalCount: freezed == lastKnownTotalCount ? _self.lastKnownTotalCount : lastKnownTotalCount // ignore: cast_nullable_to_non_nullable
+as int?,restorationPending: null == restorationPending ? _self.restorationPending : restorationPending // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
 }
 
-abstract class _SyncStatus extends SyncStatus {
-  factory _SyncStatus({
-    @JsonKey(includeToJson: false, includeFromJson: false) final int? id,
-    final DateTime? lastSyncPoint,
-    final DateTime? lastSyncStartPoint,
-    final int? lastKnownSyncCount,
-    final int? lastKnownTotalCount,
-    final bool restorationPending,
-  }) = _$SyncStatusImpl;
-  _SyncStatus._() : super._();
 
-  @override
-  @JsonKey(includeToJson: false, includeFromJson: false)
-  int? get id;
-  @override
-  DateTime? get lastSyncPoint; // . . . ->* . . |<- it stores the last sync end point in time.
-  @override
-  DateTime? get lastSyncStartPoint; // . . . ->| . . *<- it stores the last sync start point in time.
-  @override
-  int? get lastKnownSyncCount;
-  @override
-  int? get lastKnownTotalCount;
-  @override
-  bool get restorationPending;
-
-  /// Create a copy of SyncStatus
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SyncStatusImplCopyWith<_$SyncStatusImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
+
+// dart format on

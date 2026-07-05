@@ -6,7 +6,7 @@ part 'drive_access_token.freezed.dart';
 part 'drive_access_token.g.dart';
 
 @freezed
-class DriveAccessToken with _$DriveAccessToken {
+abstract class DriveAccessToken with _$DriveAccessToken {
   const DriveAccessToken._();
 
   factory DriveAccessToken({
