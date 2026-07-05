@@ -689,10 +689,12 @@ class CopyCatClipboardService : Service() {
         if (copycatStorage.notificationPaused) {
             copycatStorage.updateNotificationPaused(false)
             debugLog(logTag) { "Notification swipe resumed clipboard capture" }
+            Toast.makeText(this, "CopyCat Clipboard Resumed", Toast.LENGTH_SHORT).show()
         } else {
             mainHandler.removeCallbacks(delayedPasteRunnable)
             copycatStorage.updateNotificationPaused(true)
             debugLog(logTag) { "Notification swipe paused clipboard capture" }
+            Toast.makeText(this, "CopyCat Clipboard Paused", Toast.LENGTH_SHORT).show()
         }
 
         prepareAndShowNotification()

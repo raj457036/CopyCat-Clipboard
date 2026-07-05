@@ -67,6 +67,24 @@ class IsarClipboardItem {
   @Index()
   String? originId;
 
+  @Index(type: IndexType.value, caseSensitive: false)
+  List<String> get searchTokens {
+    final raw = [
+      title,
+      description,
+      url,
+      text,
+      fileMimeType,
+      sourceApp,
+      sourceUrl,
+      fileName,
+      fileExtension,
+      textCategory?.name,
+    ].whereType<String>().join(' ');
+
+    return Isar.splitWords(raw.toLowerCase());
+  }
+
   ClipboardItem toDomain() => ClipboardItem(
     id: isarId == Isar.autoIncrement ? null : isarId,
     serverId: serverId,

@@ -112,9 +112,14 @@ class LinkPreviewImage extends StatelessWidget {
         );
       }
 
+      final mozillaHeaders = {
+        "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+      };
+
       return CachedNetworkImage(
         imageUrl: networkImage.url,
-        httpHeaders: networkImage.headers,
+        httpHeaders: mozillaHeaders,
         fit: BoxFit.cover,
         errorWidget: (context, error, stackTrace) => const ImageNotFound(),
       );
@@ -161,15 +166,17 @@ class LinkPreview extends StatelessWidget {
       placeholderWidget: const Shimmer(),
       errorWidget: LinkPreviewItem(bottom: bottom, onTap: onTap),
       cache: const Duration(days: 30),
-      itemBuilder: (context, meta, provider, svg) => LinkPreviewItem(
-        maxTitleLines: maxTitleLines,
-        maxDescLines: maxDescLines,
-        bottom: bottom,
-        onTap: onTap,
-        meta: meta,
-        provider: provider,
-        svg: svg,
-      ),
+      itemBuilder: (context, meta, provider, svg) {
+        return LinkPreviewItem(
+          maxTitleLines: maxTitleLines,
+          maxDescLines: maxDescLines,
+          bottom: bottom,
+          onTap: onTap,
+          meta: meta,
+          provider: provider,
+          svg: svg,
+        );
+      },
     );
   }
 }

@@ -58,6 +58,9 @@ class IsarAppConfig {
   bool reviewNeverAsk = false;
   bool lanInstantSync = false;
   bool autoWriteOnReceive = false;
+  bool enableTypeToSearch = false;
+  bool hideFromScreenCapture = true;
+  bool showTrayIcon = true;
 
   // App Lock
   bool enableLocalAuth = false;
@@ -110,6 +113,9 @@ class IsarAppConfig {
     enableLocalAuth: enableLocalAuth,
     localAuthTimeoutMinutes: localAuthTimeoutMinutes,
     showCollectionTip: showCollectionTip,
+    enableTypeToSearch: enableTypeToSearch,
+    hideFromScreenCapture: hideFromScreenCapture,
+    showTrayIcon: showTrayIcon,
   );
 
   static IsarAppConfig fromDomain(AppConfig config) => IsarAppConfig()
@@ -157,5 +163,8 @@ class IsarAppConfig {
     ..autoWriteOnReceive = config.autoWriteOnReceive
     ..enableLocalAuth = config.enableLocalAuth
     ..localAuthTimeoutMinutes = config.localAuthTimeoutMinutes
-    ..showCollectionTip = config.showCollectionTip;
+    ..showCollectionTip = config.showCollectionTip
+    ..enableTypeToSearch = config.enableTypeToSearch
+    ..hideFromScreenCapture = config.hideFromScreenCapture
+    ..showTrayIcon = config.showTrayIcon;
 }

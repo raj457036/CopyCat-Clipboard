@@ -45,6 +45,7 @@ class SourceAppIcon extends StatelessWidget {
             : FileImage(File(iconPath));
 
         final imgWidget = Image(
+          key: ValueKey(iconPath),
           image: image,
           gaplessPlayback: true,
           fit: BoxFit.cover,

@@ -67,150 +67,165 @@ const IsarAppConfigSchema = CollectionSchema(
       name: r'enableSync',
       type: IsarType.bool,
     ),
-    r'enc2': PropertySchema(id: 10, name: r'enc2', type: IsarType.string),
+    r'enableTypeToSearch': PropertySchema(
+      id: 10,
+      name: r'enableTypeToSearch',
+      type: IsarType.bool,
+    ),
+    r'enc2': PropertySchema(id: 11, name: r'enc2', type: IsarType.string),
     r'exclusionRules': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'exclusionRules',
       type: IsarType.object,
 
       target: r'ExclusionRules',
     ),
+    r'hideFromScreenCapture': PropertySchema(
+      id: 13,
+      name: r'hideFromScreenCapture',
+      type: IsarType.bool,
+    ),
     r'lanInstantSync': PropertySchema(
-      id: 12,
+      id: 14,
       name: r'lanInstantSync',
       type: IsarType.bool,
     ),
     r'lastReviewPromptDate': PropertySchema(
-      id: 13,
+      id: 15,
       name: r'lastReviewPromptDate',
       type: IsarType.dateTime,
     ),
     r'launchAtStartup': PropertySchema(
-      id: 14,
+      id: 16,
       name: r'launchAtStartup',
       type: IsarType.bool,
     ),
     r'layout': PropertySchema(
-      id: 15,
+      id: 17,
       name: r'layout',
       type: IsarType.string,
       enumMap: _IsarAppConfiglayoutEnumValueMap,
     ),
     r'localAuthTimeoutMinutes': PropertySchema(
-      id: 16,
+      id: 18,
       name: r'localAuthTimeoutMinutes',
       type: IsarType.long,
     ),
-    r'locale': PropertySchema(id: 17, name: r'locale', type: IsarType.string),
+    r'locale': PropertySchema(id: 19, name: r'locale', type: IsarType.string),
     r'onBoardComplete': PropertySchema(
-      id: 18,
+      id: 20,
       name: r'onBoardComplete',
       type: IsarType.bool,
     ),
     r'pasteStackHotkey': PropertySchema(
-      id: 19,
+      id: 21,
       name: r'pasteStackHotkey',
       type: IsarType.string,
     ),
     r'pausedTill': PropertySchema(
-      id: 20,
+      id: 22,
       name: r'pausedTill',
       type: IsarType.dateTime,
     ),
-    r'pinned': PropertySchema(id: 21, name: r'pinned', type: IsarType.bool),
+    r'pinned': PropertySchema(id: 23, name: r'pinned', type: IsarType.bool),
     r'quickPasteHotkey': PropertySchema(
-      id: 22,
+      id: 24,
       name: r'quickPasteHotkey',
       type: IsarType.string,
     ),
     r'reviewNeverAsk': PropertySchema(
-      id: 23,
+      id: 25,
       name: r'reviewNeverAsk',
       type: IsarType.bool,
     ),
     r'reviewQualifyingEventCount': PropertySchema(
-      id: 24,
+      id: 26,
       name: r'reviewQualifyingEventCount',
       type: IsarType.long,
     ),
     r'richDataCapture': PropertySchema(
-      id: 25,
+      id: 27,
       name: r'richDataCapture',
       type: IsarType.bool,
     ),
     r'showCollectionTip': PropertySchema(
-      id: 26,
+      id: 28,
       name: r'showCollectionTip',
       type: IsarType.bool,
     ),
+    r'showTrayIcon': PropertySchema(
+      id: 29,
+      name: r'showTrayIcon',
+      type: IsarType.bool,
+    ),
     r'smartPaste': PropertySchema(
-      id: 27,
+      id: 30,
       name: r'smartPaste',
       type: IsarType.bool,
     ),
     r'sortBy': PropertySchema(
-      id: 28,
+      id: 31,
       name: r'sortBy',
       type: IsarType.string,
       enumMap: _IsarAppConfigsortByEnumValueMap,
     ),
     r'sortOrder': PropertySchema(
-      id: 29,
+      id: 32,
       name: r'sortOrder',
       type: IsarType.string,
       enumMap: _IsarAppConfigsortOrderEnumValueMap,
     ),
     r'syncSpeed': PropertySchema(
-      id: 30,
+      id: 33,
       name: r'syncSpeed',
       type: IsarType.string,
       enumMap: _IsarAppConfigsyncSpeedEnumValueMap,
     ),
     r'themeColor': PropertySchema(
-      id: 31,
+      id: 34,
       name: r'themeColor',
       type: IsarType.long,
     ),
     r'themeMode': PropertySchema(
-      id: 32,
+      id: 35,
       name: r'themeMode',
       type: IsarType.string,
       enumMap: _IsarAppConfigthemeModeEnumValueMap,
     ),
     r'themeVariant': PropertySchema(
-      id: 33,
+      id: 36,
       name: r'themeVariant',
       type: IsarType.string,
       enumMap: _IsarAppConfigthemeVariantEnumValueMap,
     ),
     r'toggleHotkey': PropertySchema(
-      id: 34,
+      id: 37,
       name: r'toggleHotkey',
       type: IsarType.string,
     ),
     r'transformAsNewClip': PropertySchema(
-      id: 35,
+      id: 38,
       name: r'transformAsNewClip',
       type: IsarType.bool,
     ),
     r'useEncryptionNonce': PropertySchema(
-      id: 36,
+      id: 39,
       name: r'useEncryptionNonce',
       type: IsarType.bool,
     ),
     r'view': PropertySchema(
-      id: 37,
+      id: 40,
       name: r'view',
       type: IsarType.string,
       enumMap: _IsarAppConfigviewEnumValueMap,
     ),
     r'windowHeight': PropertySchema(
-      id: 38,
+      id: 41,
       name: r'windowHeight',
       type: IsarType.double,
     ),
     r'windowWidth': PropertySchema(
-      id: 39,
+      id: 42,
       name: r'windowWidth',
       type: IsarType.double,
     ),
@@ -303,41 +318,44 @@ void _isarAppConfigSerialize(
   writer.writeBool(offsets[7], object.enableLocalAuth);
   writer.writeBool(offsets[8], object.enablePasteStack);
   writer.writeBool(offsets[9], object.enableSync);
-  writer.writeString(offsets[10], object.enc2);
+  writer.writeBool(offsets[10], object.enableTypeToSearch);
+  writer.writeString(offsets[11], object.enc2);
   writer.writeObject<IsarExclusionRules>(
-    offsets[11],
+    offsets[12],
     allOffsets,
     IsarExclusionRulesSchema.serialize,
     object.exclusionRules,
   );
-  writer.writeBool(offsets[12], object.lanInstantSync);
-  writer.writeDateTime(offsets[13], object.lastReviewPromptDate);
-  writer.writeBool(offsets[14], object.launchAtStartup);
-  writer.writeString(offsets[15], object.layout.name);
-  writer.writeLong(offsets[16], object.localAuthTimeoutMinutes);
-  writer.writeString(offsets[17], object.locale);
-  writer.writeBool(offsets[18], object.onBoardComplete);
-  writer.writeString(offsets[19], object.pasteStackHotkey);
-  writer.writeDateTime(offsets[20], object.pausedTill);
-  writer.writeBool(offsets[21], object.pinned);
-  writer.writeString(offsets[22], object.quickPasteHotkey);
-  writer.writeBool(offsets[23], object.reviewNeverAsk);
-  writer.writeLong(offsets[24], object.reviewQualifyingEventCount);
-  writer.writeBool(offsets[25], object.richDataCapture);
-  writer.writeBool(offsets[26], object.showCollectionTip);
-  writer.writeBool(offsets[27], object.smartPaste);
-  writer.writeString(offsets[28], object.sortBy.name);
-  writer.writeString(offsets[29], object.sortOrder.name);
-  writer.writeString(offsets[30], object.syncSpeed.name);
-  writer.writeLong(offsets[31], object.themeColor);
-  writer.writeString(offsets[32], object.themeMode.name);
-  writer.writeString(offsets[33], object.themeVariant.name);
-  writer.writeString(offsets[34], object.toggleHotkey);
-  writer.writeBool(offsets[35], object.transformAsNewClip);
-  writer.writeBool(offsets[36], object.useEncryptionNonce);
-  writer.writeString(offsets[37], object.view.name);
-  writer.writeDouble(offsets[38], object.windowHeight);
-  writer.writeDouble(offsets[39], object.windowWidth);
+  writer.writeBool(offsets[13], object.hideFromScreenCapture);
+  writer.writeBool(offsets[14], object.lanInstantSync);
+  writer.writeDateTime(offsets[15], object.lastReviewPromptDate);
+  writer.writeBool(offsets[16], object.launchAtStartup);
+  writer.writeString(offsets[17], object.layout.name);
+  writer.writeLong(offsets[18], object.localAuthTimeoutMinutes);
+  writer.writeString(offsets[19], object.locale);
+  writer.writeBool(offsets[20], object.onBoardComplete);
+  writer.writeString(offsets[21], object.pasteStackHotkey);
+  writer.writeDateTime(offsets[22], object.pausedTill);
+  writer.writeBool(offsets[23], object.pinned);
+  writer.writeString(offsets[24], object.quickPasteHotkey);
+  writer.writeBool(offsets[25], object.reviewNeverAsk);
+  writer.writeLong(offsets[26], object.reviewQualifyingEventCount);
+  writer.writeBool(offsets[27], object.richDataCapture);
+  writer.writeBool(offsets[28], object.showCollectionTip);
+  writer.writeBool(offsets[29], object.showTrayIcon);
+  writer.writeBool(offsets[30], object.smartPaste);
+  writer.writeString(offsets[31], object.sortBy.name);
+  writer.writeString(offsets[32], object.sortOrder.name);
+  writer.writeString(offsets[33], object.syncSpeed.name);
+  writer.writeLong(offsets[34], object.themeColor);
+  writer.writeString(offsets[35], object.themeMode.name);
+  writer.writeString(offsets[36], object.themeVariant.name);
+  writer.writeString(offsets[37], object.toggleHotkey);
+  writer.writeBool(offsets[38], object.transformAsNewClip);
+  writer.writeBool(offsets[39], object.useEncryptionNonce);
+  writer.writeString(offsets[40], object.view.name);
+  writer.writeDouble(offsets[41], object.windowHeight);
+  writer.writeDouble(offsets[42], object.windowWidth);
 }
 
 IsarAppConfig _isarAppConfigDeserialize(
@@ -357,63 +375,66 @@ IsarAppConfig _isarAppConfigDeserialize(
   object.enableLocalAuth = reader.readBool(offsets[7]);
   object.enablePasteStack = reader.readBool(offsets[8]);
   object.enableSync = reader.readBool(offsets[9]);
-  object.enc2 = reader.readStringOrNull(offsets[10]);
+  object.enableTypeToSearch = reader.readBool(offsets[10]);
+  object.enc2 = reader.readStringOrNull(offsets[11]);
   object.exclusionRules = reader.readObjectOrNull<IsarExclusionRules>(
-    offsets[11],
+    offsets[12],
     IsarExclusionRulesSchema.deserialize,
     allOffsets,
   );
+  object.hideFromScreenCapture = reader.readBool(offsets[13]);
   object.isarId = id;
-  object.lanInstantSync = reader.readBool(offsets[12]);
-  object.lastReviewPromptDate = reader.readDateTimeOrNull(offsets[13]);
-  object.launchAtStartup = reader.readBool(offsets[14]);
+  object.lanInstantSync = reader.readBool(offsets[14]);
+  object.lastReviewPromptDate = reader.readDateTimeOrNull(offsets[15]);
+  object.launchAtStartup = reader.readBool(offsets[16]);
   object.layout =
-      _IsarAppConfiglayoutValueEnumMap[reader.readStringOrNull(offsets[15])] ??
+      _IsarAppConfiglayoutValueEnumMap[reader.readStringOrNull(offsets[17])] ??
       AppLayout.grid;
-  object.localAuthTimeoutMinutes = reader.readLong(offsets[16]);
-  object.locale = reader.readString(offsets[17]);
-  object.onBoardComplete = reader.readBool(offsets[18]);
-  object.pasteStackHotkey = reader.readStringOrNull(offsets[19]);
-  object.pausedTill = reader.readDateTimeOrNull(offsets[20]);
-  object.pinned = reader.readBool(offsets[21]);
-  object.quickPasteHotkey = reader.readStringOrNull(offsets[22]);
-  object.reviewNeverAsk = reader.readBool(offsets[23]);
-  object.reviewQualifyingEventCount = reader.readLong(offsets[24]);
-  object.richDataCapture = reader.readBool(offsets[25]);
-  object.showCollectionTip = reader.readBool(offsets[26]);
-  object.smartPaste = reader.readBool(offsets[27]);
+  object.localAuthTimeoutMinutes = reader.readLong(offsets[18]);
+  object.locale = reader.readString(offsets[19]);
+  object.onBoardComplete = reader.readBool(offsets[20]);
+  object.pasteStackHotkey = reader.readStringOrNull(offsets[21]);
+  object.pausedTill = reader.readDateTimeOrNull(offsets[22]);
+  object.pinned = reader.readBool(offsets[23]);
+  object.quickPasteHotkey = reader.readStringOrNull(offsets[24]);
+  object.reviewNeverAsk = reader.readBool(offsets[25]);
+  object.reviewQualifyingEventCount = reader.readLong(offsets[26]);
+  object.richDataCapture = reader.readBool(offsets[27]);
+  object.showCollectionTip = reader.readBool(offsets[28]);
+  object.showTrayIcon = reader.readBool(offsets[29]);
+  object.smartPaste = reader.readBool(offsets[30]);
   object.sortBy =
-      _IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(offsets[28])] ??
+      _IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(offsets[31])] ??
       ClipboardSortKey.created;
   object.sortOrder =
       _IsarAppConfigsortOrderValueEnumMap[reader.readStringOrNull(
-        offsets[29],
+        offsets[32],
       )] ??
       SortOrder.asc;
   object.syncSpeed =
       _IsarAppConfigsyncSpeedValueEnumMap[reader.readStringOrNull(
-        offsets[30],
+        offsets[33],
       )] ??
       SyncSpeed.realtime;
-  object.themeColor = reader.readLong(offsets[31]);
+  object.themeColor = reader.readLong(offsets[34]);
   object.themeMode =
       _IsarAppConfigthemeModeValueEnumMap[reader.readStringOrNull(
-        offsets[32],
+        offsets[35],
       )] ??
       ThemeMode.system;
   object.themeVariant =
       _IsarAppConfigthemeVariantValueEnumMap[reader.readStringOrNull(
-        offsets[33],
+        offsets[36],
       )] ??
       DynamicSchemeVariant.tonalSpot;
-  object.toggleHotkey = reader.readStringOrNull(offsets[34]);
-  object.transformAsNewClip = reader.readBool(offsets[35]);
-  object.useEncryptionNonce = reader.readBool(offsets[36]);
+  object.toggleHotkey = reader.readStringOrNull(offsets[37]);
+  object.transformAsNewClip = reader.readBool(offsets[38]);
+  object.useEncryptionNonce = reader.readBool(offsets[39]);
   object.view =
-      _IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offsets[37])] ??
+      _IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offsets[40])] ??
       AppView.topDocked;
-  object.windowHeight = reader.readDouble(offsets[38]);
-  object.windowWidth = reader.readDouble(offsets[39]);
+  object.windowHeight = reader.readDouble(offsets[41]);
+  object.windowWidth = reader.readDouble(offsets[42]);
   return object;
 }
 
@@ -445,95 +466,101 @@ P _isarAppConfigDeserializeProp<P>(
     case 9:
       return (reader.readBool(offset)) as P;
     case 10:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 11:
+      return (reader.readStringOrNull(offset)) as P;
+    case 12:
       return (reader.readObjectOrNull<IsarExclusionRules>(
             offset,
             IsarExclusionRulesSchema.deserialize,
             allOffsets,
           ))
           as P;
-    case 12:
-      return (reader.readBool(offset)) as P;
     case 13:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 14:
       return (reader.readBool(offset)) as P;
     case 15:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 16:
+      return (reader.readBool(offset)) as P;
+    case 17:
       return (_IsarAppConfiglayoutValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               AppLayout.grid)
           as P;
-    case 16:
-      return (reader.readLong(offset)) as P;
-    case 17:
-      return (reader.readString(offset)) as P;
     case 18:
-      return (reader.readBool(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 19:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 20:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 21:
       return (reader.readBool(offset)) as P;
-    case 22:
+    case 21:
       return (reader.readStringOrNull(offset)) as P;
+    case 22:
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 23:
       return (reader.readBool(offset)) as P;
     case 24:
-      return (reader.readLong(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 25:
       return (reader.readBool(offset)) as P;
     case 26:
-      return (reader.readBool(offset)) as P;
+      return (reader.readLong(offset)) as P;
     case 27:
       return (reader.readBool(offset)) as P;
     case 28:
+      return (reader.readBool(offset)) as P;
+    case 29:
+      return (reader.readBool(offset)) as P;
+    case 30:
+      return (reader.readBool(offset)) as P;
+    case 31:
       return (_IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               ClipboardSortKey.created)
           as P;
-    case 29:
+    case 32:
       return (_IsarAppConfigsortOrderValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               SortOrder.asc)
           as P;
-    case 30:
+    case 33:
       return (_IsarAppConfigsyncSpeedValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               SyncSpeed.realtime)
           as P;
-    case 31:
+    case 34:
       return (reader.readLong(offset)) as P;
-    case 32:
+    case 35:
       return (_IsarAppConfigthemeModeValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               ThemeMode.system)
           as P;
-    case 33:
+    case 36:
       return (_IsarAppConfigthemeVariantValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               DynamicSchemeVariant.tonalSpot)
           as P;
-    case 34:
-      return (reader.readStringOrNull(offset)) as P;
-    case 35:
-      return (reader.readBool(offset)) as P;
-    case 36:
-      return (reader.readBool(offset)) as P;
     case 37:
+      return (reader.readStringOrNull(offset)) as P;
+    case 38:
+      return (reader.readBool(offset)) as P;
+    case 39:
+      return (reader.readBool(offset)) as P;
+    case 40:
       return (_IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offset)] ??
               AppView.topDocked)
           as P;
-    case 38:
+    case 41:
       return (reader.readDouble(offset)) as P;
-    case 39:
+    case 42:
       return (reader.readDouble(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -901,6 +928,15 @@ extension IsarAppConfigQueryFilter
   }
 
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  enableTypeToSearchEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'enableTypeToSearch', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
   enc2IsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
@@ -1076,6 +1112,18 @@ extension IsarAppConfigQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const FilterCondition.isNotNull(property: r'exclusionRules'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  hideFromScreenCaptureEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'hideFromScreenCapture',
+          value: value,
+        ),
       );
     });
   }
@@ -2059,6 +2107,15 @@ extension IsarAppConfigQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'showCollectionTip', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  showTrayIconEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'showTrayIcon', value: value),
       );
     });
   }
@@ -3457,6 +3514,20 @@ extension IsarAppConfigQuerySortBy
     });
   }
 
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByEnableTypeToSearch() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'enableTypeToSearch', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByEnableTypeToSearchDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'enableTypeToSearch', Sort.desc);
+    });
+  }
+
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> sortByEnc2() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'enc2', Sort.asc);
@@ -3466,6 +3537,20 @@ extension IsarAppConfigQuerySortBy
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> sortByEnc2Desc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'enc2', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByHideFromScreenCapture() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hideFromScreenCapture', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByHideFromScreenCaptureDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hideFromScreenCapture', Sort.desc);
     });
   }
 
@@ -3669,6 +3754,20 @@ extension IsarAppConfigQuerySortBy
   sortByShowCollectionTipDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'showCollectionTip', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByShowTrayIcon() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'showTrayIcon', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortByShowTrayIconDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'showTrayIcon', Sort.desc);
     });
   }
 
@@ -3985,6 +4084,20 @@ extension IsarAppConfigQuerySortThenBy
     });
   }
 
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByEnableTypeToSearch() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'enableTypeToSearch', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByEnableTypeToSearchDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'enableTypeToSearch', Sort.desc);
+    });
+  }
+
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> thenByEnc2() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'enc2', Sort.asc);
@@ -3994,6 +4107,20 @@ extension IsarAppConfigQuerySortThenBy
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy> thenByEnc2Desc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'enc2', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByHideFromScreenCapture() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hideFromScreenCapture', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByHideFromScreenCaptureDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'hideFromScreenCapture', Sort.desc);
     });
   }
 
@@ -4209,6 +4336,20 @@ extension IsarAppConfigQuerySortThenBy
   thenByShowCollectionTipDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'showCollectionTip', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByShowTrayIcon() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'showTrayIcon', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenByShowTrayIconDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'showTrayIcon', Sort.desc);
     });
   }
 
@@ -4456,11 +4597,25 @@ extension IsarAppConfigQueryWhereDistinct
     });
   }
 
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct>
+  distinctByEnableTypeToSearch() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'enableTypeToSearch');
+    });
+  }
+
   QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct> distinctByEnc2({
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'enc2', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct>
+  distinctByHideFromScreenCapture() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'hideFromScreenCapture');
     });
   }
 
@@ -4572,6 +4727,13 @@ extension IsarAppConfigQueryWhereDistinct
   distinctByShowCollectionTip() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'showCollectionTip');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct>
+  distinctByShowTrayIcon() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'showTrayIcon');
     });
   }
 
@@ -4745,6 +4907,13 @@ extension IsarAppConfigQueryProperty
     });
   }
 
+  QueryBuilder<IsarAppConfig, bool, QQueryOperations>
+  enableTypeToSearchProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'enableTypeToSearch');
+    });
+  }
+
   QueryBuilder<IsarAppConfig, String?, QQueryOperations> enc2Property() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'enc2');
@@ -4755,6 +4924,13 @@ extension IsarAppConfigQueryProperty
   exclusionRulesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'exclusionRules');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, bool, QQueryOperations>
+  hideFromScreenCaptureProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'hideFromScreenCapture');
     });
   }
 
@@ -4855,6 +5031,12 @@ extension IsarAppConfigQueryProperty
   showCollectionTipProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'showCollectionTip');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, bool, QQueryOperations> showTrayIconProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'showTrayIcon');
     });
   }
 

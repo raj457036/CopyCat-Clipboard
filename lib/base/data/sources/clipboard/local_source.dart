@@ -26,6 +26,11 @@ class LocalClipboardSource implements ClipboardSource {
   IsarCollection<IsarClipboardItem> get _collection =>
       db.collection<IsarClipboardItem>();
 
+  static List<String> _toSearchTokens(String? value) {
+    if (value == null || value.trim().isEmpty) return const [];
+    return Isar.splitWords(value.toLowerCase()).toSet().toList();
+  }
+
   @override
   Future<ClipboardItem> create(ClipboardItem item) async {
     final isarItem = IsarClipboardItem.fromDomain(item);
@@ -50,7 +55,9 @@ class LocalClipboardSource implements ClipboardSource {
     QueryBuilder<IsarClipboardItem, IsarClipboardItem, QFilterCondition>
     resultsQuery;
 
-    if (search == null && collectionId == null) {
+    final searchTokens = _toSearchTokens(search);
+
+    if (searchTokens.isEmpty && collectionId == null) {
       resultsQuery = _collection.filter();
     } else {
       resultsQuery = _collection.filter();
@@ -58,24 +65,15 @@ class LocalClipboardSource implements ClipboardSource {
       if (collectionId != null) {
         resultsQuery = resultsQuery.collectionIdEqualTo(collectionId);
       }
-      // else {
-      //   resultsQuery = resultsQuery
-      //       .encryptedEqualTo(false)
-      //       .lockedEqualTo(false);
-      // }
 
-      for (final word in Isar.splitWords(search ?? "")) {
+      for (final token in searchTokens) {
         resultsQuery = resultsQuery.group(
           (q) => q
-              .titleContains(word, caseSensitive: false)
+              .searchTokensElementEqualTo(token, caseSensitive: false)
               .or()
-              .descriptionContains(word, caseSensitive: false)
+              .searchTokensElementStartsWith(token, caseSensitive: false)
               .or()
-              .urlContains(word, caseSensitive: false)
-              .or()
-              .textContains(word, caseSensitive: false)
-              .or()
-              .fileMimeTypeContains(word, caseSensitive: false),
+              .searchTokensElementEndsWith(token, caseSensitive: false),
         );
       }
     }
