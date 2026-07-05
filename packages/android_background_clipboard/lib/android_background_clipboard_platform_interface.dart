@@ -99,6 +99,10 @@ abstract class AndroidBackgroundClipboardPlatform extends PlatformInterface {
     throw UnimplementedError();
   }
 
+  Future<String?> getCachedPackageIconPath(String packageName) async {
+    throw UnimplementedError();
+  }
+
   Stream<Map<String, String>> detectionStatusStream() {
     throw UnimplementedError();
   }

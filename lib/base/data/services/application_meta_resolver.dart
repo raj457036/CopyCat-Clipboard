@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:clipboard/base/domain/model/application_meta/activity_meta_payload.dart';
 import 'package:clipboard/base/domain/model/application_meta/application_meta.dart';
 import 'package:clipboard/base/domain/repositories/application_meta.dart';
@@ -19,6 +20,8 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
   final ApplicationMetaRepository repo;
   final FocusWindow _focusWindow;
   final AppDirectoryRepository _directoryRepo;
+  final AndroidBackgroundClipboard _androidBackgroundClipboard =
+      const AndroidBackgroundClipboard();
 
   final Map<String, ApplicationMeta?> _cache = {};
   // Guards against firing duplicate in-flight syncs for the same sourceId.
@@ -181,6 +184,56 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
     }
   }
 
+  Future<String?> _cacheAndroidPackageIconToFile(String sourceId) async {
+    try {
+      return await _androidBackgroundClipboard.getCachedPackageIconPath(
+        sourceId,
+      );
+    } catch (e) {
+      logger.w('${_tag(sourceId)} android package icon lookup failed: $e');
+      return null;
+    }
+  }
+
+  Future<ApplicationMeta> _saveResolvedIcon(
+    String sourceId,
+    String iconLocalPath,
+  ) async {
+    final now = systemTime();
+    final existingResult = await repo.getBySourceId(sourceId);
+    var rebuilt = existingResult.fold(
+      (failure) {
+        logger.w('${_tag(sourceId)} local lookup before icon save failed: $failure');
+        return ApplicationMeta(
+          sourceId: sourceId,
+          os: _currentOs,
+          iconLocalPath: iconLocalPath,
+          created: now,
+          modified: now,
+        );
+      },
+      (existing) =>
+          existing?.copyWith(iconLocalPath: iconLocalPath, modified: now) ??
+          ApplicationMeta(
+            sourceId: sourceId,
+            os: _currentOs,
+            iconLocalPath: iconLocalPath,
+            created: now,
+            modified: now,
+          ),
+    );
+
+    final saveResult = await repo.upsert(rebuilt);
+    saveResult.fold(
+      (failure) => logger.w(
+        '${_tag(sourceId)} save after local icon lookup failed: $failure',
+      ),
+      (saved) => rebuilt = saved,
+    );
+    _cacheAndScheduleSyncIfNeeded(rebuilt);
+    return rebuilt;
+  }
+
   @override
   Future<String?> syncFromActivity(ActivityMetaPayload? payload) async {
     final sourceId = resolveSourceId(payload);
@@ -250,25 +303,11 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
 
     // 2.1) Local miss + same OS => try identifier-based local OS icon lookup.
     if (_isOrigin(sourceOs)) {
-      final iconLocalPath = await _cacheIconByIdentifierToFile(sourceId);
+      final iconLocalPath = _currentOs == PlatformOS.android
+          ? await _cacheAndroidPackageIconToFile(sourceId)
+          : await _cacheIconByIdentifierToFile(sourceId);
       if (iconLocalPath != null) {
-        final now = systemTime();
-        var rebuilt = ApplicationMeta(
-          sourceId: sourceId,
-          os: _currentOs,
-          iconLocalPath: iconLocalPath,
-          created: now,
-          modified: now,
-        );
-        final saveResult = await repo.upsert(rebuilt);
-        saveResult.fold(
-          (failure) => logger.w(
-            '${_tag(sourceId)} save after identifier lookup failed: $failure',
-          ),
-          (saved) => rebuilt = saved,
-        );
-        _cache[sourceId] = rebuilt;
-        return rebuilt;
+        return _saveResolvedIcon(sourceId, iconLocalPath);
       }
     }
 

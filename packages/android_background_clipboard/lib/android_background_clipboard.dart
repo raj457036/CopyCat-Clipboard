@@ -93,6 +93,11 @@ class AndroidBackgroundClipboard {
     return AndroidBackgroundClipboardPlatform.instance.setDetectionMode(mode);
   }
 
+  Future<String?> getCachedPackageIconPath(String packageName) {
+    return AndroidBackgroundClipboardPlatform.instance
+        .getCachedPackageIconPath(packageName);
+  }
+
   Stream<Map<String, String>> detectionStatusStream() {
     return AndroidBackgroundClipboardPlatform.instance.detectionStatusStream();
   }

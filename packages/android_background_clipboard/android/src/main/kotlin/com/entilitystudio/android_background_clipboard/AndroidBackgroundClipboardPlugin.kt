@@ -3,6 +3,11 @@ package com.entilitystudio.android_background_clipboard
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -11,6 +16,8 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import java.io.File
+import java.io.FileOutputStream
 
 
 /** AndroidBackgroundClipboardPlugin */
@@ -199,6 +206,11 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
                 result.success(isRunning)
             }
 
+            "getCachedPackageIconPath" -> {
+                val packageName = call.argument<String>("packageName")
+                result.success(getCachedPackageIconPath(packageName))
+            }
+
             "broadcastClip" -> {
                 @Suppress("UNCHECKED_CAST")
                 val data = call.arguments as? Map<String, Any?> ?: emptyMap()
@@ -257,6 +269,59 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
             detectionStatusReporter.removeListener(listener)
         }
         detectionStatusListener = null
+    }
+
+    private fun getCachedPackageIconPath(packageName: String?): String? {
+        val normalizedPackage = packageName?.trim().orEmpty()
+        if (normalizedPackage.isEmpty()) return null
+
+        val iconDir = File(applicationContext.cacheDir, "package_icons").also {
+            if (!it.exists()) {
+                it.mkdirs()
+            }
+        }
+        val iconFile = File(iconDir, "$normalizedPackage.png")
+        if (iconFile.exists() && iconFile.length() > 0L) {
+            return iconFile.absolutePath
+        }
+        if (iconFile.exists() && iconFile.length() <= 0L) {
+            iconFile.delete()
+        }
+
+        return try {
+            val drawable = applicationContext.packageManager.getApplicationIcon(normalizedPackage)
+            val bitmap = drawableToBitmap(drawable)
+            FileOutputStream(iconFile).use { output ->
+                if (!bitmap.compress(Bitmap.CompressFormat.PNG, 100, output)) {
+                    iconFile.delete()
+                    return null
+                }
+                output.flush()
+            }
+            iconFile.absolutePath
+        } catch (_: PackageManager.NameNotFoundException) {
+            null
+        } catch (e: Exception) {
+            debugLog("CopyCat Service") {
+                "Failed to cache package icon for $normalizedPackage: ${e.message}"
+            }
+            iconFile.delete()
+            null
+        }
+    }
+
+    private fun drawableToBitmap(drawable: Drawable): Bitmap {
+        if (drawable is BitmapDrawable) {
+            drawable.bitmap?.let { return it }
+        }
+
+        val width = drawable.intrinsicWidth.takeIf { it > 0 } ?: 1
+        val height = drawable.intrinsicHeight.takeIf { it > 0 } ?: 1
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return bitmap
     }
 
     // Life Cycle events

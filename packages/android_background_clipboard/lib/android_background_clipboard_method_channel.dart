@@ -171,6 +171,13 @@ class MethodChannelAndroidBackgroundClipboard
   }
 
   @override
+  Future<String?> getCachedPackageIconPath(String packageName) async {
+    return methodChannel.invokeMethod<String>('getCachedPackageIconPath', {
+      'packageName': packageName,
+    });
+  }
+
+  @override
   Stream<Map<String, String>> detectionStatusStream() {
     return detectionStatusEventChannel.receiveBroadcastStream().map((event) {
       if (event is Map) {
