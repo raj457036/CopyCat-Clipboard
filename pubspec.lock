@@ -440,22 +440,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
-  dio:
-    dependency: transitive
-    description:
-      name: dio
-      sha256: ea2bad3c89a27635ce2d85cce4d6b199da49a5a48ec77b03e45b65a3b90922b0
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.10.0"
-  dio_web_adapter:
-    dependency: transitive
-    description:
-      name: dio_web_adapter
-      sha256: dd58dc3861eb36edb13b217efc006a1c21e5bbc341de8c229b85634fa5e362e4
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
   duration:
     dependency: "direct main"
     description:
@@ -582,14 +566,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.1"
-  flutter_chat_core:
-    dependency: transitive
-    description:
-      name: flutter_chat_core
-      sha256: "8c46790f64f106bf6e610e2a7324b3844320e9e295867c06d45d9deb134d848d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.9.0"
   flutter_colorpicker:
     dependency: "direct main"
     description:
@@ -606,14 +582,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.14.4"
-  flutter_link_previewer:
-    dependency: "direct main"
-    description:
-      name: flutter_link_previewer
-      sha256: "346f345064e65bc8bf739bccf19d6d6ca50f8183ffc52e452afa58c06ee2cbf7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.2.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -917,7 +885,7 @@ packages:
     source: hosted
     version: "0.2.0"
   html:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: html
       sha256: "6d1264f2dffa1b1101c25a91dff0dc2daee4c18e87cd8538729773c073dbf602"
@@ -1630,7 +1598,7 @@ packages:
     source: hosted
     version: "1.5.0"
   punycode:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: punycode
       sha256: "39b874cc1f78b94e57db17e74b3f2ba2a96e25c0bebdcc8a571614dccda0ff0c"

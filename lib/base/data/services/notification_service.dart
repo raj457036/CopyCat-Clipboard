@@ -58,12 +58,16 @@ class InAppNotificationService {
 
   /// Dismisses the notification with the given ID, if it is currently active.
   void dismiss(String id) {
-    final notification = _activeNotifications.findFirst(
-      (active) => active.message.id == id,
-    );
-    if (notification == null) return;
+    try {
+      final notification = _activeNotifications.findFirst(
+        (active) => active.message.id == id,
+      );
+      if (notification == null) return;
 
-    notification.controller.close();
+      notification.controller.close();
+    } catch (e) {
+      debugPrint('Error dismissing notification: $e');
+    }
   }
 
   SnackBar _buildSnackBar(NotificationMessage message) {

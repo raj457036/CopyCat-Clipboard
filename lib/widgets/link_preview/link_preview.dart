@@ -4,45 +4,15 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/image_not_found.dart';
+import 'package:clipboard/widgets/link_preview/fetcher.dart';
+import 'package:clipboard/widgets/link_preview/type.dart';
 import 'package:clipboard/widgets/shimmer.dart' show Shimmer;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_link_previewer/flutter_link_previewer.dart' as flp;
 import 'package:flutter_svg/flutter_svg.dart';
 
-class _PreviewContent {
-  const _PreviewContent({
-    required this.title,
-    required this.description,
-    required this.imageUrl,
-  });
-
-  static _PreviewContent? fromValues({
-    required String? title,
-    required String? description,
-    required String? imageUrl,
-  }) {
-    if ((title == null || title.isEmpty) &&
-        (description == null || description.isEmpty) &&
-        (imageUrl == null || imageUrl.isEmpty)) {
-      return null;
-    }
-
-    return _PreviewContent(
-      title: title,
-      description: description,
-      imageUrl: imageUrl,
-    );
-  }
-
-  final String? title;
-  final String? description;
-  final String? imageUrl;
-}
-
-class LinkPreviewItem extends StatelessWidget {
-  const LinkPreviewItem({
-    super.key,
+class _LinkPreviewItem extends StatelessWidget {
+  const _LinkPreviewItem({
     this.maxTitleLines = 1,
     this.maxDescLines = 1,
     this.bottom,
@@ -69,7 +39,7 @@ class LinkPreviewItem extends StatelessWidget {
       spacing: padding2,
       children: [
         if (provider != null)
-          Expanded(child: LinkPreviewImage(provider: provider!))
+          Expanded(child: _LinkPreviewImage(provider: provider!))
         else
           const Expanded(
             child: Padding(
@@ -121,9 +91,9 @@ class LinkPreviewItem extends StatelessWidget {
   }
 }
 
-class LinkPreviewImage extends StatelessWidget {
+class _LinkPreviewImage extends StatelessWidget {
   final ImageProvider<Object> provider;
-  const LinkPreviewImage({super.key, required this.provider});
+  const _LinkPreviewImage({super.key, required this.provider});
 
   @override
   Widget build(BuildContext context) {
@@ -193,9 +163,8 @@ class LinkPreview extends StatefulWidget {
 }
 
 class _LinkPreviewState extends State<LinkPreview> {
-  _PreviewContent? _preview;
+  LinkPreviewData? _preview;
   bool _isLoading = false;
-  String? _requestedUrl;
 
   String get _url => widget.item.url?.trim() ?? '';
 
@@ -209,9 +178,22 @@ class _LinkPreviewState extends State<LinkPreview> {
   @override
   void didUpdateWidget(covariant LinkPreview oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.item != widget.item) {
+    final oldUrl = oldWidget.item.url?.trim() ?? '';
+    final newUrl = widget.item.url?.trim() ?? '';
+
+    if (oldUrl != newUrl) {
       _hydrateFromItem();
       _fetchPreviewIfNeeded();
+      return;
+    }
+
+    final previewChanged =
+        oldWidget.item.linkPreviewTitle != widget.item.linkPreviewTitle ||
+        oldWidget.item.linkPreviewDescription !=
+            widget.item.linkPreviewDescription ||
+        oldWidget.item.linkPreviewImageUrl != widget.item.linkPreviewImageUrl;
+    if (previewChanged) {
+      _hydrateFromItem();
     }
   }
 
@@ -226,23 +208,9 @@ class _LinkPreviewState extends State<LinkPreview> {
     }
   }
 
-  bool _isValidUrl(String value) {
-    return RegExp(
-      flp.regexLink,
-      caseSensitive: false,
-      unicode: true,
-    ).hasMatch(value.trim());
-  }
-
   Future<void> _fetchPreview() async {
-    final url = _url;
-    _requestedUrl = url;
-
-    if (!_isValidUrl(url)) {
-      setState(() {
-        _preview = null;
-        _isLoading = false;
-      });
+    if (_url.isEmpty || !_isValidUrl(_url)) {
+      debugPrint('Invalid URL for link preview: $_url');
       return;
     }
 
@@ -251,75 +219,83 @@ class _LinkPreviewState extends State<LinkPreview> {
       _isLoading = true;
     });
 
-    final data = await flp.getLinkPreviewData(url);
+    debugPrint('Fetching link preview for: $_url');
 
-    if (!mounted || _requestedUrl != url) {
-      return;
-    }
+    final data = await getLinkPreviewData(_url);
 
-    final preview = _previewFromLinkData(data);
+    debugPrint('Fetched link preview for: $_url, data: $data');
 
-    if (preview != null) {
+    if (!mounted) return;
+
+    if (data != null) {
       await context.read<OfflinePersistenceCubit>().persistLocalLinkPreview(
         widget.item,
-        title: preview.title,
-        description: preview.description,
-        imageUrl: preview.imageUrl,
+        title: data.title,
+        description: data.description,
+        imageUrl: data.image?.imageUrl,
       );
     }
 
     setState(() {
-      _preview = preview;
+      _preview = data;
       _isLoading = false;
     });
   }
 
-  _PreviewContent? _previewFromItem(ClipboardItem item) {
-    return _PreviewContent.fromValues(
-      title: item.linkPreviewTitle,
-      description: item.linkPreviewDescription,
-      imageUrl: item.linkPreviewImageUrl,
-    );
-  }
-
-  _PreviewContent? _previewFromLinkData(dynamic data) {
-    if (data == null) {
+  LinkPreviewData? _previewFromItem(ClipboardItem item) {
+    if (item.linkPreviewTitle == null &&
+        item.linkPreviewDescription == null &&
+        item.linkPreviewImageUrl == null) {
       return null;
     }
 
-    return _PreviewContent.fromValues(
-      title: data.title as String?,
-      description: data.description as String?,
-      imageUrl: data.image?.url as String?,
+    return LinkPreviewData(
+      link: item.url ?? '',
+      title: item.linkPreviewTitle,
+      description: item.linkPreviewDescription,
+      image: item.linkPreviewImageUrl != null
+          ? LinkImagePreviewData(
+              imageUrl: item.linkPreviewImageUrl!,
+              imageSize: Size
+                  .zero, // You can replace this with actual size if available
+            )
+          : null,
     );
+  }
+
+  bool _isValidUrl(String url) {
+    if (url.isEmpty) {
+      return false;
+    }
+
+    final uri = Uri.tryParse(url);
+    if (uri == null || !uri.hasScheme || !uri.hasAuthority) {
+      return false;
+    }
+
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    final isValidUrl = _isValidUrl(_url);
-    if (!isValidUrl) {
-      return LinkPreviewItem(bottom: widget.bottom, onTap: widget.onTap);
-    }
-
     if (_isLoading) {
       return const Shimmer();
     }
 
-    final preview = _preview;
-    if (preview == null) {
-      return LinkPreviewItem(bottom: widget.bottom, onTap: widget.onTap);
+    if (_preview == null) {
+      return _LinkPreviewItem(bottom: widget.bottom, onTap: widget.onTap);
     }
 
-    return LinkPreviewItem(
+    return _LinkPreviewItem(
       maxTitleLines: widget.maxTitleLines,
       maxDescLines: widget.maxDescLines,
       bottom: widget.bottom,
       onTap: widget.onTap,
-      title: preview.title,
-      description: preview.description,
-      provider: preview.imageUrl == null
+      title: _preview?.title,
+      description: _preview?.description,
+      provider: _preview?.image == null
           ? null
-          : NetworkImage(preview.imageUrl!),
+          : CachedNetworkImageProvider(_preview!.image!.imageUrl),
     );
   }
 }

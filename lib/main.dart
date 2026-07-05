@@ -55,7 +55,9 @@ import 'widgets/keyboard_shortcuts/actions/actions.dart';
 import 'widgets/keyboard_shortcuts/arrow_focus_visibility_listener.dart';
 
 Future<void> appRunner() async {
-  MediaKit.ensureInitialized();
+  if (Platform.isWindows || Platform.isLinux) {
+    MediaKit.ensureInitialized();
+  }
   await initializeServices();
   runApp(const MainApp());
 }

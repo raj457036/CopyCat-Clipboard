@@ -99,7 +99,8 @@ dependencies:
   share_plus: ^10.1.4
   device_info_plus: ^11.5.0
   equatable: ^2.0.8
-  flutter_link_previewer: ^4.2.0
+  punycode: ^1.0.0
+  html: ^0.15.6
   cached_network_svg_image: ^2.0.0
   cached_network_image: ^3.4.1
   synchronized: ^3.4.0

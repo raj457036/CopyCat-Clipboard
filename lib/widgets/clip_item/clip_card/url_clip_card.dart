@@ -1,6 +1,6 @@
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/utils/common_extension.dart';
-import 'package:clipboard/widgets/link_preview.dart';
+import 'package:clipboard/widgets/link_preview/link_preview.dart';
 import 'package:flutter/material.dart';
 
 class UrlClipCard extends StatelessWidget {
