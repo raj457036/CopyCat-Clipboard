@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
 import 'package:clipboard/di/di.dart';
@@ -43,14 +44,23 @@ class SourceAppIcon extends StatelessWidget {
             ? CachedNetworkImageProvider(iconPath)
             : FileImage(File(iconPath));
 
-        return Image(
+        final imgWidget = Image(
           image: image,
-          width: width,
-          height: height,
           gaplessPlayback: true,
           fit: BoxFit.cover,
           semanticLabel: "Source application icon",
         );
+        if (sourceOs == PlatformOS.android) {
+          return SizedBox(
+            width: width,
+            height: height,
+            child: Padding(
+              padding: const EdgeInsets.all(padding4),
+              child: ClipRRect(borderRadius: radius8, child: imgWidget),
+            ),
+          );
+        }
+        return SizedBox(width: width, height: height, child: imgWidget);
       },
     );
   }

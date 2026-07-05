@@ -26,8 +26,7 @@ class ClipCreateTime extends StatelessWidget {
       maxLines: 1,
       overflow: TextOverflow.clip,
       style: textTheme.labelSmall?.copyWith(
-        fontVariations: fontVarW500,
-        color: context.colors.onSurfaceVariant.withValues(alpha: 0.8),
+        color: context.colors.onSurfaceVariant.withValues(alpha: 0.7),
       ),
     );
   }
