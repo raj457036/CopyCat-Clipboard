@@ -86,7 +86,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
       fetch(filterState: filters, fromTop: true);
 
   /// Filter clips to those belonging to the given collection, or show all if null.
-  Future<void> filterByCollection(int? id) {
+  Future<void> filterByCollection(int? id, int? serverId) {
     final current = state.filterState;
     return fetch(
       filterState: SearchFilterState(
@@ -97,6 +97,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
         sortBy: current.sortBy,
         sortOrder: current.sortOrder,
         collectionId: id,
+        serverCollectionId: serverId,
       ),
       fromTop: true,
     );
@@ -284,6 +285,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
         order: state.filterState.sortOrder ?? SortOrder.desc,
         sortBy: state.filterState.sortBy,
         collectionId: state.filterState.collectionId,
+        serverCollectionId: state.filterState.serverCollectionId,
       );
 
       emit(

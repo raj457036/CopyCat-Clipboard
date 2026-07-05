@@ -229,9 +229,7 @@ class SyncEngine<T extends Syncable> {
     DateTime? lastModified = lastSynced;
     DateTime? latestPulledModified;
     int syncedCount = 0;
-    // Adaptive batch size: shrinks on timeout, grows on consecutive successes.
     int batchLimit = config.pullBatchSize;
-    final maxBatchSize = config.pullBatchSize * 6;
 
     while (hasMore) {
       // Retry the same batch up to 3 times on transient server-side timeouts.
@@ -248,7 +246,7 @@ class SyncEngine<T extends Syncable> {
           (_) => false,
         );
         if (!isTimeout) break;
-        batchLimit = (batchLimit / 2).round().clamp(1, maxBatchSize);
+        batchLimit = (batchLimit / 2).round().clamp(1, config.pullBatchSize);
         logger.w(
           () =>
               '[SyncEngine:${adapter.entityType}] batch timeout, attempt $attempt/4 — retrying with limit=$batchLimit',
@@ -272,9 +270,6 @@ class SyncEngine<T extends Syncable> {
           if (paginated.results.isNotEmpty) {
             lastModified = paginated.results.last.modified;
             latestPulledModified = lastModified;
-            // Grow batch size on success (up to maxBatchSize) so fast
-            // connections naturally fetch more per round-trip over time.
-            batchLimit = (batchLimit * 2).clamp(1, maxBatchSize);
             // Save a checkpoint so "Try Again" can resume from this offset
             // rather than restarting from the beginning.
             await cursorRepo.upsert(

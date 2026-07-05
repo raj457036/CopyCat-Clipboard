@@ -181,7 +181,8 @@ class _CollectionChip extends StatelessWidget {
 
   void _onSelected(BuildContext context, bool selected) {
     final newId = selected ? collection.id : null;
-    context.read<ClipboardCubit>().filterByCollection(newId);
+    final newServerId = selected ? collection.serverId : null;
+    context.read<ClipboardCubit>().filterByCollection(newId, newServerId);
   }
 
   @override

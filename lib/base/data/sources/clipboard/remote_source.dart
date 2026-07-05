@@ -39,6 +39,7 @@ class RemoteClipboardSource implements ClipboardSource {
     Set<TextCategory>? textCategories, // no-op
     Set<ClipItemType>? types, // no-op
     int? collectionId, // no-op
+    int? serverCollectionId, // no-op
     ClipboardSortKey? sortBy, // no-op
     SortOrder order = SortOrder.desc, // no-op
     DateTime? from, // no-op

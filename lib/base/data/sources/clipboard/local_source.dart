@@ -28,7 +28,9 @@ class LocalClipboardSource implements ClipboardSource {
 
   static List<String> _toSearchTokens(String? value) {
     if (value == null || value.trim().isEmpty) return const [];
-    return Isar.splitWords(value.toLowerCase()).toSet().toList();
+    return Isar.splitWords(
+      value.toLowerCase(),
+    ).where((word) => word.length > 2).toSet().toList();
   }
 
   @override
@@ -46,6 +48,7 @@ class LocalClipboardSource implements ClipboardSource {
     Set<TextCategory>? textCategories,
     Set<ClipItemType>? types,
     int? collectionId,
+    int? serverCollectionId,
     ClipboardSortKey? sortBy,
     SortOrder order = SortOrder.desc,
     DateTime? from,
@@ -56,13 +59,26 @@ class LocalClipboardSource implements ClipboardSource {
     resultsQuery;
 
     final searchTokens = _toSearchTokens(search);
+    final hasCollectionFilter =
+        collectionId != null || serverCollectionId != null;
 
-    if (searchTokens.isEmpty && collectionId == null) {
+    if (searchTokens.isEmpty && !hasCollectionFilter) {
       resultsQuery = _collection.filter();
     } else {
       resultsQuery = _collection.filter();
 
-      if (collectionId != null) {
+      if (serverCollectionId != null && collectionId != null) {
+        resultsQuery = resultsQuery.group(
+          (q) => q
+              .serverCollectionIdEqualTo(serverCollectionId)
+              .or()
+              .collectionIdEqualTo(collectionId),
+        );
+      } else if (serverCollectionId != null) {
+        resultsQuery = resultsQuery.serverCollectionIdEqualTo(
+          serverCollectionId,
+        );
+      } else if (collectionId != null) {
         resultsQuery = resultsQuery.collectionIdEqualTo(collectionId);
       }
 

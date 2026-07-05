@@ -70,24 +70,50 @@ class IsarClipboardItem {
   @Index()
   String? originId;
 
+  @ignore
+  List<String>? _searchTokensCache;
+
   @Index(type: IndexType.value, caseSensitive: false)
   List<String> get searchTokens {
-    final raw = [
-      title,
-      description,
-      url,
-      text,
-      linkPreviewTitle,
-      linkPreviewDescription,
-      fileMimeType,
-      sourceApp,
-      sourceUrl,
-      fileName,
-      fileExtension,
-      textCategory?.name,
-    ].whereType<String>().join(' ');
+    // Note(raj): This is a performance optimization.
+    // Isar reads the index getter 1000s of times during a write transaction,
+    // and this is an expensive operation, so we cache the result for the duration of the transaction.
+    final cached = _searchTokensCache;
+    if (cached != null) return cached;
 
-    return Isar.splitWords(raw.toLowerCase());
+    final raw = (encrypted || locked)
+        ? [
+            title,
+            description,
+            url,
+            linkPreviewTitle,
+            linkPreviewDescription,
+            fileMimeType,
+            sourceApp,
+            sourceUrl,
+            fileName,
+            textCategory?.name,
+          ].whereType<String>().join(' ').toLowerCase()
+        : [
+            title,
+            description,
+            url,
+            text,
+            linkPreviewTitle,
+            linkPreviewDescription,
+            fileMimeType,
+            sourceApp,
+            sourceUrl,
+            fileName,
+            textCategory?.name,
+          ].whereType<String>().join(' ').toLowerCase();
+
+    final tokens = Isar.splitWords(
+      raw,
+    ).where((word) => word.length > 2).toList(growable: false);
+
+    _searchTokensCache = tokens;
+    return tokens;
   }
 
   ClipboardItem toDomain() => ClipboardItem(

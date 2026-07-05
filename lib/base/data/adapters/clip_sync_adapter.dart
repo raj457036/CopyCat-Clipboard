@@ -87,7 +87,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     required ConflictResolver<ClipboardItem> conflictResolver,
   }) async {
     await _batchSyncService.waitUntilReady();
-    final events = await _batchSyncService.syncBatch(items, {});
+    final events = await _batchSyncService.syncBatch(items);
     return events;
   }
 

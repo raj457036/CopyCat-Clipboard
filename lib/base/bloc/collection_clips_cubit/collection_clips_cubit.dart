@@ -47,6 +47,7 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
             limit: 50,
             search: searchQuery,
             collectionId: collection.id,
+            serverCollectionId: collection.serverId,
           );
 
           emit(
@@ -78,6 +79,7 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
             offset: newQuery ? 0 : offset,
             search: searchQuery ?? query,
             collectionId: collection.id,
+            serverCollectionId: collection.serverId,
           );
 
           final nextState = items.fold(
@@ -115,7 +117,11 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
   }
 
   void put(ClipboardItem item, {bool isNew = false}) {
-    if (item.collectionId != collection.id) {
+    final belongsHere =
+        item.collectionId == collection.id ||
+        (collection.serverId != null &&
+            item.serverCollectionId == collection.serverId);
+    if (!belongsHere) {
       deleteItem([item]);
       return;
     }
@@ -152,7 +158,10 @@ class CollectionClipsCubit extends Cubit<CollectionClipsState> {
       final (type, item) = event;
       final deleted =
           item.deletedAt != null || type == CrossSyncEventType.delete;
-      final belongsToCurrentCollection = item.collectionId == collection.id;
+      final belongsToCurrentCollection =
+          item.collectionId == collection.id ||
+          (collection.serverId != null &&
+              item.serverCollectionId == collection.serverId);
       final index = _findItemIndex(next, item);
 
       if (deleted || !belongsToCurrentCollection) {

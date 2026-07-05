@@ -1,4 +1,3 @@
-import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/domain/services/file_cloud_service.dart';
@@ -23,7 +22,6 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   final ClipboardRepository _clipRepo;
   final ClipboardRepository _remoteRepo;
   final ClipBatchSyncService _batchSyncService;
-  final ClipCollectionCubit _collectionCubit;
   final FileCloudService _fileCloudService;
 
   /// Direct local source access for write-back operations that must NOT
@@ -35,7 +33,6 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     @Named("local") this._clipRepo,
     @Named("remote") this._remoteRepo,
     this._batchSyncService,
-    this._collectionCubit,
     this._fileCloudService,
     @Named("local") this._localSource,
   );
@@ -86,9 +83,7 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     required ConflictResolver<ClipboardItem> conflictResolver,
   }) async {
     await _batchSyncService.waitUntilReady();
-    final collectionMapping = _collectionCubit.serverMapping;
-
-    final events = await _batchSyncService.syncBatch(items, collectionMapping);
+    final events = await _batchSyncService.syncBatch(items);
     return events;
   }
 

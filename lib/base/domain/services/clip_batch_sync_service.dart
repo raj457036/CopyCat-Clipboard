@@ -21,8 +21,5 @@ abstract class ClipBatchSyncService {
   ///
   /// Returns a list of [ClipCrossSyncEvent]s describing what happened
   /// (create vs update) for each item, with local IDs assigned.
-  Future<List<ClipCrossSyncEvent>> syncBatch(
-    List<ClipboardItem> items,
-    Map<int, int> collectionMapping,
-  );
+  Future<List<ClipCrossSyncEvent>> syncBatch(List<ClipboardItem> items);
 }

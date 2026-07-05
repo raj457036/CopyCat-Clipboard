@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/data/isar/adapters/isar_clip_collection.dart';
 import 'package:clipboard/base/data/isar/adapters/isar_clipboard_item.dart';
@@ -13,18 +15,18 @@ import 'package:isar_community/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_io/io.dart' show Platform;
 
-typedef _Payload = (List<ClipboardItem>, Map<int, int>);
+typedef _Payload = List<ClipboardItem>;
 
 /// Isolate entry point: resolves conflicts in-memory then writes in one
 /// transaction. DB operations: 1 batch read + 1 batch write.
-void _syncInBackground(_Payload record, Sender send) async {
+Future<void> _syncInBackground(_Payload record, Sender send) async {
+  debugPrint('[ClipSyncWorker] start: ${record.length} items');
   final Isar db = Isar.getInstance(dbName)!;
   final isarCollection = db.collection<IsarClipboardItem>();
-  final isarCollections = db.collection<IsarClipCollection>();
 
-  var (items, collectionMap) = record;
+  final items = List<ClipboardItem>.from(record);
 
-  // Phase 1a: batch read by serverId.
+  // Phase 1: batch read by serverId.
   final serverIds = items
       .map((e) => e.serverId)
       .whereType<int>()
@@ -52,38 +54,13 @@ void _syncInBackground(_Payload record, Sender send) async {
         e.originId!: e,
   };
 
-  final unresolvedServerCollectionIds = items
-      .map((e) => e.serverCollectionId)
-      .whereType<int>()
-      .where((id) => !collectionMap.containsKey(id))
-      .toSet()
-      .toList(growable: false);
-
-  final fallbackCollectionMap = <int, int>{};
-  if (unresolvedServerCollectionIds.isNotEmpty) {
-    final localCollections = await isarCollections
-        .filter()
-        .anyOf(unresolvedServerCollectionIds, (q, id) => q.serverIdEqualTo(id))
-        .findAll();
-    for (final c in localCollections) {
-      final serverId = c.serverId;
-      if (serverId == null || c.isarId == Isar.autoIncrement) continue;
-      fallbackCollectionMap[serverId] = c.isarId;
-    }
-  }
-
   final events = <ClipCrossSyncEvent>[];
   final now = systemTime();
 
-  // Phase 3: in-memory conflict resolution
+  debugPrint('[ClipSyncWorker] resolving conflicts for ${items.length} items');
+  // Phase 2: in-memory conflict resolution
   for (var index = 0; index < items.length; index++) {
     var item = items[index];
-    final resolvedCollectionId =
-        collectionMap[item.serverCollectionId] ??
-        fallbackCollectionMap[item.serverCollectionId];
-    final hasServerCollectionRef = item.serverCollectionId != null;
-    final shouldDetachCollection =
-        !hasServerCollectionRef && item.collectionId == null;
     IsarClipboardItem? found;
 
     if (item.serverId != null &&
@@ -95,12 +72,7 @@ void _syncInBackground(_Payload record, Sender send) async {
     }
 
     if (found == null) {
-      item = item.copyWith(
-        collectionId: shouldDetachCollection
-            ? null
-            : (resolvedCollectionId ?? item.collectionId),
-        lastSynced: now,
-      );
+      item = item.copyWith(lastSynced: now);
       items[index] = item;
       events.add((CrossSyncEventType.create, item));
       continue;
@@ -112,17 +84,10 @@ void _syncInBackground(_Payload record, Sender send) async {
         id: found.isarId == Isar.autoIncrement ? null : found.isarId,
         lastSynced: now,
         localPath: found.localPath,
-        collectionId: shouldDetachCollection
-            ? null
-            : (hasServerCollectionRef
-                  ? (resolvedCollectionId ?? found.collectionId)
-                  : found.collectionId),
         sourceApp: found.sourceApp ?? item.sourceApp,
         sourceId: found.sourceId ?? item.sourceId,
       );
     } else {
-      // Local copy wins on content; still carry over sync metadata so the
-      // record stays linked to Supabase (serverId must never be lost).
       item = found.toDomain().copyWith(
         lastSynced: now,
         serverId: found.serverId ?? item.serverId,
@@ -135,17 +100,20 @@ void _syncInBackground(_Payload record, Sender send) async {
     events.add((CrossSyncEventType.update, item));
   }
 
-  // Phase 4: one write — lock held only for inserts.
-  db.writeTxnSync(() {
-    final isarItems = items
-        .map(IsarClipboardItem.fromDomain)
-        .toList(growable: false);
-    final ids = isarCollection.putAllSync(isarItems);
-    for (int i = 0; i < events.length; i++) {
-      events[i] = (events[i].$1, events[i].$2.copyWith(id: ids[i]));
-    }
-  });
+  debugPrint('[ClipSyncWorker] writing ${items.length} items to Isar');
+  final isarItems = items
+      .map(IsarClipboardItem.fromDomain)
+      .toList(growable: false);
 
+  List<int> ids = [];
+  await db.writeTxn(() async {
+    ids = await isarCollection.putAll(isarItems);
+  }, silent: true);
+
+  for (int i = 0; i < events.length; i++) {
+    events[i] = (events[i].$1, events[i].$2.copyWith(id: ids[i]));
+  }
+  debugPrint('[ClipSyncWorker] done, sending ${events.length} events');
   send(events);
 }
 
@@ -168,9 +136,8 @@ class IsarClipBatchSyncService implements ClipBatchSyncService {
         String? dbPath = Platform.environment[dbPathEnvKey];
         dbPath = dbPath ?? (await getApplicationDocumentsDirectory()).path;
         await Isar.open(
-          [IsarClipboardItemSchema, IsarClipCollectionSchema],
+          [IsarClipboardItemSchema],
           directory: dbPath,
-          relaxedDurability: true,
           inspector: kDebugMode,
           name: dbName,
         );
@@ -183,13 +150,7 @@ class IsarClipBatchSyncService implements ClipBatchSyncService {
   Future<void> waitUntilReady() => _worker.waitUntilReady();
 
   @override
-  Future<List<ClipCrossSyncEvent>> syncBatch(
-    List<ClipboardItem> items,
-    Map<int, int> collectionMapping,
-  ) async {
-    // final decryptedItems = await Future.wait(
-    //   items.map((item) => item.decrypt()),
-    // );
-    return _worker.compute((items, collectionMapping));
+  Future<List<ClipCrossSyncEvent>> syncBatch(List<ClipboardItem> items) async {
+    return _worker.compute(List<ClipboardItem>.from(items));
   }
 }

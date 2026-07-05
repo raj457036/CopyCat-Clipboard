@@ -16,6 +16,7 @@ abstract class ClipboardSource {
     Set<TextCategory>? textCategories,
     Set<ClipItemType>? types,
     int? collectionId,
+    int? serverCollectionId,
     ClipboardSortKey? sortBy,
     SortOrder order = SortOrder.desc,
     DateTime? from,
