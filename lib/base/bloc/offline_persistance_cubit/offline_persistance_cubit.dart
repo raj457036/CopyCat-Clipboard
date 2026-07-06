@@ -521,16 +521,10 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     }
 
     final result = await repo.update(next);
-    return result.fold(
-      (failure) {
-        logger.w('Failed to persist local link preview: $failure');
-        return null;
-      },
-      (updated) {
-        syncEventBus.emit<ClipboardItem>((CrossSyncEventType.update, updated));
-        return updated;
-      },
-    );
+    return result.fold((failure) {
+      logger.w('Failed to persist local link preview: $failure');
+      return null;
+    }, (updated) => updated);
   }
 
   Future<void> delete(List<ClipboardItem> items) async {

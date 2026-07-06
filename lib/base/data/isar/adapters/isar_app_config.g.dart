@@ -148,84 +148,89 @@ const IsarAppConfigSchema = CollectionSchema(
       name: r'richDataCapture',
       type: IsarType.bool,
     ),
-    r'showCollectionTip': PropertySchema(
+    r'searchIndexReady': PropertySchema(
       id: 28,
+      name: r'searchIndexReady',
+      type: IsarType.bool,
+    ),
+    r'showCollectionTip': PropertySchema(
+      id: 29,
       name: r'showCollectionTip',
       type: IsarType.bool,
     ),
     r'showTrayIcon': PropertySchema(
-      id: 29,
+      id: 30,
       name: r'showTrayIcon',
       type: IsarType.bool,
     ),
     r'smartPaste': PropertySchema(
-      id: 30,
+      id: 31,
       name: r'smartPaste',
       type: IsarType.bool,
     ),
     r'sortBy': PropertySchema(
-      id: 31,
+      id: 32,
       name: r'sortBy',
       type: IsarType.string,
       enumMap: _IsarAppConfigsortByEnumValueMap,
     ),
     r'sortOrder': PropertySchema(
-      id: 32,
+      id: 33,
       name: r'sortOrder',
       type: IsarType.string,
       enumMap: _IsarAppConfigsortOrderEnumValueMap,
     ),
     r'syncSpeed': PropertySchema(
-      id: 33,
+      id: 34,
       name: r'syncSpeed',
       type: IsarType.string,
       enumMap: _IsarAppConfigsyncSpeedEnumValueMap,
     ),
     r'themeColor': PropertySchema(
-      id: 34,
+      id: 35,
       name: r'themeColor',
       type: IsarType.long,
     ),
     r'themeMode': PropertySchema(
-      id: 35,
+      id: 36,
       name: r'themeMode',
       type: IsarType.string,
       enumMap: _IsarAppConfigthemeModeEnumValueMap,
     ),
     r'themeVariant': PropertySchema(
-      id: 36,
+      id: 37,
       name: r'themeVariant',
       type: IsarType.string,
       enumMap: _IsarAppConfigthemeVariantEnumValueMap,
     ),
     r'toggleHotkey': PropertySchema(
-      id: 37,
+      id: 38,
       name: r'toggleHotkey',
       type: IsarType.string,
     ),
     r'transformAsNewClip': PropertySchema(
-      id: 38,
+      id: 39,
       name: r'transformAsNewClip',
       type: IsarType.bool,
     ),
     r'useEncryptionNonce': PropertySchema(
-      id: 39,
+      id: 40,
       name: r'useEncryptionNonce',
       type: IsarType.bool,
     ),
     r'view': PropertySchema(
-      id: 40,
+      id: 41,
       name: r'view',
       type: IsarType.string,
       enumMap: _IsarAppConfigviewEnumValueMap,
     ),
     r'windowHeight': PropertySchema(
-      id: 41,
+      id: 42,
       name: r'windowHeight',
       type: IsarType.double,
     ),
     r'windowWidth': PropertySchema(
-      id: 42,
+      id: 43,
       name: r'windowWidth',
       type: IsarType.double,
     ),
@@ -341,21 +346,22 @@ void _isarAppConfigSerialize(
   writer.writeBool(offsets[25], object.reviewNeverAsk);
   writer.writeLong(offsets[26], object.reviewQualifyingEventCount);
   writer.writeBool(offsets[27], object.richDataCapture);
-  writer.writeBool(offsets[28], object.showCollectionTip);
-  writer.writeBool(offsets[29], object.showTrayIcon);
-  writer.writeBool(offsets[30], object.smartPaste);
-  writer.writeString(offsets[31], object.sortBy.name);
-  writer.writeString(offsets[32], object.sortOrder.name);
-  writer.writeString(offsets[33], object.syncSpeed.name);
-  writer.writeLong(offsets[34], object.themeColor);
-  writer.writeString(offsets[35], object.themeMode.name);
-  writer.writeString(offsets[36], object.themeVariant.name);
-  writer.writeString(offsets[37], object.toggleHotkey);
-  writer.writeBool(offsets[38], object.transformAsNewClip);
-  writer.writeBool(offsets[39], object.useEncryptionNonce);
-  writer.writeString(offsets[40], object.view.name);
-  writer.writeDouble(offsets[41], object.windowHeight);
-  writer.writeDouble(offsets[42], object.windowWidth);
+  writer.writeBool(offsets[28], object.searchIndexReady);
+  writer.writeBool(offsets[29], object.showCollectionTip);
+  writer.writeBool(offsets[30], object.showTrayIcon);
+  writer.writeBool(offsets[31], object.smartPaste);
+  writer.writeString(offsets[32], object.sortBy.name);
+  writer.writeString(offsets[33], object.sortOrder.name);
+  writer.writeString(offsets[34], object.syncSpeed.name);
+  writer.writeLong(offsets[35], object.themeColor);
+  writer.writeString(offsets[36], object.themeMode.name);
+  writer.writeString(offsets[37], object.themeVariant.name);
+  writer.writeString(offsets[38], object.toggleHotkey);
+  writer.writeBool(offsets[39], object.transformAsNewClip);
+  writer.writeBool(offsets[40], object.useEncryptionNonce);
+  writer.writeString(offsets[41], object.view.name);
+  writer.writeDouble(offsets[42], object.windowHeight);
+  writer.writeDouble(offsets[43], object.windowWidth);
 }
 
 IsarAppConfig _isarAppConfigDeserialize(
@@ -400,41 +406,42 @@ IsarAppConfig _isarAppConfigDeserialize(
   object.reviewNeverAsk = reader.readBool(offsets[25]);
   object.reviewQualifyingEventCount = reader.readLong(offsets[26]);
   object.richDataCapture = reader.readBool(offsets[27]);
-  object.showCollectionTip = reader.readBool(offsets[28]);
-  object.showTrayIcon = reader.readBool(offsets[29]);
-  object.smartPaste = reader.readBool(offsets[30]);
+  object.searchIndexReady = reader.readBool(offsets[28]);
+  object.showCollectionTip = reader.readBool(offsets[29]);
+  object.showTrayIcon = reader.readBool(offsets[30]);
+  object.smartPaste = reader.readBool(offsets[31]);
   object.sortBy =
-      _IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(offsets[31])] ??
+      _IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(offsets[32])] ??
       ClipboardSortKey.created;
   object.sortOrder =
       _IsarAppConfigsortOrderValueEnumMap[reader.readStringOrNull(
-        offsets[32],
+        offsets[33],
       )] ??
       SortOrder.asc;
   object.syncSpeed =
       _IsarAppConfigsyncSpeedValueEnumMap[reader.readStringOrNull(
-        offsets[33],
+        offsets[34],
       )] ??
       SyncSpeed.realtime;
-  object.themeColor = reader.readLong(offsets[34]);
+  object.themeColor = reader.readLong(offsets[35]);
   object.themeMode =
       _IsarAppConfigthemeModeValueEnumMap[reader.readStringOrNull(
-        offsets[35],
+        offsets[36],
       )] ??
       ThemeMode.system;
   object.themeVariant =
       _IsarAppConfigthemeVariantValueEnumMap[reader.readStringOrNull(
-        offsets[36],
+        offsets[37],
       )] ??
       DynamicSchemeVariant.tonalSpot;
-  object.toggleHotkey = reader.readStringOrNull(offsets[37]);
-  object.transformAsNewClip = reader.readBool(offsets[38]);
-  object.useEncryptionNonce = reader.readBool(offsets[39]);
+  object.toggleHotkey = reader.readStringOrNull(offsets[38]);
+  object.transformAsNewClip = reader.readBool(offsets[39]);
+  object.useEncryptionNonce = reader.readBool(offsets[40]);
   object.view =
-      _IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offsets[40])] ??
+      _IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offsets[41])] ??
       AppView.topDocked;
-  object.windowHeight = reader.readDouble(offsets[41]);
-  object.windowWidth = reader.readDouble(offsets[42]);
+  object.windowHeight = reader.readDouble(offsets[42]);
+  object.windowWidth = reader.readDouble(offsets[43]);
   return object;
 }
 
@@ -517,50 +524,52 @@ P _isarAppConfigDeserializeProp<P>(
     case 30:
       return (reader.readBool(offset)) as P;
     case 31:
+      return (reader.readBool(offset)) as P;
+    case 32:
       return (_IsarAppConfigsortByValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               ClipboardSortKey.created)
           as P;
-    case 32:
+    case 33:
       return (_IsarAppConfigsortOrderValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               SortOrder.asc)
           as P;
-    case 33:
+    case 34:
       return (_IsarAppConfigsyncSpeedValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               SyncSpeed.realtime)
           as P;
-    case 34:
-      return (reader.readLong(offset)) as P;
     case 35:
+      return (reader.readLong(offset)) as P;
+    case 36:
       return (_IsarAppConfigthemeModeValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               ThemeMode.system)
           as P;
-    case 36:
+    case 37:
       return (_IsarAppConfigthemeVariantValueEnumMap[reader.readStringOrNull(
                 offset,
               )] ??
               DynamicSchemeVariant.tonalSpot)
           as P;
-    case 37:
-      return (reader.readStringOrNull(offset)) as P;
     case 38:
-      return (reader.readBool(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 39:
       return (reader.readBool(offset)) as P;
     case 40:
+      return (reader.readBool(offset)) as P;
+    case 41:
       return (_IsarAppConfigviewValueEnumMap[reader.readStringOrNull(offset)] ??
               AppView.topDocked)
           as P;
-    case 41:
-      return (reader.readDouble(offset)) as P;
     case 42:
+      return (reader.readDouble(offset)) as P;
+    case 43:
       return (reader.readDouble(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2098,6 +2107,15 @@ extension IsarAppConfigQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         FilterCondition.equalTo(property: r'richDataCapture', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterFilterCondition>
+  searchIndexReadyEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'searchIndexReady', value: value),
       );
     });
   }
@@ -3744,6 +3762,20 @@ extension IsarAppConfigQuerySortBy
   }
 
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortBySearchIndexReady() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'searchIndexReady', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  sortBySearchIndexReadyDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'searchIndexReady', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
   sortByShowCollectionTip() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'showCollectionTip', Sort.asc);
@@ -4326,6 +4358,20 @@ extension IsarAppConfigQuerySortThenBy
   }
 
   QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenBySearchIndexReady() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'searchIndexReady', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
+  thenBySearchIndexReadyDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'searchIndexReady', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QAfterSortBy>
   thenByShowCollectionTip() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'showCollectionTip', Sort.asc);
@@ -4724,6 +4770,13 @@ extension IsarAppConfigQueryWhereDistinct
   }
 
   QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct>
+  distinctBySearchIndexReady() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'searchIndexReady');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, IsarAppConfig, QDistinct>
   distinctByShowCollectionTip() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'showCollectionTip');
@@ -5024,6 +5077,13 @@ extension IsarAppConfigQueryProperty
   richDataCaptureProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'richDataCapture');
+    });
+  }
+
+  QueryBuilder<IsarAppConfig, bool, QQueryOperations>
+  searchIndexReadyProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'searchIndexReady');
     });
   }
 

@@ -190,7 +190,11 @@ class ClipboardCubit extends Cubit<ClipboardState> {
 
   void put(ClipboardItem item) {
     final activeCollectionId = state.filterState.collectionId;
-    if (activeCollectionId != null && activeCollectionId != item.collectionId) {
+    final activeServerCollectionId = state.filterState.serverCollectionId;
+    if ((item.serverCollectionId != null &&
+            activeServerCollectionId != item.serverCollectionId) ||
+        (item.collectionId != null &&
+            activeCollectionId != item.collectionId)) {
       deleteItem([item]);
       return;
     }

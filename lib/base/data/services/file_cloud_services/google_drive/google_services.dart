@@ -32,22 +32,19 @@ abstract class DriveService {
 class GoogleAuthClient with http.BaseClient {
   final String accessToken;
 
-  BehaviorSubject<(int, int)>? progress;
-  int? contentLength;
+  BehaviorSubject<int>? progress;
   int currentBytes = 0;
   bool stopped = false;
 
   GoogleAuthClient(this.accessToken);
 
-  BehaviorSubject<(int, int)> setProgressListener({int? contentLength}) {
-    progress ??= BehaviorSubject<(int, int)>();
-    this.contentLength ??= contentLength;
+  BehaviorSubject<int> setProgressListener() {
+    progress ??= BehaviorSubject<int>();
     return progress!;
   }
 
   void unsetProgressListener() {
     progress?.close();
-    contentLength = null;
     progress = null;
   }
 
@@ -65,7 +62,6 @@ class GoogleAuthClient with http.BaseClient {
     }
     request.headers["Authorization"] = "Bearer $accessToken";
     final response = await request.send();
-    final totalBytes = contentLength ?? 1;
     int currentLength = 0;
 
     // "range" -> "bytes=0-5505023" // upload
@@ -83,8 +79,8 @@ class GoogleAuthClient with http.BaseClient {
     if (currentLength > currentBytes) {
       currentBytes = currentLength;
     }
-    progress?.add((currentBytes, totalBytes));
-    logger.d(() => 'Transfered: $currentBytes / $totalBytes bytes');
+    progress?.add((currentBytes));
+    logger.d(() => 'Transfered: $currentBytes bytes');
 
     return response;
   }

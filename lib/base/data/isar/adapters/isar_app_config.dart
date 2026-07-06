@@ -68,6 +68,7 @@ class IsarAppConfig {
 
   // Flags
   bool showCollectionTip = true;
+  bool searchIndexReady = false;
 
   static int _sanitizeCounter(int value) => value < 0 ? 0 : value;
 
@@ -116,6 +117,7 @@ class IsarAppConfig {
     enableTypeToSearch: enableTypeToSearch,
     hideFromScreenCapture: hideFromScreenCapture,
     showTrayIcon: showTrayIcon,
+    searchIndexReady: searchIndexReady,
   );
 
   static IsarAppConfig fromDomain(AppConfig config) => IsarAppConfig()
@@ -166,5 +168,6 @@ class IsarAppConfig {
     ..showCollectionTip = config.showCollectionTip
     ..enableTypeToSearch = config.enableTypeToSearch
     ..hideFromScreenCapture = config.hideFromScreenCapture
-    ..showTrayIcon = config.showTrayIcon;
+    ..showTrayIcon = config.showTrayIcon
+    ..searchIndexReady = config.searchIndexReady;
 }

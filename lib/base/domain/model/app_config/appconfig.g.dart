@@ -56,6 +56,7 @@ _AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => _AppConfig(
       ) ??
       DynamicSchemeVariant.tonalSpot,
   showCollectionTip: json['showCollectionTip'] as bool? ?? true,
+  searchIndexReady: json['searchIndexReady'] as bool? ?? false,
   enableDragNDrop: json['enableDragNDrop'] as bool? ?? false,
   enablePasteStack: json['enablePasteStack'] as bool? ?? false,
   androidBgListener: json['androidBgListener'] as bool? ?? false,
@@ -105,6 +106,7 @@ Map<String, dynamic> _$AppConfigToJson(_AppConfig instance) =>
       'themeColor': instance.themeColor,
       'themeVariant': _$DynamicSchemeVariantEnumMap[instance.themeVariant]!,
       'showCollectionTip': instance.showCollectionTip,
+      'searchIndexReady': instance.searchIndexReady,
       'enableDragNDrop': instance.enableDragNDrop,
       'enablePasteStack': instance.enablePasteStack,
       'androidBgListener': instance.androidBgListener,

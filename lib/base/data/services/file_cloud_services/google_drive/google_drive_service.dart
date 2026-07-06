@@ -67,7 +67,7 @@ class GoogleDriveService implements DriveService {
 
     if (onProgress != null) {
       subscription = client.setProgressListener().listen(
-        (value) => onProgress(value.$1, value.$2),
+        (value) => onProgress(value, item.fileSize ?? 1),
       );
     }
 
@@ -116,9 +116,9 @@ class GoogleDriveService implements DriveService {
       final length = await file.length();
 
       if (onProgress != null) {
-        subscription = client
-            .setProgressListener(contentLength: length)
-            .listen((value) => onProgress(value.$1, value.$2));
+        subscription = client.setProgressListener().listen(
+          (value) => onProgress(value, length),
+        );
       }
 
       final drive = getDrive(client);

@@ -453,7 +453,7 @@ class _ClipInspectorState extends State<ClipInspector> {
 
     if (item.sourceUrl?.trim().isNotEmpty == true) {
       if (item.sourceUrl!.startsWith("file")) {
-        if (item.deviceId == widget.currentDeviceId) {
+        if (isDesktopPlatform && item.deviceId == widget.currentDeviceId) {
           buttons.add(
             OutlinedButton.icon(
               onPressed: _openFileSource,

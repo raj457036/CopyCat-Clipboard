@@ -94,6 +94,7 @@ abstract class AppConfig with _$AppConfig, Identifiable {
 
     // Flags
     @Default(true) bool showCollectionTip,
+    @Default(false) bool searchIndexReady,
 
     // Exprimental
     @Default(false) bool enableDragNDrop,
