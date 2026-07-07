@@ -17,7 +17,6 @@ class UrlClipCard extends StatelessWidget {
       item: item,
       maxTitleLines: 1,
       maxDescLines: 1,
-      flat: true,
       bottom: Text(
         url,
         overflow: TextOverflow.ellipsis,

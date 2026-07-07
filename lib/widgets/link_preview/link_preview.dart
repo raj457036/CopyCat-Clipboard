@@ -20,8 +20,10 @@ class _LinkPreviewItem extends StatelessWidget {
     this.title,
     this.description,
     this.provider,
+    required this.imageBoxFit,
   });
 
+  final BoxFit imageBoxFit;
   final int maxTitleLines;
   final int maxDescLines;
   final Widget? bottom;
@@ -39,7 +41,12 @@ class _LinkPreviewItem extends StatelessWidget {
       spacing: padding2,
       children: [
         if (provider != null)
-          Expanded(child: _LinkPreviewImage(provider: provider!))
+          Expanded(
+            child: _LinkPreviewImage(
+              provider: provider!,
+              imageBoxFit: imageBoxFit,
+            ),
+          )
         else
           const Expanded(
             child: Padding(
@@ -92,8 +99,9 @@ class _LinkPreviewItem extends StatelessWidget {
 }
 
 class _LinkPreviewImage extends StatelessWidget {
+  final BoxFit imageBoxFit;
   final ImageProvider<Object> provider;
-  const _LinkPreviewImage({required this.provider});
+  const _LinkPreviewImage({required this.provider, required this.imageBoxFit});
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +139,7 @@ class _LinkPreviewImage extends StatelessWidget {
   Widget _buildGeneric() {
     return Image(
       image: provider,
-      fit: BoxFit.cover,
+      fit: imageBoxFit,
       errorBuilder: (context, error, stackTrace) => const ImageNotFound(),
     );
   }
@@ -142,20 +150,18 @@ class LinkPreview extends StatefulWidget {
 
   final int maxTitleLines;
   final int maxDescLines;
-  final bool withShadow;
   final VoidCallback? onTap;
-  final bool flat;
   final Widget? bottom;
+  final BoxFit? imageBoxFit;
 
   const LinkPreview({
     super.key,
     required this.item,
     this.maxTitleLines = 2,
     this.maxDescLines = 4,
-    this.withShadow = false,
     this.onTap,
-    this.flat = false,
     this.bottom,
+    this.imageBoxFit,
   });
 
   @override
@@ -283,7 +289,11 @@ class _LinkPreviewState extends State<LinkPreview> {
     }
 
     if (_preview == null) {
-      return _LinkPreviewItem(bottom: widget.bottom, onTap: widget.onTap);
+      return _LinkPreviewItem(
+        bottom: widget.bottom,
+        onTap: widget.onTap,
+        imageBoxFit: widget.imageBoxFit ?? BoxFit.cover,
+      );
     }
 
     return _LinkPreviewItem(
@@ -296,6 +306,7 @@ class _LinkPreviewState extends State<LinkPreview> {
       provider: _preview?.image == null
           ? null
           : CachedNetworkImageProvider(_preview!.image!.imageUrl),
+      imageBoxFit: widget.imageBoxFit ?? BoxFit.cover,
     );
   }
 }

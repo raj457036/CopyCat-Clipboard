@@ -17,6 +17,7 @@ class URLClipPreviewCard extends StatelessWidget {
     return Card.filled(
       margin: EdgeInsets.zero,
       shape: config?.shape,
+      clipBehavior: Clip.hardEdge,
       child: Padding(
         padding: const EdgeInsets.all(padding8),
         child: Column(
@@ -25,14 +26,14 @@ class URLClipPreviewCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           spacing: 12,
           children: [
-            SizedBox.fromSize(
-              size: const Size(280, 240),
+            LimitedBox(
+              maxWidth: 480,
+              maxHeight: 380,
               child: LinkPreview(
                 item: item,
                 onTap: () => launchUrl(item),
                 maxTitleLines: 3,
                 maxDescLines: 5,
-                withShadow: true,
               ),
             ),
             SelectableText(

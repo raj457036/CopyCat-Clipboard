@@ -193,9 +193,14 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
                 limit: current.limit,
                 activeCount: activeCount,
               ),
+              accessStatus: activeCount <= current.limit
+                  ? DeviceAccessStatus.allowed
+                  : DeviceAccessStatus.limitReached,
               clearFailure: true,
             ),
           );
+
+          InAppNotificationService.i.dismiss('sync_device_limit_reached');
         }
         return true;
       },
