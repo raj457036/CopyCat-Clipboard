@@ -138,6 +138,7 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
                     ),
                     height16,
                     OverflowBar(
+                      overflowAlignment: OverflowBarAlignment.center,
                       children: [
                         FilledButton.icon(
                           onPressed: exportEnc2Key,

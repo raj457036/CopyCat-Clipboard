@@ -5,7 +5,6 @@ import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_state.dart';
 import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart';
-import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/model/sync/user_device_access.dart';
 import 'package:clipboard/base/domain/repositories/user_devices.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
@@ -82,11 +81,16 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
     );
   }
 
-  Future<void> setupSyncOrchestrator({
-    required DeviceAccessStatus accessStatus,
-    required Subscription subscription,
-    int? syncInterval,
-  }) async {
+  Future<void> setupSyncOrchestrator() async {
+    final accessStatus = state.accessStatus;
+    final subscription = monetizationCubit.active;
+    final syncInterval = subscription?.syncInterval;
+
+    if (subscription == null) {
+      syncOrchestrator.stop();
+      return;
+    }
+
     final active = monetizationCubit.active;
     if (active == null || !active.isSameAs(subscription)) return;
 
@@ -123,8 +127,10 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
             builder: (context) => NotificationContent(
               body: context.locale.device_mgmt_limit_reached,
             ),
+            persistent: true,
           ),
         );
+
         return;
       case DeviceAccessStatus.unknown:
         return;

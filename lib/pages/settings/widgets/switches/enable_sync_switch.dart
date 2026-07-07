@@ -1,7 +1,7 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
-import 'package:clipboard/base/constants/numbers/values.dart';
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_state.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/di/di.dart';
@@ -12,23 +12,24 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class EnableSyncSwitch extends StatelessWidget {
   const EnableSyncSwitch({super.key});
 
-  void _toggleEnableSync(BuildContext context, bool enabled) {
+  Future<void> _toggleEnableSync(BuildContext context, bool enabled) async {
     final appConfigCubit = context.read<AppConfigCubit>();
-    appConfigCubit.changeSync(enabled);
-
-    final syncOrchestrator = sl<SyncOrchestrator>();
-    final syncInterval =
-        context.read<MonetizationCubit>().active?.syncInterval ??
-        defaultBestEffortSyncInterval;
+    final syncStatusCubit = context.read<SyncStatusCubit>();
+    final deviceCubit = context.read<UserDevicesCubit>();
 
     if (enabled) {
-      syncOrchestrator.start(
-        syncSpeed: appConfigCubit.state.config.syncSpeed,
-        intervalSeconds: syncInterval,
-      );
-      context.read<SyncStatusCubit>().syncAll(const SyncAllParams());
+      if (deviceCubit.state.accessStatus == DeviceAccessStatus.allowed) {
+        appConfigCubit.changeSync(enabled);
+        await deviceCubit.setupSyncOrchestrator();
+        syncStatusCubit.syncAll(const SyncAllParams());
+      } else {
+        appConfigCubit.changeSync(false);
+        sl<SyncOrchestrator>().stop();
+        sl<SyncStatusCubit>().markDisabled();
+      }
     } else {
-      syncOrchestrator.stop();
+      appConfigCubit.changeSync(false);
+      sl<SyncOrchestrator>().stop();
       sl<SyncStatusCubit>().markDisabled();
     }
   }

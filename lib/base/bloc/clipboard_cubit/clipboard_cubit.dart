@@ -191,12 +191,14 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   void put(ClipboardItem item) {
     final activeCollectionId = state.filterState.collectionId;
     final activeServerCollectionId = state.filterState.serverCollectionId;
-    if ((item.serverCollectionId != null &&
-            activeServerCollectionId != item.serverCollectionId) ||
-        (item.collectionId != null &&
-            activeCollectionId != item.collectionId)) {
-      deleteItem([item]);
-      return;
+    if (activeCollectionId != null) {
+      if (((item.serverCollectionId != null &&
+              activeServerCollectionId != item.serverCollectionId) ||
+          (item.collectionId != null &&
+              activeCollectionId != item.collectionId))) {
+        deleteItem([item]);
+        return;
+      }
     }
 
     final changed = _upsertItem(_items, item);

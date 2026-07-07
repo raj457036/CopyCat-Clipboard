@@ -93,7 +93,7 @@ class _LinkPreviewItem extends StatelessWidget {
 
 class _LinkPreviewImage extends StatelessWidget {
   final ImageProvider<Object> provider;
-  const _LinkPreviewImage({super.key, required this.provider});
+  const _LinkPreviewImage({required this.provider});
 
   @override
   Widget build(BuildContext context) {

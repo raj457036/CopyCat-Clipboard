@@ -138,6 +138,7 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
                   ),
                   height16,
                   OverflowBar(
+                    overflowAlignment: OverflowBarAlignment.center,
                     children: [
                       TextButton(
                         onPressed: generateEnc2Key,

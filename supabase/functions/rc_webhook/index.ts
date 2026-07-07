@@ -7,6 +7,7 @@ import { getSupabaseServiceClient } from "../utils/supabase.ts";
 
 const planEntitlementId = "pro features";
 const maxPasteStackLimit = 2000;
+const maxDeviceLimit = 6;
 
 const updateOrCreateSubscription = async (
   serviceClient: SupabaseClient,
@@ -24,7 +25,7 @@ const updateOrCreateSubscription = async (
         planName: planEntitlementId,
         subId: "",
         source: "RC",
-        devices: planId == planEntitlementId ? 5 : 2,
+        devices: planId == planEntitlementId ? maxDeviceLimit : 2,
         // cers: planId == planEntitlementId,
         // ps_limit: planId == planEntitlementId ? maxPasteStackLimit : 10,
         modified: new Date().toISOString(),

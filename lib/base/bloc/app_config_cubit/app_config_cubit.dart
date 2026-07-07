@@ -469,7 +469,10 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
   }
 
   Future<void> changeOnBoardStatus(bool value) async {
-    final newConfig = state.config.copyWith(onBoardComplete: value);
+    final newConfig = state.config.copyWith(
+      onBoardComplete: value,
+      searchIndexReady: true,
+    );
     emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }

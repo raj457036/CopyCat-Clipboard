@@ -22,12 +22,8 @@ class MonetizationListener extends StatelessWidget {
           active: (subscription) async {
             final deviceCubit = context.read<UserDevicesCubit>();
             await appConfigCubit.load(subscription);
-            final accessStatus = await deviceCubit.registerCurrentDevice();
-            await deviceCubit.setupSyncOrchestrator(
-              accessStatus: accessStatus,
-              subscription: subscription,
-              syncInterval: subscription.syncInterval,
-            );
+            await deviceCubit.registerCurrentDevice();
+            await deviceCubit.setupSyncOrchestrator();
           },
         );
       },

@@ -103,8 +103,10 @@ async function registerDevice(
     .eq("deviceId", deviceId)
     .maybeSingle();
 
-  const limit = await getPlanDeviceLimit(client, userId);
-  const activeDevices = await getActiveDevices(client, userId);
+  const [limit, activeDevices] = await Promise.all([
+    getPlanDeviceLimit(client, userId),
+    getActiveDevices(client, userId),
+  ]);
 
   if (existingDevice?.isRevoked === true) {
     return jsonResponse({
@@ -115,9 +117,9 @@ async function registerDevice(
     });
   }
 
-  const alreadyActive = activeDevices.some((d) => d.deviceId === deviceId);
+  const otherActiveDevices = activeDevices.filter((d) => d.deviceId !== deviceId);
 
-  if (!alreadyActive && activeDevices.length >= limit) {
+  if (otherActiveDevices.length >= limit) {
     return jsonResponse({
       allowed: false,
       limit,
@@ -167,7 +169,7 @@ async function revokeDevice(
 
   const { error } = await client
     .from(DEVICES_TABLE)
-    .update({ isRevoked: true, last_seen_at: new Date().toISOString() })
+    .update({ isRevoked: true })
     .eq("userId", userId)
     .eq("deviceId", deviceId);
 

@@ -276,6 +276,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
                         ),
                         height16,
                         OverflowBar(
+                          overflowAlignment: OverflowBarAlignment.center,
                           children: [
                             FilledButton.icon(
                               onPressed: importEnc2Key,

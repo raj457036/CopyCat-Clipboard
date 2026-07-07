@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:clipboard/base/constants/strings/strings.dart';
-import 'package:clipboard/base/data/isar/adapters/isar_clip_collection.dart';
 import 'package:clipboard/base/data/isar/adapters/isar_clipboard_item.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart';
