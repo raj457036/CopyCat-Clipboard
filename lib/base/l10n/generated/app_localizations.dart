@@ -2698,6 +2698,42 @@ abstract class AppLocalizations {
   /// **'Select the color mode to customize the appearance of the app. The default option is \'Tonal Spot\'.'**
   String get settings__dropdown__color_mode__subtitle;
 
+  /// No description provided for @settings__dropdown__clipboard_feedback__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard Feedback'**
+  String get settings__dropdown__clipboard_feedback__title;
+
+  /// No description provided for @settings__dropdown__clipboard_feedback__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how CopyCat responds when a clip is captured.'**
+  String get settings__dropdown__clipboard_feedback__subtitle;
+
+  /// No description provided for @settings__clipboard_feedback__disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get settings__clipboard_feedback__disabled;
+
+  /// No description provided for @settings__clipboard_feedback__toast.
+  ///
+  /// In en, this message translates to:
+  /// **'Toast'**
+  String get settings__clipboard_feedback__toast;
+
+  /// No description provided for @settings__clipboard_feedback__haptic.
+  ///
+  /// In en, this message translates to:
+  /// **'Haptic'**
+  String get settings__clipboard_feedback__haptic;
+
+  /// No description provided for @settings__clipboard_feedback__both.
+  ///
+  /// In en, this message translates to:
+  /// **'Both'**
+  String get settings__clipboard_feedback__both;
+
   /// No description provided for @settings__color_mode__tonalSpot.
   ///
   /// In en, this message translates to:

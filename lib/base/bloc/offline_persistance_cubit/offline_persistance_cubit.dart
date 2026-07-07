@@ -5,6 +5,7 @@ import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/domain/model/application_meta/activity_meta_payload.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/analytics.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
@@ -13,12 +14,15 @@ import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/data/services/clipboard/clip_hash_registry.dart';
 import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:clipboard/base/data/services/lan_sync_service.dart';
+import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/utils/clipboard_feedback_service.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:dartz/dartz.dart';
@@ -405,8 +409,30 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         continue;
       }
       _newClipboardItem.add(item);
+      await _showFeedback();
       await persist([item]);
     }
+  }
+
+  // TODO(raj): implement for windows and linux
+  Future<void> _showFeedback() async {
+    if (!Platform.isMacOS) return;
+    final feedbackMode = appConfig.state.config.clipboardFeedbackMode;
+    final copiedLabel =
+        rootNavigationKey.currentContext?.locale.app__ack__copied ?? 'Copied';
+    final showToast =
+        feedbackMode == ClipboardFeedbackMode.toast ||
+        feedbackMode == ClipboardFeedbackMode.both;
+    final playHaptic =
+        feedbackMode == ClipboardFeedbackMode.haptic ||
+        feedbackMode == ClipboardFeedbackMode.both;
+    unawaited(
+      ClipboardFeedbackService.i.notifyClipboardCopied(
+        showToast: showToast,
+        playHaptic: playHaptic,
+        message: copiedLabel,
+      ),
+    );
   }
 
   /// stateless = true will not persist the change in the local database, only emit the new state. ( only work with updates )

@@ -38,6 +38,12 @@ _AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => _AppConfig(
   pasteStackHotkey: json['pasteStackHotkey'] as String?,
   smartPaste: json['smartPaste'] as bool? ?? false,
   transformAsNewClip: json['transformAsNewClip'] as bool? ?? false,
+  clipboardFeedbackMode:
+      $enumDecodeNullable(
+        _$ClipboardFeedbackModeEnumMap,
+        json['clipboardFeedbackMode'],
+      ) ??
+      ClipboardFeedbackMode.both,
   enableTypeToSearch: json['enableTypeToSearch'] as bool? ?? false,
   launchAtStartup: json['launchAtStartup'] as bool? ?? false,
   locale: json['locale'] as String? ?? "en",
@@ -94,6 +100,8 @@ Map<String, dynamic> _$AppConfigToJson(_AppConfig instance) =>
       'pasteStackHotkey': instance.pasteStackHotkey,
       'smartPaste': instance.smartPaste,
       'transformAsNewClip': instance.transformAsNewClip,
+      'clipboardFeedbackMode':
+          _$ClipboardFeedbackModeEnumMap[instance.clipboardFeedbackMode]!,
       'enableTypeToSearch': instance.enableTypeToSearch,
       'launchAtStartup': instance.launchAtStartup,
       'locale': instance.locale,
@@ -148,6 +156,13 @@ const _$SortOrderEnumMap = {SortOrder.asc: 'asc', SortOrder.desc: 'desc'};
 const _$SyncSpeedEnumMap = {
   SyncSpeed.realtime: 'realtime',
   SyncSpeed.balanced: 'balanced',
+};
+
+const _$ClipboardFeedbackModeEnumMap = {
+  ClipboardFeedbackMode.disabled: 'disabled',
+  ClipboardFeedbackMode.toast: 'toast',
+  ClipboardFeedbackMode.haptic: 'haptic',
+  ClipboardFeedbackMode.both: 'both',
 };
 
 const _$DynamicSchemeVariantEnumMap = {

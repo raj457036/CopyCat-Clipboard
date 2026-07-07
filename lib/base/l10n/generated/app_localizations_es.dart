@@ -1486,6 +1486,26 @@ class AppLocalizationsEs extends AppLocalizations {
       'Selecciona el modo de color para personalizar la apariencia de la app. La opción predeterminada es \'Tonal Spot\'.';
 
   @override
+  String get settings__dropdown__clipboard_feedback__title =>
+      'Retroalimentación del Portapapeles';
+
+  @override
+  String get settings__dropdown__clipboard_feedback__subtitle =>
+      'Elige cómo CopyCat responde cuando se captura un clip.';
+
+  @override
+  String get settings__clipboard_feedback__disabled => 'Desactivado';
+
+  @override
+  String get settings__clipboard_feedback__toast => 'Tostada';
+
+  @override
+  String get settings__clipboard_feedback__haptic => 'Háptico';
+
+  @override
+  String get settings__clipboard_feedback__both => 'Ambos';
+
+  @override
   String get settings__color_mode__tonalSpot => 'Tonal Spot';
 
   @override

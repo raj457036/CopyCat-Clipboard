@@ -1503,6 +1503,26 @@ class AppLocalizationsPt extends AppLocalizations {
       'Selecione o modo de cor para personalizar a aparência do aplicativo. A opção padrão é \'Tonal Spot\'.';
 
   @override
+  String get settings__dropdown__clipboard_feedback__title =>
+      'Clipboard Feedback';
+
+  @override
+  String get settings__dropdown__clipboard_feedback__subtitle =>
+      'Choose how CopyCat responds when a clip is captured.';
+
+  @override
+  String get settings__clipboard_feedback__disabled => 'Disabled';
+
+  @override
+  String get settings__clipboard_feedback__toast => 'Toast';
+
+  @override
+  String get settings__clipboard_feedback__haptic => 'Haptic';
+
+  @override
+  String get settings__clipboard_feedback__both => 'Both';
+
+  @override
   String get settings__color_mode__tonalSpot => 'Tonal Spot';
 
   @override

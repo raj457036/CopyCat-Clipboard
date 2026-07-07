@@ -20,6 +20,8 @@ enum SyncSpeed { realtime, balanced }
 
 enum AppView { topDocked, bottomDocked, leftDocked, rightDocked, windowed }
 
+enum ClipboardFeedbackMode { disabled, toast, haptic, both }
+
 @freezed
 abstract class AppConfig with _$AppConfig, Identifiable {
   AppConfig._();
@@ -68,6 +70,10 @@ abstract class AppConfig with _$AppConfig, Identifiable {
     /// If enabled, transformed clips will be saved as new clips instead of
     /// being copied/pasted immediately.
     @Default(false) bool transformAsNewClip,
+
+    /// Controls the feedback shown when a clip is captured.
+    @Default(ClipboardFeedbackMode.both)
+    ClipboardFeedbackMode clipboardFeedbackMode,
 
     /// If enabled, search runs while the user types in the search box.
     @Default(false) bool enableTypeToSearch,

@@ -1428,6 +1428,25 @@ class AppLocalizationsZh extends AppLocalizations {
       '选择颜色模式以自定义应用程序的外观。默认选项为“色调点”。';
 
   @override
+  String get settings__dropdown__clipboard_feedback__title => '剪贴板反馈';
+
+  @override
+  String get settings__dropdown__clipboard_feedback__subtitle =>
+      '选择 CopyCat 在捕获剪辑时的响应方式。';
+
+  @override
+  String get settings__clipboard_feedback__disabled => '禁用';
+
+  @override
+  String get settings__clipboard_feedback__toast => '吐司';
+
+  @override
+  String get settings__clipboard_feedback__haptic => '触觉';
+
+  @override
+  String get settings__clipboard_feedback__both => '两者';
+
+  @override
   String get settings__color_mode__tonalSpot => '色调点';
 
   @override

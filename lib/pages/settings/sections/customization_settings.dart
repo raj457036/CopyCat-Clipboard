@@ -1,5 +1,6 @@
 import 'package:clipboard/pages/settings/widgets/dropdowns/default_sort_dropdown.dart';
 import 'package:clipboard/pages/settings/widgets/dropdowns/default_sort_order_dropdown.dart';
+import 'package:clipboard/pages/settings/widgets/dropdowns/clipboard_feedback_dropdown.dart';
 import 'package:clipboard/pages/settings/widgets/color_picker.dart';
 import 'package:clipboard/pages/settings/widgets/dropdowns/theme_dropdown.dart';
 import 'package:clipboard/pages/settings/widgets/dropdowns/theme_variant_dropdown.dart';
@@ -15,6 +16,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
+import 'package:universal_io/io.dart';
 
 class CustomizationSettings extends StatelessWidget {
   const CustomizationSettings({super.key});
@@ -39,6 +41,7 @@ class CustomizationSettings extends StatelessWidget {
         height24,
         SettingHeader(name: locale.settings__header__interactions),
         const SmartPasteSwitch(),
+        if (Platform.isMacOS) const ClipboardFeedbackDropdownTile(),
         const TransformBehaviorSwitch(),
         const TypeToSearchSwitch(),
         height24,

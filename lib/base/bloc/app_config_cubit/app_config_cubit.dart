@@ -380,6 +380,13 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
     await repo.update(newConfig);
   }
 
+  Future<void> setClipboardFeedbackMode(ClipboardFeedbackMode? mode) async {
+    if (mode == null) return;
+    final newConfig = state.config.copyWith(clipboardFeedbackMode: mode);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+  }
+
   Future<void> changeThemeMode(ThemeMode? mode) async {
     if (mode == null) return;
     final newConfig = state.config.copyWith(themeMode: mode);
