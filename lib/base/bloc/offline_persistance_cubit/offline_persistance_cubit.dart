@@ -416,7 +416,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
 
   // TODO(raj): implement for windows and linux
   Future<void> _showFeedback() async {
-    if (!Platform.isMacOS) return;
+    if (!(Platform.isMacOS || Platform.isWindows)) return;
     final feedbackMode = appConfig.state.config.clipboardFeedbackMode;
     final copiedLabel =
         rootNavigationKey.currentContext?.locale.app__ack__copied ?? 'Copied';

@@ -3,6 +3,10 @@
 #include <optional>
 
 #include "flutter/generated_plugin_registrant.h"
+#include "clipboard_toast.h"
+
+#include <flutter/method_channel.h>
+#include <flutter/standard_method_codec.h>
 
 FlutterWindow::FlutterWindow(const flutter::DartProject &project)
     : project_(project) {}
@@ -28,6 +32,57 @@ bool FlutterWindow::OnCreate()
     return false;
   }
   RegisterPlugins(flutter_controller_->engine());
+  // Method channel for clipboard feedback (used on macOS and Windows)
+  {
+    auto messenger = flutter_controller_->engine()->messenger();
+    static auto channel = std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
+        messenger, "copycat_clipboard_feedback", &flutter::StandardMethodCodec::GetInstance());
+
+    channel->SetMethodCallHandler(
+        [](const flutter::MethodCall<flutter::EncodableValue> &call,
+           std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result)
+        {
+          if (call.method_name().compare("showClipboardFeedback") == 0)
+          {
+            const auto *args = std::get_if<flutter::EncodableMap>(call.arguments());
+            std::string message = "Copied";
+            bool showToast = true;
+            bool playHaptic = false;
+            if (args)
+            {
+              auto it = args->find(flutter::EncodableValue("message"));
+              if (it != args->end())
+              {
+                if (auto p = std::get_if<std::string>(&(it->second)))
+                {
+                  message = *p;
+                }
+              }
+              it = args->find(flutter::EncodableValue("showToast"));
+              if (it != args->end())
+              {
+                if (auto p = std::get_if<bool>(&(it->second)))
+                {
+                  showToast = *p;
+                }
+              }
+              it = args->find(flutter::EncodableValue("playHaptic"));
+              if (it != args->end())
+              {
+                if (auto p = std::get_if<bool>(&(it->second)))
+                {
+                  playHaptic = *p;
+                }
+              }
+            }
+            // Show a simple native toast on Windows
+            clipboard_toast::ShowClipboardFeedback(message, showToast, playHaptic);
+            result->Success();
+            return;
+          }
+          result->NotImplemented();
+        });
+  }
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]()

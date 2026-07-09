@@ -18,13 +18,9 @@ class ClipboardFeedbackService {
     required bool playHaptic,
     String? message,
   }) async {
-    if (playHaptic && isMobilePlatform) {
-      await HapticFeedback.selectionClick();
-    }
+    if (!(Platform.isMacOS || Platform.isWindows)) return;
 
     if (!showToast && !playHaptic) return;
-
-    if (!isDesktopPlatform || !Platform.isMacOS) return;
 
     try {
       await _channel.invokeMethod<void>('showClipboardFeedback', {

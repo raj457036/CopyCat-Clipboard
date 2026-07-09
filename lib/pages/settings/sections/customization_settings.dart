@@ -41,7 +41,8 @@ class CustomizationSettings extends StatelessWidget {
         height24,
         SettingHeader(name: locale.settings__header__interactions),
         const SmartPasteSwitch(),
-        if (Platform.isMacOS) const ClipboardFeedbackDropdownTile(),
+        if (Platform.isMacOS || Platform.isWindows)
+          const ClipboardFeedbackDropdownTile(),
         const TransformBehaviorSwitch(),
         const TypeToSearchSwitch(),
         height24,
