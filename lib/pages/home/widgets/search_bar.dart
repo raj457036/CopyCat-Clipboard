@@ -14,6 +14,7 @@ import 'package:clipboard/widgets/view_buttons/app_layout_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:universal_io/io.dart';
 
 class SearchInputBar extends StatefulWidget {
   const SearchInputBar({super.key});
@@ -163,7 +164,11 @@ class _SearchBarInputState extends State<SearchInputBar> {
                             child: Padding(
                               padding: const EdgeInsets.only(right: padding10),
                               child: Text(
-                                keyboardShortcut(key: "F"),
+                                keyboardShortcut(
+                                  key: "F",
+                                  meta: Platform.isMacOS,
+                                  ctrl: Platform.isWindows || Platform.isLinux,
+                                ),
                                 style: textTheme.labelLarge?.copyWith(
                                   color: colors.outline,
                                 ),

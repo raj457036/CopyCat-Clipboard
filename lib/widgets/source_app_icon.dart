@@ -24,7 +24,10 @@ class SourceAppIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final normalizedSourceId = sourceId?.trim() ?? '';
     if (normalizedSourceId.isEmpty) {
-      return const SizedBox.shrink();
+      return const Padding(
+        padding: EdgeInsets.only(left: padding6),
+        child: SizedBox.shrink(),
+      );
     }
 
     final resolver = sl<ApplicationMetaResolver>();
@@ -36,7 +39,10 @@ class SourceAppIcon extends StatelessWidget {
       builder: (context, snapshot) {
         final iconPath = snapshot.data;
         if (iconPath == null || iconPath.isEmpty) {
-          return const SizedBox.shrink();
+          return const Padding(
+            padding: EdgeInsets.only(left: padding6),
+            child: SizedBox.shrink(),
+          );
         }
 
         final isRemote = iconPath.startsWith('http');
@@ -51,7 +57,7 @@ class SourceAppIcon extends StatelessWidget {
           fit: BoxFit.cover,
           semanticLabel: "Source application icon",
         );
-        if (sourceOs == PlatformOS.android) {
+        if (sourceOs != PlatformOS.macos && sourceOs != PlatformOS.ios) {
           return SizedBox(
             width: width,
             height: height,

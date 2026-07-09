@@ -88,13 +88,7 @@ class LeadingClipboardOption extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           width2,
-          SourceAppIcon(
-            sourceId: item.sourceId,
-            sourceOs: item.os,
-            width: 40,
-            // height: 35,
-          ),
-          item.sourceId == null ? width6 : width2,
+          SourceAppIcon(sourceId: item.sourceId, sourceOs: item.os, width: 40),
           Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,
