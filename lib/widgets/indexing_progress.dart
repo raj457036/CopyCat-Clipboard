@@ -5,6 +5,7 @@ import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/di/di.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -107,8 +108,8 @@ class _IndexingProgressState extends State<IndexingProgress> {
             onPressed: _startIndexing,
             label: Text(context.locale.app__start_indexing),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              backgroundColor: context.colors.primary,
+              foregroundColor: context.colors.onPrimary,
             ),
           ),
         ],
