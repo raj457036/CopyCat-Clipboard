@@ -10,11 +10,14 @@ import 'package:go_router/go_router.dart';
 
 class ClipCollectionSelectorTile extends StatefulWidget {
   final int? collectionId;
+  final int? serverCollectionId;
+
   final void Function(ClipCollection? collection, {bool removed}) onChange;
 
   const ClipCollectionSelectorTile({
     super.key,
     this.collectionId,
+    this.serverCollectionId,
     required this.onChange,
   });
 
@@ -40,8 +43,11 @@ class ClipCollectionSelectorStateTile
     setState(() {
       isLoading = true;
     });
-    if (widget.collectionId != null) {
-      collection = await cubit.get(widget.collectionId!);
+    if (widget.collectionId != null || widget.serverCollectionId != null) {
+      collection = await cubit.get(
+        widget.collectionId ?? 0,
+        widget.serverCollectionId,
+      );
     }
     setState(() {
       isLoading = false;

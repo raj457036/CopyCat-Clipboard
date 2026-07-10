@@ -720,6 +720,7 @@ class _ClipInspectorState extends State<ClipInspector> {
                 ClipCollectionSelectorTile(
                   onChange: _setCollection,
                   collectionId: collectionId?.$1,
+                  serverCollectionId: collectionId?.$2,
                 ),
                 height12,
                 Align(

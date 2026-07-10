@@ -17,7 +17,10 @@ class ClipCollectionProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final collection = context.read<ClipCollectionCubit>().get(collectionId);
+    final collection = context.read<ClipCollectionCubit>().get(
+      collectionId,
+      null,
+    );
 
     return FutureBuilder(
       future: collection,

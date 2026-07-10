@@ -135,7 +135,7 @@ class _ClipDetailFormState extends State<ClipDetailForm> {
             height12,
             ClipCollectionSelectorTile(
               onChange: setCollection,
-              collectionId: collectionId?.$1,
+              collectionId: collectionId?.$1 ?? collectionId?.$2,
             ),
             height12,
             OverflowBar(

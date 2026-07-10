@@ -479,7 +479,7 @@ final appRouter = GoRouter(
             final id = state.pathParameters["id"] ?? "new";
             final collectionFuture = id == "new"
                 ? null
-                : context.read<ClipCollectionCubit>().get(int.parse(id));
+                : context.read<ClipCollectionCubit>().get(int.parse(id), null);
 
             Widget fromFuture(Widget Function(ClipCollection?) build) {
               if (collectionFuture == null) return build(null);
