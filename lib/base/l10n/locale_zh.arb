@@ -78,7 +78,7 @@
   "app__ack__missing_e2e_setup": "缺少加密设置",
   "app__ack__no_app_for_file": "未找到打开此文件的应用程序。",
   "app__ack__perm_fail_to_open_file": "未授予打开此文件的权限。",
-  "app__index_pending": "索引 {total} 个剪辑以使其可搜索。只需片刻。",
+  "app__index_pending": "⚠️ 索引 {total} 个剪辑以使其可搜索。只需片刻。",
   "@app__index_pending": {
     "placeholders": {
       "total": {
@@ -86,6 +86,7 @@
       }
     }
   },
+  "app__indexing_completed": "🎉 索引完成。您的剪辑现在可以搜索。",
   "@@DIALOG": "通用对话框",
   "dialog__delete_clip__title": "删除剪辑",
   "dialog__delete_clip__subtitle": "{itemCount, plural, other{确定要删除这些剪辑吗？} one{确定要删除此剪辑吗？}}",

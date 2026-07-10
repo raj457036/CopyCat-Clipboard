@@ -82,6 +82,12 @@ class _IndexingProgressState extends State<IndexingProgress> {
     if (completedSuccessfully) {
       logger.d("✅ Indexing Completed");
       await _appConfigCubit.setSearchIndexingStatus(true);
+      InAppNotificationService.i.notify(
+        NotificationMessage.builder(
+          builder: (context) =>
+              NotificationContent(body: context.locale.app__indexing_completed),
+        ),
+      );
     }
   }
 
@@ -91,37 +97,33 @@ class _IndexingProgressState extends State<IndexingProgress> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<AppConfigCubit, AppConfigState, bool>(
-      selector: (state) => state.config.searchIndexReady,
-      builder: (context, searchIndexReady) {
-        if (searchIndexReady) {
-          return const SizedBox.shrink();
-        }
-
-        if (!isIndexing) {
-          return MaterialBanner(
-            content: Text(context.locale.app__index_pending(total: total)),
-            actions: [
-              ElevatedButton.icon(
-                icon: const Icon(Icons.play_arrow),
-                onPressed: _startIndexing,
-                label: Text(context.locale.app__start_indexing),
-              ),
-            ],
-          );
-        }
-
-        return MaterialBanner(
-          content: LinearProgressIndicator(value: progress / total),
-          actions: [
-            TextButton.icon(
-              onPressed: _stopIndexing,
-              icon: const Icon(Icons.stop),
-              label: Text(context.locale.app__stop_indexing),
+    if (total == 0) return const SizedBox.shrink();
+    if (!isIndexing) {
+      return MaterialBanner(
+        content: Text(context.locale.app__index_pending(total: total)),
+        actions: [
+          ElevatedButton.icon(
+            icon: const Icon(Icons.play_arrow),
+            onPressed: _startIndexing,
+            label: Text(context.locale.app__start_indexing),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
             ),
-          ],
-        );
-      },
+          ),
+        ],
+      );
+    }
+
+    return MaterialBanner(
+      content: LinearProgressIndicator(value: progress / total),
+      actions: [
+        TextButton.icon(
+          onPressed: _stopIndexing,
+          icon: const Icon(Icons.stop),
+          label: Text(context.locale.app__stop_indexing),
+        ),
+      ],
     );
   }
 }

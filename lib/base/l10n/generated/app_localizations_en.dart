@@ -248,8 +248,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String app__index_pending({required int total}) {
-    return 'Index $total clips to make them searchable. It only takes a moment.';
+    return '⚠️ Index $total clips to make them searchable. It only takes a moment.';
   }
+
+  @override
+  String get app__indexing_completed =>
+      '🎉 Search indexing completed. Your clips are now searchable.';
 
   @override
   String get dialog__delete_clip__title => 'Delete Clip';

@@ -78,7 +78,7 @@
   "app__ack__missing_e2e_setup": "Configuration du chiffrement manquante",
   "app__ack__no_app_for_file": "Aucune application trouvée pour ouvrir ce fichier.",
   "app__ack__perm_fail_to_open_file": "Autorisation pour ouvrir ce fichier non accordée.",
-  "app__index_pending": "Indexer {total} clips pour les rendre consultables. Cela ne prend qu'un instant.",
+  "app__index_pending": "⚠️ Indexer {total} clips pour les rendre consultables. Cela ne prend qu'un instant.",
   "@app__index_pending": {
     "placeholders": {
       "total": {
@@ -86,6 +86,7 @@
       }
     }
   },
+  "app__indexing_completed": "🎉 Indexation terminée. Vos clips sont maintenant consultables.",
   "@@DIALOG": "Dialogue commun",
   "dialog__delete_clip__title": "Supprimer le clip",
   "dialog__delete_clip__subtitle": "{itemCount, plural, one{Êtes-vous sûr de vouloir supprimer ce clip ?} other{Êtes-vous sûr de vouloir supprimer ces clips ?}}",

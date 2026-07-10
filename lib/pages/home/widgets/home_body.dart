@@ -5,6 +5,7 @@ import 'package:clipboard/pages/home/widgets/collection_filter_chips.dart';
 import 'package:clipboard/pages/home/widgets/compact_search_bar.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/app_layout_builder.dart';
+import 'package:clipboard/widgets/appconfig_flag.dart';
 import 'package:clipboard/widgets/clip_view_builders/builder.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
 import 'package:clipboard/widgets/indexing_progress.dart';
@@ -27,7 +28,12 @@ class HomePageBody extends StatelessWidget {
 
     return Column(
       children: [
-        const IndexingProgress(),
+        AppConfigBuilder(
+          when: (config) => !config.searchIndexReady,
+          builder: (context) {
+            return const IndexingProgress();
+          },
+        ),
         if (!context.isMobile)
           view == AppView.windowed
               ? const CollectionFilterChips()

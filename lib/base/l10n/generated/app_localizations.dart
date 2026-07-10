@@ -567,8 +567,14 @@ abstract class AppLocalizations {
   /// No description provided for @app__index_pending.
   ///
   /// In en, this message translates to:
-  /// **'Index {total} clips to make them searchable. It only takes a moment.'**
+  /// **'⚠️ Index {total} clips to make them searchable. It only takes a moment.'**
   String app__index_pending({required int total});
+
+  /// No description provided for @app__indexing_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'🎉 Search indexing completed. Your clips are now searchable.'**
+  String get app__indexing_completed;
 
   /// No description provided for @dialog__delete_clip__title.
   ///

@@ -101,7 +101,7 @@
       }
     }
   },
-  "app__index_pending": "Index {total} clips to make them searchable. It only takes a moment.",
+  "app__index_pending": "⚠️ Index {total} clips to make them searchable. It only takes a moment.",
   "@app__index_pending": {
     "placeholders": {
       "total": {
@@ -109,6 +109,7 @@
       }
     }
   },
+  "app__indexing_completed": "🎉 Search indexing completed. Your clips are now searchable.",
   "@@DIALOG": "Common Dialog",
   "dialog__delete_clip__title": "Delete Clip",
   "dialog__delete_clip__subtitle": "{itemCount, plural, other{Are you sure you want to delete these clips?} one{Are you sure you want to delete this clip?}}",

@@ -249,8 +249,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String app__index_pending({required int total}) {
-    return 'Indexar $total clipes para torná-los pesquisáveis. Isso leva apenas um momento.';
+    return '⚠️ Indexar $total clipes para torná-los pesquisáveis. Isso leva apenas um momento.';
   }
+
+  @override
+  String get app__indexing_completed =>
+      '🎉 Indexação concluída. Seus clipes agora são pesquisáveis.';
 
   @override
   String get dialog__delete_clip__title => 'Excluir Clip';

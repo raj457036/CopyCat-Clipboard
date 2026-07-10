@@ -245,8 +245,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String app__index_pending({required int total}) {
-    return '索引 $total 个剪辑以使其可搜索。只需片刻。';
+    return '⚠️ 索引 $total 个剪辑以使其可搜索。只需片刻。';
   }
+
+  @override
+  String get app__indexing_completed => '🎉 索引完成。您的剪辑现在可以搜索。';
 
   @override
   String get dialog__delete_clip__title => '删除剪辑';
