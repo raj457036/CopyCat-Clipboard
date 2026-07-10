@@ -7,6 +7,7 @@ import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/app_layout_builder.dart';
 import 'package:clipboard/widgets/clip_view_builders/builder.dart';
 import 'package:clipboard/widgets/clips_provider.dart';
+import 'package:clipboard/widgets/indexing_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,6 +27,7 @@ class HomePageBody extends StatelessWidget {
 
     return Column(
       children: [
+        const IndexingProgress(),
         if (!context.isMobile)
           view == AppView.windowed
               ? const CollectionFilterChips()

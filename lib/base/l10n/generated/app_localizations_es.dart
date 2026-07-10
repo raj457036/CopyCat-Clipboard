@@ -15,6 +15,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get app__slogan => 'Un Portapapeles, Posibilidades Ilimitadas';
 
   @override
+  String get app__start_indexing => 'Iniciar Indexación';
+
+  @override
+  String get app__stop_indexing => 'Detener Indexación';
+
+  @override
   String get app__image_not_found => 'Imagen no encontrada';
 
   @override
@@ -239,6 +245,11 @@ class AppLocalizationsEs extends AppLocalizations {
     required String message,
   }) {
     return 'No se pudo sincronizar $entityType: $message';
+  }
+
+  @override
+  String app__index_pending({required int total}) {
+    return 'Indexar $total clips para que sean buscables. Solo toma un momento.';
   }
 
   @override

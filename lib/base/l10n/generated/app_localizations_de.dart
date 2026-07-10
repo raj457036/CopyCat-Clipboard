@@ -15,6 +15,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get app__slogan => 'Eine Zwischenablage, unbegrenzte Möglichkeiten';
 
   @override
+  String get app__start_indexing => 'Indexierung starten';
+
+  @override
+  String get app__stop_indexing => 'Indexierung stoppen';
+
+  @override
   String get app__image_not_found => 'Bild nicht gefunden';
 
   @override
@@ -238,6 +244,11 @@ class AppLocalizationsDe extends AppLocalizations {
     required String message,
   }) {
     return '$entityType konnte nicht synchronisiert werden: $message';
+  }
+
+  @override
+  String app__index_pending({required int total}) {
+    return 'Indizieren Sie $total Clips, um sie durchsuchbar zu machen. Es dauert nur einen Moment.';
   }
 
   @override

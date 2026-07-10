@@ -10,6 +10,8 @@
   "@app__slogan": {
     "description": "CopyCat Zwischenablage Slogan"
   },
+  "app__start_indexing": "Indexierung starten",
+  "app__stop_indexing": "Indexierung stoppen",
   "app__image_not_found": "Bild nicht gefunden",
   "app__unknown_error": "Ein unerwarteter Fehler ist aufgetreten",
   "app__downloading": "Herunterladen...",
@@ -76,6 +78,14 @@
   "app__ack__missing_e2e_setup": "Verschlüsselungseinrichtung fehlt",
   "app__ack__no_app_for_file": "Keine Anwendung gefunden, um diese Datei zu öffnen.",
   "app__ack__perm_fail_to_open_file": "Berechtigung zum Öffnen dieser Datei nicht erteilt.",
+  "app__index_pending": "Indizieren Sie {total} Clips, um sie durchsuchbar zu machen. Es dauert nur einen Moment.",
+  "@app__index_pending": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "@@DIALOG": "Allgemeiner Dialog",
   "dialog__delete_clip__title": "Clip löschen",
   "dialog__delete_clip__subtitle": "{itemCount, plural, other{Möchten Sie diese Clips wirklich löschen?} one{Möchten Sie diesen Clip wirklich löschen?}}",

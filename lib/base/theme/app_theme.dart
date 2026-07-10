@@ -50,7 +50,7 @@ ThemeData buildAppTheme({
       backButtonIconBuilder: (BuildContext context) =>
           const Icon(Icons.arrow_back),
     ),
-
+    progressIndicatorTheme: const ProgressIndicatorThemeData(year2023: false),
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
         TargetPlatform.android: ZoomPageTransitionsBuilder(),

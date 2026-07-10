@@ -10,6 +10,8 @@
   "@app__slogan": {
     "description": "Slogan do CopyCat Clipboard"
   },
+  "app__start_indexing": "Iniciar Indexação",
+  "app__stop_indexing": "Detener Indexação",
   "app__image_not_found": "Imagem não encontrada",
   "app__unknown_error": "Ocorreu um erro inesperado",
   "app__downloading": "Baixando...",
@@ -76,6 +78,14 @@
   "app__ack__missing_e2e_setup": "Configuração de criptografia ausente",
   "app__ack__no_app_for_file": "Nenhum aplicativo encontrado para abrir este arquivo.",
   "app__ack__perm_fail_to_open_file": "Permissão para abrir este arquivo não concedida.",
+  "app__index_pending": "Indexar {total} clipes para torná-los pesquisáveis. Isso leva apenas um momento.",
+  "@app__index_pending": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "@@DIALOG": "Dialog Comum",
   "dialog__delete_clip__title": "Excluir Clip",
   "dialog__delete_clip__subtitle": "{itemCount, plural, one{Tem certeza de que deseja excluir este clip?} other{Tem certeza de que deseja excluir estes clips?}}",

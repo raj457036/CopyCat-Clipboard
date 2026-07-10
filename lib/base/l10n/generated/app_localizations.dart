@@ -117,6 +117,18 @@ abstract class AppLocalizations {
   /// **'One Clipboard, Limitless Possibility'**
   String get app__slogan;
 
+  /// No description provided for @app__start_indexing.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Indexing'**
+  String get app__start_indexing;
+
+  /// No description provided for @app__stop_indexing.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop Indexing'**
+  String get app__stop_indexing;
+
   /// No description provided for @app__image_not_found.
   ///
   /// In en, this message translates to:
@@ -551,6 +563,12 @@ abstract class AppLocalizations {
     required String entityType,
     required String message,
   });
+
+  /// No description provided for @app__index_pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Index {total} clips to make them searchable. It only takes a moment.'**
+  String app__index_pending({required int total});
 
   /// No description provided for @dialog__delete_clip__title.
   ///

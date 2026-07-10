@@ -478,7 +478,7 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
   Future<void> changeOnBoardStatus(bool value) async {
     final newConfig = state.config.copyWith(
       onBoardComplete: value,
-      searchIndexReady: true,
+      searchIndexReady: value == true,
     );
     emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
@@ -492,6 +492,12 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
 
   Future<void> toggleTrayIcon(bool value) async {
     final newConfig = state.config.copyWith(showTrayIcon: value);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+  }
+
+  Future<void> setSearchIndexingStatus(bool value) async {
+    final newConfig = state.config.copyWith(searchIndexReady: value);
     emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
   }

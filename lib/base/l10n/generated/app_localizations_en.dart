@@ -15,6 +15,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app__slogan => 'One Clipboard, Limitless Possibility';
 
   @override
+  String get app__start_indexing => 'Start Indexing';
+
+  @override
+  String get app__stop_indexing => 'Stop Indexing';
+
+  @override
   String get app__image_not_found => 'Image not found';
 
   @override
@@ -238,6 +244,11 @@ class AppLocalizationsEn extends AppLocalizations {
     required String message,
   }) {
     return 'Failed to sync $entityType: $message';
+  }
+
+  @override
+  String app__index_pending({required int total}) {
+    return 'Index $total clips to make them searchable. It only takes a moment.';
   }
 
   @override

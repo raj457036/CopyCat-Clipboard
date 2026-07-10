@@ -15,6 +15,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app__slogan => '一个剪贴板，无限可能';
 
   @override
+  String get app__start_indexing => '开始索引';
+
+  @override
+  String get app__stop_indexing => '停止索引';
+
+  @override
   String get app__image_not_found => '未找到图片';
 
   @override
@@ -235,6 +241,11 @@ class AppLocalizationsZh extends AppLocalizations {
     required String message,
   }) {
     return '同步 $entityType 失败：$message';
+  }
+
+  @override
+  String app__index_pending({required int total}) {
+    return '索引 $total 个剪辑以使其可搜索。只需片刻。';
   }
 
   @override

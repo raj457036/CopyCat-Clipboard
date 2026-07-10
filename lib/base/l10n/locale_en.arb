@@ -10,6 +10,8 @@
   "@app__slogan": {
     "description": "CopyCat Clipboard Slogan"
   },
+  "app__start_indexing": "Start Indexing",
+  "app__stop_indexing": "Stop Indexing",
   "app__image_not_found": "Image not found",
   "app__unknown_error": "An unexpected error occurred",
   "app__downloading": "Downloading...",
@@ -96,6 +98,14 @@
       },
       "message": {
         "type": "String"
+      }
+    }
+  },
+  "app__index_pending": "Index {total} clips to make them searchable. It only takes a moment.",
+  "@app__index_pending": {
+    "placeholders": {
+      "total": {
+        "type": "int"
       }
     }
   },

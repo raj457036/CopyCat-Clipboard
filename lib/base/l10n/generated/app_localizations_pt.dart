@@ -15,6 +15,12 @@ class AppLocalizationsPt extends AppLocalizations {
   String get app__slogan => 'Um Clipboard, Possibilidades Ilimitadas';
 
   @override
+  String get app__start_indexing => 'Iniciar Indexação';
+
+  @override
+  String get app__stop_indexing => 'Detener Indexação';
+
+  @override
   String get app__image_not_found => 'Imagem não encontrada';
 
   @override
@@ -239,6 +245,11 @@ class AppLocalizationsPt extends AppLocalizations {
     required String message,
   }) {
     return 'Falha ao sincronizar $entityType: $message';
+  }
+
+  @override
+  String app__index_pending({required int total}) {
+    return 'Indexar $total clipes para torná-los pesquisáveis. Isso leva apenas um momento.';
   }
 
   @override

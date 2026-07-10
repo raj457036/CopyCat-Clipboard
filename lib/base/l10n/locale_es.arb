@@ -10,6 +10,8 @@
   "@app__slogan": {
     "description": "Eslogan del Portapapeles CopyCat"
   },
+  "app__start_indexing": "Iniciar Indexación",
+  "app__stop_indexing": "Detener Indexación",
   "app__image_not_found": "Imagen no encontrada",
   "app__unknown_error": "Ocurrió un error inesperado",
   "app__downloading": "Descargando...",
@@ -76,6 +78,14 @@
   "app__ack__missing_e2e_setup": "Falta configuración de encriptación",
   "app__ack__no_app_for_file": "No se encontró aplicación para abrir este archivo.",
   "app__ack__perm_fail_to_open_file": "No se otorgó permiso para abrir este archivo.",
+  "app__index_pending": "Indexar {total} clips para que sean buscables. Solo toma un momento.",
+  "@app__index_pending": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "@@DIALOG": "Diálogo Común",
   "dialog__delete_clip__title": "Eliminar Clip",
   "dialog__delete_clip__subtitle": "{itemCount, plural, other{¿Seguro que quieres eliminar estos clips?} one{¿Seguro que quieres eliminar este clip?}}",

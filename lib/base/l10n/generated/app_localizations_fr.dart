@@ -15,6 +15,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get app__slogan => 'Un presse-papiers, des possibilités illimitées';
 
   @override
+  String get app__start_indexing => 'Démarrer l\'indexation';
+
+  @override
+  String get app__stop_indexing => 'Arrêter l\'indexation';
+
+  @override
   String get app__image_not_found => 'Image introuvable';
 
   @override
@@ -240,6 +246,11 @@ class AppLocalizationsFr extends AppLocalizations {
     required String message,
   }) {
     return 'Échec de synchronisation de $entityType : $message';
+  }
+
+  @override
+  String app__index_pending({required int total}) {
+    return 'Indexer $total clips pour les rendre consultables. Cela ne prend qu\'un instant.';
   }
 
   @override
