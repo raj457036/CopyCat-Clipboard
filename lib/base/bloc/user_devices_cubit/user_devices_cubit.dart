@@ -5,7 +5,6 @@ import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_state.dart';
 import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart';
-import 'package:clipboard/base/domain/model/sync/user_device_access.dart';
 import 'package:clipboard/base/domain/repositories/user_devices.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
@@ -168,40 +167,17 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
         emit(state.copyWith(failure: failure));
         return false;
       },
-      (_) {
-        final current = state.deviceList;
-        if (current != null) {
-          final now = DateTime.now();
-          final updatedDevices = current.devices
-              .map((d) {
-                if (d.deviceId != revokeDeviceId) return d;
-                return SyncDeviceInfo(
-                  deviceId: d.deviceId,
-                  platform: d.platform,
-                  appVersion: d.appVersion,
-                  lastSeenAt: now,
-                  isRevoked: true,
-                );
-              })
-              .toList(growable: false);
+      (_) async {
+        final accessStatus = await registerCurrentDevice();
+        await setupSyncOrchestrator();
 
-          final activeCount = updatedDevices.where((d) => !d.isRevoked).length;
-          emit(
-            state.copyWith(
-              deviceList: DeviceListResult(
-                devices: updatedDevices,
-                limit: current.limit,
-                activeCount: activeCount,
-              ),
-              accessStatus: activeCount <= current.limit
-                  ? DeviceAccessStatus.allowed
-                  : DeviceAccessStatus.limitReached,
-              clearFailure: true,
-            ),
-          );
-
-          InAppNotificationService.i.dismiss('sync_device_limit_reached');
+        if (accessStatus == DeviceAccessStatus.allowed &&
+            appConfigCubit.state.config.enableSync) {
+          await syncOrchestrator.syncAll(force: true);
         }
+
+        await fetchDevices(force: true);
+        InAppNotificationService.i.dismiss('sync_device_limit_reached');
         return true;
       },
     );

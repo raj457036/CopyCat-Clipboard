@@ -67,16 +67,6 @@ class CustomScaffold extends StatelessWidget {
           bottomNavigationBar: bottomNavBar,
         );
 
-        if (Platform.isAndroid &&
-            state.view == AppView.windowed &&
-            !smallScreen) {
-          scaffold = MediaQuery.removePadding(
-            context: context,
-            removeTop: true,
-            child: scaffold,
-          );
-        }
-
         if (state.view != AppView.windowed ||
             smallScreen ||
             activeIndex == -1) {

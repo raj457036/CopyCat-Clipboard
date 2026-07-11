@@ -31,8 +31,8 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
     _userDevicesCubit.fetchDevices();
   }
 
-  void _refresh() {
-    _userDevicesCubit.fetchDevices(force: true);
+  Future<void> _refresh() async {
+    await _userDevicesCubit.fetchDevices(force: true);
   }
 
   Future<void> _revokeDevice(SyncDeviceInfo device) async {
@@ -214,7 +214,7 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                     ),
                     Expanded(
                       child: RefreshIndicator(
-                        onRefresh: () async => _refresh(),
+                        onRefresh: _refresh,
                         child: LayoutBuilder(
                           builder: (context, constraints) {
                             final columns = (constraints.maxWidth / 250)

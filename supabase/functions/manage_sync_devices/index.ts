@@ -96,26 +96,10 @@ async function registerDevice(
     return jsonResponse({ error: "deviceId is required for register" }, 400);
   }
 
-  const { data: existingDevice } = await client
-    .from(DEVICES_TABLE)
-    .select("isRevoked")
-    .eq("userId", userId)
-    .eq("deviceId", deviceId)
-    .maybeSingle();
-
   const [limit, activeDevices] = await Promise.all([
     getPlanDeviceLimit(client, userId),
     getActiveDevices(client, userId),
   ]);
-
-  if (existingDevice?.isRevoked === true) {
-    return jsonResponse({
-      allowed: false,
-      limit,
-      activeCount: activeDevices.length,
-      devices: normalizeDevices(activeDevices),
-    });
-  }
 
   const otherActiveDevices = activeDevices.filter((d) => d.deviceId !== deviceId);
 

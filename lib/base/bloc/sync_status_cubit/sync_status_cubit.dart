@@ -1,7 +1,10 @@
 import 'dart:async' show StreamSubscription;
 
 import 'package:bloc/bloc.dart';
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_state.dart';
 import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
@@ -15,6 +18,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart' show logger;
+import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/subscription_actions.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:duration/duration.dart';
@@ -205,6 +209,14 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
   }
 
   Future<void> _runSyncAll(SyncAllParams params) async {
+    final appConfig = sl<AppConfigCubit>().state.config;
+    final deviceAccess = sl<UserDevicesCubit>().state.accessStatus;
+
+    if (!appConfig.enableSync || deviceAccess != DeviceAccessStatus.allowed) {
+      emit(const SyncStatusState.disabled());
+      return;
+    }
+
     if (_isOnManualCooldown(params)) {
       final cooldown = _manualSyncCooldown;
       final elapsed = systemTime().difference(_lastManualSyncAt!);

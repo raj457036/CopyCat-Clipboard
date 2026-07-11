@@ -1,4 +1,5 @@
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/utils/common_extension.dart';
 import 'package:flutter/material.dart';
 
 enum DeviceStatusBadgeType { current, active, revoked }
@@ -10,7 +11,7 @@ class DeviceStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = context.colors;
 
     late final Color dotColor;
     late final Color textColor;
@@ -18,8 +19,8 @@ class DeviceStatusBadge extends StatelessWidget {
 
     switch (status) {
       case DeviceStatusBadgeType.current:
-        dotColor = colorScheme.primary;
-        textColor = colorScheme.primary;
+        dotColor = Colors.green;
+        textColor = Colors.green;
         label = 'This device';
       case DeviceStatusBadgeType.active:
         dotColor = colorScheme.tertiary;
