@@ -22,7 +22,7 @@ class InconsistentTiming extends StatefulWidget {
 
   Future<void> open() async {
     if (_visible) return;
-    await Future.delayed(const Duration(seconds: 5));
+    await wait(5000);
     windowManager
       ..show()
       ..focus();

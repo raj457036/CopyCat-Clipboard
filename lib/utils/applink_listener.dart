@@ -51,7 +51,7 @@ class ApplinkListener {
       await currentContext.windowAction?.show();
     }
 
-    await Future.delayed(Durations.medium1);
+    await wait(Durations.medium1.inMilliseconds);
 
     final payload = _parsePayload(uri);
 

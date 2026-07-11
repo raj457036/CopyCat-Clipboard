@@ -12,7 +12,9 @@ import android.view.accessibility.AccessibilityEvent
  * 
  * Higher battery overhead but more robust detection.
  */
-class Mode2AggressiveStrategy : ClipboardDetectionStrategy() {
+class Mode2AggressiveStrategy(
+    private val activeImePackageProvider: (() -> String)? = null,
+) : ClipboardDetectionStrategy() {
     override val mode: ClipboardDetectionMode = ClipboardDetectionMode.MODE_2_AGGRESSIVE
 
     private val logTag = "Mode2AggressiveStrategy"
@@ -105,6 +107,19 @@ class Mode2AggressiveStrategy : ClipboardDetectionStrategy() {
         currentForegroundPackage: String,
         callback: ClipboardDetectionCallback,
     ) {
+        val eventPackage = event.packageName?.toString().orEmpty()
+
+        val activeImePackage = activeImePackageProvider?.invoke()?.trim().orEmpty()
+        if (activeImePackage.isNotEmpty() && eventPackage == activeImePackage) {
+            debugLog(logTag) { "Ignoring active IME click event package=$eventPackage" }
+            return
+        }
+
+        if (isImePackage(eventPackage)) {
+            debugLog(logTag) { "Ignoring IME click event package=$eventPackage" }
+            return
+        }
+
         if (!event.hasSemanticClickPayload()) {
             return
         }
@@ -209,6 +224,17 @@ class Mode2AggressiveStrategy : ClipboardDetectionStrategy() {
         }
 
         return normalizePackageName(eventPackage)
+    }
+
+    private fun isImePackage(packageName: String): Boolean {
+        val normalized = packageName.trim().lowercase()
+        if (normalized.isBlank()) return false
+
+        return normalized.contains("inputmethod") ||
+            normalized.contains("keyboard") ||
+            normalized.startsWith("com.google.android.inputmethod") ||
+            normalized.startsWith("com.samsung.android.honeyboard") ||
+            normalized.startsWith("com.touchtype.swiftkey")
     }
 
     private fun recentSelectionPackage(): String {

@@ -1,3 +1,4 @@
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:clipboard/base/data/services/lan_sync/lan_peer.dart';
 import 'package:clipboard/base/data/services/lan_sync/lan_peer_registry.dart';
@@ -165,7 +166,7 @@ void main() {
       registry.recordPeer('peer1', '10.0.0.1', 1234);
 
       // Allow microtasks to flush.
-      await Future<void>.delayed(Duration.zero);
+      await wait(0);
 
       expect(emissions, isNotEmpty);
       expect(emissions.last.any((p) => p.deviceId == 'peer1'), isTrue);

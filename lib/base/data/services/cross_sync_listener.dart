@@ -5,6 +5,7 @@ import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart'
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -100,7 +101,7 @@ class SBClipCrossSyncListener
       return;
     }
     await stop();
-    await Future.delayed(const Duration(seconds: 1));
+    await wait(const Duration(seconds: 1).inMilliseconds);
     await start();
   }
 
@@ -195,7 +196,7 @@ class SBCollectionCrossSyncListener
       return;
     }
     await stop();
-    await Future.delayed(const Duration(seconds: 1));
+    await wait(const Duration(seconds: 1).inMilliseconds);
     await start();
   }
 

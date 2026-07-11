@@ -8,6 +8,7 @@ import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -84,7 +85,7 @@ class _SpyWindowActionCubit implements WindowActionCubit {
   Future<void> show() async {
     showCalls++;
     if (showDelay > Duration.zero) {
-      await Future.delayed(showDelay);
+      await wait(showDelay.inMilliseconds);
     }
     showCompleted = true;
   }
@@ -93,7 +94,7 @@ class _SpyWindowActionCubit implements WindowActionCubit {
   Future<void> focus() async {
     focusCalls++;
     if (focusDelay > Duration.zero) {
-      await Future.delayed(focusDelay);
+      await wait(focusDelay.inMilliseconds);
     }
     focusCompleted = true;
   }

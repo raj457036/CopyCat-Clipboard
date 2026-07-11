@@ -5,6 +5,7 @@ import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
+import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -96,7 +97,7 @@ class _PasteStackCoordinatorState extends State<PasteStackCoordinator> {
 
     final isAppFocused = windowAction.isFocused;
     if (isAppFocused) {
-      await Future.delayed(Durations.short1);
+      await wait(Durations.short1.inMilliseconds);
     }
     await focusManager.pasteOnFocusedWindow();
     pasteStack.completeCurrentPaste();

@@ -207,6 +207,22 @@ class AppContent extends StatelessWidget {
                     if (appConfig.view == AppView.windowed)
                       NavigateToSettingPageIntent:
                           NavigateToSettingPageAction(),
+                    if (isMobilePlatform)
+                      EditableTextTapOutsideIntent:
+                          CallbackAction<EditableTextTapOutsideIntent>(
+                            onInvoke: (intent) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              return null;
+                            },
+                          ),
+                    if (isMobilePlatform)
+                      EditableTextTapUpOutsideIntent:
+                          CallbackAction<EditableTextTapUpOutsideIntent>(
+                            onInvoke: (intent) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              return null;
+                            },
+                          ),
                     PasteByClipIndexIntent: PasteByClipIndexAction(),
                     SelectAllIntent: SelectAllAction(),
                   },
@@ -257,12 +273,7 @@ class MainApp extends StatelessWidget {
         BlocProvider<UserDevicesCubit>(create: (context) => sl()),
         BlocProvider<AppLockCubit>(create: (context) => sl()),
       ],
-      child: isMobilePlatform
-          ? GestureDetector(
-              onTapDown: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-              child: content,
-            )
-          : content,
+      child: content,
     );
 
     if (kDebugMode) {

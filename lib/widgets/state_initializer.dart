@@ -65,7 +65,7 @@ class _StateInitializerState extends State<StateInitializer>
 
   Future<void> setupWindow() async {
     final windowCubit = context.read<WindowActionCubit?>();
-    await Future.delayed(Durations.extralong4);
+    await wait(Durations.extralong4.inMilliseconds);
     final appConfig = appConfigCubit.state.config;
     windowCubit?.setup(appConfig.view, appConfig.windowSize);
   }

@@ -89,7 +89,7 @@ class InAppNotificationService {
       content: snackbarContent,
       showCloseIcon: isDesktopPlatform,
       behavior: behavior,
-      margin: _getSnackBarMargin(),
+      margin: !flat ? _getSnackBarMargin() : null,
       shape: flat ? null : const RoundedRectangleBorder(borderRadius: radius16),
       action: message.action ?? messageContent.action,
       persist: message.persistent,

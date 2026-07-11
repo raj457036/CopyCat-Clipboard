@@ -37,6 +37,7 @@ class _LoginPageScaffoldState extends State<LoginPageScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: context.isMobile
           ? LoginMobileLayout(
               maxWidth: _mobileMaxWidth,
@@ -109,18 +110,13 @@ class LoginSurfaceContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Align(
-        alignment: Alignment.topRight,
-        child: Padding(
-          padding: EdgeInsets.all(inset),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: maxWidth,
-              maxHeight: maxHeight,
-            ),
-            child: child,
-          ),
+    return Align(
+      alignment: Alignment.topRight,
+      child: Padding(
+        padding: EdgeInsets.all(inset),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: maxWidth, maxHeight: maxHeight),
+          child: child,
         ),
       ),
     );

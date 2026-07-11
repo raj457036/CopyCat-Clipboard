@@ -217,7 +217,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
           animate: true,
         );
 
-        await Future.delayed(const Duration(milliseconds: 200));
+        await wait(Durations.short4.inMilliseconds);
       }
     }
     await windowManager.hide();

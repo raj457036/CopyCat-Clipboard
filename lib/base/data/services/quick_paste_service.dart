@@ -6,6 +6,7 @@ import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/sort.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:focus_window/focus_window.dart';
 import 'package:injectable/injectable.dart';
@@ -191,7 +192,7 @@ class QuickPasteService {
       }
 
       await focusWindow.setActiveWindowId(targetWindowId);
-      await Future.delayed(const Duration(milliseconds: 80));
+      await wait(const Duration(milliseconds: 80).inMilliseconds);
 
       final text = _plainTextValue(selectedItem);
       if (text.isNotEmpty) {
@@ -214,7 +215,7 @@ class QuickPasteService {
     }
 
     await focusWindow.setActiveWindowId(targetWindowId);
-    await Future.delayed(const Duration(milliseconds: 80));
+    await wait(const Duration(milliseconds: 80).inMilliseconds);
     await focusWindow.pasteContent();
     return null;
   }

@@ -13,7 +13,3 @@ void onNavItemTapped(BuildContext context, int index) {
     default:
   }
 }
-
-Future<void> waitHere(int seconds) {
-  return Future.delayed(Duration(seconds: seconds));
-}

@@ -71,7 +71,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
 
   Future<void> toggleAndPaste(ClipboardItem item) async {
     final unfocused = await toggleWindow();
-    await Future.delayed(Durations.short1);
+    await wait(Durations.short1.inMilliseconds);
     if (unfocused == true) {
       await pasteOnFocusedWindow();
     }
@@ -100,7 +100,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
     final waitDuration = waitBetweenPastes ?? Durations.short1;
 
     final unfocused = await toggleWindow();
-    await Future.delayed(Durations.short1);
+    await wait(Durations.short1.inMilliseconds);
     if (unfocused != true) return;
 
     await widget.clipboardService.runWithCaptureSuppressed(() async {
@@ -109,10 +109,10 @@ class WindowFocusManagerState extends State<WindowFocusManager>
         if (!mounted) break;
         await synchronized(() async {
           await copyToClipboard(context, item, noAck: true);
-          await Future.delayed(Durations.short1);
+          await wait(Durations.short1.inMilliseconds);
           await pasteOnFocusedWindow();
           if (i < transformed.length - 1 && waitDuration > Duration.zero) {
-            await Future.delayed(waitDuration);
+            await wait(waitDuration.inMilliseconds);
           }
         });
       }
@@ -160,7 +160,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   Future<void> record() async {
     lastWindowId = await widget.focusWindow.getActiveWindowId();
     appConfigCubit.setLastFocusedWindowId(lastWindowId);
-    await Future.delayed(Durations.short2);
+    await wait(Durations.short2.inMilliseconds);
   }
 
   @override

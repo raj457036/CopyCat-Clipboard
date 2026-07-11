@@ -6,11 +6,13 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.database.ContentObserver
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.os.SystemClock
+import android.provider.Settings
 import android.util.Log
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -28,6 +30,8 @@ class CopyCatAccessibilityService : AccessibilityService() {
     private var detectingCopyAck: Boolean = false
     private var isClipboardServiceConnected: Boolean = false
     private var currentlyActiveApp: String = ""
+    private var activeImePackageName: String = ""
+    private var isImeObserverRegistered: Boolean = false
     private lateinit var clipboardManager: ClipboardManager
     private lateinit var windowManager: WindowManager
     private var transientOverlayLayout: LinearLayout? = null
@@ -80,6 +84,53 @@ class CopyCatAccessibilityService : AccessibilityService() {
             "android", "com.android.systemui", packageName -> ""
             else -> pkg
         }
+    }
+
+    private val activeImeObserver = object : ContentObserver(handler) {
+        override fun onChange(selfChange: Boolean) {
+            super.onChange(selfChange)
+            refreshActiveImePackageName()
+        }
+    }
+
+    private fun refreshActiveImePackageName() {
+        val flattened = Settings.Secure.getString(
+            contentResolver,
+            Settings.Secure.DEFAULT_INPUT_METHOD,
+        ) ?: ""
+
+        activeImePackageName = ComponentName.unflattenFromString(flattened)
+            ?.packageName
+            .orEmpty()
+            .trim()
+
+        if (activeImePackageName.isNotEmpty()) {
+            debugLog(logTag) { "Active IME package: $activeImePackageName" }
+        }
+    }
+
+    private fun registerActiveImeObserver() {
+        if (isImeObserverRegistered) {
+            refreshActiveImePackageName()
+            return
+        }
+
+        refreshActiveImePackageName()
+        contentResolver.registerContentObserver(
+            Settings.Secure.getUriFor(Settings.Secure.DEFAULT_INPUT_METHOD),
+            false,
+            activeImeObserver,
+        )
+        isImeObserverRegistered = true
+    }
+
+    private fun unregisterActiveImeObserver() {
+        if (!isImeObserverRegistered) return
+
+        runCatching {
+            contentResolver.unregisterContentObserver(activeImeObserver)
+        }
+        isImeObserverRegistered = false
     }
 
     private val connection = object : ServiceConnection {
@@ -249,6 +300,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
         Log.i(logTag, "CopyCat Accessibility Service Connected")
         clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        registerActiveImeObserver()
 
         startClipboardService()
     }
@@ -343,7 +395,8 @@ class CopyCatAccessibilityService : AccessibilityService() {
                     clipboardService?.copycatStorage?.writeMode1AckText(ackText)
                 },
             )
-            ClipboardDetectionMode.MODE_2_AGGRESSIVE -> Mode2AggressiveStrategy()
+            ClipboardDetectionMode.MODE_2_AGGRESSIVE ->
+                Mode2AggressiveStrategy(activeImePackageProvider = { activeImePackageName })
         }
 
         val requiresDetectionTest = detectionStrategy.requiresDetectionTest()
@@ -430,6 +483,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
         handler.removeCallbacksAndMessages(null)
         updateDetectionStatus(state = "stopped", outcome = "none")
         removeFocusOnOverlay()
+        unregisterActiveImeObserver()
 
         clipboardService?.copycatStorage?.removeDetectionModeListener(detectionModeListener)
         clipboardService?.copycatStorage?.removeNotificationPausedListener(notificationPausedListener)

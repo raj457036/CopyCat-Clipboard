@@ -178,7 +178,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
 
     _completionCheckPending = true;
     try {
-      await Future.delayed(_completionIdleDelay);
+      await wait(_completionIdleDelay.inMilliseconds);
       if (_busyEngines.isNotEmpty || _isManualSyncing) {
         return;
       }

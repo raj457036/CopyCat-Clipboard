@@ -102,7 +102,8 @@ class ClipboardService with ClipboardListener {
   Future<void> write(Iterable<DataWriterItem> items) async {
     setWriting(true);
     await SystemClipboard.instance?.write(items);
-    Future.delayed(Durations.short2, setWriting);
+    await wait(Durations.short2.inMilliseconds);
+    setWriting();
   }
 
   Future<void> start([void Function()? onRead]) async {
@@ -138,7 +139,7 @@ class ClipboardService with ClipboardListener {
 
   Future<List<ClipItem?>?> readClipboard({bool manual = false}) async {
     _logger.d("Reading clipboard");
-    await Future.delayed(Durations.short2);
+    await wait(Durations.short2.inMilliseconds);
     final reader = await getReader();
 
     if (reader == null) {

@@ -8,12 +8,17 @@ import 'package:clipboard/widgets/clip_cards/file_clip_card.dart';
 import 'package:clipboard/widgets/clip_cards/media_clip_card.dart';
 import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 import 'package:universal_io/io.dart';
 
 class DraggableItem extends StatelessWidget {
   final ClipboardItem item;
   final Widget child;
+
+  static const MethodChannel _dragFileUriChannel = MethodChannel(
+    'com.entilitystudio.CopyCat/drag_file_uri',
+  );
 
   const DraggableItem({super.key, required this.item, required this.child});
 
@@ -76,7 +81,10 @@ class DraggableItem extends StatelessWidget {
   }
 
   FutureOr<DragItem?> dragItemProvider(DragItemRequest request) async {
-    final dragItem = DragItem(localData: {"itemId": item.id});
+    final dragItem = DragItem(
+      localData: {"itemId": item.id},
+      suggestedName: _suggestedNameForItem(),
+    );
 
     switch (item.type) {
       case ClipItemType.text:
@@ -89,12 +97,88 @@ class DraggableItem extends StatelessWidget {
 
       case ClipItemType.media:
       case ClipItemType.file:
-        final fileUri = Formats.fileUri(
-          Uri.file(item.localPath!, windows: Platform.isWindows),
-        );
+        await _addImageRepresentationIfPossible(dragItem);
+        final uri = await _resolveFileDragUri(item.localPath!);
+        if (uri == null) {
+          return null;
+        }
+        final fileUri = Formats.fileUri(uri);
         dragItem.add(fileUri);
     }
 
     return dragItem;
+  }
+
+  Future<Uri?> _resolveFileDragUri(String path) async {
+    if (!Platform.isAndroid) {
+      return Uri.file(path, windows: Platform.isWindows);
+    }
+
+    try {
+      final uriString = await _dragFileUriChannel.invokeMethod<String>(
+        'getContentUriForPath',
+        {'path': path},
+      );
+      if (uriString == null || uriString.isEmpty) {
+        return null;
+      }
+      return Uri.parse(uriString);
+    } on PlatformException {
+      return null;
+    }
+  }
+
+  String? _suggestedNameForItem() {
+    if (item.fileName != null && item.fileName!.trim().isNotEmpty) {
+      return item.fileName!.trim();
+    }
+
+    final path = item.localPath?.trim();
+    if (path == null || path.isEmpty) {
+      return null;
+    }
+
+    final segments = Uri.file(path, windows: Platform.isWindows).pathSegments;
+    if (segments.isEmpty) {
+      return null;
+    }
+
+    final name = segments.last.trim();
+    return name.isEmpty ? null : name;
+  }
+
+  Future<void> _addImageRepresentationIfPossible(DragItem dragItem) async {
+    final path = item.localPath?.trim();
+    final mime = item.fileMimeType?.toLowerCase().trim();
+    if (path == null ||
+        path.isEmpty ||
+        mime == null ||
+        !mime.startsWith('image/')) {
+      return;
+    }
+
+    final imageFile = File(path);
+    if (!await imageFile.exists()) {
+      return;
+    }
+
+    final bytes = await imageFile.readAsBytes();
+    switch (mime) {
+      case 'image/png':
+        dragItem.add(Formats.png(bytes));
+      case 'image/jpeg':
+      case 'image/jpg':
+        dragItem.add(Formats.jpeg(bytes));
+      case 'image/gif':
+        dragItem.add(Formats.gif(bytes));
+      case 'image/webp':
+        dragItem.add(Formats.webp(bytes));
+      case 'image/bmp':
+        dragItem.add(Formats.bmp(bytes));
+      case 'image/heic':
+        dragItem.add(Formats.heic(bytes));
+      case 'image/heif':
+        dragItem.add(Formats.heif(bytes));
+    }
   }
 }
