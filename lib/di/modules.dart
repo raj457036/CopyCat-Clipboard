@@ -43,7 +43,7 @@ abstract class RegisterModule {
         "CopyCat/${packageInfo.version}+${packageInfo.buildNumber} (${Platform.operatingSystem}; ${Platform.operatingSystemVersion}; ${Platform.localeName}; Installer: ${packageInfo.installerStore ?? 'Unknown Store'})";
     await Supabase.initialize(
       url: url,
-      anonKey: key,
+      publishableKey: key,
       debug: kDebugMode,
       headers: {"user-agent": userAgent},
     );

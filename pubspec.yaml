@@ -1,7 +1,7 @@
 name: clipboard
 description: "CopyCat Clipboard: One Clipboard, Limitless Productivity"
 publish_to: "none"
-version: 2.0.0+85
+version: 2.0.0+86
 
 environment:
   sdk: ">=3.11.0 <4.0.0"
@@ -172,15 +172,16 @@ msix_config:
   execution_alias: copycat
 
 flutter_launcher_icons:
-  image_path: "./resources/icon_2026_flat.png"
+  image_path: "logo_resources/icon_2026_flat.png"
   android: true
   adaptive_icon_background: "#262141"
-  adaptive_icon_foreground: "./resources/icon_2026_adaptive_fg.png"
-  adaptive_icon_monochrome: "./resources/icon_2026_monochrome_fg.png"
+  adaptive_icon_foreground: "logo_resources/icon_2026_adaptive_fg.png"
+  adaptive_icon_monochrome: "logo_resources/icon_2026_monochrome_fg.png"
   min_sdk_android: 24
 
-  ios: "./resources/icon_2026_ios.png"
-  image_path_ios_dark_transparent: "./resources/icon_2026_rounded.png"
+  ios: true
+  image_path_ios: "logo_resources/icon_2026_IOS.png"
+  image_path_ios_dark_transparent: "logo_resources/icon_2026_flat.png"
   remove_alpha_ios: true
   desaturate_tinted_to_grayscale_ios: true
   background_color_ios: "#262141"
@@ -188,8 +189,8 @@ flutter_launcher_icons:
   windows:
     generate: true
     icon_size: 256
-    image_path: "./resources/icon_2026_flat.png"
+    image_path: "logo_resources/icon_2026_flat.png"
 
   macos:
     generate: true
-    image_path: "./resources/icon_2026_macos.png"
+    image_path: "logo_resources/icon_2026_macos.png"

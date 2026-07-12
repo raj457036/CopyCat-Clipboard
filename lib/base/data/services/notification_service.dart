@@ -9,11 +9,11 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class ActiveNotification with EquatableMixin {
+class ActiveNotification extends Equatable {
   final NotificationMessage message;
   final ScaffoldFeatureController<SnackBar, SnackBarClosedReason> controller;
 
-  ActiveNotification(this.message, this.controller);
+  const ActiveNotification(this.message, this.controller);
 
   @override
   List<Object?> get props => [message.id];

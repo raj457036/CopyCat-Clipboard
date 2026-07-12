@@ -7,7 +7,6 @@ import 'package:clipboard/widgets/layout/dynamic_floating_actions.dart';
 import 'package:clipboard/widgets/layout/navrail_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:universal_io/io.dart';
 
 class CustomScaffold extends StatelessWidget {
   final int activeIndex;

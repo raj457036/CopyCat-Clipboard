@@ -1,6 +1,4 @@
 import 'package:clipboard/common/logging.dart';
-import 'package:clipboard/utils/utility.dart'
-    show isDesktopPlatform, isMobilePlatform;
 import 'package:flutter/services.dart';
 import 'package:universal_io/io.dart';
 
