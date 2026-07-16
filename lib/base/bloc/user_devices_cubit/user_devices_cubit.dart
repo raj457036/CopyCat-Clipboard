@@ -8,6 +8,7 @@ import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/base/domain/repositories/user_devices.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:injectable/injectable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:universal_io/io.dart';
@@ -47,6 +48,7 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
 
     return result.fold(
       (failure) async {
+        logger.e('Device registration failed: $failure');
         emit(
           state.copyWith(
             isRegistering: false,
@@ -145,6 +147,7 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
     final result = await repo.listDevices();
     result.fold(
       (failure) {
+        logger.e('Failed to fetch devices: $failure');
         emit(state.copyWith(isLoading: false, failure: failure));
       },
       (list) {

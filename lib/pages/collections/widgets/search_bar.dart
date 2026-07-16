@@ -10,6 +10,7 @@ import 'package:clipboard/widgets/on_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:universal_io/universal_io.dart';
 
 class CollectionsSearchBar extends StatefulWidget {
   final ValueChanged<String> onQueryChanged;
@@ -158,7 +159,11 @@ class _CollectionsSearchBarState extends State<CollectionsSearchBar> {
                           child: Padding(
                             padding: const EdgeInsets.only(right: padding10),
                             child: Text(
-                              keyboardShortcut(key: 'F'),
+                              keyboardShortcut(
+                                key: 'F',
+                                ctrl: !Platform.isMacOS,
+                                meta: Platform.isMacOS,
+                              ),
                               style: textTheme.labelLarge?.copyWith(
                                 color: colors.outline,
                               ),

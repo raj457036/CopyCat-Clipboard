@@ -2291,6 +2291,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get paste_stack__reverse_tooltip => 'Invertir pila';
 
   @override
+  String paste_stack__limit_note({required int count}) {
+    return 'You have a limit of $count items';
+  }
+
+  @override
   String get multi_paste__title => 'Configuración del pegado múltiple';
 
   @override

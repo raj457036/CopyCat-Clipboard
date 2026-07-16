@@ -5,6 +5,7 @@ import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/sort.dart';
 import 'package:flutter/material.dart';
 import 'package:isar_community/isar.dart';
+import 'dart:math' as math;
 
 part 'isar_app_config.g.dart';
 
@@ -115,7 +116,7 @@ class IsarAppConfig {
     lanInstantSync: lanInstantSync,
     autoWriteOnReceive: autoWriteOnReceive,
     enableLocalAuth: enableLocalAuth,
-    localAuthTimeoutMinutes: localAuthTimeoutMinutes,
+    localAuthTimeoutMinutes: math.max(localAuthTimeoutMinutes, 0),
     showCollectionTip: showCollectionTip,
     enableTypeToSearch: enableTypeToSearch,
     hideFromScreenCapture: hideFromScreenCapture,
@@ -168,7 +169,7 @@ class IsarAppConfig {
     ..lanInstantSync = config.lanInstantSync
     ..autoWriteOnReceive = config.autoWriteOnReceive
     ..enableLocalAuth = config.enableLocalAuth
-    ..localAuthTimeoutMinutes = config.localAuthTimeoutMinutes
+    ..localAuthTimeoutMinutes = math.max(config.localAuthTimeoutMinutes, 0)
     ..showCollectionTip = config.showCollectionTip
     ..enableTypeToSearch = config.enableTypeToSearch
     ..hideFromScreenCapture = config.hideFromScreenCapture

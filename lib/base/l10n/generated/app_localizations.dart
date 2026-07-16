@@ -3994,6 +3994,12 @@ abstract class AppLocalizations {
   /// **'Reverse Stack'**
   String get paste_stack__reverse_tooltip;
 
+  /// No description provided for @paste_stack__limit_note.
+  ///
+  /// In en, this message translates to:
+  /// **'You have a limit of {count} items'**
+  String paste_stack__limit_note({required int count});
+
   /// No description provided for @multi_paste__title.
   ///
   /// In en, this message translates to:

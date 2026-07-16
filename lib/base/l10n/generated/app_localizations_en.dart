@@ -2264,6 +2264,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get paste_stack__reverse_tooltip => 'Reverse Stack';
 
   @override
+  String paste_stack__limit_note({required int count}) {
+    return 'You have a limit of $count items';
+  }
+
+  @override
   String get multi_paste__title => 'Multi Paste Setup';
 
   @override

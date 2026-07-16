@@ -2148,6 +2148,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get paste_stack__reverse_tooltip => '反转顺序';
 
   @override
+  String paste_stack__limit_note({required int count}) {
+    return 'You have a limit of $count items';
+  }
+
+  @override
   String get multi_paste__title => '多项粘贴设置';
 
   @override

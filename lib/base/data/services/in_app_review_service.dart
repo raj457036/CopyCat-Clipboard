@@ -16,6 +16,6 @@ class InAppReviewServiceImpl implements InAppReviewService {
   @override
   Future<void> openStoreListing() => _inAppReview.openStoreListing(
     appStoreId: iosAppStoreId,
-    microsoftStoreId: microsoftStoreId == '' ? null : microsoftStoreId,
+    microsoftStoreId: microsoftStoreId,
   );
 }

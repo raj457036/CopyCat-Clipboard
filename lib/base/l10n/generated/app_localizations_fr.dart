@@ -2297,6 +2297,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get paste_stack__reverse_tooltip => 'Inverser la pile';
 
   @override
+  String paste_stack__limit_note({required int count}) {
+    return 'You have a limit of $count items';
+  }
+
+  @override
   String get multi_paste__title => 'Configuration du collage multiple';
 
   @override

@@ -975,6 +975,14 @@
     }
   },
   "paste_stack__reverse_tooltip": "Reverse Stack",
+  "paste_stack__limit_note": "You have a limit of {count} items",
+  "@paste_stack__limit_note": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "multi_paste__title": "Multi Paste Setup",
   "multi_paste__subtitle": "Control how selected clips are merged and paced.",
   "multi_paste__stat__selected": "Selected",

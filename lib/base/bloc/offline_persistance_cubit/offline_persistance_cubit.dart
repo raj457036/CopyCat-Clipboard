@@ -414,7 +414,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     }
   }
 
-  // TODO(raj): implement for windows and linux
+  // TODO(raj): implement for linux
   Future<void> _showFeedback() async {
     if (!(Platform.isMacOS || Platform.isWindows)) return;
     final feedbackMode = appConfig.state.config.clipboardFeedbackMode;

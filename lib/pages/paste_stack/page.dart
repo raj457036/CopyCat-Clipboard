@@ -8,6 +8,7 @@ import 'package:clipboard/pages/paste_stack/widgets/paste_stack_body.dart';
 import 'package:clipboard/utils/common_extension.dart'
     show BuildContextExtension;
 import 'package:clipboard/utils/datetime_extension.dart';
+import 'package:clipboard/utils/subscription_actions.dart';
 import 'package:clipboard/widgets/can_paste_builder.dart';
 import 'package:clipboard/widgets/layout/custom_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -35,8 +36,15 @@ class PasteStackPage extends StatelessWidget {
     final banner = PreferredSize(
       preferredSize: const Size.fromHeight(40),
       child: MaterialBanner(
-        content: Text("You have a limit of $pasteStackLimit items"),
-        actions: const [TextButton(onPressed: null, child: Text("Upgrade"))],
+        content: Text(
+          context.locale.paste_stack__limit_note(count: pasteStackLimit),
+        ),
+        actions: [
+          TextButton(
+            onPressed: showUpgradePlanDialog,
+            child: Text(context.locale.paywall_dialog__text__upgrade),
+          ),
+        ],
         minActionBarHeight: 40,
       ),
     );
