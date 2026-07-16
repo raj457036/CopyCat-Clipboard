@@ -587,10 +587,9 @@ class _StatusPill extends StatelessWidget {
             if (complete)
               Icon(Icons.done_rounded, size: 16, color: fg)
             else
-              SizedBox(
-                width: 12,
-                height: 12,
-                child: CircularProgressIndicator(strokeWidth: 2, color: fg),
+              SizedBox.square(
+                dimension: 18,
+                child: CircularProgressIndicator(strokeWidth: 1.5, color: fg),
               ),
             width6,
             Text(
