@@ -4,6 +4,8 @@
 default_platform(:ios)
 
 platform :ios do
+  PROJECT_ROOT = File.expand_path("../..", __dir__)
+
   private_lane :prepare_ios_dependencies do
     ios_dir = File.expand_path("..", __dir__)
     ruby_env = "env -u GEM_HOME -u GEM_PATH -u BUNDLE_GEMFILE -u BUNDLE_BIN_PATH"
@@ -29,10 +31,11 @@ platform :ios do
       --obfuscate \
       --split-debug-info=build_symbols"
 
-    ipa_path = Dir["../build/ios/ipa/*.ipa"].max_by { |f| File.mtime(f) }
+    ipa_glob = File.join(PROJECT_ROOT, "build", "ios", "ipa", "*.ipa")
+    ipa_path = Dir[ipa_glob].max_by { |f| File.mtime(f) }
 
     if ipa_path.nil?
-      UI.user_error!("No IPA found in ../build/ios/ipa")
+      UI.user_error!("No IPA found in #{ipa_glob}")
     end
 
     upload_to_testflight(
@@ -44,17 +47,23 @@ platform :ios do
   desc "Build and upload for App Store review"
   lane :release do
     prepare_ios_dependencies
-    sh "env -u GEM_HOME -u GEM_PATH -u BUNDLE_GEMFILE -u BUNDLE_BIN_PATH flutter build ios --config-only --release --dart-define-from-file=local/prod.json --obfuscate --split-debug-info=./build_symbols"
+    sh "env -u GEM_HOME -u GEM_PATH -u BUNDLE_GEMFILE -u BUNDLE_BIN_PATH flutter build ipa \
+      --config-only \
+      --release \
+      --dart-define-from-file=local/prod.json \
+      --obfuscate \
+      --split-debug-info=./build_symbols"
     sh "env -u GEM_HOME -u GEM_PATH -u BUNDLE_GEMFILE -u BUNDLE_BIN_PATH flutter build ipa \
       --release \
       --dart-define-from-file=local/prod.json \
       --obfuscate \
       --split-debug-info=build_symbols"
 
-    ipa_path = Dir["../build/ios/ipa/*.ipa"].max_by { |f| File.mtime(f) }
+    ipa_glob = File.join(PROJECT_ROOT, "build", "ios", "ipa", "*.ipa")
+    ipa_path = Dir[ipa_glob].max_by { |f| File.mtime(f) }
 
     if ipa_path.nil?
-      UI.user_error!("No IPA found in ../build/ios/ipa")
+      UI.user_error!("No IPA found in #{ipa_glob}")
     end
 
     upload_to_app_store(
