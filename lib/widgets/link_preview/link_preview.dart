@@ -169,6 +169,9 @@ class LinkPreview extends StatefulWidget {
 }
 
 class _LinkPreviewState extends State<LinkPreview> {
+  static final Map<String, LinkPreviewData> _stalePreviewCache = {};
+  static final Map<String, Future<LinkPreviewData?>> _inFlightFetches = {};
+
   LinkPreviewData? _preview;
   bool _isLoading = false;
 
@@ -205,6 +208,14 @@ class _LinkPreviewState extends State<LinkPreview> {
 
   void _hydrateFromItem() {
     _preview = _previewFromItem(widget.item);
+
+    if (_preview != null) {
+      // Preview now exists on the item (usually after DB sync), so drop stale cache.
+      _stalePreviewCache.remove(_url);
+    } else {
+      _preview = _stalePreviewCache[_url];
+    }
+
     _isLoading = false;
   }
 
@@ -220,6 +231,15 @@ class _LinkPreviewState extends State<LinkPreview> {
       return;
     }
 
+    final cached = _stalePreviewCache[_url];
+    if (cached != null) {
+      setState(() {
+        _preview = cached;
+        _isLoading = false;
+      });
+      return;
+    }
+
     setState(() {
       _preview = null;
       _isLoading = true;
@@ -227,19 +247,35 @@ class _LinkPreviewState extends State<LinkPreview> {
 
     debugPrint('Fetching link preview for: $_url');
 
-    final data = await getLinkPreviewData(_url);
+    final existingFetch = _inFlightFetches[_url];
+    final startedFetch = existingFetch == null;
+    final fetch = existingFetch ?? getLinkPreviewData(_url);
+
+    if (startedFetch) {
+      _inFlightFetches[_url] = fetch;
+    }
+
+    final data = await fetch;
+
+    if (startedFetch) {
+      _inFlightFetches.remove(_url);
+    }
 
     debugPrint('Fetched link preview for: $_url, data: $data');
 
     if (!mounted) return;
 
     if (data != null) {
-      await context.read<OfflinePersistenceCubit>().persistLocalLinkPreview(
-        widget.item,
-        title: data.title,
-        description: data.description,
-        imageUrl: data.image?.imageUrl,
-      );
+      _stalePreviewCache[_url] = data;
+
+      if (startedFetch) {
+        await context.read<OfflinePersistenceCubit>().persistLocalLinkPreview(
+          widget.item,
+          title: data.title,
+          description: data.description,
+          imageUrl: data.image?.imageUrl,
+        );
+      }
     }
 
     setState(() {

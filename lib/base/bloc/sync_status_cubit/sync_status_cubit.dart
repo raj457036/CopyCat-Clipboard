@@ -34,8 +34,13 @@ part 'sync_status_state.dart';
 class SyncAllParams {
   final bool force;
   final bool freshPull;
+  final bool restoration;
 
-  const SyncAllParams({this.force = false, this.freshPull = false});
+  const SyncAllParams({
+    this.force = false,
+    this.freshPull = false,
+    this.restoration = false,
+  });
 }
 
 class SyncProgressInitParams {
@@ -210,9 +215,11 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
 
   Future<void> _runSyncAll(SyncAllParams params) async {
     final appConfig = sl<AppConfigCubit>().state.config;
-    final deviceAccess = sl<UserDevicesCubit>().state.accessStatus;
+    // final deviceAccess = sl<UserDevicesCubit>().state.accessStatus;
 
-    if (!appConfig.enableSync || deviceAccess != DeviceAccessStatus.allowed) {
+    if (!params.restoration && !appConfig.enableSync
+    // || deviceAccess != DeviceAccessStatus.allowed
+    ) {
       emit(const SyncStatusState.disabled());
       return;
     }

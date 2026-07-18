@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:ui' show Size;
 
 import 'package:clipboard/widgets/link_preview/type.dart';
-import 'package:flutter/material.dart' hide Element;
+import 'package:flutter/foundation.dart';
+import 'package:flutter/painting.dart' show decodeImageFromList;
 import 'package:html/dom.dart' show Document, Element;
 import 'package:html/parser.dart' as parser show parse;
 import 'package:http/http.dart' as http show Request, Client, Response;
@@ -121,56 +123,21 @@ String? _getActualImageUrl(String baseUrl, String? imageUrl) {
   return imageUrl;
 }
 
-Future<Size> _getImageSize(String url) {
-  final completer = Completer<Size>();
-  final stream = Image.network(url).image.resolve(ImageConfiguration.empty);
-  late ImageStreamListener streamListener;
-
-  void onError(Object error, StackTrace? stackTrace) {
-    completer.completeError(error, stackTrace);
-  }
-
-  void listener(ImageInfo info, bool _) {
-    if (!completer.isCompleted) {
-      completer.complete(
-        Size(info.image.width.toDouble(), info.image.height.toDouble()),
-      );
-    }
-    stream.removeListener(streamListener);
-  }
-
-  streamListener = ImageStreamListener(listener, onError: onError);
-
-  stream.addListener(streamListener);
-  return completer.future;
-}
-
 Future<Size> _getImageSizeFromBytes(Uint8List bytes) async {
   final image = await decodeImageFromList(bytes);
   return Size(image.width.toDouble(), image.height.toDouble());
 }
 
-Future<String> _getBiggestImageUrl(
-  List<String> imageUrls,
-  String? proxy,
-) async {
-  if (imageUrls.length > 5) {
-    imageUrls.removeRange(5, imageUrls.length);
-  }
+Map<String, Object?> _extractPreviewMetadata(Map<String, Object?> payload) {
+  final html = payload['html'] as String;
+  final baseUrl = payload['baseUrl'] as String;
 
-  var currentUrl = imageUrls[0];
-  var currentArea = 0.0;
+  final document = parser.parse(html);
+  final title = _getTitle(document)?.trim();
+  final description = _getDescription(document)?.trim();
+  final imageUrls = _getImageUrls(document, baseUrl);
 
-  await Future.forEach(imageUrls, (String url) async {
-    final size = await _getImageSize(_calculateUrl(url, proxy));
-    final area = size.width * size.height;
-    if (area > currentArea) {
-      currentArea = area;
-      currentUrl = _calculateUrl(url, proxy);
-    }
-  });
-
-  return currentUrl;
+  return {'title': title, 'description': description, 'imageUrls': imageUrls};
 }
 
 Future<http.Response?> _getRedirectedResponse(
@@ -214,12 +181,10 @@ Future<LinkPreviewData?> getLinkPreviewData(
   Duration? requestTimeout,
   String userAgent = 'WhatsApp/2',
 }) async {
-  String? previewDataDescription;
-  String? previewDataTitle;
   String? previewDataUrl;
   LinkImagePreviewData? previewDataImage;
-  Size imageSize;
-  String previewDataImageUrl;
+  String? previewDataDescription;
+  String? previewDataTitle;
 
   try {
     if (!url.toLowerCase().startsWith('http')) {
@@ -257,7 +222,6 @@ Future<LinkPreviewData?> getLinkPreviewData(
       );
     }
 
-    Document document;
     try {
       Encoding encoding;
       final contentType = response.headers['content-type']?.toLowerCase() ?? '';
@@ -269,36 +233,25 @@ Future<LinkPreviewData?> getLinkPreviewData(
         encoding = utf8;
       }
 
-      document = parser.parse(encoding.decode(response.bodyBytes));
+      final parsedMetadata = await compute(_extractPreviewMetadata, {
+        'html': encoding.decode(response.bodyBytes),
+        'baseUrl': url,
+      });
+
+      previewDataTitle = parsedMetadata['title'] as String?;
+      previewDataDescription = parsedMetadata['description'] as String?;
+
+      final imageUrls = (parsedMetadata['imageUrls'] as List<dynamic>)
+          .cast<String>();
+
+      if (imageUrls.isNotEmpty) {
+        final previewDataImageUrl = _calculateUrl(imageUrls.first, proxy);
+        previewDataImage = LinkImagePreviewData(imageUrl: previewDataImageUrl);
+      }
     } catch (e) {
       return LinkPreviewData(link: url);
     }
 
-    final title = _getTitle(document);
-    if (title != null) {
-      previewDataTitle = title.trim();
-    }
-
-    final description = _getDescription(document);
-    if (description != null) {
-      previewDataDescription = description.trim();
-    }
-
-    try {
-      final imageUrls = _getImageUrls(document, url);
-
-      if (imageUrls.isNotEmpty) {
-        previewDataImageUrl = imageUrls.length == 1
-            ? _calculateUrl(imageUrls[0], proxy)
-            : await _getBiggestImageUrl(imageUrls, proxy);
-
-        imageSize = await _getImageSize(previewDataImageUrl);
-        previewDataImage = LinkImagePreviewData(
-          imageUrl: previewDataImageUrl,
-          imageSize: imageSize,
-        );
-      }
-    } catch (_) {}
     return LinkPreviewData(
       link: previewDataUrl,
       title: previewDataTitle,

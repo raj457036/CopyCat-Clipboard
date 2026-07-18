@@ -98,7 +98,9 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
       );
       syncCubit.initializeProgress(SyncProgressInitParams(progress));
       await wait(800);
-      syncCubit.syncAll(const SyncAllParams(force: true, freshPull: true));
+      syncCubit.syncAll(
+        const SyncAllParams(force: true, freshPull: true, restoration: true),
+      );
     } finally {
       if (mounted) setState(() => fetchingCounts = false);
     }
