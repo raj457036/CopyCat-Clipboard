@@ -11,7 +11,7 @@ import { getSupabaseServiceClient } from "../utils/supabase.ts";
 
 const planEntitlementId = "pro features";
 const maxPasteStackLimit = 2000;
-const maxDeviceLimit = 6;
+const maxDeviceLimit = 12;
 
 const logPrefix = "[rc_webhook]";
 
