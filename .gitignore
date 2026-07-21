@@ -63,6 +63,7 @@ packages/android_background_clipboard/*.md
 packages/supabase_auth_ui
 
 drizzle
+website
 
 
 # Fastlane
