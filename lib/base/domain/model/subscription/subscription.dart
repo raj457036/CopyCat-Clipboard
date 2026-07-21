@@ -60,6 +60,7 @@ abstract class Subscription with _$Subscription, Identifiable {
 
   bool get isFree => planName == "Free";
 
+  /// Returns true if the subscription is active, false otherwise.
   bool get isActive {
     if (planName == "Free") return true;
     if (subId == "Trial") {

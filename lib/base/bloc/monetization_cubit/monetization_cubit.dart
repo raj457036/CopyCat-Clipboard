@@ -49,21 +49,23 @@ class MonetizationCubit extends Cubit<MonetizationState>
 
   Future<void> login(String userId) async {
     if (_isListenersSetUp) return;
+
+    final result = await repo.get(userId: userId);
+    result.fold(
+      (l) {
+        logger.e(l);
+        return null;
+      },
+      (subscription) {
+        if (subscription == null) return null;
+        onSubscriptionChange(subscription);
+      },
+    );
+
     setupListeners();
     final done = await setUser(userId);
-    if (!done) {
-      final result = await repo.get(userId: userId);
-      return result.fold(
-        (l) {
-          logger.e(l);
-          return null;
-        },
-        (subscription) {
-          if (subscription == null) return null;
-          onSubscriptionChange(subscription);
-        },
-      );
-    }
+
+    if (!done) return;
     _isListenersSetUp = true;
   }
 

@@ -31,17 +31,6 @@ class WindowFocusManager extends StatefulWidget {
     required this.clipboardService,
   });
 
-  static Widget forPlatform({required Widget child}) {
-    if (isMobilePlatform) {
-      return child;
-    }
-    return WindowFocusManager(
-      focusWindow: sl(),
-      clipboardService: sl(),
-      child: child,
-    );
-  }
-
   static WindowFocusManagerState? of(BuildContext context) {
     return context.findAncestorStateOfType<WindowFocusManagerState>();
   }

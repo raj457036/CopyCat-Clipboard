@@ -5,7 +5,7 @@ const kMaxDropItemCount = 5;
 // Configs
 
 /// Default no. of devices allowed to be synced at a time
-const defaultNoOfSyncedDevices = 2;
+const defaultNoOfSyncedDevices = 4;
 
 /// Default no. of collections allowed to be active at a time
 const defaultCollectionCount = 3;

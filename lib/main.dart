@@ -255,10 +255,8 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget content = WindowFocusManager.forPlatform(
-      child: const SystemShortcutListener(
-        child: ArrowFocusVisibilityListener(child: AppContent()),
-      ),
+    const shortcutListener = SystemShortcutListener(
+      child: ArrowFocusVisibilityListener(child: AppContent()),
     );
     final child = MultiBlocProvider(
       providers: [
@@ -273,7 +271,13 @@ class MainApp extends StatelessWidget {
         BlocProvider<UserDevicesCubit>(create: (context) => sl()),
         BlocProvider<AppLockCubit>(create: (context) => sl()),
       ],
-      child: content,
+      child: isMobilePlatform
+          ? shortcutListener
+          : WindowFocusManager(
+              focusWindow: sl(),
+              clipboardService: sl(),
+              child: shortcutListener,
+            ),
     );
 
     if (kDebugMode) {
