@@ -128,6 +128,10 @@ class Mode2AggressiveStrategy(
             return
         }
 
+        if (!shouldEmitCopy()) {
+            return
+        }
+
         val targetPackage = resolveSelectionPackage(
             currentForegroundPackage = currentForegroundPackage,
             eventPackage = event.packageName?.toString().orEmpty(),
@@ -137,6 +141,7 @@ class Mode2AggressiveStrategy(
         }
 
         debugLog(logTag) { "Triggering clipboard read via clicked view package=$targetPackage" }
+        clearSelectionArm()
         callback.onCopyDetected(targetPackage)
     }
 

@@ -175,6 +175,13 @@ class CopyCatClipboardService : Service() {
 
     private fun isDuplicateBurst(fingerprint: String): Boolean {
         val now = SystemClock.elapsedRealtime()
+        if (
+            copycatStorage.detectionMode == ClipboardDetectionMode.MODE_2_AGGRESSIVE &&
+            lastClipFingerprint == fingerprint
+        ) {
+            return true
+        }
+
         val duplicateWindowMs = when (copycatStorage.detectionMode) {
             ClipboardDetectionMode.MODE_INACTIVE -> 0L
             ClipboardDetectionMode.MODE_1_ACK_TEXT -> 900L
@@ -183,6 +190,15 @@ class CopyCatClipboardService : Service() {
 
         return lastClipFingerprint == fingerprint &&
             now - lastClipCapturedAtMs < duplicateWindowMs
+    }
+
+    private fun isDuplicateOfLatestStoredText(text: String, type: ClipType): Boolean {
+        val latest = copycatStorage.readLatestClip() ?: return false
+        if (latest.deletedAt != null || latest.encrypted) {
+            return false
+        }
+
+        return latest.type == type && latest.text == text
     }
 
     fun performClipboardReadFromClipData(clipData: ClipData?, appPackageName: String) {
@@ -386,6 +402,11 @@ class CopyCatClipboardService : Service() {
         sourcePackageName: String = "",
         sourceAppName: String? = null,
     ): ClipAction {
+        if (isDuplicateOfLatestStoredText(text, type)) {
+            debugLog(logTag) { "Detected duplicate latest stored item" }
+            return ClipAction.Duplicate
+        }
+
         val fingerprint = buildClipFingerprint(text, type)
         if (isDuplicateBurst(fingerprint)) {
             debugLog(logTag) { "Detected duplicate item" }

@@ -512,6 +512,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         return clips
     }
 
+    fun readLatestClip(): CopyCatFileStorage.ClipData? {
+        if (endId < 0) return null
+        return fileStorage.readClipItem("Clip-$endId")
+    }
+
     fun writeTextClip(
         text: String,
         type: ClipType,
