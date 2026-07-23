@@ -1604,6 +1604,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'Pega contenido directamente en la aplicación enfocada.';
 
   @override
+  String get settings__switch__focus_loss_behavior__title =>
+      'Mantener la Ventana Abierta al Perder el Enfoque';
+
+  @override
+  String get settings__switch__focus_loss_behavior__subtitle =>
+      'Cuando CopyCat pierde el enfoque, mantenerlo abierto en segundo plano en lugar de ocultarlo automáticamente.';
+
+  @override
   String get settings__switch__transform_behavior__title =>
       'Guardar transformaciones como clips nuevos';
 

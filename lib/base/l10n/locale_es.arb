@@ -572,6 +572,8 @@
   },
   "settings__switch__smart_paste__title": "Pegado Inteligente",
   "settings__switch__smart_paste__subtitle": "Pega contenido directamente en la aplicación enfocada.",
+  "settings__switch__focus_loss_behavior__title": "Mantener la Ventana Abierta al Perder el Enfoque",
+  "settings__switch__focus_loss_behavior__subtitle": "Cuando CopyCat pierde el enfoque, mantenerlo abierto en segundo plano en lugar de ocultarlo automáticamente.",
   "settings__switch__transform_behavior__title": "Guardar transformaciones como clips nuevos",
   "settings__switch__transform_behavior__subtitle": "Si está activado, las acciones de transformación crean un nuevo clip en lugar de copiar o pegar de inmediato.",
   "settings__switch__startup__title": "Iniciar al Iniciar",

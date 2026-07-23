@@ -3,8 +3,6 @@ import 'dart:async' show StreamSubscription;
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
-import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
-import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_state.dart';
 import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'

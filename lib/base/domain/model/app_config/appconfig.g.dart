@@ -37,6 +37,7 @@ _AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => _AppConfig(
   quickPasteHotkey: json['quickPasteHotkey'] as String?,
   pasteStackHotkey: json['pasteStackHotkey'] as String?,
   smartPaste: json['smartPaste'] as bool? ?? false,
+  keepWindowOpenOnUnfocus: json['keepWindowOpenOnUnfocus'] as bool? ?? true,
   transformAsNewClip: json['transformAsNewClip'] as bool? ?? false,
   clipboardFeedbackMode:
       $enumDecodeNullable(
@@ -99,6 +100,7 @@ Map<String, dynamic> _$AppConfigToJson(_AppConfig instance) =>
       'quickPasteHotkey': instance.quickPasteHotkey,
       'pasteStackHotkey': instance.pasteStackHotkey,
       'smartPaste': instance.smartPaste,
+      'keepWindowOpenOnUnfocus': instance.keepWindowOpenOnUnfocus,
       'transformAsNewClip': instance.transformAsNewClip,
       'clipboardFeedbackMode':
           _$ClipboardFeedbackModeEnumMap[instance.clipboardFeedbackMode]!,

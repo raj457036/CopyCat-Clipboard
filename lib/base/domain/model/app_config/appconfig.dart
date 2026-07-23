@@ -67,6 +67,10 @@ abstract class AppConfig with _$AppConfig, Identifiable {
     /// to the last focused cursor in the last window, and the clipboard will minimize.
     @Default(false) bool smartPaste,
 
+    /// If enabled, losing focus keeps the window open in the background
+    /// instead of hiding it automatically.
+    @Default(true) bool keepWindowOpenOnUnfocus,
+
     /// If enabled, transformed clips will be saved as new clips instead of
     /// being copied/pasted immediately.
     @Default(false) bool transformAsNewClip,

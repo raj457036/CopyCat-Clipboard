@@ -572,6 +572,8 @@
   },
   "settings__switch__smart_paste__title": "Collage intelligent",
   "settings__switch__smart_paste__subtitle": "Collez du contenu directement sur l'application ciblée.",
+  "settings__switch__focus_loss_behavior__title": "Garder la fenêtre ouverte en cas de perte de focus",
+  "settings__switch__focus_loss_behavior__subtitle": "Lorsque CopyCat perd le focus, gardez-le ouvert en arrière-plan au lieu de le masquer automatiquement.",
   "settings__switch__transform_behavior__title": "Enregistrer les transformations comme nouveaux clips",
   "settings__switch__transform_behavior__subtitle": "Si activé, les actions de transformation créent un nouveau clip au lieu de copier ou coller immédiatement.",
   "settings__switch__startup__title": "Lancer au démarrage",

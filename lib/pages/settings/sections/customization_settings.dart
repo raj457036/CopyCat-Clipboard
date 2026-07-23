@@ -6,6 +6,7 @@ import 'package:clipboard/pages/settings/widgets/dropdowns/theme_dropdown.dart';
 import 'package:clipboard/pages/settings/widgets/dropdowns/theme_variant_dropdown.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
 import 'package:clipboard/pages/settings/widgets/switches/clipboard_hotkey_switch.dart';
+import 'package:clipboard/pages/settings/widgets/switches/focus_loss_behavior_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/paste_stack_hotkey_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/quick_paste_hotkey_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/smart_paste_switch.dart';
@@ -41,6 +42,7 @@ class CustomizationSettings extends StatelessWidget {
         height24,
         SettingHeader(name: locale.settings__header__interactions),
         const SmartPasteSwitch(),
+        if (isDesktopPlatform) const FocusLossBehaviorSwitch(),
         if (Platform.isMacOS || Platform.isWindows)
           const ClipboardFeedbackDropdownTile(),
         const TransformBehaviorSwitch(),

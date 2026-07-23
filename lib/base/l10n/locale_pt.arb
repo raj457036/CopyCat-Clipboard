@@ -572,6 +572,8 @@
   },
   "settings__switch__smart_paste__title": "Colagem Inteligente",
   "settings__switch__smart_paste__subtitle": "Cole o conteúdo diretamente no aplicativo com foco.",
+  "settings__switch__focus_loss_behavior__title": "Manter a Janela Aberta ao Perder o Foco",
+  "settings__switch__focus_loss_behavior__subtitle": "Quando o CopyCat perde o foco, mantenha-o aberto em segundo plano em vez de ocultá-lo automaticamente.",
   "settings__switch__transform_behavior__title": "Salvar transformações como novos clips",
   "settings__switch__transform_behavior__subtitle": "Quando ativado, as ações de transformação criam um novo clip em vez de copiar ou colar imediatamente.",
   "settings__switch__startup__title": "Lançar na Inicialização",

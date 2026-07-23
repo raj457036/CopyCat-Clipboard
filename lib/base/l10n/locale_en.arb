@@ -683,6 +683,8 @@
   },
   "settings__switch__smart_paste__title": "Smart Paste",
   "settings__switch__smart_paste__subtitle": "Paste content directly on the focused app.",
+  "settings__switch__focus_loss_behavior__title": "Keep Window Open on Focus Loss",
+  "settings__switch__focus_loss_behavior__subtitle": "When CopyCat loses focus, keep it open in the background instead of hiding it automatically.",
   "settings__switch__transform_behavior__title": "Save Transforms as New Clips",
   "settings__switch__transform_behavior__subtitle": "When enabled, transform actions create a new clip instead of copying or pasting immediately.",
   "settings__switch__type_search__title": "Type to Search",

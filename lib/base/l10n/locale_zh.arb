@@ -572,6 +572,8 @@
   },
   "settings__switch__smart_paste__title": "智能粘贴",
   "settings__switch__smart_paste__subtitle": "直接在目标应用上粘贴内容。",
+  "settings__switch__focus_loss_behavior__title": "失去焦点时保持窗口打开",
+  "settings__switch__focus_loss_behavior__subtitle": "当 CopyCat 失去焦点时，保持其在后台打开，而不是自动隐藏。",
   "settings__switch__transform_behavior__title": "将转换结果保存为新剪辑",
   "settings__switch__transform_behavior__subtitle": "启用后，转换操作会创建新剪辑，而不是立即复制或粘贴。",
   "settings__switch__startup__title": "启动时运行",

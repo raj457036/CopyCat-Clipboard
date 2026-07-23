@@ -1621,6 +1621,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Cole o conteúdo diretamente no aplicativo com foco.';
 
   @override
+  String get settings__switch__focus_loss_behavior__title =>
+      'Manter a Janela Aberta ao Perder o Foco';
+
+  @override
+  String get settings__switch__focus_loss_behavior__subtitle =>
+      'Quando o CopyCat perde o foco, mantenha-o aberto em segundo plano em vez de ocultá-lo automaticamente.';
+
+  @override
   String get settings__switch__transform_behavior__title =>
       'Salvar transformações como novos clips';
 

@@ -39,6 +39,7 @@ class IsarAppConfig {
   String? quickPasteHotkey;
   String? pasteStackHotkey;
   bool smartPaste = false;
+  bool keepWindowOpenOnUnfocus = true;
   bool transformAsNewClip = false;
   bool launchAtStartup = false;
   String locale = "en";
@@ -96,6 +97,7 @@ class IsarAppConfig {
     quickPasteHotkey: quickPasteHotkey,
     pasteStackHotkey: pasteStackHotkey,
     smartPaste: smartPaste,
+    keepWindowOpenOnUnfocus: keepWindowOpenOnUnfocus,
     transformAsNewClip: transformAsNewClip,
     launchAtStartup: launchAtStartup,
     locale: locale,
@@ -145,6 +147,7 @@ class IsarAppConfig {
     ..quickPasteHotkey = config.quickPasteHotkey
     ..pasteStackHotkey = config.pasteStackHotkey
     ..smartPaste = config.smartPaste
+    ..keepWindowOpenOnUnfocus = config.keepWindowOpenOnUnfocus
     ..transformAsNewClip = config.transformAsNewClip
     ..launchAtStartup = config.launchAtStartup
     ..locale = config.locale

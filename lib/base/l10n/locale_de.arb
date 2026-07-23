@@ -572,6 +572,8 @@
   },
   "settings__switch__smart_paste__title": "Smartes Einfügen",
   "settings__switch__smart_paste__subtitle": "Fügen Sie Inhalte direkt in die fokussierte App ein.",
+  "settings__switch__focus_loss_behavior__title": "Fenster bei Fokusverlust geöffnet halten",
+  "settings__switch__focus_loss_behavior__subtitle": "Wenn CopyCat den Fokus verliert, im Hintergrund geöffnet halten, anstatt es automatisch zu verbergen.",
   "settings__switch__transform_behavior__title": "Transformationen als neue Clips speichern",
   "settings__switch__transform_behavior__subtitle": "Wenn aktiviert, erstellen Transformationsaktionen einen neuen Clip, statt sofort zu kopieren oder einzufügen.",
   "settings__switch__startup__title": "Beim Start starten",

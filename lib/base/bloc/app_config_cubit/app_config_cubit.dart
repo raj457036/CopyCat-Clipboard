@@ -420,6 +420,12 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
     await repo.update(newConfig);
   }
 
+  Future<void> toggleKeepWindowOpenOnUnfocus(bool value) async {
+    final newConfig = state.config.copyWith(keepWindowOpenOnUnfocus: value);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+  }
+
   Future<void> toggleTransformAsNewClip(bool value) async {
     final newConfig = state.config.copyWith(transformAsNewClip: value);
     emit(state.copyWith(config: newConfig));

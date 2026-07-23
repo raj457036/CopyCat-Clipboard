@@ -1535,6 +1535,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__switch__smart_paste__subtitle => '直接在目标应用上粘贴内容。';
 
   @override
+  String get settings__switch__focus_loss_behavior__title => '失去焦点时保持窗口打开';
+
+  @override
+  String get settings__switch__focus_loss_behavior__subtitle =>
+      '当 CopyCat 失去焦点时，保持其在后台打开，而不是自动隐藏。';
+
+  @override
   String get settings__switch__transform_behavior__title => '将转换结果保存为新剪辑';
 
   @override

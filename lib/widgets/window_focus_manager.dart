@@ -59,7 +59,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   }
 
   Future<void> toggleAndPaste(ClipboardItem item) async {
-    final unfocused = await toggleWindow();
+    final unfocused = await _unfocusForPaste();
     await wait(Durations.short1.inMilliseconds);
     if (unfocused == true) {
       await pasteOnFocusedWindow();
@@ -88,7 +88,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
 
     final waitDuration = waitBetweenPastes ?? Durations.short1;
 
-    final unfocused = await toggleWindow();
+    final unfocused = await _unfocusForPaste();
     await wait(Durations.short1.inMilliseconds);
     if (unfocused != true) return;
 
@@ -112,12 +112,16 @@ class WindowFocusManagerState extends State<WindowFocusManager>
     }
   }
 
-  Future<void> restore() async {
+  Future<void> restore({bool hideWindow = true}) async {
+    final windowAction = context.windowAction;
     if (lastWindowId != null) {
       final windowId = lastWindowId;
-      context.windowAction?.hide();
+      if (hideWindow) {
+        await windowAction?.hide();
+      }
       await widget.focusWindow.setActiveWindowId(windowId!);
     }
+    windowAction?.isFocused = false;
     _setWindowInBackground(true);
   }
 
@@ -138,6 +142,22 @@ class WindowFocusManagerState extends State<WindowFocusManager>
     if (focused) {
       await windowAction?.hide();
       await restore();
+      return true;
+    } else {
+      await record();
+      await windowAction?.show();
+      return false;
+    }
+  }
+
+  Future<bool> _unfocusForPaste() async {
+    final windowAction = context.windowAction;
+    final bool focused = windowAction?.isFocused ?? false;
+
+    if (focused) {
+      await restore(
+        hideWindow: !appConfigCubit.state.config.keepWindowOpenOnUnfocus,
+      );
       return true;
     } else {
       await record();
@@ -196,11 +216,18 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   @override
   Future<void> onWindowBlur() async {
     _setWindowInBackground(true);
+    context.windowAction?.isFocused = false;
     final authInProgress =
         appLockCubit.state is AppLockAuthenticating ||
         appLockCubit.isSensitiveAuthInProgress;
 
     if (!authInProgress) appLockCubit.onAppBackground();
+
+    final appConfig = appConfigCubit.state.config;
+    if (appConfig.keepWindowOpenOnUnfocus || appConfig.pinned) return;
+    if (context.location == RouteConstants.pasteStack) return;
+    if (authInProgress) return;
+    await context.windowAction?.hide();
   }
 
   @override

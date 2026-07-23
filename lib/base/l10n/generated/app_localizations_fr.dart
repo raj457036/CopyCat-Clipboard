@@ -1608,6 +1608,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Collez du contenu directement sur l\'application ciblée.';
 
   @override
+  String get settings__switch__focus_loss_behavior__title =>
+      'Garder la fenêtre ouverte en cas de perte de focus';
+
+  @override
+  String get settings__switch__focus_loss_behavior__subtitle =>
+      'Lorsque CopyCat perd le focus, gardez-le ouvert en arrière-plan au lieu de le masquer automatiquement.';
+
+  @override
   String get settings__switch__transform_behavior__title =>
       'Enregistrer les transformations comme nouveaux clips';
 

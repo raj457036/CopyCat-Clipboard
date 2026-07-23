@@ -2890,6 +2890,18 @@ abstract class AppLocalizations {
   /// **'Paste content directly on the focused app.'**
   String get settings__switch__smart_paste__subtitle;
 
+  /// No description provided for @settings__switch__focus_loss_behavior__title.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Window Open on Focus Loss'**
+  String get settings__switch__focus_loss_behavior__title;
+
+  /// No description provided for @settings__switch__focus_loss_behavior__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When CopyCat loses focus, keep it open in the background instead of hiding it automatically.'**
+  String get settings__switch__focus_loss_behavior__subtitle;
+
   /// No description provided for @settings__switch__transform_behavior__title.
   ///
   /// In en, this message translates to:
