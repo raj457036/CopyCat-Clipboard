@@ -221,11 +221,11 @@ class WindowFocusManagerState extends State<WindowFocusManager>
         appLockCubit.state is AppLockAuthenticating ||
         appLockCubit.isSensitiveAuthInProgress;
 
+    if (context.location == RouteConstants.pasteStack) return;
     if (!authInProgress) appLockCubit.onAppBackground();
 
     final appConfig = appConfigCubit.state.config;
     if (appConfig.keepWindowOpenOnUnfocus || appConfig.pinned) return;
-    if (context.location == RouteConstants.pasteStack) return;
     if (authInProgress) return;
     await context.windowAction?.hide();
   }

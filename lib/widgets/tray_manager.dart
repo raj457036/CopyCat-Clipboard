@@ -7,7 +7,6 @@ import 'package:clipboard/base/l10n/generated/app_localizations.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/paste_stack.dart';
 import 'package:clipboard/utils/utility.dart';
-import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,16 +22,6 @@ class TrayManager extends StatefulWidget {
 
   @override
   State<TrayManager> createState() => TrayManagerState();
-
-  static Widget forPlatform({required Widget child}) {
-    if (isMobilePlatform) {
-      return child;
-    }
-    return TrayManager(child: child);
-  }
-
-  static TrayManagerState? maybeOf(BuildContext context) =>
-      context.findAncestorStateOfType<TrayManagerState>();
 }
 
 class TrayManagerState extends State<TrayManager> with TrayListener {
@@ -58,8 +47,8 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
     }
 
     trayManager.addListener(this);
-    super.initState();
     unawaited(_initTrayIfConfigured());
+    super.initState();
   }
 
   @override
@@ -75,6 +64,9 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
     if (configCubit.state.config.showTrayIcon) {
       unawaited(_refreshLocalizedTray());
     }
+    trayManager
+      ..removeListener(this)
+      ..addListener(this);
   }
 
   @override
@@ -186,14 +178,12 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
 
   @override
   Future<void> onTrayIconMouseDown() async {
-    final focusWindow = WindowFocusManager.of(context);
-    await focusWindow?.toggleWindow();
+    final actionCubit = context.read<WindowActionCubit>();
+    await actionCubit.toggleWindowVisibility();
   }
 
   @override
-  Future<void> onTrayIconRightMouseDown() async {
-    trayManager.popUpContextMenu();
-  }
+  Future<void> onTrayIconRightMouseDown() => trayManager.popUpContextMenu();
 
   Future<void> quitApp() async {
     final locale = await _currentL10n();

@@ -166,6 +166,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     await setWindowdView(pasteStackWindowSize, positionWithOffset);
     await show();
     await focus();
+    await windowManager.setAlwaysOnTop(true);
     await windowManager.setResizable(false);
   }
 
@@ -176,7 +177,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     _isPasteStackBackgroundToggleMode = false;
   }
 
-  Future<void> hidePasteStackView() async {
+  Future<void> hidePasteStackView({required bool alreadyPinned}) async {
     final position = await calcWindowPosition(
       pasteStackWindowSize,
       Alignment.centerRight,
@@ -185,6 +186,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     await windowManager.setPosition(offScreenPosition, animate: true);
     await wait(Durations.short4.inMilliseconds);
     await hide();
+    await windowManager.setAlwaysOnTop(alreadyPinned);
     await windowManager.setResizable(true);
   }
 
@@ -230,14 +232,19 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     // Pre-lock before the window becomes visible so the user never sees a
     // flash of app content. If a lock is needed the state transitions to
     // AppLockAuthenticating; we wait one frame for it to paint, then show.
-    final lockCubit = sl<AppLockCubit>();
-    lockCubit.onAppForeground();
-    if (lockCubit.state is! AppLockUnlocked) {
-      await WidgetsBinding.instance.endOfFrame;
-    }
     await windowManager.show();
     isFocused = true;
     requestFocus();
+    await wait(Durations.medium4.inMilliseconds);
+    sl<AppLockCubit>().onAppForeground();
+  }
+
+  Future<void> toggleWindowVisibility() async {
+    if (isFocused) {
+      await hide();
+    } else {
+      await show();
+    }
   }
 
   Future<void> requestFocus() async {

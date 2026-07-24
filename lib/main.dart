@@ -234,11 +234,13 @@ class AppContent extends StatelessWidget {
                       AppLocalizations.localizationsDelegates,
                   supportedLocales: AppLocalizations.supportedLocales,
                   builder: (context, child) {
-                    return AppLockOverlay(
-                      child: TrayManager.forPlatform(
-                        child: UpgraderBuilder(child: child),
-                      ),
+                    final appLockOverlay = AppLockOverlay(
+                      child: UpgraderBuilder(child: child),
                     );
+                    if (isDesktopPlatform) {
+                      return TrayManager(child: appLockOverlay);
+                    }
+                    return appLockOverlay;
                   },
                 ),
               );

@@ -26,7 +26,9 @@ class AppLockOverlay extends StatelessWidget {
 
     return BlocListener<AppLockCubit, AppLockState>(
       listenWhen: (_, curr) => curr is AppLockAuthenticating,
-      listener: (_, _) => windowManager.blur(),
+      listener: (_, _) {
+        // windowManager.blur();
+      },
       child: builder,
     );
   }

@@ -1,3 +1,4 @@
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart'
     show RouteConstants;
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
@@ -7,6 +8,7 @@ import 'package:clipboard/utils/common_extension.dart' show GoRouterExtension;
 import 'package:clipboard/utils/common_extension.dart'
     show BuildContextExtension;
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 Future<void> togglePasteStack(
   BuildContext context, [
@@ -14,6 +16,9 @@ Future<void> togglePasteStack(
 ]) async {
   final windowAction = context.windowAction;
   final isActive = appRouter.location() == RouteConstants.pasteStack;
+  final isPinned = context.select(
+    (AppConfigCubit cubit) => cubit.state.config.pinned,
+  );
 
   if (isActive) {
     final backgroundMode =
@@ -22,7 +27,7 @@ Future<void> togglePasteStack(
     if (backgroundMode) {
       final focused = windowAction?.isFocused ?? false;
       if (focused) {
-        await windowAction?.hidePasteStackView();
+        await windowAction?.hidePasteStackView(alreadyPinned: isPinned);
       } else {
         await windowAction?.showPasteStackView();
       }
