@@ -9,6 +9,7 @@ import android.os.Looper
 import android.util.Base64
 import android.util.Log
 import android.widget.Toast
+import java.security.MessageDigest
 
 
 class CopyCatSharedStorage private constructor(applicationContext: Context) {
@@ -86,6 +87,26 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private var remoteClipApplier: ((String) -> Unit)? = null
 //    For Future Use
     var autoCopyOtp: Boolean = false
+
+    private val latestClipLock = Any()
+    private var lastRawClipHash: String? = null
+    private var lastRawClipId: String? = null
+
+    private fun hashBytesSha256(vararg chunks: ByteArray): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        for (chunk in chunks) {
+            digest.update(chunk)
+        }
+        return digest.digest().joinToString("") { "%02x".format(it) }
+    }
+
+    private fun rawTextClipHash(text: String): String {
+        return hashBytesSha256(text.toByteArray())
+    }
+
+    private fun rawBinaryClipHash(type: ClipType, data: ByteArray): String {
+        return hashBytesSha256(type.name.toByteArray(), data)
+    }
 
     @Volatile
     var isWritingToClipboard: Boolean = false
@@ -512,11 +533,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         return clips
     }
 
-    fun readLatestClip(): CopyCatFileStorage.ClipData? {
-        if (endId < 0) return null
-        return fileStorage.readClipItem("Clip-$endId")
-    }
-
     fun writeTextClip(
         text: String,
         type: ClipType,
@@ -524,7 +540,23 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         sourceId: String = "",
         sourceApp: String? = null,
     ) {
-        if (!serviceEnabled) return
+        writeTextClipIfLatestMissing(
+            text = text,
+            type = type,
+            label = label,
+            sourceId = sourceId,
+            sourceApp = sourceApp,
+        )
+    }
+
+    fun writeTextClipIfLatestMissing(
+        text: String,
+        type: ClipType,
+        label: String = "",
+        sourceId: String = "",
+        sourceApp: String? = null,
+    ): CopyCatFileStorage.ClipWriteOutcome {
+        if (!serviceEnabled) return CopyCatFileStorage.ClipWriteOutcome.Failed
 
         var contentToPersist = text
         var encrypted = false
@@ -544,30 +576,54 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             }
         }
         
-        // Get next clip ID (e.g., "Clip-1") for local file storage.
-        val nextId = getNextId()
-        // Globally unique 8-char ID for LAN/Supabase dedup — separate from the file storage ID.
-        val originId = generateOriginId()
-        
-        // Write to file storage instead of SharedPreferences to avoid memory bloat
-        val success = fileStorage.writeClipItem(
-            nextId,
-            contentToPersist,
-            type,
-            label,
-            encrypted,
-            iv,
-            encMode,
-            sourceId = sourceId,
-            sourceApp = sourceApp ?: "",
-        )
-        
-        if (!success) {
-            Log.e(logTag, "Failed to write clip to file storage")
-            return
+        val rawHash = rawTextClipHash(text)
+        var nextId = ""
+        var originId = ""
+
+        val writeResult = synchronized(latestClipLock) {
+            if (lastRawClipHash == rawHash) {
+                return@synchronized CopyCatFileStorage.ClipWriteOutcome.Duplicate(
+                    lastRawClipId ?: "",
+                )
+            }
+
+            // Get next clip ID (e.g., "Clip-1") for local file storage.
+            nextId = getNextId()
+            // Globally unique 8-char ID for LAN/Supabase dedup — separate from the file storage ID.
+            originId = generateOriginId()
+
+            val success = fileStorage.writeClipItem(
+                nextId,
+                contentToPersist,
+                type,
+                label,
+                encrypted,
+                iv,
+                encMode,
+                sourceId = sourceId,
+                sourceApp = sourceApp ?: "",
+            )
+
+            if (!success) {
+                Log.e(logTag, "Failed to write clip to file storage")
+                return@synchronized CopyCatFileStorage.ClipWriteOutcome.Failed
+            }
+
+            lastRawClipHash = rawHash
+            lastRawClipId = nextId
+            commitEndId(endId + 1)
+            CopyCatFileStorage.ClipWriteOutcome.Written(nextId)
         }
-        commitEndId(endId + 1)
-        
+
+        if (writeResult is CopyCatFileStorage.ClipWriteOutcome.Duplicate) {
+            debugLog(logTag) { "Skipping duplicate latest clip $nextId" }
+            return writeResult
+        }
+
+        if (writeResult is CopyCatFileStorage.ClipWriteOutcome.Failed) {
+            return writeResult
+        }
+
         debugLog(logTag) { "Wrote $nextId to file storage (${contentToPersist.length} bytes)" }
         
         // Broadcast to LAN peers
@@ -603,6 +659,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                 sourceApp = sourceApp,
             )
         }
+        return writeResult
     }
     
     private fun writeTextClipToServer(
@@ -671,39 +728,66 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         fileName: String,
         sourceId: String = "",
         sourceApp: String? = null,
-    ) {
-        if (!serviceEnabled) return
+    ): CopyCatFileStorage.ClipWriteOutcome {
+        if (!serviceEnabled) return CopyCatFileStorage.ClipWriteOutcome.Failed
 
-        val originId = generateOriginId()
+        val rawHash = rawBinaryClipHash(ClipType.FileUrl, data)
+        var originId = ""
+        var nextId = ""
 
-        // Persist bytes to a per-clip cache file so localPath survives across
-        // app restarts (the file is small enough that cache eviction is rare).
-        val cacheDir = java.io.File(appContext.cacheDir, "media_clips").also { it.mkdirs() }
-        val cacheFile = java.io.File(cacheDir, "$originId.$ext")
-        try {
-            cacheFile.writeBytes(data)
-        } catch (e: Exception) {
-            Log.e(logTag, "writeBinaryClip: failed to write cache file — ${e.message}")
-            return
+        val writeResult = synchronized(latestClipLock) {
+            if (lastRawClipHash == rawHash) {
+                return@synchronized CopyCatFileStorage.ClipWriteOutcome.Duplicate(
+                    lastRawClipId ?: "",
+                )
+            }
+
+            originId = generateOriginId()
+
+            // Persist bytes to a per-clip cache file so localPath survives across
+            // app restarts (the file is small enough that cache eviction is rare).
+            val cacheDir = java.io.File(appContext.cacheDir, "media_clips").also { it.mkdirs() }
+            val cacheFile = java.io.File(cacheDir, "$originId.$ext")
+            try {
+                cacheFile.writeBytes(data)
+            } catch (e: Exception) {
+                Log.e(logTag, "writeBinaryClip: failed to write cache file — ${e.message}")
+                return@synchronized CopyCatFileStorage.ClipWriteOutcome.Failed
+            }
+
+            nextId = getNextId()
+
+            val success = fileStorage.writeClipItem(
+                clipId = nextId,
+                text = cacheFile.absolutePath,
+                type = ClipType.FileUrl,
+                label = fileName,
+                encrypted = false,
+                originId = originId,
+                sourceId = sourceId,
+                sourceApp = sourceApp ?: "",
+            )
+            if (!success) {
+                Log.e(logTag, "writeBinaryClip: failed to persist to file storage")
+                return@synchronized CopyCatFileStorage.ClipWriteOutcome.Failed
+            }
+
+            lastRawClipHash = rawHash
+            lastRawClipId = nextId
+            commitEndId(endId + 1)
+            CopyCatFileStorage.ClipWriteOutcome.Written(nextId)
         }
 
-        val nextId = getNextId()
+        when (writeResult) {
+            is CopyCatFileStorage.ClipWriteOutcome.Duplicate -> {
+                debugLog(logTag) { "writeBinaryClip: skipping duplicate latest clip" }
+                return writeResult
+            }
 
-        val success = fileStorage.writeClipItem(
-            clipId = nextId,
-            text = cacheFile.absolutePath,
-            type = ClipType.FileUrl,
-            label = fileName,
-            encrypted = false,
-            originId = originId,
-            sourceId = sourceId,
-            sourceApp = sourceApp ?: "",
-        )
-        if (!success) {
-            Log.e(logTag, "writeBinaryClip: failed to persist to file storage")
-            return
+            is CopyCatFileStorage.ClipWriteOutcome.Failed -> return writeResult
+
+            is CopyCatFileStorage.ClipWriteOutcome.Written -> Unit
         }
-        commitEndId(endId + 1)
 
         // Lazily sync userId
         if (lanSyncManager.userId.isBlank()) {
@@ -722,6 +806,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         )
 
         debugLog(logTag) { "writeBinaryClip: persisted $nextId and broadcast $mimeType clip (${ data.size } bytes)" }
+        return writeResult
     }
 
     /**

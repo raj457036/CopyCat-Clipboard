@@ -56,8 +56,6 @@ class CopyCatClipboardService : Service() {
     private val notificationId: Int = 1
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private var lastCopiedText: String? = null
-    private var lastClipFingerprint: String? = null
-    private var lastClipCapturedAtMs: Long = 0L
     private val mainHandler by lazy { Handler(mainLooper) }
     private val pasteActionDelayMs = 1000L
     private val clipboardAckToastCooldownMs = 3000L
@@ -156,49 +154,10 @@ class CopyCatClipboardService : Service() {
 
     fun writeToClipboard(data: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Mark this as already handled so listener does not re-capture and re-sync it.
-            markCaptured(buildClipFingerprint(data, ClipType.Text))
             lastCopiedText = data
             val clip = ClipData.newPlainText("CopyCat", data)
             clipboardManager.setPrimaryClip(clip)
         }
-    }
-
-    private fun buildClipFingerprint(text: String, type: ClipType): String {
-        return "$type::$text"
-    }
-
-    private fun markCaptured(fingerprint: String) {
-        lastClipFingerprint = fingerprint
-        lastClipCapturedAtMs = SystemClock.elapsedRealtime()
-    }
-
-    private fun isDuplicateBurst(fingerprint: String): Boolean {
-        val now = SystemClock.elapsedRealtime()
-        if (
-            copycatStorage.detectionMode == ClipboardDetectionMode.MODE_2_AGGRESSIVE &&
-            lastClipFingerprint == fingerprint
-        ) {
-            return true
-        }
-
-        val duplicateWindowMs = when (copycatStorage.detectionMode) {
-            ClipboardDetectionMode.MODE_INACTIVE -> 0L
-            ClipboardDetectionMode.MODE_1_ACK_TEXT -> 900L
-            ClipboardDetectionMode.MODE_2_AGGRESSIVE -> 1800L
-        }
-
-        return lastClipFingerprint == fingerprint &&
-            now - lastClipCapturedAtMs < duplicateWindowMs
-    }
-
-    private fun isDuplicateOfLatestStoredText(text: String, type: ClipType): Boolean {
-        val latest = copycatStorage.readLatestClip() ?: return false
-        if (latest.deletedAt != null || latest.encrypted) {
-            return false
-        }
-
-        return latest.type == type && latest.text == text
     }
 
     fun performClipboardReadFromClipData(clipData: ClipData?, appPackageName: String) {
@@ -262,12 +221,6 @@ class CopyCatClipboardService : Service() {
                     mimeType.startsWith("audio/")
                 if (!isMedia) return ClipAction.Pending
 
-                val fingerprint = buildClipFingerprint(uri.toString(), ClipType.FileUrl)
-                if (isDuplicateBurst(fingerprint)) {
-                    debugLog(logTag) { "Detected duplicate image URI" }
-                    return ClipAction.Duplicate
-                }
-
                 try {
                     val maxBytes = 50 * 1024 * 1024
                     val buffer = ByteArrayOutputStream()
@@ -295,8 +248,8 @@ class CopyCatClipboardService : Service() {
                         ?: label?.takeIf { it.isNotBlank() }
                         ?: "media.$ext"
 
-                    markCaptured(fingerprint)
-                    copycatStorage.writeBinaryClip(
+                    when (
+                        copycatStorage.writeBinaryClip(
                         data = bytes,
                         mimeType = mimeType,
                         ext = ext,
@@ -304,6 +257,15 @@ class CopyCatClipboardService : Service() {
                         sourceId = sourcePackageName,
                         sourceApp = sourceAppName,
                     )
+                    ) {
+                        is CopyCatFileStorage.ClipWriteOutcome.Duplicate -> {
+                            return ClipAction.Duplicate
+                        }
+                        is CopyCatFileStorage.ClipWriteOutcome.Failed -> {
+                            return ClipAction.Failed
+                        }
+                        is CopyCatFileStorage.ClipWriteOutcome.Written -> Unit
+                    }
                     disableDuplicateAnnouncement = false
                     ClipAction.Success
                 } catch (e: Exception) {
@@ -402,26 +364,25 @@ class CopyCatClipboardService : Service() {
         sourcePackageName: String = "",
         sourceAppName: String? = null,
     ): ClipAction {
-        if (isDuplicateOfLatestStoredText(text, type)) {
-            debugLog(logTag) { "Detected duplicate latest stored item" }
-            return ClipAction.Duplicate
-        }
-
-        val fingerprint = buildClipFingerprint(text, type)
-        if (isDuplicateBurst(fingerprint)) {
-            debugLog(logTag) { "Detected duplicate item" }
-            return ClipAction.Duplicate
-        }
-
-        markCaptured(fingerprint)
-        lastCopiedText = text
-        copycatStorage.writeTextClip(
+        val writeResult = copycatStorage.writeTextClipIfLatestMissing(
             text = text,
             type = type,
             label = label ?: "",
             sourceId = sourcePackageName,
             sourceApp = sourceAppName,
         )
+        when (writeResult) {
+            is CopyCatFileStorage.ClipWriteOutcome.Duplicate -> {
+                debugLog(logTag) { "Detected duplicate latest stored item" }
+                return ClipAction.Duplicate
+            }
+            is CopyCatFileStorage.ClipWriteOutcome.Failed -> {
+                return ClipAction.Failed
+            }
+            is CopyCatFileStorage.ClipWriteOutcome.Written -> Unit
+        }
+
+        lastCopiedText = text
         disableDuplicateAnnouncement = false
         return ClipAction.Success
     }
@@ -455,19 +416,15 @@ class CopyCatClipboardService : Service() {
                             sourcePackageName = normalizedSourcePackage,
                             sourceAppName = sourceAppName,
                         )
-                        actionStatus =
-                            if (result == ClipAction.Success && it.text.length == lastCopiedText?.length) {
-                                result
-                            } else if (result == ClipAction.Excluded) {
-                                ClipAction.Excluded
-                            } else {
-                                ClipAction.PartialSuccess
-                            }
+                        actionStatus = result
                     }
                 }
 
                 if (actionStatus != ClipAction.Excluded) {
-                    if (actionStatus != ClipAction.Success)
+                    if (
+                        actionStatus != ClipAction.Success &&
+                        actionStatus != ClipAction.Duplicate
+                    )
                         item.uri?.let {
                             debugLog(logTag) { "Clipboard URI: $it" }
                             actionStatus = readUriClip(
@@ -478,7 +435,10 @@ class CopyCatClipboardService : Service() {
                             )
                         }
 
-                    if (actionStatus != ClipAction.Success)
+                    if (
+                        actionStatus != ClipAction.Success &&
+                        actionStatus != ClipAction.Duplicate
+                    )
                         item.text?.let {
                             val textValue = it.toString()
                             val hasUri = item.uri != null
@@ -504,11 +464,7 @@ class CopyCatClipboardService : Service() {
                 debugLog(logTag) { "Clip Action: $actionStatus" }
                 debugLog(logTag) { "Clip Content: ${redactForLog(lastCopiedText)}" }
                 when (actionStatus) {
-                    ClipAction.Duplicate -> {
-                        if (!disableDuplicateAnnouncement) {
-                            showClipboardAck("Detected duplicate item", sourcePackageName)
-                        }
-                    }
+                    ClipAction.Duplicate -> Unit
                     ClipAction.Failed -> showClipboardAck(
                         "CopyCat failed to capture clipboard",
                         sourcePackageName,
@@ -840,8 +796,6 @@ class CopyCatClipboardService : Service() {
         
         // Clear references to prevent memory leaks
         lastCopiedText = null
-        lastClipFingerprint = null
-        lastClipCapturedAtMs = 0L
         lastAckToastAtMsByPackage.clear()
         
         super.onDestroy()

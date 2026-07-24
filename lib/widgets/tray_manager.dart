@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/generated/app_localizations.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/paste_stack.dart';
@@ -39,6 +40,11 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
   late final WindowActionCubit windowActionCubit;
   Locale? _lastLocale;
   bool paused = false;
+
+  bool _shouldShowInTaskbar(AppConfig config) {
+    if (!config.showTrayIcon) return true;
+    return config.keepWindowOpenOnUnfocus || !kReleaseMode;
+  }
 
   @override
   void initState() {
@@ -84,7 +90,9 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
 
     if (configCubit.state.config.showTrayIcon) {
       await initTray();
-      await windowActionCubit.showInTaskbar(!kReleaseMode);
+      await windowActionCubit.showInTaskbar(
+        _shouldShowInTaskbar(configCubit.state.config),
+      );
     } else {
       await windowActionCubit.showInTaskbar(true);
     }
@@ -242,7 +250,9 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
       listenWhen: (p, c) {
         if (p is AppConfigLoaded && c is AppConfigLoaded) {
           return p.config.pausedTill != c.config.pausedTill ||
-              p.config.showTrayIcon != c.config.showTrayIcon;
+              p.config.showTrayIcon != c.config.showTrayIcon ||
+              p.config.keepWindowOpenOnUnfocus !=
+                  c.config.keepWindowOpenOnUnfocus;
         }
         return false;
       },
@@ -252,7 +262,7 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
           await destroyTray();
           return;
         }
-        await windowActionCubit.showInTaskbar(!kReleaseMode);
+        await windowActionCubit.showInTaskbar(_shouldShowInTaskbar(config));
         await windowActionCubit.show();
         final isPaused =
             config.pausedTill != null &&
