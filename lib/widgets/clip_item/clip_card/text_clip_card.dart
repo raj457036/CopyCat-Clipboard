@@ -69,7 +69,6 @@ class TextClipCard extends StatelessWidget {
           bg: colors.tertiaryContainer,
           child: Text(
             item.text!,
-            softWrap: false,
             overflow: TextOverflow.visible,
             style: textTheme.bodySmall?.copyWith(
               fontFamily: jetBrainsMonoFont,
