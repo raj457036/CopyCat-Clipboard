@@ -36,8 +36,8 @@ class SyncModeTile extends StatelessWidget {
                 context.locale.settings__sync_mode__balanced,
             };
             final speedColor = switch (speed) {
-              SyncSpeed.realtime => colors.primary,
-              SyncSpeed.balanced => colors.outline,
+              SyncSpeed.realtime => colors.onPrimaryContainer,
+              SyncSpeed.balanced => colors.onSurfaceVariant,
             };
             final speedBackground = switch (speed) {
               SyncSpeed.realtime => colors.primaryContainer,

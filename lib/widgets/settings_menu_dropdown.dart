@@ -47,6 +47,7 @@ class _SettingsMenuDropdownState<T> extends State<SettingsMenuDropdown<T>> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final selected = widget.itemBuilder(context, widget.value);
     const menuWidth = 180.0;
 
@@ -88,6 +89,10 @@ class _SettingsMenuDropdownState<T> extends State<SettingsMenuDropdown<T>> {
       builder: (context, controller, child) {
         final button = ElevatedButton(
           onPressed: widget.onSelected == null ? null : _toggle,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: colors.surfaceContainerHigh,
+            foregroundColor: colors.primary,
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

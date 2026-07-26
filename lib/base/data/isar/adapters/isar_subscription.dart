@@ -49,7 +49,6 @@ class IsarSubscription {
     syncHours: syncHours,
     ads: ads,
     syncInterval: syncInterval,
-    edit: edit,
     activeTill: activeTill,
     maxSyncDevices: maxSyncDevices,
     customExclusionRules: customExclusionRules,
@@ -76,7 +75,6 @@ class IsarSubscription {
     ..syncHours = sub.syncHours
     ..ads = sub.ads
     ..syncInterval = sub.syncInterval
-    ..edit = sub.edit
     ..activeTill = sub.activeTill
     ..maxSyncDevices = sub.maxSyncDevices
     ..customExclusionRules = sub.customExclusionRules

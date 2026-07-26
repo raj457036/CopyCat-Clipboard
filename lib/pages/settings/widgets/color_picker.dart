@@ -113,6 +113,13 @@ class ColorPickerTile extends StatelessWidget {
               );
               return ElevatedButton(
                 onPressed: hasAccess ? () => chooseColor(context, color) : null,
+                style: ElevatedButton.styleFrom(
+                  shape: StadiumBorder(
+                    side: BorderSide(color: color, width: 2.0),
+                  ),
+                  backgroundColor: colors.surfaceContainerHigh,
+                  foregroundColor: colors.primary,
+                ),
                 child: Text(context.locale.app__change),
               );
             },

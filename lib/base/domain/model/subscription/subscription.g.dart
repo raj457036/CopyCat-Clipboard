@@ -28,13 +28,12 @@ _Subscription _$SubscriptionFromJson(Map<String, dynamic> json) =>
       itemsPerCollection:
           (json['itemsPerCollection'] as num?)?.toInt() ??
           defaultMaxItemPerCollection,
-      dragNdrop: json['dragNdrop'] as bool? ?? false,
+      dragNdrop: json['drag_n_drop'] as bool? ?? false,
       theming: json['theming'] as bool? ?? false,
       syncHours: (json['syncHr'] as num?)?.toInt() ?? defaultSyncHourOffset,
       ads: json['ads'] as bool? ?? true,
       syncInterval:
           (json['syncInt'] as num?)?.toInt() ?? defaultBestEffortSyncInterval,
-      edit: json['edit'] as bool? ?? false,
       activeTill: _$JsonConverterFromJson<String, DateTime>(
         json['activeTill'],
         const DateTimeConverter().fromJson,
@@ -66,12 +65,11 @@ Map<String, dynamic> _$SubscriptionToJson(_Subscription instance) =>
       ),
       'collections': instance.collections,
       'itemsPerCollection': instance.itemsPerCollection,
-      'dragNdrop': instance.dragNdrop,
+      'drag_n_drop': instance.dragNdrop,
       'theming': instance.theming,
       'syncHr': instance.syncHours,
       'ads': instance.ads,
       'syncInt': instance.syncInterval,
-      'edit': instance.edit,
       'activeTill': _$JsonConverterToJson<String, DateTime>(
         instance.activeTill,
         const DateTimeConverter().toJson,

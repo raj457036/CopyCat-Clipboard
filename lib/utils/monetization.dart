@@ -39,7 +39,6 @@ Subscription generateProPlan(
     syncHours: 720,
     syncInterval: 5,
     maxSyncDevices: 12,
-    edit: true,
     managementUrl: managementUrl,
     customExclusionRules: true,
   );

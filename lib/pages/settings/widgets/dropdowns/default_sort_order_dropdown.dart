@@ -26,6 +26,9 @@ class DefaultSortOrderTile extends StatelessWidget {
         selector: (state) => state.config.sortOrder,
         builder: (context, sortOrder) {
           return SegmentedButton<SortOrder>(
+            style: SegmentedButton.styleFrom(
+              enabledMouseCursor: SystemMouseCursors.click,
+            ),
             segments: [
               ButtonSegment(
                 value: SortOrder.asc,

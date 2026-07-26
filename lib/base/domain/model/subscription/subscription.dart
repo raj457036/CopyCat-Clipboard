@@ -31,14 +31,13 @@ abstract class Subscription with _$Subscription, Identifiable {
     @DateTimeConverter() DateTime? trialEnd,
     @Default(defaultCollectionCount) int collections,
     @Default(defaultMaxItemPerCollection) int itemsPerCollection,
-    @Default(false) bool dragNdrop,
+    @JsonKey(name: "drag_n_drop") @Default(false) bool dragNdrop,
     @Default(false) bool theming,
     @JsonKey(name: "syncHr") @Default(defaultSyncHourOffset) int syncHours,
     @Default(true) bool ads,
     @JsonKey(name: "syncInt")
     @Default(defaultBestEffortSyncInterval)
     int syncInterval,
-    @Default(false) bool edit,
     @DateTimeConverter() DateTime? activeTill,
     @JsonKey(name: "devices")
     @Default(defaultNoOfSyncedDevices)
@@ -83,7 +82,6 @@ abstract class Subscription with _$Subscription, Identifiable {
         syncHours == other.syncHours &&
         ads == other.ads &&
         syncInterval == other.syncInterval &&
-        edit == other.edit &&
         activeTill == other.activeTill &&
         maxSyncDevices == other.maxSyncDevices &&
         customExclusionRules == other.customExclusionRules &&
