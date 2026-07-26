@@ -51,6 +51,17 @@ import 'package:clipboard/base/data/adapters/collection_clip_sync_adapter.dart'
     as _i272;
 import 'package:clipboard/base/data/adapters/collection_sync_adapter.dart'
     as _i220;
+import 'package:clipboard/base/data/drift/drift_database.dart' as _i633;
+import 'package:clipboard/base/data/drift/repositories/drift_app_config_repository.dart'
+    as _i273;
+import 'package:clipboard/base/data/drift/repositories/drift_sync_cursor_repository.dart'
+    as _i487;
+import 'package:clipboard/base/data/drift/repositories/drift_sync_outbox_repository.dart'
+    as _i308;
+import 'package:clipboard/base/data/drift/services/drift_clip_batch_sync_service.dart'
+    as _i413;
+import 'package:clipboard/base/data/isar/repositories/isar_app_config.dart'
+    as _i889;
 import 'package:clipboard/base/data/isar/repositories/isar_sync_cursor_repository.dart'
     as _i958;
 import 'package:clipboard/base/data/isar/repositories/isar_sync_outbox_repository.dart'
@@ -58,7 +69,6 @@ import 'package:clipboard/base/data/isar/repositories/isar_sync_outbox_repositor
 import 'package:clipboard/base/data/isar/services/isar_clip_batch_sync_service.dart'
     as _i639;
 import 'package:clipboard/base/data/repositories/analytics.dart' as _i202;
-import 'package:clipboard/base/data/repositories/app_config.dart' as _i655;
 import 'package:clipboard/base/data/repositories/app_directory.dart' as _i715;
 import 'package:clipboard/base/data/repositories/application_meta.dart'
     as _i756;
@@ -175,6 +185,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i653.SelectedClipsCubit>(() => _i653.SelectedClipsCubit());
     gh.factory<_i657.WindowActionCubit>(() => _i657.WindowActionCubit());
     gh.singleton<_i291.FocusWindow>(() => registerModule.focusWindow);
+    gh.singleton<_i633.AppDatabase>(() => registerModule.driftDb);
     await gh.singletonAsync<_i829.TinyStorage>(
       () => registerModule.localCache(),
       preResolve: true,
@@ -194,6 +205,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i563.GoogleOAuth2Service(),
     );
     gh.lazySingleton<_i405.LocalAuthService>(() => _i405.LocalAuthService());
+    gh.lazySingleton<_i891.AppConfigRepository>(
+      () => _i889.IsarAppConfigRepositoryImpl(gh<_i214.Isar>()),
+    );
     gh.lazySingleton<_i707.AnalyticsRepository>(
       () => const _i202.AnalyticsRepositoryImpl(),
     );
@@ -208,6 +222,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i616.ClipBatchSyncService>(),
         gh<_i292.SyncEventBus>(),
       ),
+    );
+    gh.singleton<_i542.AppConfigCubit>(
+      () => _i542.AppConfigCubit(gh<_i891.AppConfigRepository>()),
     );
     gh.lazySingleton<_i284.ApplicationMetaSource>(
       () => _i651.LocalApplicationMetaSource(gh<_i214.Isar>()),
@@ -248,17 +265,26 @@ extension GetItInjectableX on _i174.GetIt {
       instanceName: 'supabase_key',
     );
     gh.lazySingleton<_i891.AppConfigRepository>(
-      () => _i655.AppConfigRepositoryImpl(gh<_i214.Isar>()),
+      () => _i273.DriftAppConfigRepository(gh<_i633.AppDatabase>()),
+      instanceName: 'drift',
     );
     gh.lazySingleton<_i110.ApplicationMetaRepository>(
       () => _i756.ApplicationMetaRepositoryImpl(
         gh<_i284.ApplicationMetaSource>(instanceName: 'local'),
       ),
     );
+    gh.lazySingleton<_i616.ClipBatchSyncService>(
+      () => _i413.DriftClipBatchSyncService(gh<_i633.AppDatabase>()),
+      instanceName: 'drift',
+    );
     await gh.factoryAsync<String>(
       () => registerModule.deviceId(gh<_i829.TinyStorage>()),
       instanceName: 'device_id',
       preResolve: true,
+    );
+    gh.lazySingleton<_i770.SyncOutboxRepository>(
+      () => _i308.DriftSyncOutboxRepository(gh<_i633.AppDatabase>()),
+      instanceName: 'drift',
     );
     await gh.singletonAsync<_i454.SupabaseClient>(
       () => registerModule.client(
@@ -266,6 +292,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<String>(instanceName: 'supabase_key'),
       ),
       preResolve: true,
+    );
+    gh.lazySingleton<_i834.SyncCursorRepository>(
+      () => _i487.DriftSyncCursorRepository(gh<_i633.AppDatabase>()),
+      instanceName: 'drift',
     );
     gh.lazySingleton<_i1069.RestorationStatusRepository>(
       () => _i970.RestorationStatusRepositoryImpl(
@@ -285,15 +315,18 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i899.RemoteClipCollectionSource(gh<_i454.SupabaseClient>()),
       instanceName: 'remote',
     );
+    gh.lazySingleton<_i242.AppLockCubit>(
+      () => _i242.AppLockCubit(
+        gh<_i542.AppConfigCubit>(),
+        gh<_i405.LocalAuthService>(),
+      ),
+    );
     gh.lazySingleton<_i533.ApplicationMetaResolver>(
       () => _i375.ApplicationMetaResolverImpl(
         gh<_i110.ApplicationMetaRepository>(),
         gh<_i291.FocusWindow>(),
         gh<_i636.AppDirectoryRepository>(),
       ),
-    );
-    gh.singleton<_i542.AppConfigCubit>(
-      () => _i542.AppConfigCubit(gh<_i891.AppConfigRepository>()),
     );
     gh.lazySingleton<_i422.SubscriptionSource>(
       () => _i35.RemoteSubscriptionSource(client: gh<_i454.SupabaseClient>()),
@@ -387,12 +420,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i61.SyncRepository>(
       () => _i223.SyncRepositoryImpl(
         gh<_i782.SyncClipboardSource>(instanceName: 'remote'),
-      ),
-    );
-    gh.lazySingleton<_i242.AppLockCubit>(
-      () => _i242.AppLockCubit(
-        gh<_i542.AppConfigCubit>(),
-        gh<_i405.LocalAuthService>(),
       ),
     );
     gh.lazySingleton<_i956.SubscriptionRepository>(

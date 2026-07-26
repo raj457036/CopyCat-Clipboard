@@ -8,11 +8,11 @@ import 'package:injectable/injectable.dart';
 import 'package:isar_community/isar.dart';
 
 @LazySingleton(as: AppConfigRepository)
-class AppConfigRepositoryImpl implements AppConfigRepository {
+class IsarAppConfigRepositoryImpl implements AppConfigRepository {
   final Isar db;
   final _fixedId = 1;
 
-  AppConfigRepositoryImpl(this.db);
+  IsarAppConfigRepositoryImpl(this.db);
 
   IsarCollection<IsarAppConfig> get _collection =>
       db.collection<IsarAppConfig>();

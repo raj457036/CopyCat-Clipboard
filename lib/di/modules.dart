@@ -1,5 +1,7 @@
 import "package:android_background_clipboard/android_background_clipboard.dart";
 import "package:clipboard/base/constants/strings/strings.dart";
+import "package:clipboard/base/data/drift/drift_database.dart";
+import "package:clipboard/base/data/drift/services/drift_migration_service.dart";
 import "package:clipboard/base/data/isar/isar_database.dart";
 import "package:clipboard/base/data/isar/isar_database_service.dart";
 import "package:clipboard/base/domain/services/database_service.dart";
@@ -56,8 +58,25 @@ abstract class RegisterModule {
     final appDir = await getApplicationDocumentsDirectory();
     final cacheDir = p.join(appDir.path, "cache");
     final storage = await TinyStorage.init("local_cache.json", path: cacheDir);
+
+    // Initial Database Engine determination for migration phase 1
+    final currentEngine = storage.get<String?>(kActiveDbEngineKey);
+    if (currentEngine == null) {
+      String? dbPath = Platform.environment[dbPathEnvKey];
+      dbPath = dbPath ?? appDir.path;
+      final isarFile = File(p.join(dbPath, "$dbName.isar"));
+      if (!isarFile.existsSync()) {
+        storage.set(kActiveDbEngineKey, kDbEngineDrift);
+      } else {
+        storage.set(kActiveDbEngineKey, kDbEngineIsar);
+      }
+    }
+
     return storage;
   }
+
+  @singleton
+  AppDatabase get driftDb => AppDatabase();
 
   @preResolve
   @LazySingleton(dispose: closeIsarDb)
