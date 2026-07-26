@@ -4,7 +4,6 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:window_manager/window_manager.dart';
 
 class AppLockOverlay extends StatelessWidget {
   final Widget child;

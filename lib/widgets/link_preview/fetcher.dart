@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:ui' show Size;
 
 import 'package:clipboard/widgets/link_preview/type.dart';
