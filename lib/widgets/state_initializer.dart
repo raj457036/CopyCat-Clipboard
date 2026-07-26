@@ -39,8 +39,12 @@ class _StateInitializerState extends State<StateInitializer>
     with WidgetsBindingObserver {
   final appLinkListener = ApplinkListener();
   final shareListener = ShareListener();
-  final powerSaverDebounce = Debouncer(milliseconds: 180000); // 3 minutes
-  final backgroundStateDebounce = Debouncer(milliseconds: 60000); // 1 minute
+  final powerSaverDebounce = Debouncer(
+    milliseconds: 5 * 60 * 1000,
+  ); // 5 minutes
+  final backgroundStateDebounce = Debouncer(
+    milliseconds: 2 * 60 * 1000,
+  ); // 2 minutes
 
   late final AppConfigCubit appConfigCubit;
   late final AuthCubit authCubit;

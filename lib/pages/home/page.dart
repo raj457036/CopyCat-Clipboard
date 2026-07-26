@@ -15,14 +15,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final view = context.select(
-      (AppConfigCubit cubit) => cubit.state.config.view,
-    );
-
-    Widget scaffold = CustomScaffold(
+    Widget scaffold = const CustomScaffold(
       activeIndex: 0,
-      appBar: view == AppView.windowed ? const HomeAppbar() : null,
-      body: const ScaffoldBody(child: HomePageBody()),
+      appBar: HomeAppbar(),
+      body: ScaffoldBody(child: HomePageBody()),
     );
 
     // NOTE: drag and drop doesn't work in android for now

@@ -122,91 +122,101 @@ class _SearchBarInputState extends State<SearchInputBar> {
       backgroundColor: colors.surface,
       title: OnEvent<EventBusKeyboardEvent>(
         trigger: onSearchFocusEvent,
-        child: AnimatedContainer(
-          curve: Curves.easeIn,
-          width: isFocused ? 850 : 650,
-          height: 46,
-          duration: Durations.short2,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            spacing: 4,
-            children: [
-              Expanded(
-                child: Focus(
-                  skipTraversal: true,
-                  onFocusChange: (value) => value ? focus() : null,
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(50)),
-                    child: SearchBar(
-                      controller: queryController,
-                      focusNode: searchInputFocusNode,
-                      side: isFocused
-                          ? BorderSide(color: colors.outline, width: 2).wsp
-                          : null,
-                      smartDashesType: SmartDashesType.disabled,
-                      smartQuotesType: SmartQuotesType.disabled,
-                      onTapOutside: (event) => searchInputFocusNode
-                          .focusInDirection(TraversalDirection.down),
-                      elevation: 0.0.wsp,
-                      hintText: context.locale.home__search__hint,
-                      leading: const Align(
-                        alignment: Alignment.bottomLeft,
-                        child: CopyCatLogo(),
-                      ),
-                      backgroundColor: colors.surfaceContainerHigh.wsp,
-                      trailing: [
-                        if (isDesktopPlatform)
-                          Align(
-                            widthFactor: 1,
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: padding10),
-                              child: Text(
-                                keyboardShortcut(
-                                  key: "F",
-                                  meta: Platform.isMacOS,
-                                  ctrl: Platform.isWindows || Platform.isLinux,
-                                ),
-                                style: textTheme.labelLarge?.copyWith(
-                                  color: colors.outline,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return AnimatedContainer(
+              curve: Curves.easeIn,
+              width: isFocused ? 850 : 650,
+              height: 46,
+              duration: Durations.short2,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                spacing: 4,
+                children: [
+                  Expanded(
+                    child: Focus(
+                      skipTraversal: true,
+                      onFocusChange: (value) => value ? focus() : null,
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(50),
+                        ),
+                        child: SearchBar(
+                          controller: queryController,
+                          focusNode: searchInputFocusNode,
+                          side: isFocused
+                              ? BorderSide(color: colors.outline, width: 2).wsp
+                              : null,
+                          smartDashesType: SmartDashesType.disabled,
+                          smartQuotesType: SmartQuotesType.disabled,
+                          onTapOutside: (event) => searchInputFocusNode
+                              .focusInDirection(TraversalDirection.down),
+                          elevation: 0.0.wsp,
+                          hintText: context.locale.home__search__hint,
+                          leading: const Align(
+                            alignment: Alignment.bottomLeft,
+                            child: CopyCatLogo(),
+                          ),
+                          backgroundColor: colors.surfaceContainerHigh.wsp,
+                          trailing: [
+                            if (isDesktopPlatform)
+                              Align(
+                                widthFactor: 1,
+                                alignment: Alignment.centerRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    right: padding10,
+                                  ),
+                                  child: Text(
+                                    keyboardShortcut(
+                                      key: "F",
+                                      meta: Platform.isMacOS,
+                                      ctrl:
+                                          Platform.isWindows ||
+                                          Platform.isLinux,
+                                    ),
+                                    style: textTheme.labelLarge?.copyWith(
+                                      color: colors.outline,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                      ],
-                      textInputAction: TextInputAction.search,
-                      onChanged: (text) =>
-                          _onQueryChanged(text, typeToSearchEnabled),
-                      onSubmitted: _onQuerySubmitted,
+                          ],
+                          textInputAction: TextInputAction.search,
+                          onChanged: (text) =>
+                              _onQueryChanged(text, typeToSearchEnabled),
+                          onSubmitted: _onQuerySubmitted,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              if (isActive)
-                IconButton(
-                  focusColor: colors.secondaryContainer,
-                  style: IconButton.styleFrom(
-                    backgroundColor: colors.surfaceContainerHigh,
-                    maximumSize: const Size.square(kToolbarHeight),
-                    padding: const EdgeInsets.all(padding10),
-                  ),
-                  onPressed: clear,
-                  icon: const Icon(Icons.clear_rounded),
-                  color: colors.outline,
-                  tooltip: context.locale.home__search__reset,
-                ),
+                  if (isActive)
+                    IconButton(
+                      focusColor: colors.secondaryContainer,
+                      style: IconButton.styleFrom(
+                        backgroundColor: colors.surfaceContainerHigh,
+                        maximumSize: const Size.square(kToolbarHeight),
+                        padding: const EdgeInsets.all(padding10),
+                      ),
+                      onPressed: clear,
+                      icon: const Icon(Icons.clear_rounded),
+                      color: colors.outline,
+                      tooltip: context.locale.home__search__reset,
+                    ),
 
-              if (context.screenSize.width > 250)
-                FilterButton(
-                  onChange: onFilterChange,
-                  filterState: filterState,
-                ),
-              if (isMobilePlatform && isMobile && !isActive)
-                const AppLayoutToggleButton(compact: true),
-            ],
-          ),
+                  if (constraints.maxWidth > 350)
+                    FilterButton(
+                      onChange: onFilterChange,
+                      filterState: filterState,
+                    ),
+                  if (isMobilePlatform && isMobile && !isActive)
+                    const AppLayoutToggleButton(compact: true),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

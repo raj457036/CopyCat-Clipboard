@@ -19,6 +19,7 @@ import 'package:clipboard/di/di.dart';
 import 'package:clipboard/routes/routes.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,9 +37,9 @@ class AuthListener extends StatelessWidget {
     final enc1Decrypt = await appConfigCubit.decryptEnc2(enc1);
 
     if (enc1Decrypt == null) return;
-
-    final config = appConfigCubit.state.config;
     await encryptionWorker.start(enc1Decrypt);
+    await wait(Durations.medium4.inMilliseconds);
+    final config = appConfigCubit.state.config;
     encryptionWorker.setEncryption(config.autoEncrypt);
     encryptionWorker.setDecryption(true);
   }

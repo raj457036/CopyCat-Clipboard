@@ -1,3 +1,4 @@
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
@@ -47,6 +48,7 @@ class ClipInspector extends StatefulWidget {
 class _ClipInspectorState extends State<ClipInspector> {
   late final OfflinePersistenceCubit offlineCubit;
   late final AppLockCubit appLockCubit;
+  late final AppConfigCubit appConfigCubit;
   late final GlobalKey<FormState> formKey;
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
@@ -56,9 +58,12 @@ class _ClipInspectorState extends State<ClipInspector> {
 
   ClipboardItem get item => widget.item;
 
+  bool get e2eeSetup => appConfigCubit.isE2EESetupDone;
+
   @override
   void initState() {
     super.initState();
+    appConfigCubit = context.read<AppConfigCubit>();
     offlineCubit = context.read<OfflinePersistenceCubit>();
     appLockCubit = context.read<AppLockCubit>();
     formKey = GlobalKey<FormState>();
@@ -679,14 +684,19 @@ class _ClipInspectorState extends State<ClipInspector> {
             child: SwitchListTile(
               title: Text(context.locale.preview__inspector__lock_clip),
               subtitle: Text(
-                context.locale.preview__inspector_lock_clip_description,
+                context.locale.preview__inspector_lock_clip_description +
+                    (!e2eeSetup
+                        ? "\n⚠️ ${context.locale.app__ack__missing_e2e_setup}"
+                        : ""),
               ),
               value: isLocked,
               contentPadding: EdgeInsets.zero,
               thumbIcon: isLocked
                   ? const Icon(Icons.lock_rounded).wsp
                   : const Icon(Icons.lock_open_rounded).wsp,
-              onChanged: (value) async => await onLockedStateChanged(value),
+              onChanged: e2eeSetup
+                  ? (value) async => await onLockedStateChanged(value)
+                  : null,
             ),
           ),
           height16,
@@ -785,7 +795,7 @@ class _InspectorSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title, style: context.textTheme.titleMedium),
-            height12,
+            height8,
             child,
           ],
         ),

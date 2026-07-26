@@ -1,7 +1,10 @@
+import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/pages/home/widgets/search_bar.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/app_bar/selection_appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppbar({super.key});
@@ -9,13 +12,20 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final size = context.mq.size;
+    final view = context.select(
+      (AppConfigCubit cubit) => cubit.state.config.view,
+    );
     late final Widget defaultAppBar;
     if (size.shortestSide < 250) {
       defaultAppBar = const SizedBox.shrink();
     } else {
       defaultAppBar = const SearchInputBar();
     }
-    return SelectionAppbar(defaultChild: defaultAppBar);
+    return SelectionAppbar(
+      defaultChild: view == AppView.topDocked || view == AppView.bottomDocked
+          ? const SizedBox.shrink()
+          : defaultAppBar,
+    );
   }
 
   @override

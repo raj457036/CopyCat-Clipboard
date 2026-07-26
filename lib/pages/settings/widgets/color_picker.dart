@@ -62,12 +62,13 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
           },
           child: Text(context.mlocale.cancelButtonLabel.title),
         ),
-        TextButton(
+        FilledButton(
           onPressed: () {
             Navigator.pop(context, color_);
           },
           child: Text(context.locale.app__select),
         ),
+        width8,
       ],
       contentPadding: EdgeInsets.zero,
     );

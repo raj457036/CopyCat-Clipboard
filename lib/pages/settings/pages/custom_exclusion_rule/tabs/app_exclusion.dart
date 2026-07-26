@@ -9,13 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universal_io/io.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:path/path.dart' as path;
 
 class AppExclusionTab extends StatelessWidget {
   const AppExclusionTab({super.key});
 
   void deleteItem(BuildContext context, int index) {
     final cubit = context.read<AppConfigCubit>();
-    final androidCubit = context.read<AndroidBgClipboardCubit>();
+    final androidCubit = context.read<AndroidBgClipboardCubit?>();
     final rules = cubit.exclusionRules;
     final excludedApps = [
       ...rules.apps.take(index),
@@ -23,18 +24,18 @@ class AppExclusionTab extends StatelessWidget {
     ];
     final updatedRules = cubit.exclusionRules.copyWith(apps: excludedApps);
     cubit.updateExclusionRule(updatedRules);
-    androidCubit.updateExclusionRule(updatedRules);
+    androidCubit?.updateExclusionRule(updatedRules);
   }
 
   void addApp(BuildContext context) async {
     final cubit = context.read<AppConfigCubit>();
-    final androidCubit = context.read<AndroidBgClipboardCubit>();
+    final androidCubit = context.read<AndroidBgClipboardCubit?>();
     final apps = await selectApp(context);
     if (apps.isEmpty) return;
     final excludedApps = {...apps, ...cubit.exclusionRules.apps}.toList();
     final updatedRules = cubit.exclusionRules.copyWith(apps: excludedApps);
     cubit.updateExclusionRule(updatedRules);
-    androidCubit.updateExclusionRule(updatedRules);
+    androidCubit?.updateExclusionRule(updatedRules);
   }
 
   Future<Iterable<AppInfo>> selectApp(BuildContext context) async {
@@ -61,19 +62,14 @@ class AppExclusionTab extends StatelessWidget {
   }
 
   Future<Iterable<AppInfo>> selectDesktopApp() async {
-    final List<String> ext;
     String? initialDirectory;
     if (Platform.isMacOS) {
-      ext = ["app"];
+      initialDirectory = "/Applications";
     } else if (Platform.isWindows) {
-      ext = ["exe"];
       initialDirectory = r"C:\Program Files";
-    } else {
-      ext = ["bin"];
     }
     final result = await FilePicker.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ext,
+      type: FileType.any,
       allowMultiple: true,
       initialDirectory: initialDirectory,
     );
@@ -81,9 +77,26 @@ class AppExclusionTab extends StatelessWidget {
     windowManager.focus();
     if (result == null || result.count == 0) return [];
 
-    final files = result.files.map(
-      (e) => AppInfo(name: e.name, path: e.path ?? ''),
-    );
+    late Pattern supportedExtensions = "";
+    if (Platform.isMacOS) {
+      supportedExtensions = RegExp(r"^.?(app|dmg|pkg)$", caseSensitive: false);
+    }
+    if (Platform.isLinux) {
+      supportedExtensions = RegExp(
+        r"^.?(appimage|snap|deb|rpm)$",
+        caseSensitive: false,
+      );
+    }
+    if (Platform.isWindows) {
+      supportedExtensions = RegExp(r"^.?(exe|msi)$", caseSensitive: false);
+    }
+    final files = result.files
+        .where(
+          (e) =>
+              e.path != null &&
+              path.extension(e.path!).contains(supportedExtensions),
+        )
+        .map((e) => AppInfo(name: e.name, path: e.path ?? ''));
     return files;
   }
 

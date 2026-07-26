@@ -1,8 +1,10 @@
 import 'package:clipboard/base/background/encryption_worker.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,8 +12,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class E2EESetupListTile extends StatelessWidget {
   const E2EESetupListTile({super.key});
 
-  void toggleAutoEncrypt(BuildContext context, bool value) {
+  Future<void> _startEncryptionWorker() async {
+    final appConfigCubit = sl<AppConfigCubit>();
+    final encryptionWorker = EncryptionWorker.instance;
+    await encryptionWorker.waitUntilReady();
+
+    if (sl<AuthCubit>().state is AuthenticatedAuthState) {
+      final authState = sl<AuthCubit>().state as AuthenticatedAuthState;
+      final enc1 = authState.user.enc1;
+      final enc1Decrypt = await appConfigCubit.decryptEnc2(enc1);
+
+      if (enc1Decrypt == null) return;
+      await encryptionWorker.start(enc1Decrypt);
+      await wait(Durations.medium4.inMilliseconds);
+    }
+  }
+
+  Future<void> toggleAutoEncrypt(BuildContext context, bool value) async {
     context.read<AppConfigCubit>().toggleAutoEncrypt(value);
+    if (value) await _startEncryptionWorker();
     EncryptionWorker.instance.setEncryption(value);
   }
 
