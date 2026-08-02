@@ -36,6 +36,8 @@ const getPlanConfig = (planId: string) => ({
   collections: planId == planEntitlementId ? 50 : 3,
   syncInt: planId == planEntitlementId ? 5 : 45,
   pasteStackLimit: planId == planEntitlementId ? maxPasteStackLimit : 10,
+  theming: planId == planEntitlementId ? true : false,
+  dragNdrop: planId == planEntitlementId ? true : false,
 });
 
 const updateOrCreateSubscription = async (
@@ -99,6 +101,8 @@ const updateOrCreateSubscription = async (
         modified: new Date().toISOString(),
         collections: planConfig.collections,
         syncInt: planConfig.syncInt,
+        theming: planConfig.theming,
+        dragNdrop: planConfig.dragNdrop,
       },
       { onConflict: "userId" }
     )
