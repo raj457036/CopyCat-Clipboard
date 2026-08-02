@@ -11,6 +11,7 @@ import 'package:clipboard/base/domain/model/notification_message.dart'
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:open_dir/open_dir.dart' show OpenDir;
 import 'package:path/path.dart' as p;
 import 'package:clipboard/pages/preview/page.dart';
@@ -381,12 +382,7 @@ class _ClipInspectorState extends State<ClipInspector> {
           icon: item.downloading
               ? SizedBox.square(
                   dimension: 18,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation(
-                      context.colors.onPrimary,
-                    ),
-                  ),
+                  child: YarnBallLoading(color: context.colors.onPrimary),
                 )
               : const Icon(Icons.download_for_offline_outlined),
           label: Text(

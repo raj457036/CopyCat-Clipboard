@@ -6,6 +6,7 @@ import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/widgets/forms/reset_password_form.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +28,7 @@ class ResetPasswordPage extends StatelessWidget {
           },
           builder: (context, accessToken) {
             if (accessToken == null) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: YarnBallLoading());
             }
             return SizedBox(
               width: 300,

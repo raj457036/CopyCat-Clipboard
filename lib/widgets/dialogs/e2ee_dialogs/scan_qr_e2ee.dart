@@ -3,6 +3,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/e2ee_qr_transfer_service.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -68,7 +69,7 @@ class _ScanQrE2eeDialogState extends State<ScanQrE2eeDialog> {
                 if (snapshot.connectionState != ConnectionState.done)
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 48),
-                    child: CircularProgressIndicator(),
+                    child: YarnBallLoading(),
                   )
                 else if (!hasCamera)
                   Text(

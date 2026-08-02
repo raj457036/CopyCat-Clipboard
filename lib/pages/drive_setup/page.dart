@@ -4,6 +4,7 @@ import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -63,7 +64,7 @@ class _DriveSetupPageState extends State<DriveSetupPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const CircularProgressIndicator(),
+                    const YarnBallLoading(),
                     height10,
                     Text(
                       context.locale.drive__text__setting_up,

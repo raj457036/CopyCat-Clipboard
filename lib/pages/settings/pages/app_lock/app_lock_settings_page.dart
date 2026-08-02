@@ -5,6 +5,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/settings_menu_dropdown.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -70,10 +71,9 @@ class _AppLockSettingsPageState extends State<AppLockSettingsPage> {
               if (_checking)
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: padding16),
-                  child: SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                  child: SizedBox.square(
+                    dimension: 24,
+                    child: YarnBallLoading(),
                   ),
                 )
               else

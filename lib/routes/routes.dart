@@ -52,6 +52,7 @@ import "package:clipboard/pages/settings/pages/personal_drives/page.dart";
 import "package:clipboard/pages/splash_page.dart";
 import "package:clipboard/widgets/listeners/android_clip_restore_lifecycle_listener.dart";
 import "package:clipboard/widgets/page_route/dynamic_page_route.dart";
+import "package:clipboard/widgets/yarn_ball_loading.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -218,7 +219,7 @@ final appRouter = GoRouter(
                 future: item,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: YarnBallLoading());
                   }
                   return ClipboardItemPreviewPage(item: snapshot.data);
                 },
@@ -443,9 +444,7 @@ final appRouter = GoRouter(
                       future: item,
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (!snapshot.hasData) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
+                          return const Center(child: YarnBallLoading());
                         }
                         return CreateClipNotePage(item: snapshot.data);
                       },
@@ -487,7 +486,7 @@ final appRouter = GoRouter(
                 future: collectionFuture,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(child: YarnBallLoading());
                   }
                   return build(snapshot.data);
                 },

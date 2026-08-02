@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart' show AuthCubit;
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,7 +19,7 @@ class SplashPage extends StatelessWidget {
           spacing: 10,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircularProgressIndicator(),
+            const YarnBallLoading(),
             Text(context.locale.splash__checking_authentication),
           ],
         ),

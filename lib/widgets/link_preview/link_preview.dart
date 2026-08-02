@@ -7,6 +7,7 @@ import 'package:clipboard/widgets/image_not_found.dart';
 import 'package:clipboard/widgets/link_preview/fetcher.dart';
 import 'package:clipboard/widgets/link_preview/type.dart';
 import 'package:clipboard/widgets/shimmer.dart' show Shimmer;
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -124,8 +125,7 @@ class _LinkPreviewImage extends StatelessWidget {
         url,
         fit: BoxFit.contain,
         headers: networkImage.headers,
-        placeholderBuilder: (context) =>
-            const Center(child: CircularProgressIndicator()),
+        placeholderBuilder: (context) => const Center(child: YarnBallLoading()),
       );
     }
 

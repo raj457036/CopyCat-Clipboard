@@ -3,6 +3,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -150,7 +151,7 @@ class CustomPaywallStateDialog extends State<CustomPaywallDialog> {
       );
     }
 
-    const loader = Center(child: CircularProgressIndicator());
+    const loader = Center(child: YarnBallLoading());
 
     if (loading) {
       return const AlertDialog(content: loader);

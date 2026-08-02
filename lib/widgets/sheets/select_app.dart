@@ -1,4 +1,5 @@
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:installed_apps/app_info.dart' as app_info;
 import 'package:installed_apps/installed_apps.dart';
@@ -34,7 +35,7 @@ class SelectInstalledAppSheet extends StatelessWidget {
           future: apps,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: YarnBallLoading());
             }
             if (snapshot.hasError) {
               return Center(

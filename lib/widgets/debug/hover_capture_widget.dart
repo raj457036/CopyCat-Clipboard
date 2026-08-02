@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
@@ -114,10 +115,7 @@ class _HoverCaptureWidgetState extends State<HoverCaptureWidget> {
                             ? const SizedBox(
                                 width: 18,
                                 height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
+                                child: YarnBallLoading(),
                               )
                             : const Icon(
                                 Icons.photo_camera,

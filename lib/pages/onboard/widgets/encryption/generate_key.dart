@@ -14,6 +14,7 @@ import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:clipboard/widgets/dialogs/info_dialog.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
@@ -125,7 +126,7 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
             ),
             height10,
             if (generating || saving)
-              const CircularProgressIndicator()
+              const YarnBallLoading()
             else if (generatedKeys != null)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,

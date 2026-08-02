@@ -13,6 +13,7 @@ import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/scaffold_body.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -130,7 +131,7 @@ class _DecryptClipsPageState extends State<DecryptClipsPage> {
     if (loading) {
       return Column(
         mainAxisSize: MainAxisSize.min,
-        children: [const CircularProgressIndicator(), height10, cancelButton],
+        children: [const YarnBallLoading(), height10, cancelButton],
       );
     }
 

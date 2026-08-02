@@ -13,6 +13,7 @@ import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:clipboard/widgets/dialogs/info_dialog.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_io/io.dart';
@@ -122,7 +123,7 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
             ),
             height16,
             if (exporting)
-              const CircularProgressIndicator()
+              const YarnBallLoading()
             else
               FadeIn(
                 child: Column(

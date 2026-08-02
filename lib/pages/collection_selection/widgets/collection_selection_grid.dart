@@ -8,6 +8,7 @@ import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_collection_grid_item.dart';
 import 'package:clipboard/widgets/no_collection.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,7 +44,7 @@ class CollectionSelectionGrid extends StatelessWidget {
       builder: (context, state) {
         switch (state) {
           case ClipCollectionLoaded(loading: true):
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: YarnBallLoading());
           case ClipCollectionLoaded(
             :final failure,
             :final collections,

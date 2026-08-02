@@ -20,6 +20,7 @@ import 'package:clipboard/widgets/dialogs/e2ee_dialogs/e2ee_passcode_prompt_dial
 import 'package:clipboard/widgets/dialogs/e2ee_dialogs/e2ee_qr_scan_action_button.dart';
 import 'package:clipboard/widgets/dialogs/info_dialog.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialogs/scan_qr_e2ee.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -264,7 +265,7 @@ class _ImportEncryptionKeyStepState extends State<ImportEncryptionKeyStep> {
                 ),
                 height16,
                 if (importing || saving)
-                  const CircularProgressIndicator()
+                  const YarnBallLoading()
                 else
                   FadeIn(
                     child: Column(

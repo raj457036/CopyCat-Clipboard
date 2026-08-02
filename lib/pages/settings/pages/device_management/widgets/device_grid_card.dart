@@ -1,6 +1,7 @@
 import 'package:clipboard/base/domain/model/sync/user_device_access.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/pages/settings/pages/device_management/widgets/device_status_badge.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -215,11 +216,7 @@ class _DeviceGridCardState extends State<DeviceGridCard> {
   Widget _buildTrailingActions(BuildContext context) {
     if (_isEditingName) {
       if (_isSubmittingName || widget.isSavingName) {
-        return const SizedBox(
-          width: 20,
-          height: 20,
-          child: CircularProgressIndicator(strokeWidth: 2),
-        );
+        return const SizedBox(width: 20, height: 20, child: YarnBallLoading());
       }
 
       return const SizedBox.shrink();
@@ -247,7 +244,7 @@ class _DeviceGridCardState extends State<DeviceGridCard> {
                 ? const SizedBox(
                     width: 16,
                     height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: YarnBallLoading(),
                   )
                 : const Icon(Icons.link_off_rounded, size: 16),
             label: Text(

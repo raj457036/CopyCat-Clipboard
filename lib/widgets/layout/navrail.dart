@@ -4,6 +4,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/routes/utils.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 
 class CopyCatNavrail extends StatelessWidget {
@@ -73,14 +74,14 @@ class CopyCatNavrail extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: padding12),
             icon: Tooltip(
               message: settingsTooltip,
-              child: const Icon(Icons.settings_outlined),
+              child: YarnBall(size: 28, color: context.colors.onSurface),
             ),
             selectedIcon: Tooltip(
               message: settingsTooltip,
-              child: const Spin(
+              child: Spin(
                 duration: Durations.medium4,
-                spins: 1,
-                child: Icon(Icons.settings),
+                spins: 0.4,
+                child: YarnBall(size: 28, color: context.colors.onSurface),
               ),
             ),
             label: Text(

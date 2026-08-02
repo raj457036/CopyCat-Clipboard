@@ -2,6 +2,7 @@ import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage;
 import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
@@ -124,7 +125,7 @@ class _MeidaKitVideoPlayerState extends State<MeidaKitVideoPlayer> {
             borderRadius: widget.borderRadius,
             color: Theme.of(context).colorScheme.surfaceContainerHighest,
           ),
-          child: const Center(child: CircularProgressIndicator()),
+          child: const Center(child: YarnBallLoading(size: 32)),
         ),
       );
     }

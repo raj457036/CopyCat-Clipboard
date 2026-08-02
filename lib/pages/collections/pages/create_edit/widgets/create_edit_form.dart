@@ -7,6 +7,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/sheets/emoji_selector.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_validator/form_validator.dart';
@@ -118,11 +119,7 @@ class _ClipCollectionCreateEditFormState
       FilledButton(
         onPressed: _isSaving ? null : submit,
         child: _isSaving
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
+            ? const SizedBox(height: 20, width: 20, child: YarnBallLoading())
             : Text(context.mlocale.saveButtonLabel.title),
       ),
     ];

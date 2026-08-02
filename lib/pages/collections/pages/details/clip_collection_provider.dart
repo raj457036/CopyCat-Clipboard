@@ -2,6 +2,7 @@ import 'package:clipboard/di/di.dart';
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/collection_clips_cubit/collection_clips_cubit.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -26,7 +27,7 @@ class ClipCollectionProvider extends StatelessWidget {
       future: collection,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: YarnBallLoading());
         }
         return BlocProvider<CollectionClipsCubit>(
           create: (context) => sl(param1: snapshot.data)..fetch(),

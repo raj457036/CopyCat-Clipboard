@@ -6,6 +6,7 @@ import 'package:clipboard/base/data/services/lan_sync_service.dart';
 import 'package:clipboard/base/domain/model/sync/user_device_access.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universal_io/io.dart';
@@ -215,13 +216,7 @@ class _ScanningEmpty extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         spacing: 16,
         children: [
-          SizedBox.square(
-            dimension: 36,
-            child: CircularProgressIndicator(
-              strokeWidth: 2.5,
-              color: colorScheme.primary,
-            ),
-          ),
+          const SizedBox.square(dimension: 36, child: YarnBallLoading()),
           Text(
             context.locale.settings__lan_mesh__searching,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(

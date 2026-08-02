@@ -13,6 +13,7 @@ import 'package:clipboard/base/l10n/generated/app_localizations.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -345,11 +346,7 @@ class _Preparing extends StatelessWidget {
         padding: const EdgeInsets.all(padding20),
         child: Row(
           children: [
-            const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(strokeWidth: 3),
-            ),
+            const SizedBox(width: 24, height: 24, child: YarnBallLoading()),
             width16,
             Expanded(
               child: Text(
@@ -589,10 +586,7 @@ class _StatusPill extends StatelessWidget {
             if (complete)
               Icon(Icons.done_rounded, size: 16, color: fg)
             else
-              SizedBox.square(
-                dimension: 18,
-                child: CircularProgressIndicator(strokeWidth: 1.5, color: fg),
-              ),
+              SizedBox.square(dimension: 18, child: YarnBallLoading(color: fg)),
             width6,
             Text(
               complete

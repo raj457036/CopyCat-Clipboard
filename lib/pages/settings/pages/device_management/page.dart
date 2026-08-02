@@ -9,6 +9,7 @@ import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/settings/pages/device_management/widgets/device_grid_card.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/scaffold_body.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -176,7 +177,7 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
               bloc: _userDevicesCubit,
               builder: (context, state) {
                 if (state.isLoading && state.deviceList == null) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: YarnBallLoading());
                 }
 
                 if (state.failure != null && state.deviceList == null) {

@@ -3,6 +3,7 @@ import 'package:clipboard/base/data/services/notification_service.dart'
 import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage;
 import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -115,7 +116,7 @@ class _NativeVideoPlayerState extends State<NativeVideoPlayer> {
               borderRadius: widget.borderRadius,
               color: Theme.of(context).colorScheme.surfaceContainerHighest,
             ),
-            child: const Center(child: CircularProgressIndicator()),
+            child: const Center(child: YarnBallLoading(size: 32)),
           ),
         ),
       );

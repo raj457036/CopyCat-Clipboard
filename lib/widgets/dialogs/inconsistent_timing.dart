@@ -6,6 +6,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -122,10 +123,7 @@ class _InconsistentTimingState extends State<InconsistentTiming> {
 
   @override
   Widget build(BuildContext context) {
-    const loading = SizedBox.square(
-      dimension: 22,
-      child: CircularProgressIndicator(strokeWidth: 2),
-    );
+    const loading = SizedBox.square(dimension: 22, child: YarnBallLoading());
     final actionDisabled = autoFixing || checking;
     return AlertDialog.adaptive(
       title: Text(

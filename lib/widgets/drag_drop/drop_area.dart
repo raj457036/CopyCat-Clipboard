@@ -1,6 +1,7 @@
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 
 class DropArea extends StatelessWidget {
@@ -14,7 +15,7 @@ class DropArea extends StatelessWidget {
     return ColoredBox(
       color: colors.secondaryContainer.withAlpha(217),
       child: processing
-          ? const CircularProgressIndicator()
+          ? const YarnBallLoading()
           : Padding(
               padding: const EdgeInsets.all(padding12),
               child: Column(
