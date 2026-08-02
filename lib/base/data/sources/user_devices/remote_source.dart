@@ -48,7 +48,7 @@ class RemoteUserDevicesSource implements UserDevicesSource {
 
     final rows = await db
         .from(_devicesTable)
-        .select('deviceId, platform, appVersion, isRevoked, last_seen_at')
+        .select('deviceId, platform, appVersion, name, isRevoked, last_seen_at')
         .eq('userId', userId)
         .eq('isRevoked', false)
         .gte('last_seen_at', activeSince)
@@ -95,7 +95,7 @@ class RemoteUserDevicesSource implements UserDevicesSource {
   Future<DeviceListResult> listDevices({required String userId}) async {
     final rows = await db
         .from(_devicesTable)
-        .select('deviceId, platform, appVersion, isRevoked, last_seen_at')
+        .select('deviceId, platform, appVersion, name, isRevoked, last_seen_at')
         .eq('userId', userId)
         .order('last_seen_at', ascending: false);
 
@@ -112,6 +112,22 @@ class RemoteUserDevicesSource implements UserDevicesSource {
       limit: limit,
       activeCount: activeDevices.length,
     );
+  }
+
+  @override
+  Future<void> updateDeviceName({
+    required String userId,
+    required String deviceId,
+    String? name,
+  }) async {
+    assert(userId.isNotEmpty);
+
+    final normalizedName = name?.trim();
+    await db
+        .from(_devicesTable)
+        .update({'name': normalizedName?.isNotEmpty == true ? normalizedName : null})
+        .eq('userId', userId)
+        .eq('deviceId', deviceId);
   }
 
   @override

@@ -51,6 +51,24 @@ class UserDevicesRepositoryImpl implements UserDevicesRepository {
   }
 
   @override
+  FailureOr<void> updateDeviceName({
+    required String deviceId,
+    String? name,
+  }) async {
+    try {
+      final userId = _currentUserId();
+      final result = await remote.updateDeviceName(
+        userId: userId,
+        deviceId: deviceId,
+        name: name,
+      );
+      return Right(result);
+    } catch (e) {
+      return Left(Failure.fromException(e));
+    }
+  }
+
+  @override
   FailureOr<void> revokeDevice(String deviceId) async {
     try {
       final userId = _currentUserId();

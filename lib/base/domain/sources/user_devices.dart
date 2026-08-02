@@ -10,5 +10,11 @@ abstract class UserDevicesSource {
 
   Future<DeviceListResult> listDevices({required String userId});
 
+  Future<void> updateDeviceName({
+    required String userId,
+    required String deviceId,
+    String? name,
+  });
+
   Future<void> revokeDevice({required String userId, required String deviceId});
 }

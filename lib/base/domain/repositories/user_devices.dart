@@ -14,6 +14,9 @@ abstract class UserDevicesRepository {
   /// along with their access status.
   FailureOr<DeviceListResult> listDevices();
 
+  /// Persists a user-facing name for the current device.
+  FailureOr<void> updateDeviceName({required String deviceId, String? name});
+
   /// Revokes sync access for the specified device.
   FailureOr<void> revokeDevice(String deviceId);
 }

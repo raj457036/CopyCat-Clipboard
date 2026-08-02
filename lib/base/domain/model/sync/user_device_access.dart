@@ -2,6 +2,7 @@ class SyncDeviceInfo {
   final String deviceId;
   final String platform;
   final String? appVersion;
+  final String? name;
   final DateTime lastSeenAt;
   final bool isRevoked;
 
@@ -9,6 +10,7 @@ class SyncDeviceInfo {
     required this.deviceId,
     required this.platform,
     required this.appVersion,
+    required this.name,
     required this.lastSeenAt,
     required this.isRevoked,
   });
@@ -18,6 +20,7 @@ class SyncDeviceInfo {
       deviceId: (json['deviceId'] ?? json['device_id']) as String,
       platform: (json['platform'] as String?) ?? 'unknown',
       appVersion: (json['appVersion'] ?? json['app_version']) as String?,
+      name: (json['name'] ?? json['deviceName'] ?? json['device_name']) as String?,
       lastSeenAt:
           DateTime.tryParse(
             (json['lastSeenAt'] ?? json['last_seen_at']) as String? ?? '',

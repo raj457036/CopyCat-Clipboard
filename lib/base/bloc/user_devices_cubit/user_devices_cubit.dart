@@ -31,6 +31,14 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
     required this.monetizationCubit,
   }) : super(const UserDevicesState());
 
+  String _resolveDeviceName() {
+    final hostname = Platform.localHostname.trim();
+    if (hostname.isEmpty) {
+      return 'Device ${deviceId.substring(0, 6)}';
+    }
+    return hostname;
+  }
+
   Future<DeviceAccessStatus> registerCurrentDevice() async {
     emit(
       state.copyWith(
@@ -40,6 +48,7 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
       ),
     );
 
+    final deviceName = _resolveDeviceName();
     final result = await repo.registerCurrentDevice(
       deviceId: deviceId,
       platform: Platform.operatingSystem,
@@ -60,6 +69,7 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
       },
       (registration) async {
         if (registration.allowed) {
+          await repo.updateDeviceName(deviceId: deviceId, name: deviceName);
           emit(
             state.copyWith(
               isRegistering: false,
@@ -158,6 +168,21 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
             clearFailure: true,
           ),
         );
+      },
+    );
+  }
+
+  Future<bool> updateDeviceName(String deviceId, String? name) async {
+    final result = await repo.updateDeviceName(deviceId: deviceId, name: name);
+
+    return result.fold(
+      (failure) {
+        emit(state.copyWith(failure: failure));
+        return false;
+      },
+      (_) async {
+        await fetchDevices(force: true);
+        return true;
       },
     );
   }

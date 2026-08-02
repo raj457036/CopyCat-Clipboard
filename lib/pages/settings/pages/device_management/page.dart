@@ -22,6 +22,8 @@ class DeviceManagementPage extends StatefulWidget {
 class _DeviceManagementPageState extends State<DeviceManagementPage> {
   late final UserDevicesCubit _userDevicesCubit;
   late final String _currentDeviceId;
+  final Map<String, bool> _savingDeviceNames = <String, bool>{};
+  final Map<String, bool> _revokingDevices = <String, bool>{};
 
   @override
   void initState() {
@@ -35,6 +37,53 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
     await _userDevicesCubit.fetchDevices(force: true);
   }
 
+  Future<void> _renameDevice(SyncDeviceInfo device, String? name) async {
+    final trimmedName = (name ?? '').trim();
+    final nextName = trimmedName.isEmpty ? null : trimmedName;
+    final currentName = device.name?.trim();
+
+    if (nextName == currentName) {
+      return;
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _savingDeviceNames[device.deviceId] = true;
+    });
+
+    final success = await _userDevicesCubit.updateDeviceName(
+      device.deviceId,
+      nextName,
+    );
+
+    if (!mounted) return;
+    setState(() {
+      _savingDeviceNames.remove(device.deviceId);
+    });
+
+    if (!success) {
+      InAppNotificationService.i.notify(
+        NotificationMessage.builder(
+          builder: (context) => NotificationContent(
+            body: 'Could not save the device name. Please try again.',
+          ),
+          id: 'rename-device-${device.deviceId}-failure',
+        ),
+      );
+      return;
+    }
+
+    await _refresh();
+    InAppNotificationService.i.notify(
+      NotificationMessage.builder(
+        builder: (context) => NotificationContent(
+          body: 'Device name updated successfully.',
+        ),
+        id: 'rename-device-${device.deviceId}-success',
+      ),
+    );
+  }
+
   Future<void> _revokeDevice(SyncDeviceInfo device) async {
     final shouldRevoke = await showDialog<bool>(
       context: context,
@@ -42,7 +91,7 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
         return AlertDialog(
           title: Text(context.locale.settings__device_mgmt__dialog_title),
           content: Text(
-            'This will revoke sync access for ${device.deviceId}. You can register it again later by signing in from that device.',
+            'This will revoke sync access for ${device.name ?? device.deviceId}. You can register it again later by signing in from that device.',
           ),
           actions: [
             TextButton(
@@ -60,9 +109,18 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
 
     if (shouldRevoke != true) return;
 
+    if (!mounted) return;
+    setState(() {
+      _revokingDevices[device.deviceId] = true;
+    });
+
     final success = await _userDevicesCubit.revokeDevice(device.deviceId);
+    if (!mounted) return;
+    setState(() {
+      _revokingDevices.remove(device.deviceId);
+    });
+
     if (!success) {
-      if (!mounted) return;
       InAppNotificationService.i.notify(
         NotificationMessage.builder(
           builder: (context) => NotificationContent(
@@ -74,12 +132,11 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
       return;
     }
 
-    if (!mounted) return;
-    _refresh();
+    await _refresh();
     InAppNotificationService.i.notify(
       NotificationMessage.builder(
         builder: (context) => NotificationContent(
-          body: 'Removed ${device.deviceId} from sync devices.',
+          body: 'Removed ${device.name ?? device.deviceId} from sync devices.',
         ),
         id: 'revoke-device-${device.deviceId}-success',
       ),
@@ -113,10 +170,9 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
       ),
       body: ScaffoldBody(
         margin: const EdgeInsets.symmetric(horizontal: 16),
-        child: Align(
-          alignment: Alignment.centerLeft,
+        child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 980),
+            constraints: const BoxConstraints(maxWidth: 450),
             child: BlocBuilder<UserDevicesCubit, UserDevicesState>(
               bloc: _userDevicesCubit,
               builder: (context, state) {
@@ -170,6 +226,13 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                     return b.lastSeenAt.compareTo(a.lastSeenAt);
                   });
 
+                final visibleDevices = allDevices
+                    .where((d) => !d.isRevoked)
+                    .toList(growable: false);
+                final revokedDevices = allDevices
+                    .where((d) => d.isRevoked)
+                    .toList(growable: false);
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -215,42 +278,62 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                     Expanded(
                       child: RefreshIndicator(
                         onRefresh: _refresh,
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final columns = (constraints.maxWidth / 250)
-                                .floor()
-                                .clamp(1, 5);
-
-                            return GridView.builder(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              padding: const EdgeInsets.all(padding16),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: columns,
-                                    mainAxisSpacing: padding12,
-                                    crossAxisSpacing: padding12,
-                                    childAspectRatio: 3 / 2,
-                                  ),
-                              itemCount: allDevices.length,
-                              itemBuilder: (context, index) {
-                                final device = allDevices[index];
-                                return DeviceGridCard(
-                                  device: device,
-                                  isCurrentDevice:
-                                      device.deviceId == _currentDeviceId,
-                                  lastSeenText: _formatLastSeen(
-                                    context,
-                                    device.lastSeenAt,
-                                  ),
-                                  onRevoke:
-                                      (!device.isRevoked &&
-                                          device.deviceId != _currentDeviceId)
-                                      ? () => _revokeDevice(device)
-                                      : null,
-                                );
-                              },
-                            );
-                          },
+                        child: ListView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(padding16),
+                          children: [
+                            for (final device in visibleDevices) ...[
+                              DeviceGridCard(
+                                device: device,
+                                isCurrentDevice: device.deviceId == _currentDeviceId,
+                                lastSeenText: _formatLastSeen(context, device.lastSeenAt),
+                                onRename: (name) => _renameDevice(device, name),
+                                isSavingName:
+                                    _savingDeviceNames[device.deviceId] ?? false,
+                                isRevoking: _revokingDevices[device.deviceId] ?? false,
+                                onRevoke:
+                                    device.deviceId != _currentDeviceId
+                                    ? () => _revokeDevice(device)
+                                    : null,
+                              ),
+                              const SizedBox(height: 8),
+                            ],
+                            if (revokedDevices.isNotEmpty)
+                              ExpansionTile(
+                                tilePadding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                ),
+                                childrenPadding: const EdgeInsets.only(
+                                  left: 8,
+                                  right: 8,
+                                  bottom: 8,
+                                ),
+                                initiallyExpanded: false,
+                                title: Text(
+                                  'Revoked devices (${revokedDevices.length})',
+                                ),
+                                children: [
+                                  for (final device in revokedDevices) ...[
+                                    DeviceGridCard(
+                                      device: device,
+                                      isCurrentDevice:
+                                          device.deviceId == _currentDeviceId,
+                                      lastSeenText: _formatLastSeen(
+                                        context,
+                                        device.lastSeenAt,
+                                      ),
+                                      onRename: (name) => _renameDevice(device, name),
+                                      isSavingName:
+                                          _savingDeviceNames[device.deviceId] ?? false,
+                                      isRevoking:
+                                          _revokingDevices[device.deviceId] ?? false,
+                                      onRevoke: null,
+                                    ),
+                                    const SizedBox(height: 8),
+                                  ],
+                                ],
+                              ),
+                          ],
                         ),
                       ),
                     ),
