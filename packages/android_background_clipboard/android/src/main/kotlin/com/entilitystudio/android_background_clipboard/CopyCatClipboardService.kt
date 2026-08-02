@@ -303,6 +303,21 @@ class CopyCatClipboardService : Service() {
         }
     }
 
+    private fun isPureEmail(text: String): Boolean {
+        return Regex("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$", RegexOption.IGNORE_CASE)
+            .matches(text.trim())
+    }
+
+    private fun isPurePhone(text: String): Boolean {
+        val normalized = text.trim().replace(Regex("[\\s().-]+"), "")
+        return Regex("^\\+?\\d{7,15}$").matches(normalized)
+    }
+
+    private fun isWholeTrimmedTextLink(text: String, trimmedText: String, start: Int, end: Int): Boolean {
+        val trimmedStart = text.indexOf(trimmedText)
+        return trimmedStart >= 0 && start == trimmedStart && end == trimmedStart + trimmedText.length
+    }
+
     @RequiresApi(Build.VERSION_CODES.R)
     private fun readTextLinks(
         tls: TextLinks,
@@ -311,8 +326,45 @@ class CopyCatClipboardService : Service() {
         sourceAppName: String? = null,
     ): ClipAction {
 
-        val text = tls.text
+        val text = tls.text.toString()
+        val trimmedText = text.trim()
+
         for (link in tls.links) {
+            if (link.getConfidenceScore(TextClassifier.TYPE_EMAIL) == 1.0f && copycatStorage.excludeEmail) {
+                return ClipAction.Excluded
+            }
+            if (link.getConfidenceScore(TextClassifier.TYPE_PHONE) == 1.0f && copycatStorage.excludePhone) {
+                return ClipAction.Excluded
+            }
+        }
+
+        if (isPureEmail(trimmedText)) {
+            if (copycatStorage.excludeEmail) return ClipAction.Excluded
+            return writeTextToCopyCatClipboard(
+                text = trimmedText,
+                type = ClipType.Email,
+                label = label,
+                sourcePackageName = sourcePackageName,
+                sourceAppName = sourceAppName,
+            )
+        }
+
+        if (isPurePhone(trimmedText)) {
+            if (copycatStorage.excludePhone) return ClipAction.Excluded
+            return writeTextToCopyCatClipboard(
+                text = trimmedText,
+                type = ClipType.Phone,
+                label = label,
+                sourcePackageName = sourcePackageName,
+                sourceAppName = sourceAppName,
+            )
+        }
+
+        for (link in tls.links) {
+            if (!isWholeTrimmedTextLink(text, trimmedText, link.start, link.end)) {
+                continue
+            }
+
             if (link.getConfidenceScore(TextClassifier.TYPE_URL) == 1.0f) {
                 val url = text.substring(link.start, link.end)
                 if (url.startsWith("http://") || url.startsWith("https://")) {

@@ -70,6 +70,7 @@ class _GenerateEncryptionKeyStepState extends State<GenerateEncryptionKeyStep> {
     });
     try {
       await appConfigCubit.setE2EEKey(enc2.serialized);
+      await appConfigCubit.toggleAutoEncrypt(true);
       await authCubit.setupEncryption(keyId, enc1);
     } catch (e) {
       InAppNotificationService.i.notify(

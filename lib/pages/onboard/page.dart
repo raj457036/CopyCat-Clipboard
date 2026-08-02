@@ -41,6 +41,7 @@ class _OnBoardPageState extends State<OnBoardPage> {
   }
 
   void finishOnboarding() {
+    context.read<AppConfigCubit>().toggleAutoEncrypt(true);
     context.read<AppConfigCubit>().changeOnBoardStatus(true);
     context.read<AuthCubit>().setOnboardingCompleted();
   }

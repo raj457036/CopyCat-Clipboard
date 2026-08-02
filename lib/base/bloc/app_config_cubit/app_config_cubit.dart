@@ -127,6 +127,7 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
   }
 
   Future<void> reset() async {
+    await _secureStorage.deleteAll();
     await _clearStoredE2EEKey();
     _hasStoredE2EEKey = false;
     final config = AppConfig(

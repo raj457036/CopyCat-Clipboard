@@ -9,9 +9,16 @@ import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EncryptionStep extends StatelessWidget {
+class EncryptionStep extends StatefulWidget {
   final VoidCallback onContinue;
   const EncryptionStep({super.key, required this.onContinue});
+
+  @override
+  State<EncryptionStep> createState() => _EncryptionStepState();
+}
+
+class _EncryptionStepState extends State<EncryptionStep> {
+  bool imported = false;
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +27,6 @@ class EncryptionStep extends StatelessWidget {
         return state.mapOrNull(authenticated: (value) => value.user);
       },
       builder: (context, user) {
-        bool imported = false;
-
         return BlocBuilder<AppConfigCubit, AppConfigState>(
           builder: (context, _) {
             final appConfigCubit = context.read<AppConfigCubit>();
@@ -36,7 +41,9 @@ class EncryptionStep extends StatelessWidget {
                 final enc1 = user.enc1;
 
                 if (keyId == null || enc1 == null) {
-                  return GenerateEncryptionKeyStep(onContinue: onContinue);
+                  return GenerateEncryptionKeyStep(
+                    onContinue: widget.onContinue,
+                  );
                 }
 
                 if (enc2Key == null) {
@@ -44,13 +51,13 @@ class EncryptionStep extends StatelessWidget {
                     importableKeyId: keyId,
                     clipboardRepository: sl(instanceName: "remote"),
                     onImportSuccess: () => imported = true,
-                    onContinue: onContinue,
+                    onContinue: widget.onContinue,
                   );
                 }
                 return ExportEncryptionKeyStep(
                   exportableKeyId: keyId,
                   exportableEnc2Key: enc2Key,
-                  onContinue: onContinue,
+                  onContinue: widget.onContinue,
                   skipExportWarning: imported,
                 );
               },

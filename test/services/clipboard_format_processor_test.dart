@@ -1,5 +1,10 @@
 import 'package:clipboard/base/constants/misc.dart';
 import 'package:clipboard/base/data/services/clipboard/format_processor.dart';
+import 'package:clipboard/base/data/services/clipboard/clip_models.dart';
+import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_checker.dart';
+import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_rules.dart';
+import 'package:clipboard/base/domain/services/analysis/text_analysis.dart';
+import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:super_clipboard/super_clipboard.dart';
 
@@ -116,6 +121,47 @@ void main() {
             expect(true, isTrue);
           }
         }
+      });
+    });
+
+    group('Text classification', () {
+      test('keeps full text when it contains an email address', () {
+        final (category, parsedText) = TextAnalysis.getTextCategory(
+          'Please reach me at john@example.com',
+        );
+
+        expect(category, isNull);
+        expect(parsedText, 'Please reach me at john@example.com');
+      });
+
+      test('keeps full text when it contains a phone number', () {
+        final (category, parsedText) = TextAnalysis.getTextCategory(
+          'Call me at 555-123-4567',
+        );
+
+        expect(category, isNull);
+        expect(parsedText, 'Call me at 555-123-4567');
+      });
+
+      test('classifies pure email and phone values as their own categories', () {
+        final (emailCategory, emailText) = TextAnalysis.getTextCategory(
+          'john@example.com',
+        );
+        final (phoneCategory, phoneText) = TextAnalysis.getTextCategory(
+          '5551234567',
+        );
+
+        expect(emailCategory, TextCategory.email);
+        expect(emailText, 'john@example.com');
+        expect(phoneCategory, TextCategory.phone);
+        expect(phoneText, '5551234567');
+      });
+
+      test('exclusion rules still block clips that contain embedded phone or email content', () {
+        final checker = ExclusionChecker(ExclusionRules());
+        final clip = ClipItem.text(text: 'Call me at 5551234567');
+
+        expect(checker.isClipAllowed(clip, null), isFalse);
       });
     });
   });

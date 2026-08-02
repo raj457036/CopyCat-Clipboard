@@ -53,6 +53,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         decryptContent = ::decryptLanContent,
     )
     private var encryptor: CopyCatEncryptor? = null
+    private val authSyncFailureTracker = CopyCatAuthSyncFailureTracker(appContext)
     private val mainHandler = Handler(Looper.getMainLooper())
     private val reconfigureRunnable = Runnable {
         syncManager.reconfigureConnections()
@@ -60,6 +61,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private val persistEndIdRunnable = Runnable {
         sp.edit().putInt("endId", endId).apply()
     }
+    private var started: Boolean = false
     
     // Use file-based storage for clipboard items to avoid loading everything into memory
     private val fileStorage: CopyCatFileStorage = CopyCatFileStorage(appContext)
@@ -275,6 +277,10 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     }
 
     fun start() {
+        if (started) {
+            Log.i(logTag, "Storage already started; skipping duplicate start")
+            return
+        }
         readConfig()
         syncManager.start()
         // syncManager.start() loads auth token/userId; re-apply to LAN auth key
@@ -282,6 +288,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         lanSyncManager.userId = syncManager.currentUserId ?: ""
         lanSyncManager.start()
         sp.registerOnSharedPreferenceChangeListener(listener)
+        started = true
         Log.i(logTag, "Storage started")
     }
 
@@ -707,7 +714,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                 debugLog(logTag) { "Synced $clipId to server with ID $serverId" }
                 // Update the file metadata with server ID and user ID
                 fileStorage.updateServerMetadata(clipId, serverId, syncManager.currentUserId ?: "")
+                authSyncFailureTracker.onSyncSuccess()
                 return
+            }
+            if (syncManager.consumeLastWriteAuthFailure()) {
+                authSyncFailureTracker.onAuthFailure()
             }
             Log.w(logTag, "Syncing failed")
         } catch (e: Exception) {
@@ -879,6 +890,10 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     }
 
     fun clean() {
+        if (!started) {
+            Log.i(logTag, "Storage already cleaned; skipping duplicate clean")
+            return
+        }
         flushPersistEndId()
         mainHandler.removeCallbacks(reconfigureRunnable)
         syncManager.stop()
@@ -888,6 +903,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         // Clear references to help GC
         encryptor = null
         remoteClipApplier = null
+        started = false
         
         Log.i(logTag, "Storage cleaned up")
     }

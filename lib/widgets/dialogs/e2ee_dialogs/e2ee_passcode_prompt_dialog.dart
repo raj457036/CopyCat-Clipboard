@@ -21,6 +21,8 @@ class E2EEPasscodePromptDialog {
               border: const OutlineInputBorder(),
               hintText: context.locale.transfer__six_digit_passcode,
             ),
+            autocorrect: false,
+            autofillHints: null,
           ),
           actions: [
             TextButton(

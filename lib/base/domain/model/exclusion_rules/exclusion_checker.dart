@@ -1,6 +1,7 @@
 import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_rules.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/sensitive_info.dart';
+import 'package:clipboard/base/domain/services/analysis/text_analysis.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:focus_window/platform/activity_info.dart';
@@ -90,11 +91,11 @@ class ExclusionChecker {
   bool isClipAllowed(ClipItem clip, ActivityInfo? activity) {
     if (clip.isText) {
       if (isPatternExcluded(clip.text!)) return false;
-      if (_phone && clip.textCategory == TextCategory.phone) {
+      if (_phone && (clip.textCategory == TextCategory.phone || TextAnalysis.containsPhone(clip.text!))) {
         logger.w("Exclusion rule triggered for phone numebr");
         return false;
       }
-      if (_email && clip.textCategory == TextCategory.email) {
+      if (_email && (clip.textCategory == TextCategory.email || TextAnalysis.containsEmail(clip.text!))) {
         logger.w("Exclusion rule triggered for email");
         return false;
       }

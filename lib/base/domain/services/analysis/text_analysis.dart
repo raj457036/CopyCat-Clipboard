@@ -33,6 +33,9 @@ class TextAnalysis {
   );
   static final RegExp _phoneRegex = RegExp(r'^\+?\d{0,2}\s?\d{7,15}$');
   static final RegExp _phoneStrictRegex = RegExp(r'^\+?\d{7,15}$');
+  static final RegExp _phoneExtractRegex = RegExp(
+    r'(?<!\w)(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,4}\)?[-.\s]?){2,4}\d{2,4}(?!\w)',
+  );
   static final RegExp _urlRegex = RegExp(
     r'(https?:\/\/[^\s]+|www\.[^\s]+)',
     caseSensitive: false,
@@ -84,6 +87,10 @@ class TextAnalysis {
   }
 
   static bool isEmail(String value) => _emailRegex.hasMatch(value.trim());
+
+  static bool containsEmail(String value) => _emailExtractRegex.hasMatch(value);
+
+  static bool containsPhone(String value) => _phoneExtractRegex.hasMatch(value);
 
   static bool isPhoneLike(String value) {
     final normalized = value.trim().replaceAll(RegExp(r'[\s()-]'), '');
@@ -178,11 +185,13 @@ class TextAnalysis {
     final (isColor, color) = _parseColor(value);
     if (isColor) return (TextCategory.color, color);
 
-    final (isEmail, email) = _parseEmail(value);
-    if (isEmail) return (TextCategory.email, email);
+    if (_isPureEmail(trimmed)) {
+      return (TextCategory.email, trimmed);
+    }
 
-    final (isPhone, phone) = _parsePhone(value);
-    if (isPhone) return (TextCategory.phone, phone);
+    if (_isPurePhone(trimmed)) {
+      return (TextCategory.phone, trimmed);
+    }
 
     final (isStruct, structuredText) = _parseStruct(value);
     if (isStruct) return (TextCategory.struct, structuredText);
@@ -198,20 +207,16 @@ class TextAnalysis {
     return (false, value);
   }
 
-  static (bool, String) _parseEmail(String value) {
-    final email = _emailRegex.stringMatch(value);
-    if (email != null) {
-      return (true, email);
-    }
-    return (false, value);
+  static bool _isPureEmail(String value) {
+    final trimmed = value.trim();
+    return trimmed.isNotEmpty && _emailRegex.hasMatch(trimmed);
   }
 
-  static (bool, String) _parsePhone(String value) {
-    final phone = _phoneRegex.stringMatch(value);
-    if (phone != null) {
-      return (true, phone);
-    }
-    return (false, value);
+  static bool _isPurePhone(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return false;
+    final normalized = trimmed.replaceAll(RegExp(r'[\s().-]'), '');
+    return _phoneStrictRegex.hasMatch(normalized);
   }
 
   static (bool, String) _parseStruct(String value) {

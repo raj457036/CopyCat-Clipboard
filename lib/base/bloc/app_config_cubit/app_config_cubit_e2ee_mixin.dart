@@ -42,7 +42,7 @@ mixin AppConfigE2EEMixin on Cubit<AppConfigState> {
     return _secureStorage.write(key: _enc2SecureStorageKey, value: value);
   }
 
-  Future<void> _clearStoredE2EEKey() {
+  Future<void> _clearStoredE2EEKey() async {
     return _secureStorage.delete(key: _enc2SecureStorageKey);
   }
 

@@ -27,6 +27,8 @@ import java.util.Timer
 import java.util.TimerTask
 import java.util.TimeZone
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.concurrent.thread
 
 data class RemoteClipPayload(
     val serverId: Long,
@@ -58,6 +60,8 @@ class CopyCatSyncManager(
     private val contentType = "application/json"
     private val reconnectDelayMs = 5_000L
     private val heartbeatMs = 30_000L
+    private val screenOnRefreshCooldownMs = 60_000L
+    private val maxAuthRecoveryAttempts = 3
     private val loggingInterceptor = HttpLoggingInterceptor()
 
     // Configure OkHttp with memory-efficient settings
@@ -95,6 +99,11 @@ class CopyCatSyncManager(
     private var wsRef = 1
     private var isScreenOn: Boolean = true
     private var screenStateReceiverRegistered = false
+    @Volatile
+    private var lastScreenOnRefreshAtMs: Long = 0L
+    private val screenOnRefreshInFlight = AtomicBoolean(false)
+    @Volatile
+    private var lastWriteAuthFailure: Boolean = false
     var isStopped = false
 
     private val screenStateReceiver = object : BroadcastReceiver() {
@@ -109,6 +118,7 @@ class CopyCatSyncManager(
                 Intent.ACTION_SCREEN_ON -> {
                     isScreenOn = true
                     Log.i(logTag, "Screen ON detected: resuming realtime background sync")
+                    preflightAuthRefreshOnScreenOn()
                     reconfigureConnections()
                 }
             }
@@ -127,12 +137,18 @@ class CopyCatSyncManager(
     private val isExpired: Boolean
         get() {
             if (expireAt == null) return true
-            val currentTime = (System.currentTimeMillis() / 1000) - 300
-            return currentTime > expireAt!!
+            val refreshBefore = (System.currentTimeMillis() / 1000) + 240
+            return refreshBefore >= expireAt!!
         }
 
     val currentUserId: String?
         get() = userId
+
+    fun consumeLastWriteAuthFailure(): Boolean {
+        val failed = lastWriteAuthFailure
+        lastWriteAuthFailure = false
+        return failed
+    }
 
     private val isReady: Boolean
         get() = projectKey.isNotBlank() && projectApiKey.isNotBlank() && deviceId.isNotBlank()
@@ -263,6 +279,20 @@ class CopyCatSyncManager(
         isStopped = false
     }
 
+    private fun reloadTokenFromSharedPreferences(): Boolean {
+        val latestToken = sp.getString(tokenKey, "{}") ?: "{}"
+        if (latestToken == "{}") return false
+
+        return try {
+            token = latestToken
+            load()
+            !accessToken.isNullOrBlank()
+        } catch (e: Exception) {
+            Log.e(logTag, "Failed to reload token from preferences: ${e.message}")
+            false
+        }
+    }
+
     private fun writeToSp(key: String, value: String) {
         sp.edit().putString(key, value).apply()
     }
@@ -295,6 +325,56 @@ class CopyCatSyncManager(
         } catch (e: Exception) {
             Log.e(logTag, "Error refreshing token: ${e.message}")
             false
+        }
+    }
+
+    private fun recoverAuthWithRetries(): Boolean {
+        for (attempt in 1..maxAuthRecoveryAttempts) {
+            val refreshed = doRefreshToken()
+            if (refreshed && !isExpired && !accessToken.isNullOrBlank()) {
+                return true
+            }
+
+            val reloaded = reloadTokenFromSharedPreferences()
+            if (reloaded && !isExpired && !accessToken.isNullOrBlank()) {
+                return true
+            }
+
+            Log.w(logTag, "Auth recovery attempt $attempt/$maxAuthRecoveryAttempts failed")
+        }
+        return false
+    }
+
+    private fun preflightAuthRefreshOnScreenOn() {
+        if (!syncEnabled || !isReady || refreshToken.isNullOrBlank()) {
+            return
+        }
+
+        if (!isExpired) {
+            return
+        }
+
+        val now = System.currentTimeMillis()
+        if (now - lastScreenOnRefreshAtMs < screenOnRefreshCooldownMs) {
+            return
+        }
+
+        if (!screenOnRefreshInFlight.compareAndSet(false, true)) {
+            return
+        }
+
+        lastScreenOnRefreshAtMs = now
+        thread(start = true, name = "copycat-screen-on-auth-refresh") {
+            try {
+                val recovered = recoverAuthWithRetries()
+                if (recovered) {
+                    Log.i(logTag, "Screen-on auth preflight succeeded")
+                } else {
+                    Log.w(logTag, "Screen-on auth preflight failed")
+                }
+            } finally {
+                screenOnRefreshInFlight.set(false)
+            }
         }
     }
 
@@ -536,6 +616,7 @@ class CopyCatSyncManager(
         sourceId: String? = null,
         sourceApp: String? = null,
     ): Long {
+        lastWriteAuthFailure = false
         Log.i(logTag, "Writing to remote clipboard")
         if (userId == null || !isReady) {
             Log.w(
@@ -545,13 +626,13 @@ class CopyCatSyncManager(
             return -1
         }
         if (isExpired) {
-            Log.w(logTag, "Token expired, trying to refresh the token.")
-            val refreshed = doRefreshToken()
-            if (!refreshed) {
-                Log.w(logTag, "Couldn't refresh token.")
+            Log.w(logTag, "Token expired, starting auth recovery.")
+            val recovered = recoverAuthWithRetries()
+            if (!recovered) {
+                lastWriteAuthFailure = true
                 return -1
             }
-            Log.i(logTag, "Successfully refreshed the token")
+            Log.i(logTag, "Auth recovery succeeded for expired token")
         }
         val url = "$url/rest/v1/clipboard_items"
         val normalizedSourceId = sourceId?.trim()?.ifEmpty { null }
@@ -615,26 +696,60 @@ class CopyCatSyncManager(
             .post(requestBody)
             .build()
 
-        return try {
-            // Use the 'use' block to automatically close the response after usage
-            client.newCall(request).execute().use { response ->
+        fun executeRequest(req: Request): Pair<Long, Int> {
+            return client.newCall(req).execute().use { response ->
                 if (response.code == 201) {
                     Log.i(
                         logTag,
                         "Remote write accepted (201). sourceId=$normalizedSourceId sourceApp=$normalizedSourceApp",
                     )
-                    val location = response.header("location") ?: return -1
-                    val match = regex.find(location) ?: return -1
-                    match.value.toLong()
+                    val location = response.header("location") ?: return Pair(-1, 201)
+                    val match = regex.find(location) ?: return Pair(-1, 201)
+                    Pair(match.value.toLong(), 201)
                 } else {
                     val responseBody = response.body?.string()?.takeIf { it.isNotBlank() }
                     Log.w(
                         logTag,
                         "Failed to write clipboard item. code=${response.code} sourceId=$normalizedSourceId sourceApp=$normalizedSourceApp body=${responseBody ?: "<empty>"}",
                     )
-                    -1
+                    Pair(-1, response.code)
                 }
             }
+        }
+
+        return try {
+            val (firstResult, firstCode) = executeRequest(request)
+            if (firstResult > 0) {
+                return firstResult
+            }
+
+            if (firstCode == 401 || firstCode == 403) {
+                Log.w(logTag, "Auth rejected write ($firstCode). Starting auth recovery.")
+                val recovered = recoverAuthWithRetries()
+                if (recovered) {
+                    val retryRequest = Request.Builder()
+                        .url(url)
+                        .addHeader("apikey", projectApiKey)
+                        .addHeader("Content-type", contentType)
+                        .addHeader("Authorization", "Bearer $accessToken")
+                        .addHeader("Prefer", "return=headers-only")
+                        .post(requestBody)
+                        .build()
+
+                    val (retryResult, retryCode) = executeRequest(retryRequest)
+                    if (retryResult > 0) {
+                        return retryResult
+                    }
+
+                    if (retryCode == 401 || retryCode == 403) {
+                        lastWriteAuthFailure = true
+                    }
+                } else {
+                    lastWriteAuthFailure = true
+                }
+            }
+
+            -1
         } catch (e: Exception) {
             Log.e(
                 logTag,

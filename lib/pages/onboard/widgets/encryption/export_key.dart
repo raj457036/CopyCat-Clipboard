@@ -63,10 +63,6 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
         if (isDesktopPlatform) {
           await File(path).writeAsString(content);
         }
-        // showTextSnackbar(
-        //   locale.onboarding__snackbar__export_success,
-        //   success: true,
-        // );
         InAppNotificationService.i.notify(
           NotificationMessage(
             id: "export_success",
