@@ -76,9 +76,8 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
     await _refresh();
     InAppNotificationService.i.notify(
       NotificationMessage.builder(
-        builder: (context) => NotificationContent(
-          body: 'Device name updated successfully.',
-        ),
+        builder: (context) =>
+            NotificationContent(body: 'Device name updated successfully.'),
         id: 'rename-device-${device.deviceId}-success',
       ),
     );
@@ -285,14 +284,19 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                             for (final device in visibleDevices) ...[
                               DeviceGridCard(
                                 device: device,
-                                isCurrentDevice: device.deviceId == _currentDeviceId,
-                                lastSeenText: _formatLastSeen(context, device.lastSeenAt),
+                                isCurrentDevice:
+                                    device.deviceId == _currentDeviceId,
+                                lastSeenText: _formatLastSeen(
+                                  context,
+                                  device.lastSeenAt,
+                                ),
                                 onRename: (name) => _renameDevice(device, name),
                                 isSavingName:
-                                    _savingDeviceNames[device.deviceId] ?? false,
-                                isRevoking: _revokingDevices[device.deviceId] ?? false,
-                                onRevoke:
-                                    device.deviceId != _currentDeviceId
+                                    _savingDeviceNames[device.deviceId] ??
+                                    false,
+                                isRevoking:
+                                    _revokingDevices[device.deviceId] ?? false,
+                                onRevoke: device.deviceId != _currentDeviceId
                                     ? () => _revokeDevice(device)
                                     : null,
                               ),
@@ -322,11 +326,14 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                                         context,
                                         device.lastSeenAt,
                                       ),
-                                      onRename: (name) => _renameDevice(device, name),
+                                      onRename: (name) =>
+                                          _renameDevice(device, name),
                                       isSavingName:
-                                          _savingDeviceNames[device.deviceId] ?? false,
+                                          _savingDeviceNames[device.deviceId] ??
+                                          false,
                                       isRevoking:
-                                          _revokingDevices[device.deviceId] ?? false,
+                                          _revokingDevices[device.deviceId] ??
+                                          false,
                                       onRevoke: null,
                                     ),
                                     const SizedBox(height: 8),

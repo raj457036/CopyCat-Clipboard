@@ -37,7 +37,9 @@ class _DeviceGridCardState extends State<DeviceGridCard> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.device.name?.trim() ?? '');
+    _nameController = TextEditingController(
+      text: widget.device.name?.trim() ?? '',
+    );
     _nameFocusNode = FocusNode();
     _nameFocusNode.addListener(_handleNameFocusChange);
   }
@@ -201,8 +203,8 @@ class _DeviceGridCardState extends State<DeviceGridCard> {
             status: widget.isCurrentDevice
                 ? DeviceStatusBadgeType.current
                 : (widget.device.isRevoked
-                    ? DeviceStatusBadgeType.revoked
-                    : DeviceStatusBadgeType.active),
+                      ? DeviceStatusBadgeType.revoked
+                      : DeviceStatusBadgeType.active),
           ),
         ],
       ),

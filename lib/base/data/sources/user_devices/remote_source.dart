@@ -125,7 +125,9 @@ class RemoteUserDevicesSource implements UserDevicesSource {
     final normalizedName = name?.trim();
     await db
         .from(_devicesTable)
-        .update({'name': normalizedName?.isNotEmpty == true ? normalizedName : null})
+        .update({
+          'name': normalizedName?.isNotEmpty == true ? normalizedName : null,
+        })
         .eq('userId', userId)
         .eq('deviceId', deviceId);
   }

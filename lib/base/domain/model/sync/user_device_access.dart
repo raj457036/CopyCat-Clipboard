@@ -20,7 +20,9 @@ class SyncDeviceInfo {
       deviceId: (json['deviceId'] ?? json['device_id']) as String,
       platform: (json['platform'] as String?) ?? 'unknown',
       appVersion: (json['appVersion'] ?? json['app_version']) as String?,
-      name: (json['name'] ?? json['deviceName'] ?? json['device_name']) as String?,
+      name:
+          (json['name'] ?? json['deviceName'] ?? json['device_name'])
+              as String?,
       lastSeenAt:
           DateTime.tryParse(
             (json['lastSeenAt'] ?? json['last_seen_at']) as String? ?? '',
