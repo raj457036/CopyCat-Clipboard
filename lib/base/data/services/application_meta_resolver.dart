@@ -24,8 +24,13 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
       const AndroidBackgroundClipboard();
 
   final Map<String, ApplicationMeta?> _cache = {};
+  final Map<String, DateTime> _negativeCacheUntil = {};
+  final Map<String, Future<ApplicationMeta?>> _resolveInFlight = {};
+  Future<Directory>? _iconsDirFuture;
   // Guards against firing duplicate in-flight syncs for the same sourceId.
   final Set<String> _syncInFlight = {};
+
+  static const Duration _negativeCacheTtl = Duration(seconds: 30);
 
   ApplicationMetaResolverImpl(
     this.repo,
@@ -34,6 +39,8 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
   );
 
   String _tag(String sourceId) => '[AppMeta:$sourceId]';
+
+  String _resolveKey(String sourceId) => sourceId;
 
   PlatformOS get _currentOs => currentPlatformOS();
 
@@ -46,12 +53,19 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
     return normalized;
   }
 
+  Future<Directory> _getIconsDir() {
+    return _iconsDirFuture ??= () async {
+      final supportDir = await getApplicationSupportDirectory();
+      final iconsDir = Directory(p.join(supportDir.path, 'app_icons'));
+      if (!await iconsDir.exists()) {
+        await iconsDir.create(recursive: true);
+      }
+      return iconsDir;
+    }();
+  }
+
   Future<File> _iconFileForSource(String sourceId) async {
-    final supportDir = await getApplicationSupportDirectory();
-    final iconsDir = Directory(p.join(supportDir.path, 'app_icons'));
-    if (!await iconsDir.exists()) {
-      await iconsDir.create(recursive: true);
-    }
+    final iconsDir = await _getIconsDir();
 
     final safeName = sourceId.replaceAll(RegExp(r'[^a-zA-Z0-9_\-]'), '_');
     return File(p.join(iconsDir.path, '$safeName.png'));
@@ -61,7 +75,6 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
     String sourceId,
     List<int>? bytes, {
     required String emptyBytesLog,
-    required String successLogLabel,
   }) async {
     if (bytes == null || bytes.isEmpty) {
       logger.w('${_tag(sourceId)} $emptyBytesLog');
@@ -74,7 +87,10 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
   }
 
   Future<ApplicationMeta?> _loadFromCacheOrLocal(String sourceId) async {
-    if (_cache[sourceId]?.iconLocalPath != null) return _cache[sourceId];
+    final cached = _cache[sourceId];
+    if (cached != null && cached.hasIcon) {
+      return cached;
+    }
 
     final result = await repo.getBySourceId(sourceId);
     final local = result.fold((failure) {
@@ -107,10 +123,30 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
   }
 
   void _cacheAndScheduleSyncIfNeeded(ApplicationMeta app) {
+    _negativeCacheUntil.remove(app.sourceId);
     _cache[app.sourceId] = app;
     if (!app.directorySynced) {
       unawaited(_syncToDirectory(app));
     }
+  }
+
+  bool _isNegativeCached(String sourceId) {
+    final until = _negativeCacheUntil[sourceId];
+    if (until == null) {
+      return false;
+    }
+
+    final now = systemTime();
+    if (now.isAfter(until)) {
+      _negativeCacheUntil.remove(sourceId);
+      return false;
+    }
+
+    return true;
+  }
+
+  void _markNegativeCache(String sourceId) {
+    _negativeCacheUntil[sourceId] = systemTime().add(_negativeCacheTtl);
   }
 
   Future<ApplicationMeta> _buildFromPayload(
@@ -159,7 +195,6 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
         sourceId,
         bytes,
         emptyBytesLog: 'focus_window returned empty icon bytes',
-        successLogLabel: 'icon cached at',
       );
     } catch (e) {
       logger.w('${_tag(sourceId)} cache icon failed: $e');
@@ -176,7 +211,6 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
         sourceId,
         bytes,
         emptyBytesLog: 'identifier icon lookup returned empty bytes',
-        successLogLabel: 'identifier icon cached at',
       );
     } catch (e) {
       logger.w('${_tag(sourceId)} identifier icon lookup failed: $e');
@@ -297,9 +331,35 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
     String sourceId, {
     PlatformOS? sourceOs,
   }) async {
+    if (_isNegativeCached(sourceId)) {
+      return null;
+    }
+
+    final key = _resolveKey(sourceId);
+    final inFlight = _resolveInFlight[key];
+    if (inFlight != null) {
+      return inFlight;
+    }
+
+    final future = _resolveBySourceId(sourceId, sourceOs: sourceOs);
+    _resolveInFlight[key] = future;
+    try {
+      return await future;
+    } finally {
+      _resolveInFlight.remove(key);
+    }
+  }
+
+  Future<ApplicationMeta?> _resolveBySourceId(
+    String sourceId, {
+    PlatformOS? sourceOs,
+  }) async {
     // 1) Check local repository/cache first.
     var local = await _loadFromCacheOrLocal(sourceId);
-    if (local != null) return local;
+    if (local != null) {
+      _negativeCacheUntil.remove(sourceId);
+      return local;
+    }
 
     // 2.1) Local miss + same OS => try identifier-based local OS icon lookup.
     if (_isOrigin(sourceOs)) {
@@ -307,6 +367,7 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
           ? await _cacheAndroidPackageIconToFile(sourceId)
           : await _cacheIconByIdentifierToFile(sourceId);
       if (iconLocalPath != null) {
+        _negativeCacheUntil.remove(sourceId);
         return _saveResolvedIcon(sourceId, iconLocalPath);
       }
     }
@@ -322,11 +383,13 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
         ),
         (saved) => resolvedRemote = saved,
       );
+      _negativeCacheUntil.remove(sourceId);
       _cache[sourceId] = resolvedRemote;
       return resolvedRemote;
     }
 
     // 3) Nothing found locally or remotely.
+    _markNegativeCache(sourceId);
     _cache[sourceId] = null;
     return null;
   }
