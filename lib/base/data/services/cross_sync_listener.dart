@@ -96,8 +96,7 @@ class SBClipCrossSyncListener
 
   @override
   Future<void> reconnect() async {
-    // Reconnect only if not connected
-    if (_lastStatus != CrossSyncListenerStatus.disconnected) {
+    if (!isInitiated || _lastStatus == CrossSyncListenerStatus.connected) {
       return;
     }
     await stop();
