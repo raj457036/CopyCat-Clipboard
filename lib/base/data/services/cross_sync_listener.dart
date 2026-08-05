@@ -12,6 +12,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 mixin SBCrossSyncListenerStatusChangeMixin<T> {
   CrossSyncListenerStatus _lastStatus = CrossSyncListenerStatus.unknown;
 
+  CrossSyncListenerStatus get currentStatus => _lastStatus;
+
   final _statusEvents = StreamController<CrossSyncStatusEvent>.broadcast();
   final _changesStream = StreamController<CrossSyncEvent<T>>.broadcast();
 

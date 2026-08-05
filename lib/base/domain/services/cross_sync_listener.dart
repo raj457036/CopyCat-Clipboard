@@ -29,6 +29,7 @@ abstract class CrossSyncListener<T> {
   Stream<CrossSyncStatusEvent> get onStatusChange;
   Stream<CrossSyncEvent<T>> get onChangeEvent;
 
+  CrossSyncListenerStatus get currentStatus;
   bool get isInitiated;
 }
 

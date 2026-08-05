@@ -20,13 +20,14 @@ class RealTimeConnectionStatus extends StatefulWidget {
 }
 
 class _RealTimeConnectionStatusState extends State<RealTimeConnectionStatus> {
-  CrossSyncListenerStatus _status = CrossSyncListenerStatus.unknown;
+  late CrossSyncListenerStatus _status;
   StreamSubscription<CrossSyncStatusEvent>? _sub;
 
   @override
   void initState() {
     super.initState();
     final listener = sl<ClipCrossSyncListener>();
+    _status = listener.currentStatus;
     _sub = listener.onStatusChange.listen((event) {
       if (mounted) setState(() => _status = event.$1);
     });
@@ -42,8 +43,14 @@ class _RealTimeConnectionStatusState extends State<RealTimeConnectionStatus> {
     CrossSyncListenerStatus status,
     AppLocalizations locale,
   ) => switch (status) {
-    CrossSyncListenerStatus.connected => (Colors.green, locale.app__realtime_connected),
-    CrossSyncListenerStatus.connecting => (Colors.orange, locale.app__realtime_connecting),
+    CrossSyncListenerStatus.connected => (
+      Colors.green,
+      locale.app__realtime_connected,
+    ),
+    CrossSyncListenerStatus.connecting => (
+      Colors.orange,
+      locale.app__realtime_connecting,
+    ),
     _ => (Colors.red, locale.app__realtime_disconnected),
   };
 

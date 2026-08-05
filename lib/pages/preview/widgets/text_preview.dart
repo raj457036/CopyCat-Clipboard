@@ -44,6 +44,21 @@ class TextClipPreviewCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final bg = getBG(context);
     final fontFamily = getFontFamily();
+    TextStyle? style;
+
+    if (item.textCategory == TextCategory.color ||
+        item.textCategory == TextCategory.email ||
+        item.textCategory == TextCategory.phone) {
+      style = context.textTheme.headlineMedium?.copyWith(
+        color: getFG(context, bg),
+        fontFamily: fontFamily,
+      );
+    } else {
+      style = context.textTheme.bodyMedium?.copyWith(
+        color: getFG(context, bg),
+        fontFamily: fontFamily,
+      );
+    }
 
     final config = ClipPreviewConfig.of(context);
 
@@ -57,7 +72,7 @@ class TextClipPreviewCard extends StatelessWidget {
           padding: const EdgeInsets.all(padding16),
           child: SelectableText(
             item.text ?? context.locale.preview__card__missing_text,
-            style: TextStyle(color: getFG(context, bg), fontFamily: fontFamily),
+            style: style,
           ),
         ),
       ),
