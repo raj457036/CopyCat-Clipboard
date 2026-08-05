@@ -7,6 +7,7 @@ import 'package:clipboard/base/domain/sources/subscription.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:injectable/injectable.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:isar_community/isar.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:retry/retry.dart';
@@ -68,14 +69,15 @@ class RemoteSubscriptionSource implements SubscriptionSource {
   @override
   Future<Subscription> get(String userId) async {
     Subscription? remote;
+    final hasInternet = await InternetConnection().hasInternetAccess;
     try {
-      remote = await _getFromDatabase(userId);
+      remote = hasInternet ? await _getFromDatabase(userId) : null;
       if (remote != null) {
         await save(remote);
         return remote;
       }
 
-      final fallback = await _getFromRevenueCat();
+      final fallback = hasInternet ? await _getFromRevenueCat() : null;
       if (fallback != null) {
         await save(fallback);
         return fallback;

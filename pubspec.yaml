@@ -110,6 +110,7 @@ dependencies:
   qr_flutter: ^4.1.0
   mobile_scanner: ^7.1.1
   thumbnailer: ^3.3.0
+  image_size_getter: ^2.4.0
 
 dev_dependencies:
   flutter_test:

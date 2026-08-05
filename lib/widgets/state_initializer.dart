@@ -13,13 +13,14 @@ import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart
 import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/constants/numbers/breakpoints.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
+import 'package:clipboard/common/globals.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/applink_listener.dart';
 import 'package:clipboard/utils/debounce.dart';
 import 'package:clipboard/utils/share_listener.dart';
 import 'package:clipboard/utils/utility.dart';
-import 'package:clipboard/widgets/custom_thumbnailer_generations.dart';
+import 'package:clipboard/common/custom_thumbnailer_generations.dart';
 import 'package:clipboard/widgets/dialogs/in_app_review_dialog.dart';
 import 'package:clipboard/widgets/in_background_state.dart';
 import 'package:flutter/material.dart';
@@ -68,10 +69,12 @@ class _StateInitializerState extends State<StateInitializer>
       (_isAppLifecycleBackgrounded || _isWindowBackgrounded);
 
   Future<void> setupWindow() async {
+    windowSizeStabilized.wait();
     final windowCubit = context.read<WindowActionCubit?>();
     await wait(Durations.extralong4.inMilliseconds);
     final appConfig = appConfigCubit.state.config;
-    windowCubit?.setup(appConfig.view, appConfig.windowSize);
+    await windowCubit?.setup(appConfig.view, appConfig.windowSize);
+    windowSizeStabilized.set(true);
   }
 
   @override

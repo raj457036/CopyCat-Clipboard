@@ -10,6 +10,7 @@ import 'package:clipboard/base/data/services/notification_service.dart'
 import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/common/globals.dart';
 import 'package:clipboard/widgets/dialogs/inconsistent_timing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,7 +36,9 @@ class _NetworkObserverState extends State<NetworkObserver> {
   Stream<bool>? networkObserver;
 
   bool transformNetworkStatus(InternetStatus event) {
-    return event == InternetStatus.connected;
+    final connected = event == InternetStatus.connected;
+    internetConnected.set(connected);
+    return connected;
   }
 
   @override
@@ -81,6 +84,7 @@ class _NetworkObserverState extends State<NetworkObserver> {
 
   void onConnectionChanged(bool isConnected) {
     if (authCubit.isLocalAuth) return;
+    internetConnected.set(isConnected);
     if (isConnected) {
       if (wasDisconnected) {
         wasDisconnected = false;

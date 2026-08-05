@@ -12,6 +12,8 @@ import 'package:path_provider/path_provider.dart';
 import "package:universal_io/io.dart";
 import 'package:uuid/uuid.dart';
 import 'package:uuid/v4.dart';
+import 'package:image_size_getter/image_size_getter.dart';
+import 'package:image_size_getter/file_input.dart';
 
 String formatDuration(Duration duration) {
   String twoDigits(int n) => n.toString().padLeft(2, '0');
@@ -214,11 +216,19 @@ String formatBytes(int sizeInBytes, {bool precise = true}) {
   const gb = mb * 1024;
   if (sizeInBytes < 1024) {
     return '$sizeInBytes b';
+  } else if (sizeInBytes < mb) {
+    return '${(sizeInBytes / 1024).toStringAsFixed(precise ? 2 : 0)} KB';
   } else if (sizeInBytes < gb) {
     return '${(sizeInBytes / mb).toStringAsFixed(precise ? 2 : 0)} MB';
   } else {
     return '${(sizeInBytes / gb).toStringAsFixed(precise ? 2 : 0)} GB';
   }
+}
+
+Size getImageResolution(String path) {
+  final file = File(path);
+  final result = ImageSizeGetter.getSizeResult(FileInput(file));
+  return result.size;
 }
 
 // Text cleanup

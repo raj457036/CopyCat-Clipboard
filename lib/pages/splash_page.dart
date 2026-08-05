@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart' show AuthCubit;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/widgets/yarn_ball_loading.dart';

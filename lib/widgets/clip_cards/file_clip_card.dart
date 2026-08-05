@@ -3,41 +3,21 @@ import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/clip_cards/file_display_name_mixin.dart';
 import 'package:clipboard/widgets/file_thumbnail.dart';
 import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
 
-class FileClipCard extends StatelessWidget {
-  final ClipboardItem item;
-
-  const FileClipCard({super.key, required this.item});
-
-  String _displayFileType() {
-    final mimeType = item.fileMimeType;
-    final extension = item.fileExtension?.replaceFirst('.', '').trim();
-
-    final fromMime = mimeType == null || mimeType.isEmpty
-        ? null
-        : extensionFromMime(mimeType)?.trim();
-
-    // Prefer real extension for generic/unknown mime types.
-    if (fromMime == null || fromMime.isEmpty || fromMime == 'bin') {
-      if (extension != null && extension.isNotEmpty) {
-        return extension.toLowerCase();
-      }
-      return 'file';
-    }
-
-    return fromMime;
-  }
+class FileClipCard extends FileTypePreview {
+  const FileClipCard({super.key, required super.item});
 
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
     final colors = context.colors;
     final typeAndSize =
-        "${_displayFileType()} • ${formatBytes(item.fileSize ?? 1024)}";
-    final fileName = item.fileName?.sub(end: 30) ?? context.locale.app__no_name;
+        "${displayFileType().toUpperCase()} • ${formatBytes(item.fileSize ?? 1024)}";
+    final fileName = item.fileName?.sub(end: 30);
 
     return SizedBox.expand(
       child: Stack(
@@ -48,24 +28,25 @@ class FileClipCard extends StatelessWidget {
             right: 0,
             bottom: 0,
             child: ColoredBox(
-              color: colors.surface.withValues(alpha: .75),
+              color: colors.surfaceContainerLow,
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: padding8,
-                  vertical: padding6,
-                ),
+                padding: const EdgeInsets.all(padding8),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: padding4,
                   children: [
+                    if (fileName != null && fileName.isNotEmpty)
+                      Text(
+                        fileName,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: colors.onSurfaceVariant,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     Text(
                       typeAndSize,
-                      style: textTheme.labelSmall,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      fileName,
                       style: textTheme.labelMedium,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

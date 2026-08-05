@@ -5,6 +5,7 @@ import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart'
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart'
     show MonetizationCubit;
 import 'package:clipboard/common/logging.dart';
+import 'package:flutter/foundation.dart';
 
 class CustomBlocObserver extends BlocObserver {
   static const _logger = AppLogger.scoped('Bloc');
@@ -35,10 +36,11 @@ class CustomBlocObserver extends BlocObserver {
   void onChange(BlocBase bloc, Change change) {
     super.onChange(bloc, change);
 
-    if (bloc is AuthCubit) return;
-    if (bloc is MonetizationCubit) return;
-    if (bloc is DriveSetupCubit) return;
-
+    if (kReleaseMode) {
+      if (bloc is AuthCubit) return;
+      if (bloc is MonetizationCubit) return;
+      if (bloc is DriveSetupCubit) return;
+    }
     _logger.d(
       () =>
           'onChange(${bloc.runtimeType}) -- ${change.currentState} → ${change.nextState}',

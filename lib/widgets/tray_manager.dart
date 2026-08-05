@@ -27,7 +27,6 @@ class TrayManager extends StatefulWidget {
 class TrayManagerState extends State<TrayManager> with TrayListener {
   late final AppConfigCubit configCubit;
   late final WindowActionCubit windowActionCubit;
-  Locale? _lastLocale;
   bool paused = false;
 
   bool _shouldShowInTaskbar(AppConfig config) {
@@ -54,13 +53,7 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final locale = Localizations.localeOf(context);
-    if (_lastLocale == null) {
-      _lastLocale = locale;
-      return;
-    }
-    if (_lastLocale == locale) return;
-    _lastLocale = locale;
+
     if (configCubit.state.config.showTrayIcon) {
       unawaited(_refreshLocalizedTray());
     }

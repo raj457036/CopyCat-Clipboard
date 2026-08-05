@@ -22,9 +22,14 @@ class AuthCubit extends Cubit<AuthState> {
   final TinyStorage localCache;
   final AppConfigCubit appConfigCubit;
   final AnalyticsRepository analyticsRepo;
+  StreamSubscription<void>? _authStateChangesSubscription;
+  bool _isAuthCheckInProgress = false;
+  bool _isRefreshInProgress = false;
 
   AuthCubit(this.repo, this.localCache, this.analyticsRepo, this.appConfigCubit)
-    : super(const AuthState.unknown());
+    : super(const AuthState.unknown()) {
+    _listenToAuthStateChanges();
+  }
 
   /// validate the code and return a suitable page path
   Future<(String?, Failure?)> validateAuthCode(String code) async {
@@ -48,30 +53,40 @@ class AuthCubit extends Cubit<AuthState> {
   String? get userId => repo.userId;
 
   Future<bool> checkForAuthentication() async {
-    if (checkLocalSignin()) return true;
-
-    final currentUser = repo.currentUser;
-    final accessToken = repo.accessToken;
-    if (currentUser != null &&
-        accessToken != null &&
-        !repo.needsSessionRefresh) {
-      await authenticated(currentUser, accessToken);
-      return true;
+    if (_isAuthCheckInProgress) {
+      return state is AuthenticatedAuthState ||
+          state is LocalAuthenticatedAuthState;
     }
 
-    final hasCachedSession = currentUser != null || accessToken != null;
-    if (!hasCachedSession) {
-      unauthenticated(authFailure);
+    _isAuthCheckInProgress = true;
+
+    try {
+      if (checkLocalSignin()) return true;
+
+      final currentUser = repo.currentUser;
+      final accessToken = repo.accessToken;
+      if (currentUser != null && accessToken != null) {
+        await authenticated(currentUser, accessToken);
+
+        if (repo.needsSessionRefresh) {
+          unawaited(_refreshSessionInBackground());
+        }
+        return true;
+      }
+
+      final hasCachedSession = currentUser != null || accessToken != null;
+      if (hasCachedSession) {
+        unawaited(_refreshSessionInBackground());
+        return false;
+      }
+
+      if (state is! UnauthenticatedAuthState) {
+        unauthenticated(authFailure);
+      }
       return false;
+    } finally {
+      _isAuthCheckInProgress = false;
     }
-
-    await repo.refreshSession();
-    if (repo.currentUser != null) {
-      await authenticated(repo.currentUser!, repo.accessToken!);
-    } else {
-      unauthenticated(authFailure);
-    }
-    return state is AuthenticatedAuthState;
   }
 
   Future<void> removeEncryptionSetup() async {
@@ -106,7 +121,9 @@ class AuthCubit extends Cubit<AuthState> {
   bool checkLocalSignin() {
     final result = localCache.get(klocalAuthKey);
     if (result == true) {
-      emit(const AuthState.localAuthenticated());
+      if (state is! LocalAuthenticatedAuthState) {
+        emit(const AuthState.localAuthenticated());
+      }
       return true;
     }
     return false;
@@ -155,10 +172,92 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthState.unauthenticated(failure));
   }
 
+  Future<void> _refreshSessionInBackground() async {
+    if (_isRefreshInProgress) return;
+    _isRefreshInProgress = true;
+
+    try {
+      final result = await repo
+          .refreshSession()
+          .timeout(const Duration(seconds: 8));
+
+      await result.fold(
+        (failure) async {
+          logger.w("Session refresh failed: ${failure.message}");
+
+          final hasSession = repo.currentUser != null && repo.accessToken != null;
+          if (!hasSession &&
+              state is! AuthenticatedAuthState &&
+              state is! LocalAuthenticatedAuthState) {
+            unauthenticated(failure);
+          }
+        },
+        (_) async {
+          final refreshedUser = repo.currentUser;
+          final refreshedToken = repo.accessToken;
+
+          if (refreshedUser != null && refreshedToken != null) {
+            await authenticated(refreshedUser, refreshedToken);
+            return;
+          }
+
+          if (state is! LocalAuthenticatedAuthState) {
+            unauthenticated(authFailure);
+          }
+        },
+      );
+    } on TimeoutException {
+      logger.w("Session refresh timed out while bootstrapping auth state.");
+    } catch (e) {
+      logger.w("Session refresh threw while bootstrapping auth state. $e");
+    } finally {
+      _isRefreshInProgress = false;
+    }
+  }
+
+  void _listenToAuthStateChanges() {
+    _authStateChangesSubscription = repo.authStateChanges.listen(
+      (_) {
+        unawaited(_reconcileAuthStateFromRepository());
+      },
+      onError: (error) {
+        logger.w("Auth state stream error: $error");
+      },
+    );
+  }
+
+  Future<void> _reconcileAuthStateFromRepository() async {
+    if (checkLocalSignin()) return;
+
+    final currentUser = repo.currentUser;
+    final accessToken = repo.accessToken;
+
+    if (currentUser != null && accessToken != null) {
+      final currentState = state;
+      if (currentState is AuthenticatedAuthState &&
+          currentState.user.userId == currentUser.userId) {
+        return;
+      }
+
+      await authenticated(currentUser, accessToken);
+      return;
+    }
+
+    if (state is! UnauthenticatedAuthState) {
+      unauthenticated(authFailure);
+    }
+  }
+
   Future<void> logout() async {
     emit(const AuthState.authenticating());
     localCache.set(klocalAuthKey, false);
     await repo.logout();
     emit(const AuthState.unauthenticated());
+  }
+
+  @override
+  Future<void> close() async {
+    await _authStateChangesSubscription?.cancel();
+    return super.close();
   }
 }

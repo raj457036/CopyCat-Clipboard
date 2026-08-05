@@ -22,7 +22,7 @@ class ClipCardOptionsHeader extends StatelessWidget {
     );
     final hovered = HoverScope.of(context);
 
-    final Color color = context.colors.surface.withValues(alpha: 0.8);
+    final Color color = context.colors.surface.withValues(alpha: 0.75);
 
     return ExcludeFocus(
       child: ColoredBox(

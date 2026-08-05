@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:clipboard/base/constants/numbers/breakpoints.dart'
     show Breakpoints;
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart';
+import 'package:clipboard/common/globals.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart'
     show BreakpointExtension, BuildContextExtension, ListExtension;
@@ -96,9 +99,9 @@ class InAppNotificationService {
     );
   }
 
-  /// Displays a notification message to the user using a SnackBar.
-  /// If a notification with the same ID is already active, it will be replaced.
-  void notify(NotificationMessage message) {
+  Future<void> _notify(NotificationMessage message) async {
+    await windowSizeStabilized();
+
     if (_activeNotifications.any((active) => active.message.id == message.id) ||
         _context == null) {
       return;
@@ -114,5 +117,11 @@ class InAppNotificationService {
       activeNotification.message.onClose?.call();
       _activeNotifications.remove(activeNotification);
     });
+  }
+
+  /// Displays a notification message to the user using a SnackBar.
+  /// If a notification with the same ID is already active, it will be replaced.
+  void notify(NotificationMessage message) {
+    unawaited(_notify(message));
   }
 }
