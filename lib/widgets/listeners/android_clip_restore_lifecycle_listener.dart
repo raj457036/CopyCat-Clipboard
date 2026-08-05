@@ -20,31 +20,29 @@ class AndroidClipRestoreLifecycleListener extends StatefulWidget {
 }
 
 class _AndroidClipRestoreLifecycleListenerState
-    extends State<AndroidClipRestoreLifecycleListener>
-    with WidgetsBindingObserver {
+    extends State<AndroidClipRestoreLifecycleListener> {
+  late final AppLifecycleListener _appLifecycleListner;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    _syncStates();
+    _appLifecycleListner = AppLifecycleListener(
+      onResume: _syncStates,
+      onShow: _syncStates,
+    );
+  }
+
+  void _syncStates() {
+    if (Platform.isAndroid) {
+      unawaited(widget.androidBgClipboardCubit.syncStates());
+    }
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    _appLifecycleListner.dispose();
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
-      syncAndroidBgClipboardStates();
-    }
-  }
-
-  Future<void> syncAndroidBgClipboardStates() async {
-    if (!Platform.isAndroid) return;
-    unawaited(widget.androidBgClipboardCubit.syncStates());
   }
 
   @override

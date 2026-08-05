@@ -26,12 +26,12 @@ class MediaPreview extends StatelessWidget {
 
     if (item.localPath != null) {
       if (item.fileMimeType!.contains("svg")) {
-        return SvgPicture.file(File(item.localPath!), width: 320);
+        return SvgPicture.file(File(item.localPath!), width: 360);
       }
       return Image(
         image: ResizeImage(
           FileImage(File(item.localPath!)),
-          width: 320,
+          width: 480,
           policy: ResizeImagePolicy.fit,
         ),
         gaplessPlayback: true,
