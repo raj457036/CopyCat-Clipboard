@@ -39,6 +39,7 @@ import kotlinx.coroutines.withContext
 import android.provider.OpenableColumns
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
+import java.util.Date
 
 enum class ClipAction {
     Pending,
@@ -56,12 +57,16 @@ class CopyCatClipboardService : Service() {
     private val notificationId: Int = 1
     private lateinit var notificationBuilder: NotificationCompat.Builder
     private var lastCopiedText: String? = null
+    private var pauseResumeAtMs: Long? = null
     private val mainHandler by lazy { Handler(mainLooper) }
     private val pasteActionDelayMs = 1000L
     private val clipboardAckToastCooldownMs = 3000L
     private val delayedPasteRunnable = Runnable {
         disableDuplicateAnnouncement = true
         performClipboardRead("")
+    }
+    private val autoResumePauseRunnable = Runnable {
+        resumeNotificationPause()
     }
     
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -113,6 +118,7 @@ class CopyCatClipboardService : Service() {
         const val ACTION_CAPTURE_NOW = "CAPTURE_NOW"
         const val ACTION_RESTART_SERVICE = "RESTART_SERVICE"
         const val ACTION_TOGGLE_NOTIFICATION_PAUSE = "TOGGLE_NOTIFICATION_PAUSE"
+        const val ACTION_RESHOW_NOTIFICATION = "RESHOW_NOTIFICATION"
 
         var isRunning: Boolean = false
     }
@@ -592,34 +598,31 @@ class CopyCatClipboardService : Service() {
     @SuppressLint("LaunchActivityFromNotification")
     private fun showNotification(): Notification {
         val contentIntent = buildOpenAppPendingIntent()
-        val deleteIntent = Intent(this, NotificationDeleteReceiver::class.java)
-        val pendingDeleteIntent = PendingIntent.getBroadcast(
-            this,
-            788,
-            deleteIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
 
-        val actionLabel = when {
-            copycatStorage.notificationPaused -> "Resume"
-            copycatStorage.detectionMode == ClipboardDetectionMode.MODE_INACTIVE -> null
-            else -> "Capture now"
+        val toggleLabel = if (copycatStorage.notificationPaused) "Resume now" else "Pause for 30 min"
+        val toggleIntent = if (copycatStorage.detectionMode != ClipboardDetectionMode.MODE_INACTIVE) {
+            buildServicePendingIntent(ACTION_TOGGLE_NOTIFICATION_PAUSE, 791)
+        } else {
+            null
         }
-        val actionIntent = when {
-            copycatStorage.notificationPaused ->
-                buildServicePendingIntent(ACTION_TOGGLE_NOTIFICATION_PAUSE, 791)
-
-            copycatStorage.detectionMode == ClipboardDetectionMode.MODE_INACTIVE -> null
-            else -> buildServicePendingIntent(ACTION_CAPTURE_NOW, 790)
+        val resumeText = if (copycatStorage.notificationPaused) {
+            val resumeAtMs = pauseResumeAtMs ?: (System.currentTimeMillis() + 30 * 60 * 1000L)
+            val timeFormat = android.text.format.DateFormat.getTimeFormat(this)
+            "It will resume at ${timeFormat.format(Date(resumeAtMs))}."
+        } else {
+            null
         }
 
         val summaryText = when {
-            copycatStorage.notificationPaused -> "Capture paused. Swipe to resume."
-
+            copycatStorage.notificationPaused ->
+                if (resumeText != null) {
+                    "Background clipboard capture is paused. $resumeText"
+                } else {
+                    "Background clipboard capture is paused."
+                }
             copycatStorage.detectionMode == ClipboardDetectionMode.MODE_INACTIVE ->
-                "Choose a detection mode in CopyCat."
-
-            else -> "Capture active. Swipe to pause."
+                "Choose a detection mode in CopyCat to start background clipboard capture."
+            else -> "Background clipboard capture is running."
         }
         val titleText = if (copycatStorage.notificationPaused) {
             "CopyCat Clipboard Paused"
@@ -628,20 +631,21 @@ class CopyCatClipboardService : Service() {
         }
 
         val builder = notificationBuilder
-            .setDeleteIntent(pendingDeleteIntent)
             .setContentTitle(titleText)
             .setContentText(summaryText)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(summaryText))
             .setAutoCancel(false)
-            .setOngoing(false)
+            .setOngoing(true)
 
         if (contentIntent != null) {
             builder.setContentIntent(contentIntent)
         }
-        if (actionLabel != null && actionIntent != null) {
-            builder.addAction(R.drawable.tray_icon, actionLabel, actionIntent)
+        if (toggleIntent != null) {
+            builder.addAction(R.drawable.tray_icon, toggleLabel, toggleIntent)
         }
-
-        return builder.build()
+        return builder.build().apply {
+            flags = flags or Notification.FLAG_ONGOING_EVENT or Notification.FLAG_NO_CLEAR
+        }
     }
 
     private val onClipChangeListener = ClipboardManager.OnPrimaryClipChangedListener {
@@ -707,25 +711,37 @@ class CopyCatClipboardService : Service() {
     }
 
     private fun toggleNotificationPause() {
-        if (!copycatStorage.notificationPaused &&
-            copycatStorage.detectionMode == ClipboardDetectionMode.MODE_INACTIVE
-        ) {
+        if (copycatStorage.detectionMode == ClipboardDetectionMode.MODE_INACTIVE) {
             debugLog(logTag) { "Ignoring notification pause toggle: detection mode is inactive" }
             prepareAndShowNotification()
             return
         }
 
         if (copycatStorage.notificationPaused) {
-            copycatStorage.updateNotificationPaused(false)
-            debugLog(logTag) { "Notification swipe resumed clipboard capture" }
-            Toast.makeText(this, "CopyCat Clipboard Resumed", Toast.LENGTH_SHORT).show()
-        } else {
-            mainHandler.removeCallbacks(delayedPasteRunnable)
-            copycatStorage.updateNotificationPaused(true)
-            debugLog(logTag) { "Notification swipe paused clipboard capture" }
-            Toast.makeText(this, "CopyCat Clipboard Paused", Toast.LENGTH_SHORT).show()
+            resumeNotificationPause()
+            return
         }
 
+        mainHandler.removeCallbacks(delayedPasteRunnable)
+        copycatStorage.updateNotificationPaused(true)
+        pauseResumeAtMs = System.currentTimeMillis() + 30 * 60 * 1000L
+        mainHandler.removeCallbacks(autoResumePauseRunnable)
+        mainHandler.postDelayed(autoResumePauseRunnable, 30 * 60 * 1000L)
+        debugLog(logTag) { "Notification paused clipboard capture for 30 minutes" }
+        Toast.makeText(this, "CopyCat Clipboard Paused for 30 minutes", Toast.LENGTH_SHORT).show()
+
+        prepareAndShowNotification()
+    }
+
+    private fun resumeNotificationPause() {
+        mainHandler.removeCallbacks(autoResumePauseRunnable)
+        if (!copycatStorage.notificationPaused) {
+            return
+        }
+        copycatStorage.updateNotificationPaused(false)
+        pauseResumeAtMs = null
+        debugLog(logTag) { "Notification resumed clipboard capture" }
+        Toast.makeText(this, "CopyCat Clipboard Resumed", Toast.LENGTH_SHORT).show()
         prepareAndShowNotification()
     }
 
@@ -821,7 +837,10 @@ class CopyCatClipboardService : Service() {
             }
             ACTION_CAPTURE_NOW -> {
                 mainHandler.removeCallbacks(delayedPasteRunnable)
-                mainHandler.postDelayed(delayedPasteRunnable, pasteActionDelayMs)
+                mainHandler.post {
+                    disableDuplicateAnnouncement = true
+                    performClipboardRead("")
+                }
             }
             ACTION_TOGGLE_NOTIFICATION_PAUSE -> {
                 toggleNotificationPause()
