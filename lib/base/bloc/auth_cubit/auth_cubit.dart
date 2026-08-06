@@ -53,6 +53,8 @@ class AuthCubit extends Cubit<AuthState> {
   String? get userId => repo.userId;
 
   Future<bool> checkForAuthentication() async {
+    emit(const AuthState.authenticating());
+
     if (_isAuthCheckInProgress) {
       return state is AuthenticatedAuthState ||
           state is LocalAuthenticatedAuthState;
@@ -80,9 +82,7 @@ class AuthCubit extends Cubit<AuthState> {
         return false;
       }
 
-      if (state is! UnauthenticatedAuthState) {
-        unauthenticated(authFailure);
-      }
+      unauthenticated(authFailure);
       return false;
     } finally {
       _isAuthCheckInProgress = false;
@@ -177,15 +177,16 @@ class AuthCubit extends Cubit<AuthState> {
     _isRefreshInProgress = true;
 
     try {
-      final result = await repo
-          .refreshSession()
-          .timeout(const Duration(seconds: 8));
+      final result = await repo.refreshSession().timeout(
+        const Duration(seconds: 8),
+      );
 
       await result.fold(
         (failure) async {
           logger.w("Session refresh failed: ${failure.message}");
 
-          final hasSession = repo.currentUser != null && repo.accessToken != null;
+          final hasSession =
+              repo.currentUser != null && repo.accessToken != null;
           if (!hasSession &&
               state is! AuthenticatedAuthState &&
               state is! LocalAuthenticatedAuthState) {

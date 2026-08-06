@@ -15,6 +15,7 @@ import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/base/domain/services/database_service.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
+import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/routes/routes.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -43,16 +44,20 @@ class AuthListener extends StatelessWidget {
     encryptionWorker.setDecryption(true);
   }
 
-  Future<void> resetAll(BuildContext context) async {
+  Future<void> resetAll(BuildContext context, {bool logout = false}) async {
     EncryptionWorker.instance.dispose();
     InAppNotificationService.i.dismissAll();
-    InAppNotificationService.i.notify(
-      NotificationMessage.builder(
-        id: "logout_success",
-        builder: (context) =>
-            NotificationContent(body: context.locale.app__ack__logout_success),
-      ),
-    );
+
+    if (logout) {
+      InAppNotificationService.i.notify(
+        NotificationMessage.builder(
+          id: "logout_success",
+          builder: (context) => NotificationContent(
+            body: context.locale.app__ack__logout_success,
+          ),
+        ),
+      );
+    }
 
     await clearPersistedRootDir();
     await sl<DatabaseService>().clearAll();
@@ -106,7 +111,7 @@ class AuthListener extends StatelessWidget {
             await _handleAuthenticatedState(context, state);
           case UnauthenticatedAuthState(:final failure):
             context.read<ReviewPromptCubit>().setEnabled(false);
-            if (failure != null) {
+            if (failure != null && failure != authFailure) {
               InAppNotificationService.i.notify(
                 NotificationMessage(
                   id: "logout_failure",
@@ -114,7 +119,7 @@ class AuthListener extends StatelessWidget {
                 ),
               );
             }
-            unawaited(resetAll(context));
+            unawaited(resetAll(context, logout: failure == null));
             await context.windowAction?.show();
             appRouter.goNamed(RouteConstants.login);
           case LocalAuthenticatedAuthState():

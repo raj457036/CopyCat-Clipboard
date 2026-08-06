@@ -422,7 +422,7 @@ class _ClipInspectorState extends State<ClipInspector> {
       );
     }
 
-    if (item.text != null && !item.encrypted) {
+    if (item.type == ClipItemType.text && !item.encrypted) {
       buttons.add(
         OutlinedButton.icon(
           onPressed: _editTextContent,

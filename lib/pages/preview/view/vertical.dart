@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/di/di.dart' show sl;
 import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:clipboard/pages/preview/view/fullscreen_preview.dart';
@@ -37,7 +38,12 @@ class ClipItemPreviewVerticalView extends StatelessWidget {
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                   ),
-                  child: ClipPreview(item: item),
+                  child: item.fileMimeType?.startsWith("image/") == true
+                      ? Hero(
+                          tag: "Clip--${item.id}",
+                          child: ClipPreview(item: item),
+                        )
+                      : ClipPreview(item: item),
                 ),
               ),
               Positioned(

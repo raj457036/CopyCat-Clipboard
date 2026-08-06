@@ -19,6 +19,8 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
     int value,
   ) {
     final (double size, String label) = switch (value) {
+      $512KB => (2, '512 KB'),
+      $2MB => (4, '2 MB'),
       $5MB => (5, context.locale.settings__text__5MB),
       $10MB => (10, context.locale.settings__text__10MB),
       $20MB => (15, context.locale.settings__text__20MB),
@@ -73,6 +75,8 @@ class DontAutoCopyOverDropdown extends StatelessWidget {
           trailing: SettingsMenuDropdown<int>(
             value: state,
             items: const [
+              SettingsDropdownItem(value: $512KB),
+              SettingsDropdownItem(value: $2MB),
               SettingsDropdownItem(value: $5MB),
               SettingsDropdownItem(value: $10MB),
               SettingsDropdownItem(value: $20MB),
