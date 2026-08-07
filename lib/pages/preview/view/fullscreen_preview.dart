@@ -1,5 +1,5 @@
+import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:clipboard/pages/preview/widgets/preview.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,10 @@ class ClipPreviewFullscreenPage extends StatelessWidget {
         scrolledUnderElevation: 0,
         elevation: 0,
       ),
-      body: ClipPreviewConfig(child: preview),
+      body: Padding(
+        padding: const EdgeInsets.only(top: padding2),
+        child: ClipPreviewConfig(child: preview),
+      ),
     );
   }
 }
