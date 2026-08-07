@@ -636,6 +636,7 @@ class CopyCatClipboardService : Service() {
             .setStyle(NotificationCompat.BigTextStyle().bigText(summaryText))
             .setAutoCancel(false)
             .setOngoing(true)
+            .setDeleteIntent(buildDeletePendingIntent())
 
         if (contentIntent != null) {
             builder.setContentIntent(contentIntent)
@@ -688,6 +689,17 @@ class CopyCatClipboardService : Service() {
             this,
             requestCode,
             intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+    }
+
+    private fun buildDeletePendingIntent(): PendingIntent {
+        val deleteIntent = Intent(this, NotificationDeleteReceiver::class.java)
+
+        return PendingIntent.getBroadcast(
+            this,
+            792,
+            deleteIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
     }
@@ -834,6 +846,10 @@ class CopyCatClipboardService : Service() {
                 if (!isRunning) {
                     isRunning = true
                 }
+            }
+            ACTION_RESHOW_NOTIFICATION -> {
+                debugLog(logTag) { "Notification re-show requested" }
+                prepareAndShowNotification(forceForegroundRestart = true)
             }
             ACTION_CAPTURE_NOW -> {
                 mainHandler.removeCallbacks(delayedPasteRunnable)

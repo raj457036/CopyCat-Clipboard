@@ -10,6 +10,7 @@ import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/utils/debounce.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -18,7 +19,7 @@ import 'package:synchronized/synchronized.dart';
 part 'android_bg_clipboard_cubit.freezed.dart';
 part 'android_bg_clipboard_state.dart';
 
-@injectable
+@lazySingleton
 class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
   final SyncEventBus syncEventBus;
   final AndroidBackgroundClipboard plugin;
@@ -26,6 +27,7 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
   final String deviceId;
   final _lock = Lock();
   StreamSubscription<String>? _lanClipSub;
+  final syncDebouncer = Debouncer(milliseconds: 450);
 
   AndroidBgClipboardCubit(
     this.plugin,
@@ -203,6 +205,10 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
   }
 
   Future<void> syncStates() async {
+    syncDebouncer(_syncStates);
+  }
+
+  Future<void> _syncStates() async {
     await _lock.synchronized(() async {
       final endMark = await plugin.readShared<int>("endId") ?? -1;
       if (endMark == -1) return;

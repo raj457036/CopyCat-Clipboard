@@ -434,7 +434,7 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'non_collection_clips',
     );
-    gh.factory<_i643.AndroidBgClipboardCubit>(
+    gh.lazySingleton<_i643.AndroidBgClipboardCubit>(
       () => _i643.AndroidBgClipboardCubit(
         gh<_i565.AndroidBackgroundClipboard>(),
         gh<_i292.SyncEventBus>(),
