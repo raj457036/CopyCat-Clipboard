@@ -61,14 +61,28 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
   String _detectionStatusOutcome = 'none';
 
   String _selectedMode = 'inactive';
-  final List<(String, String)> _detectionModes = const [
-    ('inactive', 'Select mode'),
-    ("mode_1_ack_text", "Mode 1"),
-    ("mode_2_aggressive", "Mode 2"),
+
+  List<(String, String, IconData)> get _detectionModes => [
+    (
+      'inactive',
+      context.locale.settings__clipboard_feedback__disabled,
+      Icons.content_paste_off_rounded,
+    ),
+    (
+      "mode_1_ack_text",
+      context.locale.abc__detection_mode__mode_1,
+      Icons.linear_scale_rounded,
+    ),
+    (
+      "mode_2_aggressive",
+      context.locale.abc__detection_mode__mode_2,
+      Icons.linear_scale,
+    ),
   ];
 
   String _normalizeDetectionMode(String? mode) {
     final value = (mode ?? '').trim();
+
     final supported = _detectionModes.any((entry) => entry.$1 == value);
     return supported ? value : 'inactive';
   }
@@ -447,7 +461,14 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                 final label = _detectionModes
                     .firstWhere((mode) => mode.$1 == value)
                     .$2;
-                return (leading: null, child: Text(label), trailing: null);
+                final icon = _detectionModes
+                    .firstWhere((mode) => mode.$1 == value)
+                    .$3;
+                return (
+                  leading: Icon(icon),
+                  child: Text(label),
+                  trailing: null,
+                );
               },
               onSelected: canChooseMode ? _onModeChanged : null,
             ),

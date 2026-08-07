@@ -736,6 +736,8 @@
   "abc__detection_mode__title": "Erkennungsmodus",
   "abc__detection_mode__subtitle__enabled": "Wählen Sie, wie CopyCat Kopiervorganäge in anderen Apps erkennt. CopyCat bleibt inaktiv, bis Sie einen Modus auswählen.",
   "abc__detection_mode__subtitle__disabled": "Aktivieren Sie zuerst den Bedienungshilfendienst und wählen Sie dann einen Erkennungsmodus.",
+  "abc__detection_mode__mode_1": "Effizient",
+  "abc__detection_mode__mode_2": "Maximale Kompatibilität",
   "abc__network__header": "Netzwerk",
   "app__loading": "Lädt...",
   "app__utc": "UTC",

@@ -2241,6 +2241,12 @@ class AppLocalizationsDe extends AppLocalizations {
       'Aktivieren Sie zuerst den Bedienungshilfendienst und wählen Sie dann einen Erkennungsmodus.';
 
   @override
+  String get abc__detection_mode__mode_1 => 'Effizient';
+
+  @override
+  String get abc__detection_mode__mode_2 => 'Maximale Kompatibilität';
+
+  @override
   String get abc__network__header => 'Netzwerk';
 
   @override

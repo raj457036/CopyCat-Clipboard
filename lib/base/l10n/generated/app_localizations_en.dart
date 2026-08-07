@@ -2218,6 +2218,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enable accessibility service first, then choose a detection mode.';
 
   @override
+  String get abc__detection_mode__mode_1 => 'Efficient';
+
+  @override
+  String get abc__detection_mode__mode_2 => 'Maximum Compatibility';
+
+  @override
   String get abc__network__header => 'Network';
 
   @override

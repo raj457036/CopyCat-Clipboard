@@ -928,6 +928,8 @@
   "abc__detection_mode__title": "Detection Mode",
   "abc__detection_mode__subtitle__enabled": "Choose how CopyCat detects copy actions in other apps. CopyCat stays inactive until you pick a mode.",
   "abc__detection_mode__subtitle__disabled": "Enable accessibility service first, then choose a detection mode.",
+  "abc__detection_mode__mode_1": "Efficient",
+  "abc__detection_mode__mode_2": "Maximum Compatibility",
   "abc__network__header": "Network",
   "current_time__local": "Local: {time}",
   "@current_time__local": {

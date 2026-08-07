@@ -736,6 +736,8 @@
   "abc__detection_mode__title": "Modo de detección",
   "abc__detection_mode__subtitle__enabled": "Elige cómo CopyCat detecta las acciones de copia en otras aplicaciones. CopyCat permanece inactivo hasta que elijas un modo.",
   "abc__detection_mode__subtitle__disabled": "Activa primero el servicio de accesibilidad y luego elige un modo de detección.",
+  "abc__detection_mode__mode_1": "Eficiente",
+  "abc__detection_mode__mode_2": "Máxima compatibilidad",
   "abc__network__header": "Red",
   "app__loading": "Cargando...",
   "app__utc": "UTC",

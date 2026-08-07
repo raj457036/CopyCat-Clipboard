@@ -2245,6 +2245,12 @@ class AppLocalizationsEs extends AppLocalizations {
       'Activa primero el servicio de accesibilidad y luego elige un modo de detección.';
 
   @override
+  String get abc__detection_mode__mode_1 => 'Eficiente';
+
+  @override
+  String get abc__detection_mode__mode_2 => 'Máxima compatibilidad';
+
+  @override
   String get abc__network__header => 'Red';
 
   @override

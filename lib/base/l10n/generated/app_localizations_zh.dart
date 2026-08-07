@@ -2102,6 +2102,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get abc__detection_mode__subtitle__disabled => '请先启用无障碍服务，然后选择检测模式。';
 
   @override
+  String get abc__detection_mode__mode_1 => '高效';
+
+  @override
+  String get abc__detection_mode__mode_2 => '最大兼容性';
+
+  @override
   String get abc__network__header => '网络';
 
   @override

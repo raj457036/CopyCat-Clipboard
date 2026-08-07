@@ -736,6 +736,8 @@
   "abc__detection_mode__title": "检测模式",
   "abc__detection_mode__subtitle__enabled": "选择CopyCat检测其他应用中复制操作的方式。CopyCat在您选择模式之前保持非活跃状态。",
   "abc__detection_mode__subtitle__disabled": "请先启用无障碍服务，然后选择检测模式。",
+  "abc__detection_mode__mode_1": "高效",
+  "abc__detection_mode__mode_2": "最大兼容性",
   "abc__network__header": "网络",
   "app__loading": "加载中...",
   "app__utc": "UTC",

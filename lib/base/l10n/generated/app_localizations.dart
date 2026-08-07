@@ -3922,6 +3922,18 @@ abstract class AppLocalizations {
   /// **'Enable accessibility service first, then choose a detection mode.'**
   String get abc__detection_mode__subtitle__disabled;
 
+  /// No description provided for @abc__detection_mode__mode_1.
+  ///
+  /// In en, this message translates to:
+  /// **'Efficient'**
+  String get abc__detection_mode__mode_1;
+
+  /// No description provided for @abc__detection_mode__mode_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum Compatibility'**
+  String get abc__detection_mode__mode_2;
+
   /// No description provided for @abc__network__header.
   ///
   /// In en, this message translates to:
