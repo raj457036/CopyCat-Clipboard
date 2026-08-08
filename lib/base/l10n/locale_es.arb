@@ -840,6 +840,14 @@
   "splash__checking_authentication": "Comprobando autenticación...",
   "paste_stack__title": "Paste Stack • {count}",
   "paste_stack__reverse_tooltip": "Invertir pila",
+  "paste_stack__limit_note": "Tienes un límite de {count} elementos",
+  "@paste_stack__limit_note": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "multi_paste__title": "Configuración del pegado múltiple",
   "multi_paste__subtitle": "Controla cómo se combinan y temporizan los clips seleccionados.",
   "multi_paste__stat__selected": "Seleccionados",

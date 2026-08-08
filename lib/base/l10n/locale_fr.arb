@@ -840,6 +840,14 @@
   "splash__checking_authentication": "Vérification de l'authentification...",
   "paste_stack__title": "Paste Stack • {count}",
   "paste_stack__reverse_tooltip": "Inverser la pile",
+  "paste_stack__limit_note": "Vous avez une limite de {count} éléments",
+  "@paste_stack__limit_note": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "multi_paste__title": "Configuration du collage multiple",
   "multi_paste__subtitle": "Contrôlez la fusion et le rythme des clips sélectionnés.",
   "multi_paste__stat__selected": "Sélectionnés",

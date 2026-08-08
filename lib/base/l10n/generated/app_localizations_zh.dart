@@ -2171,7 +2171,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String paste_stack__limit_note({required int count}) {
-    return 'You have a limit of $count items';
+    return '您有 $count 个项目的限制';
   }
 
   @override

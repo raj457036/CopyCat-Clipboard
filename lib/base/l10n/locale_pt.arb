@@ -784,6 +784,8 @@
   "preview__inspector__label__characters": "Caracteres",
   "preview__inspector__label__lines": "Linhas",
   "preview__inspector__label__link": "Link",
+  "preview__inspector__label__image_dimension": "Dimensão",
+  "preview__inspector__label__device": "Dispositivo",
   "preview__inspector__status__encrypted": "Criptografado",
   "preview__inspector__status__local_only": "Somente local",
   "preview__inspector__status__synced": "Sincronizado",
@@ -838,6 +840,14 @@
   "splash__checking_authentication": "Verificando autenticação...",
   "paste_stack__title": "Paste Stack • {count}",
   "paste_stack__reverse_tooltip": "Inverter pilha",
+  "paste_stack__limit_note": "Você tem um limite de {count} itens",
+  "@paste_stack__limit_note": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "multi_paste__title": "Configuração de colagem múltipla",
   "multi_paste__subtitle": "Controle como os clipes selecionados são mesclados e temporizados.",
   "multi_paste__stat__selected": "Selecionados",

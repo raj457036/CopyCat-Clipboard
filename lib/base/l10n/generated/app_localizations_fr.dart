@@ -2321,7 +2321,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String paste_stack__limit_note({required int count}) {
-    return 'You have a limit of $count items';
+    return 'Vous avez une limite de $count éléments';
   }
 
   @override

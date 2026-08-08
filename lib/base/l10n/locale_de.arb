@@ -840,6 +840,14 @@
   "splash__checking_authentication": "Authentifizierung wird überprüft...",
   "paste_stack__title": "Paste Stack • {count}",
   "paste_stack__reverse_tooltip": "Stapel umkehren",
+  "paste_stack__limit_note": "Sie haben ein Limit von {count} Elementen",
+  "@paste_stack__limit_note": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "multi_paste__title": "Mehrfaches Einfügen konfigurieren",
   "multi_paste__subtitle": "Steuern Sie, wie ausgewählte Clips zusammengeführt und getaktet werden.",
   "multi_paste__stat__selected": "Ausgewählt",

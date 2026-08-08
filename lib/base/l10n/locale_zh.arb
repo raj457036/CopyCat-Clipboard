@@ -840,6 +840,14 @@
   "splash__checking_authentication": "正在检查身份验证...",
   "paste_stack__title": "粘贴堆栈 • {count}",
   "paste_stack__reverse_tooltip": "反转顺序",
+  "paste_stack__limit_note": "您有 {count} 个项目的限制",
+  "@paste_stack__limit_note": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "multi_paste__title": "多项粘贴设置",
   "multi_paste__subtitle": "控制所选剪辑的合并方式和粘贴节奏。",
   "multi_paste__stat__selected": "已选",

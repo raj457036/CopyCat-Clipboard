@@ -918,10 +918,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get preview__inspector__label__link => 'Link';
 
   @override
-  String get preview__inspector__label__image_dimension => 'Dimension';
+  String get preview__inspector__label__image_dimension => 'Dimensão';
 
   @override
-  String get preview__inspector__label__device => 'Device';
+  String get preview__inspector__label__device => 'Dispositivo';
 
   @override
   String get preview__inspector__status__encrypted => 'Criptografado';
@@ -2328,7 +2328,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String paste_stack__limit_note({required int count}) {
-    return 'You have a limit of $count items';
+    return 'Você tem um limite de $count itens';
   }
 
   @override
