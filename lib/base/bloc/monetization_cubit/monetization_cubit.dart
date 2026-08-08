@@ -32,6 +32,10 @@ class MonetizationCubit extends Cubit<MonetizationState>
   }
 
   void onSubscriptionChange(Subscription subscription) {
+    if (state is MonetizationActive) {
+      final currentSubscription = (state as MonetizationActive).subscription;
+      if (currentSubscription == subscription) return;
+    }
     emit(MonetizationState.active(subscription: subscription));
   }
 
@@ -48,8 +52,6 @@ class MonetizationCubit extends Cubit<MonetizationState>
   }
 
   Future<void> login(String userId) async {
-    if (_isListenersSetUp) return;
-
     final result = await repo.get(userId: userId);
     result.fold(
       (l) {
@@ -62,6 +64,7 @@ class MonetizationCubit extends Cubit<MonetizationState>
       },
     );
 
+    if (_isListenersSetUp) return;
     setupListeners();
     final done = await setUser(userId);
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
@@ -22,6 +24,7 @@ class MonetizationListener extends StatelessWidget {
           active: (subscription) async {
             final deviceCubit = context.read<UserDevicesCubit>();
             await appConfigCubit.load(subscription);
+            unawaited(deviceCubit.fetchDevices());
             await deviceCubit.registerCurrentDevice();
             await deviceCubit.setupSyncOrchestrator();
           },

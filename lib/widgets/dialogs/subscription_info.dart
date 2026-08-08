@@ -126,8 +126,8 @@ class FeatureTabs extends StatelessWidget {
         children: [
           const TabBar(
             tabs: [
-              Tab(text: "Free"),
-              Tab(text: "PRO ✨"),
+              Tab(text: "Core"),
+              Tab(text: "Pro"),
             ],
           ),
           Expanded(

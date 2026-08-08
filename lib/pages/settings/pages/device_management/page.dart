@@ -233,6 +233,22 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                     .where((d) => d.isRevoked)
                     .toList(growable: false);
 
+                final refreshButton =
+                    BlocSelector<UserDevicesCubit, UserDevicesState, bool>(
+                      selector: (state) {
+                        return state.isLoading;
+                      },
+                      builder: (context, isLoading) {
+                        return IconButton.filledTonal(
+                          onPressed: isLoading ? null : _refresh,
+                          icon: isLoading
+                              ? const YarnBallLoading(size: 18)
+                              : const Icon(Icons.refresh, size: 18),
+                          mouseCursor: SystemMouseCursors.click,
+                        );
+                      },
+                    );
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -241,7 +257,7 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                         top: padding16,
                         left: padding16,
                       ),
-                      child: OverflowBar(
+                      child: Row(
                         spacing: padding8,
                         children: [
                           Tooltip(
@@ -272,6 +288,8 @@ class _DeviceManagementPageState extends State<DeviceManagementPage> {
                               color: context.colors.secondaryContainer.wsp,
                             ),
                           ),
+                          const Spacer(),
+                          refreshButton,
                         ],
                       ),
                     ),

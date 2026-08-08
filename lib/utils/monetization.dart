@@ -11,7 +11,7 @@ Subscription generateFreePlan(String userId) {
     created: systemTime(),
     modified: systemTime(),
     userId: userId,
-    planName: "Free",
+    planName: "Core",
     subId: "",
     source: "",
   );
@@ -27,7 +27,7 @@ Subscription generateProPlan(
     created: systemTime(),
     modified: systemTime(),
     userId: userId,
-    planName: "PRO ✨",
+    planName: "Pro",
     subId: "",
     source: isPromo ? "PROMO" : "",
     activeTill: activeTill,

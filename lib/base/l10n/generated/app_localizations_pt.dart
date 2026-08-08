@@ -475,7 +475,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'A criptografia ponta a ponta tornará tudo criptografado para uma privacidade superior.';
 
   @override
-  String get sub_dialog__text__pro_title => 'Com PRO ✨';
+  String get sub_dialog__text__pro_title => 'Com PRO';
 
   @override
   String get sub_dialog__text__pro_subtitle => 'Tudo incluído no Grátis +';
@@ -623,7 +623,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Este recurso é experimental e pode não funcionar como esperado.';
 
   @override
-  String get badges__label__pro => 'PRO';
+  String get badges__label__pro => 'Pro';
 
   @override
   String get badges__tooltip__pro_only =>
@@ -916,6 +916,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get preview__inspector__label__link => 'Link';
+
+  @override
+  String get preview__inspector__label__image_dimension => 'Dimension';
+
+  @override
+  String get preview__inspector__label__device => 'Device';
 
   @override
   String get preview__inspector__status__encrypted => 'Criptografado';
@@ -2301,6 +2307,9 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get tray__menu__paste_stack => 'Paste Stack';
+
+  @override
+  String get tray__menu__restart_app => 'Reiniciar';
 
   @override
   String get tray__dialog__quit__subtitle =>

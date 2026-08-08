@@ -459,7 +459,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sub_dialog__f10__subtitle => 'E2EE 将对所有内容进行加密，以实现出色的隐私保护。';
 
   @override
-  String get sub_dialog__text__pro_title => '拥有 PRO ✨';
+  String get sub_dialog__text__pro_title => '拥有 PRO';
 
   @override
   String get sub_dialog__text__pro_subtitle => '免费版包含的所有功能 +';
@@ -599,7 +599,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get badges__tooltip__experimental => '此功能为实验性功能，可能无法正常工作。';
 
   @override
-  String get badges__label__pro => 'PRO';
+  String get badges__label__pro => 'Pro';
 
   @override
   String get badges__tooltip__pro_only => '此功能仅适用于专业用户。';
@@ -883,6 +883,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get preview__inspector__label__link => '链接';
+
+  @override
+  String get preview__inspector__label__image_dimension => '图片尺寸';
+
+  @override
+  String get preview__inspector__label__device => '设备';
 
   @override
   String get preview__inspector__status__encrypted => '已加密';
@@ -2145,6 +2151,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get tray__menu__paste_stack => '粘贴堆栈';
+
+  @override
+  String get tray__menu__restart_app => '重新启动';
 
   @override
   String get tray__dialog__quit__subtitle => '确定要退出应用吗？';

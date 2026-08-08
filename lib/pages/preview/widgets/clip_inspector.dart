@@ -1,6 +1,7 @@
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
@@ -50,6 +51,7 @@ class _ClipInspectorState extends State<ClipInspector> {
   late final OfflinePersistenceCubit offlineCubit;
   late final AppLockCubit appLockCubit;
   late final AppConfigCubit appConfigCubit;
+  late final UserDevicesCubit userDevicesCubit;
   late final GlobalKey<FormState> formKey;
   late final TextEditingController titleController;
   late final TextEditingController descriptionController;
@@ -67,6 +69,7 @@ class _ClipInspectorState extends State<ClipInspector> {
     appConfigCubit = context.read<AppConfigCubit>();
     offlineCubit = context.read<OfflinePersistenceCubit>();
     appLockCubit = context.read<AppLockCubit>();
+    userDevicesCubit = context.read<UserDevicesCubit>();
     formKey = GlobalKey<FormState>();
     collectionId = (item.collectionId, item.serverCollectionId);
     titleController = TextEditingController(text: item.title);
@@ -570,6 +573,27 @@ class _ClipInspectorState extends State<ClipInspector> {
         _InspectorInfoRow(
           label: context.locale.preview__inspector__label__extension,
           value: item.fileExtension!.trim(),
+        ),
+      );
+    }
+
+    if (item.fileMimeType?.startsWith("image/") == true &&
+        item.localPath != null) {
+      final resolution = getImageResolution(item.localPath!);
+      rows.add(
+        _InspectorInfoRow(
+          label: context.locale.preview__inspector__label__image_dimension,
+          value: "${resolution.width} x ${resolution.height}",
+        ),
+      );
+    }
+
+    if (item.deviceId != null) {
+      rows.add(
+        _InspectorInfoRow(
+          label: context.locale.preview__inspector__label__device,
+          value:
+              userDevicesCubit.getDeviceName(item.deviceId!) ?? item.deviceId!,
         ),
       );
     }

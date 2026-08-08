@@ -477,7 +477,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'E2EE hará todo encriptado para una privacidad superior.';
 
   @override
-  String get sub_dialog__text__pro_title => 'Con PRO ✨';
+  String get sub_dialog__text__pro_title => 'Con PRO';
 
   @override
   String get sub_dialog__text__pro_subtitle => 'Todo incluido en Gratis +';
@@ -626,7 +626,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Esta característica es experimental y puede no funcionar como se espera.';
 
   @override
-  String get badges__label__pro => 'PRO';
+  String get badges__label__pro => 'Pro';
 
   @override
   String get badges__tooltip__pro_only =>
@@ -921,6 +921,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get preview__inspector__label__link => 'Enlace';
+
+  @override
+  String get preview__inspector__label__image_dimension => 'Dimensión';
+
+  @override
+  String get preview__inspector__label__device => 'Dispositivo';
 
   @override
   String get preview__inspector__status__encrypted => 'Cifrado';
@@ -2288,6 +2294,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tray__menu__paste_stack => 'Paste Stack';
+
+  @override
+  String get tray__menu__restart_app => 'Reiniciar';
 
   @override
   String get tray__dialog__quit__subtitle =>

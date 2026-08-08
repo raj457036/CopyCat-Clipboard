@@ -63,7 +63,7 @@ class _SyncRestoreStepState extends State<SyncRestoreStep> {
 
       // clip:clip engine always syncs from (now - pullOffset) during freshPull,
       // regardless of lastSyncPoint. Use the same window for the count so the
-      // progress total matches what will actually be fetched (24h free / 30d pro).
+      // progress total matches what will actually be fetched (24h core / 30d pro).
       final clipCountSince = systemTime().subtract(
         Duration(seconds: syncCubit.pullOffset),
       );

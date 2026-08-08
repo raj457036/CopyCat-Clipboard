@@ -461,7 +461,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sub_dialog__f9__subtitle =>
-      'Free syncing runs on a best-effort basis and may take up to 15 minutes depending on server load.';
+      'Core syncing runs on a best-effort basis and may take up to 15 minutes depending on server load.';
 
   @override
   String get sub_dialog__f10__title => 'Support End-to-End Encryption';
@@ -471,10 +471,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'E2EE will make everything encrypted for superior privacy.';
 
   @override
-  String get sub_dialog__text__pro_title => 'With PRO ✨';
+  String get sub_dialog__text__pro_title => 'With PRO';
 
   @override
-  String get sub_dialog__text__pro_subtitle => 'Everything included in Free +';
+  String get sub_dialog__text__pro_subtitle => 'Everything included in Core +';
 
   @override
   String get sub_dialog__f11__title => 'Up to 50 Collections';
@@ -618,7 +618,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'This feature is experimental and might not work as expected.';
 
   @override
-  String get badges__label__pro => 'PRO';
+  String get badges__label__pro => 'Pro';
 
   @override
   String get badges__tooltip__pro_only =>
@@ -909,6 +909,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get preview__inspector__label__link => 'Link';
+
+  @override
+  String get preview__inspector__label__image_dimension => 'Dimension';
+
+  @override
+  String get preview__inspector__label__device => 'Device';
 
   @override
   String get preview__inspector__status__encrypted => 'Encrypted';
@@ -2261,6 +2267,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tray__menu__paste_stack => 'Paste Stack';
+
+  @override
+  String get tray__menu__restart_app => 'Restart';
 
   @override
   String get tray__dialog__quit__subtitle => 'Are you sure you want to quit?';

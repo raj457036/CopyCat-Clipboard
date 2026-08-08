@@ -474,7 +474,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Ende-zu-Ende-Verschlüsselung macht alles für überlegene Privatsphäre verschlüsselt.';
 
   @override
-  String get sub_dialog__text__pro_title => 'Mit PRO ✨';
+  String get sub_dialog__text__pro_title => 'Mit PRO';
 
   @override
   String get sub_dialog__text__pro_subtitle => 'Alles in Freemium enthalten +';
@@ -624,7 +624,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Diese Funktion ist experimentell und funktioniert möglicherweise nicht wie erwartet.';
 
   @override
-  String get badges__label__pro => 'PRO';
+  String get badges__label__pro => 'Pro';
 
   @override
   String get badges__tooltip__pro_only =>
@@ -918,6 +918,12 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get preview__inspector__label__link => 'Link';
+
+  @override
+  String get preview__inspector__label__image_dimension => 'Bilddimensionen';
+
+  @override
+  String get preview__inspector__label__device => 'Gerät';
 
   @override
   String get preview__inspector__status__encrypted => 'Verschlüsselt';
@@ -2284,6 +2290,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tray__menu__paste_stack => 'Paste Stack';
+
+  @override
+  String get tray__menu__restart_app => 'Neu starten';
 
   @override
   String get tray__dialog__quit__subtitle =>

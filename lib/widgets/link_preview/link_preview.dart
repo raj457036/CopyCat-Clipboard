@@ -4,6 +4,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/image_not_found.dart';
+import 'package:clipboard/widgets/link_preview/favicon.dart';
 import 'package:clipboard/widgets/link_preview/fetcher.dart';
 import 'package:clipboard/widgets/link_preview/type.dart';
 import 'package:clipboard/widgets/shimmer.dart' show Shimmer;
@@ -21,9 +22,11 @@ class _LinkPreviewItem extends StatelessWidget {
     this.title,
     this.description,
     this.provider,
+    required this.originalUrl,
     required this.imageBoxFit,
   });
 
+  final String originalUrl;
   final BoxFit imageBoxFit;
   final int maxTitleLines;
   final int maxDescLines;
@@ -59,11 +62,22 @@ class _LinkPreviewItem extends StatelessWidget {
         if (title != null && title!.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: padding8),
-            child: Text(
-              title!,
-              overflow: TextOverflow.ellipsis,
-              maxLines: maxTitleLines,
-              style: context.textTheme.labelMedium,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Favicon(url: originalUrl),
+                width4,
+                Expanded(
+                  child: Text(
+                    title!,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: maxTitleLines,
+                    style: context.textTheme.labelMedium,
+                  ),
+                ),
+              ],
             ),
           ),
         if (description != null && description!.isNotEmpty)
@@ -328,6 +342,7 @@ class _LinkPreviewState extends State<LinkPreview> {
       return _LinkPreviewItem(
         bottom: widget.bottom,
         onTap: widget.onTap,
+        originalUrl: _url,
         imageBoxFit: widget.imageBoxFit ?? BoxFit.cover,
       );
     }
@@ -339,6 +354,7 @@ class _LinkPreviewState extends State<LinkPreview> {
       onTap: widget.onTap,
       title: _preview?.title,
       description: _preview?.description,
+      originalUrl: _url,
       provider: _preview?.image == null
           ? null
           : CachedNetworkImageProvider(_preview!.image!.imageUrl),

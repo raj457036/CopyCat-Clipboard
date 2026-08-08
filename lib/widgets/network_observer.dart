@@ -5,12 +5,15 @@ import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/globals.dart';
+import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/inconsistent_timing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +35,7 @@ class _NetworkObserverState extends State<NetworkObserver> {
   late DriveSetupCubit driveSetupCubit;
   late AppConfigCubit appConfigCubit;
   late SyncStatusCubit syncStatusCubit;
+  late UserDevicesCubit userDevicesCubit;
 
   Stream<bool>? networkObserver;
 
@@ -60,6 +64,7 @@ class _NetworkObserverState extends State<NetworkObserver> {
     driveSetupCubit = BlocProvider.of<DriveSetupCubit>(context);
     appConfigCubit = BlocProvider.of<AppConfigCubit>(context);
     syncStatusCubit = BlocProvider.of<SyncStatusCubit>(context);
+    userDevicesCubit = BlocProvider.of<UserDevicesCubit>(context);
 
     syncClocks();
   }
@@ -72,23 +77,25 @@ class _NetworkObserverState extends State<NetworkObserver> {
   }
 
   Future<void> refetchStates() async {
+    logger.i('Refetching states after internet reconnection...');
+    await wait(1000);
     final userId = authCubit.userId;
     if (userId == null) return;
-    await Future.wait([
-      monetizationCubit.login(userId),
-      driveSetupCubit.fetch(),
-      appConfigCubit.syncClocks(),
-    ]);
-    syncStatusCubit.syncAll(const SyncAllParams());
+
+    await monetizationCubit.login(userId);
+    await driveSetupCubit.fetch();
+    await appConfigCubit.syncClocks();
+    await syncStatusCubit.syncAll(const SyncAllParams());
   }
 
   void onConnectionChanged(bool isConnected) {
+    logger.i('Network connection changed: $isConnected');
     if (authCubit.isLocalAuth) return;
     internetConnected.set(isConnected);
     if (isConnected) {
       if (wasDisconnected) {
         wasDisconnected = false;
-        refetchStates();
+        unawaited(refetchStates());
         InAppNotificationService.i.notify(
           NotificationMessage(
             id: "internet_connected",

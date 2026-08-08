@@ -73,7 +73,10 @@ class DriveCredentialRepositoryImpl implements DriveCredentialRepository {
             ].join(","),
           )
           .eq("userId", userId);
-      final doc = await query.limit(1).maybeSingle();
+      final doc = await retry(
+        query.limit(1).maybeSingle,
+        retryIf: (p0) => p0 is SocketException,
+      );
       if (doc == null) {
         return const Left(driveFailure);
       }

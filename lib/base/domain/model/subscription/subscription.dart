@@ -57,11 +57,11 @@ abstract class Subscription with _$Subscription, Identifiable {
     return trialStart != null && trialEnd != null && subId == "Trial";
   }
 
-  bool get isFree => planName == "Free";
+  bool get isFree => planName == "Core";
 
   /// Returns true if the subscription is active, false otherwise.
   bool get isActive {
-    if (planName == "Free") return true;
+    if (planName == "Core") return true;
     if (subId == "Trial") {
       return (trialStart != null && trialStart!.isBefore(systemTime())) &&
           (trialEnd != null && trialEnd!.isAfter(systemTime()));

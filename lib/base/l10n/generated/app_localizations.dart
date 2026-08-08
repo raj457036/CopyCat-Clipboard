@@ -927,7 +927,7 @@ abstract class AppLocalizations {
   /// No description provided for @sub_dialog__f9__subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Free syncing runs on a best-effort basis and may take up to 15 minutes depending on server load.'**
+  /// **'Core syncing runs on a best-effort basis and may take up to 15 minutes depending on server load.'**
   String get sub_dialog__f9__subtitle;
 
   /// No description provided for @sub_dialog__f10__title.
@@ -945,13 +945,13 @@ abstract class AppLocalizations {
   /// No description provided for @sub_dialog__text__pro_title.
   ///
   /// In en, this message translates to:
-  /// **'With PRO ✨'**
+  /// **'With PRO'**
   String get sub_dialog__text__pro_title;
 
   /// No description provided for @sub_dialog__text__pro_subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Everything included in Free +'**
+  /// **'Everything included in Core +'**
   String get sub_dialog__text__pro_subtitle;
 
   /// No description provided for @sub_dialog__f11__title.
@@ -1197,7 +1197,7 @@ abstract class AppLocalizations {
   /// No description provided for @badges__label__pro.
   ///
   /// In en, this message translates to:
-  /// **'PRO'**
+  /// **'Pro'**
   String get badges__label__pro;
 
   /// No description provided for @badges__tooltip__pro_only.
@@ -1757,6 +1757,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Link'**
   String get preview__inspector__label__link;
+
+  /// No description provided for @preview__inspector__label__image_dimension.
+  ///
+  /// In en, this message translates to:
+  /// **'Dimension'**
+  String get preview__inspector__label__image_dimension;
+
+  /// No description provided for @preview__inspector__label__device.
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get preview__inspector__label__device;
 
   /// No description provided for @preview__inspector__status__encrypted.
   ///
@@ -3993,6 +4005,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Paste Stack'**
   String get tray__menu__paste_stack;
+
+  /// No description provided for @tray__menu__restart_app.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get tray__menu__restart_app;
 
   /// No description provided for @tray__dialog__quit__subtitle.
   ///

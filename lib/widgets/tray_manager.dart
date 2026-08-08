@@ -162,6 +162,7 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
           label: locale.tray__menu__paste_stack,
           disabled: paused,
         ),
+        MenuItem(key: 'restart_app', label: locale.tray__menu__restart_app),
         MenuItem.separator(),
         MenuItem(key: 'quit_app', label: locale.app__quit),
       ],
@@ -177,6 +178,14 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
 
   @override
   Future<void> onTrayIconRightMouseDown() => trayManager.popUpContextMenu();
+
+  Future<void> restartApp() async {
+    final executable = Platform.resolvedExecutable;
+    final arguments = Platform.executableArguments;
+    await Process.start(executable, arguments, mode: ProcessStartMode.detached);
+    await SystemNavigator.pop(animated: true);
+    exit(0);
+  }
 
   Future<void> quitApp() async {
     final locale = await _currentL10n();
@@ -215,6 +224,9 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
 
       case "paste_stack":
         await togglePasteStack(context);
+
+      case "restart_app":
+        await restartApp();
 
       case "quit_app":
         await quitApp();

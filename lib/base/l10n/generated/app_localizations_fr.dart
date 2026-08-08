@@ -478,7 +478,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le chiffrement de bout en bout rend tout crypté pour une confidentialité supérieure.';
 
   @override
-  String get sub_dialog__text__pro_title => 'Avec PRO ✨';
+  String get sub_dialog__text__pro_title => 'Avec PRO';
 
   @override
   String get sub_dialog__text__pro_subtitle => 'Tout inclus dans Gratuit +';
@@ -628,7 +628,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Cette fonctionnalité est expérimentale et peut ne pas fonctionner comme prévu.';
 
   @override
-  String get badges__label__pro => 'PRO';
+  String get badges__label__pro => 'Pro';
 
   @override
   String get badges__tooltip__pro_only =>
@@ -924,6 +924,12 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get preview__inspector__label__link => 'Lien';
+
+  @override
+  String get preview__inspector__label__image_dimension => 'Dimension';
+
+  @override
+  String get preview__inspector__label__device => 'Appareil';
 
   @override
   String get preview__inspector__status__encrypted => 'Chiffré';
@@ -2293,6 +2299,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tray__menu__paste_stack => 'Paste Stack';
+
+  @override
+  String get tray__menu__restart_app => 'Redémarrer';
 
   @override
   String get tray__dialog__quit__subtitle =>
