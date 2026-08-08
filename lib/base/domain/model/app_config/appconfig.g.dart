@@ -44,7 +44,7 @@ _AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => _AppConfig(
         _$ClipboardFeedbackModeEnumMap,
         json['clipboardFeedbackMode'],
       ) ??
-      ClipboardFeedbackMode.both,
+      ClipboardFeedbackMode.toast,
   enableTypeToSearch: json['enableTypeToSearch'] as bool? ?? false,
   launchAtStartup: json['launchAtStartup'] as bool? ?? false,
   locale: json['locale'] as String? ?? "en",
@@ -163,8 +163,6 @@ const _$SyncSpeedEnumMap = {
 const _$ClipboardFeedbackModeEnumMap = {
   ClipboardFeedbackMode.disabled: 'disabled',
   ClipboardFeedbackMode.toast: 'toast',
-  ClipboardFeedbackMode.haptic: 'haptic',
-  ClipboardFeedbackMode.both: 'both',
 };
 
 const _$DynamicSchemeVariantEnumMap = {

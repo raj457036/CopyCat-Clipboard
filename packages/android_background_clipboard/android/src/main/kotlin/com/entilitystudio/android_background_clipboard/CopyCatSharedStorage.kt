@@ -76,6 +76,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     var excludedPackages: Set<String> = emptySet()
     var strictCheck = true
     var showAckToast = true
+    var clipboardFeedbackMode: String = "toast"
     var serviceEnabled: Boolean = false
     var excludePasswordManagers: Boolean = false
     var excludeEmail: Boolean = false
@@ -164,6 +165,12 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         }
         if (key == "showAckToast") {
             showAckToast = sharedPreferences.getBoolean(key, true)
+            if (!sharedPreferences.contains("clipboardFeedbackMode")) {
+                clipboardFeedbackMode = if (showAckToast) "toast" else "disabled"
+            }
+        }
+        if (key == "clipboardFeedbackMode") {
+            clipboardFeedbackMode = sharedPreferences.getString(key, "toast") ?: "toast"
         }
         if (key == BgPrefKey.SERVICE_ENABLED) {
             serviceEnabled = sharedPreferences.getBoolean(key, false)
@@ -341,6 +348,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         strictCheck = sp.getBoolean("strictCheck", true)
         autoCopyOtp = sp.getBoolean("autoCopyOtp", false)
         showAckToast = sp.getBoolean("showAckToast", true)
+        clipboardFeedbackMode = sp.getString("clipboardFeedbackMode", null)
+            ?.takeIf { it.isNotBlank() }
+            ?: if (showAckToast) "toast" else "disabled"
         serviceEnabled = sp.getBoolean(BgPrefKey.SERVICE_ENABLED, false)
         excludePasswordManagers = sp.getBoolean("exclude-pass-mgr", false)
         excludeEmail = sp.getBoolean("exclude-email", false)
@@ -401,6 +411,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             if (nextMode == ClipboardDetectionMode.MODE_INACTIVE && notificationPaused) {
                 updateNotificationPaused(false)
             }
+        }
+        if (key == "clipboardFeedbackMode" && value is String) {
+            clipboardFeedbackMode = value
         }
         val editor = sp.edit()
         when (value) {

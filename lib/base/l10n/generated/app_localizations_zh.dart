@@ -1461,12 +1461,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__clipboard_feedback__toast => '吐司';
 
   @override
-  String get settings__clipboard_feedback__haptic => '触觉';
-
-  @override
-  String get settings__clipboard_feedback__both => '两者';
-
-  @override
   String get settings__color_mode__tonalSpot => '色调点';
 
   @override

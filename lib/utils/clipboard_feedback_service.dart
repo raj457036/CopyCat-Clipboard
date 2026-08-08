@@ -13,18 +13,16 @@ class ClipboardFeedbackService {
 
   Future<void> notifyClipboardCopied({
     required bool showToast,
-    required bool playHaptic,
     String? message,
   }) async {
     if (!(Platform.isMacOS || Platform.isWindows)) return;
 
-    if (!showToast && !playHaptic) return;
+    if (!showToast) return;
 
     try {
       await _channel.invokeMethod<void>('showClipboardFeedback', {
         'message': message ?? 'Copied',
         'showToast': showToast,
-        'playHaptic': playHaptic,
       });
     } catch (e) {
       logger.e(() => 'Failed to show clipboard toast: $e');

@@ -2758,18 +2758,6 @@ abstract class AppLocalizations {
   /// **'Toast'**
   String get settings__clipboard_feedback__toast;
 
-  /// No description provided for @settings__clipboard_feedback__haptic.
-  ///
-  /// In en, this message translates to:
-  /// **'Haptic'**
-  String get settings__clipboard_feedback__haptic;
-
-  /// No description provided for @settings__clipboard_feedback__both.
-  ///
-  /// In en, this message translates to:
-  /// **'Both'**
-  String get settings__clipboard_feedback__both;
-
   /// No description provided for @settings__color_mode__tonalSpot.
   ///
   /// In en, this message translates to:

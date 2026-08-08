@@ -13,6 +13,7 @@ import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/pages/settings/pages/android_bg_clipboard/accessibility_service_notice.dart';
 import 'package:clipboard/pages/settings/pages/android_bg_clipboard/detection_status_card.dart';
+import 'package:clipboard/pages/settings/widgets/dropdowns/clipboard_feedback_dropdown.dart';
 import 'package:clipboard/pages/settings/widgets/setting_header.dart';
 import 'package:clipboard/pages/settings/widgets/switches/auto_write_on_receive_switch.dart';
 import 'package:clipboard/pages/settings/widgets/switches/lan_instant_sync_switch.dart';
@@ -290,6 +291,10 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
       await widget.bgService.writeShared("syncSpeed", syncSpeed);
       await widget.bgService.writeShared("syncInterval", syncInterval);
       await widget.bgService.writeShared("deviceId", widget.deviceId);
+      await widget.bgService.writeShared(
+        "clipboardFeedbackMode",
+        appConfigCubit.state.config.clipboardFeedbackMode.name,
+      );
       await widget.bgService.writeShared("showAckToast", true);
       await widget.bgService.writeShared("serviceEnabled", true);
       await widget.bgService.writeShared(
@@ -479,6 +484,10 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
             outcome: _detectionStatusOutcome,
           ),
           height5,
+          if (!widget.liteMode)
+            ClipboardFeedbackDropdownTile(
+              enabled: !writingConfig && isRunning && accessibility,
+            ),
           if (!widget.liteMode)
             AutoWriteOnReceiveSwitchTile(
               enabled: !writingConfig && isRunning && accessibility,

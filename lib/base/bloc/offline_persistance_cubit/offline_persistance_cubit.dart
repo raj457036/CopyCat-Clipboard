@@ -420,16 +420,10 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     final feedbackMode = appConfig.state.config.clipboardFeedbackMode;
     final copiedLabel =
         rootNavigationKey.currentContext?.locale.app__ack__copied ?? 'Copied';
-    final showToast =
-        feedbackMode == ClipboardFeedbackMode.toast ||
-        feedbackMode == ClipboardFeedbackMode.both;
-    final playHaptic =
-        feedbackMode == ClipboardFeedbackMode.haptic ||
-        feedbackMode == ClipboardFeedbackMode.both;
+    final showToast = feedbackMode == ClipboardFeedbackMode.toast;
     unawaited(
       ClipboardFeedbackService.i.notifyClipboardCopied(
         showToast: showToast,
-        playHaptic: playHaptic,
         message: copiedLabel,
       ),
     );

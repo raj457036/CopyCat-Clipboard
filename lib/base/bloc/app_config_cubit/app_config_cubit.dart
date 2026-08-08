@@ -233,6 +233,10 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
     plugin.writeShared('lanInstantSync', config.lanInstantSync);
     plugin.writeShared('autoWriteOnReceive', config.autoWriteOnReceive);
     plugin.writeShared('dontCopyOver', config.dontCopyOver);
+    plugin.writeShared(
+      'clipboardFeedbackMode',
+      config.clipboardFeedbackMode.name,
+    );
   }
 
   bool get isCopyingPaused =>
@@ -386,6 +390,12 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
     final newConfig = state.config.copyWith(clipboardFeedbackMode: mode);
     emit(state.copyWith(config: newConfig));
     await repo.update(newConfig);
+    if (Platform.isAndroid) {
+      await sl<AndroidBackgroundClipboard>().writeShared(
+        'clipboardFeedbackMode',
+        mode.name,
+      );
+    }
   }
 
   Future<void> changeThemeMode(ThemeMode? mode) async {

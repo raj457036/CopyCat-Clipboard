@@ -539,8 +539,6 @@
   "settings__dropdown__clipboard_feedback__subtitle": "选择 CopyCat 在捕获剪辑时的响应方式。",
   "settings__clipboard_feedback__disabled": "禁用",
   "settings__clipboard_feedback__toast": "吐司",
-  "settings__clipboard_feedback__haptic": "触觉",
-  "settings__clipboard_feedback__both": "两者",
   "settings__color_mode__tonalSpot": "色调点",
   "settings__color_mode__content": "内容",
   "settings__color_mode__expressive": "表现力",

@@ -1519,12 +1519,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings__clipboard_feedback__toast => 'Toast';
 
   @override
-  String get settings__clipboard_feedback__haptic => 'Haptic';
-
-  @override
-  String get settings__clipboard_feedback__both => 'Both';
-
-  @override
   String get settings__color_mode__tonalSpot => 'Tonal Spot';
 
   @override

@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ClipboardFeedbackDropdownTile extends StatelessWidget {
-  const ClipboardFeedbackDropdownTile({super.key});
+  final bool enabled;
+  const ClipboardFeedbackDropdownTile({super.key, this.enabled = true});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +17,7 @@ class ClipboardFeedbackDropdownTile extends StatelessWidget {
     final cubit = context.read<AppConfigCubit>();
 
     return ListTile(
+      enabled: enabled,
       leading: const Icon(Icons.notifications),
       title: Text(context.locale.settings__dropdown__clipboard_feedback__title),
       subtitle: Text(
@@ -27,12 +29,11 @@ class ClipboardFeedbackDropdownTile extends StatelessWidget {
             selector: (state) => state.config.clipboardFeedbackMode,
             builder: (context, mode) {
               return SettingsMenuDropdown<ClipboardFeedbackMode>(
+                enabled: enabled,
                 value: mode,
                 items: const [
                   SettingsDropdownItem(value: ClipboardFeedbackMode.disabled),
                   SettingsDropdownItem(value: ClipboardFeedbackMode.toast),
-                  SettingsDropdownItem(value: ClipboardFeedbackMode.haptic),
-                  SettingsDropdownItem(value: ClipboardFeedbackMode.both),
                 ],
                 itemBuilder: (context, value) {
                   final label = switch (value) {
@@ -40,10 +41,6 @@ class ClipboardFeedbackDropdownTile extends StatelessWidget {
                       context.locale.settings__clipboard_feedback__disabled,
                     ClipboardFeedbackMode.toast =>
                       context.locale.settings__clipboard_feedback__toast,
-                    ClipboardFeedbackMode.haptic =>
-                      context.locale.settings__clipboard_feedback__haptic,
-                    ClipboardFeedbackMode.both =>
-                      context.locale.settings__clipboard_feedback__both,
                   };
 
                   return (leading: null, child: Text(label), trailing: null);

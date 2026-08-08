@@ -40,11 +40,9 @@ class MainFlutterWindow: NSWindow {
         let arguments = call.arguments as? [String: Any]
         let message = arguments?["message"] as? String
         let showToast = arguments?["showToast"] as? Bool ?? false
-        let playHaptic = arguments?["playHaptic"] as? Bool ?? false
         self?.clipboardToastPresenter.show(
           message: message,
-          showToast: showToast,
-          playHaptic: playHaptic
+          showToast: showToast
         )
         result(nil)
 
@@ -71,20 +69,13 @@ final class ClipboardToastPresenter {
   func show(
     message: String?,
     showToast: Bool,
-    playHaptic: Bool,
     duration: TimeInterval = 1.8
   ) {
     DispatchQueue.main.async {
-      guard showToast || playHaptic else { return }
+      guard showToast else { return }
 
       self.dismissWorkItem?.cancel()
       self.dismissCurrentToast()
-
-      if playHaptic {
-        NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
-      }
-
-      guard showToast else { return }
 
       let screen = self.activeScreen()
       let visibleFrame = screen.visibleFrame

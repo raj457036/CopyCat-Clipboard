@@ -606,14 +606,10 @@ P _isarAppConfigDeserializeProp<P>(
 const _IsarAppConfigclipboardFeedbackModeEnumValueMap = {
   r'disabled': r'disabled',
   r'toast': r'toast',
-  r'haptic': r'haptic',
-  r'both': r'both',
 };
 const _IsarAppConfigclipboardFeedbackModeValueEnumMap = {
   r'disabled': ClipboardFeedbackMode.disabled,
   r'toast': ClipboardFeedbackMode.toast,
-  r'haptic': ClipboardFeedbackMode.haptic,
-  r'both': ClipboardFeedbackMode.both,
 };
 const _IsarAppConfiglayoutEnumValueMap = {r'grid': r'grid', r'list': r'list'};
 const _IsarAppConfiglayoutValueEnumMap = {

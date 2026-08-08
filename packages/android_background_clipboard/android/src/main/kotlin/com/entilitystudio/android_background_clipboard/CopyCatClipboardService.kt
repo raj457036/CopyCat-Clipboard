@@ -108,7 +108,7 @@ class CopyCatClipboardService : Service() {
     var disableDuplicateAnnouncement: Boolean = false
 
     private val ackToastEnable: Boolean
-        get() = copycatStorage.showAckToast
+        get() = copycatStorage.showAckToast && copycatStorage.clipboardFeedbackMode == "toast"
 
     inner class LocalBinder : Binder() {
         fun getService(): CopyCatClipboardService = this@CopyCatClipboardService
@@ -523,18 +523,18 @@ class CopyCatClipboardService : Service() {
                 debugLog(logTag) { "Clip Content: ${redactForLog(lastCopiedText)}" }
                 when (actionStatus) {
                     ClipAction.Duplicate -> Unit
-                    ClipAction.Failed -> showClipboardAck(
+                    ClipAction.Failed -> handleClipboardAck(
                         "CopyCat failed to capture clipboard",
                         sourcePackageName,
                     )
                     ClipAction.Excluded -> {
                         if (!disableDuplicateAnnouncement) {
-                            showClipboardAck("Clip Excluded!", sourcePackageName)
+                            handleClipboardAck("Clip Excluded!", sourcePackageName)
                         }
                     }
                     ClipAction.Success -> {
                         if (!disableDuplicateAnnouncement) {
-                            showClipboardAck("Clip Captured!", sourcePackageName)
+                            handleClipboardAck("Clip Captured!", sourcePackageName)
                         }
                     }
                     else -> {}
@@ -542,6 +542,14 @@ class CopyCatClipboardService : Service() {
             }
         }
 
+    }
+
+    private fun handleClipboardAck(text: String, sourcePackageName: String) {
+        val shouldShowToast = copycatStorage.clipboardFeedbackMode == "toast"
+
+        if (shouldShowToast) {
+            showClipboardAck(text, sourcePackageName)
+        }
     }
 
     private fun showClipboardAck(text: String, sourcePackageName: String) {
@@ -558,6 +566,7 @@ class CopyCatClipboardService : Service() {
         lastAckToastAtMsByPackage[packageKey] = now
         Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
     }
+
 
     private fun showAck(text: String) {
         if (!ackToastEnable) return

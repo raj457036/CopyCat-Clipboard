@@ -1,1 +1,4 @@
-<manifest package="com.entilitystudio.android_background_clipboard"></manifest>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.entilitystudio.android_background_clipboard">
+    <uses-permission android:name="android.permission.VIBRATE" />
+</manifest>

@@ -539,8 +539,6 @@
   "settings__dropdown__clipboard_feedback__subtitle": "Elige cómo CopyCat responde cuando se captura un clip.",
   "settings__clipboard_feedback__disabled": "Desactivado",
   "settings__clipboard_feedback__toast": "Tostada",
-  "settings__clipboard_feedback__haptic": "Háptico",
-  "settings__clipboard_feedback__both": "Ambos",
   "settings__color_mode__tonalSpot": "Tonal Spot",
   "settings__color_mode__content": "Contenido",
   "settings__color_mode__expressive": "Expresivo",

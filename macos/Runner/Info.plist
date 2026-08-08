@@ -48,6 +48,6 @@
 		<key>NSFaceIDUsageDescription</key>
 		<string>Used to authenticate and lock access to your clipboard.</string>
 		<key>FLTEnableImpeller</key>
-		<true />
+		<false />
 	</dict>
 </plist>

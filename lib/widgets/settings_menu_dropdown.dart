@@ -22,8 +22,10 @@ class SettingsMenuDropdown<T> extends StatefulWidget {
     required this.items,
     required this.itemBuilder,
     this.onSelected,
+    this.enabled = true,
   });
 
+  final bool enabled;
   final T value;
   final List<SettingsDropdownItem<T>> items;
   final SettingsDropdownItemBuilder<T> itemBuilder;
@@ -88,7 +90,9 @@ class _SettingsMenuDropdownState<T> extends State<SettingsMenuDropdown<T>> {
       ],
       builder: (context, controller, child) {
         final button = ElevatedButton(
-          onPressed: widget.onSelected == null ? null : _toggle,
+          onPressed: widget.enabled && widget.onSelected != null
+              ? _toggle
+              : null,
           style: ElevatedButton.styleFrom(
             backgroundColor: colors.surfaceContainerHigh,
             foregroundColor: colors.primary,
