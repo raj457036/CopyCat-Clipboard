@@ -1,6 +1,17 @@
 # This file contains the fastlane.tools configuration
 # You can find the documentation at https://docs.fastlane.tools
 
+require 'dotenv'
+
+Dotenv.load(File.expand_path('../../local/fastlane/.env', __dir__))
+
+ENV['FASTLANE_USER'] ||= ENV['FASTLANE_APPLE_ID']
+ENV['APP_IDENTIFIER'] ||= ENV['FASTLANE_APP_IDENTIFIER']
+ENV['APPLE_ID'] ||= ENV['FASTLANE_APPLE_ID']
+ENV['APPLE_APP_SPECIFIC_PASSWORD'] ||= ENV['FASTLANE_APPLE_APP_SPECIFIC_PASSWORD']
+ENV['FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD'] ||= ENV['FASTLANE_APPLE_APP_SPECIFIC_PASSWORD']
+ENV['APP_SPECIFIC_PASSWORD'] ||= ENV['FASTLANE_APPLE_APP_SPECIFIC_PASSWORD']
+
 default_platform(:ios)
 
 platform :ios do
