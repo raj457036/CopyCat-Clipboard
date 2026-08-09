@@ -1,5 +1,6 @@
 import 'package:clipboard/base/constants/numbers/breakpoints.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/titlebar.dart';
 import 'package:flutter/material.dart';
@@ -77,12 +78,7 @@ class DynamicPage<T> extends CustomTransitionPage<T> {
           alignment: Alignment.centerRight,
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: sheetWidth),
-            child: Dialog(
-              insetPadding: EdgeInsets.zero,
-              shape: const RoundedRectangleBorder(),
-              clipBehavior: Clip.hardEdge,
-              child: effectiveDialogChild,
-            ),
+            child: effectiveDialogChild,
           ),
         ),
         anchorPoint: anchorPoint,
@@ -128,6 +124,41 @@ class _EndSheetDialogRoute<T> extends DialogRoute<T> {
     super.themes,
   });
 
+  CurvedAnimation? opacityAnimation, slideAnimation;
+  GlobalKey<ScaffoldMessengerState>? _scaffoldMessengerKey;
+
+  void _setAnimation(Animation<double> animation) {
+    if (slideAnimation?.parent != animation) {
+      slideAnimation?.dispose();
+      slideAnimation = CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeInCubic,
+      );
+    }
+
+    if (opacityAnimation?.parent != animation) {
+      opacityAnimation?.dispose();
+      opacityAnimation = CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOut,
+        reverseCurve: Curves.easeIn,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    slideAnimation?.dispose();
+    opacityAnimation?.dispose();
+    if (_scaffoldMessengerKey != null) {
+      InAppNotificationService.removeScaffoldMessengerKey(
+        _scaffoldMessengerKey!,
+      );
+    }
+    super.dispose();
+  }
+
   @override
   Duration get transitionDuration => const Duration(milliseconds: 220);
 
@@ -138,20 +169,16 @@ class _EndSheetDialogRoute<T> extends DialogRoute<T> {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    final curve = CurvedAnimation(
-      parent: animation,
-      curve: Curves.easeOutCubic,
-      reverseCurve: Curves.easeInCubic,
-    );
-
+    _scaffoldMessengerKey ??= InAppNotificationService.mintScaffoldMessengerKey;
+    _setAnimation(animation);
     return FadeTransition(
-      opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+      opacity: opacityAnimation!,
       child: SlideTransition(
         position: Tween<Offset>(
           begin: const Offset(1, 0),
           end: Offset.zero,
-        ).animate(curve),
-        child: child,
+        ).animate(slideAnimation!),
+        child: ScaffoldMessenger(key: _scaffoldMessengerKey, child: child),
       ),
     );
   }

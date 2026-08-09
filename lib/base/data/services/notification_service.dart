@@ -24,6 +24,8 @@ class ActiveNotification extends Equatable {
 
 class InAppNotificationService {
   final List<ActiveNotification> _activeNotifications = [];
+  static final List<GlobalKey<ScaffoldMessengerState>> _scaffoldMessengerKeys =
+      [];
 
   static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
@@ -35,27 +37,55 @@ class InAppNotificationService {
 
   static InAppNotificationService get i => _instance;
 
-  ScaffoldMessengerState get _scaffoldMessenger =>
-      scaffoldMessengerKey.currentState!;
-  BuildContext? get _context => rootNavigationKey.currentContext;
+  static GlobalKey<ScaffoldMessengerState> get mintScaffoldMessengerKey {
+    final key = GlobalKey<ScaffoldMessengerState>();
+    _scaffoldMessengerKeys.add(key);
+    return key;
+  }
+
+  static void removeScaffoldMessengerKey(
+    GlobalKey<ScaffoldMessengerState> key,
+  ) {
+    _scaffoldMessengerKeys.remove(key);
+  }
+
+  ScaffoldMessengerState? _resolveScaffoldMessengerState() {
+    for (final key in _scaffoldMessengerKeys.reversed) {
+      final currentState = key.currentState;
+      if (currentState != null) {
+        return currentState;
+      }
+    }
+    return scaffoldMessengerKey.currentState;
+  }
+
+  ScaffoldMessengerState get _scaffoldMessenger {
+    final messenger = _resolveScaffoldMessengerState();
+    if (messenger != null) {
+      return messenger;
+    }
+    throw StateError('No scaffold messenger is currently available');
+  }
+
+  BuildContext? get _context {
+    for (final key in _scaffoldMessengerKeys.reversed) {
+      final context = key.currentContext;
+      if (context != null) {
+        return context;
+      }
+    }
+    return rootNavigationKey.currentContext;
+  }
 
   /// MARK: - NotificationService Implementation
 
-  EdgeInsets? _getSnackBarMargin() {
-    if (_context == null) return null;
-    final mq = _context!.mq;
-    const double snackBarWidth = 580.0;
-    if (!Breakpoints.isMobile(mq.size.width)) {
-      // Desktop
-      final double horizontalMargin = (mq.size.width - snackBarWidth) / 2;
-      return EdgeInsets.symmetric(horizontal: horizontalMargin, vertical: 16.0);
-    }
-    return null;
-  }
-
   void dismissAll() {
     while (_activeNotifications.isNotEmpty) {
-      _activeNotifications.removeLast().controller.close();
+      try {
+        _activeNotifications.removeLast().controller.close();
+      } catch (e) {
+        debugPrint('Error dismissing notification: $e');
+      }
     }
   }
 
@@ -92,8 +122,7 @@ class InAppNotificationService {
       content: snackbarContent,
       showCloseIcon: isDesktopPlatform,
       behavior: behavior,
-      margin: !flat ? _getSnackBarMargin() : null,
-      shape: flat ? null : const RoundedRectangleBorder(borderRadius: radius16),
+      shape: flat ? null : const StadiumBorder(),
       action: message.action ?? messageContent.action,
       persist: message.persistent,
     );
@@ -104,7 +133,7 @@ class InAppNotificationService {
 
     if (_activeNotifications.any((active) => active.message.id == message.id) ||
         _context == null) {
-      return;
+      dismiss(message.id!);
     }
 
     final snackbar = _buildSnackBar(message);
@@ -113,10 +142,18 @@ class InAppNotificationService {
     final activeNotification = ActiveNotification(message, controller);
     _activeNotifications.add(activeNotification);
 
-    controller.closed.then((reason) {
-      activeNotification.message.onClose?.call();
-      _activeNotifications.remove(activeNotification);
-    });
+    unawaited(
+      Future.delayed(snackbar.duration, () {
+        if (_activeNotifications.contains(activeNotification)) {
+          _activeNotifications.remove(activeNotification);
+        }
+      }),
+    );
+    unawaited(
+      controller.closed.then((reason) {
+        activeNotification.message.onClose?.call();
+      }),
+    );
   }
 
   /// Displays a notification message to the user using a SnackBar.

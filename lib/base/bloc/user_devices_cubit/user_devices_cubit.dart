@@ -39,7 +39,7 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
       );
       return device?.name;
     } catch (e) {
-      logger.e('Error getting device name for $deviceId: $e');
+      logger.w('Error getting device name for $deviceId: $e');
       return null;
     }
   }
