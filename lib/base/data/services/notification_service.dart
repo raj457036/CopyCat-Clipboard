@@ -1,13 +1,10 @@
 import 'dart:async';
 
-import 'package:clipboard/base/constants/numbers/breakpoints.dart'
-    show Breakpoints;
-import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/common/globals.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart'
-    show BreakpointExtension, BuildContextExtension, ListExtension;
+    show BreakpointExtension, ListExtension;
 import 'package:clipboard/utils/utility.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';

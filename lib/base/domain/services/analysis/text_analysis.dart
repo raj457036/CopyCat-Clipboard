@@ -31,7 +31,6 @@ class TextAnalysis {
     r'[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}',
     caseSensitive: false,
   );
-  static final RegExp _phoneRegex = RegExp(r'^\+?\d{0,2}\s?\d{7,15}$');
   static final RegExp _phoneStrictRegex = RegExp(r'^\+?\d{7,15}$');
   static final RegExp _phoneExtractRegex = RegExp(
     r'(?<!\w)(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,4}\)?[-.\s]?){2,4}\d{2,4}(?!\w)',

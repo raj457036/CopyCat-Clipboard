@@ -93,19 +93,6 @@ class LoginForm extends StatelessWidget {
     final authCubit = context.read<AuthCubit>();
     await appConfigCubit.changeOnBoardStatus(false);
     authCubit.authenticated(user, accessToken);
-
-    if (isSignUp) {
-      authCubit.analyticsRepo.logSignup(
-        signUpMethod: "Email",
-        parameters: {"userId": user.userId, "email": user.email},
-      );
-      return;
-    }
-
-    authCubit.analyticsRepo.logSignin(
-      loginMethod: "Email",
-      parameters: {"userId": user.userId, "email": user.email},
-    );
   }
 
   void _onAuthError(BuildContext context, Object? error) {

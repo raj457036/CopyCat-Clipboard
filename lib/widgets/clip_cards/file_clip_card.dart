@@ -1,12 +1,9 @@
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_cards/file_display_name_mixin.dart';
 import 'package:clipboard/widgets/file_thumbnail.dart';
 import 'package:flutter/material.dart';
-import 'package:mime/mime.dart';
 
 class FileClipCard extends FileTypePreview {
   const FileClipCard({super.key, required super.item});

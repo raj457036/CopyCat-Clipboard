@@ -5,7 +5,6 @@ import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
-import 'package:clipboard/base/domain/repositories/analytics.dart';
 import 'package:clipboard/base/domain/repositories/auth.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
@@ -21,12 +20,11 @@ class AuthCubit extends Cubit<AuthState> {
   final AuthRepository repo;
   final TinyStorage localCache;
   final AppConfigCubit appConfigCubit;
-  final AnalyticsRepository analyticsRepo;
   StreamSubscription<void>? _authStateChangesSubscription;
   bool _isAuthCheckInProgress = false;
   bool _isRefreshInProgress = false;
 
-  AuthCubit(this.repo, this.localCache, this.analyticsRepo, this.appConfigCubit)
+  AuthCubit(this.repo, this.localCache, this.appConfigCubit)
     : super(const AuthState.unknown()) {
     _listenToAuthStateChanges();
   }
@@ -136,8 +134,6 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> authenticated(AuthUser user, String accessToken) async {
-    analyticsRepo.setAnalyticUser(user);
-
     if (!appConfigCubit.loaded.isCompleted) {
       await appConfigCubit.loaded.future;
     }

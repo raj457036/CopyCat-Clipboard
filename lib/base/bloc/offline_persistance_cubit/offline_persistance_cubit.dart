@@ -7,7 +7,6 @@ import 'package:clipboard/base/data/services/clipboard_service.dart';
 import 'package:clipboard/base/domain/model/application_meta/activity_meta_payload.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/base/domain/repositories/analytics.dart';
 import 'package:clipboard/base/domain/repositories/clipboard.dart';
 import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
@@ -45,7 +44,6 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   final AppConfigCubit appConfig;
   final ApplicationMetaResolver appMetaResolver;
   final String deviceId;
-  final AnalyticsRepository analyticsRepo;
   final SyncEventBus syncEventBus;
   final StreamController<ClipboardItem> _newClipboardItem =
       StreamController<ClipboardItem>.broadcast();
@@ -61,7 +59,6 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     this.clipboard,
     this.appConfig,
     this.appMetaResolver,
-    this.analyticsRepo,
     @Named("device_id") this.deviceId,
     this.syncEventBus,
   ) : super(const OfflinePersistanceState.initial());
@@ -213,7 +210,6 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       return false;
     }
 
-    analyticsRepo.logFeatureUsed(feature: "share");
     return true;
   }
 

@@ -1,6 +1,5 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
-import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/di/di.dart' show sl;
 import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
 import 'package:clipboard/pages/preview/view/fullscreen_preview.dart';
