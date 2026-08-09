@@ -47,7 +47,6 @@ bool FlutterWindow::OnCreate()
             const auto *args = std::get_if<flutter::EncodableMap>(call.arguments());
             std::string message = "Copied";
             bool showToast = true;
-            bool playHaptic = false;
             if (args)
             {
               auto it = args->find(flutter::EncodableValue("message"));
@@ -66,17 +65,9 @@ bool FlutterWindow::OnCreate()
                   showToast = *p;
                 }
               }
-              it = args->find(flutter::EncodableValue("playHaptic"));
-              if (it != args->end())
-              {
-                if (auto p = std::get_if<bool>(&(it->second)))
-                {
-                  playHaptic = *p;
-                }
-              }
             }
             // Show a simple native toast on Windows
-            clipboard_toast::ShowClipboardFeedback(message, showToast, playHaptic);
+            clipboard_toast::ShowClipboardFeedback(message, showToast);
             result->Success();
             return;
           }

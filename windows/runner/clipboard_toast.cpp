@@ -93,7 +93,7 @@ namespace clipboard_toast
     }
 
     void ShowClipboardFeedback(const std::string &message, bool showToast,
-                               bool playHaptic, double durationSeconds)
+                               double durationSeconds)
     {
         if (!showToast)
             return;
