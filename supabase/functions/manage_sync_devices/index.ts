@@ -19,7 +19,7 @@ type Payload = {
 const DEVICE_ACTIVITY_WINDOW_DAYS = 30;
 const SUBSCRIPTION_TABLE = "subscription";
 const DEVICES_TABLE = "user_devices";
-const DEFAULT_DEVICE_LIMIT = 2;
+const DEFAULT_DEVICE_LIMIT = 4;
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
