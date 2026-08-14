@@ -837,6 +837,7 @@
   "tray__dialog__quit__subtitle": "Tem certeza de que deseja sair do aplicativo?",
   "splash__checking_authentication": "Verificando autenticação...",
   "paste_stack__title": "Paste Stack • {count}",
+  "paste_stack__reorder_hint": "Você pode arrastar os itens para reordená-los.",
   "paste_stack__reverse_tooltip": "Inverter pilha",
   "paste_stack__limit_note": "Você tem um limite de {count} itens",
   "@paste_stack__limit_note": {

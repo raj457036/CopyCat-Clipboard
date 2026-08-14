@@ -979,6 +979,7 @@
       }
     }
   },
+  "paste_stack__reorder_hint": "You can drag item to reorder.",
   "paste_stack__reverse_tooltip": "Reverse Stack",
   "paste_stack__limit_note": "You have a limit of {count} items",
   "@paste_stack__limit_note": {

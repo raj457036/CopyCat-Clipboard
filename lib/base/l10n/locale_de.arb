@@ -837,6 +837,7 @@
   "tray__dialog__quit__subtitle": "Möchten Sie die Anwendung wirklich beenden?",
   "splash__checking_authentication": "Authentifizierung wird überprüft...",
   "paste_stack__title": "Paste Stack • {count}",
+  "paste_stack__reorder_hint": "Sie können Elemente per Drag-and-Drop neu anordnen.",
   "paste_stack__reverse_tooltip": "Stapel umkehren",
   "paste_stack__limit_note": "Sie haben ein Limit von {count} Elementen",
   "@paste_stack__limit_note": {

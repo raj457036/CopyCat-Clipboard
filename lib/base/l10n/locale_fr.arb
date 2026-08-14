@@ -837,6 +837,7 @@
   "tray__dialog__quit__subtitle": "Voulez-vous vraiment quitter l'application ?",
   "splash__checking_authentication": "Vérification de l'authentification...",
   "paste_stack__title": "Paste Stack • {count}",
+  "paste_stack__reorder_hint": "Vous pouvez faire glisser les éléments pour les réorganiser.",
   "paste_stack__reverse_tooltip": "Inverser la pile",
   "paste_stack__limit_note": "Vous avez une limite de {count} éléments",
   "@paste_stack__limit_note": {

@@ -2305,6 +2305,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get paste_stack__reorder_hint =>
+      'Puedes arrastrar los elementos para reordenarlos.';
+
+  @override
   String get paste_stack__reverse_tooltip => 'Invertir pila';
 
   @override

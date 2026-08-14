@@ -2278,6 +2278,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get paste_stack__reorder_hint => 'You can drag item to reorder.';
+
+  @override
   String get paste_stack__reverse_tooltip => 'Reverse Stack';
 
   @override

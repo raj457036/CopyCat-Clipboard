@@ -2302,6 +2302,10 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get paste_stack__reorder_hint =>
+      'Sie können Elemente per Drag-and-Drop neu anordnen.';
+
+  @override
   String get paste_stack__reverse_tooltip => 'Stapel umkehren';
 
   @override

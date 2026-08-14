@@ -2161,6 +2161,9 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get paste_stack__reorder_hint => '你可以拖动项目来重新排序。';
+
+  @override
   String get paste_stack__reverse_tooltip => '反转顺序';
 
   @override

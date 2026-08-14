@@ -837,6 +837,7 @@
   "tray__dialog__quit__subtitle": "确定要退出应用吗？",
   "splash__checking_authentication": "正在检查身份验证...",
   "paste_stack__title": "粘贴堆栈 • {count}",
+  "paste_stack__reorder_hint": "你可以拖动项目来重新排序。",
   "paste_stack__reverse_tooltip": "反转顺序",
   "paste_stack__limit_note": "您有 {count} 个项目的限制",
   "@paste_stack__limit_note": {

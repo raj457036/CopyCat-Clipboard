@@ -2311,6 +2311,10 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get paste_stack__reorder_hint =>
+      'Vous pouvez faire glisser les éléments pour les réorganiser.';
+
+  @override
   String get paste_stack__reverse_tooltip => 'Inverser la pile';
 
   @override

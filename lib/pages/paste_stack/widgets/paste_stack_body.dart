@@ -38,7 +38,7 @@ class PasteStackBody extends StatelessWidget {
                       dense: true,
                       tileColor: context.colors.surfaceContainerHigh,
                       leading: const Icon(Icons.drag_handle),
-                      title: const Text("You can drag item to reorder."),
+                      title: Text(context.locale.paste_stack__reorder_hint),
                     ),
                   )
                 : null,

@@ -2318,6 +2318,10 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String get paste_stack__reorder_hint =>
+      'Você pode arrastar os itens para reordená-los.';
+
+  @override
   String get paste_stack__reverse_tooltip => 'Inverter pilha';
 
   @override

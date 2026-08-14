@@ -4018,6 +4018,12 @@ abstract class AppLocalizations {
   /// **'Paste Stack • {count}'**
   String paste_stack__title({required int count});
 
+  /// No description provided for @paste_stack__reorder_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can drag item to reorder.'**
+  String get paste_stack__reorder_hint;
+
   /// No description provided for @paste_stack__reverse_tooltip.
   ///
   /// In en, this message translates to:
