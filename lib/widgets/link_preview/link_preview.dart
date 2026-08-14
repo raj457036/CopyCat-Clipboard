@@ -67,8 +67,10 @@ class _LinkPreviewItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Favicon(url: originalUrl),
-                width4,
+                Favicon(
+                  url: originalUrl,
+                  padding: const EdgeInsets.only(right: padding4),
+                ),
                 Expanded(
                   child: Text(
                     title!,
