@@ -20,7 +20,7 @@ class AuthCubit extends Cubit<AuthState> {
   final AuthRepository repo;
   final TinyStorage localCache;
   final AppConfigCubit appConfigCubit;
-  StreamSubscription<void>? _authStateChangesSubscription;
+  StreamSubscription<AuthSessionChange>? _authStateChangesSubscription;
   bool _isAuthCheckInProgress = false;
   bool _isRefreshInProgress = false;
 
@@ -198,7 +198,8 @@ class AuthCubit extends Cubit<AuthState> {
             return;
           }
 
-          if (state is! LocalAuthenticatedAuthState) {
+          if (state is! AuthenticatedAuthState &&
+              state is! LocalAuthenticatedAuthState) {
             unauthenticated(authFailure);
           }
         },
@@ -214,8 +215,8 @@ class AuthCubit extends Cubit<AuthState> {
 
   void _listenToAuthStateChanges() {
     _authStateChangesSubscription = repo.authStateChanges.listen(
-      (_) {
-        unawaited(_reconcileAuthStateFromRepository());
+      (event) {
+        unawaited(_reconcileAuthStateFromRepository(event));
       },
       onError: (error) {
         logger.w("Auth state stream error: $error");
@@ -223,7 +224,9 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<void> _reconcileAuthStateFromRepository() async {
+  Future<void> _reconcileAuthStateFromRepository(
+    AuthSessionChange event,
+  ) async {
     if (checkLocalSignin()) return;
 
     final currentUser = repo.currentUser;
@@ -239,6 +242,8 @@ class AuthCubit extends Cubit<AuthState> {
       await authenticated(currentUser, accessToken);
       return;
     }
+
+    if (event != AuthSessionChange.signedOut) return;
 
     if (state is! UnauthenticatedAuthState) {
       unauthenticated(authFailure);

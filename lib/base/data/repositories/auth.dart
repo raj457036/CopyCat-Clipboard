@@ -15,7 +15,12 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({required this.client});
 
   @override
-  Stream<void> get authStateChanges => client.auth.onAuthStateChange.map((_) {});
+  Stream<AuthSessionChange> get authStateChanges =>
+      client.auth.onAuthStateChange.map((authState) {
+        return authState.event == sb.AuthChangeEvent.signedOut
+            ? AuthSessionChange.signedOut
+            : AuthSessionChange.updated;
+      });
 
   @override
   String? get userId => client.auth.currentUser?.id;

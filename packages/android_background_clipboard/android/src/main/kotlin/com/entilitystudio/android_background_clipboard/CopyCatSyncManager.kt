@@ -102,6 +102,7 @@ class CopyCatSyncManager(
     @Volatile
     private var lastScreenOnRefreshAtMs: Long = 0L
     private val screenOnRefreshInFlight = AtomicBoolean(false)
+    private val authRefreshLock = Any()
     @Volatile
     private var lastWriteAuthFailure: Boolean = false
     var isStopped = false
@@ -293,8 +294,8 @@ class CopyCatSyncManager(
         }
     }
 
-    private fun writeToSp(key: String, value: String) {
-        sp.edit().putString(key, value).apply()
+    private fun writeToSp(key: String, value: String): Boolean {
+        return sp.edit().putString(key, value).commit()
     }
 
     private fun doRefreshToken(): Boolean {
@@ -313,11 +314,11 @@ class CopyCatSyncManager(
 
         return try {
             client.newCall(request).execute().use { response ->
-                if (response.code == 200 && response.body != null) {
-                    val token = response.body?.string() ?: return false
-                    writeToSp(tokenKey, token)
+                if (response.code == 200) {
+                    val refreshedToken = response.body.string()
+                    token = refreshedToken
                     load()
-                    true
+                    writeToSp(tokenKey, refreshedToken)
                 } else {
                     false
                 }
@@ -328,22 +329,29 @@ class CopyCatSyncManager(
         }
     }
 
-    private fun recoverAuthWithRetries(): Boolean {
-        for (attempt in 1..maxAuthRecoveryAttempts) {
-            val refreshed = doRefreshToken()
-            if (refreshed && !isExpired && !accessToken.isNullOrBlank()) {
-                return true
-            }
-
+    private fun recoverAuthWithRetries(forceRefresh: Boolean = false): Boolean =
+        synchronized(authRefreshLock) {
             val reloaded = reloadTokenFromSharedPreferences()
-            if (reloaded && !isExpired && !accessToken.isNullOrBlank()) {
-                return true
+            if (!forceRefresh && reloaded && !isExpired && !accessToken.isNullOrBlank()) {
+                return@synchronized true
             }
 
-            Log.w(logTag, "Auth recovery attempt $attempt/$maxAuthRecoveryAttempts failed")
+            for (attempt in 1..maxAuthRecoveryAttempts) {
+                val refreshed = doRefreshToken()
+                if (refreshed && !isExpired && !accessToken.isNullOrBlank()) {
+                    return@synchronized true
+                }
+
+                reloadTokenFromSharedPreferences()
+                if (!isExpired && !accessToken.isNullOrBlank()) {
+                    return@synchronized true
+                }
+
+                Log.w(logTag, "Auth recovery attempt $attempt/$maxAuthRecoveryAttempts failed")
+            }
+
+            false
         }
-        return false
-    }
 
     private fun preflightAuthRefreshOnScreenOn() {
         if (!syncEnabled || !isReady || refreshToken.isNullOrBlank()) {
@@ -467,7 +475,7 @@ class CopyCatSyncManager(
             override fun run() {
                 if (realtimeEnabled && !realtimeConnected) {
                     if (isExpired) {
-                        doRefreshToken()
+                        recoverAuthWithRetries()
                     }
                     Log.i(logTag, "Attempting realtime reconnect")
                     startRealtime()
@@ -725,7 +733,7 @@ class CopyCatSyncManager(
 
             if (firstCode == 401 || firstCode == 403) {
                 Log.w(logTag, "Auth rejected write ($firstCode). Starting auth recovery.")
-                val recovered = recoverAuthWithRetries()
+                val recovered = recoverAuthWithRetries(forceRefresh = true)
                 if (recovered) {
                     val retryRequest = Request.Builder()
                         .url(url)
