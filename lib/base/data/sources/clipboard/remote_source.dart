@@ -3,7 +3,7 @@ import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
-import 'package:clipboard/base/enums/sort.dart';
+import 'package:clipboard/base/enums/sort.dart' as sortOrder;
 import 'package:clipboard/common/paginated_results.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:injectable/injectable.dart';
@@ -41,7 +41,7 @@ class RemoteClipboardSource implements ClipboardSource {
     int? collectionId, // no-op
     int? serverCollectionId, // no-op
     ClipboardSortKey? sortBy, // no-op
-    SortOrder order = SortOrder.desc, // no-op
+    sortOrder.SortOrder order = sortOrder.SortOrder.desc, // no-op
     DateTime? from, // no-op
     DateTime? to, // no-op
     bool? encrypted, // no-op

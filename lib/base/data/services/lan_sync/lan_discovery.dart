@@ -13,13 +13,18 @@ import 'lan_sync_config.dart';
 class LanDiscovery {
   final LanSyncConfig _config;
   final LanPeerRegistry _registry;
+  final Future<void> Function(String deviceId)? _onPeerDiscovered;
 
   MDNSServer? _mdnsServer;
   Timer? _warmupTimer;
   bool _inFlight = false;
   DateTime? _lastDiscoveryAt;
 
-  LanDiscovery(this._config, this._registry);
+  LanDiscovery(
+    this._config,
+    this._registry, {
+    Future<void> Function(String deviceId)? onPeerDiscovered,
+  }) : _onPeerDiscovered = onPeerDiscovered;
 
   // MARK: - Lifecycle
 
@@ -118,6 +123,10 @@ class LanDiscovery {
     if (!changed) return;
 
     unawaited(_registry.save());
+    final onPeerDiscovered = _onPeerDiscovered;
+    if (onPeerDiscovered != null) {
+      unawaited(onPeerDiscovered(did));
+    }
 
     // Stop warmup once at least one peer is found.
     _warmupTimer?.cancel();

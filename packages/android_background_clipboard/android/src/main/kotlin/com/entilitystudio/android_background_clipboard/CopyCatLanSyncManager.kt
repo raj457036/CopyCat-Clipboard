@@ -300,10 +300,17 @@ class CopyCatLanSyncManager(
                 val requestLine = readAsciiLine(rawInput) ?: return
                 // Respond to health-check pings from desktop peers.
                 if (requestLine.startsWith("GET /ping")) {
+                    val headers = mutableMapOf<String, String>()
                     while (true) {
                         val line = readAsciiLine(rawInput) ?: break
                         if (line.isEmpty()) break
+                        val colon = line.indexOf(':')
+                        if (colon > 0) {
+                            headers[line.substring(0, colon).trim().lowercase()] =
+                                line.substring(colon + 1).trim()
+                        }
                     }
+                    learnPeerFromPing(headers, s.inetAddress)
                     s.getOutputStream().write("HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n".toByteArray())
                     return
                 }
@@ -420,6 +427,18 @@ class CopyCatLanSyncManager(
             if (b != '\r'.code) sb.append(b.toChar())
         }
         return sb.toString()
+    }
+
+    private fun learnPeerFromPing(headers: Map<String, String>, remoteAddress: InetAddress) {
+        val announcedDeviceId = headers["x-cc-did"]?.takeIf { it.isNotBlank() } ?: return
+        val announcedPort = headers["x-cc-port"]?.toIntOrNull()?.takeIf { it in 1..65535 } ?: return
+        if (announcedDeviceId == deviceId) return
+
+        val host = remoteAddress.hostAddress ?: return
+        peers[announcedDeviceId] = PeerAddress(host, announcedPort)
+        LanPeerReporter.getInstance().addPeer(announcedDeviceId, host, announcedPort)
+        scheduleDiscoveryRefresh()
+        Log.d(LOG_TAG, "Peer learned via ping: $announcedDeviceId @ $host:$announcedPort")
     }
 
     private fun handleTextClip(

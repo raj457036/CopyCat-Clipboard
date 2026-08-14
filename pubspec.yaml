@@ -1,7 +1,7 @@
 name: clipboard
 description: "CopyCat Clipboard: One Clipboard, Limitless Productivity"
 publish_to: "none"
-version: 2.0.6+99
+version: 2.0.6+100
 
 environment:
   sdk: ">=3.11.0 <4.0.0"
@@ -65,7 +65,7 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   flutter_svg: ^2.2.4
   screen_retriever: ^0.2.0
-  no_screenshot: ^1.1.0
+  no_screenshot: ^2.0.1
   flutter_secure_storage: ^9.2.4
   local_auth: ^3.0.1
   android_background_clipboard:

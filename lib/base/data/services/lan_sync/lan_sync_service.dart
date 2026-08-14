@@ -58,7 +58,11 @@ class LanSyncService {
     _clipBuilder = LanClipBuilder(_cfg);
     _receiver = LanReceiver(_cfg, _batchSync, _syncEventBus, _clipBuilder);
     _sender = LanSender(_cfg, _registry, _hmac);
-    _discovery = LanDiscovery(_cfg, _registry);
+    _discovery = LanDiscovery(
+      _cfg,
+      _registry,
+      onPeerDiscovered: _pingSinglePeer,
+    );
     _httpHandler = LanHttpHandler(_cfg, _registry, _hmac, _receiver);
   }
 
