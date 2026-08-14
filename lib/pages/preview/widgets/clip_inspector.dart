@@ -580,12 +580,14 @@ class _ClipInspectorState extends State<ClipInspector> {
     if (item.fileMimeType?.startsWith("image/") == true &&
         item.localPath != null) {
       final resolution = getImageResolution(item.localPath!);
-      rows.add(
-        _InspectorInfoRow(
-          label: context.locale.preview__inspector__label__image_dimension,
-          value: "${resolution.width} x ${resolution.height}",
-        ),
-      );
+      if (resolution != null) {
+        rows.add(
+          _InspectorInfoRow(
+            label: context.locale.preview__inspector__label__image_dimension,
+            value: "${resolution.width} x ${resolution.height}",
+          ),
+        );
+      }
     }
 
     if (item.deviceId != null) {

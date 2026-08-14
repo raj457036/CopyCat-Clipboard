@@ -34,14 +34,15 @@ class ClipCardBodyContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final item = ClipItemScope.of(context);
-    final selected = context.select(
-      (SelectedClipsCubit cubit) => cubit.isSelected(item),
-    );
+    if (liteMode) return ClipPreview(item: item, liteMode: true);
+
     final syncActive = context.select(
       (AppConfigCubit cubit) => cubit.state.config.enableSync,
     );
-    if (liteMode) return ClipPreview(item: item);
 
+    final selected = context.select(
+      (SelectedClipsCubit cubit) => cubit.isSelected(item),
+    );
     final child = Column(
       mainAxisSize: MainAxisSize.min,
       children: [

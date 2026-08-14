@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 
 class ClipPreview extends StatelessWidget {
   final ClipboardItem item;
-  const ClipPreview({super.key, required this.item});
+  final bool liteMode;
+
+  const ClipPreview({super.key, required this.item, this.liteMode = false});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class ClipPreview extends StatelessWidget {
     }
 
     if (item.type == ClipItemType.text) {
-      return TextClipCard(item: item);
+      return TextClipCard(item: item, liteMode: liteMode);
     }
     if (item.type == ClipItemType.media || isMediaType(item)) {
       return MediaClipCard(item: item);

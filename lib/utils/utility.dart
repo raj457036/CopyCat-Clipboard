@@ -225,10 +225,14 @@ String formatBytes(int sizeInBytes, {bool precise = true}) {
   }
 }
 
-Size getImageResolution(String path) {
-  final file = File(path);
-  final result = ImageSizeGetter.getSizeResult(FileInput(file));
-  return result.size;
+Size? getImageResolution(String path) {
+  try {
+    final file = File(path);
+    final result = ImageSizeGetter.getSizeResult(FileInput(file));
+    return result.size;
+  } catch (e) {
+    return null;
+  }
 }
 
 // Text cleanup

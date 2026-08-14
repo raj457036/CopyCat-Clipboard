@@ -83,6 +83,7 @@ class MediaClipCard extends FileTypePreview {
     }
 
     final size = getImageResolution(item.localPath!);
+    if (size == null) return '';
     return " • ${size.width}x${size.height}";
   }
 

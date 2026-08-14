@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart'
     show RouteConstants;
@@ -12,13 +14,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 Future<void> togglePasteStack(
   BuildContext context, [
-  List<ClipboardItem>? initalItems,
+  List<ClipboardItem>? initialItems,
 ]) async {
   final windowAction = context.windowAction;
   final isActive = appRouter.location() == RouteConstants.pasteStack;
-  final isPinned = context.select(
-    (AppConfigCubit cubit) => cubit.state.config.pinned,
-  );
+  final isPinned = context.read<AppConfigCubit>().state.config.pinned;
 
   if (isActive) {
     final backgroundMode =
@@ -41,12 +41,13 @@ Future<void> togglePasteStack(
 
     appRouter.goNamed(RouteConstants.home);
     return;
-  }
-
-  if (!isActive) {
-    await appRouter.pushNamed(
-      RouteConstants.pasteStack,
-      extra: RoutePayload(data: initalItems),
+  } else {
+    await windowAction?.show();
+    unawaited(
+      appRouter.pushNamed(
+        RouteConstants.pasteStack,
+        extra: RoutePayload(data: initialItems),
+      ),
     );
     return;
   }

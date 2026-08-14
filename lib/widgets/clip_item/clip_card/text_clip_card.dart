@@ -10,12 +10,23 @@ import 'package:flutter/material.dart';
 class TextPreviewBody extends StatelessWidget {
   final Color? bg;
   final Widget child;
+  final bool liteMode;
 
-  const TextPreviewBody({super.key, required this.child, this.bg});
+  const TextPreviewBody({
+    super.key,
+    required this.child,
+    this.bg,
+    this.liteMode = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final body = Padding(padding: clipCardContentPadding, child: child);
+    final body = Padding(
+      padding: liteMode
+          ? const EdgeInsets.all(padding8)
+          : clipCardContentPadding,
+      child: child,
+    );
     if (bg != null) {
       return Ink(color: bg!, child: body);
     }
@@ -25,8 +36,9 @@ class TextPreviewBody extends StatelessWidget {
 
 class TextClipCard extends StatelessWidget {
   final ClipboardItem item;
+  final bool liteMode;
 
-  const TextClipCard({super.key, required this.item});
+  const TextClipCard({super.key, required this.item, this.liteMode = false});
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +90,7 @@ class TextClipCard extends StatelessWidget {
         );
       default:
         return TextPreviewBody(
+          liteMode: liteMode,
           child: Text(
             item.text!,
             overflow: TextOverflow.ellipsis,
