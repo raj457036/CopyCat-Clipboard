@@ -85,3 +85,5 @@ website
 *.p8
 *.json
 .env*
+.github/workflows/release-macos-on-release-pr.yml
+CopyCat-*.zip

@@ -102,7 +102,7 @@ PODS:
   - mobile_scanner (7.0.0):
     - Flutter
     - FlutterMacOS
-  - no_screenshot (0.10.0):
+  - no_screenshot (2.0.1):
     - Flutter
   - open_filex (0.0.2):
     - Flutter
@@ -113,21 +113,21 @@ PODS:
   - PromisesObjC (2.4.1)
   - PromisesSwift (2.4.1):
     - PromisesObjC (= 2.4.1)
-  - purchases_flutter (10.4.1):
+  - purchases_flutter (10.9.0):
     - Flutter
-    - PurchasesHybridCommon (= 18.19.0)
-  - purchases_ui_flutter (10.4.1):
+    - PurchasesHybridCommon (= 18.30.0)
+  - purchases_ui_flutter (10.9.0):
     - Flutter
-    - PurchasesHybridCommonUI (= 18.19.0)
-  - PurchasesHybridCommon (18.19.0):
-    - RevenueCat (= 5.80.2)
-  - PurchasesHybridCommonUI (18.19.0):
-    - PurchasesHybridCommon (= 18.19.0)
-    - RevenueCatUI (= 5.80.2)
+    - PurchasesHybridCommonUI (= 18.30.0)
+  - PurchasesHybridCommon (18.30.0):
+    - RevenueCat (= 5.83.1)
+  - PurchasesHybridCommonUI (18.30.0):
+    - PurchasesHybridCommon (= 18.30.0)
+    - RevenueCatUI (= 5.83.1)
   - RecaptchaInterop (101.0.0)
-  - RevenueCat (5.80.2)
-  - RevenueCatUI (5.80.2):
-    - RevenueCat (= 5.80.2)
+  - RevenueCat (5.83.1)
+  - RevenueCatUI (5.83.1):
+    - RevenueCat (= 5.83.1)
   - SDWebImage (5.21.7):
     - SDWebImage/Core (= 5.21.7)
   - SDWebImage/Core (5.21.7)
@@ -290,7 +290,7 @@ SPEC CHECKSUMS:
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   emoji_picker_flutter: ece213fc274bdddefb77d502d33080dc54e616cc
   file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
-  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
   flutter_platform_alert: bf3b5fcd4ac14bd637e20527e9c471633071afd3
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
   google_sign_in_ios: b48bb9af78576358a168361173155596c845f0b9
@@ -305,19 +305,19 @@ SPEC CHECKSUMS:
   media_kit_libs_ios_video: 5a18affdb97d1f5d466dc79988b13eff6c5e2854
   media_kit_video: 1746e198cb697d1ffb734b1d05ec429d1fcd1474
   mobile_scanner: 9157936403f5a0644ca3779a38ff8404c5434a93
-  no_screenshot: 03c8ac6586f9652cd45e3d12d74e5992256403ac
+  no_screenshot: b0da13a6e7fb92706ab1082f6d6662cf300aa889
   open_filex: 432f3cd11432da3e39f47fcc0df2b1603854eff1
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   pdfx: 77f4dddc48361fbb01486fa2bdee4532cbb97ef3
   PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
   PromisesSwift: 217dea0fd5d2ad65222a109c48698add13cc1c5b
-  purchases_flutter: 1bfc08dbcd8f55c6e79dfc055a76fe2081a2b729
-  purchases_ui_flutter: 63ddcc72cf0ae40f68da66ff650fad07a68f3913
-  PurchasesHybridCommon: 1eb67a6c8997233b35ed9b4eee8205dd8dd92890
-  PurchasesHybridCommonUI: e990fdbfdcd607bbb240ac237e7f208b2fb2d893
+  purchases_flutter: 208163b2383af842ff8ae9bd065cbcc641dd1f34
+  purchases_ui_flutter: d2ac2e679620f68ffa4e1fa49236025da1454e3a
+  PurchasesHybridCommon: 6a2230d42f14de597e3f6a0633938992c2442133
+  PurchasesHybridCommonUI: b77223b7f6964005ee479001d10a4bf6dd3ed2a8
   RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
-  RevenueCat: b772273e51fa103a2ecc644439dd54a5dec199f3
-  RevenueCatUI: 89a3f81665e6f3e2b70a15403e91683ff0959952
+  RevenueCat: 9a06074a6aebf09f749c19a73a96f0870ad477e6
+  RevenueCatUI: f292b4e28e8dc511a2d899c9e994f788ed213bc6
   SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
   share_handler_ios: e2244e990f826b2c8eaa291ac3831569438ba0fb
   share_handler_ios_models: fc638c9b4330dc7f082586c92aee9dfa0b87b871
@@ -331,6 +331,6 @@ SPEC CHECKSUMS:
   video_player_avfoundation: 3453f792138786248960ca029747fcd9f318ef52
   wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
 
-PODFILE CHECKSUM: 9df484d41aba92b5de2f43a4584c023338f2fa4b
+PODFILE CHECKSUM: 5860455b91496c4f116b6b27bd48f19644234fee
 
 COCOAPODS: 1.16.2

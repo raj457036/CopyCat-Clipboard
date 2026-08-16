@@ -1,0 +1,103 @@
+name: Release macOS Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag in X.X.X format
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-macos-main
+  cancel-in-progress: false
+
+jobs:
+  build-macos-release:
+    name: Build and Publish macOS Release
+    runs-on: macos-14
+
+    steps:
+      - name: Validate release tag
+        env:
+          INPUT_TAG: ${{ github.event.inputs.tag }}
+        run: |
+          if [[ ! "$INPUT_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid tag: $INPUT_TAG"
+            echo "Expected format: X.X.X (example: 2.0.6)"
+            exit 1
+          fi
+
+      - name: Checkout selected branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Inject production defines
+        env:
+          PROD_SECRETS: ${{ secrets.PROD_SECRETS }}
+        run: |
+          mkdir -p local
+          printf '%s' "$PROD_SECRETS" > local/prod.json
+
+      - name: Build macOS zip
+        run: bash scripts/build_mac.sh
+
+      - name: Rename zip with version
+        env:
+          TAG_NAME: ${{ github.event.inputs.tag }}
+        run: mv -f CopyCat-macOS.zip "CopyCat-macOS-${TAG_NAME}.zip"
+
+      - name: Ensure git tag exists
+        env:
+          TAG_NAME: ${{ github.event.inputs.tag }}
+        run: |
+          git fetch --tags --force
+          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            echo "Tag already exists: $TAG_NAME"
+          else
+            git tag "$TAG_NAME" "$(git rev-parse HEAD)"
+            git push origin "$TAG_NAME"
+            echo "Created tag: $TAG_NAME"
+          fi
+
+      - name: Create or update GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ github.event.inputs.tag }}
+        run: |
+          ASSET_NAME="CopyCat-macOS-${TAG_NAME}.zip"
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            gh release edit "$TAG_NAME" --title "CopyCat $TAG_NAME" --target "$(git rev-parse HEAD)"
+            gh release upload "$TAG_NAME" "$ASSET_NAME" --clobber
+            echo "Updated existing release: $TAG_NAME"
+          else
+            gh release create "$TAG_NAME" "$ASSET_NAME" \
+              --title "CopyCat $TAG_NAME" \
+              --target "$(git rev-parse HEAD)" \
+              --generate-notes
+            echo "Created new release: $TAG_NAME"
+          fi
+
+      - name: Upload macOS artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CopyCat-macOS-${{ github.event.inputs.tag }}
+          path: CopyCat-macOS-${{ github.event.inputs.tag }}.zip
+          if-no-files-found: error
+
+      - name: Cleanup local prod file
+        if: always()
+        run: rm -f local/prod.json
