@@ -53,7 +53,17 @@ jobs:
           printf '%s' "$PROD_SECRETS" > local/prod.json
 
       - name: Build macOS zip
-        run: bash scripts/build_mac.sh
+        run: |
+          flutter build macos --verbose \
+            --tree-shake-icons \
+            --dart-define-from-file=local/prod.json \
+            --obfuscate \
+            --split-debug-info=./build_symbols && \
+          codesign --remove-signature \
+            build/macos/Build/Products/Release/CopyCat.app && \
+          ditto -c -k --keepParent \
+            build/macos/Build/Products/Release/CopyCat.app \
+            CopyCat-macOS.zip
 
       - name: Rename zip with version
         env:
