@@ -43,7 +43,7 @@ GEM
     dotenv (2.8.1)
     emoji_regex (3.2.3)
     erb (6.0.7)
-    excon (1.7.0)
+    excon (1.5.0)
       logger
     faraday (2.14.3)
       faraday-net_http (>= 2.0, < 3.5)
@@ -283,7 +283,7 @@ CHECKSUMS
   dotenv (2.8.1) sha256=c5944793349ae03c432e1780a2ca929d60b88c7d14d52d630db0508c3a8a17d8
   emoji_regex (3.2.3) sha256=ecd8be856b7691406c6bf3bb3a5e55d6ed683ffab98b4aa531bb90e1ddcc564b
   erb (6.0.7) sha256=c5ca6dc25b0ef974a44dc8f59fe847577122483b1968a38dec305c60bf91ee92
-  excon (1.7.0) sha256=b8deec2bf978123b7e4b13a103ffec61557c6feaba34706dbc1ce4a94dec33e0
+  excon (1.5.0) sha256=c503ad1d0123bc8ab2a062ff3789dc891ec368cb9e13765ab88a9c58c8bb6d50
   faraday (2.14.3) sha256=1882247e6766615c8220b4392bf1d27f6ebb63d8e28267587cef1fb0bf37f278
   faraday-cookie_jar (0.0.8) sha256=0140605823f8cc63c7028fccee486aaed8e54835c360cffc1f7c8c07c4299dbb
   faraday-follow_redirects (0.5.0) sha256=5cde93c894b30943a5d2b93c2fe9284216a6b756f7af406a1e55f211d97d10ad
