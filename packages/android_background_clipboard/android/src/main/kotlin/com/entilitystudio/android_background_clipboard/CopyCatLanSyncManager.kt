@@ -80,8 +80,7 @@ private data class PeerAddress(val host: String, val port: Int)
 class CopyCatLanSyncManager(
     private val appContext: Context,
     private val onLanClipReceived: (LanClipPayload) -> Unit,
-    private val markCaptured: (String) -> Unit,
-    private val onBeforeClipboardWrite: () -> Unit = {},
+    private val onBeforeClipboardWrite: (ByteArray) -> Unit = {},
     private val decryptContent: ((content: String, encMode: String?, iv: String?) -> String?)? = null,
 ) {
     companion object {
@@ -477,8 +476,7 @@ class CopyCatLanSyncManager(
                 payload.content
             }
             if (textToWrite != null) {
-                markCaptured(originId)
-                onBeforeClipboardWrite()
+                onBeforeClipboardWrite(textToWrite.toByteArray())
                 writeTextToClipboard(textToWrite, payload.label)
             } else if (payload.encrypted) {
                 Log.w(LOG_TAG, "Skipping clipboard write: encrypted LAN clip could not be decrypted")
@@ -657,8 +655,7 @@ class CopyCatLanSyncManager(
                 )
                 val clipData = AndroidClipData.newUri(appContext.contentResolver, fileName, uri)
                 val cm = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                markCaptured(originId)
-                onBeforeClipboardWrite()
+                onBeforeClipboardWrite(tempFile.readBytes())
                 cm.setPrimaryClip(clipData)
             }
             Log.d(LOG_TAG, "Binary clip ($mimeType) received from $fromDeviceId — persisted${if (autoWriteOnReceive) " + clipboard" else ""}")
