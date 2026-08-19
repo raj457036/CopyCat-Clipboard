@@ -293,11 +293,12 @@ class _LinkPreviewState extends State<LinkPreview> {
         );
       }
     }
-
-    setState(() {
-      _preview = data;
-      _isLoading = false;
-    });
+    if (mounted) {
+      setState(() {
+        _preview = data;
+        _isLoading = false;
+      });
+    }
   }
 
   LinkPreviewData? _previewFromItem(ClipboardItem item) {

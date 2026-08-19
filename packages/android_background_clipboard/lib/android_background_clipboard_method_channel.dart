@@ -113,16 +113,9 @@ class MethodChannelAndroidBackgroundClipboard
   }
 
   @override
-  Future<List<Map<Object?, Object?>>> readClipsBatch(
-    int start,
-    int end,
-  ) async {
+  Future<List<Map<Object?, Object?>>> readAllClips() async {
     final result = await methodChannel.invokeMethod<List<dynamic>>(
-      'readClipsBatch',
-      {
-        'start': start,
-        'end': end,
-      },
+      'readAllClips',
     );
     if (result == null) return const [];
 

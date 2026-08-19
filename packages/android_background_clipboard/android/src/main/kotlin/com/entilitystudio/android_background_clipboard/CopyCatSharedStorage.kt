@@ -39,7 +39,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private var autoWriteOnReceive: Boolean = false
     private var dontCopyOverBytes: Int = DEFAULT_DONT_COPY_OVER_BYTES
     private lateinit var deviceId: String
-    private var endId: Int = -1
     private var syncManager: CopyCatSyncManager = CopyCatSyncManager(
         appContext,
         onRemoteClipUpsert = ::ingestRemoteClip,
@@ -57,9 +56,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private val mainHandler = Handler(Looper.getMainLooper())
     private val reconfigureRunnable = Runnable {
         syncManager.reconfigureConnections()
-    }
-    private val persistEndIdRunnable = Runnable {
-        sp.edit().putInt("endId", endId).apply()
     }
     private var started: Boolean = false
     
@@ -94,6 +90,8 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private val latestClipLock = Any()
     private var lastRawClipHash: String? = null
     private var lastRawClipId: String? = null
+    private val clipIdLock = Any()
+    private var lastClipIdMs: Long = 0L
 
     private fun hashBytesSha256(vararg chunks: ByteArray): String {
         val digest = MessageDigest.getInstance("SHA-256")
@@ -128,32 +126,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         mainHandler.postDelayed(reconfigureRunnable, 300)
     }
 
-    private fun schedulePersistEndId() {
-        mainHandler.removeCallbacks(persistEndIdRunnable)
-        mainHandler.postDelayed(persistEndIdRunnable, 300)
-    }
-
-    private fun commitEndId(nextEndId: Int) {
-        endId = nextEndId
-        schedulePersistEndId()
-    }
-
-    private fun flushPersistEndId() {
-        mainHandler.removeCallbacks(persistEndIdRunnable)
-        sp.edit().putInt("endId", endId).apply()
-    }
-
     private val listener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
-        if (key == "endId") {
-            val spEndId = sharedPreferences.getInt(key, -1)
-            // When Flutter resets endId (e.g. after syncStates()), sync the
-            // in-memory value and cancel any pending deferred write so it
-            // cannot overwrite the reset and cause stale clip-range reads.
-            if (spEndId < endId) {
-                mainHandler.removeCallbacks(persistEndIdRunnable)
-                endId = spEndId
-            }
-        }
         if (key == "excludedPackages") {
             excludedPackages = sharedPreferences.getStringSet(key, emptySet())!!
         }
@@ -318,10 +291,8 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     fun clear() {
         debugLog(logTag) { "Clearing storage" }
         mainHandler.removeCallbacks(reconfigureRunnable)
-        mainHandler.removeCallbacks(persistEndIdRunnable)
         fileStorage.clearAll()
         sp.edit().clear().apply()
-        endId = -1
     }
 
     fun writeSecure(key: String, value: String) {
@@ -342,7 +313,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         syncSpeed = sp.getString(BgPrefKey.SYNC_SPEED, "balanced") ?: "balanced"
         syncIntervalSeconds = sp.getInt(BgPrefKey.SYNC_INTERVAL, 45)
         deviceId = sp.getString(BgPrefKey.DEVICE_ID, "").toString()
-        endId = maxOf(sp.getInt("endId", -1), fileStorage.getMaxClipIndex())
 
         excludedPackages = sp.getStringSet("excludedPackages", emptySet())!!
         strictCheck = sp.getBoolean("strictCheck", true)
@@ -396,8 +366,16 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         lanSyncManager.maxAutoCopyBytes = dontCopyOverBytes
     }
     
+    /**
+     * Allocates a clip ID from the wall clock, stepping forward by 1ms when the
+     * clock has not advanced so bursts and clock skew still produce unique IDs.
+     */
     private fun getNextId(): String {
-        return "Clip-${endId + 1}"
+        synchronized(clipIdLock) {
+            val now = System.currentTimeMillis()
+            lastClipIdMs = if (now > lastClipIdMs) now else lastClipIdMs + 1
+            return "Clip-$lastClipIdMs"
+        }
     }
 
     fun write(key: String, value: Any) {
@@ -538,21 +516,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         return fileStorage.readAllClips()
     }
 
-    fun readClipBatch(startInclusive: Int, endInclusive: Int): List<CopyCatFileStorage.ClipData> {
-        if (startInclusive > endInclusive) return emptyList()
-
-        val clips = mutableListOf<CopyCatFileStorage.ClipData>()
-        for (index in startInclusive..endInclusive) {
-            val clipId = "Clip-$index"
-            val clip = fileStorage.readClipItem(clipId)
-            if (clip != null) {
-                clips.add(clip)
-            }
-        }
-
-        return clips
-    }
-
     fun writeTextClip(
         text: String,
         type: ClipType,
@@ -631,7 +594,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
             lastRawClipHash = rawHash
             lastRawClipId = nextId
-            commitEndId(endId + 1)
             CopyCatFileStorage.ClipWriteOutcome.Written(nextId)
         }
 
@@ -798,7 +760,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
             lastRawClipHash = rawHash
             lastRawClipId = nextId
-            commitEndId(endId + 1)
             CopyCatFileStorage.ClipWriteOutcome.Written(nextId)
         }
 
@@ -907,7 +868,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             Log.i(logTag, "Storage already cleaned; skipping duplicate clean")
             return
         }
-        flushPersistEndId()
         mainHandler.removeCallbacks(reconfigureRunnable)
         syncManager.stop()
         lanSyncManager.stop()
@@ -998,14 +958,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         }
 
         val existingClipId = fileStorage.findClipIdByServerId(clip.serverId)
-        val clipId = if (existingClipId != null) {
-            existingClipId
-        } else {
-            val next = getNextId()
-            endId += 1
-            schedulePersistEndId()
-            next
-        }
+        val clipId = existingClipId ?: getNextId()
 
         fileStorage.writeClipItem(
             clipId = clipId,
@@ -1051,7 +1004,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
         if (payload.deleted) {
             val targetClipId = existingClipId ?: getNextId()
-            val wasNew = existingClipId == null
             val tombstoneTimestamp = payload.deletedAtMs ?: payload.timestamp
             val writeSuccess = fileStorage.writeClipItem(
                 clipId = targetClipId,
@@ -1071,11 +1023,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             )
 
             if (writeSuccess) {
-                if (wasNew) {
-                    endId += 1
-                    mainHandler.removeCallbacks(persistEndIdRunnable)
-                    sp.edit().putInt("endId", endId).apply()
-                }
                 LanClipReceivedReporter.getInstance().signal(targetClipId)
                 debugLog(logTag) {
                     "LAN: tombstoned clip originId=${payload.originId} serverId=${payload.serverId} clipId=$targetClipId"
@@ -1166,13 +1113,6 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
 
         when (writeOutcome) {
             is CopyCatFileStorage.ClipWriteOutcome.Written -> {
-                endId += 1
-                // Write endId synchronously before signalling Flutter so:
-                // 1. Flutter can read the correct value immediately via the stream.
-                // 2. syncStates() on lifecycle resume also finds this clip if the
-                //    stream event was missed while the app was in the background.
-                mainHandler.removeCallbacks(persistEndIdRunnable)
-                sp.edit().putInt("endId", endId).apply()
                 LanClipReceivedReporter.getInstance().signal(nextId)
             }
             is CopyCatFileStorage.ClipWriteOutcome.Duplicate -> debugLog(logTag) {

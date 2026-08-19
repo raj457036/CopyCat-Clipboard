@@ -12,14 +12,8 @@ class AndroidBackgroundClipboard {
         .readShared<T>(key, secure: secure);
   }
 
-  Future<List<Map<Object?, Object?>>> readClipsBatch(
-    int start,
-    int end,
-  ) {
-    return AndroidBackgroundClipboardPlatform.instance.readClipsBatch(
-      start,
-      end,
-    );
+  Future<List<Map<Object?, Object?>>> readAllClips() {
+    return AndroidBackgroundClipboardPlatform.instance.readAllClips();
   }
 
   Future<bool> writeShared<T>(String key, T value, {bool secure = false}) {

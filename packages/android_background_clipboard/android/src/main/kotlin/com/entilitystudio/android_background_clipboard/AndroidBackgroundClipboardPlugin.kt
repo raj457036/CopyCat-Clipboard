@@ -110,10 +110,8 @@ class AndroidBackgroundClipboardPlugin : FlutterPlugin, MethodCallHandler,
                 }
             }
 
-            "readClipsBatch" -> {
-                val start = call.argument<Int>("start") ?: 0
-                val end = call.argument<Int>("end") ?: -1
-                val values = storage.readClipBatch(start, end).map { it.toMap() }
+            "readAllClips" -> {
+                val values = storage.readAllClips().map { it.toMap() }
                 result.success(values)
             }
 

@@ -71,16 +71,6 @@ class CopyCatFileStorage(private val context: Context) {
         originIdIndex = index
     }
 
-    fun getMaxClipIndex(): Int = lock.read {
-        val clipFiles = storageDir.listFiles { file ->
-            file.name.startsWith("Clip-") && file.name.endsWith(".txt")
-        } ?: return -1
-
-        return clipFiles.maxOfOrNull { file ->
-            file.nameWithoutExtension.removePrefix("Clip-").toIntOrNull() ?: -1
-        } ?: -1
-    }
-
     private fun pruneOldClipsLocked() {
         val clipFiles = storageDir.listFiles { file ->
             file.name.startsWith("Clip-") && file.name.endsWith(".txt")

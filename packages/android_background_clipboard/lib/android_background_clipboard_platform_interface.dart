@@ -32,10 +32,7 @@ abstract class AndroidBackgroundClipboardPlatform extends PlatformInterface {
     throw UnimplementedError();
   }
 
-  Future<List<Map<Object?, Object?>>> readClipsBatch(
-    int start,
-    int end,
-  ) {
+  Future<List<Map<Object?, Object?>>> readAllClips() {
     throw UnimplementedError();
   }
 

@@ -773,7 +773,10 @@ class CopyCatLanSyncManager(
                 }
             }
             override fun onServiceFound(info: NsdServiceInfo) {
-                if (info.serviceType != serviceType) return
+                if (!matchesServiceType(info.serviceType)) {
+                    Log.d(LOG_TAG, "Ignoring service ${info.serviceName} of type ${info.serviceType}")
+                    return
+                }
                 // Resolve to get host + port
                 nsd.resolveService(info, makeResolveListener())
             }
@@ -876,6 +879,20 @@ class CopyCatLanSyncManager(
 
     private fun peerKeyFromServiceName(name: String): String =
         name.removePrefix("copycat-")
+
+    /**
+     * NSD reports the service type inconsistently across OEMs, with or without
+     * a trailing dot, and sometimes truncated to just "_tcp.", so compare on a
+     * normalized form instead of requiring an exact match.
+     */
+    private fun matchesServiceType(found: String?): Boolean {
+        val normalizedFound = found?.trim()?.trim('.')?.lowercase().orEmpty()
+        if (normalizedFound.isEmpty()) return true
+        val expected = serviceType.trim('.').lowercase()
+        return normalizedFound == expected ||
+            expected.endsWith(normalizedFound) ||
+            normalizedFound.endsWith(expected)
+    }
 
     // MARK: - Sending
 
