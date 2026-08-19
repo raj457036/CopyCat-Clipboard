@@ -42,13 +42,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private var syncManager: CopyCatSyncManager = CopyCatSyncManager(
         appContext,
         onRemoteClipUpsert = ::ingestRemoteClip,
-        onRemoteClipDelete = ::deleteRemoteClip,
     )
     private var lanSyncManager: CopyCatLanSyncManager = CopyCatLanSyncManager(
         appContext,
         onLanClipReceived = ::ingestLanClip,
-        markCaptured = ::markCapturedByOriginId,
-        onBeforeClipboardWrite = ::suppressNextCapture,
+        onBeforeClipboardWrite = ::markClipboardWrite,
         decryptContent = ::decryptLanContent,
     )
     private var encryptor: CopyCatEncryptor? = null
@@ -88,34 +86,24 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     var autoCopyOtp: Boolean = false
 
     private val latestClipLock = Any()
-    private var lastRawClipHash: String? = null
-    private var lastRawClipId: String? = null
+    private var lastClipHash: String? = null
     private val clipIdLock = Any()
     private var lastClipIdMs: Long = 0L
 
-    private fun hashBytesSha256(vararg chunks: ByteArray): String {
-        val digest = MessageDigest.getInstance("SHA-256")
-        for (chunk in chunks) {
-            digest.update(chunk)
+    /** Every capture is bytes; identical consecutive bytes are the same clip. */
+    private fun contentHash(bytes: ByteArray): String =
+        MessageDigest.getInstance("SHA-256").digest(bytes)
+            .joinToString("") { "%02x".format(it) }
+
+    /**
+     * Records content this app is about to place on the OS clipboard so the
+     * detection strategies treat the resulting change as already-captured
+     * instead of a fresh user copy.
+     */
+    fun markClipboardWrite(bytes: ByteArray) {
+        synchronized(latestClipLock) {
+            lastClipHash = contentHash(bytes)
         }
-        return digest.digest().joinToString("") { "%02x".format(it) }
-    }
-
-    private fun rawTextClipHash(text: String): String {
-        return hashBytesSha256(text.toByteArray())
-    }
-
-    private fun rawBinaryClipHash(type: ClipType, data: ByteArray): String {
-        return hashBytesSha256(type.name.toByteArray(), data)
-    }
-
-    @Volatile
-    var isWritingToClipboard: Boolean = false
-        private set
-
-    fun suppressNextCapture() {
-        isWritingToClipboard = true
-        mainHandler.postDelayed({ isWritingToClipboard = false }, 500L)
     }
 
     val keystore: CopyCatKeyStore
@@ -559,30 +547,27 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             }
         }
         
-        val rawHash = rawTextClipHash(text)
+        val rawHash = contentHash(text.toByteArray())
         var nextId = ""
         var originId = ""
 
         val writeResult = synchronized(latestClipLock) {
-            if (lastRawClipHash == rawHash) {
-                return@synchronized CopyCatFileStorage.ClipWriteOutcome.Duplicate(
-                    lastRawClipId ?: "",
-                )
+            if (lastClipHash == rawHash) {
+                return@synchronized CopyCatFileStorage.ClipWriteOutcome.Duplicate
             }
 
-            // Get next clip ID (e.g., "Clip-1") for local file storage.
             nextId = getNextId()
-            // Globally unique 8-char ID for LAN/Supabase dedup — separate from the file storage ID.
             originId = generateOriginId()
 
             val success = fileStorage.writeClipItem(
-                nextId,
-                contentToPersist,
-                type,
-                label,
-                encrypted,
-                iv,
-                encMode,
+                clipId = nextId,
+                text = contentToPersist,
+                type = type,
+                label = label,
+                encrypted = encrypted,
+                iv = iv,
+                encMode = encMode,
+                originId = originId,
                 sourceId = sourceId,
                 sourceApp = sourceApp ?: "",
             )
@@ -592,13 +577,12 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                 return@synchronized CopyCatFileStorage.ClipWriteOutcome.Failed
             }
 
-            lastRawClipHash = rawHash
-            lastRawClipId = nextId
+            lastClipHash = rawHash
             CopyCatFileStorage.ClipWriteOutcome.Written(nextId)
         }
 
         if (writeResult is CopyCatFileStorage.ClipWriteOutcome.Duplicate) {
-            debugLog(logTag) { "Skipping duplicate latest clip $nextId" }
+            debugLog(logTag) { "Skipping duplicate latest clip" }
             return writeResult
         }
 
@@ -717,15 +701,13 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     ): CopyCatFileStorage.ClipWriteOutcome {
         if (!serviceEnabled) return CopyCatFileStorage.ClipWriteOutcome.Failed
 
-        val rawHash = rawBinaryClipHash(ClipType.FileUrl, data)
+        val rawHash = contentHash(data)
         var originId = ""
         var nextId = ""
 
         val writeResult = synchronized(latestClipLock) {
-            if (lastRawClipHash == rawHash) {
-                return@synchronized CopyCatFileStorage.ClipWriteOutcome.Duplicate(
-                    lastRawClipId ?: "",
-                )
+            if (lastClipHash == rawHash) {
+                return@synchronized CopyCatFileStorage.ClipWriteOutcome.Duplicate
             }
 
             originId = generateOriginId()
@@ -758,8 +740,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                 return@synchronized CopyCatFileStorage.ClipWriteOutcome.Failed
             }
 
-            lastRawClipHash = rawHash
-            lastRawClipId = nextId
+            lastClipHash = rawHash
             CopyCatFileStorage.ClipWriteOutcome.Written(nextId)
         }
 
@@ -947,18 +928,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             "ingestRemoteClip serverId=${clip.serverId} type=${clip.type} encrypted=${clip.encrypted} hasApplier=${remoteClipApplier != null}"
         )
 
-        // If a LAN clip with the same originId was already persisted, skip to
-        // avoid a duplicate entry in history. The serverId lookup handles the
-        // normal case where this device itself triggered the remote upsert.
-        val existingByOriginId = clip.originId?.takeIf { it.isNotBlank() }
+        // originId is the durable identity; legacy rows without one are
+        // reconciled by serverId in the Flutter layer.
+        val clipId = clip.originId?.takeIf { it.isNotBlank() }
             ?.let { fileStorage.findClipIdByOriginId(it) }
-        if (existingByOriginId != null) {
-            Log.d(logTag, "Skipping duplicate remote clip originId=${clip.originId} serverId=${clip.serverId} existingClipId=$existingByOriginId")
-            return
-        }
-
-        val existingClipId = fileStorage.findClipIdByServerId(clip.serverId)
-        val clipId = existingClipId ?: getNextId()
+            ?: getNextId()
 
         fileStorage.writeClipItem(
             clipId = clipId,
@@ -971,16 +945,12 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             serverId = clip.serverId,
             userId = clip.userId ?: "",
             timestamp = clip.modifiedAt,
+            originId = clip.originId ?: "",
         )
 
         val decryptedContent = decryptRemoteContent(clip) ?: return
         Log.i(logTag, "Applying remote clip to system clipboard")
         remoteClipApplier?.invoke(decryptedContent)
-    }
-
-    private fun deleteRemoteClip(serverId: Long) {
-        Log.i(logTag, "deleteRemoteClip serverId=$serverId")
-        fileStorage.deleteClipByServerId(serverId)
     }
 
     /** Called by [CopyCatLanSyncManager] when a clip arrives from a LAN peer. */
@@ -997,10 +967,8 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             "LAN: processed clip from ${payload.fromDeviceId} with originId ${payload.originId} and type ${payload.type.name.lowercase()}"
         }
 
-        val existingClipId = payload.serverId?.takeIf { it > 0L }
-            ?.let { fileStorage.findClipIdByServerId(it) }
-            ?: payload.originId.takeIf { it.isNotBlank() }
-                ?.let { fileStorage.findClipIdByOriginId(it) }
+        val existingClipId = payload.originId.takeIf { it.isNotBlank() }
+            ?.let { fileStorage.findClipIdByOriginId(it) }
 
         if (payload.deleted) {
             val targetClipId = existingClipId ?: getNextId()
@@ -1033,104 +1001,42 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             return
         }
 
-        if (existingClipId != null) {
-            // For media/file clips arriving as text-envelope mutations (title
-            // updates etc.), localFilePath and content are both empty. Preserve
-            // the existing stored file path so the clip remains playable.
-            val existingText = if (payload.localFilePath == null && payload.content.isBlank()) {
-                fileStorage.readClipItem(existingClipId)?.text ?: payload.content
-            } else {
-                payload.localFilePath ?: payload.content
-            }
-            val isFilePath = payload.localFilePath != null || (payload.content.isBlank() && existingText.isNotBlank())
-            val writeSuccess = fileStorage.writeClipItem(
-                clipId = existingClipId,
-                text = existingText,
-                type = payload.type,
-                label = if (isFilePath) {
-                    payload.fileName?.takeIf { it.isNotBlank() } ?: payload.label
-                } else {
-                    payload.label
-                },
-                encrypted = if (isFilePath) false else payload.encrypted,
-                iv = if (isFilePath) null else payload.iv,
-                encMode = if (isFilePath) null else payload.encMode,
-                serverId = payload.serverId ?: -1,
-                userId = payload.userId ?: "",
-                timestamp = payload.timestamp,
-                originId = payload.originId,
-                sourceId = payload.sourceId ?: "",
-                sourceApp = payload.sourceApp ?: "",
-                deletedAt = null,
-            )
-            if (writeSuccess) {
-                LanClipReceivedReporter.getInstance().signal(existingClipId)
-            } else {
-                Log.e(logTag, "Failed to update LAN clip originId=${payload.originId}")
-            }
-            return
-        }
+        val clipId = existingClipId ?: getNextId()
 
-        val nextId = getNextId()
+        // Media/file mutations (title edits etc.) arrive with neither a path nor
+        // content; keep whatever is already stored so the clip stays playable.
+        val text = payload.localFilePath
+            ?: payload.content.takeIf { it.isNotBlank() }
+            ?: existingClipId?.let { fileStorage.readClipItem(it)?.text }
+            ?: ""
+        val isFileClip = payload.localFilePath != null ||
+            (payload.content.isBlank() && text.isNotBlank())
 
-        val writeOutcome = if (payload.localFilePath != null) {
-            // File / media clip: store the cached file path as the text field so
-            // the Flutter layer can resolve it to a ClipboardItem with localPath.
-            fileStorage.writeClipItemIfOriginMissing(
-                clipId = nextId,
-                text = payload.localFilePath,
-                type = payload.type,
-                label = payload.fileName ?: payload.label,
-                encrypted = false,
-                iv = null,
-                encMode = null,
-                serverId = payload.serverId ?: -1,
-                userId = payload.userId ?: "",
-                timestamp = payload.timestamp,
-                originId = payload.originId,
-                sourceId = payload.sourceId ?: "",
-                sourceApp = payload.sourceApp ?: "",
-                deletedAt = null,
-            )
+        val written = fileStorage.writeClipItem(
+            clipId = clipId,
+            text = text,
+            type = payload.type,
+            label = if (isFileClip) {
+                payload.fileName?.takeIf { it.isNotBlank() } ?: payload.label
+            } else {
+                payload.label
+            },
+            encrypted = if (isFileClip) false else payload.encrypted,
+            iv = if (isFileClip) null else payload.iv,
+            encMode = if (isFileClip) null else payload.encMode,
+            serverId = payload.serverId ?: -1,
+            userId = payload.userId ?: "",
+            timestamp = payload.timestamp,
+            originId = payload.originId,
+            sourceId = payload.sourceId ?: "",
+            sourceApp = payload.sourceApp ?: "",
+            deletedAt = null,
+        )
+
+        if (written) {
+            LanClipReceivedReporter.getInstance().signal(clipId)
         } else {
-            fileStorage.writeClipItemIfOriginMissing(
-                clipId = nextId,
-                text = payload.content,
-                type = payload.type,
-                label = payload.label,
-                encrypted = payload.encrypted,
-                iv = payload.iv,
-                encMode = payload.encMode,
-                serverId = payload.serverId ?: -1,
-                userId = payload.userId ?: "",
-                timestamp = payload.timestamp,
-                originId = payload.originId,
-                sourceId = payload.sourceId ?: "",
-                sourceApp = payload.sourceApp ?: "",
-                deletedAt = null,
-            )
+            Log.e(logTag, "Failed to persist LAN clip originId=${payload.originId}")
         }
-
-        when (writeOutcome) {
-            is CopyCatFileStorage.ClipWriteOutcome.Written -> {
-                LanClipReceivedReporter.getInstance().signal(nextId)
-            }
-            is CopyCatFileStorage.ClipWriteOutcome.Duplicate -> debugLog(logTag) {
-                "Skipping duplicate LAN clip originId=${payload.originId} existingClipId=${writeOutcome.clipId}"
-            }
-            is CopyCatFileStorage.ClipWriteOutcome.Failed -> {
-                Log.e(logTag, "Failed to persist LAN clip originId=${payload.originId}")
-            }
-        }
-    }
-
-    /**
-     * Suppresses re-capture of a clip that LAN sync just wrote to the clipboard.
-     * The [originId] is stored so the detection strategy can skip the next
-     * matching clipboard read.
-     */
-    private fun markCapturedByOriginId(originId: String) {
-        // Store in SharedPreferences so detection strategies can check it.
-        sp.edit().putString("lan_last_written_origin", originId).apply()
     }
 }

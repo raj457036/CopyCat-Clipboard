@@ -51,7 +51,6 @@ object ListeningMode {
 class CopyCatSyncManager(
     applicationContext: Context,
     private val onRemoteClipUpsert: (RemoteClipPayload) -> Unit,
-    private val onRemoteClipDelete: (Long) -> Unit,
 ) {
     private val appContext: Context = applicationContext.applicationContext
     private val logTag = "CopyCatSyncManager"
@@ -540,13 +539,6 @@ class CopyCatSyncManager(
                         "[CC] [debug] Received realtime event: ($eventType, $record)"
                     }
                     processRemoteRecord(record)
-                }
-                "DELETE" -> {
-                    val oldRecord = data.optJSONObject(JsonKey.OLD_RECORD)
-                    val serverId = oldRecord?.optLong(JsonKey.ID, -1L) ?: -1L
-                    if (serverId > 0) {
-                        onRemoteClipDelete(serverId)
-                    }
                 }
             }
         } catch (e: Exception) {

@@ -23,7 +23,6 @@ object JsonKey {
     const val DATA = "data"
     const val TYPE = "type"
     const val RECORD = "record"
-    const val OLD_RECORD = "old_record"
 
     const val ID = "id"
     const val ORIGIN_ID = "origin_id"

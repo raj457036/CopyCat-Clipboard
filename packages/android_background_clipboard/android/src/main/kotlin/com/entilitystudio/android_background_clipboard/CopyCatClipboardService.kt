@@ -161,6 +161,7 @@ class CopyCatClipboardService : Service() {
     fun writeToClipboard(data: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             lastCopiedText = data
+            copycatStorage.markClipboardWrite(data.toByteArray())
             val clip = ClipData.newPlainText("CopyCat", data)
             clipboardManager.setPrimaryClip(clip)
         }
@@ -177,10 +178,6 @@ class CopyCatClipboardService : Service() {
         }
         if (!isScreenOn()) {
             debugLog(logTag) { "Clipboard capture paused: screen is off" }
-            return
-        }
-        if (copycatStorage.isWritingToClipboard) {
-            debugLog(logTag) { "Clipboard capture suppressed: LAN sync is writing to clipboard" }
             return
         }
         val resolvedPackageName = appPackageName.trim()
