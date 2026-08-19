@@ -192,11 +192,9 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
 
   Future<void> _syncOneLanClip(String clipKey) async {
     await _lock.synchronized(() async {
-      final index = int.tryParse(clipKey.replaceFirst('Clip-', ''));
-      if (index == null) return;
-      final clips = await plugin.readClipsBatch(index, index);
-      if (clips.isEmpty || clips.first.isEmpty) return;
-      final clipItem = parseClip(clips.first);
+      final clip = await plugin.readShared<Map>(clipKey);
+      if (clip == null || clip.isEmpty) return;
+      final clipItem = parseClip(clip);
       final success = await writeToLocal(clipItem);
       if (success) {
         await plugin.deleteShared([clipKey]);
@@ -210,51 +208,33 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
 
   Future<void> _syncStates() async {
     await _lock.synchronized(() async {
-      final endMark = await plugin.readShared<int>("endId") ?? -1;
-      if (endMark == -1) return;
+      final clips = await plugin.readAllClips();
+      if (clips.isEmpty) return;
 
-      const batchSize = 100;
       final deleteKeys = <String>[];
-      final seenKeys = <String>{};
 
-      for (var start = 0; start <= endMark; start += batchSize) {
-        final end = (start + batchSize - 1 > endMark)
-            ? endMark
-            : start + batchSize - 1;
-        final clips = await plugin.readClipsBatch(start, end);
+      for (final clip in clips) {
+        if (clip.isEmpty) continue;
 
-        for (final clip in clips) {
-          if (clip.isEmpty) continue;
+        final clipKey = clip['id'] as String?;
+        if (clipKey == null || clipKey.isEmpty) continue;
 
-          final clipKey = clip['id'] as String?;
-          if (clipKey == null || clipKey.isEmpty) continue;
-
-          final rawType = (clip['type'] as String?)?.trim();
-          final rawText = (clip['text'] as String?)?.trim();
-          // Legacy malformed URI captures may be stored as Text="null".
-          // These should never be restored into app history.
-          if (rawType == 'Text' && rawText?.toLowerCase() == 'null') {
-            deleteKeys.add(clipKey);
-            continue;
-          }
-
-          seenKeys.add(clipKey);
-          final clipItem = parseClip(clip);
-          final success = await writeToLocal(clipItem);
-          if (success) {
-            deleteKeys.add(clipKey);
-          }
+        final rawType = (clip['type'] as String?)?.trim();
+        final rawText = (clip['text'] as String?)?.trim();
+        // Legacy malformed URI captures may be stored as Text="null".
+        // These should never be restored into app history.
+        if (rawType == 'Text' && rawText?.toLowerCase() == 'null') {
+          deleteKeys.add(clipKey);
+          continue;
         }
-      }
 
-      for (var i = 0; i < endMark + 1; i++) {
-        final clipKey = "Clip-$i";
-        if (!seenKeys.contains(clipKey)) {
+        final clipItem = parseClip(clip);
+        final success = await writeToLocal(clipItem);
+        if (success) {
           deleteKeys.add(clipKey);
         }
       }
 
-      await plugin.writeShared("endId", -1);
       await plugin.deleteShared(deleteKeys);
     });
   }
