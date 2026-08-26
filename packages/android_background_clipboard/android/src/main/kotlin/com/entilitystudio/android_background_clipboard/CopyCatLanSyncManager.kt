@@ -12,7 +12,9 @@ import android.os.Looper
 import android.os.PowerManager
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import android.os.SystemClock
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -109,6 +111,23 @@ class CopyCatLanSyncManager(
     var lanSyncEnabled: Boolean = false
     var deviceId: String = ""
     var userId: String = ""
+        set(value) {
+            val normalized = value.trim()
+            val changed = field != normalized
+            field = normalized
+            if (changed && started) {
+                Log.i(LOG_TAG, "User ID updated ($normalized), re-registering NSD with new serviceType ($serviceType)")
+                mainHandler.post {
+                    if (started && !nsdPaused) {
+                        stopDiscovery()
+                        unregisterNsd()
+                        registerNsd()
+                        discoverPeers()
+                        scheduleDiscoveryRefresh()
+                    }
+                }
+            }
+        }
     var autoWriteOnReceive: Boolean = false
     var maxAutoCopyBytes: Int = 10 * 1024 * 1024
 
@@ -127,6 +146,21 @@ class CopyCatLanSyncManager(
     private var started = false
     private var connectionExecutor: ThreadPoolExecutor? = null
     private val mainHandler = Handler(Looper.getMainLooper())
+    private val lastErrorToastAtMs = mutableMapOf<String, Long>()
+    private val errorToastCooldownMs = 5000L
+
+    private fun showErrorToast(message: String) {
+        val now = SystemClock.elapsedRealtime()
+        synchronized(lastErrorToastAtMs) {
+            val lastToast = lastErrorToastAtMs[message] ?: 0L
+            if (now - lastToast < errorToastCooldownMs) return
+            lastErrorToastAtMs[message] = now
+        }
+        mainHandler.post {
+            Toast.makeText(appContext, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private val discoveryRefreshRunnable = object : Runnable {
         override fun run() {
             if (!started || nsdPaused) return
@@ -360,6 +394,7 @@ class CopyCatLanSyncManager(
                         val bodyBytes = readBodyBytes(rawInput, contentLength, originId) ?: return
                         if (!verifyHmac(bodyBytes, hmacHeader)) {
                             Log.w(LOG_TAG, "HMAC verification failed from $fromDeviceId")
+                            showErrorToast("LAN clip authentication failed")
                             return
                         }
                         handleTextClip(bodyBytes, fromDeviceId, originId, clipType)
@@ -617,6 +652,7 @@ class CopyCatLanSyncManager(
             val expectedBytes = parseHmacHex(expectedHmac)
             if (expectedBytes == null || !MessageDigest.isEqual(mac.doFinal(), expectedBytes)) {
                 Log.w(LOG_TAG, "HMAC verification failed from $fromDeviceId")
+                showErrorToast("LAN clip authentication failed")
                 tempFile.delete()
                 return
             }
@@ -815,10 +851,7 @@ class CopyCatLanSyncManager(
         mainHandler.removeCallbacks(discoveryRefreshRunnable)
         stopDiscovery()
         unregisterNsd()
-        peers.clear()
-        serviceNameToDeviceId.clear()
-        LanPeerReporter.getInstance().clear()
-        Log.i(LOG_TAG, "LAN mDNS paused (screen off)")
+        Log.i(LOG_TAG, "LAN mDNS paused (screen off, ${peers.size} peers cached)")
     }
 
     private fun resumeNsd() {
@@ -932,7 +965,10 @@ class CopyCatLanSyncManager(
         sourceId: String? = null,
         sourceApp: String? = null,
     ) {
-        if (!started || peers.isEmpty() || userId.isBlank()) return
+        if (!started || peers.isEmpty() || userId.isBlank()) {
+            Log.i(LOG_TAG, "broadcastTextClip skipped: started=$started peersCount=${peers.size} userIdBlank=${userId.isBlank()}")
+            return
+        }
 
         val timestamp = System.currentTimeMillis()
         val payloadType = when (type) {
@@ -994,7 +1030,10 @@ class CopyCatLanSyncManager(
         sourceId: String? = null,
         sourceApp: String? = null,
     ) {
-        if (!started || peers.isEmpty() || userId.isBlank()) return
+        if (!started || peers.isEmpty() || userId.isBlank()) {
+            Log.i(LOG_TAG, "broadcastBinaryClip skipped: started=$started peersCount=${peers.size} userIdBlank=${userId.isBlank()}")
+            return
+        }
         val hmac = computeHmac(data)
         peers.values.forEach { peer ->
             sendToPeer(
