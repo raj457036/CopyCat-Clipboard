@@ -6,6 +6,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.util.Base64
 import android.util.Log
 import android.widget.Toast
@@ -52,6 +53,21 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private var encryptor: CopyCatEncryptor? = null
     private val authSyncFailureTracker = CopyCatAuthSyncFailureTracker(appContext)
     private val mainHandler = Handler(Looper.getMainLooper())
+    private val lastErrorToastAtMs = mutableMapOf<String, Long>()
+    private val errorToastCooldownMs = 5000L
+
+    fun showErrorToast(message: String) {
+        val now = SystemClock.elapsedRealtime()
+        synchronized(lastErrorToastAtMs) {
+            val lastToast = lastErrorToastAtMs[message] ?: 0L
+            if (now - lastToast < errorToastCooldownMs) return
+            lastErrorToastAtMs[message] = now
+        }
+        mainHandler.post {
+            Toast.makeText(appContext, message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private val reconfigureRunnable = Runnable {
         syncManager.reconfigureConnections()
     }
@@ -594,9 +610,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         
         // Broadcast to LAN peers
         // Lazily sync userId in case the token loaded after start().
-        if (lanSyncManager.userId.isBlank()) {
-            val uid = syncManager.currentUserId ?: ""
-            if (uid.isNotBlank()) lanSyncManager.userId = uid
+        val currentUid = syncManager.currentUserId ?: ""
+        if (currentUid.isNotBlank() && lanSyncManager.userId != currentUid) {
+            lanSyncManager.userId = currentUid
         }
         lanSyncManager.broadcastTextClip(
             originId = originId,
@@ -678,10 +694,14 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             }
             if (syncManager.consumeLastWriteAuthFailure()) {
                 authSyncFailureTracker.onAuthFailure()
+                showErrorToast("Cloud sync auth expired. Open app to reconnect.")
+            } else {
+                showErrorToast("Failed to sync clip to cloud.")
             }
             Log.w(logTag, "Syncing failed")
         } catch (e: Exception) {
             Log.e(logTag, "Error while syncing clip $e")
+            showErrorToast("Failed to sync clip to cloud.")
         }
     }
 
@@ -756,9 +776,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         }
 
         // Lazily sync userId
-        if (lanSyncManager.userId.isBlank()) {
-            val uid = syncManager.currentUserId ?: ""
-            if (uid.isNotBlank()) lanSyncManager.userId = uid
+        val binaryUid = syncManager.currentUserId ?: ""
+        if (binaryUid.isNotBlank() && lanSyncManager.userId != binaryUid) {
+            lanSyncManager.userId = binaryUid
         }
         lanSyncManager.broadcastBinaryClip(
             originId = originId,
@@ -897,18 +917,14 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private fun decryptLanContent(content: String, encMode: String?, iv: String?): String? {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || encryptor == null) {
             Log.w(logTag, "Encrypted LAN clip cannot be written to clipboard: encryptor unavailable")
-            mainHandler.post {
-                Toast.makeText(appContext, "CopyCat: Encryption key not ready - clip not copied", Toast.LENGTH_SHORT).show()
-            }
+            showErrorToast("Encryption key not ready - clip not copied")
             return null
         }
         return try {
             encryptor?.decrypt(content, encMode ?: EncryptionMode.CFB, iv)
         } catch (e: Exception) {
             Log.w(logTag, "Failed to decrypt LAN clip: ${e.message}")
-            mainHandler.post {
-                Toast.makeText(appContext, "CopyCat: Failed to decrypt clip - not copied to clipboard", Toast.LENGTH_SHORT).show()
-            }
+            showErrorToast("Could not decrypt LAN clip")
             null
         }
     }

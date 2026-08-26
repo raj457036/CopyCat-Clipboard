@@ -307,18 +307,22 @@ class CopyCatSyncManager(
         val request = Request.Builder()
             .url(url)
             .addHeader("apikey", projectApiKey)
+            .addHeader("Authorization", "Bearer $projectApiKey")
             .addHeader("Content-type", contentType)
             .post(requestBody)
             .build()
 
         return try {
             client.newCall(request).execute().use { response ->
-                if (response.code == 200) {
-                    val refreshedToken = response.body.string()
-                    token = refreshedToken
+                val bodyString = response.body?.string() ?: ""
+                if (response.code == 200 && bodyString.isNotBlank()) {
+                    token = bodyString
                     load()
-                    writeToSp(tokenKey, refreshedToken)
+                    writeToSp(tokenKey, bodyString)
+                    Log.i(logTag, "Successfully refreshed Supabase token in background")
+                    true
                 } else {
+                    Log.w(logTag, "Token refresh failed. code=${response.code} body=$bodyString")
                     false
                 }
             }
@@ -336,13 +340,13 @@ class CopyCatSyncManager(
             }
 
             for (attempt in 1..maxAuthRecoveryAttempts) {
-                val refreshed = doRefreshToken()
-                if (refreshed && !isExpired && !accessToken.isNullOrBlank()) {
+                if (reloadTokenFromSharedPreferences() && !isExpired && !accessToken.isNullOrBlank()) {
+                    Log.i(logTag, "Recovered auth from SharedPreferences before network attempt $attempt")
                     return@synchronized true
                 }
 
-                reloadTokenFromSharedPreferences()
-                if (!isExpired && !accessToken.isNullOrBlank()) {
+                val refreshed = doRefreshToken()
+                if (refreshed && !isExpired && !accessToken.isNullOrBlank()) {
                     return@synchronized true
                 }
 
@@ -698,14 +702,15 @@ class CopyCatSyncManager(
 
         fun executeRequest(req: Request): Pair<Long, Int> {
             return client.newCall(req).execute().use { response ->
-                if (response.code == 201) {
+                if (response.code == 201 || response.code == 200) {
                     Log.i(
                         logTag,
-                        "Remote write accepted (201). sourceId=$normalizedSourceId sourceApp=$normalizedSourceApp",
+                        "Remote write accepted (${response.code}). sourceId=$normalizedSourceId sourceApp=$normalizedSourceApp",
                     )
-                    val location = response.header("location") ?: return Pair(-1, 201)
-                    val match = regex.find(location) ?: return Pair(-1, 201)
-                    Pair(match.value.toLong(), 201)
+                    val location = response.header("location")
+                    val match = location?.let { regex.find(it) }
+                    val id = match?.value?.toLongOrNull() ?: 1L
+                    Pair(id, response.code)
                 } else {
                     val responseBody = response.body?.string()?.takeIf { it.isNotBlank() }
                     Log.w(
