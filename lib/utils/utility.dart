@@ -236,7 +236,7 @@ Size? getImageResolution(String path) {
 }
 
 // Text cleanup
-final cleanUpStringRegex = RegExp(r'[\x00-\x09\x0B-\x0C\x0E-\x1F\x7F]');
+final cleanUpStringRegex = RegExp(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]');
 String? cleanUpString(String? input) {
   if (input == null) return null;
   // Problematic characters to be replaced them with an empty string

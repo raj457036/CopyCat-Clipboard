@@ -1,6 +1,7 @@
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/pages/preview/view/clip_preview_config.dart';
+import 'package:clipboard/utils/clipboard_actions.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
@@ -73,6 +74,9 @@ class TextClipPreviewCard extends StatelessWidget {
           child: SelectableText(
             item.text ?? context.locale.preview__card__missing_text,
             style: style,
+            contextMenuBuilder: isDesktopPlatform
+                ? textSelectionToolbarButtonItems
+                : null,
           ),
         ),
       ),
