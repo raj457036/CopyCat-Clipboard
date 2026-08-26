@@ -86,6 +86,26 @@ class LanHttpHandler {
     final hmacHeader = request.headers.value('x-cc-hmac') ?? '';
     final fromOs = LanClipBuilder.parseOS(request.headers.value('x-cc-os'));
 
+    // Opportunistically learn or refresh peer address from incoming clip traffic
+    final annPort = int.tryParse(request.headers.value('x-cc-port') ?? '');
+    if (annPort != null && annPort > 0) {
+      final host = request.connectionInfo?.remoteAddress.address ?? '';
+      if (host.isNotEmpty) {
+        final changed = _registry.recordPeer(
+          fromDeviceId,
+          host,
+          annPort,
+          os: fromOs,
+        );
+        if (changed) {
+          unawaited(_registry.save());
+          logger.i(
+            () => 'LAN: learned peer $fromDeviceId at $host:$annPort via /clip',
+          );
+        }
+      }
+    }
+
     if (originId.isEmpty || typeStr.isEmpty || hmacHeader.isEmpty) {
       _badRequest(request);
       return;

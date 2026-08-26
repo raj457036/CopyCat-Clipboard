@@ -185,27 +185,30 @@ class LanSender {
     required List<int> bodyBytes,
     required String hmac,
   }) async {
-    final client = io.HttpClient();
-    try {
-      client.connectionTimeout = const Duration(seconds: 3);
-      final req = await client.postUrl(Uri.parse('http://$host:$port/clip'));
-      req.headers
-        ..set('X-CC-DID', _config.deviceId)
-        ..set('X-CC-OID', originId)
-        ..set('X-CC-TYPE', typeStr)
-        ..set('X-CC-HMAC', hmac)
-        ..set('X-CC-PORT', _config.serverPort.toString())
-        ..set('X-CC-OS', currentPlatformOS().name)
-        ..contentType = io.ContentType.json
-        ..contentLength = bodyBytes.length;
-      req.add(bodyBytes);
-      final resp = await req.close();
-      await resp.drain<void>();
-    } catch (e) {
-      logger.d('LAN: Could not reach peer $host:$port: $e');
-    } finally {
-      client.close(force: true);
-    }
+    await _executeWithRetry(
+      peerDescription: '$host:$port',
+      action: () async {
+        final client = io.HttpClient();
+        try {
+          client.connectionTimeout = const Duration(seconds: 3);
+          final req = await client.postUrl(Uri.parse('http://$host:$port/clip'));
+          req.headers
+            ..set('X-CC-DID', _config.deviceId)
+            ..set('X-CC-OID', originId)
+            ..set('X-CC-TYPE', typeStr)
+            ..set('X-CC-HMAC', hmac)
+            ..set('X-CC-PORT', _config.serverPort.toString())
+            ..set('X-CC-OS', currentPlatformOS().name)
+            ..contentType = io.ContentType.json
+            ..contentLength = bodyBytes.length;
+          req.add(bodyBytes);
+          final resp = await req.close();
+          await resp.drain<void>();
+        } finally {
+          client.close(force: true);
+        }
+      },
+    );
   }
 
   Future<void> sendBinaryToPeer({
@@ -226,34 +229,62 @@ class LanSender {
     required int modified,
     required String osStr,
   }) async {
-    final client = io.HttpClient();
-    try {
-      client.connectionTimeout = const Duration(seconds: 10);
-      final req = await client.postUrl(Uri.parse('http://$host:$port/clip'));
-      req.headers
-        ..set('X-CC-DID', _config.deviceId)
-        ..set('X-CC-OID', originId)
-        ..set('X-CC-TYPE', typeStr)
-        ..set('X-CC-HMAC', hmac)
-        ..set('X-CC-PORT', _config.serverPort.toString())
-        ..set('X-CC-TS', ts.toString())
-        ..set('X-CC-EXT', fileExt)
-        ..set('X-CC-NAME', fileName)
-        ..set('X-CC-MIME', mimeType)
-        ..set('X-CC-CREATED', created.toString())
-        ..set('X-CC-MODIFIED', modified.toString())
-        ..set('X-CC-OS', osStr)
-        ..set('X-CC-SOURCE-ID', sourceId ?? '')
-        ..set('X-CC-SOURCE-APP', sourceApp ?? '')
-        ..set('Content-Type', mimeType)
-        ..contentLength = fileLength;
-      await req.addStream(file.openRead());
-      final resp = await req.close();
-      await resp.drain<void>();
-    } catch (e) {
-      logger.d('LAN: Could not send binary clip to peer $host:$port: $e');
-    } finally {
-      client.close(force: true);
+    await _executeWithRetry(
+      peerDescription: '$host:$port',
+      action: () async {
+        final client = io.HttpClient();
+        try {
+          client.connectionTimeout = const Duration(seconds: 10);
+          final req = await client.postUrl(Uri.parse('http://$host:$port/clip'));
+          req.headers
+            ..set('X-CC-DID', _config.deviceId)
+            ..set('X-CC-OID', originId)
+            ..set('X-CC-TYPE', typeStr)
+            ..set('X-CC-HMAC', hmac)
+            ..set('X-CC-PORT', _config.serverPort.toString())
+            ..set('X-CC-TS', ts.toString())
+            ..set('X-CC-EXT', fileExt)
+            ..set('X-CC-NAME', fileName)
+            ..set('X-CC-MIME', mimeType)
+            ..set('X-CC-CREATED', created.toString())
+            ..set('X-CC-MODIFIED', modified.toString())
+            ..set('X-CC-OS', osStr)
+            ..set('X-CC-SOURCE-ID', sourceId ?? '')
+            ..set('X-CC-SOURCE-APP', sourceApp ?? '')
+            ..set('Content-Type', mimeType)
+            ..contentLength = fileLength;
+          await req.addStream(file.openRead());
+          final resp = await req.close();
+          await resp.drain<void>();
+        } finally {
+          client.close(force: true);
+        }
+      },
+    );
+  }
+
+  Future<void> _executeWithRetry({
+    required String peerDescription,
+    required Future<void> Function() action,
+    int maxRetries = 2,
+  }) async {
+    for (var attempt = 1; attempt <= maxRetries + 1; attempt++) {
+      try {
+        await action();
+        return;
+      } catch (e) {
+        if (attempt <= maxRetries) {
+          final delayMs = attempt == 1 ? 350 : 1000;
+          logger.d(
+            'LAN: Delivery to $peerDescription failed ($attempt/$maxRetries), retrying in ${delayMs}ms: $e',
+          );
+          await Future<void>.delayed(Duration(milliseconds: delayMs));
+        } else {
+          logger.d(
+            'LAN: Could not deliver to $peerDescription after $maxRetries retries: $e',
+          );
+        }
+      }
     }
   }
 }

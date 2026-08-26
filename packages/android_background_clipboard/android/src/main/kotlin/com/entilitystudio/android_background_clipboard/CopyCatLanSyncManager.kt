@@ -12,14 +12,18 @@ import android.os.Looper
 import android.os.PowerManager
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
+import android.net.wifi.WifiManager
 import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
@@ -97,6 +101,8 @@ class CopyCatLanSyncManager(
         private const val DISCOVERY_REFRESH_EMPTY_MS = 15_000L
         private const val DISCOVERY_REFRESH_STABLE_MS = 60_000L
         private const val DISCOVERY_POST_REGISTER_DELAY_MS = 1_200L
+        private const val CACHED_PEERS_PREF_KEY = "lan_cached_peers"
+        private const val MAX_SEND_RETRIES = 2
     }
 
     private val serviceType: String
@@ -148,6 +154,85 @@ class CopyCatLanSyncManager(
     private val mainHandler = Handler(Looper.getMainLooper())
     private val lastErrorToastAtMs = mutableMapOf<String, Long>()
     private val errorToastCooldownMs = 5000L
+    private var multicastLock: WifiManager.MulticastLock? = null
+    private val sp = appContext.getSharedPreferences("CopyCatSharedPreferences", Context.MODE_PRIVATE)
+
+    private fun acquireMulticastLock() {
+        if (multicastLock?.isHeld == true) return
+        try {
+            val wifi = appContext.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager
+            multicastLock = wifi?.createMulticastLock("copycat_lan_multicast")?.apply {
+                setReferenceCounted(false)
+                acquire()
+            }
+            Log.i(LOG_TAG, "Acquired WiFi MulticastLock for mDNS discovery")
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "Failed to acquire MulticastLock: ${e.message}")
+        }
+    }
+
+    private fun releaseMulticastLock() {
+        try {
+            if (multicastLock?.isHeld == true) {
+                multicastLock?.release()
+                Log.i(LOG_TAG, "Released WiFi MulticastLock")
+            }
+        } catch (_: Exception) {}
+        multicastLock = null
+    }
+
+    private fun loadCachedPeers() {
+        try {
+            val raw = sp.getString(CACHED_PEERS_PREF_KEY, null) ?: return
+            val json = JSONObject(raw)
+            val keys = json.keys()
+            var loadedCount = 0
+            while (keys.hasNext()) {
+                val did = keys.next()
+                val peerObj = json.optJSONObject(did) ?: continue
+                val host = peerObj.optString("host")
+                val port = peerObj.optInt("port", 0)
+                if (did.isNotBlank() && did != deviceId && host.isNotBlank() && port in 1..65535) {
+                    peers[did] = PeerAddress(host, port)
+                    LanPeerReporter.getInstance().addPeer(did, host, port)
+                    loadedCount++
+                }
+            }
+            if (loadedCount > 0) {
+                Log.i(LOG_TAG, "Loaded $loadedCount cached LAN peer(s) from storage")
+            }
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "Failed to load cached LAN peers: ${e.message}")
+        }
+    }
+
+    private fun saveCachedPeers() {
+        try {
+            val json = JSONObject()
+            peers.forEach { (did, address) ->
+                val obj = JSONObject().apply {
+                    put("host", address.host)
+                    put("port", address.port)
+                }
+                json.put(did, obj)
+            }
+            sp.edit().putString(CACHED_PEERS_PREF_KEY, json.toString()).apply()
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "Failed to save cached LAN peers: ${e.message}")
+        }
+    }
+
+    private fun recordPeer(did: String, host: String, port: Int, source: String) {
+        if (did.isBlank() || did == deviceId || host.isBlank() || port !in 1..65535) return
+        val existing = peers[did]
+        if (existing == null || existing.host != host || existing.port != port) {
+            peers[did] = PeerAddress(host, port)
+            LanPeerReporter.getInstance().addPeer(did, host, port)
+            saveCachedPeers()
+            scheduleDiscoveryRefresh()
+            Log.i(LOG_TAG, "Peer recorded ($source): $did @ $host:$port")
+        }
+    }
 
     private fun showErrorToast(message: String) {
         val now = SystemClock.elapsedRealtime()
@@ -200,10 +285,12 @@ class CopyCatLanSyncManager(
     fun start() {
         if (started || !lanSyncEnabled) return
         started = true
+        loadCachedPeers()
         isScreenOn = readScreenInteractiveState()
         registerScreenReceiver()
         startServer()
         if (isScreenOn) {
+            acquireMulticastLock()
             registerNsd()
             discoverPeers()
             scheduleDiscoveryRefresh()
@@ -218,6 +305,7 @@ class CopyCatLanSyncManager(
         if (!started) return
         started = false
         mainHandler.removeCallbacks(discoveryRefreshRunnable)
+        releaseMulticastLock()
         unregisterScreenReceiver()
         stopDiscovery()
         unregisterNsd()
@@ -363,6 +451,13 @@ class CopyCatLanSyncManager(
                 val fromDeviceId = headers["x-cc-did"] ?: return
                 if (fromDeviceId == deviceId) return // don't receive own broadcasts
 
+                // Opportunistically learn or refresh peer address from incoming clip traffic
+                val remotePort = headers["x-cc-port"]?.toIntOrNull()?.takeIf { it in 1..65535 }
+                val remoteHost = s.inetAddress?.hostAddress
+                if (remotePort != null && !remoteHost.isNullOrBlank()) {
+                    recordPeer(fromDeviceId, remoteHost, remotePort, "clip-traffic")
+                }
+
                 val originId = headers["x-cc-oid"] ?: return
                 val typeStr = headers["x-cc-type"] ?: return
                 val hmacHeader = headers["x-cc-hmac"] ?: return
@@ -466,13 +561,8 @@ class CopyCatLanSyncManager(
     private fun learnPeerFromPing(headers: Map<String, String>, remoteAddress: InetAddress) {
         val announcedDeviceId = headers["x-cc-did"]?.takeIf { it.isNotBlank() } ?: return
         val announcedPort = headers["x-cc-port"]?.toIntOrNull()?.takeIf { it in 1..65535 } ?: return
-        if (announcedDeviceId == deviceId) return
-
         val host = remoteAddress.hostAddress ?: return
-        peers[announcedDeviceId] = PeerAddress(host, announcedPort)
-        LanPeerReporter.getInstance().addPeer(announcedDeviceId, host, announcedPort)
-        scheduleDiscoveryRefresh()
-        Log.d(LOG_TAG, "Peer learned via ping: $announcedDeviceId @ $host:$announcedPort")
+        recordPeer(announcedDeviceId, host, announcedPort, "ping")
     }
 
     private fun handleTextClip(
@@ -849,6 +939,7 @@ class CopyCatLanSyncManager(
         if (nsdPaused) return
         nsdPaused = true
         mainHandler.removeCallbacks(discoveryRefreshRunnable)
+        releaseMulticastLock()
         stopDiscovery()
         unregisterNsd()
         Log.i(LOG_TAG, "LAN mDNS paused (screen off, ${peers.size} peers cached)")
@@ -857,6 +948,7 @@ class CopyCatLanSyncManager(
     private fun resumeNsd() {
         if (!nsdPaused) return
         nsdPaused = false
+        acquireMulticastLock()
         registerNsd()
         discoverPeers()
         scheduleDiscoveryRefresh()
@@ -896,10 +988,7 @@ class CopyCatLanSyncManager(
                 if (did == deviceId) return // self
                 val host = info.host?.hostAddress ?: return
                 serviceNameToDeviceId[info.serviceName] = did
-                peers[did] = PeerAddress(host, info.port)
-                LanPeerReporter.getInstance().addPeer(did, host, info.port)
-                scheduleDiscoveryRefresh()
-                Log.d(LOG_TAG, "Peer resolved: $did @ $host:${info.port}")
+                recordPeer(did, host, info.port, "mdns-resolve")
                 // Announce our own HTTP server address to the peer immediately
                 // so it can broadcast clips back to us without waiting for its
                 // own mDNS discovery cycle.
@@ -1084,14 +1173,38 @@ class CopyCatLanSyncManager(
                 .post(body.toRequestBody(contentType.toMediaTypeOrNull()))
                 .build()
 
-            httpClient.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    Log.w(LOG_TAG, "Peer ${peer.host}:${peer.port} returned ${response.code}")
+            enqueueWithRetry(peer, request)
+        } catch (e: Exception) {
+            Log.d(LOG_TAG, "Could not build send request to peer ${peer.host}:${peer.port}: ${e.message}")
+        }
+    }
+
+    private fun enqueueWithRetry(
+        peer: PeerAddress,
+        request: Request,
+        attempt: Int = 1,
+    ) {
+        httpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                if (attempt <= MAX_SEND_RETRIES) {
+                    val delayMs = if (attempt == 1) 350L else 1000L
+                    Log.d(LOG_TAG, "Delivery to ${peer.host}:${peer.port} failed ($attempt/$MAX_SEND_RETRIES), retrying in ${delayMs}ms: ${e.message}")
+                    mainHandler.postDelayed({
+                        enqueueWithRetry(peer, request, attempt + 1)
+                    }, delayMs)
+                } else {
+                    Log.d(LOG_TAG, "Could not reach peer ${peer.host}:${peer.port} after $MAX_SEND_RETRIES retries: ${e.message}")
                 }
             }
-        } catch (e: Exception) {
-            Log.d(LOG_TAG, "Could not reach peer ${peer.host}:${peer.port}: ${e.message}")
-        }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use { res ->
+                    if (!res.isSuccessful) {
+                        Log.w(LOG_TAG, "Peer ${peer.host}:${peer.port} returned ${res.code}")
+                    }
+                }
+            }
+        })
     }
 
     private fun toIso8601Utc(timestampMs: Long): String {
