@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/logging.dart';
@@ -46,10 +47,23 @@ class LanDiscovery {
 
   Future<void> _registerService() async {
     final localOs = currentPlatformOS().name;
+    final interfaces = await NetworkInterface.list();
+    final ips = interfaces
+        .expand((iface) => iface.addresses)
+        .where(
+          (addr) =>
+              addr.type == InternetAddressType.IPv4 ||
+              (addr.type == InternetAddressType.IPv6 && !addr.isLinkLocal),
+        )
+        .toSet()
+        .toList();
+
     final service = await MDNSService.create(
       instance: 'copycat-${_config.deviceId}',
       service: _config.serviceType,
       port: _config.serverPort,
+      hostName: 'copycat-${_config.deviceId}',
+      ips: ips.isNotEmpty ? ips : null,
       txt: ['did=${_config.deviceId}', 'os=$localOs'],
     );
     _mdnsServer = MDNSServer(MDNSServerConfig(zone: service, reusePort: true));
