@@ -188,6 +188,8 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
   }
 
   Future<void> quitApp() async {
+    await windowActionCubit.show();
+    await windowActionCubit.focus();
     final locale = await _currentL10n();
     final result = await FlutterPlatformAlert.showCustomAlert(
       windowTitle: locale.app__name,
@@ -208,6 +210,7 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
     switch (menuItem.key) {
       case "show_window":
         await windowAction?.show();
+        await windowAction?.focus();
 
       case "pause_copycat":
         if (paused) {
@@ -258,7 +261,6 @@ class TrayManagerState extends State<TrayManager> with TrayListener {
           return;
         }
         await windowActionCubit.showInTaskbar(_shouldShowInTaskbar(config));
-        await windowActionCubit.show();
         final isPaused =
             config.pausedTill != null &&
             systemTime().isBefore(config.pausedTill!);
