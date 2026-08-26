@@ -483,3 +483,38 @@ Future<void> performPrimaryActionOnClip(
     await copyToClipboard(context, item);
   }
 }
+
+Widget textSelectionToolbarButtonItems(
+  BuildContext context,
+  EditableTextState editableTextState,
+) {
+  final selectedText = editableTextState.textEditingValue.selection.textInside(
+    editableTextState.textEditingValue.text,
+  );
+  final tempClipItem = ClipboardItem.fromText(selectedText);
+  return AdaptiveTextSelectionToolbar.buttonItems(
+    anchors: editableTextState.contextMenuAnchors,
+    buttonItems: [
+      ContextMenuButtonItem(
+        onPressed: () async {
+          await copyToClipboard(context, tempClipItem);
+          ContextMenuController.removeAny();
+        },
+        type: ContextMenuButtonType.copy,
+      ),
+      ContextMenuButtonItem(
+        onPressed: () async {
+          await pasteOnLastWindow(context, tempClipItem);
+          ContextMenuController.removeAny();
+        },
+        type: ContextMenuButtonType.paste,
+      ),
+      ...editableTextState.contextMenuButtonItems.skipWhile(
+        (t) => [
+          ContextMenuButtonType.copy,
+          ContextMenuButtonType.paste,
+        ].contains(t.type),
+      ),
+    ],
+  );
+}

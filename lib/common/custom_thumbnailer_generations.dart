@@ -1,4 +1,6 @@
 import 'package:clipboard/base/constants/widget_styles.dart';
+import 'package:clipboard/utils/clipboard_actions.dart';
+import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:thumbnailer/thumbnailer.dart';
 import 'dart:convert' show utf8;
@@ -13,7 +15,12 @@ Future<Widget> _plainTextThumbnail(
 ) async {
   final text = utf8.decode(await getData(), allowMalformed: true);
   if (name?.endsWith("full_view") ?? false) {
-    return SelectableText(text);
+    return SelectableText(
+      text,
+      contextMenuBuilder: isDesktopPlatform
+          ? textSelectionToolbarButtonItems
+          : null,
+    );
   }
   return Padding(
     padding: const EdgeInsets.only(
