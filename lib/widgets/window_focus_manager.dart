@@ -122,7 +122,10 @@ class WindowFocusManagerState extends State<WindowFocusManager>
       await widget.focusWindow.setActiveWindowId(windowId!);
     }
     windowAction?.isFocused = false;
-    _setWindowInBackground(true);
+    if (hideWindow) {
+      _setWindowInBackground(true);
+      appLockCubit.onAppBackground();
+    }
   }
 
   Future<void> pasteOnFocusedWindow() async {
@@ -176,6 +179,8 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   Future<void> onWindowClose() async {
     bool isPreventClose = await windowManager.isPreventClose();
     if (isPreventClose && mounted) {
+      _setWindowInBackground(true);
+      appLockCubit.onAppBackground();
       context.windowAction?.hide();
     }
   }
@@ -184,6 +189,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
   void onWindowFocus() {
     _setWindowInBackground(false);
     context.windowAction?.isFocused = true;
+    context.windowAction?.isVisible = true;
     appLockCubit.onAppForeground();
     _maybeTrackWindowForeground();
   }
@@ -215,18 +221,19 @@ class WindowFocusManagerState extends State<WindowFocusManager>
 
   @override
   Future<void> onWindowBlur() async {
-    _setWindowInBackground(true);
     context.windowAction?.isFocused = false;
     final authInProgress =
         appLockCubit.state is AppLockAuthenticating ||
         appLockCubit.isSensitiveAuthInProgress;
 
     if (context.location == RouteConstants.pasteStack) return;
-    if (!authInProgress) appLockCubit.onAppBackground();
 
     final appConfig = appConfigCubit.state.config;
     if (appConfig.keepWindowOpenOnUnfocus || appConfig.pinned) return;
     if (authInProgress) return;
+
+    _setWindowInBackground(true);
+    appLockCubit.onAppBackground();
     await context.windowAction?.hide();
   }
 

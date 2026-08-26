@@ -23,6 +23,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
   Display? primaryDisplay;
   bool isCompactMode = false;
   bool isFocused = false;
+  bool isVisible = true;
   bool _isPasteStackBackgroundToggleMode = false;
 
   WindowActionCubit() : super(const WindowActionState.loaded());
@@ -60,8 +61,17 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     }
   }
 
+  Future<bool> checkVisibility() async {
+    if (isDesktopPlatform) {
+      isVisible = await windowManager.isVisible();
+      return isVisible;
+    }
+    return true;
+  }
+
   Future<void> setupScreenInfo() async {
     primaryDisplay = await screenRetriever.getPrimaryDisplay();
+    await checkVisibility();
     checkFocus();
     emit(const WindowActionState.loaded(loading: false));
   }
@@ -213,6 +223,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
 
   Future<void> hide({bool animated = false}) async {
     isFocused = false;
+    isVisible = false;
     if (state.view == AppView.windowed) {
       if (animated && primaryDisplay != null) {
         final currentPosition = await windowManager.getPosition();
@@ -233,6 +244,7 @@ class WindowActionCubit extends Cubit<WindowActionState> {
     // flash of app content. If a lock is needed the state transitions to
     // AppLockAuthenticating; we wait one frame for it to paint, then show.
     await windowManager.show();
+    isVisible = true;
     isFocused = true;
     requestFocus();
     await wait(Durations.medium4.inMilliseconds);

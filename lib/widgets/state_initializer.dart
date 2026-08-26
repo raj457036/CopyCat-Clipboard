@@ -27,6 +27,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thumbnailer/thumbnailer.dart';
+import 'package:window_manager/window_manager.dart';
 
 class StateInitializer extends StatefulWidget {
   final Widget child;
@@ -41,11 +42,11 @@ class _StateInitializerState extends State<StateInitializer>
   final appLinkListener = ApplinkListener();
   final shareListener = ShareListener();
   final powerSaverDebounce = Debouncer(
-    milliseconds: 5 * 60 * 1000,
-  ); // 5 minutes
-  final backgroundStateDebounce = Debouncer(
     milliseconds: 2 * 60 * 1000,
   ); // 2 minutes
+  final backgroundStateDebounce = Debouncer(
+    milliseconds: 90 * 1000,
+  ); // 90 seconds
 
   late final AppConfigCubit appConfigCubit;
   late final AuthCubit authCubit;
@@ -110,9 +111,16 @@ class _StateInitializerState extends State<StateInitializer>
     }
   }
 
-  void disableRendering(bool disable) {
+  Future<void> disableRendering(bool disable) async {
     if (!isDesktopPlatform) return;
-    if (disable) logger.i("CopyCat switching to power saving mode.");
+    if (disable) {
+      final isVisible = await windowManager.isVisible();
+      if (isVisible) return;
+      logger.i("CopyCat switching to power saving mode.");
+      PaintingBinding.instance.imageCache.clear();
+      PaintingBinding.instance.imageCache.clearLiveImages();
+      WidgetsBinding.instance.handleMemoryPressure();
+    }
     setState(() => renderingDisabled = disable);
   }
 
@@ -122,16 +130,21 @@ class _StateInitializerState extends State<StateInitializer>
 
     switch (state) {
       case AppLifecycleState.resumed || AppLifecycleState.inactive:
-        disableRendering(false);
+        powerSaverDebounce.cancel();
+        unawaited(disableRendering(false));
         _isAppLifecycleBackgrounded = false;
         if (state == AppLifecycleState.resumed) {
           appLockCubit.onAppForeground();
           unawaited(_runResumeSyncCatchUp());
         }
       case _:
-        powerSaverDebounce(() => disableRendering(true));
         _isAppLifecycleBackgrounded = true;
-        appLockCubit.onAppBackground();
+        if (!isDesktopPlatform) {
+          powerSaverDebounce(() => disableRendering(true));
+          appLockCubit.onAppBackground();
+        } else if (_isEffectivelyBackgrounded) {
+          powerSaverDebounce(() => disableRendering(true));
+        }
     }
     _syncClipboardBackgroundState();
   }
@@ -187,6 +200,12 @@ class _StateInitializerState extends State<StateInitializer>
     final inBackground = InBackgroundState.of(context)?.inBackground ?? false;
     if (_isWindowBackgrounded != inBackground) {
       _isWindowBackgrounded = inBackground;
+      if (!inBackground) {
+        powerSaverDebounce.cancel();
+        unawaited(disableRendering(false));
+      } else if (_isEffectivelyBackgrounded) {
+        powerSaverDebounce(() => disableRendering(true));
+      }
       _syncClipboardBackgroundState();
     }
   }
