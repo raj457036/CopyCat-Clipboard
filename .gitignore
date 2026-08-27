@@ -84,6 +84,8 @@ website
 *.keystore
 *.p8
 *.json
+!**/Contents.json
+!**/skills-lock.json
 .env*
 .github/workflows/release-macos-on-release-pr.yml
 CopyCat-*.zip
