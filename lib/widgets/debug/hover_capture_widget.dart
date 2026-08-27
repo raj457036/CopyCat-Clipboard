@@ -67,7 +67,9 @@ class _HoverCaptureWidgetState extends State<HoverCaptureWidget> {
       );
 
       if (filePath == null) return;
-      await File(filePath).writeAsBytes(bytes);
+      await File(
+        filePath.toFilePath(windows: Platform.isWindows),
+      ).writeAsBytes(bytes);
 
       if (!mounted) return;
       ScaffoldMessenger.maybeOf(

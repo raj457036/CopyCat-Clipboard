@@ -80,19 +80,19 @@ class FileCloudCubit extends Cubit<FileCloudState> {
   ) async {
     try {
       if (item.id != null) {
-        return _updateDownloadedItem(item);
+        return await _updateDownloadedItem(item);
       }
 
       if (item.serverId == null) {
-        return _createDownloadedItem(item);
+        return await _createDownloadedItem(item);
       }
 
       final existingItem = await _localSource.get(serverId: item.serverId);
       if (existingItem == null) {
-        return _createDownloadedItem(item);
+        return await _createDownloadedItem(item);
       }
 
-      return _updateDownloadedItem(
+      return await _updateDownloadedItem(
         item.copyWith(id: existingItem.id, localOnly: existingItem.localOnly),
       );
     } catch (e) {

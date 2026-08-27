@@ -3,20 +3,21 @@ import 'package:win32_registry/win32_registry.dart';
 
 Future<void> updateWindowsRegistry() async {
   if (!Platform.isWindows) return;
-  String appPath = Platform.resolvedExecutable;
+  final appPath = Platform.resolvedExecutable;
 
-  String protocolRegKey = 'Software\\Classes\\clipboard';
-  RegistryValue protocolRegValue = const RegistryValue.string(
-    'URL Protocol',
-    '',
-  );
-  String protocolCmdRegKey = 'shell\\open\\command';
-  RegistryValue protocolCmdRegValue = RegistryValue.string(
-    '',
-    '"$appPath" "%1"',
-  );
+  const protocolRegKey = r'Software\Classes\clipboard';
+  const protocolCmdRegKey = r'shell\open\command';
 
-  final regKey = Registry.currentUser.createKey(protocolRegKey);
-  regKey.createValue(protocolRegValue);
-  regKey.createKey(protocolCmdRegKey).createValue(protocolCmdRegValue);
+  final regKey = CURRENT_USER.create(protocolRegKey);
+  try {
+    regKey.setValue('URL Protocol', const RegistryValue.string(''));
+    final cmdKey = regKey.create(protocolCmdRegKey);
+    try {
+      cmdKey.setValue('', RegistryValue.string('"$appPath" "%1"'));
+    } finally {
+      cmdKey.close();
+    }
+  } finally {
+    regKey.close();
+  }
 }

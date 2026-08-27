@@ -62,7 +62,9 @@ class _ExportEncryptionKeyStepState extends State<ExportEncryptionKeyStep> {
       if (path != null) {
         exported = true;
         if (isDesktopPlatform) {
-          await File(path).writeAsString(content);
+          await File(
+            path.toFilePath(windows: Platform.isWindows),
+          ).writeAsString(content);
         }
         InAppNotificationService.i.notify(
           NotificationMessage(

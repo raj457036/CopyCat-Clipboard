@@ -58,6 +58,8 @@ firebase.json
 **/secret/**
 
 packages/android_background_clipboard/*.md
+packages/launch_at_startup
+
 
 drizzle
 website
@@ -89,3 +91,4 @@ website
 .env*
 .github/workflows/release-macos-on-release-pr.yml
 CopyCat-*.zip
+

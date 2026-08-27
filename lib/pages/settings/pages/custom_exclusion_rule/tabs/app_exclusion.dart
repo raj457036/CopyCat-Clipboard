@@ -70,12 +70,11 @@ class AppExclusionTab extends StatelessWidget {
     }
     final result = await FilePicker.pickFiles(
       type: FileType.any,
-      allowMultiple: true,
       initialDirectory: initialDirectory,
     );
 
     windowManager.focus();
-    if (result == null || result.count == 0) return [];
+    if (result.isEmpty) return [];
 
     late Pattern supportedExtensions = "";
     if (Platform.isMacOS) {
@@ -90,7 +89,7 @@ class AppExclusionTab extends StatelessWidget {
     if (Platform.isWindows) {
       supportedExtensions = RegExp(r"^.?(exe|msi)$", caseSensitive: false);
     }
-    final files = result.files
+    final files = result
         .where(
           (e) =>
               e.path != null &&

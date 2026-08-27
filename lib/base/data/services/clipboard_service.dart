@@ -308,11 +308,11 @@ class CopyToClipboard {
   }
 
   Future<bool> saveFile(File file) async {
-    String? outputFile = await FilePicker.saveFile(
+    Uri? outputFile = await FilePicker.saveFile(
       dialogTitle: 'Save to',
       fileName: p.basename(file.path),
       bytes: await file.readAsBytes(),
-      lockParentWindow: true,
+      windowsOptions: const WindowsOptions(lockParentWindow: true),
     );
 
     if (isDesktopPlatform) {
@@ -323,8 +323,11 @@ class CopyToClipboard {
 
     if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
       final ext = p.extension(file.path);
-      outputFile = p.setExtension(outputFile, ext);
-      final result = await copyFileInBackground(file.path, outputFile);
+      final newPath = p.setExtension(
+        outputFile.toFilePath(windows: Platform.isWindows),
+        ext,
+      );
+      final result = await copyFileInBackground(file.path, newPath);
       return result;
     }
     return true;

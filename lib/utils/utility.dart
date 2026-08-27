@@ -99,7 +99,7 @@ Future<void> screenshotAsFile(
   );
 
   if (filePath != null) {
-    final file = File(filePath);
+    final file = File(filePath.toFilePath(windows: Platform.isWindows));
 
     file.writeAsBytesSync(screenshot.bytes);
   }

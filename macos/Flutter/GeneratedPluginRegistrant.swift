@@ -9,7 +9,7 @@ import app_links
 import clipboard_watcher
 import device_info_plus
 import emoji_picker_flutter
-import file_picker
+import file_picker_darwin
 import flutter_platform_alert
 import flutter_secure_storage_macos
 import focus_window

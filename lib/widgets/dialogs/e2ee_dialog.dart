@@ -63,14 +63,12 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
       final pickedFile = await FilePicker.pickFiles(
         type: isDesktopPlatform ? FileType.custom : FileType.any,
         allowedExtensions: isDesktopPlatform ? ['enc2'] : null,
-        withData: true,
       );
 
       await windowAction?.show();
-
-      if (pickedFile == null) return;
-      if (pickedFile.files.first.bytes == null) return;
-      final content = utf8.decode(pickedFile.files.first.bytes!);
+      if (pickedFile.isEmpty) return;
+      final bytes = await pickedFile.first.readAsBytes();
+      final content = utf8.decode(bytes);
       final secret = E2EEQrTransferService.decodeKeyFile(content);
       if (secret == null) {
         setState(() => invalidImportedKey = true);
@@ -182,7 +180,9 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
     await windowAction?.show();
     if (path != null) {
       if (isDesktopPlatform) {
-        await File(path).writeAsString(content);
+        await File(
+          path.toFilePath(windows: Platform.isWindows),
+        ).writeAsString(content);
       }
       if (context.mounted) {
         context.pop();

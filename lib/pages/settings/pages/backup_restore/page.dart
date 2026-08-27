@@ -94,6 +94,8 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
         bytes: await File(result.outputPath).readAsBytes(),
       );
 
+      final path = savePath?.toFilePath(windows: Platform.isWindows);
+
       if (!mounted) return;
       setState(() {
         _backupSummary = result;
@@ -103,7 +105,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
         NotificationMessage(
           id: "backup_created",
           body: context.locale.backup_restore__snackbar__saved(
-            outputPath: savePath ?? result.outputPath,
+            outputPath: path ?? result.outputPath,
           ),
         ),
       );
@@ -129,12 +131,11 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
   Future<void> _restoreBackup() async {
     final selected = await FilePicker.pickFiles(
       dialogTitle: context.locale.backup_restore__dialog__select_file,
-      allowMultiple: false,
       type: FileType.custom,
       allowedExtensions: const ['ccbkup'],
     );
 
-    if (!mounted || selected == null || selected.files.single.path == null) {
+    if (!mounted || selected.single.path == null) {
       return;
     }
 
@@ -153,7 +154,7 @@ class _BackupRestorePageState extends State<BackupRestorePage> {
 
     try {
       final summary = await _service.restoreBackup(
-        backupPath: selected.files.single.path!,
+        backupPath: selected.single.path!,
         password: password,
       );
 
