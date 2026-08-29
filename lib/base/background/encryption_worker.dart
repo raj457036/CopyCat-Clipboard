@@ -605,14 +605,28 @@ class EncryptionWorker {
           ? EncryptionMode.gcm
           : EncryptionMode.cfb;
 
-      final cipherBytes = Uint8List.fromList(convert.base64.decode(content));
-      final decryptedBytes = await decryptBytes(
-        cipherBytes,
-        customIV: customIV,
-        mode: resolvedMode,
-      );
-      final decoded = convert.utf8.decode(decryptedBytes, allowMalformed: true);
-      return _stripLegacyTrailingPadding(decoded).trimRight();
+      try {
+        final cipherBytes = Uint8List.fromList(convert.base64.decode(content));
+        final decryptedBytes = await decryptBytes(
+          cipherBytes,
+          customIV: customIV,
+          mode: resolvedMode,
+        );
+        final decoded = convert.utf8.decode(
+          decryptedBytes,
+          allowMalformed: true,
+        );
+        return _stripLegacyTrailingPadding(decoded).trimRight();
+      } on DecryptionException catch (e) {
+        if (e.code == "invalid-ciphertext") {
+          _logger.w("Failed to decrypt: ${e.toString()}");
+          return content;
+        }
+        rethrow;
+      } catch (e) {
+        _logger.w("Failed to decrypt: ${e.toString()}");
+        rethrow;
+      }
     });
   }
 
