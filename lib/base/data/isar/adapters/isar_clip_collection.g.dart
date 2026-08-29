@@ -116,7 +116,7 @@ const IsarClipCollectionSchema = CollectionSchema(
   getId: _isarClipCollectionGetId,
   getLinks: _isarClipCollectionGetLinks,
   attach: _isarClipCollectionAttach,
-  version: '3.3.0-dev.1',
+  version: '3.3.2',
 );
 
 int _isarClipCollectionEstimateSize(

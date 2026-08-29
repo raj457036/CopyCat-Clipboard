@@ -3145,8 +3145,20 @@ abstract class AppLocalizations {
   /// No description provided for @settings__text__gdrive__info.
   ///
   /// In en, this message translates to:
-  /// **'Your files and media are securely synced across devices via Google Drive, ensuring your privacy is protected.'**
+  /// **'Your files and media are securely synced across devices via supported cloud providers, ensuring your privacy is protected. When multiple providers are connected, you can choose the default storage for new uploads.'**
   String get settings__text__gdrive__info;
+
+  /// No description provided for @settings__drive__default_tooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Default storage for uploads'**
+  String get settings__drive__default_tooltip;
+
+  /// No description provided for @settings__drive__set_default.
+  ///
+  /// In en, this message translates to:
+  /// **'Set as default'**
+  String get settings__drive__set_default;
 
   /// No description provided for @settings__tile__other_cloud__title.
   ///
@@ -3154,11 +3166,119 @@ abstract class AppLocalizations {
   /// **'Setup Other Cloud Drive'**
   String get settings__tile__other_cloud__title;
 
-  /// No description provided for @settings__tile__other_cloud__subtitle.
+  /// No description provided for @settings__text__webdav__name.
   ///
   /// In en, this message translates to:
-  /// **'Setup other cloud drives like Dropbox, OneDrive, etc.'**
-  String get settings__tile__other_cloud__subtitle;
+  /// **'WebDAV'**
+  String get settings__text__webdav__name;
+
+  /// No description provided for @settings__text__webdav__info.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your WebDAV server (Nextcloud, ownCloud, Synology NAS, etc.) to store and sync your files and media attachments.'**
+  String get settings__text__webdav__info;
+
+  /// No description provided for @settings__dialog__webdav__title.
+  ///
+  /// In en, this message translates to:
+  /// **'WebDAV Storage'**
+  String get settings__dialog__webdav__title;
+
+  /// No description provided for @settings__dialog__webdav__server_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Server URL'**
+  String get settings__dialog__webdav__server_url;
+
+  /// No description provided for @settings__dialog__webdav__server_url_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'https://cloud.example.com/remote.php/dav/files/username/'**
+  String get settings__dialog__webdav__server_url_hint;
+
+  /// No description provided for @settings__dialog__webdav__username.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get settings__dialog__webdav__username;
+
+  /// No description provided for @settings__dialog__webdav__password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password / App Password'**
+  String get settings__dialog__webdav__password;
+
+  /// No description provided for @settings__dialog__webdav__base_path.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage Folder Path'**
+  String get settings__dialog__webdav__base_path;
+
+  /// No description provided for @settings__dialog__webdav__self_signed.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow Self-Signed / Insecure Certificates'**
+  String get settings__dialog__webdav__self_signed;
+
+  /// No description provided for @settings__dialog__webdav__test_conn.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Connection'**
+  String get settings__dialog__webdav__test_conn;
+
+  /// No description provided for @settings__dialog__webdav__testing.
+  ///
+  /// In en, this message translates to:
+  /// **'Testing Connection...'**
+  String get settings__dialog__webdav__testing;
+
+  /// No description provided for @settings__dialog__webdav__test_success.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection successful!'**
+  String get settings__dialog__webdav__test_success;
+
+  /// No description provided for @settings__dialog__webdav__disconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get settings__dialog__webdav__disconnect;
+
+  /// No description provided for @settings__dialog__webdav__save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & Connect'**
+  String get settings__dialog__webdav__save;
+
+  /// No description provided for @settings__dialog__webdav__reconnect_title.
+  ///
+  /// In en, this message translates to:
+  /// **'WebDAV Settings'**
+  String get settings__dialog__webdav__reconnect_title;
+
+  /// No description provided for @settings__dialog__webdav__reconnect_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'WebDAV is already connected. Update settings or disconnect?'**
+  String get settings__dialog__webdav__reconnect_subtitle;
+
+  /// No description provided for @settings__dialog__webdav__url_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid WebDAV server URL'**
+  String get settings__dialog__webdav__url_required;
+
+  /// No description provided for @settings__dialog__webdav__username_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a username'**
+  String get settings__dialog__webdav__username_required;
+
+  /// No description provided for @settings__dialog__webdav__password_required.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a password or app token'**
+  String get settings__dialog__webdav__password_required;
 
   /// No description provided for @settings__app_lock__title.
   ///

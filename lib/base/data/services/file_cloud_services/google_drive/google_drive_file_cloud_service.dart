@@ -14,6 +14,7 @@ import 'package:injectable/injectable.dart';
 /// Handles uploading file/media content to Google Drive, including
 /// blur hash generation for images. Additional cloud drive providers
 /// can be added by implementing the [FileCloudService] interface.
+@Named("google_drive")
 @LazySingleton(as: FileCloudService)
 class GoogleDriveFileCloudService implements FileCloudService {
   final DriveService _drive;

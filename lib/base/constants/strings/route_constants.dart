@@ -25,4 +25,5 @@ class RouteConstants {
   static const String lanMesh = "lan-mesh";
   static const String appLockSettings = "app-lock-settings";
   static const String personalDrives = "personal-drives";
+  static const String webdavSetup = "webdav-setup";
 }

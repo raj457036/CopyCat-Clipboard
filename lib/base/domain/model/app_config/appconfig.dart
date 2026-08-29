@@ -22,6 +22,8 @@ enum AppView { topDocked, bottomDocked, leftDocked, rightDocked, windowed }
 
 enum ClipboardFeedbackMode { disabled, toast }
 
+enum ActiveCloudStorageProvider { googleDrive, webdav }
+
 @freezed
 abstract class AppConfig with _$AppConfig, Identifiable {
   AppConfig._();
@@ -31,6 +33,8 @@ abstract class AppConfig with _$AppConfig, Identifiable {
     @Default(ThemeMode.system) ThemeMode themeMode,
     @Default(true) bool enableSync,
     @Default(true) bool enableFileSync,
+    @Default(ActiveCloudStorageProvider.googleDrive)
+    ActiveCloudStorageProvider activeStorageProvider,
     @Default(AppLayout.grid) AppLayout layout,
     @Default(AppView.windowed) AppView view,
     @Default(false) bool pinned,

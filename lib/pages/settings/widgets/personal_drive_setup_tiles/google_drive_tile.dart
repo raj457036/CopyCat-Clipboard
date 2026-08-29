@@ -1,7 +1,9 @@
 import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/constants/font_variations.dart';
 import 'package:clipboard/base/constants/strings/asset_constants.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/pages/settings/widgets/personal_drive_setup_tiles/personal_drive_trailing.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class GoogleDriveSetupTile extends StatelessWidget {
   const GoogleDriveSetupTile({super.key});
 
-  Future<void> onAction(
+  Future<void> _onAction(
     BuildContext context, {
     required bool waitingForCallback,
     bool alreadyConnected = false,
@@ -38,47 +40,34 @@ class GoogleDriveSetupTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = context.textTheme;
-    final colors = context.colors;
+    final cubit = context.read<DriveSetupCubit>();
+
     return BlocBuilder<DriveSetupCubit, DriveSetupState>(
       builder: (context, state) {
-        String actionText = 'Connect';
-        bool buttonDisabled = false;
         bool alreadyConnected = false;
         bool waitingForCallback = false;
+        bool isLoading = false;
         String subtitle = context.locale.settings__drive__disconnected;
-        ButtonStyle? actionStyle;
 
         switch (state) {
           case DriveSetupFetching() || DriveSetupRefreshingToken():
-            actionText = context.locale.settings__drive__loading;
             subtitle = context.locale.settings__drive__loading;
-            buttonDisabled = true;
+            isLoading = true;
           case DriveSetupVerifyingCode():
-            actionText = context.locale.settings__drive__authorizing;
             subtitle = context.locale.settings__drive__authorizing;
-            buttonDisabled = true;
+            isLoading = true;
           case DriveSetupUnknown(:final waiting):
             waitingForCallback = waiting;
-            if (waitingForCallback) {
-              actionText = context.mlocale.cancelButtonLabel.title;
-              subtitle = context.locale.settings__drive__authorizing;
-              actionStyle = ElevatedButton.styleFrom(
-                backgroundColor: colors.errorContainer,
-                foregroundColor: colors.onErrorContainer,
-              );
-            } else {
-              actionText = context.locale.settings__drive__connect;
-              subtitle = context.locale.settings__drive__disconnected;
-            }
+            subtitle = waitingForCallback
+                ? context.locale.settings__drive__authorizing
+                : context.locale.settings__drive__disconnected;
           case DriveSetupDone():
-            actionText = context.locale.settings__drive__connected;
             final account =
                 state.token.displayText ?? state.token.accountId ?? "?";
             subtitle =
                 "${context.locale.settings__drive__connected} - $account";
             alreadyConnected = true;
           case DriveSetupError():
-            actionText = context.locale.settings__drive__connect;
             subtitle = context.locale.settings__drive__disconnected;
         }
 
@@ -91,18 +80,30 @@ class GoogleDriveSetupTile extends StatelessWidget {
             context.locale.settings__text__cloud__name,
             style: textTheme.titleMedium?.copyWith(fontVariations: fontVarW700),
           ),
-          subtitle: Text(subtitle),
-          trailing: ElevatedButton(
-            style: actionStyle,
-            onPressed: buttonDisabled
-                ? null
-                : () => onAction(
-                    context,
-                    waitingForCallback: waitingForCallback,
-                    alreadyConnected: alreadyConnected,
-                  ),
-            child: Text(actionText),
+          subtitle: Text(
+            subtitle,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
+          trailing: PersonalDriveTrailing(
+            isLoading: isLoading,
+            isConnected: alreadyConnected,
+            provider: ActiveCloudStorageProvider.googleDrive,
+            pendingAction: waitingForCallback
+                ? IconButton(
+                    icon: const Icon(Icons.close_rounded),
+                    tooltip: context.mlocale.cancelButtonLabel.title,
+                    onPressed: () => cubit.cancelPendingSetup(),
+                  )
+                : null,
+          ),
+          onTap: isLoading
+              ? null
+              : () => _onAction(
+                  context,
+                  waitingForCallback: waitingForCallback,
+                  alreadyConnected: alreadyConnected,
+                ),
         );
       },
     );

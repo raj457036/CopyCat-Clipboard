@@ -58,6 +58,7 @@ firebase.json
 **/secret/**
 
 packages/android_background_clipboard/*.md
+packages/launch_at_startup
 
 drizzle
 website

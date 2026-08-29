@@ -337,7 +337,7 @@ const IsarClipboardItemSchema = CollectionSchema(
   getId: _isarClipboardItemGetId,
   getLinks: _isarClipboardItemGetLinks,
   attach: _isarClipboardItemAttach,
-  version: '3.3.0-dev.1',
+  version: '3.3.2',
 );
 
 int _isarClipboardItemEstimateSize(

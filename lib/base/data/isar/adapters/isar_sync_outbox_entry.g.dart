@@ -81,7 +81,7 @@ const IsarSyncOutboxEntrySchema = CollectionSchema(
   getId: _isarSyncOutboxEntryGetId,
   getLinks: _isarSyncOutboxEntryGetLinks,
   attach: _isarSyncOutboxEntryAttach,
-  version: '3.3.0-dev.1',
+  version: '3.3.2',
 );
 
 int _isarSyncOutboxEntryEstimateSize(
