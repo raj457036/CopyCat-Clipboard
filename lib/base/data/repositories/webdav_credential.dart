@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:clipboard/base/constants/strings/strings.dart';
@@ -170,6 +171,58 @@ class WebDavCredentialRepositoryImpl implements WebDavCredentialRepository {
           ),
         );
       }
+    } on TimeoutException {
+      return const Left(
+        Failure(
+          message:
+              'Connection timed out. Please check if the server URL and port are reachable.',
+          code: 'webdav-timeout',
+        ),
+      );
+    } on HandshakeException catch (e) {
+      final msg = config.allowSelfSignedCert
+          ? 'SSL/TLS handshake failed: ${e.message}'
+          : 'SSL/TLS certificate error. If using a self-signed certificate, please enable it in Advanced settings.';
+      return Left(
+        Failure(
+          message: msg,
+          code: 'webdav-ssl-error',
+        ),
+      );
+    } on SocketException catch (e) {
+      if (e.message.toLowerCase().contains('failed host lookup') ||
+          e.osError?.errorCode == 8) {
+        return const Left(
+          Failure(
+            message:
+                'Server not found. Please check your domain name or host URL.',
+            code: 'webdav-host-not-found',
+          ),
+        );
+      } else if (e.message.toLowerCase().contains('connection refused') ||
+          e.osError?.errorCode == 61 ||
+          e.osError?.errorCode == 111) {
+        return const Left(
+          Failure(
+            message:
+                'Connection refused. Please check the port and ensure WebDAV is running.',
+            code: 'webdav-connection-refused',
+          ),
+        );
+      }
+      return Left(
+        Failure(
+          message: 'Could not connect to WebDAV server: ${e.message}',
+          code: 'webdav-socket-error',
+        ),
+      );
+    } on HttpException catch (e) {
+      return Left(
+        Failure(
+          message: 'HTTP error: ${e.message}',
+          code: 'webdav-http-error',
+        ),
+      );
     } catch (e) {
       _logger.e('WebDAV test connection error: $e');
       return Left(Failure.fromException(e));

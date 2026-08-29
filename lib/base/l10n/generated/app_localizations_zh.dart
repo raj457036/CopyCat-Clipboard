@@ -1695,6 +1695,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__dialog__webdav__title => 'WebDAV Storage';
 
   @override
+  String get settings__dialog__webdav__preset_provider => 'Provider Preset';
+
+  @override
   String get settings__dialog__webdav__server_url => 'Server URL';
 
   @override

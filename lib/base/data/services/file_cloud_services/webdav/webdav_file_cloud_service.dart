@@ -58,6 +58,42 @@ class WebDavFileCloudService implements FileCloudService {
     return 'Basic ${base64Encode(utf8.encode('${config.username}:${config.password}'))}';
   }
 
+  Failure _handleWebDavException(dynamic e, WebDavConfig config) {
+    if (e is TimeoutException) {
+      return const Failure(
+        message: 'WebDAV connection timed out.',
+        code: 'webdav-timeout',
+      );
+    } else if (e is HandshakeException) {
+      final msg = config.allowSelfSignedCert
+          ? 'SSL/TLS handshake failed: ${e.message}'
+          : 'SSL/TLS certificate error. If using a self-signed certificate, please enable it in Advanced settings.';
+      return Failure(message: msg, code: 'webdav-ssl-error');
+    } else if (e is SocketException) {
+      if (e.message.toLowerCase().contains('failed host lookup') ||
+          e.osError?.errorCode == 8) {
+        return const Failure(
+          message:
+              'Server not found. Please check your WebDAV domain name or host URL.',
+          code: 'webdav-host-not-found',
+        );
+      } else if (e.message.toLowerCase().contains('connection refused') ||
+          e.osError?.errorCode == 61 ||
+          e.osError?.errorCode == 111) {
+        return const Failure(
+          message:
+              'Connection refused. Please check the port and ensure WebDAV is running.',
+          code: 'webdav-connection-refused',
+        );
+      }
+      return Failure(
+        message: 'Could not connect to WebDAV server: ${e.message}',
+        code: 'webdav-socket-error',
+      );
+    }
+    return Failure.fromException(e);
+  }
+
   Future<void> _ensureDirectoryExists(
     HttpClient client,
     WebDavConfig config,
@@ -208,7 +244,7 @@ class WebDavFileCloudService implements FileCloudService {
       }
     } catch (e) {
       _logger.e('WebDAV upload exception: $e');
-      return Left(Failure.fromException(e));
+      return Left(_handleWebDavException(e, config));
     } finally {
       client?.close(force: true);
     }
@@ -301,7 +337,7 @@ class WebDavFileCloudService implements FileCloudService {
       }
     } catch (e) {
       _logger.e('WebDAV download exception: $e');
-      return Left(Failure.fromException(e));
+      return Left(_handleWebDavException(e, config));
     } finally {
       client?.close(force: true);
     }
@@ -355,7 +391,7 @@ class WebDavFileCloudService implements FileCloudService {
       }
     } catch (e) {
       _logger.e('WebDAV delete exception: $e');
-      return Left(Failure.fromException(e));
+      return Left(_handleWebDavException(e, config));
     } finally {
       client?.close(force: true);
     }

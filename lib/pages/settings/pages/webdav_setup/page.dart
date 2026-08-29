@@ -5,6 +5,7 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/base/domain/model/webdav_config/webdav_config.dart';
+import 'package:clipboard/base/domain/model/webdav_config/webdav_provider_preset.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
@@ -34,6 +35,7 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
   String? _testResult;
   bool _testSuccess = false;
   bool _initializedFromState = false;
+  WebDavProviderPreset _selectedPreset = WebDavProviderPreset.custom;
 
   @override
   void initState() {
@@ -42,15 +44,37 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
     _basePathController = TextEditingController(text: defaultWebDavBasePath);
+    _serverUrlController.addListener(_onServerUrlChanged);
   }
 
   @override
   void dispose() {
+    _serverUrlController.removeListener(_onServerUrlChanged);
     _serverUrlController.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
     _basePathController.dispose();
     super.dispose();
+  }
+
+  void _onServerUrlChanged() {
+    final detected =
+        WebDavProviderPreset.detectFromUrl(_serverUrlController.text);
+    if (detected != _selectedPreset) {
+      setState(() {
+        _selectedPreset = detected;
+      });
+    }
+  }
+
+  void _onPresetChanged(WebDavProviderPreset? preset) {
+    if (preset == null) return;
+    setState(() {
+      _selectedPreset = preset;
+      if (preset.fixedUrl != null) {
+        _serverUrlController.text = preset.fixedUrl!;
+      }
+    });
   }
 
   void _populateFromConfig(WebDavConfig config) {
@@ -64,6 +88,7 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
         : defaultWebDavBasePath;
     _allowSelfSigned = config.allowSelfSignedCert;
     _autoCleanInactiveFiles = config.autoCleanInactiveFiles;
+    _selectedPreset = WebDavProviderPreset.detectFromUrl(config.serverUrl);
   }
 
   WebDavConfig _buildConfig() {
@@ -193,14 +218,37 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
                     vertical: padding16,
                   ),
                   children: [
+                    DropdownButtonFormField<WebDavProviderPreset>(
+                      value: _selectedPreset,
+                      isExpanded: true,
+                      borderRadius: BorderRadius.circular(12),
+                      menuMaxHeight: 350,
+                      alignment: AlignmentDirectional.centerStart,
+                      decoration: InputDecoration(
+                        labelText: context
+                            .locale
+                            .settings__dialog__webdav__preset_provider,
+                        border: const OutlineInputBorder(),
+                      ),
+                      items: WebDavProviderPreset.values.map((preset) {
+                        return DropdownMenuItem(
+                          value: preset,
+                          child: Text(preset.displayName),
+                        );
+                      }).toList(),
+                      onChanged: _onPresetChanged,
+                    ),
+                    height16,
                     TextFormField(
                       controller: _serverUrlController,
                       decoration: InputDecoration(
                         labelText:
                             context.locale.settings__dialog__webdav__server_url,
-                        hintText: context
-                            .locale
-                            .settings__dialog__webdav__server_url_hint,
+                        hintText: _selectedPreset.defaultHint,
+                        helperText: _selectedPreset.fixedUrl == null
+                            ? 'e.g. ${_selectedPreset.defaultHint}'
+                            : null,
+                        helperMaxLines: 2,
                         border: const OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.url,

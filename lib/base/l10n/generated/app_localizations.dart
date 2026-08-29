@@ -3190,6 +3190,12 @@ abstract class AppLocalizations {
   /// **'WebDAV Storage'**
   String get settings__dialog__webdav__title;
 
+  /// No description provided for @settings__dialog__webdav__preset_provider.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider Preset'**
+  String get settings__dialog__webdav__preset_provider;
+
   /// No description provided for @settings__dialog__webdav__server_url.
   ///
   /// In en, this message translates to:

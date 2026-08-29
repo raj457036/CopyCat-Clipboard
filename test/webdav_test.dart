@@ -1,5 +1,6 @@
 import 'package:clipboard/base/domain/model/cloud_file_id/cloud_file_id.dart';
 import 'package:clipboard/base/domain/model/webdav_config/webdav_config.dart';
+import 'package:clipboard/base/domain/model/webdav_config/webdav_provider_preset.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -68,6 +69,63 @@ void main() {
       expect(fromJson.allowSelfSignedCert, isTrue);
       expect(fromJson.autoCleanInactiveFiles, isTrue);
       expect(fromJson.basePath, '/custom/path');
+    });
+  });
+
+  group('WebDavProviderPreset Tests', () {
+    test('detects provider presets correctly from URLs', () {
+      expect(
+        WebDavProviderPreset.detectFromUrl('https://app.koofr.net/dav/Koofr'),
+        WebDavProviderPreset.koofr,
+      );
+      expect(
+        WebDavProviderPreset.detectFromUrl('https://webdav.pcloud.com'),
+        WebDavProviderPreset.pcloud,
+      );
+      expect(
+        WebDavProviderPreset.detectFromUrl('https://dav.box.com/dav'),
+        WebDavProviderPreset.box,
+      );
+      expect(
+        WebDavProviderPreset.detectFromUrl('https://myfiles.fastmail.com/'),
+        WebDavProviderPreset.fastmail,
+      );
+      expect(
+        WebDavProviderPreset.detectFromUrl(
+          'https://cloud.mycompany.com/remote.php/dav/files/alice/',
+        ),
+        WebDavProviderPreset.nextcloud,
+      );
+      expect(
+        WebDavProviderPreset.detectFromUrl('https://user123.teracloud.jp/dav/'),
+        WebDavProviderPreset.infinicloud,
+      );
+      expect(
+        WebDavProviderPreset.detectFromUrl('https://192.168.1.50:5006/'),
+        WebDavProviderPreset.synology,
+      );
+      expect(
+        WebDavProviderPreset.detectFromUrl('https://custom.nas.local/dav/'),
+        WebDavProviderPreset.custom,
+      );
+    });
+
+    test('returns fixedUrl for static providers only', () {
+      expect(
+        WebDavProviderPreset.koofr.fixedUrl,
+        'https://app.koofr.net/dav/Koofr',
+      );
+      expect(
+        WebDavProviderPreset.pcloud.fixedUrl,
+        'https://webdav.pcloud.com',
+      );
+      expect(WebDavProviderPreset.box.fixedUrl, 'https://dav.box.com/dav');
+      expect(
+        WebDavProviderPreset.fastmail.fixedUrl,
+        'https://myfiles.fastmail.com/',
+      );
+      expect(WebDavProviderPreset.nextcloud.fixedUrl, isNull);
+      expect(WebDavProviderPreset.custom.fixedUrl, isNull);
     });
   });
 }
