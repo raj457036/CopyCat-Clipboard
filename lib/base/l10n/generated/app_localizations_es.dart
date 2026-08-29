@@ -929,6 +929,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get preview__inspector__label__device => 'Dispositivo';
 
   @override
+  String get preview__inspector__label__storage => 'Almacenamiento';
+
+  @override
   String get preview__inspector__status__encrypted => 'Cifrado';
 
   @override
@@ -1799,8 +1802,23 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settings__dialog__webdav__base_path => 'Storage Folder Path';
 
   @override
+  String get settings__dialog__webdav__base_path_helper =>
+      'Folder path cannot be changed after setup. To change it, disconnect first.';
+
+  @override
+  String get settings__dialog__webdav__advanced => 'Advanced';
+
+  @override
   String get settings__dialog__webdav__self_signed =>
       'Allow Self-Signed / Insecure Certificates';
+
+  @override
+  String get settings__dialog__webdav__auto_clean =>
+      'Auto-clean inactive files after 30 days';
+
+  @override
+  String get settings__dialog__webdav__auto_clean_subtitle =>
+      'Because WebDAV credentials remain private on your device, remote files are not removed by cloud cleanup. When enabled, media files older than 30 days from last modification will be deleted from your WebDAV server. Clips in collections or locked are always protected.';
 
   @override
   String get settings__dialog__webdav__test_conn => 'Test Connection';

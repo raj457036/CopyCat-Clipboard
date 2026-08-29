@@ -58,6 +58,7 @@ void main() {
         password: 'test_password',
         basePath: '/custom/path',
         allowSelfSignedCert: true,
+        autoCleanInactiveFiles: true,
       );
 
       final json = config.toJson();
@@ -65,6 +66,7 @@ void main() {
 
       expect(fromJson, equals(config));
       expect(fromJson.allowSelfSignedCert, isTrue);
+      expect(fromJson.autoCleanInactiveFiles, isTrue);
       expect(fromJson.basePath, '/custom/path');
     });
   });

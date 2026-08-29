@@ -1940,14 +1940,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
-  simple_webdav_client:
-    dependency: "direct main"
-    description:
-      name: simple_webdav_client
-      sha256: "9c3d52e9a969d26e48bb071ad8649f3d04d1db653f3342ec4a08aab331a1e9ff"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.0"
   sky_engine:
     dependency: transitive
     description: flutter

@@ -87,6 +87,8 @@ import 'package:clipboard/base/data/services/file_cloud_services/google_drive/go
     as _i563;
 import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_services.dart'
     as _i543;
+import 'package:clipboard/base/data/services/file_cloud_services/webdav/webdav_cleanup_service.dart'
+    as _i179;
 import 'package:clipboard/base/data/services/file_cloud_services/webdav/webdav_file_cloud_service.dart'
     as _i1008;
 import 'package:clipboard/base/data/services/in_app_review_service.dart'
@@ -218,15 +220,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i651.LocalApplicationMetaSource(gh<_i214.Isar>()),
       instanceName: 'local',
     );
-    gh.lazySingleton<_i193.WebDavCredentialRepository>(
-      () => _i214.WebDavCredentialRepositoryImpl(),
-    );
     gh.factory<String>(
       () => registerModule.supabaseProjectKey,
       instanceName: 'supabase_project_key',
-    );
-    gh.factory<_i923.WebDavSetupCubit>(
-      () => _i923.WebDavSetupCubit(gh<_i193.WebDavCredentialRepository>()),
     );
     gh.lazySingleton<_i543.DriveService>(
       () => _i563.GoogleDriveService(),
@@ -313,6 +309,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<String>(instanceName: 'device_id'),
       ),
     );
+    gh.lazySingleton<_i193.WebDavCredentialRepository>(
+      () => _i214.WebDavCredentialRepositoryImpl(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i110.ApplicationMetaRepository>(
       () => _i756.ApplicationMetaRepositoryImpl(
         gh<_i284.ApplicationMetaSource>(instanceName: 'local'),
@@ -351,6 +350,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i543.UserDevicesSource>(instanceName: 'remote'),
         gh<_i454.SupabaseClient>(),
       ),
+    );
+    gh.factory<_i923.WebDavSetupCubit>(
+      () => _i923.WebDavSetupCubit(gh<_i193.WebDavCredentialRepository>()),
     );
     gh.factoryCached<_i521.DriveSetupCubit>(
       () => _i521.DriveSetupCubit(
@@ -436,6 +438,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i292.SyncEventBus>(),
         gh<_i230.ClipboardRepository>(instanceName: 'local'),
         collection: collection,
+      ),
+    );
+    gh.lazySingleton<_i179.WebDavCleanupService>(
+      () => _i179.WebDavCleanupService(
+        gh<_i193.WebDavCredentialRepository>(),
+        gh<_i112.FileCloudService>(instanceName: 'webdav'),
+        gh<_i23.ClipboardSource>(instanceName: 'local'),
       ),
     );
     gh.singleton<_i246.MonetizationCubit>(

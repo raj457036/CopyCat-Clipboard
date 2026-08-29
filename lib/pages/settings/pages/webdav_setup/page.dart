@@ -29,6 +29,7 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
 
   bool _obscurePassword = true;
   bool _allowSelfSigned = false;
+  bool _autoCleanInactiveFiles = false;
   bool _isTesting = false;
   String? _testResult;
   bool _testSuccess = false;
@@ -40,8 +41,7 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
     _serverUrlController = TextEditingController();
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
-    _basePathController =
-        TextEditingController(text: defaultWebDavBasePath);
+    _basePathController = TextEditingController(text: defaultWebDavBasePath);
   }
 
   @override
@@ -63,6 +63,7 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
         ? config.basePath
         : defaultWebDavBasePath;
     _allowSelfSigned = config.allowSelfSignedCert;
+    _autoCleanInactiveFiles = config.autoCleanInactiveFiles;
   }
 
   WebDavConfig _buildConfig() {
@@ -74,6 +75,7 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
           ? defaultWebDavBasePath
           : _basePathController.text.trim(),
       allowSelfSignedCert: _allowSelfSigned,
+      autoCleanInactiveFiles: _autoCleanInactiveFiles,
     );
   }
 
@@ -144,9 +146,8 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
     if (!mounted) return;
     InAppNotificationService.i.notify(
       NotificationMessage.builder(
-        builder: (context) => NotificationContent(
-          body: 'WebDAV storage disconnected.',
-        ),
+        builder: (context) =>
+            NotificationContent(body: 'WebDAV storage disconnected.'),
         id: 'webdav-disconnect-success',
       ),
     );
@@ -171,7 +172,8 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
           _populateFromConfig(state.config);
         }
 
-        final isConfigured = state is WebDavSetupConfigured;
+        final isConfigured =
+            state is WebDavSetupConfigured && state.config.password.isNotEmpty;
         final isLoading = state is WebDavSetupLoading;
 
         return Scaffold(
@@ -194,22 +196,29 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
                     TextFormField(
                       controller: _serverUrlController,
                       decoration: InputDecoration(
-                        labelText: context.locale.settings__dialog__webdav__server_url,
-                        hintText: context.locale.settings__dialog__webdav__server_url_hint,
+                        labelText:
+                            context.locale.settings__dialog__webdav__server_url,
+                        hintText: context
+                            .locale
+                            .settings__dialog__webdav__server_url_hint,
                         border: const OutlineInputBorder(),
                       ),
                       keyboardType: TextInputType.url,
                       autocorrect: false,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return context.locale.settings__dialog__webdav__url_required;
+                          return context
+                              .locale
+                              .settings__dialog__webdav__url_required;
                         }
                         final uri = Uri.tryParse(value.trim());
                         if (uri == null ||
                             !uri.hasScheme ||
                             (!value.trim().startsWith('http://') &&
                                 !value.trim().startsWith('https://'))) {
-                          return context.locale.settings__dialog__webdav__url_required;
+                          return context
+                              .locale
+                              .settings__dialog__webdav__url_required;
                         }
                         return null;
                       },
@@ -218,13 +227,16 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
                     TextFormField(
                       controller: _usernameController,
                       decoration: InputDecoration(
-                        labelText: context.locale.settings__dialog__webdav__username,
+                        labelText:
+                            context.locale.settings__dialog__webdav__username,
                         border: const OutlineInputBorder(),
                       ),
                       autocorrect: false,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return context.locale.settings__dialog__webdav__username_required;
+                          return context
+                              .locale
+                              .settings__dialog__webdav__username_required;
                         }
                         return null;
                       },
@@ -233,7 +245,8 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
                     TextFormField(
                       controller: _passwordController,
                       decoration: InputDecoration(
-                        labelText: context.locale.settings__dialog__webdav__password,
+                        labelText:
+                            context.locale.settings__dialog__webdav__password,
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -251,33 +264,89 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
                       obscureText: _obscurePassword,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return context.locale.settings__dialog__webdav__password_required;
+                          return context
+                              .locale
+                              .settings__dialog__webdav__password_required;
                         }
                         return null;
                       },
                     ),
-                    height16,
-                    TextFormField(
-                      controller: _basePathController,
-                      decoration: InputDecoration(
-                        labelText: context.locale.settings__dialog__webdav__base_path,
-                        hintText: defaultWebDavBasePath,
-                        border: const OutlineInputBorder(),
+                    ExpansionTileTheme(
+                      data: const ExpansionTileThemeData(
+                        shape: RoundedRectangleBorder(),
                       ),
-                      autocorrect: false,
-                    ),
-                    height12,
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        context.locale.settings__dialog__webdav__self_signed,
+                      child: ExpansionTile(
+                        tilePadding: EdgeInsets.zero,
+                        childrenPadding: const EdgeInsets.only(
+                          top: 8,
+                          bottom: 8,
+                        ),
+                        title: Text(
+                          context.locale.settings__dialog__webdav__advanced,
+                          style: textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: colors.outline,
+                          ),
+                        ),
+                        dense: true,
+                        children: [
+                          TextFormField(
+                            controller: _basePathController,
+                            enabled: !isConfigured,
+                            decoration: InputDecoration(
+                              labelText: context
+                                  .locale
+                                  .settings__dialog__webdav__base_path,
+                              hintText: defaultWebDavBasePath,
+                              helperText: isConfigured
+                                  ? context
+                                        .locale
+                                        .settings__dialog__webdav__base_path_helper
+                                  : null,
+                              helperMaxLines: 2,
+                              border: const OutlineInputBorder(),
+                            ),
+                            autocorrect: false,
+                          ),
+                          height12,
+                          SwitchListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              context
+                                  .locale
+                                  .settings__dialog__webdav__self_signed,
+                            ),
+                            value: _allowSelfSigned,
+                            onChanged: (val) {
+                              setState(() {
+                                _allowSelfSigned = val;
+                              });
+                            },
+                          ),
+                          SwitchListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              context
+                                  .locale
+                                  .settings__dialog__webdav__auto_clean,
+                            ),
+                            subtitle: Text(
+                              context
+                                  .locale
+                                  .settings__dialog__webdav__auto_clean_subtitle,
+                              style: textTheme.bodySmall?.copyWith(
+                                color: colors.outline,
+                              ),
+                            ),
+                            value: _autoCleanInactiveFiles,
+                            onChanged: (val) {
+                              setState(() {
+                                _autoCleanInactiveFiles = val;
+                              });
+                            },
+                          ),
+                        ],
                       ),
-                      value: _allowSelfSigned,
-                      onChanged: (val) {
-                        setState(() {
-                          _allowSelfSigned = val;
-                        });
-                      },
                     ),
                     height16,
                     Row(
@@ -289,7 +358,9 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
                           child: _isTesting
                               ? const YarnBallLoading(size: 16)
                               : Text(
-                                  context.locale.settings__dialog__webdav__test_conn,
+                                  context
+                                      .locale
+                                      .settings__dialog__webdav__test_conn,
                                 ),
                         ),
                         if (_testResult != null) ...[
@@ -332,12 +403,16 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
                       children: [
                         if (isConfigured)
                           TextButton(
-                            onPressed: isLoading ? null : _onDisconnect,
+                            onPressed: (isLoading || _isTesting)
+                                ? null
+                                : _onDisconnect,
                             style: TextButton.styleFrom(
                               foregroundColor: colors.error,
                             ),
                             child: Text(
-                              context.locale.settings__dialog__webdav__disconnect,
+                              context
+                                  .locale
+                                  .settings__dialog__webdav__disconnect,
                             ),
                           ),
                         FilledButton(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/model/webdav_config/webdav_config.dart';
 import 'package:clipboard/base/domain/repositories/webdav_credential.dart';
 import 'package:clipboard/common/failure.dart';
@@ -7,7 +8,7 @@ import 'package:clipboard/common/logging.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
-import 'package:simple_webdav_client/client.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:universal_io/io.dart';
 
 @LazySingleton(as: WebDavCredentialRepository)
@@ -16,18 +17,55 @@ class WebDavCredentialRepositoryImpl implements WebDavCredentialRepository {
   static const _logger = AppLogger.scoped('WebDavCredentialRepo');
 
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final SupabaseClient _supabase;
 
-  WebDavCredentialRepositoryImpl();
+  WebDavCredentialRepositoryImpl(this._supabase);
+
+  HttpClient _createHttpClient(WebDavConfig config) {
+    final client = HttpClient();
+    client.idleTimeout = const Duration(seconds: 15);
+    client.connectionTimeout = const Duration(seconds: 15);
+    if (config.allowSelfSignedCert) {
+      client.badCertificateCallback = (cert, host, port) => true;
+    }
+    return client;
+  }
 
   @override
   FailureOr<WebDavConfig?> getConfig() async {
     try {
       final raw = await _secureStorage.read(key: _storageKey);
-      if (raw == null || raw.isEmpty) {
-        return const Right(null);
+      if (raw != null && raw.isNotEmpty) {
+        final json = jsonDecode(raw) as Map<String, dynamic>;
+        return Right(WebDavConfig.fromJson(json));
       }
-      final json = jsonDecode(raw) as Map<String, dynamic>;
-      return Right(WebDavConfig.fromJson(json));
+
+      // Check if user has WebDAV metadata saved on their Supabase account
+      final userMeta = _supabase.auth.currentUser?.userMetadata?['webdav'];
+      if (userMeta is Map) {
+        final serverUrl = userMeta['serverUrl'] as String? ?? '';
+        final username = userMeta['username'] as String? ?? '';
+        final basePath =
+            userMeta['basePath'] as String? ?? defaultWebDavBasePath;
+        final allowSelfSigned =
+            userMeta['allowSelfSignedCert'] as bool? ?? false;
+        final autoClean =
+            userMeta['autoCleanInactiveFiles'] as bool? ?? false;
+        if (serverUrl.isNotEmpty) {
+          return Right(
+            WebDavConfig(
+              serverUrl: serverUrl,
+              username: username,
+              password: '', // Blank on new device until user enters password
+              basePath: basePath,
+              allowSelfSignedCert: allowSelfSigned,
+              autoCleanInactiveFiles: autoClean,
+            ),
+          );
+        }
+      }
+
+      return const Right(null);
     } catch (e) {
       _logger.e('Failed to read WebDAV config: $e');
       return Left(Failure.fromException(e));
@@ -39,6 +77,31 @@ class WebDavCredentialRepositoryImpl implements WebDavCredentialRepository {
     try {
       final raw = jsonEncode(config.toJson());
       await _secureStorage.write(key: _storageKey, value: raw);
+
+      // Sync non-sensitive server metadata to Supabase user account
+      try {
+        if (_supabase.auth.currentUser != null) {
+          final currentMetadata =
+              _supabase.auth.currentUser?.userMetadata ?? {};
+          await _supabase.auth.updateUser(
+            UserAttributes(
+              data: {
+                ...currentMetadata,
+                'webdav': {
+                  'serverUrl': config.serverUrl,
+                  'username': config.username,
+                  'basePath': config.basePath,
+                  'allowSelfSignedCert': config.allowSelfSignedCert,
+                  'autoCleanInactiveFiles': config.autoCleanInactiveFiles,
+                },
+              },
+            ),
+          );
+        }
+      } catch (e) {
+        _logger.w('Failed to sync WebDAV user metadata: $e');
+      }
+
       return const Right(null);
     } catch (e) {
       _logger.e('Failed to save WebDAV config: $e');
@@ -59,6 +122,7 @@ class WebDavCredentialRepositoryImpl implements WebDavCredentialRepository {
 
   @override
   FailureOr<void> testConnection(WebDavConfig config) async {
+    HttpClient? client;
     try {
       final uri = Uri.parse(config.serverUrl.trim());
       if (!uri.hasScheme || !uri.hasAuthority) {
@@ -70,17 +134,17 @@ class WebDavCredentialRepositoryImpl implements WebDavCredentialRepository {
         );
       }
 
-      final client = WebDavStdClient();
-      final dispatcher = client.dispatch(uri);
-
-      final req = await dispatcher.findAllProps();
+      client = _createHttpClient(config);
+      final req = await client.openUrl('PROPFIND', uri);
       final authHeader =
           'Basic ${base64Encode(utf8.encode('${config.username}:${config.password}'))}';
-      req.request.headers.set(HttpHeaders.authorizationHeader, authHeader);
+      req.headers.set(HttpHeaders.authorizationHeader, authHeader);
+      req.headers.set('Depth', '0');
 
       final resp = await req.close().timeout(const Duration(seconds: 15));
+      await resp.drain();
 
-      final statusCode = resp.response.statusCode;
+      final statusCode = resp.statusCode;
       if ((statusCode >= 200 && statusCode < 300) || statusCode == 207) {
         return const Right(null);
       } else if (statusCode == 401 || statusCode == 403) {
@@ -109,6 +173,8 @@ class WebDavCredentialRepositoryImpl implements WebDavCredentialRepository {
     } catch (e) {
       _logger.e('WebDAV test connection error: $e');
       return Left(Failure.fromException(e));
+    } finally {
+      client?.close(force: true);
     }
   }
 }

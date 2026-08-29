@@ -14,7 +14,6 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path/path.dart' as p;
-import 'package:simple_webdav_client/client.dart';
 import 'package:universal_io/io.dart';
 
 @Named("webdav")
@@ -36,6 +35,16 @@ class WebDavFileCloudService implements FileCloudService {
     return result.fold((l) => false, (config) => config != null);
   }
 
+  HttpClient _createHttpClient(WebDavConfig config) {
+    final client = HttpClient();
+    client.idleTimeout = const Duration(seconds: 15);
+    client.connectionTimeout = const Duration(seconds: 15);
+    if (config.allowSelfSignedCert) {
+      client.badCertificateCallback = (cert, host, port) => true;
+    }
+    return client;
+  }
+
   Uri _buildUri(String serverUrl, String relativePath) {
     final cleanServer = serverUrl.trim().endsWith('/')
         ? serverUrl.trim().substring(0, serverUrl.trim().length - 1)
@@ -50,27 +59,27 @@ class WebDavFileCloudService implements FileCloudService {
   }
 
   Future<void> _ensureDirectoryExists(
-    WebDavStdClient client,
+    HttpClient client,
     WebDavConfig config,
     String dirPath,
   ) async {
-    final segments =
-        dirPath.split('/').where((s) => s.isNotEmpty).toList();
+    final segments = dirPath.split('/').where((s) => s.isNotEmpty).toList();
     String currentPath = '';
 
     for (final segment in segments) {
       currentPath += '/$segment';
       try {
         final uri = _buildUri(config.serverUrl, currentPath);
-        final dispatcher = client.dispatch(uri);
-        final req = await dispatcher.createDir();
-        req.request.headers.set(
+        final req = await client.openUrl('MKCOL', uri);
+        req.headers.set(
           HttpHeaders.authorizationHeader,
           _getAuthHeader(config),
         );
         final resp = await req.close().timeout(const Duration(seconds: 10));
-        _logger.d(() =>
-            'Directory $currentPath MKCOL status: ${resp.response.statusCode}');
+        await resp.drain();
+        _logger.d(
+          () => 'Directory $currentPath MKCOL status: ${resp.statusCode}',
+        );
       } catch (e) {
         _logger.d(() => 'Directory check/create notice for $currentPath: $e');
       }
@@ -143,34 +152,39 @@ class WebDavFileCloudService implements FileCloudService {
       );
     }
 
+    HttpClient? client;
     try {
-      final client = WebDavStdClient();
+      client = _createHttpClient(config);
       await _ensureDirectoryExists(client, config, config.sanitizedBasePath);
 
-      final fileBytes = await localFile.readAsBytes();
+      final fileLength = await localFile.length();
       final fileExt = item.fileExtension ??
           (item.fileName != null ? p.extension(item.fileName!) : '');
-      final sanitizedName = p.basenameWithoutExtension(item.fileName ?? 'file');
+      final sanitizedName =
+          p.basenameWithoutExtension(item.fileName ?? 'file');
       final uniqueFileName = '${getId()}_$sanitizedName$fileExt';
       final relativePath = '${config.sanitizedBasePath}/$uniqueFileName';
 
       final fileUri = _buildUri(config.serverUrl, relativePath);
-      final dispatcher = client.dispatch(fileUri);
-
-      final req = await dispatcher.create(data: fileBytes);
-      req.request.headers.set(
+      final req = await client.openUrl('PUT', fileUri);
+      req.headers.set(
         HttpHeaders.authorizationHeader,
         _getAuthHeader(config),
       );
       if (item.fileMimeType != null) {
-        req.request.headers.set(
+        req.headers.set(
           HttpHeaders.contentTypeHeader,
           item.fileMimeType!,
         );
       }
+      req.contentLength = fileLength;
 
-      final resp = await req.close().timeout(const Duration(minutes: 2));
-      final statusCode = resp.response.statusCode;
+      // Stream the raw binary bytes directly to the WebDAV server
+      await req.addStream(localFile.openRead());
+      final resp = await req.close();
+      await resp.drain();
+
+      final statusCode = resp.statusCode;
 
       if (statusCode >= 200 && statusCode < 300) {
         final blurHash = await _getBlurHashIfNeeded(item);
@@ -195,6 +209,8 @@ class WebDavFileCloudService implements FileCloudService {
     } catch (e) {
       _logger.e('WebDAV upload exception: $e');
       return Left(Failure.fromException(e));
+    } finally {
+      client?.close(force: true);
     }
   }
 
@@ -224,21 +240,20 @@ class WebDavFileCloudService implements FileCloudService {
       );
     }
 
+    HttpClient? client;
     try {
       final cloudFileId = CloudFileId.parse(item.driveFileId!);
       final fileUri = _buildUri(config.serverUrl, cloudFileId.pathOrId);
 
-      final client = WebDavStdClient();
-      final dispatcher = client.dispatch(fileUri);
-
-      final req = await dispatcher.get();
-      req.request.headers.set(
+      client = _createHttpClient(config);
+      final req = await client.getUrl(fileUri);
+      req.headers.set(
         HttpHeaders.authorizationHeader,
         _getAuthHeader(config),
       );
 
-      final resp = await req.close().timeout(const Duration(minutes: 2));
-      final statusCode = resp.response.statusCode;
+      final resp = await req.close();
+      final statusCode = resp.statusCode;
 
       if (statusCode >= 200 && statusCode < 300) {
         final rootDir = await getPersistedRootDirPath(item.rootDir);
@@ -248,12 +263,34 @@ class WebDavFileCloudService implements FileCloudService {
         final localFilePath = p.join(rootDir, fileName);
 
         final targetFile = File(localFilePath);
-        final sink = targetFile.openWrite();
-        await resp.response.pipe(sink);
+        await targetFile.parent.create(recursive: true);
+
+        IOSink? sink;
+        try {
+          sink = targetFile.openWrite();
+          await resp.pipe(sink);
+        } catch (e) {
+          await sink?.close();
+          if (await targetFile.exists()) {
+            await targetFile.delete();
+          }
+          rethrow;
+        }
 
         _logger.i('WebDAV download success: $localFilePath');
         return Right(item.copyWith(localPath: localFilePath));
+      } else if (statusCode == 404) {
+        await resp.drain();
+        _logger.w('WebDAV file not found (404) at $fileUri');
+        return const Left(
+          Failure(
+            message:
+                "File does not exist on the currently connected WebDAV server.",
+            code: "webdav-file-not-found",
+          ),
+        );
       } else {
+        await resp.drain();
         _logger.e('WebDAV download failed with status $statusCode');
         return Left(
           Failure(
@@ -265,6 +302,8 @@ class WebDavFileCloudService implements FileCloudService {
     } catch (e) {
       _logger.e('WebDAV download exception: $e');
       return Left(Failure.fromException(e));
+    } finally {
+      client?.close(force: true);
     }
   }
 
@@ -286,21 +325,21 @@ class WebDavFileCloudService implements FileCloudService {
       );
     }
 
+    HttpClient? client;
     try {
       final cloudFileId = CloudFileId.parse(item.driveFileId!);
       final fileUri = _buildUri(config.serverUrl, cloudFileId.pathOrId);
 
-      final client = WebDavStdClient();
-      final dispatcher = client.dispatch(fileUri);
-
-      final req = await dispatcher.delete();
-      req.request.headers.set(
+      client = _createHttpClient(config);
+      final req = await client.openUrl('DELETE', fileUri);
+      req.headers.set(
         HttpHeaders.authorizationHeader,
         _getAuthHeader(config),
       );
 
       final resp = await req.close().timeout(const Duration(seconds: 30));
-      final statusCode = resp.response.statusCode;
+      await resp.drain();
+      final statusCode = resp.statusCode;
 
       if ((statusCode >= 200 && statusCode < 300) || statusCode == 404) {
         _logger.i('WebDAV delete success: ${cloudFileId.pathOrId}');
@@ -317,6 +356,8 @@ class WebDavFileCloudService implements FileCloudService {
     } catch (e) {
       _logger.e('WebDAV delete exception: $e');
       return Left(Failure.fromException(e));
+    } finally {
+      client?.close(force: true);
     }
   }
 }

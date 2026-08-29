@@ -784,6 +784,7 @@
   "preview__inspector__label__link": "Link",
   "preview__inspector__label__image_dimension": "Dimensão",
   "preview__inspector__label__device": "Dispositivo",
+  "preview__inspector__label__storage": "Armazenamento",
   "preview__inspector__status__encrypted": "Criptografado",
   "preview__inspector__status__local_only": "Somente local",
   "preview__inspector__status__synced": "Sincronizado",

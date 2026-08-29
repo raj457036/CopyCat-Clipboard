@@ -47,11 +47,16 @@ class _WebDavSetupTileState extends State<WebDavSetupTile> {
             subtitle = context.locale.settings__drive__loading;
             isLoading = true;
           case WebDavSetupConfigured(:final config):
-            final host =
-                Uri.tryParse(config.serverUrl)?.host ?? config.serverUrl;
-            subtitle =
-                '${context.locale.settings__drive__connected} - ${config.username}@$host';
-            isConfigured = true;
+            if (config.password.isNotEmpty) {
+              final host =
+                  Uri.tryParse(config.serverUrl)?.host ?? config.serverUrl;
+              subtitle =
+                  '${context.locale.settings__drive__connected} - ${config.username}@$host';
+              isConfigured = true;
+            } else {
+              subtitle = context.locale.settings__drive__disconnected;
+              isConfigured = false;
+            }
           case WebDavSetupDisconnected():
             subtitle = context.locale.settings__drive__disconnected;
           case WebDavSetupError(:final failure):
