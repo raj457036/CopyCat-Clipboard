@@ -194,17 +194,21 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     final firstItem = shareableItems.first;
 
     if (fileItems.isNotEmpty) {
-      await Share.shareXFiles(
-        fileItems,
-        subject: firstItem.title,
-        text: text.isEmpty ? firstItem.description : text,
-        sharePositionOrigin: origin,
+      await SharePlus.instance.share(
+        ShareParams(
+          files: fileItems,
+          subject: firstItem.title,
+          text: text.isEmpty ? firstItem.description : text,
+          sharePositionOrigin: origin,
+        ),
       );
     } else if (text.isNotEmpty) {
-      await Share.share(
-        text,
-        subject: firstItem.title,
-        sharePositionOrigin: origin,
+      await SharePlus.instance.share(
+        ShareParams(
+          text: text,
+          subject: firstItem.title,
+          sharePositionOrigin: origin,
+        ),
       );
     } else {
       return false;

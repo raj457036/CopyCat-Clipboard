@@ -153,6 +153,20 @@ class PasteStackCubit extends Cubit<PasteStackState> {
     emit(state.copyWith(items: state.items.skip(1).toList(growable: false)));
   }
 
+  void removeItem(ClipboardItem item) {
+    emit(
+      state.copyWith(
+        items: state.items.where((i) => i != item).toList(growable: false),
+      ),
+    );
+  }
+
+  void removeItemAt(int index) {
+    if (index < 0 || index >= state.items.length) return;
+    final items = List<ClipboardItem>.from(state.items)..removeAt(index);
+    emit(state.copyWith(items: items));
+  }
+
   @override
   Future<void> close() {
     _offlinePersistenceSub?.cancel();

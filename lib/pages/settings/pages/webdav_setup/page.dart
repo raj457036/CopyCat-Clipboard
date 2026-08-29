@@ -58,8 +58,9 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
   }
 
   void _onServerUrlChanged() {
-    final detected =
-        WebDavProviderPreset.detectFromUrl(_serverUrlController.text);
+    final detected = WebDavProviderPreset.detectFromUrl(
+      _serverUrlController.text,
+    );
     if (detected != _selectedPreset) {
       setState(() {
         _selectedPreset = detected;
@@ -219,7 +220,7 @@ class _WebDavSetupPageState extends State<WebDavSetupPage> {
                   ),
                   children: [
                     DropdownButtonFormField<WebDavProviderPreset>(
-                      value: _selectedPreset,
+                      initialValue: _selectedPreset,
                       isExpanded: true,
                       borderRadius: BorderRadius.circular(12),
                       menuMaxHeight: 350,
