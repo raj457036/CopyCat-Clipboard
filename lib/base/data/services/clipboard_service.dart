@@ -100,6 +100,7 @@ class ClipboardService with ClipboardListener {
   }
 
   Future<void> write(Iterable<DataWriterItem> items) async {
+    if (items.isEmpty) return;
     setWriting(true);
     await SystemClipboard.instance?.write(items);
     await wait(Durations.short2.inMilliseconds);
@@ -233,6 +234,7 @@ class CopyToClipboard {
   CopyToClipboard() : _items = <DataWriterItem>[];
 
   Future<bool> commit(ClipboardService service) async {
+    if (_items.isEmpty) return false;
     try {
       await service.runWithCaptureSuppressed(() async {
         await service.write(_items);
@@ -307,12 +309,40 @@ class CopyToClipboard {
     return true;
   }
 
-  Future<bool> saveFile(File file) async {
+  Future<bool> saveFile(
+    File file, {
+    String? fileName,
+    String? fileExtension,
+    String? mimeType,
+  }) async {
+    final baseName = fileName?.trim().isNotEmpty == true
+        ? fileName!.trim()
+        : p.basename(file.path);
+
+    var ext = (fileExtension?.trim().isNotEmpty == true
+            ? fileExtension!.trim()
+            : p.extension(baseName))
+        .replaceAll('.', '')
+        .toLowerCase();
+
+    if (ext.isEmpty) {
+      ext = p.extension(file.path).replaceAll('.', '').toLowerCase();
+    }
+
+    final resolvedFileName =
+        ext.isNotEmpty && !baseName.toLowerCase().endsWith('.$ext')
+            ? '$baseName.$ext'
+            : baseName;
+
+    final bytes = await file.readAsBytes();
+
     String? outputFile = await FilePicker.saveFile(
       dialogTitle: 'Save to',
-      fileName: p.basename(file.path),
-      bytes: await file.readAsBytes(),
-      lockParentWindow: true,
+      fileName: resolvedFileName,
+      type: ext.isNotEmpty ? FileType.custom : FileType.any,
+      allowedExtensions: ext.isNotEmpty ? [ext] : null,
+      bytes: bytes,
+      lockParentWindow: isDesktopPlatform,
     );
 
     if (isDesktopPlatform) {
@@ -322,8 +352,9 @@ class CopyToClipboard {
     if (outputFile == null) return false;
 
     if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
-      final ext = p.extension(file.path);
-      outputFile = p.setExtension(outputFile, ext);
+      if (ext.isNotEmpty) {
+        outputFile = p.setExtension(outputFile, '.$ext');
+      }
       final result = await copyFileInBackground(file.path, outputFile);
       return result;
     }

@@ -240,6 +240,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     items = await _resolvePreviewItems(items);
     final copy = CopyToClipboard();
 
+    bool saveFileSuccess = true;
     for (final item in items) {
       switch (item.type) {
         case ClipItemType.text:
@@ -255,7 +256,13 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         case ClipItemType.file:
           if (item.localPath == null) return false;
           if (saveFile) {
-            await copy.saveFile(File(item.localPath!));
+            final saved = await copy.saveFile(
+              File(item.localPath!),
+              fileName: item.fileName,
+              fileExtension: item.fileExtension,
+              mimeType: item.fileMimeType,
+            );
+            if (!saved) saveFileSuccess = false;
           } else {
             await copy.writeFileContent(
               File(item.localPath!),
@@ -263,6 +270,10 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
             );
           }
       }
+    }
+
+    if (saveFile) {
+      return saveFileSuccess;
     }
 
     final copied = await copy.commit(clipboard);
