@@ -733,6 +733,7 @@
   "settings__text__webdav__name": "WebDAV",
   "settings__text__webdav__info": "Connect your WebDAV server (Nextcloud, ownCloud, Synology NAS, etc.) to store and sync your files and media attachments.",
   "settings__dialog__webdav__title": "WebDAV Storage",
+  "settings__dialog__webdav__preset_provider": "Provider Preset",
   "settings__dialog__webdav__server_url": "Server URL",
   "settings__dialog__webdav__server_url_hint": "https://cloud.example.com/remote.php/dav/files/username/",
   "settings__dialog__webdav__username": "Username",
