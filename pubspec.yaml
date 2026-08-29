@@ -1,7 +1,7 @@
 name: clipboard
 description: "CopyCat Clipboard: One Clipboard, Limitless Productivity"
 publish_to: "none"
-version: 2.0.9+103
+version: 2.0.10+104
 
 environment:
   sdk: ">=3.11.0 <4.0.0"
