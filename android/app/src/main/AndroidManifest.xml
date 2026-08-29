@@ -71,10 +71,10 @@
         >
             <layout
                 android:defaultHeight="600dp"
-                android:defaultWidth="1000dp"
-                android:gravity="top|end"
-                android:minHeight="520dp"
-                android:minWidth="480dp" />
+                android:defaultWidth="380dp"
+                android:gravity="center"
+                android:minHeight="320dp"
+                android:minWidth="280dp" />
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
