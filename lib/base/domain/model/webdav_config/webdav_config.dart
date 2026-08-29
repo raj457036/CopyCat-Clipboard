@@ -8,6 +8,7 @@ class WebDavConfig {
   final String password;
   final String basePath;
   final bool allowSelfSignedCert;
+  final bool autoCleanInactiveFiles;
 
   const WebDavConfig({
     required this.serverUrl,
@@ -15,6 +16,7 @@ class WebDavConfig {
     required this.password,
     this.basePath = defaultWebDavBasePath,
     this.allowSelfSignedCert = false,
+    this.autoCleanInactiveFiles = false,
   });
 
   String get sanitizedBasePath {
@@ -34,6 +36,7 @@ class WebDavConfig {
     String? password,
     String? basePath,
     bool? allowSelfSignedCert,
+    bool? autoCleanInactiveFiles,
   }) {
     return WebDavConfig(
       serverUrl: serverUrl ?? this.serverUrl,
@@ -41,6 +44,8 @@ class WebDavConfig {
       password: password ?? this.password,
       basePath: basePath ?? this.basePath,
       allowSelfSignedCert: allowSelfSignedCert ?? this.allowSelfSignedCert,
+      autoCleanInactiveFiles:
+          autoCleanInactiveFiles ?? this.autoCleanInactiveFiles,
     );
   }
 
@@ -50,6 +55,7 @@ class WebDavConfig {
         'password': password,
         'basePath': basePath,
         'allowSelfSignedCert': allowSelfSignedCert,
+        'autoCleanInactiveFiles': autoCleanInactiveFiles,
       };
 
   factory WebDavConfig.fromJson(Map<String, dynamic> json) => WebDavConfig(
@@ -58,6 +64,8 @@ class WebDavConfig {
         password: json['password'] as String? ?? '',
         basePath: json['basePath'] as String? ?? defaultWebDavBasePath,
         allowSelfSignedCert: json['allowSelfSignedCert'] as bool? ?? false,
+        autoCleanInactiveFiles:
+            json['autoCleanInactiveFiles'] as bool? ?? false,
       );
 
   @override
@@ -69,7 +77,8 @@ class WebDavConfig {
           username == other.username &&
           password == other.password &&
           basePath == other.basePath &&
-          allowSelfSignedCert == other.allowSelfSignedCert;
+          allowSelfSignedCert == other.allowSelfSignedCert &&
+          autoCleanInactiveFiles == other.autoCleanInactiveFiles;
 
   @override
   int get hashCode =>
@@ -77,9 +86,10 @@ class WebDavConfig {
       username.hashCode ^
       password.hashCode ^
       basePath.hashCode ^
-      allowSelfSignedCert.hashCode;
+      allowSelfSignedCert.hashCode ^
+      autoCleanInactiveFiles.hashCode;
 
   @override
   String toString() =>
-      'WebDavConfig(serverUrl: $serverUrl, username: $username, basePath: $basePath, allowSelfSignedCert: $allowSelfSignedCert)';
+      'WebDavConfig(serverUrl: $serverUrl, username: $username, basePath: $basePath, allowSelfSignedCert: $allowSelfSignedCert, autoCleanInactiveFiles: $autoCleanInactiveFiles)';
 }

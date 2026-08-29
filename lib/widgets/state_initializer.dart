@@ -12,6 +12,7 @@ import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
 import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/constants/numbers/breakpoints.dart';
+import 'package:clipboard/base/data/services/file_cloud_services/webdav/webdav_cleanup_service.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/globals.dart';
 import 'package:clipboard/common/logging.dart';
@@ -98,6 +99,10 @@ class _StateInitializerState extends State<StateInitializer>
         (_) => _trackMobileAppLaunch(),
       );
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      sl<WebDavCleanupService>().runCleanupIfEligible();
+    });
 
     Thumbnailer.addCustomGenerationStrategies(customGenerationStrategies);
   }

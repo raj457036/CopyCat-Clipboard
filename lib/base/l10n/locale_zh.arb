@@ -784,6 +784,7 @@
   "preview__inspector__label__link": "链接",
   "preview__inspector__label__image_dimension": "图片尺寸",
   "preview__inspector__label__device": "设备",
+  "preview__inspector__label__storage": "存储位置",
   "preview__inspector__status__encrypted": "已加密",
   "preview__inspector__status__local_only": "仅本地",
   "preview__inspector__status__synced": "已同步",

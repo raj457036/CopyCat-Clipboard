@@ -110,7 +110,6 @@ dependencies:
   mobile_scanner: ^7.1.1
   thumbnailer: ^3.3.0
   image_size_getter: ^2.4.0
-  simple_webdav_client: ^0.2.0
 
 dev_dependencies:
   flutter_test:

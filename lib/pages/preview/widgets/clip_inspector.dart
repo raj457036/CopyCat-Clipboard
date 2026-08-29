@@ -7,6 +7,7 @@ import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/cloud_file_id/cloud_file_id.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage;
 import 'package:clipboard/base/enums/clip_type.dart';
@@ -596,6 +597,19 @@ class _ClipInspectorState extends State<ClipInspector> {
           label: context.locale.preview__inspector__label__device,
           value:
               userDevicesCubit.getDeviceName(item.deviceId!) ?? item.deviceId!,
+        ),
+      );
+    }
+
+    if (item.driveFileId != null && item.driveFileId!.isNotEmpty) {
+      final driveId = item.driveFileId!;
+      final storageLocation = driveId.startsWith(CloudStorageType.webdavPrefix)
+          ? driveId
+          : context.locale.settings__text__cloud__name;
+      rows.add(
+        _InspectorInfoRow(
+          label: context.locale.preview__inspector__label__storage,
+          value: storageLocation,
         ),
       );
     }

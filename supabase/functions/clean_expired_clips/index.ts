@@ -36,20 +36,9 @@ async function cleanExpiredMediaClips(client: SupabaseClient) {
 
       console.info("Running cleanup for User Id: ", id);
 
-      // refresh the google auth token
+      // refresh the google auth token if available
       const result = await refreshGoogleToken(client, id);
-      if (result.status !== 200) {
-        console.error(result);
-        console.warn(
-          "Error refreshing google token, skipping further operations.",
-        );
-        continue;
-      }
-      const { access_token } = result;
-      if (!access_token) {
-        console.info("No access token found!, skipping further operations.");
-        continue;
-      }
+      const accessToken = result.status === 200 ? result.access_token : null;
 
       let ciOffset = 0;
       while (true) {
@@ -63,25 +52,26 @@ async function cleanExpiredMediaClips(client: SupabaseClient) {
         )
           .select("*").range(ciOffset, ciOffset + 100);
 
-        if (!clips.data) {
+        if (!clips.data || clips.data.length === 0) {
           console.info(
             "No media/file clips found for the user, skipping further operations.",
           );
           break;
         }
 
-        const fileIds = clips.data!.map((c) => c.file_id);
-        const clipIds = clips.data!.map((c) => c.id);
+        const gdriveFileIds = clips.data
+          .map((c) => c.file_id as string)
+          .filter((fileId: string) => fileId && !fileId.startsWith("webdav:"));
 
-        if (fileIds.length === 0) {
-          console.info(
-            "No media/file clips found for the user, skipping further operations.",
-          );
-          break;
+        const clipIds = clips.data.map((c) => c.id);
+
+        if (gdriveFileIds.length > 0 && accessToken) {
+          await batchDeleteDriveFiles(gdriveFileIds, accessToken);
         }
 
-        await batchDeleteDriveFiles(fileIds, access_token);
-        await client.from("clipboard_items").delete().in("id", clipIds);
+        if (clipIds.length > 0) {
+          await client.from("clipboard_items").delete().in("id", clipIds);
+        }
 
         console.info("Finished cleanup for User Id: ", id);
 

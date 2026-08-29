@@ -1770,6 +1770,12 @@ abstract class AppLocalizations {
   /// **'Device'**
   String get preview__inspector__label__device;
 
+  /// No description provided for @preview__inspector__label__storage.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage'**
+  String get preview__inspector__label__storage;
+
   /// No description provided for @preview__inspector__status__encrypted.
   ///
   /// In en, this message translates to:
@@ -3214,11 +3220,35 @@ abstract class AppLocalizations {
   /// **'Storage Folder Path'**
   String get settings__dialog__webdav__base_path;
 
+  /// No description provided for @settings__dialog__webdav__base_path_helper.
+  ///
+  /// In en, this message translates to:
+  /// **'Folder path cannot be changed after setup. To change it, disconnect first.'**
+  String get settings__dialog__webdav__base_path_helper;
+
+  /// No description provided for @settings__dialog__webdav__advanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get settings__dialog__webdav__advanced;
+
   /// No description provided for @settings__dialog__webdav__self_signed.
   ///
   /// In en, this message translates to:
   /// **'Allow Self-Signed / Insecure Certificates'**
   String get settings__dialog__webdav__self_signed;
+
+  /// No description provided for @settings__dialog__webdav__auto_clean.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-clean inactive files after 30 days'**
+  String get settings__dialog__webdav__auto_clean;
+
+  /// No description provided for @settings__dialog__webdav__auto_clean_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Because WebDAV credentials remain private on your device, remote files are not removed by cloud cleanup. When enabled, media files older than 30 days from last modification will be deleted from your WebDAV server. Clips in collections or locked are always protected.'**
+  String get settings__dialog__webdav__auto_clean_subtitle;
 
   /// No description provided for @settings__dialog__webdav__test_conn.
   ///
