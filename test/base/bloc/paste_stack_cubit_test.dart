@@ -290,5 +290,62 @@ void main() {
 
       await cubit.close();
     });
+
+    test('removeItem removes item from stack', () async {
+      final appConfig = _StubAppConfigCubit(AppConfig(view: AppView.windowed));
+      final monetization = _StubMonetizationCubit(
+        MonetizationState.active(subscription: _subscription()),
+      );
+
+      final cubit = PasteStackCubit(
+        appConfig,
+        windowAction,
+        monetization,
+        offline,
+      );
+
+      final itemA = _textItem('A');
+      final itemB = _textItem('B');
+      final itemC = _textItem('C');
+
+      cubit.pushItems([itemA, itemB, itemC]);
+      expect(cubit.state.items.length, 3);
+
+      cubit.removeItem(itemB);
+      expect(cubit.state.items.length, 2);
+      expect(cubit.state.items.map((e) => e.text).toList(), ['A', 'C']);
+
+      await cubit.close();
+    });
+
+    test('removeItemAt removes item by index', () async {
+      final appConfig = _StubAppConfigCubit(AppConfig(view: AppView.windowed));
+      final monetization = _StubMonetizationCubit(
+        MonetizationState.active(subscription: _subscription()),
+      );
+
+      final cubit = PasteStackCubit(
+        appConfig,
+        windowAction,
+        monetization,
+        offline,
+      );
+
+      final itemA = _textItem('A');
+      final itemB = _textItem('B');
+
+      cubit.pushItems([itemA, itemB]);
+      expect(cubit.state.items.length, 2);
+
+      cubit.removeItemAt(0);
+      expect(cubit.state.items.length, 1);
+      expect(cubit.state.items.first.text, 'B');
+
+      // Invalid index does nothing
+      cubit.removeItemAt(5);
+      expect(cubit.state.items.length, 1);
+
+      await cubit.close();
+    });
   });
 }
