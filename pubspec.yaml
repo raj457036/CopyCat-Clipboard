@@ -6,14 +6,13 @@ version: 2.0.8+102
 environment:
   sdk: ">=3.11.0 <4.0.0"
 
-isar_version: &isar_version 3.3.0-dev.1
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  injectable: ^2.7.1
+  injectable: ^3.0.0
   flutter_bloc: ^9.1.1
   bloc: ^9.2.1
   freezed_annotation: ^3.1.0
@@ -21,18 +20,18 @@ dependencies:
   path_provider: ^2.1.5
   json_annotation: ^4.9.0
   get_it: ^9.2.1
-  go_router: ^17.2.3
+  go_router: ^18.0.0
   dartz: ^0.10.1
   form_validator: ^2.1.1
   window_manager: ^0.5.1
   timeago: ^3.7.1
-  isar_community: *isar_version
-  isar_community_flutter_libs: *isar_version
+  isar_community: ^3.3.2
+  isar_community_flutter_libs: ^3.3.2
   uuid: ^4.5.3
   rxdart: ^0.28.0
   internet_connection_checker_plus: ^3.0.0
   url_launcher: ^6.3.2
-  googleapis: ^16.0.0
+  googleapis: ^17.0.0
   file_picker: ^11.0.2
   http: ^1.6.0
   blurhash_dart: ^1.2.1
@@ -52,13 +51,13 @@ dependencies:
     path: packages/focus_window
   quick_paste_popup:
     path: packages/quick_paste_popup
-  package_info_plus: ^8.3.1
+  package_info_plus: ^9.0.1
   tray_manager: ^0.5.2
-  flutter_platform_alert: ^0.8.0
+  flutter_platform_alert: ^0.9.1
   device_preview_screenshot: ^1.0.0
   encrypt: ^5.0.3
   pointycastle: ^3.9.1
-  upgrader: 13.1.0
+  upgrader: ^13.7.0
   in_app_review: ^2.0.9
   retry: ^3.1.2
   launch_at_startup: ^0.5.1
@@ -66,7 +65,7 @@ dependencies:
   flutter_svg: ^2.2.4
   screen_retriever: ^0.2.0
   no_screenshot: ^2.0.1
-  flutter_secure_storage: ^9.2.4
+  flutter_secure_storage: ^10.3.1
   local_auth: ^3.0.1
   android_background_clipboard:
     path: packages/android_background_clipboard
@@ -89,14 +88,14 @@ dependencies:
   super_clipboard: ^0.9.1
   super_drag_and_drop: ^0.9.1
   easy_worker: ^1.2.3
-  cacherine: ^1.1.4
+  cacherine: ^2.4.0
   clipboard_watcher: ^0.3.0
   crypto: ^3.0.7
   mdns_dart: ^2.2.1
   ntp: ^2.0.0
   nanoid2: ^2.0.1
   tiny_storage: ^2.0.2
-  share_plus: ^10.1.4
+  share_plus: ^12.0.2
   device_info_plus: ^11.5.0
   equatable: ^2.0.8
   punycode: ^1.0.0
@@ -111,14 +110,15 @@ dependencies:
   mobile_scanner: ^7.1.1
   thumbnailer: ^3.3.0
   image_size_getter: ^2.4.0
+  simple_webdav_client: ^0.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
   build_runner: ^2.5.4
-  injectable_generator: ^2.7.0
-  isar_community_generator: *isar_version
+  injectable_generator: ^3.0.2
+  isar_community_generator: ^3.3.2
   freezed: ^3.1.0
   json_serializable: ^6.8.0
   flutter_launcher_icons: ^0.14.4

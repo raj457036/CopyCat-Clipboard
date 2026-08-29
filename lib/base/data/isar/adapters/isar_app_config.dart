@@ -19,6 +19,9 @@ class IsarAppConfig {
   bool enableSync = true;
   bool enableFileSync = true;
   @Enumerated(EnumType.name)
+  ActiveCloudStorageProvider activeStorageProvider =
+      ActiveCloudStorageProvider.googleDrive;
+  @Enumerated(EnumType.name)
   AppLayout layout = AppLayout.grid;
   @Enumerated(EnumType.name)
   AppView view = AppView.windowed;
@@ -82,6 +85,7 @@ class IsarAppConfig {
     themeMode: themeMode,
     enableSync: enableSync,
     enableFileSync: enableFileSync,
+    activeStorageProvider: activeStorageProvider,
     layout: layout,
     view: view,
     pinned: pinned,
@@ -132,6 +136,7 @@ class IsarAppConfig {
     ..themeMode = config.themeMode
     ..enableSync = config.enableSync
     ..enableFileSync = config.enableFileSync
+    ..activeStorageProvider = config.activeStorageProvider
     ..layout = config.layout
     ..view = config.view
     ..pinned = config.pinned

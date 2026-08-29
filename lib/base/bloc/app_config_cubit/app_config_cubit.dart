@@ -511,6 +511,14 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
     await repo.update(newConfig);
   }
 
+  Future<void> changeActiveStorageProvider(
+    ActiveCloudStorageProvider value,
+  ) async {
+    final newConfig = state.config.copyWith(activeStorageProvider: value);
+    emit(state.copyWith(config: newConfig));
+    await repo.update(newConfig);
+  }
+
   Future<void> toggleTrayIcon(bool value) async {
     final newConfig = state.config.copyWith(showTrayIcon: value);
     emit(state.copyWith(config: newConfig));

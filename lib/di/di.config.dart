@@ -1,5 +1,5 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 // **************************************************************************
 // InjectableConfigGenerator
@@ -44,6 +44,8 @@ import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart'
     as _i891;
 import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart'
     as _i805;
+import 'package:clipboard/base/bloc/webdav_setup_cubit/webdav_setup_cubit.dart'
+    as _i923;
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart'
     as _i657;
 import 'package:clipboard/base/data/adapters/clip_sync_adapter.dart' as _i8;
@@ -71,16 +73,22 @@ import 'package:clipboard/base/data/repositories/restoration_status.dart'
 import 'package:clipboard/base/data/repositories/subscription.dart' as _i623;
 import 'package:clipboard/base/data/repositories/sync_clipboard.dart' as _i223;
 import 'package:clipboard/base/data/repositories/user_devices.dart' as _i843;
+import 'package:clipboard/base/data/repositories/webdav_credential.dart'
+    as _i214;
 import 'package:clipboard/base/data/services/application_meta_resolver.dart'
     as _i375;
 import 'package:clipboard/base/data/services/clipboard_service.dart' as _i63;
 import 'package:clipboard/base/data/services/cross_sync_listener.dart' as _i95;
+import 'package:clipboard/base/data/services/file_cloud_services/composite_file_cloud_service.dart'
+    as _i919;
 import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_drive_file_cloud_service.dart'
     as _i858;
 import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_drive_service.dart'
     as _i563;
 import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_services.dart'
     as _i543;
+import 'package:clipboard/base/data/services/file_cloud_services/webdav/webdav_file_cloud_service.dart'
+    as _i1008;
 import 'package:clipboard/base/data/services/in_app_review_service.dart'
     as _i930;
 import 'package:clipboard/base/data/services/lan_sync/lan_sync_service.dart'
@@ -128,6 +136,8 @@ import 'package:clipboard/base/domain/repositories/sync_clipboard.dart' as _i61;
 import 'package:clipboard/base/domain/repositories/sync_cursor.dart' as _i834;
 import 'package:clipboard/base/domain/repositories/sync_outbox.dart' as _i770;
 import 'package:clipboard/base/domain/repositories/user_devices.dart' as _i462;
+import 'package:clipboard/base/domain/repositories/webdav_credential.dart'
+    as _i193;
 import 'package:clipboard/base/domain/services/application_meta_resolver.dart'
     as _i533;
 import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart'
@@ -166,20 +176,24 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
+    gh.factory<_i653.SelectedClipsCubit>(() => _i653.SelectedClipsCubit());
+    gh.factory<_i657.WindowActionCubit>(() => _i657.WindowActionCubit());
     await gh.factoryAsync<_i655.PackageInfo>(
       () => registerModule.packageInfo,
       preResolve: true,
     );
-    gh.factory<_i653.SelectedClipsCubit>(() => _i653.SelectedClipsCubit());
-    gh.factory<_i657.WindowActionCubit>(() => _i657.WindowActionCubit());
+    gh.singleton<_i588.EventBusCubit>(() => _i588.EventBusCubit());
+    gh.singleton<_i63.ClipboardService>(() => _i63.ClipboardService());
+    gh.singleton<_i292.SyncEventBus>(() => _i292.SyncEventBus());
     gh.singleton<_i291.FocusWindow>(() => registerModule.focusWindow);
     await gh.singletonAsync<_i829.TinyStorage>(
       () => registerModule.localCache(),
       preResolve: true,
     );
-    gh.singleton<_i63.ClipboardService>(() => _i63.ClipboardService());
-    gh.singleton<_i292.SyncEventBus>(() => _i292.SyncEventBus());
-    gh.singleton<_i588.EventBusCubit>(() => _i588.EventBusCubit());
+    gh.lazySingleton<_i563.GoogleOAuth2Service>(
+      () => _i563.GoogleOAuth2Service(),
+    );
+    gh.lazySingleton<_i405.LocalAuthService>(() => _i405.LocalAuthService());
     await gh.lazySingletonAsync<_i214.Isar>(
       () => registerModule.db,
       preResolve: true,
@@ -188,32 +202,31 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i565.AndroidBackgroundClipboard>(
       () => registerModule.bgService,
     );
-    gh.lazySingleton<_i563.GoogleOAuth2Service>(
-      () => _i563.GoogleOAuth2Service(),
+    gh.lazySingleton<_i891.AppConfigRepository>(
+      () => _i655.AppConfigRepositoryImpl(gh<_i214.Isar>()),
     );
-    gh.lazySingleton<_i405.LocalAuthService>(() => _i405.LocalAuthService());
     gh.lazySingleton<_i616.ClipBatchSyncService>(
       () => _i639.IsarClipBatchSyncService(),
     );
     gh.lazySingleton<_i952.InAppReviewService>(
       () => _i930.InAppReviewServiceImpl(),
     );
-    gh.lazySingleton<_i976.LanSyncService>(
-      () => _i976.LanSyncService(
-        gh<_i616.ClipBatchSyncService>(),
-        gh<_i292.SyncEventBus>(),
-      ),
+    gh.lazySingleton<_i671.DatabaseService>(
+      () => registerModule.databaseService(gh<_i214.Isar>()),
     );
     gh.lazySingleton<_i284.ApplicationMetaSource>(
       () => _i651.LocalApplicationMetaSource(gh<_i214.Isar>()),
       instanceName: 'local',
     );
-    gh.lazySingleton<_i671.DatabaseService>(
-      () => registerModule.databaseService(gh<_i214.Isar>()),
+    gh.lazySingleton<_i193.WebDavCredentialRepository>(
+      () => _i214.WebDavCredentialRepositoryImpl(),
     );
     gh.factory<String>(
       () => registerModule.supabaseProjectKey,
       instanceName: 'supabase_project_key',
+    );
+    gh.factory<_i923.WebDavSetupCubit>(
+      () => _i923.WebDavSetupCubit(gh<_i193.WebDavCredentialRepository>()),
     );
     gh.lazySingleton<_i543.DriveService>(
       () => _i563.GoogleDriveService(),
@@ -222,18 +235,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i770.SyncOutboxRepository>(
       () => _i442.IsarSyncOutboxRepository(),
     );
-    gh.lazySingleton<_i235.ReviewPromptCubit>(
-      () => _i235.ReviewPromptCubit(
-        gh<_i829.TinyStorage>(),
-        gh<_i952.InAppReviewService>(),
-      ),
-    );
     gh.factory<String>(
       () => registerModule.supabaseUrl,
       instanceName: 'supabase_url',
     );
-    gh.lazySingleton<_i922.RestorationStatusSource>(
-      () => _i364.RestorationStatusSourceImpl(db: gh<_i214.Isar>()),
+    await gh.factoryAsync<String>(
+      () => registerModule.deviceId(gh<_i829.TinyStorage>()),
+      instanceName: 'device_id',
+      preResolve: true,
     );
     gh.lazySingleton<_i834.SyncCursorRepository>(
       () => _i958.IsarSyncCursorRepository(),
@@ -242,18 +251,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.supabaseKey,
       instanceName: 'supabase_key',
     );
-    gh.lazySingleton<_i891.AppConfigRepository>(
-      () => _i655.AppConfigRepositoryImpl(gh<_i214.Isar>()),
+    gh.lazySingleton<_i922.RestorationStatusSource>(
+      () => _i364.RestorationStatusSourceImpl(db: gh<_i214.Isar>()),
     );
-    gh.lazySingleton<_i110.ApplicationMetaRepository>(
-      () => _i756.ApplicationMetaRepositoryImpl(
-        gh<_i284.ApplicationMetaSource>(instanceName: 'local'),
+    gh.lazySingleton<_i235.ReviewPromptCubit>(
+      () => _i235.ReviewPromptCubit(
+        gh<_i829.TinyStorage>(),
+        gh<_i952.InAppReviewService>(),
       ),
-    );
-    await gh.factoryAsync<String>(
-      () => registerModule.deviceId(gh<_i829.TinyStorage>()),
-      instanceName: 'device_id',
-      preResolve: true,
     );
     await gh.singletonAsync<_i454.SupabaseClient>(
       () => registerModule.client(
@@ -262,9 +267,44 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       preResolve: true,
     );
-    gh.lazySingleton<_i1069.RestorationStatusRepository>(
-      () => _i970.RestorationStatusRepositoryImpl(
-        gh<_i922.RestorationStatusSource>(),
+    gh.lazySingleton<_i782.SyncClipboardSource>(
+      () => _i425.SyncClipboardSourceImpl(gh<_i454.SupabaseClient>()),
+      instanceName: 'remote',
+    );
+    gh.lazySingleton<_i23.ClipboardSource>(
+      () => _i411.RemoteClipboardSource(gh<_i454.SupabaseClient>()),
+      instanceName: 'remote',
+    );
+    gh.lazySingleton<_i543.UserDevicesSource>(
+      () => _i752.RemoteUserDevicesSource(gh<_i454.SupabaseClient>()),
+      instanceName: 'remote',
+    );
+    gh.lazySingleton<_i422.SubscriptionSource>(
+      () => _i35.RemoteSubscriptionSource(client: gh<_i454.SupabaseClient>()),
+      instanceName: 'remote',
+    );
+    gh.lazySingleton<_i670.ClipCollectionSource>(
+      () => _i173.LocalClipCollectionSource(
+        gh<_i214.Isar>(),
+        gh<String>(instanceName: 'device_id'),
+      ),
+      instanceName: 'local',
+    );
+    gh.singleton<_i542.AppConfigCubit>(
+      () => _i542.AppConfigCubit(gh<_i891.AppConfigRepository>()),
+    );
+    gh.lazySingleton<_i460.DriveCredentialRepository>(
+      () => _i477.DriveCredentialRepositoryImpl(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i61.SyncRepository>(
+      () => _i223.SyncRepositoryImpl(
+        gh<_i782.SyncClipboardSource>(instanceName: 'remote'),
+      ),
+    );
+    gh.lazySingleton<_i976.LanSyncService>(
+      () => _i976.LanSyncService(
+        gh<_i616.ClipBatchSyncService>(),
+        gh<_i292.SyncEventBus>(),
       ),
     );
     gh.lazySingleton<_i543.ClipCrossSyncListener>(
@@ -273,40 +313,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<String>(instanceName: 'device_id'),
       ),
     );
-    gh.lazySingleton<_i636.AppDirectoryRepository>(
-      () => _i715.AppDirectoryRepositoryImpl(gh<_i454.SupabaseClient>()),
-    );
-    gh.lazySingleton<_i670.ClipCollectionSource>(
-      () => _i899.RemoteClipCollectionSource(gh<_i454.SupabaseClient>()),
-      instanceName: 'remote',
-    );
-    gh.lazySingleton<_i533.ApplicationMetaResolver>(
-      () => _i375.ApplicationMetaResolverImpl(
-        gh<_i110.ApplicationMetaRepository>(),
-        gh<_i291.FocusWindow>(),
-        gh<_i636.AppDirectoryRepository>(),
-      ),
-    );
-    gh.singleton<_i542.AppConfigCubit>(
-      () => _i542.AppConfigCubit(gh<_i891.AppConfigRepository>()),
-    );
-    gh.lazySingleton<_i422.SubscriptionSource>(
-      () => _i35.RemoteSubscriptionSource(client: gh<_i454.SupabaseClient>()),
-      instanceName: 'remote',
-    );
-    gh.lazySingleton<_i543.CollectionCrossSyncListener>(
-      () => _i95.SBCollectionCrossSyncListener(
-        gh<_i454.SupabaseClient>(),
-        gh<String>(instanceName: 'device_id'),
-      ),
-    );
-    gh.lazySingleton<_i579.AuthRepository>(
-      () => _i346.AuthRepositoryImpl(client: gh<_i454.SupabaseClient>()),
-    );
-    gh.lazySingleton<_i112.FileCloudService>(
-      () => _i858.GoogleDriveFileCloudService(
-        gh<_i543.DriveService>(instanceName: 'google_drive'),
-        gh<_i542.AppConfigCubit>(),
+    gh.lazySingleton<_i110.ApplicationMetaRepository>(
+      () => _i756.ApplicationMetaRepositoryImpl(
+        gh<_i284.ApplicationMetaSource>(instanceName: 'local'),
       ),
     );
     gh.lazySingleton<_i23.ClipboardSource>(
@@ -317,34 +326,49 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'local',
     );
-    gh.lazySingleton<_i670.ClipCollectionSource>(
-      () => _i173.LocalClipCollectionSource(
-        gh<_i214.Isar>(),
+    gh.lazySingleton<_i242.AppLockCubit>(
+      () => _i242.AppLockCubit(
+        gh<_i542.AppConfigCubit>(),
+        gh<_i405.LocalAuthService>(),
+      ),
+    );
+    gh.lazySingleton<_i543.CollectionCrossSyncListener>(
+      () => _i95.SBCollectionCrossSyncListener(
+        gh<_i454.SupabaseClient>(),
         gh<String>(instanceName: 'device_id'),
       ),
-      instanceName: 'local',
     );
-    gh.lazySingleton<_i460.DriveCredentialRepository>(
-      () => _i477.DriveCredentialRepositoryImpl(gh<_i454.SupabaseClient>()),
-    );
-    gh.lazySingleton<_i543.UserDevicesSource>(
-      () => _i752.RemoteUserDevicesSource(gh<_i454.SupabaseClient>()),
-      instanceName: 'remote',
-    );
-    gh.lazySingleton<_i23.ClipboardSource>(
-      () => _i411.RemoteClipboardSource(gh<_i454.SupabaseClient>()),
-      instanceName: 'remote',
-    );
-    gh.lazySingleton<_i782.SyncClipboardSource>(
-      () => _i425.SyncClipboardSourceImpl(gh<_i454.SupabaseClient>()),
-      instanceName: 'remote',
-    );
-    gh.lazySingleton<_i276.ClipCollectionRepository>(
-      () => _i432.ClipCollectionRepositoryImpl(
-        gh<_i670.ClipCollectionSource>(instanceName: 'remote'),
-        gh<_i670.ClipCollectionSource>(instanceName: 'local'),
-        gh<_i770.SyncOutboxRepository>(),
+    gh.lazySingleton<_i1069.RestorationStatusRepository>(
+      () => _i970.RestorationStatusRepositoryImpl(
+        gh<_i922.RestorationStatusSource>(),
       ),
+    );
+    gh.lazySingleton<_i636.AppDirectoryRepository>(
+      () => _i715.AppDirectoryRepositoryImpl(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i462.UserDevicesRepository>(
+      () => _i843.UserDevicesRepositoryImpl(
+        gh<_i543.UserDevicesSource>(instanceName: 'remote'),
+        gh<_i454.SupabaseClient>(),
+      ),
+    );
+    gh.factoryCached<_i521.DriveSetupCubit>(
+      () => _i521.DriveSetupCubit(
+        gh<_i460.DriveCredentialRepository>(),
+        gh<_i543.DriveService>(instanceName: 'google_drive'),
+      ),
+    );
+    gh.lazySingleton<_i579.PostSyncDecryptionService>(
+      () => _i579.PostSyncDecryptionService(
+        gh<_i23.ClipboardSource>(instanceName: 'local'),
+      ),
+    );
+    gh.lazySingleton<_i579.AuthRepository>(
+      () => _i346.AuthRepositoryImpl(client: gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i670.ClipCollectionSource>(
+      () => _i899.RemoteClipCollectionSource(gh<_i454.SupabaseClient>()),
+      instanceName: 'remote',
     );
     gh.singleton<_i29.AuthCubit>(
       () => _i29.AuthCubit(
@@ -353,22 +377,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i542.AppConfigCubit>(),
       ),
     );
-    gh.lazySingleton<_i230.ClipboardRepository>(
-      () => _i378.ClipboardRepositoryCloudImpl(
-        gh<_i23.ClipboardSource>(instanceName: 'remote'),
+    gh.lazySingleton<_i112.FileCloudService>(
+      () => _i858.GoogleDriveFileCloudService(
+        gh<_i543.DriveService>(instanceName: 'google_drive'),
+        gh<_i542.AppConfigCubit>(),
       ),
-      instanceName: 'remote',
+      instanceName: 'google_drive',
     );
-    gh.lazySingleton<_i579.PostSyncDecryptionService>(
-      () => _i579.PostSyncDecryptionService(
-        gh<_i23.ClipboardSource>(instanceName: 'local'),
-      ),
-    );
-    gh.factory<_i618.FileCloudCubit>(
-      () => _i618.FileCloudCubit(
-        gh<_i112.FileCloudService>(),
-        gh<_i23.ClipboardSource>(instanceName: 'local'),
-        gh<_i292.SyncEventBus>(),
+    gh.lazySingleton<_i276.ClipCollectionRepository>(
+      () => _i432.ClipCollectionRepositoryImpl(
+        gh<_i670.ClipCollectionSource>(instanceName: 'remote'),
+        gh<_i670.ClipCollectionSource>(instanceName: 'local'),
+        gh<_i770.SyncOutboxRepository>(),
       ),
     );
     gh.lazySingleton<_i230.ClipboardRepository>(
@@ -378,37 +398,37 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'local',
     );
-    gh.lazySingleton<_i706.OfflinePersistenceCubit>(
-      () => _i706.OfflinePersistenceCubit(
-        gh<_i29.AuthCubit>(),
-        gh<_i230.ClipboardRepository>(instanceName: 'local'),
-        gh<_i63.ClipboardService>(),
-        gh<_i542.AppConfigCubit>(),
-        gh<_i533.ApplicationMetaResolver>(),
-        gh<String>(instanceName: 'device_id'),
-        gh<_i292.SyncEventBus>(),
-      ),
-    );
-    gh.lazySingleton<_i61.SyncRepository>(
-      () => _i223.SyncRepositoryImpl(
-        gh<_i782.SyncClipboardSource>(instanceName: 'remote'),
-      ),
-    );
-    gh.lazySingleton<_i242.AppLockCubit>(
-      () => _i242.AppLockCubit(
-        gh<_i542.AppConfigCubit>(),
-        gh<_i405.LocalAuthService>(),
-      ),
-    );
     gh.lazySingleton<_i956.SubscriptionRepository>(
       () => _i623.SubscriptionRepositoryImpl(
         remote: gh<_i422.SubscriptionSource>(instanceName: 'remote'),
       ),
     );
-    gh.factory<_i521.DriveSetupCubit>(
-      () => _i521.DriveSetupCubit(
-        gh<_i460.DriveCredentialRepository>(),
-        gh<_i543.DriveService>(instanceName: 'google_drive'),
+    gh.lazySingleton<_i230.ClipboardRepository>(
+      () => _i378.ClipboardRepositoryCloudImpl(
+        gh<_i23.ClipboardSource>(instanceName: 'remote'),
+      ),
+      instanceName: 'remote',
+    );
+    gh.lazySingleton<_i533.ApplicationMetaResolver>(
+      () => _i375.ApplicationMetaResolverImpl(
+        gh<_i110.ApplicationMetaRepository>(),
+        gh<_i291.FocusWindow>(),
+        gh<_i636.AppDirectoryRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i112.FileCloudService>(
+      () => _i1008.WebDavFileCloudService(
+        gh<_i193.WebDavCredentialRepository>(),
+        gh<_i542.AppConfigCubit>(),
+      ),
+      instanceName: 'webdav',
+    );
+    gh.lazySingleton<_i643.AndroidBgClipboardCubit>(
+      () => _i643.AndroidBgClipboardCubit(
+        gh<_i565.AndroidBackgroundClipboard>(),
+        gh<_i292.SyncEventBus>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<String>(instanceName: 'device_id'),
       ),
     );
     gh.factoryParam<_i46.CollectionClipsCubit, _i687.ClipCollection, dynamic>(
@@ -421,10 +441,39 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i246.MonetizationCubit>(
       () => _i246.MonetizationCubit(repo: gh<_i956.SubscriptionRepository>()),
     );
-    gh.lazySingleton<_i462.UserDevicesRepository>(
-      () => _i843.UserDevicesRepositoryImpl(
-        gh<_i543.UserDevicesSource>(instanceName: 'remote'),
-        gh<_i454.SupabaseClient>(),
+    gh.factoryCached<_i620.ClipCollectionCubit>(
+      () => _i620.ClipCollectionCubit(
+        gh<_i292.SyncEventBus>(),
+        gh<_i29.AuthCubit>(),
+        gh<_i276.ClipCollectionRepository>(),
+        gh<String>(instanceName: 'device_id'),
+        gh<_i246.MonetizationCubit>(),
+      ),
+    );
+    gh.lazySingleton<_i706.OfflinePersistenceCubit>(
+      () => _i706.OfflinePersistenceCubit(
+        gh<_i29.AuthCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i63.ClipboardService>(),
+        gh<_i542.AppConfigCubit>(),
+        gh<_i533.ApplicationMetaResolver>(),
+        gh<String>(instanceName: 'device_id'),
+        gh<_i292.SyncEventBus>(),
+      ),
+    );
+    gh.lazySingleton<_i112.FileCloudService>(
+      () => _i919.CompositeFileCloudService(
+        gh<_i112.FileCloudService>(instanceName: 'google_drive'),
+        gh<_i112.FileCloudService>(instanceName: 'webdav'),
+        gh<_i542.AppConfigCubit>(),
+      ),
+    );
+    gh.factoryCached<_i554.PasteStackCubit>(
+      () => _i554.PasteStackCubit(
+        gh<_i542.AppConfigCubit>(),
+        gh<_i657.WindowActionCubit>(),
+        gh<_i246.MonetizationCubit>(),
+        gh<_i706.OfflinePersistenceCubit>(),
       ),
     );
     gh.lazySingleton<_i589.SyncAdapter<_i1066.ClipboardItem>>(
@@ -439,22 +488,6 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'non_collection_clips',
     );
-    gh.lazySingleton<_i643.AndroidBgClipboardCubit>(
-      () => _i643.AndroidBgClipboardCubit(
-        gh<_i565.AndroidBackgroundClipboard>(),
-        gh<_i292.SyncEventBus>(),
-        gh<_i230.ClipboardRepository>(instanceName: 'local'),
-        gh<String>(instanceName: 'device_id'),
-      ),
-    );
-    gh.factory<_i554.PasteStackCubit>(
-      () => _i554.PasteStackCubit(
-        gh<_i542.AppConfigCubit>(),
-        gh<_i657.WindowActionCubit>(),
-        gh<_i246.MonetizationCubit>(),
-        gh<_i706.OfflinePersistenceCubit>(),
-      ),
-    );
     gh.lazySingleton<_i589.SyncAdapter<_i1066.ClipboardItem>>(
       () => _i272.CollectionClipSyncAdapter(
         gh<_i61.SyncRepository>(),
@@ -466,22 +499,11 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       instanceName: 'collection_clips',
     );
-    gh.lazySingleton<_i227.QuickPasteService>(
-      () => _i227.QuickPasteService(
-        gh<_i542.AppConfigCubit>(),
-        gh<_i230.ClipboardRepository>(instanceName: 'local'),
-        gh<_i706.OfflinePersistenceCubit>(),
-        gh<_i533.ApplicationMetaResolver>(),
-        gh<_i291.FocusWindow>(),
-      ),
-    );
-    gh.factory<_i620.ClipCollectionCubit>(
-      () => _i620.ClipCollectionCubit(
+    gh.factory<_i618.FileCloudCubit>(
+      () => _i618.FileCloudCubit(
+        gh<_i112.FileCloudService>(),
+        gh<_i23.ClipboardSource>(instanceName: 'local'),
         gh<_i292.SyncEventBus>(),
-        gh<_i29.AuthCubit>(),
-        gh<_i276.ClipCollectionRepository>(),
-        gh<String>(instanceName: 'device_id'),
-        gh<_i246.MonetizationCubit>(),
       ),
     );
     gh.lazySingleton<_i589.SyncAdapter<_i687.ClipCollection>>(
@@ -509,6 +531,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<String>(instanceName: 'device_id'),
       ),
     );
+    gh.lazySingleton<_i227.QuickPasteService>(
+      () => _i227.QuickPasteService(
+        gh<_i542.AppConfigCubit>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i706.OfflinePersistenceCubit>(),
+        gh<_i533.ApplicationMetaResolver>(),
+        gh<_i291.FocusWindow>(),
+      ),
+    );
     gh.lazySingleton<_i805.UserDevicesCubit>(
       () => _i805.UserDevicesCubit(
         repo: gh<_i462.UserDevicesRepository>(),
@@ -528,7 +559,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1069.RestorationStatusRepository>(),
       ),
     );
-    gh.factory<_i489.ClipboardCubit>(
+    gh.factoryCached<_i489.ClipboardCubit>(
       () => _i489.ClipboardCubit(
         gh<_i292.SyncEventBus>(),
         gh<_i230.ClipboardRepository>(instanceName: 'local'),

@@ -9,6 +9,7 @@ import "package:clipboard/base/domain/model/clip_collection/clipcollection.dart"
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import "package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart";
 import 'package:clipboard/base/bloc/file_cloud_cubit/file_cloud_cubit.dart';
+import 'package:clipboard/base/bloc/webdav_setup_cubit/webdav_setup_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import "package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart";
 import 'package:clipboard/base/bloc/paste_stack_cubit/paste_stack_cubit.dart';
@@ -49,6 +50,7 @@ import "package:clipboard/pages/settings/pages/app_lock/app_lock_settings_page.d
 import "package:clipboard/pages/settings/pages/exclusion_rules.dart";
 import "package:clipboard/pages/settings/pages/lan_mesh/lan_mesh_page.dart";
 import "package:clipboard/pages/settings/pages/personal_drives/page.dart";
+import "package:clipboard/pages/settings/pages/webdav_setup/page.dart";
 import "package:clipboard/pages/splash_page.dart";
 import "package:clipboard/widgets/listeners/android_clip_restore_lifecycle_listener.dart";
 import "package:clipboard/widgets/page_route/dynamic_page_route.dart";
@@ -150,6 +152,13 @@ final appRouter = GoRouter(
                 if (!isLocalAuth) {
                   unawaited(cubit.fetch());
                 }
+                return cubit;
+              },
+            ),
+            BlocProvider<WebDavSetupCubit>(
+              create: (context) {
+                final cubit = sl<WebDavSetupCubit>();
+                unawaited(cubit.fetch());
                 return cubit;
               },
             ),
@@ -408,6 +417,12 @@ final appRouter = GoRouter(
                           scopes: scopes,
                         );
                       },
+                    ),
+                    GoRoute(
+                      name: RouteConstants.webdavSetup,
+                      path: 'webdav-setup',
+                      builder: (context, state) =>
+                          WebDavSetupPage(key: state.pageKey),
                     ),
                   ],
                 ),

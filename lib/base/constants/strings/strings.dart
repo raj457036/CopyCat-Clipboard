@@ -67,3 +67,5 @@ const jetBrainsMonoFont = "JetBrainsMono";
 
 const privacyPolicyUrl = String.fromEnvironment("PRIVACY_POLICY_URL");
 const termsConditionsUrl = String.fromEnvironment("TERMS_CONDITIONS_URL");
+
+const defaultWebDavBasePath = "/.CopyCat/media";

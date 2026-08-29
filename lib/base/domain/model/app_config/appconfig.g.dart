@@ -12,6 +12,12 @@ _AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => _AppConfig(
       ThemeMode.system,
   enableSync: json['enableSync'] as bool? ?? true,
   enableFileSync: json['enableFileSync'] as bool? ?? true,
+  activeStorageProvider:
+      $enumDecodeNullable(
+        _$ActiveCloudStorageProviderEnumMap,
+        json['activeStorageProvider'],
+      ) ??
+      ActiveCloudStorageProvider.googleDrive,
   layout:
       $enumDecodeNullable(_$AppLayoutEnumMap, json['layout']) ?? AppLayout.grid,
   view: $enumDecodeNullable(_$AppViewEnumMap, json['view']) ?? AppView.windowed,
@@ -85,6 +91,8 @@ Map<String, dynamic> _$AppConfigToJson(_AppConfig instance) =>
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
       'enableSync': instance.enableSync,
       'enableFileSync': instance.enableFileSync,
+      'activeStorageProvider':
+          _$ActiveCloudStorageProviderEnumMap[instance.activeStorageProvider]!,
       'layout': _$AppLayoutEnumMap[instance.layout]!,
       'view': _$AppViewEnumMap[instance.view]!,
       'pinned': instance.pinned,
@@ -134,6 +142,11 @@ const _$ThemeModeEnumMap = {
   ThemeMode.system: 'system',
   ThemeMode.light: 'light',
   ThemeMode.dark: 'dark',
+};
+
+const _$ActiveCloudStorageProviderEnumMap = {
+  ActiveCloudStorageProvider.googleDrive: 'googleDrive',
+  ActiveCloudStorageProvider.webdav: 'webdav',
 };
 
 const _$AppLayoutEnumMap = {AppLayout.grid: 'grid', AppLayout.list: 'list'};

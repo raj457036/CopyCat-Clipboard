@@ -60,7 +60,7 @@ const IsarSyncCursorSchema = CollectionSchema(
   getId: _isarSyncCursorGetId,
   getLinks: _isarSyncCursorGetLinks,
   attach: _isarSyncCursorAttach,
-  version: '3.3.0-dev.1',
+  version: '3.3.2',
 );
 
 int _isarSyncCursorEstimateSize(
