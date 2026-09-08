@@ -20,7 +20,7 @@ class CopyCatFileStorage(private val context: Context) {
 
     private companion object {
         const val SEPARATOR = "---|---|---"
-        const val SEPARATOR_LINE = 13
+        const val SEPARATOR_LINE = 14
     }
     
     init {
@@ -44,9 +44,9 @@ class CopyCatFileStorage(private val context: Context) {
             } catch (_: Exception) {
                 continue
             }
-            // Old-format files have fewer header lines; the separator position
-            // is what distinguishes them.
-            if (header.getOrNull(SEPARATOR_LINE) != SEPARATOR) continue
+            // Find separator to support both current (line 14) and legacy (line 13) formats
+            val sepIndex = header.indexOfFirst { it == SEPARATOR }
+            if (sepIndex < 10) continue
 
             header[9].trim().takeIf { it.isNotEmpty() }?.let { byOriginId[it] = clipId }
         }
@@ -116,6 +116,7 @@ class CopyCatFileStorage(private val context: Context) {
         type: ClipType,
         label: String = "",
         encrypted: Boolean = false,
+        locked: Boolean = false,
         iv: String? = null,
         encMode: String? = null,
         serverId: Long = -1,
@@ -133,6 +134,7 @@ class CopyCatFileStorage(private val context: Context) {
                 type = type,
                 label = label,
                 encrypted = encrypted,
+                locked = locked,
                 iv = iv,
                 encMode = encMode,
                 serverId = serverId,
@@ -157,6 +159,7 @@ class CopyCatFileStorage(private val context: Context) {
         type: ClipType,
         label: String,
         encrypted: Boolean,
+        locked: Boolean,
         iv: String?,
         encMode: String?,
         serverId: Long,
@@ -182,6 +185,7 @@ class CopyCatFileStorage(private val context: Context) {
             writer.write("$sourceId\n")
             writer.write("$sourceApp\n")
             writer.write("${deletedAt ?: ""}\n")
+            writer.write("$locked\n")
             writer.write("$SEPARATOR\n")
             writer.write(text)
         }
@@ -312,6 +316,10 @@ class CopyCatFileStorage(private val context: Context) {
                 separatorIndex >= 13 -> lines[12].toLongOrNull()
                 else -> null
             }
+            val locked = when {
+                separatorIndex >= 14 -> lines[13].toBooleanStrictOrNull() ?: false
+                else -> false
+            }
             
             val text = if (separatorIndex != -1 && separatorIndex < lines.size - 1) {
                 lines.subList(separatorIndex + 1, lines.size).joinToString("\n")
@@ -328,6 +336,7 @@ class CopyCatFileStorage(private val context: Context) {
                 serverId,
                 userId,
                 encrypted,
+                locked,
                 iv,
                 encMode,
                 originId,
@@ -407,6 +416,7 @@ class CopyCatFileStorage(private val context: Context) {
         val serverId: Long = -1,
         val userId: String = "",
         val encrypted: Boolean = false,
+        val locked: Boolean = false,
         val iv: String? = null,
         val encMode: String? = null,
         val originId: String? = null,
@@ -424,6 +434,7 @@ class CopyCatFileStorage(private val context: Context) {
                 "serverId" to serverId,
                 "userId" to userId,
                 "encrypted" to encrypted,
+                "locked" to locked,
                 "iv" to iv,
                 "encMode" to encMode,
                 "originId" to originId,

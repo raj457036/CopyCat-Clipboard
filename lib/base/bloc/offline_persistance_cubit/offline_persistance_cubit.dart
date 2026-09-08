@@ -621,6 +621,9 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       'content': item.text ?? item.url ?? '',
       'label': item.title ?? '',
       'encrypted': item.encrypted,
+      'locked': item.locked,
+      'modified': item.modified.millisecondsSinceEpoch,
+      'created': item.created.millisecondsSinceEpoch,
       if (item.iv != null) 'iv': item.iv,
       if (item.encMode != null) 'encMode': item.encMode,
       if (item.sourceId != null && item.sourceId!.isNotEmpty)
@@ -636,6 +639,14 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
 
   void _broadcastLanMutation(ClipboardItem item) {
     if (Platform.isIOS) return;
+    if (Platform.isAndroid) {
+      unawaited(
+        sl<AndroidBackgroundClipboard>().broadcastClip(
+          _toLanClipMap(item),
+        ),
+      );
+      return;
+    }
     // Route mutations via Dart LAN service to preserve full model payload.
     unawaited(sl<LanSyncService>().broadcastMutation(item));
   }

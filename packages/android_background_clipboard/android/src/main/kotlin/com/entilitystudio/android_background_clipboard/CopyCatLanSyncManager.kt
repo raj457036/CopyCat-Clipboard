@@ -56,6 +56,7 @@ data class LanClipPayload(
     val label: String,
     val timestamp: Long,
     val encrypted: Boolean,
+    val locked: Boolean = false,
     val iv: String?,
     val encMode: String?,
     val userId: String? = null,
@@ -594,7 +595,7 @@ class CopyCatLanSyncManager(
 
         onLanClipReceived(payload)
 
-        if (autoWriteOnReceive && !payload.deleted && payload.content.isNotBlank()) {
+        if (autoWriteOnReceive && !payload.deleted && !payload.locked && payload.content.isNotBlank()) {
             val textToWrite = if (payload.encrypted) {
                 decryptContent?.invoke(payload.content, payload.encMode, payload.iv)
             } else {
@@ -656,6 +657,11 @@ class CopyCatLanSyncManager(
         } else {
             fullItem?.optBoolean(JsonKey.ENCRYPTED, false) ?: false
         }
+        val locked = if (json.has(JsonKey.LOCKED)) {
+            json.optBoolean(JsonKey.LOCKED, false)
+        } else {
+            fullItem?.optBoolean(JsonKey.LOCKED, false) ?: false
+        }
         val iv = json.optNonBlank(JsonKey.IV)
             ?: fullItem?.optNonBlank(JsonKey.IV)
         val encMode = json.optNonBlank(JsonKey.ENC_MODE)
@@ -688,6 +694,7 @@ class CopyCatLanSyncManager(
             label = label,
             timestamp = timestamp,
             encrypted = encrypted,
+            locked = locked,
             iv = iv,
             encMode = encMode,
             userId = itemUserId,
@@ -1049,10 +1056,13 @@ class CopyCatLanSyncManager(
         content: String,
         label: String,
         encrypted: Boolean = false,
+        locked: Boolean = false,
         iv: String? = null,
         encMode: String? = null,
         sourceId: String? = null,
         sourceApp: String? = null,
+        modifiedMs: Long? = null,
+        createdMs: Long? = null,
     ) {
         if (!started || peers.isEmpty() || userId.isBlank()) {
             Log.i(LOG_TAG, "broadcastTextClip skipped: started=$started peersCount=${peers.size} userIdBlank=${userId.isBlank()}")
@@ -1060,6 +1070,8 @@ class CopyCatLanSyncManager(
         }
 
         val timestamp = System.currentTimeMillis()
+        val created = createdMs ?: timestamp
+        val modified = modifiedMs ?: timestamp
         val payloadType = when (type) {
             ClipType.Url -> "url"
             else -> "text"
@@ -1068,10 +1080,11 @@ class CopyCatLanSyncManager(
             put(JsonKey.CONTENT, content)
             put(JsonKey.LABEL, label)
             put(JsonKey.TS, timestamp)
-            put(JsonKey.CREATED, timestamp)
-            put(JsonKey.MODIFIED, timestamp)
+            put(JsonKey.CREATED, created)
+            put(JsonKey.MODIFIED, modified)
             put(JsonKey.OS, "android")
             put(JsonKey.ENCRYPTED, encrypted)
+            put(JsonKey.LOCKED, locked)
             putIfNotBlank(JsonKey.IV, iv)
             putIfNotBlank(JsonKey.ENC_MODE, encMode)
             putIfNotBlank(JsonKey.SOURCE_ID, sourceId)
@@ -1080,12 +1093,13 @@ class CopyCatLanSyncManager(
             put(JsonKey.ITEM, JSONObject().apply {
                 put(JsonKey.TYPE, payloadType)
                 put(JsonKey.USER_ID, if (userId.isNotBlank()) userId else "local")
-                put(JsonKey.CREATED, toIso8601Utc(timestamp))
-                put(JsonKey.MODIFIED, toIso8601Utc(timestamp))
+                put(JsonKey.CREATED, toIso8601Utc(created))
+                put(JsonKey.MODIFIED, toIso8601Utc(modified))
                 put(JsonKey.OS, "android")
                 put(JsonKey.TITLE, label)
                 put(JsonKey.ORIGIN_ID, originId)
                 put(JsonKey.ENCRYPTED, encrypted)
+                put(JsonKey.LOCKED, locked)
                 if (payloadType == "url") {
                     put(JsonKey.URL, content)
                 } else {

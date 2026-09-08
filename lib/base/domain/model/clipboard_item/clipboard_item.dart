@@ -258,7 +258,8 @@ abstract class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
   ///
   /// Locked items will be decrypted on demand and their content won't be avaiable for searching.
   Future<ClipboardItem> lock() async {
-    final locked = await copyWith(locked: true).encrypt();
+    final locked =
+        await copyWith(locked: true, modified: systemTime()).encrypt();
     if (!locked.encrypted) return this;
     return locked;
   }
@@ -267,7 +268,8 @@ abstract class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
   ///
   /// The content of the unlocked item will be decrypted and available for searching.
   Future<ClipboardItem> unlock() async {
-    final unlocked = await copyWith(locked: false).decrypt();
+    final unlocked =
+        await copyWith(locked: false, modified: systemTime()).decrypt();
     if (unlocked.encrypted) return this;
     return unlocked;
   }

@@ -812,6 +812,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         val originId = data["originId"] as? String ?: return
         val label = data["label"] as? String ?: ""
         val encrypted = data["encrypted"] as? Boolean ?: false
+        val locked = data["locked"] as? Boolean ?: false
+        val modifiedMs = (data["modified"] as? Number)?.toLong()
+        val createdMs = (data["created"] as? Number)?.toLong()
         val iv = data["iv"] as? String
         val encMode = data["encMode"] as? String
         val sourceId = data["sourceId"] as? String
@@ -833,10 +836,13 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                     content = content,
                     label = label,
                     encrypted = encrypted,
+                    locked = locked,
                     iv = iv,
                     encMode = encMode,
                     sourceId = sourceId,
                     sourceApp = sourceApp,
+                    modifiedMs = modifiedMs,
+                    createdMs = createdMs,
                 )
             }
             "media", "file" -> {
@@ -956,6 +962,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             type = clip.type,
             label = clip.label ?: "",
             encrypted = clip.encrypted,
+            locked = clip.locked,
             iv = clip.iv,
             encMode = clip.encMode,
             serverId = clip.serverId,
@@ -964,9 +971,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             originId = clip.originId ?: "",
         )
 
-        val decryptedContent = decryptRemoteContent(clip) ?: return
-        Log.i(logTag, "Applying remote clip to system clipboard")
-        remoteClipApplier?.invoke(decryptedContent)
+        if (!clip.locked) {
+            val decryptedContent = decryptRemoteContent(clip) ?: return
+            Log.i(logTag, "Applying remote clip to system clipboard")
+            remoteClipApplier?.invoke(decryptedContent)
+        }
     }
 
     /** Called by [CopyCatLanSyncManager] when a clip arrives from a LAN peer. */
@@ -1038,6 +1047,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                 payload.label
             },
             encrypted = if (isFileClip) false else payload.encrypted,
+            locked = if (isFileClip) false else payload.locked,
             iv = if (isFileClip) null else payload.iv,
             encMode = if (isFileClip) null else payload.encMode,
             serverId = payload.serverId ?: -1,

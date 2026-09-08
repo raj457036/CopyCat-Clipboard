@@ -69,7 +69,7 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
     final result = await clipRepo.updateOrCreate(item);
     return result.fold((failure) => false, (r) async {
       var (item, created) = r;
-      item = await item.decrypt();
+      item = item.locked ? item : await item.decrypt();
       final eventType = item.deletedAt != null
           ? CrossSyncEventType.delete
           : created
@@ -107,6 +107,7 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
         : systemTime();
     final clipText = clip["text"] as String?;
     final encrypted = clip["encrypted"] == true;
+    final locked = clip["locked"] == true;
     final iv = clip["iv"] as String?;
     final encMode = clip["encMode"] as String?;
     final sourceId = (clip["sourceId"] as String?)?.trim();
@@ -170,6 +171,7 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       type: resolvedType,
       os: PlatformOS.android,
       encrypted: encrypted,
+      locked: locked,
       iv: iv,
       encMode: encMode,
       textCategory: textCategory,

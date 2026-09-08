@@ -39,6 +39,7 @@ object JsonKey {
     const val CREATED = "created"
     const val OS = "os"
     const val ENCRYPTED = "encrypted"
+    const val LOCKED = "locked"
     const val IV = "iv"
     const val ENC_MODE = "encMode"
     const val ENC_MODE_SNAKE = "enc_mode"

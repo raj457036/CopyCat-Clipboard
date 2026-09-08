@@ -345,6 +345,10 @@ class LocalClipboardSource implements ClipboardSource {
         originId: item.originId ?? existingClip.originId,
         description: item.description ?? existingClip.description,
         title: item.title ?? existingClip.title,
+        locked: item.locked,
+        encrypted: item.encrypted,
+        iv: item.iv ?? existingClip.iv,
+        encMode: item.encMode ?? existingClip.encMode,
       );
       return (await update(item), false);
     }
