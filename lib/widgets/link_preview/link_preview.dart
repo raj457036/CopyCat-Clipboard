@@ -338,7 +338,20 @@ class _LinkPreviewState extends State<LinkPreview> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Shimmer();
+      if (widget.bottom == null) return const Shimmer();
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Expanded(child: Shimmer()),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: padding8,
+              vertical: padding10,
+            ),
+            child: widget.bottom!,
+          ),
+        ],
+      );
     }
 
     if (_preview == null) {
