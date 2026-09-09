@@ -358,20 +358,11 @@ class LocalClipboardSource implements ClipboardSource {
         final isarItem = IsarClipboardItem.fromDomain(updated);
         await _collection.put(isarItem);
 
-        // Prune any duplicate records with the same serverId if present
         if (updated.serverId != null) {
-          final duplicates = await _collection
-              .filter()
-              .serverIdEqualTo(updated.serverId!)
-              .and()
-              .not()
-              .isarIdEqualTo(isarItem.isarId)
-              .findAll();
-          if (duplicates.isNotEmpty) {
-            await _collection.deleteAll(
-              duplicates.map((e) => e.isarId).toList(),
-            );
-          }
+          await _pruneDuplicatesByServerId(
+            serverId: updated.serverId!,
+            keepIsarId: isarItem.isarId,
+          );
         }
 
         return (updated, false);
@@ -402,5 +393,26 @@ class LocalClipboardSource implements ClipboardSource {
     final isarItems = items.map(IsarClipboardItem.fromDomain).toList();
     await db.writeTxn(() => _collection.putAll(isarItems));
     return items;
+  }
+
+  /// Prunes legacy orphan duplicate rows in Isar that share [serverId] but have
+  /// a different local ID from [keepIsarId].
+  Future<void> _pruneDuplicatesByServerId({
+    required int serverId,
+    required int keepIsarId,
+  }) async {
+    final duplicates = await _collection
+        .filter()
+        .serverIdEqualTo(serverId)
+        .and()
+        .not()
+        .isarIdEqualTo(keepIsarId)
+        .findAll();
+
+    if (duplicates.isNotEmpty) {
+      await _collection.deleteAll(
+        duplicates.map((e) => e.isarId).toList(),
+      );
+    }
   }
 }
