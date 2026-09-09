@@ -369,23 +369,42 @@ class SyncEngine<T extends Syncable> {
   Future<void> _processDeleteBatch(List<SyncOutboxEntry> entries) async {
     if (entries.isEmpty) return;
 
-    final resolvable = <(SyncOutboxEntry, T)>[];
-
+    final entriesByLocalId = <int, List<SyncOutboxEntry>>{};
     for (final entry in entries) {
-      final item = await adapter.getLocalById(entry.localId);
+      entriesByLocalId.putIfAbsent(entry.localId, () => []).add(entry);
+    }
+
+    final resolvable = <(List<SyncOutboxEntry>, T)>[];
+
+    for (final MapEntry(:key, :value) in entriesByLocalId.entries) {
+      final item = await adapter.getLocalById(key);
       if (item == null) {
-        if (entry.id != null) {
-          await outboxRepo.markCompleted(entry.id!);
+        for (final entry in value) {
+          if (entry.id != null) {
+            await outboxRepo.markCompleted(entry.id!);
+          }
         }
         continue;
       }
-      resolvable.add((entry, item));
+      resolvable.add((value, item));
     }
 
     if (resolvable.isEmpty) return;
 
-    final items = resolvable.map((e) => e.$2).toList(growable: false);
-    final result = await adapter.deleteBatchFromRemote(items);
+    // Deduplicate items to delete remotely by serverId
+    final uniqueRemoteItems = <Object, T>{};
+    for (final (_, item) in resolvable) {
+      if (item.serverId != null) {
+        uniqueRemoteItems[item.serverId!] = item;
+      } else {
+        uniqueRemoteItems[item] = item;
+      }
+    }
+
+    final allLocalItems = resolvable.map((e) => e.$2).toList(growable: false);
+    final remoteItems = uniqueRemoteItems.values.toList(growable: false);
+
+    final result = await adapter.deleteBatchFromRemote(remoteItems);
 
     final success = result.fold((_) => false, (ok) => ok);
     if (!success) {
@@ -396,7 +415,7 @@ class SyncEngine<T extends Syncable> {
       return;
     }
 
-    await adapter.deleteLocally(items);
+    await adapter.deleteLocally(allLocalItems);
 
     for (final entry in entries) {
       if (entry.id != null) {

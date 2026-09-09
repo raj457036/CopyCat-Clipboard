@@ -23,35 +23,39 @@ Future<void> _syncInBackground(_Payload record, Sender send) async {
   final Isar db = Isar.getInstance(dbName)!;
   final isarCollection = db.collection<IsarClipboardItem>();
 
-  final items = List<ClipboardItem>.from(record);
+  // Collapse incoming items so identical originId/serverId
+  // items within the same batch are merged (latest modified wins) before processing.
+  final collapsed = IsarClipBatchSyncService.collapseBatch(record);
 
-  // Phase 1: batch read by serverId.
-  final serverIds = items
-      .map((e) => e.serverId)
-      .whereType<int>()
-      .toList(growable: false);
+  final items = collapsed.values.toList();
+  if (items.isEmpty) {
+    send(<ClipCrossSyncEvent>[]);
+    return;
+  }
 
-  final originIds = items
-      .map((e) => e.originId)
-      .whereType<String>()
-      .toList(growable: false);
+  // Phase 1: batch read existing items. Prefer originId, with serverId fallback for older clips.
+  final existingItems = await isarCollection.filter().anyOf(items, (q, item) {
+    final hasOrigin = item.originId != null && item.originId!.isNotEmpty;
+    if (hasOrigin && item.serverId != null) {
+      return q
+          .originIdEqualTo(item.originId!)
+          .or()
+          .serverIdEqualTo(item.serverId!);
+    } else if (hasOrigin) {
+      return q.originIdEqualTo(item.originId!);
+    } else if (item.serverId != null) {
+      return q.serverIdEqualTo(item.serverId!);
+    }
+    return q.isarIdEqualTo(-1);
+  }).findAll();
 
-  final existingItems = serverIds.isEmpty
-      ? <IsarClipboardItem>[]
-      : await isarCollection
-            .filter()
-            .anyOf(serverIds, (q, id) => q.serverIdEqualTo(id))
-            .or()
-            .anyOf(originIds, (q, id) => q.originIdEqualTo(id))
-            .findAll();
-
-  final existingById = <String, IsarClipboardItem>{
-    for (final e in existingItems)
-      if (e.serverId != null)
-        e.serverId!.toString(): e
-      else if (e.originId != null)
-        e.originId!: e,
-  };
+  final existingById = <String, IsarClipboardItem>{};
+  for (final e in existingItems) {
+    if (e.originId != null && e.originId!.isNotEmpty) {
+      existingById[e.originId!] = e;
+    }
+    if (e.serverId != null) existingById[e.serverId!.toString()] = e;
+  }
 
   final events = <ClipCrossSyncEvent>[];
   final now = systemTime();
@@ -62,18 +66,26 @@ Future<void> _syncInBackground(_Payload record, Sender send) async {
     var item = items[index];
     IsarClipboardItem? found;
 
-    if (item.serverId != null &&
+    final hasOrigin = item.originId != null && item.originId!.isNotEmpty;
+    if (hasOrigin && existingById.containsKey(item.originId!)) {
+      found = existingById[item.originId!];
+    } else if (item.serverId != null &&
         existingById.containsKey(item.serverId!.toString())) {
       found = existingById[item.serverId!.toString()];
-    } else if (item.originId != null &&
-        existingById.containsKey(item.originId!)) {
-      found = existingById[item.originId!];
     }
 
     if (found == null) {
       item = item.copyWith(lastSynced: now);
       items[index] = item;
       events.add((CrossSyncEventType.create, item));
+
+      final placeholder = IsarClipboardItem.fromDomain(item);
+      if (hasOrigin) {
+        existingById[item.originId!] = placeholder;
+      }
+      if (item.serverId != null) {
+        existingById[item.serverId!.toString()] = placeholder;
+      }
       continue;
     }
 
@@ -83,6 +95,8 @@ Future<void> _syncInBackground(_Payload record, Sender send) async {
         id: found.isarId == Isar.autoIncrement ? null : found.isarId,
         lastSynced: now,
         localPath: found.localPath,
+        serverId: item.serverId ?? found.serverId,
+        originId: item.originId ?? found.originId,
         sourceApp: found.sourceApp ?? item.sourceApp,
         sourceId: found.sourceId ?? item.sourceId,
       );
@@ -90,6 +104,7 @@ Future<void> _syncInBackground(_Payload record, Sender send) async {
       item = found.toDomain().copyWith(
         lastSynced: now,
         serverId: found.serverId ?? item.serverId,
+        originId: found.originId ?? item.originId,
         sourceApp: found.sourceApp ?? item.sourceApp,
         sourceId: found.sourceId ?? item.sourceId,
       );
@@ -151,5 +166,33 @@ class IsarClipBatchSyncService implements ClipBatchSyncService {
   @override
   Future<List<ClipCrossSyncEvent>> syncBatch(List<ClipboardItem> items) async {
     return _worker.compute(List<ClipboardItem>.from(items));
+  }
+
+  /// Collapses incoming batch items so duplicates within the same batch are
+  /// merged with last-modified-wins before touching the database.
+  ///
+  /// Prefers `originId` as the unique invariant key for new clips, falling back
+  /// to `serverId` for legacy clips where `originId` is null.
+  @visibleForTesting
+  static Map<String, ClipboardItem> collapseBatch(
+    Iterable<ClipboardItem> items,
+  ) {
+    final collapsed = <String, ClipboardItem>{};
+    for (final item in items) {
+      final hasOrigin = item.originId != null && item.originId!.isNotEmpty;
+      final key = hasOrigin
+          ? 'origin:${item.originId}'
+          : (item.serverId != null ? 'server:${item.serverId}' : null);
+      if (key == null) {
+        collapsed['unique:${item.hashCode}_${systemTime().microsecondsSinceEpoch}'] =
+            item;
+        continue;
+      }
+      final existing = collapsed[key];
+      if (existing == null || item.modified.isAfter(existing.modified)) {
+        collapsed[key] = item;
+      }
+    }
+    return collapsed;
   }
 }
