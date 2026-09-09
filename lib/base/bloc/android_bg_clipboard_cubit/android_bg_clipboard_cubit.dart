@@ -80,6 +80,12 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
     });
   }
 
+  static String? _cleanString(dynamic raw) {
+    if (raw is! String) return null;
+    final trimmed = raw.trim();
+    return (trimmed.isEmpty || trimmed.toLowerCase() == 'null') ? null : trimmed;
+  }
+
   ClipboardItem parseClip(Map clip) {
     final ClipItemType clipType = switch (clip["type"]) {
       "Text" => ClipItemType.text,
@@ -94,11 +100,12 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       "Phone" => TextCategory.phone,
       _ => null,
     };
-    final rawDesc = (clip["label"] as String?)?.trim();
-    final desc =
-        (rawDesc == null || rawDesc.isEmpty || rawDesc.toLowerCase() == 'null')
-        ? null
-        : rawDesc;
+    final cleanTitle = _cleanString(clip["title"]);
+    final cleanDescription = _cleanString(clip["description"]);
+    final cleanLabel = _cleanString(clip["label"]);
+    final resolvedTitle = cleanTitle ?? cleanLabel;
+    final resolvedDescription = cleanDescription;
+
     final serverIdRaw = clip["serverId"];
     final serverId = serverIdRaw is num ? serverIdRaw.toInt() : -1;
     final timestampRaw = clip["timestamp"];
@@ -110,9 +117,9 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
     final locked = clip["locked"] == true;
     final iv = clip["iv"] as String?;
     final encMode = clip["encMode"] as String?;
-    final sourceId = (clip["sourceId"] as String?)?.trim();
-    final sourceApp = (clip["sourceApp"] as String?)?.trim();
-    final originId = clip["originId"] as String?;
+    final sourceId = _cleanString(clip["sourceId"]);
+    final sourceApp = _cleanString(clip["sourceApp"]);
+    final originId = _cleanString(clip["originId"]);
     final deletedAtRaw = clip["deletedAt"];
     final deletedAt = deletedAtRaw is num
         ? DateTime.fromMillisecondsSinceEpoch(deletedAtRaw.toInt())
@@ -178,16 +185,16 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       text: resolvedType == ClipItemType.text ? clipText : null,
       url: resolvedType == ClipItemType.url ? clipText : null,
       localPath: localPath,
-      fileName: isFileClip ? desc : null,
+      fileName: isFileClip ? (cleanLabel ?? resolvedTitle) : null,
       fileMimeType: fileMimeType,
-      title: desc,
-      description: desc,
-      sourceId: sourceId?.isEmpty == true ? null : sourceId,
-      sourceApp: sourceApp?.isEmpty == true ? null : sourceApp,
+      title: resolvedTitle,
+      description: resolvedDescription,
+      sourceId: sourceId,
+      sourceApp: sourceApp,
       serverId: serverId == -1 ? null : serverId,
       lastSynced: systemTime(),
       deviceId: deviceId,
-      originId: originId?.isEmpty == true ? null : originId,
+      originId: originId,
       deletedAt: deletedAt,
     );
   }

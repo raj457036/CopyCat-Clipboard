@@ -46,6 +46,8 @@ class LanSender {
       final body = jsonEncode({
         'content': content,
         'label': item.title ?? '',
+        if (item.title != null) 'title': item.title,
+        if (item.description != null) 'description': item.description,
         'ts': ts,
         'created': item.created.millisecondsSinceEpoch,
         'modified': item.modified.millisecondsSinceEpoch,
@@ -98,6 +100,8 @@ class LanSender {
       final body = jsonEncode({
         'content': content,
         'label': item.title ?? item.fileName ?? '',
+        if (item.title != null) 'title': item.title,
+        if (item.description != null) 'description': item.description,
         'ts': ts,
         'created': item.created.millisecondsSinceEpoch,
         'modified': item.modified.millisecondsSinceEpoch,

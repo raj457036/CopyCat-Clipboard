@@ -819,6 +819,10 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         val encMode = data["encMode"] as? String
         val sourceId = data["sourceId"] as? String
         val sourceApp = data["sourceApp"] as? String
+        val title = (data["title"] as? String)?.trim()?.ifEmpty { null }
+        val description = (data["description"] as? String)?.trim()?.ifEmpty { null }
+        @Suppress("UNCHECKED_CAST")
+        val fullItemMap = data["item"] as? Map<String, Any?>
 
         // Lazily propagate userId in case the token loaded after service start.
         if (lanSyncManager.userId.isBlank()) {
@@ -843,6 +847,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                     sourceApp = sourceApp,
                     modifiedMs = modifiedMs,
                     createdMs = createdMs,
+                    title = title,
+                    description = description,
+                    fullItemMap = fullItemMap,
                 )
             }
             "media", "file" -> {
@@ -865,6 +872,8 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                     fileName = fileName,
                     sourceId = sourceId,
                     sourceApp = sourceApp,
+                    createdMs = createdMs,
+                    modifiedMs = modifiedMs,
                 )
             }
         }
@@ -969,6 +978,8 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             userId = clip.userId ?: "",
             timestamp = clip.modifiedAt,
             originId = clip.originId ?: "",
+            title = clip.title,
+            description = clip.description,
         )
 
         if (!clip.locked) {
@@ -1013,6 +1024,8 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                 sourceId = payload.sourceId ?: "",
                 sourceApp = payload.sourceApp ?: "",
                 deletedAt = tombstoneTimestamp,
+                title = payload.title,
+                description = payload.description,
             )
 
             if (writeSuccess) {
@@ -1037,6 +1050,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         val isFileClip = payload.localFilePath != null ||
             (payload.content.isBlank() && text.isNotBlank())
 
+        val resolvedTitle = payload.title?.takeIf { it.isNotBlank() }
+            ?: (if (!isFileClip) payload.label.takeIf { it.isNotBlank() } else null)
+            ?: payload.fileName?.takeIf { it.isNotBlank() }
+            ?: payload.label
+
         val written = fileStorage.writeClipItem(
             clipId = clipId,
             text = text,
@@ -1057,6 +1075,8 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             sourceId = payload.sourceId ?: "",
             sourceApp = payload.sourceApp ?: "",
             deletedAt = null,
+            title = resolvedTitle,
+            description = payload.description,
         )
 
         if (written) {

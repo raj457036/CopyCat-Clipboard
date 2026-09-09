@@ -70,6 +70,8 @@ data class LanClipPayload(
     val sourceApp: String? = null,
     val deleted: Boolean = false,
     val deletedAtMs: Long? = null,
+    val title: String? = null,
+    val description: String? = null,
 )
 
 private data class PeerAddress(val host: String, val port: Int)
@@ -651,7 +653,12 @@ class CopyCatLanSyncManager(
             else -> fullItem?.optString(JsonKey.TEXT, "") ?: ""
         }
         val content = json.optString(JsonKey.CONTENT, fallbackContent)
-        val label = json.optString(JsonKey.LABEL, fullItem?.optString(JsonKey.TITLE, "") ?: "")
+        val title = json.optNonBlank(JsonKey.TITLE)
+            ?: fullItem?.optNonBlank(JsonKey.TITLE)
+            ?: json.optNonBlank(JsonKey.LABEL)
+        val description = json.optNonBlank(JsonKey.DESCRIPTION)
+            ?: fullItem?.optNonBlank(JsonKey.DESCRIPTION)
+        val label = json.optString(JsonKey.LABEL, title ?: "")
         val encrypted = if (json.has(JsonKey.ENCRYPTED)) {
             json.optBoolean(JsonKey.ENCRYPTED, false)
         } else {
@@ -703,6 +710,8 @@ class CopyCatLanSyncManager(
             sourceApp = sourceApp,
             deleted = deleted,
             deletedAtMs = deletedAtMs,
+            title = title,
+            description = description,
         )
     }
 
@@ -772,6 +781,8 @@ class CopyCatLanSyncManager(
                 fileName = fileName,
                 sourceId = sourceId,
                 sourceApp = sourceApp,
+                title = fileName,
+                description = null,
             )
             onLanClipReceived(payload)
 
@@ -1054,7 +1065,7 @@ class CopyCatLanSyncManager(
         originId: String,
         type: ClipType,
         content: String,
-        label: String,
+        label: String = "",
         encrypted: Boolean = false,
         locked: Boolean = false,
         iv: String? = null,
@@ -1063,6 +1074,9 @@ class CopyCatLanSyncManager(
         sourceApp: String? = null,
         modifiedMs: Long? = null,
         createdMs: Long? = null,
+        title: String? = null,
+        description: String? = null,
+        fullItemMap: Map<String, Any?>? = null,
     ) {
         if (!started || peers.isEmpty() || userId.isBlank()) {
             Log.i(LOG_TAG, "broadcastTextClip skipped: started=$started peersCount=${peers.size} userIdBlank=${userId.isBlank()}")
@@ -1076,9 +1090,12 @@ class CopyCatLanSyncManager(
             ClipType.Url -> "url"
             else -> "text"
         }
+        val resolvedTitle = title ?: label.ifBlank { null }
         val bodyJson = JSONObject().apply {
             put(JsonKey.CONTENT, content)
             put(JsonKey.LABEL, label)
+            putIfNotBlank(JsonKey.TITLE, resolvedTitle)
+            putIfNotBlank(JsonKey.DESCRIPTION, description)
             put(JsonKey.TS, timestamp)
             put(JsonKey.CREATED, created)
             put(JsonKey.MODIFIED, modified)
@@ -1090,33 +1107,39 @@ class CopyCatLanSyncManager(
             putIfNotBlank(JsonKey.SOURCE_ID, sourceId)
             putIfNotBlank(JsonKey.SOURCE_APP, sourceApp)
 
-            put(JsonKey.ITEM, JSONObject().apply {
-                put(JsonKey.TYPE, payloadType)
-                put(JsonKey.USER_ID, if (userId.isNotBlank()) userId else "local")
-                put(JsonKey.CREATED, toIso8601Utc(created))
-                put(JsonKey.MODIFIED, toIso8601Utc(modified))
-                put(JsonKey.OS, "android")
-                put(JsonKey.TITLE, label)
-                put(JsonKey.ORIGIN_ID, originId)
-                put(JsonKey.ENCRYPTED, encrypted)
-                put(JsonKey.LOCKED, locked)
-                if (payloadType == "url") {
-                    put(JsonKey.URL, content)
-                } else {
-                    put(JsonKey.TEXT, content)
+            val itemObj = if (fullItemMap != null && fullItemMap.isNotEmpty()) {
+                JSONObject(fullItemMap)
+            } else {
+                JSONObject().apply {
+                    put(JsonKey.TYPE, payloadType)
+                    put(JsonKey.USER_ID, if (userId.isNotBlank()) userId else "local")
+                    put(JsonKey.CREATED, toIso8601Utc(created))
+                    put(JsonKey.MODIFIED, toIso8601Utc(modified))
+                    put(JsonKey.OS, "android")
+                    putIfNotBlank(JsonKey.TITLE, resolvedTitle)
+                    putIfNotBlank(JsonKey.DESCRIPTION, description)
+                    put(JsonKey.ORIGIN_ID, originId)
+                    put(JsonKey.ENCRYPTED, encrypted)
+                    put(JsonKey.LOCKED, locked)
+                    if (payloadType == "url") {
+                        put(JsonKey.URL, content)
+                    } else {
+                        put(JsonKey.TEXT, content)
+                    }
+                    putIfNotBlank(JsonKey.IV, iv)
+                    putIfNotBlank(JsonKey.ENC_MODE_SNAKE, encMode)
+                    putIfNotBlank(JsonKey.SOURCE_ID, sourceId)
+                    putIfNotBlank(JsonKey.SOURCE_APP, sourceApp)
                 }
-                putIfNotBlank(JsonKey.IV, iv)
-                putIfNotBlank(JsonKey.ENC_MODE_SNAKE, encMode)
-                putIfNotBlank(JsonKey.SOURCE_ID, sourceId)
-                putIfNotBlank(JsonKey.SOURCE_APP, sourceApp)
-            })
+            }
+            put(JsonKey.ITEM, itemObj)
         }
         val bodyBytes = bodyJson.toString().toByteArray(Charsets.UTF_8)
         val hmac = computeHmac(bodyBytes)
 
         peers.values.forEach { peer ->
             sendToPeer(peer, originId, type.name.lowercase(), bodyBytes, hmac,
-                "application/json", null, null, sourceId, sourceApp)
+                "application/json", null, null, sourceId, sourceApp, created, modified)
         }
     }
 
@@ -1132,6 +1155,8 @@ class CopyCatLanSyncManager(
         fileName: String,
         sourceId: String? = null,
         sourceApp: String? = null,
+        createdMs: Long? = null,
+        modifiedMs: Long? = null,
     ) {
         if (!started || peers.isEmpty() || userId.isBlank()) {
             Log.i(LOG_TAG, "broadcastBinaryClip skipped: started=$started peersCount=${peers.size} userIdBlank=${userId.isBlank()}")
@@ -1150,6 +1175,8 @@ class CopyCatLanSyncManager(
                 fileName,
                 sourceId,
                 sourceApp,
+                createdMs,
+                modifiedMs,
             )
         }
     }
@@ -1165,6 +1192,8 @@ class CopyCatLanSyncManager(
         fileName: String?,
         sourceId: String?,
         sourceApp: String?,
+        createdMs: Long? = null,
+        modifiedMs: Long? = null,
     ) {
         try {
             val requestBuilder = Request.Builder()
@@ -1174,8 +1203,12 @@ class CopyCatLanSyncManager(
                 .addHeader("X-CC-TYPE", typeStr)
                 .addHeader("X-CC-HMAC", hmac)
                 .addHeader("X-CC-PORT", serverPort.toString())
+                .addHeader("X-CC-OS", "android")
             if (ext != null) requestBuilder.addHeader("X-CC-EXT", ext)
             if (fileName != null) requestBuilder.addHeader("X-CC-NAME", fileName)
+            if (contentType.isNotBlank()) requestBuilder.addHeader("X-CC-MIME", contentType)
+            if (createdMs != null) requestBuilder.addHeader("X-CC-CREATED", createdMs.toString())
+            if (modifiedMs != null) requestBuilder.addHeader("X-CC-MODIFIED", modifiedMs.toString())
             if (!sourceId.isNullOrBlank()) {
                 requestBuilder.addHeader("X-CC-SOURCE-ID", sourceId)
             }
