@@ -4,6 +4,7 @@ import 'package:clipboard/base/bloc/event_bus_cubit/event_bus_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/search_filter_state.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/pages/home/widgets/create_new_clip_note_icon_button.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/debounce.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -206,13 +207,14 @@ class _SearchBarInputState extends State<SearchInputBar> {
                       tooltip: context.locale.home__search__reset,
                     ),
 
-                  if (constraints.maxWidth > 350)
+                  if (constraints.maxWidth > dockedLRMinWidth)
                     FilterButton(
                       onChange: onFilterChange,
                       filterState: filterState,
                     ),
-                  if (isMobilePlatform && isMobile && !isActive)
-                    const AppLayoutToggleButton(compact: true),
+                  if (isMobilePlatform && isMobile && !isFocused)
+                    const AppLayoutToggleButton(compact: false),
+                  const CreateNewClipNoteIconButton(),
                 ],
               ),
             );

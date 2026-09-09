@@ -153,7 +153,7 @@ class _CreateCollectionButton extends StatelessWidget {
       alignment: Alignment.topLeft,
       isLabelVisible: !canCreate,
       child: TextButton.icon(
-        icon: const Icon(Icons.add_rounded),
+        icon: const Icon(Icons.create_new_folder_rounded),
         onPressed: () => _onCreate(context),
         style: TextButton.styleFrom(
           foregroundColor: context.colors.onSecondaryContainer,

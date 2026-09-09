@@ -60,24 +60,21 @@ class _CreateClipNotePageState extends State<CreateClipNotePage> {
     final colors = context.colors;
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            widget.item == null
-                ? Text(context.locale.create_clip__appbar__title__new)
-                : Text(context.locale.create_clip__appbar__title__edit),
-            width10,
-            const Icon(Icons.science_rounded),
-          ],
-        ),
+        title: widget.item == null
+            ? Text(context.locale.create_clip__appbar__title__new)
+            : Text(context.locale.create_clip__appbar__title__edit),
         centerTitle: false,
         leading: const CloseButton(),
         backgroundColor: colors.secondaryContainer,
         actions: [
           IconButton(
-            icon: const Icon(Icons.note_add_rounded),
-            onPressed: saveAsNew,
-            tooltip: context.locale.create_clip__button__save_new,
+            icon: widget.item == null
+                ? const Icon(Icons.save)
+                : const Icon(Icons.note_add_rounded),
+            onPressed: widget.item == null ? saveAsNew : save,
+            tooltip: widget.item == null
+                ? context.mlocale.saveButtonLabel.title
+                : context.locale.create_clip__button__save_new,
           ),
           if (widget.item != null)
             IconButton(
