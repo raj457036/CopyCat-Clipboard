@@ -316,40 +316,68 @@ class LocalClipboardSource implements ClipboardSource {
 
   @override
   Future<(ClipboardItem, bool)> updateOrCreate(ClipboardItem item) async {
-    item = item.copyWith(lastSynced: systemTime());
-    item = item.locked ? item : await item.decrypt();
+    final decryptedItem = item.locked ? item : await item.decrypt();
+    final now = systemTime();
 
-    ClipboardItem? existingClip;
+    return await db.writeTxn(() async {
+      IsarClipboardItem? existingIsar;
 
-    if (item.originId != null) {
-      existingClip = await db
-          .txn(
-            () =>
-                _collection.where().originIdEqualTo(item.originId).findFirst(),
-          )
-          .then((e) => e?.toDomain());
-    }
+      if (decryptedItem.originId != null &&
+          decryptedItem.originId!.trim().isNotEmpty) {
+        existingIsar = await _collection
+            .where()
+            .originIdEqualTo(decryptedItem.originId!)
+            .findFirst();
+      }
 
-    if (existingClip == null && item.serverId != null) {
-      existingClip = await get(serverId: item.serverId!);
-    }
+      if (existingIsar == null && decryptedItem.serverId != null) {
+        existingIsar = await _collection
+            .filter()
+            .serverIdEqualTo(decryptedItem.serverId!)
+            .findFirst();
+      }
 
-    if (existingClip != null) {
-      item = existingClip.copyWith(
-        localPath: item.localPath ?? existingClip.localPath,
-        text: item.text ?? existingClip.text,
-        richData: item.richData ?? existingClip.richData,
-        modified: item.modified,
-        lastSynced: item.lastSynced,
-        serverId: item.serverId ?? existingClip.serverId,
-        originId: item.originId ?? existingClip.originId,
-        description: item.description ?? existingClip.description,
-        title: item.title ?? existingClip.title,
-      );
-      return (await update(item), false);
-    }
+      if (existingIsar != null) {
+        final existingClip = existingIsar.toDomain();
+        final updated = existingClip.copyWith(
+          localPath: decryptedItem.localPath ?? existingClip.localPath,
+          text: decryptedItem.text ?? existingClip.text,
+          richData: decryptedItem.richData ?? existingClip.richData,
+          modified: decryptedItem.modified,
+          lastSynced: now,
+          serverId: decryptedItem.serverId ?? existingClip.serverId,
+          originId: decryptedItem.originId ?? existingClip.originId,
+          description: decryptedItem.description ?? existingClip.description,
+          title: decryptedItem.title ?? existingClip.title,
+        );
 
-    return (await create(item), true);
+        final isarItem = IsarClipboardItem.fromDomain(updated);
+        await _collection.put(isarItem);
+
+        // Prune any duplicate records with the same serverId if present
+        if (updated.serverId != null) {
+          final duplicates = await _collection
+              .filter()
+              .serverIdEqualTo(updated.serverId!)
+              .and()
+              .not()
+              .isarIdEqualTo(isarItem.isarId)
+              .findAll();
+          if (duplicates.isNotEmpty) {
+            await _collection.deleteAll(
+              duplicates.map((e) => e.isarId).toList(),
+            );
+          }
+        }
+
+        return (updated, false);
+      }
+
+      final newItem = decryptedItem.copyWith(lastSynced: now);
+      final isarItem = IsarClipboardItem.fromDomain(newItem);
+      final id = await _collection.put(isarItem);
+      return (newItem.copyWith(id: id), true);
+    });
   }
 
   @override
