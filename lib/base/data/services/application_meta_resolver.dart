@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:clipboard/base/domain/model/application_meta/activity_meta_payload.dart';
@@ -8,6 +9,7 @@ import 'package:clipboard/base/domain/repositories/app_directory.dart';
 import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/utils/icon_optimizer.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:focus_window/focus_window.dart';
 import 'package:injectable/injectable.dart';
@@ -81,8 +83,11 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
       return null;
     }
 
+    final rawBytes = bytes is Uint8List ? bytes : Uint8List.fromList(bytes);
+    final optimizedBytes = await IconOptimizer.optimize(rawBytes);
+
     final iconFile = await _iconFileForSource(sourceId);
-    await iconFile.writeAsBytes(bytes, flush: true);
+    await iconFile.writeAsBytes(optimizedBytes, flush: true);
     return iconFile.path;
   }
 
