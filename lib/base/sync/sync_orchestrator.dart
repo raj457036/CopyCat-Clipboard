@@ -270,6 +270,15 @@ class SyncOrchestrator {
     }
   }
 
+  /// Reconnects realtime listeners across all registered engines if realtime is active.
+  Future<void> reconnectRealtime() async {
+    if (!_isRunning || _activeSyncSpeed != SyncSpeed.realtime) return;
+    _logger.i('Reconnecting realtime listeners across all engines...');
+    for (final engine in _engines.values) {
+      await engine.reconnectRealtime();
+    }
+  }
+
   void _startPolling({int? intervalSeconds}) {
     for (final engine in _engines.values) {
       engine.startPolling(intervalSeconds: intervalSeconds);

@@ -98,21 +98,31 @@ class SBClipCrossSyncListener
 
   @override
   Future<void> reconnect() async {
-    if (!isInitiated || _lastStatus == CrossSyncListenerStatus.connected) {
+    if (isInitiated && _lastStatus == CrossSyncListenerStatus.connected) {
       return;
     }
     await stop();
-    await wait(const Duration(seconds: 1).inMilliseconds);
+    await wait(const Duration(milliseconds: 500).inMilliseconds);
     await start();
   }
 
   @override
   Future<void> stop() async {
-    if (!isInitiated) return;
-    final result = await _channel?.unsubscribe();
-    if (result == "ok") {
-      _channel = null;
-      _statusEvents.add((CrossSyncListenerStatus.disconnected, null));
+    final channel = _channel;
+    _channel = null;
+    _lastStatus = CrossSyncListenerStatus.disconnected;
+    _statusEvents.add((CrossSyncListenerStatus.disconnected, null));
+    if (channel != null) {
+      try {
+        await channel.unsubscribe().timeout(const Duration(seconds: 2));
+      } catch (e) {
+        logger.w("Error or timeout unsubscribing realtime channel ($channelID): $e");
+      }
+      try {
+        client.removeChannel(channel);
+      } catch (e) {
+        logger.w("Error removing realtime channel ($channelID): $e");
+      }
     }
   }
 
@@ -192,21 +202,31 @@ class SBCollectionCrossSyncListener
 
   @override
   Future<void> reconnect() async {
-    // Reconnect only if not connected
-    if (!isInitiated || _lastStatus == CrossSyncListenerStatus.connected) {
+    if (isInitiated && _lastStatus == CrossSyncListenerStatus.connected) {
       return;
     }
     await stop();
-    await wait(const Duration(seconds: 1).inMilliseconds);
+    await wait(const Duration(milliseconds: 500).inMilliseconds);
     await start();
   }
 
   @override
   Future<void> stop() async {
-    if (!isInitiated) return;
-    if (await _channel?.unsubscribe() == "ok") {
-      _channel = null;
-      _statusEvents.add((CrossSyncListenerStatus.disconnected, null));
+    final channel = _channel;
+    _channel = null;
+    _lastStatus = CrossSyncListenerStatus.disconnected;
+    _statusEvents.add((CrossSyncListenerStatus.disconnected, null));
+    if (channel != null) {
+      try {
+        await channel.unsubscribe().timeout(const Duration(seconds: 2));
+      } catch (e) {
+        logger.w("Error or timeout unsubscribing realtime channel ($channelID): $e");
+      }
+      try {
+        client.removeChannel(channel);
+      } catch (e) {
+        logger.w("Error removing realtime channel ($channelID): $e");
+      }
     }
   }
 

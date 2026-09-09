@@ -40,6 +40,7 @@ class SyncEngine<T extends Syncable> {
 
   Timer? _pollingTimer;
   Timer? _reconnectTimer;
+  int _reconnectAttempts = 0;
   int? _pollingIntervalSeconds; // saved so realtime fallback can restore it
   bool _busy = false;
   bool _isRealtimeSubscribed = false;
@@ -585,6 +586,7 @@ class SyncEngine<T extends Syncable> {
       case CrossSyncListenerStatus.connected:
         _reconnectTimer?.cancel();
         _reconnectTimer = null;
+        _reconnectAttempts = 0;
         stopPolling();
         return;
       case CrossSyncListenerStatus.disconnected:
@@ -605,10 +607,30 @@ class SyncEngine<T extends Syncable> {
 
   void _scheduleReconnect() {
     _reconnectTimer?.cancel();
+    final delayMultiplier = 1 << _reconnectAttempts.clamp(0, 4);
+    final delaySeconds = (config.reconnectDelaySeconds * delayMultiplier)
+        .clamp(config.reconnectDelaySeconds, 30);
     _reconnectTimer = Timer(
-      Duration(seconds: config.reconnectDelaySeconds),
-      () => adapter.realtimeListener?.reconnect(),
+      Duration(seconds: delaySeconds),
+      () async {
+        if (!_isRealtimeSubscribed) return;
+        _reconnectAttempts++;
+        await adapter.realtimeListener?.reconnect();
+        if (_isRealtimeSubscribed &&
+            adapter.realtimeListener?.currentStatus !=
+                CrossSyncListenerStatus.connected) {
+          _scheduleReconnect();
+        }
+      },
     );
+  }
+
+  Future<void> reconnectRealtime() async {
+    if (!_isRealtimeSubscribed || adapter.realtimeListener == null) return;
+    _reconnectTimer?.cancel();
+    _reconnectTimer = null;
+    _reconnectAttempts = 0;
+    await adapter.realtimeListener?.reconnect();
   }
 
   Future<void> _onRealtimeEvent(CrossSyncEvent<T> event) async {
@@ -643,6 +665,7 @@ class SyncEngine<T extends Syncable> {
   void stopRealtime() {
     _reconnectTimer?.cancel();
     _reconnectTimer = null;
+    _reconnectAttempts = 0;
     _statusSub?.cancel();
     _eventSub?.cancel();
     adapter.realtimeListener?.stop();

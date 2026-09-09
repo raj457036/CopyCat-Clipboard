@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart'
+    show SyncSpeed;
 import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
@@ -60,6 +62,7 @@ class _StateInitializerState extends State<StateInitializer>
   bool renderingDisabled = false;
   bool _isAppLifecycleBackgrounded = false;
   bool _isWindowBackgrounded = false;
+  bool _wasAppBackgrounded = false;
   bool? _lastClipboardBackgroundState;
   bool _resumeSyncInProgress = false;
 
@@ -143,6 +146,7 @@ class _StateInitializerState extends State<StateInitializer>
           unawaited(_runResumeSyncCatchUp());
         }
       case _:
+        _wasAppBackgrounded = true;
         _isAppLifecycleBackgrounded = true;
         if (!isDesktopPlatform) {
           powerSaverDebounce(() => disableRendering(true));
@@ -168,32 +172,29 @@ class _StateInitializerState extends State<StateInitializer>
   Future<void> _runResumeSyncCatchUp() async {
     if (!mounted || _resumeSyncInProgress) return;
     if (isDesktopPlatform) return;
+    if (!_wasAppBackgrounded) return;
     if (!appConfigCubit.isSyncEnabled || !_isSyncEligibleAuthState()) return;
 
+    _wasAppBackgrounded = false;
+    _resumeSyncInProgress = true;
     final intervalSeconds =
         monetizationCubit.active?.syncInterval ?? defaultBestEffortSyncInterval;
-
-    _resumeSyncInProgress = true;
-    final wasRunning = syncOrchestrator.isRunning;
     final syncSpeed = appConfigCubit.state.config.syncSpeed;
 
     try {
-      if (wasRunning) {
-        syncOrchestrator.stop();
+      if (!syncOrchestrator.isRunning) {
+        syncOrchestrator.start(
+          syncSpeed: syncSpeed,
+          intervalSeconds: intervalSeconds,
+        );
+      } else if (syncSpeed == SyncSpeed.realtime) {
+        await syncOrchestrator.reconnectRealtime();
       }
 
       await syncStatusCubit.syncAll(const SyncAllParams(force: true));
     } catch (e) {
       logger.e("Resume catch-up sync failed: $e");
     } finally {
-      if (wasRunning &&
-          appConfigCubit.isSyncEnabled &&
-          _isSyncEligibleAuthState()) {
-        syncOrchestrator.start(
-          syncSpeed: syncSpeed,
-          intervalSeconds: intervalSeconds,
-        );
-      }
       _resumeSyncInProgress = false;
     }
   }

@@ -77,6 +77,9 @@ class InAppNotificationService {
   /// MARK: - NotificationService Implementation
 
   void dismissAll() {
+    try {
+      _scaffoldMessenger.clearSnackBars();
+    } catch (_) {}
     while (_activeNotifications.isNotEmpty) {
       try {
         _activeNotifications.removeLast().controller.close();
@@ -94,6 +97,7 @@ class InAppNotificationService {
       );
       if (notification == null) return;
 
+      _activeNotifications.remove(notification);
       notification.controller.close();
     } catch (e) {
       debugPrint('Error dismissing notification: $e');
@@ -128,9 +132,18 @@ class InAppNotificationService {
   Future<void> _notify(NotificationMessage message) async {
     await windowSizeStabilized();
 
-    if (_activeNotifications.any((active) => active.message.id == message.id) ||
-        _context == null) {
-      dismiss(message.id!);
+    if (message.clearPrevious) {
+      dismissAll();
+    } else if (message.id != null) {
+      final hasActive = _activeNotifications.any(
+        (active) => active.message.id == message.id,
+      );
+      if (hasActive) {
+        dismiss(message.id!);
+        try {
+          _scaffoldMessenger.removeCurrentSnackBar();
+        } catch (_) {}
+      }
     }
 
     final snackbar = _buildSnackBar(message);
