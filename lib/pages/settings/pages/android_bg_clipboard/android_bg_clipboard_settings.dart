@@ -452,30 +452,33 @@ class _AndroidBgClipboardSettingsState extends State<AndroidBgClipboardSettings>
                   : context.locale.abc__detection_mode__subtitle__disabled,
               style: textTheme.bodyMedium?.copyWith(color: colors.outline),
             ),
-            trailing: SettingsMenuDropdown<String>(
-              value: _normalizeDetectionMode(_selectedMode),
-              items: _detectionModes
-                  .map(
-                    (mode) => SettingsDropdownItem(
-                      value: mode.$1,
-                      enabled: accessibility || mode.$1 == 'inactive',
-                    ),
-                  )
-                  .toList(),
-              itemBuilder: (context, value) {
-                final label = _detectionModes
-                    .firstWhere((mode) => mode.$1 == value)
-                    .$2;
-                final icon = _detectionModes
-                    .firstWhere((mode) => mode.$1 == value)
-                    .$3;
-                return (
-                  leading: Icon(icon),
-                  child: Text(label),
-                  trailing: null,
-                );
-              },
-              onSelected: canChooseMode ? _onModeChanged : null,
+            trailing: SizedBox(
+              width: 185,
+              child: SettingsMenuDropdown<String>(
+                value: _normalizeDetectionMode(_selectedMode),
+                items: _detectionModes
+                    .map(
+                      (mode) => SettingsDropdownItem(
+                        value: mode.$1,
+                        enabled: accessibility || mode.$1 == 'inactive',
+                      ),
+                    )
+                    .toList(),
+                itemBuilder: (context, value) {
+                  final label = _detectionModes
+                      .firstWhere((mode) => mode.$1 == value)
+                      .$2;
+                  final icon = _detectionModes
+                      .firstWhere((mode) => mode.$1 == value)
+                      .$3;
+                  return (
+                    leading: Icon(icon),
+                    child: Text(label),
+                    trailing: null,
+                  );
+                },
+                onSelected: canChooseMode ? _onModeChanged : null,
+              ),
             ),
           ),
           height5,
