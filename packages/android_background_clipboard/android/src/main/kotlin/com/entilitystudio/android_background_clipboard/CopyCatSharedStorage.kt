@@ -905,8 +905,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         return when (detectionMode) {
             ClipboardDetectionMode.MODE_INACTIVE -> ModeInactiveStrategy()
             ClipboardDetectionMode.MODE_1_ACK_TEXT ->
-                Mode1AckTextStrategy(initialAckText = mode1AckText)
-            ClipboardDetectionMode.MODE_2_AGGRESSIVE -> Mode2AggressiveStrategy()
+                Mode1AckTextStrategy(context = appContext, initialAckText = mode1AckText)
+            ClipboardDetectionMode.MODE_2_AGGRESSIVE ->
+                Mode2AggressiveStrategy(context = appContext, initialAckText = mode1AckText)
         }
     }
 

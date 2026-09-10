@@ -390,13 +390,21 @@ class CopyCatAccessibilityService : AccessibilityService() {
         detectionStrategy = when (selectedMode) {
             ClipboardDetectionMode.MODE_INACTIVE -> ModeInactiveStrategy()
             ClipboardDetectionMode.MODE_1_ACK_TEXT -> Mode1AckTextStrategy(
+                context = this,
                 initialAckText = cachedMode1AckText,
                 onAckTextLearned = { ackText ->
                     clipboardService?.copycatStorage?.writeMode1AckText(ackText)
                 },
             )
             ClipboardDetectionMode.MODE_2_AGGRESSIVE ->
-                Mode2AggressiveStrategy(activeImePackageProvider = { activeImePackageName })
+                Mode2AggressiveStrategy(
+                    context = this,
+                    initialAckText = cachedMode1AckText,
+                    onAckTextLearned = { ackText ->
+                        clipboardService?.copycatStorage?.writeMode1AckText(ackText)
+                    },
+                    activeImePackageProvider = { activeImePackageName },
+                )
         }
 
         val requiresDetectionTest = detectionStrategy.requiresDetectionTest()
@@ -405,10 +413,11 @@ class CopyCatAccessibilityService : AccessibilityService() {
                 ClipboardDetectionMode.MODE_INACTIVE -> "inactive"
                 ClipboardDetectionMode.MODE_1_ACK_TEXT ->
                     if (requiresDetectionTest) "starting" else "running_heuristic"
-                ClipboardDetectionMode.MODE_2_AGGRESSIVE -> "running_aggressive"
+                ClipboardDetectionMode.MODE_2_AGGRESSIVE ->
+                    if (requiresDetectionTest) "starting" else "running_aggressive"
             },
             outcome = when (selectedMode) {
-                ClipboardDetectionMode.MODE_1_ACK_TEXT ->
+                ClipboardDetectionMode.MODE_1_ACK_TEXT, ClipboardDetectionMode.MODE_2_AGGRESSIVE ->
                     if (requiresDetectionTest) "pending" else "success"
 
                 else -> "none"
