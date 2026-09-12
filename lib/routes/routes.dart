@@ -154,28 +154,28 @@ final appRouter = GoRouter(
             isOnboardingCompleted,
           _ => false,
         };
+        final collectionCubit = sl<ClipCollectionCubit>();
+        if (shouldRunInitialSync || isLocalAuth) {
+          unawaited(collectionCubit.fetch());
+        }
+        final clipboardCubit = sl<ClipboardCubit>();
+        if (shouldRunInitialSync || isLocalAuth) {
+          unawaited(clipboardCubit.fetch());
+        }
+        final driveSetupCubit = sl<DriveSetupCubit>();
+        if (!isLocalAuth) {
+          unawaited(driveSetupCubit.fetch());
+        }
         return MultiBlocProvider(
           providers: [
             BlocProvider<FileCloudCubit>(
               create: (context) => sl<FileCloudCubit>(),
             ),
-            BlocProvider<ClipCollectionCubit>(
-              create: (context) {
-                final cubit = sl<ClipCollectionCubit>();
-                if (shouldRunInitialSync || isLocalAuth) {
-                  unawaited(cubit.fetch());
-                }
-                return cubit;
-              },
+            BlocProvider<ClipCollectionCubit>.value(
+              value: collectionCubit,
             ),
-            BlocProvider<DriveSetupCubit>(
-              create: (context) {
-                final cubit = sl<DriveSetupCubit>();
-                if (!isLocalAuth) {
-                  unawaited(cubit.fetch());
-                }
-                return cubit;
-              },
+            BlocProvider<DriveSetupCubit>.value(
+              value: driveSetupCubit,
             ),
             BlocProvider<WebDavSetupCubit>(
               create: (context) {
@@ -188,14 +188,8 @@ final appRouter = GoRouter(
             BlocProvider<SelectedClipsCubit>(
               create: (context) => sl<SelectedClipsCubit>(),
             ),
-            BlocProvider<ClipboardCubit>(
-              create: (context) {
-                final cubit = sl<ClipboardCubit>();
-                if (shouldRunInitialSync || isLocalAuth) {
-                  unawaited(cubit.fetch());
-                }
-                return cubit;
-              },
+            BlocProvider<ClipboardCubit>.value(
+              value: clipboardCubit,
             ),
             if (Platform.isAndroid)
               BlocProvider<AndroidBgClipboardCubit>(

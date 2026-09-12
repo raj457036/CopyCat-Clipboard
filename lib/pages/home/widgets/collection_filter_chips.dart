@@ -1,13 +1,11 @@
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
-import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/subscription_actions.dart';
-import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -44,7 +42,10 @@ class CollectionFilterChips extends StatelessWidget {
               spacing: padding4,
               children: [
                 if (!dense)
-                  _CreateCollectionButton(collectionCount: collections.length),
+                  _CreateCollectionButton(
+                    collectionCount: collections.length,
+                    allowedCollectionCount: loaded.activeLimit,
+                  ),
                 if (!dense)
                   const VerticalDivider(
                     indent: padding14,
@@ -67,6 +68,7 @@ class CollectionFilterChips extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: _CreateCollectionButton(
                             collectionCount: collections.length,
+                            allowedCollectionCount: loaded.activeLimit,
                           ),
                         );
                       }
@@ -124,10 +126,14 @@ class CollectionFilterChips extends StatelessWidget {
 
 class _CreateCollectionButton extends StatelessWidget {
   final int collectionCount;
+  final int allowedCollectionCount;
 
-  const _CreateCollectionButton({required this.collectionCount});
+  const _CreateCollectionButton({
+    required this.collectionCount,
+    required this.allowedCollectionCount,
+  });
 
-  void _onCreate(BuildContext context, int allowedCollectionCount) {
+  void _onCreate(BuildContext context) {
     if (collectionCount >= allowedCollectionCount) {
       showUpgradePlanDialog();
       return;
@@ -140,29 +146,24 @@ class _CreateCollectionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SubscriptionBuilder(
-      builder: (context, subscription) {
-        final limit = subscription?.collections ?? defaultCollectionCount;
-        final canCreate = limit > collectionCount;
+    final canCreate = allowedCollectionCount > collectionCount;
 
-        return Badge(
-          label: Text(context.locale.badges__label__pro),
-          alignment: Alignment.topLeft,
-          isLabelVisible: !canCreate,
-          child: TextButton.icon(
-            icon: const Icon(Icons.create_new_folder_rounded),
-            onPressed: () => _onCreate(context, limit),
-            style: TextButton.styleFrom(
-              foregroundColor: context.colors.onSecondaryContainer,
-              backgroundColor: context.colors.secondaryContainer,
-              shape: const StadiumBorder(),
-              enabledMouseCursor: SystemMouseCursors.click,
-              disabledMouseCursor: SystemMouseCursors.forbidden,
-            ),
-            label: Text(context.locale.app__create),
-          ),
-        );
-      },
+    return Badge(
+      label: Text(context.locale.badges__label__pro),
+      alignment: Alignment.topLeft,
+      isLabelVisible: !canCreate,
+      child: TextButton.icon(
+        icon: const Icon(Icons.create_new_folder_rounded),
+        onPressed: () => _onCreate(context),
+        style: TextButton.styleFrom(
+          foregroundColor: context.colors.onSecondaryContainer,
+          backgroundColor: context.colors.secondaryContainer,
+          shape: const StadiumBorder(),
+          enabledMouseCursor: SystemMouseCursors.click,
+          disabledMouseCursor: SystemMouseCursors.forbidden,
+        ),
+        label: Text(context.locale.app__create),
+      ),
     );
   }
 }

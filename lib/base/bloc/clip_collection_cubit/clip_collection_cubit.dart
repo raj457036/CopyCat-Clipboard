@@ -306,6 +306,15 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
     );
   }
 
+  void reset() {
+    emit(
+      ClipCollectionState.loaded(
+        collections: [],
+        activeLimit: _limitFromMonetization(monetizationCubit.state),
+      ),
+    );
+  }
+
   @override
   Future<void> close() {
     _monetizationSub.cancel();

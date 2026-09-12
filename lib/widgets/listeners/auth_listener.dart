@@ -4,6 +4,7 @@ import 'package:clipboard/base/background/encryption_worker.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart';
@@ -66,6 +67,7 @@ class AuthListener extends StatelessWidget {
     sl<AppConfigCubit>().reset();
     sl<SyncOrchestrator>().stop();
     sl<MonetizationCubit>().logout();
+    sl<ClipCollectionCubit>().reset();
   }
 
   Future<void> _handleAuthenticatedState(

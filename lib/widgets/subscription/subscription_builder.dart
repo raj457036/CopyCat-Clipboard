@@ -13,15 +13,13 @@ class SubscriptionBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<MonetizationCubit, MonetizationState, Subscription?>(
-      selector: (state) {
-        return state.whenOrNull(
-          active: (subscription) {
-            return subscription;
-          },
+    return BlocBuilder<MonetizationCubit, MonetizationState>(
+      builder: (context, state) {
+        final subscription = state.whenOrNull(
+          active: (sub) => sub,
         );
+        return builder(context, subscription);
       },
-      builder: builder,
     );
   }
 }
@@ -59,11 +57,11 @@ class HasAccessToFeature extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<MonetizationCubit, MonetizationState, Subscription?>(
-      selector: (state) {
-        return state.whenOrNull(active: (subscription) => subscription);
-      },
-      builder: (context, subscription) {
+    return BlocBuilder<MonetizationCubit, MonetizationState>(
+      builder: (context, state) {
+        final subscription = state.whenOrNull(
+          active: (sub) => sub,
+        );
         final hasAccess_ = subscription != null && hasAccess(subscription);
 
         if (alwaysBuild || hasAccess_) {
