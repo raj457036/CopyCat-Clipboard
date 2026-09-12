@@ -14,6 +14,7 @@ type Payload = {
   deviceId?: string;
   platform?: string;
   appVersion?: string;
+  deviceName?: string;
 };
 
 const DEVICE_ACTIVITY_WINDOW_DAYS = 30;
@@ -62,7 +63,7 @@ async function getActiveDevices(
 
   const { data, error } = await client
     .from(DEVICES_TABLE)
-    .select("deviceId, platform, appVersion, isRevoked, last_seen_at")
+    .select("deviceId, platform, appVersion, name, isRevoked, last_seen_at")
     .eq("userId", userId)
     .eq("isRevoked", false)
     .gte("last_seen_at", activeSince)
@@ -77,6 +78,7 @@ function normalizeDevices(devices: Array<Record<string, unknown>>) {
     deviceId: String(d.deviceId ?? ""),
     platform: String(d.platform ?? "unknown"),
     appVersion: (d.appVersion as string | null) ?? null,
+    name: (d.name as string | null) ?? null,
     isRevoked: Boolean(d.isRevoked),
     lastSeenAt: String(d.last_seen_at ?? new Date(0).toISOString()),
   }));
@@ -91,6 +93,7 @@ async function registerDevice(
   const deviceId = payload.deviceId?.trim();
   const platform = payload.platform?.trim() || "unknown";
   const appVersion = payload.appVersion?.trim() || null;
+  const deviceName = payload.deviceName?.trim() || null;
 
   if (!deviceId) {
     return jsonResponse({ error: "deviceId is required for register" }, 400);
@@ -112,19 +115,29 @@ async function registerDevice(
     });
   }
 
+  const { data: existingDevice } = await client
+    .from(DEVICES_TABLE)
+    .select("name")
+    .eq("userId", userId)
+    .eq("deviceId", deviceId)
+    .maybeSingle();
+
+  const insertData: Record<string, unknown> = {
+    userId,
+    deviceId,
+    platform,
+    appVersion,
+    isRevoked: false,
+    last_seen_at: now,
+  };
+
+  if (!existingDevice?.name && deviceName) {
+    insertData.name = deviceName;
+  }
+
   const { error: upsertError } = await client
     .from(DEVICES_TABLE)
-    .upsert(
-      {
-        userId,
-        deviceId,
-        platform,
-        appVersion,
-        isRevoked: false,
-        last_seen_at: now,
-      },
-      { onConflict: "userId,deviceId" },
-    );
+    .upsert(insertData, { onConflict: "userId,deviceId" });
 
   if (upsertError) {
     console.error("register device upsert error:", upsertError.message);

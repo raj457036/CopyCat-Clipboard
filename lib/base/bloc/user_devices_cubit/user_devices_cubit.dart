@@ -33,18 +33,18 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
 
   String? getDeviceName(String deviceId) {
     try {
-      final device = state.deviceList?.devices.firstWhere(
-        (d) => d.deviceId == deviceId,
-        orElse: () => throw StateError('Device not found'),
-      );
-      return device?.name;
+      final device = state.deviceList?.devices
+          .where((d) => d.deviceId == deviceId)
+          .firstOrNull;
+      final name = device?.name?.trim();
+      return (name != null && name.isNotEmpty) ? name : null;
     } catch (e) {
       logger.w('Error getting device name for $deviceId: $e');
       return null;
     }
   }
 
-  String _resolveDeviceName() {
+  String _defaultDeviceName() {
     final hostname = Platform.localHostname.trim();
     if (hostname.isEmpty) {
       return 'Device ${deviceId.substring(0, 6)}';
@@ -65,6 +65,7 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
       deviceId: deviceId,
       platform: Platform.operatingSystem,
       appVersion: '${packageInfo.version}+${packageInfo.buildNumber}',
+      deviceName: _defaultDeviceName(),
     );
 
     return result.fold(
@@ -81,15 +82,6 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
       },
       (registration) async {
         if (registration.allowed) {
-          final existingName = getDeviceName(deviceId);
-
-          if (existingName == null || existingName.trim().isEmpty) {
-            await repo.updateDeviceName(
-              deviceId: deviceId,
-              name: _resolveDeviceName(),
-            );
-          }
-
           emit(
             state.copyWith(
               isRegistering: false,

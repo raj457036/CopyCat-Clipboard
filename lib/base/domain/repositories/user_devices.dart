@@ -8,6 +8,7 @@ abstract class UserDevicesRepository {
     required String deviceId,
     required String platform,
     String? appVersion,
+    String? deviceName,
   });
 
   /// Fetches the list of devices registered for the current user

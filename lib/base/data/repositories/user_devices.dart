@@ -24,6 +24,7 @@ class UserDevicesRepositoryImpl implements UserDevicesRepository {
     required String deviceId,
     required String platform,
     String? appVersion,
+    String? deviceName,
   }) async {
     try {
       final userId = _currentUserId();
@@ -32,6 +33,7 @@ class UserDevicesRepositoryImpl implements UserDevicesRepository {
         deviceId: deviceId,
         platform: platform,
         appVersion: appVersion,
+        deviceName: deviceName,
       );
       return Right(result);
     } catch (e) {

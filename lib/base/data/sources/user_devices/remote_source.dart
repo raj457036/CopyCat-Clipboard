@@ -66,6 +66,7 @@ class RemoteUserDevicesSource implements UserDevicesSource {
     required String deviceId,
     required String platform,
     String? appVersion,
+    String? deviceName,
   }) async {
     assert(userId.isNotEmpty);
 
@@ -77,6 +78,7 @@ class RemoteUserDevicesSource implements UserDevicesSource {
         'deviceId': deviceId,
         'platform': platform,
         'appVersion': appVersion,
+        'deviceName': ?deviceName,
       },
     );
 
