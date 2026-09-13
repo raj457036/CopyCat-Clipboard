@@ -110,9 +110,8 @@ class CollectionFilterChips extends StatelessWidget {
                 data: ChipThemeData(
                   backgroundColor: colorScheme.surfaceContainerHighest,
                   selectedColor: colorScheme.primaryContainer,
-                  disabledColor: colorScheme.surfaceContainerLow,
+                  disabledColor: colorScheme.outlineVariant,
                   side: BorderSide.none,
-                  shape: const RoundedRectangleBorder(borderRadius: radius4),
                 ),
                 child: childWithPadding,
               ),
@@ -187,6 +186,10 @@ class _CollectionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final labelStyle = context.textTheme.labelLarge?.copyWith(
+      color: isSelected ? colors.onPrimaryContainer : colors.onSurface,
+    );
     return TooltipTheme(
       data: const TooltipThemeData(constraints: BoxConstraints(maxWidth: 200)),
       child: ChoiceChip(
@@ -201,7 +204,9 @@ class _CollectionChip extends StatelessWidget {
             ? const StadiumBorder()
             : const RoundedRectangleBorder(borderRadius: radius8),
         showCheckmark: false,
+
         mouseCursor: SystemMouseCursors.click,
+        labelStyle: labelStyle,
       ),
     );
   }
