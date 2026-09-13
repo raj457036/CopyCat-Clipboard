@@ -109,12 +109,16 @@ final class ClipboardToastPresenter {
       self.dismissWorkItem?.cancel()
       self.dismissCurrentToast()
 
-      let screen = self.activeScreen()
-      let visibleFrame = screen.visibleFrame
-      let width: CGFloat = 132
-      let height: CGFloat = 30
-      let originX = visibleFrame.midX - width / 2
-      let originY = visibleFrame.maxY - height - 22
+      let screen: NSScreen = self.activeScreen()
+      let visibleFrame: NSRect = screen.visibleFrame
+      let toastMessage: String = message ?? "Copied"
+
+      let font: NSFont = NSFont.systemFont(ofSize: 12, weight: .medium)
+      let textWidth: CGFloat = (toastMessage as NSString).size(withAttributes: [.font: font]).width
+      let width: CGFloat = max(136, textWidth + 48)
+      let height: CGFloat = 34
+      let originX: CGFloat = visibleFrame.midX - width / 2
+      let originY: CGFloat = visibleFrame.maxY - height - 22
 
       let panel = NSPanel(
         contentRect: NSRect(x: originX, y: originY, width: width, height: height),
@@ -132,7 +136,11 @@ final class ClipboardToastPresenter {
       panel.hidesOnDeactivate = false
       panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .transient, .ignoresCycle]
       panel.contentViewController = NSHostingController(
-        rootView: ClipboardToastView(message: message ?? "Copied")
+        rootView: ClipboardToastView(
+          message: toastMessage,
+          width: width,
+          height: height
+        )
       )
       panel.alphaValue = 0
       panel.orderFrontRegardless()
@@ -166,7 +174,7 @@ final class ClipboardToastPresenter {
   }
 
   private func activeScreen() -> NSScreen {
-    let mouseLocation = NSEvent.mouseLocation
+    let mouseLocation: NSPoint = NSEvent.mouseLocation
     if let screen = NSScreen.screens.first(where: { NSMouseInRect(mouseLocation, $0.frame, false) }) {
       return screen
     }
@@ -177,28 +185,53 @@ final class ClipboardToastPresenter {
 
 private struct ClipboardToastView: View {
   let message: String
-  @Environment(\.colorScheme) private var colorScheme
+  let width: CGFloat
+  let height: CGFloat
 
   var body: some View {
     let capsule = Capsule(style: .continuous)
 
-    Text(message)
-      .font(.system(size: 11, weight: .semibold))
-      .foregroundColor(.primary)
-      .kerning(0.2)
-      .multilineTextAlignment(.center)
-      .padding(.horizontal, 12)
-      .lineLimit(1)
-      .frame(width: 132, height: 30)
-      .background(
-        capsule.fill(colorScheme == .dark ? Color(white: 0.22) : Color(white: 0.89))
-      )
-      .clipShape(capsule)
-      .overlay(
-        capsule.strokeBorder(
-          colorScheme == .dark ? Color(white: 0.33) : Color(white: 0.77),
-          lineWidth: 0.9
+    HStack(spacing: 7) {
+      Image(systemName: "checkmark")
+        .font(.system(size: 11, weight: .semibold))
+        .foregroundColor(Color.white.opacity(0.95))
+
+      Text(message)
+        .font(.system(size: 12, weight: .medium))
+        .foregroundColor(Color.white)
+        .lineLimit(1)
+    }
+    .padding(.horizontal, 16)
+    .frame(width: width, height: height)
+    .background(
+      capsule
+        .fill(Color(white: 0.44))
+        .overlay(
+          LinearGradient(
+            colors: [
+              Color.white.opacity(0.12),
+              Color.clear,
+            ],
+            startPoint: .top,
+            endPoint: .center
+          )
+          .clipShape(capsule)
         )
+    )
+    .clipShape(capsule)
+    .overlay(
+      capsule.strokeBorder(
+        LinearGradient(
+          colors: [
+            Color.white.opacity(0.35),
+            Color.white.opacity(0.08),
+            Color.white.opacity(0.18),
+          ],
+          startPoint: .top,
+          endPoint: .bottom
+        ),
+        lineWidth: 0.75
       )
+    )
   }
 }
