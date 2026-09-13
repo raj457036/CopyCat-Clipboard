@@ -215,6 +215,22 @@ void main() {
 
       expect(listener.reconnectCalls, greaterThanOrEqualTo(1));
     });
+
+    test(
+      'reconnect does not immediately schedule another retry while connecting',
+      () async {
+        engine.startRealtime();
+        expect(listener.reconnectCalls, 0);
+
+        listener.simulateDisconnect();
+
+        await Future<void>.delayed(const Duration(milliseconds: 1200));
+        expect(listener.reconnectCalls, 1);
+
+        await Future<void>.delayed(const Duration(milliseconds: 1200));
+        expect(listener.reconnectCalls, 1);
+      },
+    );
   });
 
   group('NotificationMessage clearPrevious Tests', () {

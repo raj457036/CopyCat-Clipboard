@@ -78,6 +78,7 @@ class SBClipCrossSyncListener
   @override
   Future<void> start() async {
     if (isInitiated) return;
+    _lastStatus = CrossSyncListenerStatus.connecting;
     _statusEvents.add((CrossSyncListenerStatus.connecting, null));
     _channel = client.channel(
       channelID,
@@ -98,11 +99,38 @@ class SBClipCrossSyncListener
 
   @override
   Future<void> reconnect() async {
-    if (isInitiated && _lastStatus == CrossSyncListenerStatus.connected) {
+    if (_lastStatus == CrossSyncListenerStatus.connected &&
+        client.realtime.isConnected) {
       return;
     }
+
+    if (_lastStatus == CrossSyncListenerStatus.connecting ||
+        client.realtime.connState == SocketStates.connecting) {
+      logger.d(
+        () =>
+            "Realtime is already connecting for $channelID, skipping teardown.",
+      );
+      return;
+    }
+
+    logger.i(
+      () =>
+          "Reconnecting realtime for $channelID (lastStatus: $_lastStatus, socket: ${client.realtime.connState})",
+    );
+
     await stop();
-    await wait(const Duration(milliseconds: 500).inMilliseconds);
+
+    if (!client.realtime.isConnected ||
+        client.realtime.connState == SocketStates.closed ||
+        client.realtime.connState == SocketStates.disconnecting) {
+      try {
+        client.realtime.disconnect();
+      } catch (e) {
+        logger.w("Error disconnecting realtime socket: $e");
+      }
+    }
+
+    await wait(const Duration(milliseconds: 300).inMilliseconds);
     await start();
   }
 
@@ -167,6 +195,7 @@ class SBCollectionCrossSyncListener
   @override
   Future<void> start() async {
     if (isInitiated) return;
+    _lastStatus = CrossSyncListenerStatus.connecting;
     _statusEvents.add((CrossSyncListenerStatus.connecting, null));
     _channel = client.channel(
       channelID,
@@ -202,11 +231,38 @@ class SBCollectionCrossSyncListener
 
   @override
   Future<void> reconnect() async {
-    if (isInitiated && _lastStatus == CrossSyncListenerStatus.connected) {
+    if (_lastStatus == CrossSyncListenerStatus.connected &&
+        client.realtime.isConnected) {
       return;
     }
+
+    if (_lastStatus == CrossSyncListenerStatus.connecting ||
+        client.realtime.connState == SocketStates.connecting) {
+      logger.d(
+        () =>
+            "Realtime is already connecting for $channelID, skipping teardown.",
+      );
+      return;
+    }
+
+    logger.i(
+      () =>
+          "Reconnecting realtime for $channelID (lastStatus: $_lastStatus, socket: ${client.realtime.connState})",
+    );
+
     await stop();
-    await wait(const Duration(milliseconds: 500).inMilliseconds);
+
+    if (!client.realtime.isConnected ||
+        client.realtime.connState == SocketStates.closed ||
+        client.realtime.connState == SocketStates.disconnecting) {
+      try {
+        client.realtime.disconnect();
+      } catch (e) {
+        logger.w("Error disconnecting realtime socket: $e");
+      }
+    }
+
+    await wait(const Duration(milliseconds: 300).inMilliseconds);
     await start();
   }
 

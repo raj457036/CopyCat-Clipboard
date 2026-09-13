@@ -282,12 +282,18 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
     );
   }
 
-  Future<void> fetch({bool fromTop = false}) async {
-    emit(state.copyWith(loading: true, offset: fromTop ? 0 : state.offset));
+  Future<void> fetch({bool fromTop = true}) async {
+    final isInitialOrTop = fromTop || state.offset == 0;
+    emit(
+      state.copyWith(
+        loading: true,
+        offset: isInitialOrTop ? 0 : state.offset,
+      ),
+    );
 
     final items = await repo.getList(
       limit: state.limit,
-      offset: fromTop ? 0 : state.offset,
+      offset: isInitialOrTop ? 0 : state.offset,
     );
 
     emit(
@@ -295,10 +301,12 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
         (l) => state.copyWith(failure: l, loading: false),
         (r) => state.copyWith(
           loading: false,
-          collections: fromTop
+          collections: isInitialOrTop
               ? r.results
               : [...state.collections, ...r.results],
-          offset: state.offset + r.results.length,
+          offset: isInitialOrTop
+              ? r.results.length
+              : state.offset + r.results.length,
           limit: state.limit,
           hasMore: r.hasMore,
         ),

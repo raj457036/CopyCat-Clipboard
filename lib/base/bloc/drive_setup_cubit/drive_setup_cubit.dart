@@ -86,7 +86,13 @@ class DriveSetupCubit extends Cubit<DriveSetupState> {
     return token?.accessToken;
   }
 
-  Future<bool> fetch() async {
+  Future<bool> fetch({bool force = false}) async {
+    if (!force) {
+      if (state is DriveSetupFetching) return true;
+      if (state case DriveSetupDone(:final token) when !token.isExpired) {
+        return true;
+      }
+    }
     try {
       emit(const DriveSetupState.fetching());
       final response = await repo.getDriveCredentials();

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui' show Size;
 
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/widgets/link_preview/type.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart' show decodeImageFromList;
@@ -227,7 +228,7 @@ Future<LinkPreviewData?> getLinkPreviewData(
       if (contentType.contains('charset=')) {
         final charset = contentType.split('charset=')[1].split(';')[0].trim();
         encoding = Encoding.getByName(charset) ?? utf8;
-        debugPrint('getLinkPreviewData fetched document encoding: $encoding');
+        logger.d('getLinkPreviewData fetched document encoding: $encoding');
       } else {
         encoding = utf8;
       }

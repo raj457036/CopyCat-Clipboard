@@ -9,6 +9,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+
 import 'package:android_background_clipboard/android_background_clipboard.dart'
     as _i565;
 import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart'
@@ -351,7 +352,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i454.SupabaseClient>(),
       ),
     );
-    gh.factory<_i923.WebDavSetupCubit>(
+    gh.factoryCached<_i923.WebDavSetupCubit>(
       () => _i923.WebDavSetupCubit(gh<_i193.WebDavCredentialRepository>()),
     );
     gh.factoryCached<_i521.DriveSetupCubit>(

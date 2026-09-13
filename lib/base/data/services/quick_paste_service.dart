@@ -6,6 +6,7 @@ import 'package:clipboard/base/domain/services/application_meta_resolver.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/sort.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:focus_window/focus_window.dart';
@@ -78,12 +79,12 @@ class QuickPasteService {
 
       if (pastableItems.isEmpty) return (pastableItems, <ClipboardItemDto>[]);
       final dtos = await Future.wait(pastableItems.map(_convertToDto));
-      debugPrint(
+      logger.d(
         '[QuickPasteService] Scanned $totalFetched items, ${pastableItems.length} are pastable for quick paste',
       );
       return (pastableItems, dtos);
     } catch (e) {
-      debugPrint('[QuickPasteService] getTopItems error: $e');
+      logger.e('[QuickPasteService] getTopItems error: $e');
       return (<ClipboardItem>[], <ClipboardItemDto>[]);
     }
   }
@@ -117,7 +118,7 @@ class QuickPasteService {
 
       final targetWindowId = await focusWindow.getActiveWindowId();
       var (clipItems, dtos) = await getTopItems();
-      debugPrint(
+      logger.d(
         '[QuickPasteService] Fetched ${dtos.length} items for quick paste popup',
       );
 
@@ -125,7 +126,7 @@ class QuickPasteService {
       await _quickPastePopup.setTheme(selectionColor: selectionColor);
       final result = await _quickPastePopup.showQuickPastePopup(items: dtos);
 
-      debugPrint(
+      logger.d(
         '[QuickPasteService] Popup result selected=${result.selectedItemId} dismissed=${result.dismissed} error=${result.error}',
       );
 
@@ -146,7 +147,7 @@ class QuickPasteService {
 
       return result;
     } catch (e) {
-      debugPrint('[QuickPasteService] Failed to show quick paste popup: $e');
+      logger.d('[QuickPasteService] Failed to show quick paste popup: $e');
       return null;
     }
   }

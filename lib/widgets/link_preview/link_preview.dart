@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/widgets/image_not_found.dart';
 import 'package:clipboard/widgets/link_preview/favicon.dart';
@@ -243,7 +244,7 @@ class _LinkPreviewState extends State<LinkPreview> {
 
   Future<void> _fetchPreview() async {
     if (_url.isEmpty || !_isValidUrl(_url)) {
-      debugPrint('Invalid URL for link preview: $_url');
+      logger.w('Invalid URL for link preview: $_url');
       return;
     }
 
@@ -261,7 +262,7 @@ class _LinkPreviewState extends State<LinkPreview> {
       _isLoading = true;
     });
 
-    debugPrint('Fetching link preview for: $_url');
+    logger.d('Fetching link preview for: $_url');
 
     final existingFetch = _inFlightFetches[_url];
     final startedFetch = existingFetch == null;
@@ -277,7 +278,7 @@ class _LinkPreviewState extends State<LinkPreview> {
       _inFlightFetches.remove(_url);
     }
 
-    debugPrint('Fetched link preview for: $_url, data: $data');
+    logger.d('Fetched link preview for: $_url, data: $data');
 
     if (!mounted) return;
 

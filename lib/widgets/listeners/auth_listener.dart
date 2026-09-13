@@ -1,15 +1,19 @@
 import 'dart:async';
 
 import 'package:clipboard/base/background/encryption_worker.dart';
+import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
+import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
+import 'package:clipboard/base/bloc/drive_setup_cubit/drive_setup_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart';
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
+import 'package:clipboard/base/bloc/webdav_setup_cubit/webdav_setup_cubit.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart';
@@ -17,12 +21,14 @@ import 'package:clipboard/base/domain/services/database_service.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/failure.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/routes/routes.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:universal_io/io.dart';
 
 class AuthListener extends StatelessWidget {
   final Widget child;
@@ -68,6 +74,7 @@ class AuthListener extends StatelessWidget {
     sl<SyncOrchestrator>().stop();
     sl<MonetizationCubit>().logout();
     sl<ClipCollectionCubit>().reset();
+    sl<WebDavSetupCubit>().reset();
   }
 
   Future<void> _handleAuthenticatedState(
@@ -91,6 +98,13 @@ class AuthListener extends StatelessWidget {
     reviewPromptCubit.setEnabled(true);
 
     unawaited(sl<OfflinePersistenceCubit>().startListeners());
+    unawaited(sl<ClipCollectionCubit>().fetch(fromTop: true));
+    unawaited(sl<ClipboardCubit>().fetch(fromTop: true));
+    unawaited(sl<DriveSetupCubit>().fetch());
+    unawaited(sl<WebDavSetupCubit>().fetch());
+    if (Platform.isAndroid) {
+      unawaited(sl<AndroidBgClipboardCubit>().syncStates());
+    }
 
     final appConfigCubit = sl<AppConfigCubit>();
 
@@ -106,10 +120,17 @@ class AuthListener extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
+      listenWhen: (previous, current) {
+        if (previous is UnauthenticatedAuthState &&
+            current is UnauthenticatedAuthState) {
+          return false;
+        }
+        return previous != current;
+      },
       listener: (context, state) async {
         switch (state) {
           case AuthenticatedAuthState():
-            // debugPrint("User ID: ${state.user.userId}");
+            logger.d("User ID: ${state.user.userId}");
             await _handleAuthenticatedState(context, state);
           case UnauthenticatedAuthState(:final failure):
             context.read<ReviewPromptCubit>().setEnabled(false);
@@ -134,6 +155,12 @@ class AuthListener extends StatelessWidget {
             final isOnboarded = appConfigCubit.state.config.onBoardComplete;
             context.read<ReviewPromptCubit>().setEnabled(isOnboarded);
             unawaited(sl<OfflinePersistenceCubit>().startListeners());
+            unawaited(sl<ClipCollectionCubit>().fetch(fromTop: true));
+            unawaited(sl<ClipboardCubit>().fetch(fromTop: true));
+            unawaited(sl<WebDavSetupCubit>().fetch());
+            if (Platform.isAndroid) {
+              unawaited(sl<AndroidBgClipboardCubit>().syncStates());
+            }
             appRouter.goNamed(RouteConstants.home);
             sl<AppLockCubit>().onAppForeground();
         }

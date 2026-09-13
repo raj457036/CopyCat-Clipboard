@@ -246,7 +246,7 @@ class AuthCubit extends Cubit<AuthState> {
     if (event != AuthSessionChange.signedOut) return;
 
     if (state is! UnauthenticatedAuthState) {
-      unauthenticated(authFailure);
+      emit(const AuthState.unauthenticated());
     }
   }
 
@@ -254,7 +254,9 @@ class AuthCubit extends Cubit<AuthState> {
     emit(const AuthState.authenticating());
     localCache.set(klocalAuthKey, false);
     await repo.logout();
-    emit(const AuthState.unauthenticated());
+    if (state is! UnauthenticatedAuthState) {
+      emit(const AuthState.unauthenticated());
+    }
   }
 
   @override

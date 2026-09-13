@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import "package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart";
 import "package:clipboard/base/domain/model/clip_collection/clipcollection.dart";
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
@@ -123,6 +122,40 @@ GoRoute materialRoute({
   );
 }
 
+class _AppShellScope extends StatelessWidget {
+  final Widget child;
+
+  const _AppShellScope({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<FileCloudCubit>(create: (context) => sl<FileCloudCubit>()),
+        BlocProvider<ClipCollectionCubit>.value(
+          value: sl<ClipCollectionCubit>(),
+        ),
+        BlocProvider<DriveSetupCubit>.value(value: sl<DriveSetupCubit>()),
+        BlocProvider<WebDavSetupCubit>.value(value: sl<WebDavSetupCubit>()),
+        BlocProvider<SelectedClipsCubit>(
+          create: (context) => sl<SelectedClipsCubit>(),
+        ),
+        BlocProvider<ClipboardCubit>.value(value: sl<ClipboardCubit>()),
+        if (Platform.isAndroid)
+          BlocProvider<AndroidBgClipboardCubit>.value(
+            value: sl<AndroidBgClipboardCubit>(),
+          ),
+      ],
+      child: Platform.isAndroid
+          ? AndroidClipRestoreLifecycleListener(
+              androidBgClipboardCubit: sl(),
+              child: child,
+            )
+          : child,
+    );
+  }
+}
+
 final appRouter = GoRouter(
   // restorationScopeId: 'router',
   debugLogDiagnostics: kDebugMode,
@@ -146,71 +179,7 @@ final appRouter = GoRouter(
       builder: (context, state) => LoginFormPage(key: state.pageKey),
     ),
     ShellRoute(
-      builder: (context, state, child) {
-        final authState = context.read<AuthCubit>().state;
-        final isLocalAuth = authState is LocalAuthenticatedAuthState;
-        final shouldRunInitialSync = switch (authState) {
-          AuthenticatedAuthState(:final isOnboardingCompleted) =>
-            isOnboardingCompleted,
-          _ => false,
-        };
-        final collectionCubit = sl<ClipCollectionCubit>();
-        if (shouldRunInitialSync || isLocalAuth) {
-          unawaited(collectionCubit.fetch());
-        }
-        final clipboardCubit = sl<ClipboardCubit>();
-        if (shouldRunInitialSync || isLocalAuth) {
-          unawaited(clipboardCubit.fetch());
-        }
-        final driveSetupCubit = sl<DriveSetupCubit>();
-        if (!isLocalAuth) {
-          unawaited(driveSetupCubit.fetch());
-        }
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider<FileCloudCubit>(
-              create: (context) => sl<FileCloudCubit>(),
-            ),
-            BlocProvider<ClipCollectionCubit>.value(
-              value: collectionCubit,
-            ),
-            BlocProvider<DriveSetupCubit>.value(
-              value: driveSetupCubit,
-            ),
-            BlocProvider<WebDavSetupCubit>(
-              create: (context) {
-                final cubit = sl<WebDavSetupCubit>();
-                unawaited(cubit.fetch());
-                return cubit;
-              },
-            ),
-
-            BlocProvider<SelectedClipsCubit>(
-              create: (context) => sl<SelectedClipsCubit>(),
-            ),
-            BlocProvider<ClipboardCubit>.value(
-              value: clipboardCubit,
-            ),
-            if (Platform.isAndroid)
-              BlocProvider<AndroidBgClipboardCubit>(
-                lazy: false,
-                create: (context) {
-                  final cubit = sl<AndroidBgClipboardCubit>();
-                  if (shouldRunInitialSync || isLocalAuth) {
-                    unawaited(cubit.syncStates());
-                  }
-                  return cubit;
-                },
-              ),
-          ],
-          child: Platform.isAndroid
-              ? AndroidClipRestoreLifecycleListener(
-                  androidBgClipboardCubit: sl(),
-                  child: child,
-                )
-              : child,
-        );
-      },
+      builder: (context, state, child) => _AppShellScope(child: child),
       routes: [
         GoRoute(
           name: RouteConstants.onboard,

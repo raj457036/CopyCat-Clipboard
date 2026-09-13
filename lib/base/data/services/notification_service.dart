@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/common/globals.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart'
     show BreakpointExtension, ListExtension;
@@ -80,13 +81,7 @@ class InAppNotificationService {
     try {
       _scaffoldMessenger.clearSnackBars();
     } catch (_) {}
-    while (_activeNotifications.isNotEmpty) {
-      try {
-        _activeNotifications.removeLast().controller.close();
-      } catch (e) {
-        debugPrint('Error dismissing notification: $e');
-      }
-    }
+    _activeNotifications.clear();
   }
 
   /// Dismisses the notification with the given ID, if it is currently active.
@@ -100,7 +95,7 @@ class InAppNotificationService {
       _activeNotifications.remove(notification);
       notification.controller.close();
     } catch (e) {
-      debugPrint('Error dismissing notification: $e');
+      logger.e('Error dismissing notification: $e');
     }
   }
 

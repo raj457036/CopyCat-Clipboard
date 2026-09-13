@@ -616,11 +616,6 @@ class SyncEngine<T extends Syncable> {
         if (!_isRealtimeSubscribed) return;
         _reconnectAttempts++;
         await adapter.realtimeListener?.reconnect();
-        if (_isRealtimeSubscribed &&
-            adapter.realtimeListener?.currentStatus !=
-                CrossSyncListenerStatus.connected) {
-          _scheduleReconnect();
-        }
       },
     );
   }

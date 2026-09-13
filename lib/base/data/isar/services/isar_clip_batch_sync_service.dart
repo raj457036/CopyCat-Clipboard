@@ -5,6 +5,7 @@ import 'package:clipboard/base/data/isar/adapters/isar_clipboard_item.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:easy_worker/easy_worker.dart';
 import 'package:flutter/foundation.dart';
@@ -19,7 +20,7 @@ typedef _Payload = List<ClipboardItem>;
 /// Isolate entry point: resolves conflicts in-memory then writes in one
 /// transaction. DB operations: 1 batch read + 1 batch write.
 Future<void> _syncInBackground(_Payload record, Sender send) async {
-  debugPrint('[ClipSyncWorker] start: ${record.length} items');
+  logger.d('[ClipSyncWorker] start: ${record.length} items');
   final Isar db = Isar.getInstance(dbName)!;
   final isarCollection = db.collection<IsarClipboardItem>();
 
@@ -60,7 +61,7 @@ Future<void> _syncInBackground(_Payload record, Sender send) async {
   final events = <ClipCrossSyncEvent>[];
   final now = systemTime();
 
-  debugPrint('[ClipSyncWorker] resolving conflicts for ${items.length} items');
+  logger.d('[ClipSyncWorker] resolving conflicts for ${items.length} items');
   // Phase 2: in-memory conflict resolution
   for (var index = 0; index < items.length; index++) {
     var item = items[index];
@@ -114,7 +115,7 @@ Future<void> _syncInBackground(_Payload record, Sender send) async {
     events.add((CrossSyncEventType.update, item));
   }
 
-  debugPrint('[ClipSyncWorker] writing ${items.length} items to Isar');
+  logger.d('[ClipSyncWorker] writing ${items.length} items to Isar');
   final isarItems = items
       .map(IsarClipboardItem.fromDomain)
       .toList(growable: false);
@@ -127,7 +128,7 @@ Future<void> _syncInBackground(_Payload record, Sender send) async {
   for (int i = 0; i < events.length; i++) {
     events[i] = (events[i].$1, events[i].$2.copyWith(id: ids[i]));
   }
-  debugPrint('[ClipSyncWorker] done, sending ${events.length} events');
+  logger.d('[ClipSyncWorker] done, sending ${events.length} events');
   send(events);
 }
 
