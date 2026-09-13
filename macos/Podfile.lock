@@ -89,14 +89,14 @@ PODS:
   - PromisesObjC (2.4.1)
   - PromisesSwift (2.4.1):
     - PromisesObjC (= 2.4.1)
-  - purchases_flutter (10.11.0):
+  - purchases_flutter (10.12.0):
     - FlutterMacOS
-    - PurchasesHybridCommon (= 18.33.1)
-  - PurchasesHybridCommon (18.33.1):
-    - RevenueCat (= 5.87.1)
+    - PurchasesHybridCommon (= 18.37.0)
+  - PurchasesHybridCommon (18.37.0):
+    - RevenueCat (= 5.88.0)
   - quick_paste_popup (0.0.1):
     - FlutterMacOS
-  - RevenueCat (5.87.1)
+  - RevenueCat (5.88.0)
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
   - share_plus (0.0.1):
@@ -278,10 +278,10 @@ SPEC CHECKSUMS:
   pdfx: 824a9108791a81e400da7d1a903ab73668365072
   PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
   PromisesSwift: 217dea0fd5d2ad65222a109c48698add13cc1c5b
-  purchases_flutter: 67a02e180fabd5ca12d0e7e17c5b72b713b58f68
-  PurchasesHybridCommon: 10fa5043609584e834a84b4641f9c1166e69ea55
+  purchases_flutter: 40f3e615d6e58925e88805847188f11046e48eb1
+  PurchasesHybridCommon: 2e72564d3393d480ca126d4d057737435dd7ccba
   quick_paste_popup: 0ed179088e77d0add387a5acb6e641940c9230bf
-  RevenueCat: 7d45133f048270481facf0f7b02530e503a01620
+  RevenueCat: 96e12da1f3de201c65f337ff661506ac28ee1514
   screen_retriever_macos: c5508cc3c66ff0d4db650480cf0ab691e220d933
   share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb

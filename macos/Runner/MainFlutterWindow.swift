@@ -4,10 +4,42 @@ import LaunchAtLogin
 import SwiftUI
 import window_manager
 
+// Intercept FLTEnableImpeller lookup before FlutterViewController initializes.
+// Forces Skia on Intel (x86_64) and Impeller on Apple Silicon (arm64).
+extension Bundle {
+  private static let swizzleInfoDictionaryOnce: Void = {
+    let originalSelector = #selector(Bundle.object(forInfoDictionaryKey:))
+    let swizzledSelector = #selector(Bundle.custom_object(forInfoDictionaryKey:))
+
+    guard let originalMethod = class_getInstanceMethod(Bundle.self, originalSelector),
+          let swizzledMethod = class_getInstanceMethod(Bundle.self, swizzledSelector) else {
+      return
+    }
+    method_exchangeImplementations(originalMethod, swizzledMethod)
+  }()
+
+  static func enableArchitectureSpecificRendering() {
+    _ = swizzleInfoDictionaryOnce
+  }
+
+  @objc func custom_object(forInfoDictionaryKey key: String) -> Any? {
+    if key == "FLTEnableImpeller" {
+      #if arch(x86_64)
+        return false
+      #else
+        return true
+      #endif
+    }
+    return custom_object(forInfoDictionaryKey: key)
+  }
+}
+
 class MainFlutterWindow: NSWindow {
   private let clipboardToastPresenter = ClipboardToastPresenter()
 
   override func awakeFromNib() {
+    Bundle.enableArchitectureSpecificRendering()
+
     let flutterViewController = FlutterViewController.init()
     let windowFrame = self.frame
     self.contentViewController = flutterViewController
