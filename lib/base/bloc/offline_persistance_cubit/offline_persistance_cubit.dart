@@ -402,7 +402,10 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         return;
       }
 
-      if (clip.isDuplicate) continue;
+      if (clip.isDuplicate) {
+        await _showFeedback();
+        continue;
+      }
 
       if (!manualPaste) {
         ClipHashRegistry.instance.register(clip.contentHash);
@@ -426,11 +429,13 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   }
 
   // TODO(raj): implement for linux
-  Future<void> _showFeedback() async {
+  Future<void> _showFeedback([String? message]) async {
     if (!(Platform.isMacOS || Platform.isWindows)) return;
     final feedbackMode = appConfig.state.config.clipboardFeedbackMode;
     final copiedLabel =
-        rootNavigationKey.currentContext?.locale.app__ack__copied ?? 'Copied';
+        message ??
+        rootNavigationKey.currentContext?.locale.app__ack__copied ??
+        'Copied';
     final showToast = feedbackMode == ClipboardFeedbackMode.toast;
     unawaited(
       ClipboardFeedbackService.i.notifyClipboardCopied(
@@ -644,9 +649,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     if (Platform.isIOS) return;
     if (Platform.isAndroid) {
       unawaited(
-        sl<AndroidBackgroundClipboard>().broadcastClip(
-          _toLanClipMap(item),
-        ),
+        sl<AndroidBackgroundClipboard>().broadcastClip(_toLanClipMap(item)),
       );
       return;
     }
