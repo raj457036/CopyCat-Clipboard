@@ -19,6 +19,8 @@ class LoggingConfig {
   static bool useAnsiColors = kDebugMode;
   static bool captureErrorStackTraces = kDebugMode;
   static bool showScope = true;
+  static bool showTime = true;
+  static bool showMilliseconds = true;
 
   static void configure({
     bool? enabled,
@@ -26,6 +28,8 @@ class LoggingConfig {
     bool? useAnsiColors,
     bool? captureErrorStackTraces,
     bool? showScope,
+    bool? showTime,
+    bool? showMilliseconds,
   }) {
     if (enabled != null) {
       LoggingConfig.enabled = enabled;
@@ -41,6 +45,12 @@ class LoggingConfig {
     }
     if (showScope != null) {
       LoggingConfig.showScope = showScope;
+    }
+    if (showTime != null) {
+      LoggingConfig.showTime = showTime;
+    }
+    if (showMilliseconds != null) {
+      LoggingConfig.showMilliseconds = showMilliseconds;
     }
   }
 }
@@ -100,9 +110,11 @@ class AppLogger {
   }) {
     if (!_shouldLog(level)) return;
 
+    final now = systemTime();
     final resolvedMessage = _withScope(
       level,
       _resolveMessage(message)?.toString() ?? '',
+      now,
     );
     final payload = _colorize(resolvedMessage, _messageColor(level));
 
@@ -112,7 +124,7 @@ class AppLogger {
       name: 'CC',
       error: error,
       stackTrace: stackTrace,
-      time: systemTime(),
+      time: now,
     );
   }
 
@@ -125,15 +137,46 @@ class AppLogger {
     };
   }
 
-  String _withScope(LogLevel level, String message) {
-    // MARK: - Formatting
-    if (!LoggingConfig.showScope || _scope == null || _scope.isEmpty) {
-      return '[${level.name}] $message';
+  String _withScope(LogLevel level, String message, [DateTime? time]) {
+    final buffer = StringBuffer();
+
+    if (LoggingConfig.showTime) {
+      buffer
+        ..write('[')
+        ..write(_formatTime(time ?? systemTime()))
+        ..write('] ');
     }
-    if (message.isEmpty) {
-      return '[${level.name}][$_scope]';
+
+    buffer
+      ..write('[')
+      ..write(level.name)
+      ..write(']');
+
+    if (LoggingConfig.showScope && _scope != null && _scope.isNotEmpty) {
+      buffer
+        ..write('[')
+        ..write(_scope)
+        ..write(']');
     }
-    return '[${level.name}][$_scope] $message';
+
+    if (message.isNotEmpty) {
+      buffer
+        ..write(' ')
+        ..write(message);
+    }
+
+    return buffer.toString();
+  }
+
+  static String _formatTime(DateTime time) {
+    final h = time.hour.toString().padLeft(2, '0');
+    final m = time.minute.toString().padLeft(2, '0');
+    final s = time.second.toString().padLeft(2, '0');
+    if (LoggingConfig.showMilliseconds) {
+      final ms = time.millisecond.toString().padLeft(3, '0');
+      return '$h:$m:$s.$ms';
+    }
+    return '$h:$m:$s';
   }
 
   StackTrace? _resolveErrorStackTrace(
