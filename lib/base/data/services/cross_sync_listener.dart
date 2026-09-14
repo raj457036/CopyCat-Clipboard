@@ -11,11 +11,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 mixin SBCrossSyncListenerStatusChangeMixin<T> {
   CrossSyncListenerStatus _lastStatus = CrossSyncListenerStatus.unknown;
+  final StreamController<CrossSyncStatusEvent> _statusEvents =
+      StreamController<CrossSyncStatusEvent>.broadcast();
+  final StreamController<CrossSyncEvent<T>> _changesStream =
+      StreamController<CrossSyncEvent<T>>.broadcast();
 
   CrossSyncListenerStatus get currentStatus => _lastStatus;
-
-  final _statusEvents = StreamController<CrossSyncStatusEvent>.broadcast();
-  final _changesStream = StreamController<CrossSyncEvent<T>>.broadcast();
+  Stream<CrossSyncStatusEvent> get onStatusChange => _statusEvents.stream;
+  Stream<CrossSyncEvent<T>> get onChangeEvent => _changesStream.stream;
 
   Future<T?> castToType(Object? obj);
 
@@ -47,7 +50,6 @@ mixin SBCrossSyncListenerStatusChangeMixin<T> {
             _changesStream.add((CrossSyncEventType.update, item));
           }
         case PostgresChangeEvent.delete:
-          // For delete, oldRecord should contain the deleted item's ID at minimum.
           final item = await castToType(payload.oldRecord);
           if (item != null) {
             _changesStream.add((CrossSyncEventType.delete, item));
@@ -58,6 +60,11 @@ mixin SBCrossSyncListenerStatusChangeMixin<T> {
       logger.e("Error processing realtime change: $e", stackTrace: stack);
     }
   }
+
+  void dispose() {
+    _statusEvents.close();
+    _changesStream.close();
+  }
 }
 
 @LazySingleton(as: ClipCrossSyncListener)
@@ -65,15 +72,16 @@ class SBClipCrossSyncListener
     with SBCrossSyncListenerStatusChangeMixin<ClipboardItem>
     implements ClipCrossSyncListener {
   RealtimeChannel? _channel;
-
   final String channelID = "clips-rtc";
-
   final SupabaseClient client;
   final String deviceId;
 
   SBClipCrossSyncListener(this.client, @Named("device_id") this.deviceId) {
     _statusEvents.add((CrossSyncListenerStatus.unknown, null));
   }
+
+  @override
+  bool get isInitiated => _channel != null;
 
   @override
   Future<void> start() async {
@@ -84,6 +92,7 @@ class SBClipCrossSyncListener
       channelID,
       opts: const RealtimeChannelConfig(ack: false),
     );
+
     _channel
         ?.onPostgresChanges(
           schema: 'public',
@@ -92,46 +101,6 @@ class SBClipCrossSyncListener
           callback: _onChange,
         )
         .subscribe(_onStatusChange);
-  }
-
-  @override
-  get onStatusChange => _statusEvents.stream;
-
-  @override
-  Future<void> reconnect() async {
-    if (_lastStatus == CrossSyncListenerStatus.connected &&
-        client.realtime.isConnected) {
-      return;
-    }
-
-    if (_lastStatus == CrossSyncListenerStatus.connecting ||
-        client.realtime.connState == SocketStates.connecting) {
-      logger.d(
-        () =>
-            "Realtime is already connecting for $channelID, skipping teardown.",
-      );
-      return;
-    }
-
-    logger.i(
-      () =>
-          "Reconnecting realtime for $channelID (lastStatus: $_lastStatus, socket: ${client.realtime.connState})",
-    );
-
-    await stop();
-
-    if (!client.realtime.isConnected ||
-        client.realtime.connState == SocketStates.closed ||
-        client.realtime.connState == SocketStates.disconnecting) {
-      try {
-        client.realtime.disconnect();
-      } catch (e) {
-        logger.w("Error disconnecting realtime socket: $e");
-      }
-    }
-
-    await wait(const Duration(milliseconds: 300).inMilliseconds);
-    await start();
   }
 
   @override
@@ -144,10 +113,12 @@ class SBClipCrossSyncListener
       try {
         await channel.unsubscribe().timeout(const Duration(seconds: 2));
       } catch (e) {
-        logger.w("Error or timeout unsubscribing realtime channel ($channelID): $e");
+        logger.w(
+          "Error or timeout unsubscribing realtime channel ($channelID): $e",
+        );
       }
       try {
-        client.removeChannel(channel);
+        await client.removeChannel(channel);
       } catch (e) {
         logger.w("Error removing realtime channel ($channelID): $e");
       }
@@ -155,10 +126,11 @@ class SBClipCrossSyncListener
   }
 
   @override
-  bool get isInitiated => _channel != null;
-
-  @override
-  get onChangeEvent => _changesStream.stream;
+  Future<void> reconnect() async {
+    await stop();
+    await wait(const Duration(milliseconds: 200).inMilliseconds);
+    await start();
+  }
 
   @override
   Future<ClipboardItem?> castToType(Object? obj) async {
@@ -179,9 +151,7 @@ class SBCollectionCrossSyncListener
     with SBCrossSyncListenerStatusChangeMixin<ClipCollection>
     implements CollectionCrossSyncListener {
   RealtimeChannel? _channel;
-
   final String channelID = "collection-rtc";
-
   final SupabaseClient client;
   final String deviceId;
 
@@ -191,6 +161,9 @@ class SBCollectionCrossSyncListener
   ) {
     _statusEvents.add((CrossSyncListenerStatus.unknown, null));
   }
+
+  @override
+  bool get isInitiated => _channel != null;
 
   @override
   Future<void> start() async {
@@ -213,7 +186,33 @@ class SBCollectionCrossSyncListener
   }
 
   @override
-  get onChangeEvent => _changesStream.stream;
+  Future<void> stop() async {
+    final channel = _channel;
+    _channel = null;
+    _lastStatus = CrossSyncListenerStatus.disconnected;
+    _statusEvents.add((CrossSyncListenerStatus.disconnected, null));
+    if (channel != null) {
+      try {
+        await channel.unsubscribe().timeout(const Duration(seconds: 2));
+      } catch (e) {
+        logger.w(
+          "Error or timeout unsubscribing realtime channel ($channelID): $e",
+        );
+      }
+      try {
+        await client.removeChannel(channel);
+      } catch (e) {
+        logger.w("Error removing realtime channel ($channelID): $e");
+      }
+    }
+  }
+
+  @override
+  Future<void> reconnect() async {
+    await stop();
+    await wait(const Duration(milliseconds: 200).inMilliseconds);
+    await start();
+  }
 
   @override
   Future<ClipCollection?> castToType(Object? obj) async {
@@ -225,67 +224,4 @@ class SBCollectionCrossSyncListener
       return null;
     }
   }
-
-  @override
-  get onStatusChange => _statusEvents.stream;
-
-  @override
-  Future<void> reconnect() async {
-    if (_lastStatus == CrossSyncListenerStatus.connected &&
-        client.realtime.isConnected) {
-      return;
-    }
-
-    if (_lastStatus == CrossSyncListenerStatus.connecting ||
-        client.realtime.connState == SocketStates.connecting) {
-      logger.d(
-        () =>
-            "Realtime is already connecting for $channelID, skipping teardown.",
-      );
-      return;
-    }
-
-    logger.i(
-      () =>
-          "Reconnecting realtime for $channelID (lastStatus: $_lastStatus, socket: ${client.realtime.connState})",
-    );
-
-    await stop();
-
-    if (!client.realtime.isConnected ||
-        client.realtime.connState == SocketStates.closed ||
-        client.realtime.connState == SocketStates.disconnecting) {
-      try {
-        client.realtime.disconnect();
-      } catch (e) {
-        logger.w("Error disconnecting realtime socket: $e");
-      }
-    }
-
-    await wait(const Duration(milliseconds: 300).inMilliseconds);
-    await start();
-  }
-
-  @override
-  Future<void> stop() async {
-    final channel = _channel;
-    _channel = null;
-    _lastStatus = CrossSyncListenerStatus.disconnected;
-    _statusEvents.add((CrossSyncListenerStatus.disconnected, null));
-    if (channel != null) {
-      try {
-        await channel.unsubscribe().timeout(const Duration(seconds: 2));
-      } catch (e) {
-        logger.w("Error or timeout unsubscribing realtime channel ($channelID): $e");
-      }
-      try {
-        client.removeChannel(channel);
-      } catch (e) {
-        logger.w("Error removing realtime channel ($channelID): $e");
-      }
-    }
-  }
-
-  @override
-  bool get isInitiated => _channel != null;
 }

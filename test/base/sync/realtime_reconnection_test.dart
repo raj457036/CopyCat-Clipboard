@@ -70,6 +70,7 @@ class _FakeRealtimeListener implements CrossSyncListener<ClipboardItem> {
     _statusController.add((CrossSyncListenerStatus.connected, null));
   }
 
+  @override
   void dispose() {
     _statusController.close();
     _changesController.close();
@@ -168,7 +169,7 @@ class _FakeAdapterWithRealtime implements SyncAdapter<ClipboardItem> {
 }
 
 void main() {
-  group('Realtime Reconnection & Backoff Tests', () {
+  group('SyncEngine Realtime Tests', () {
     late _FakeRealtimeListener listener;
     late SyncEngine<ClipboardItem> engine;
 
@@ -180,7 +181,7 @@ void main() {
         cursorRepo: _FakeCursorRepo(),
         outboxRepo: _FakeOutboxRepo(),
         eventBus: SyncEventBus(),
-        config: const SyncConfig(reconnectDelaySeconds: 1),
+        config: const SyncConfig(),
         conflictResolver: _FakeConflictResolver(),
         deviceId: 'test-device',
         namespace: 'clip-test',
@@ -192,43 +193,28 @@ void main() {
       listener.dispose();
     });
 
-    test(
-      'reconnectRealtime calls adapter realtimeListener.reconnect directly',
-      () async {
-        engine.startRealtime();
-        expect(listener.startCalls, 1);
-
-        await engine.reconnectRealtime();
-        expect(listener.reconnectCalls, 1);
-      },
-    );
-
-    test('reconnect timer triggers and retries on disconnect', () async {
+    test('reconnectRealtime delegates to listener.reconnect', () async {
       engine.startRealtime();
-      expect(listener.reconnectCalls, 0);
+      expect(listener.startCalls, 1);
 
-      // Simulate network disconnect
-      listener.simulateDisconnect();
-
-      // Wait for the 1 second reconnect delay timer to trigger
-      await Future<void>.delayed(const Duration(milliseconds: 1200));
-
-      expect(listener.reconnectCalls, greaterThanOrEqualTo(1));
+      await engine.reconnectRealtime();
+      expect(listener.reconnectCalls, 1);
     });
 
     test(
-      'reconnect does not immediately schedule another retry while connecting',
+      'polling starts as fallback on disconnect and stops on reconnect',
       () async {
         engine.startRealtime();
-        expect(listener.reconnectCalls, 0);
+        engine.startPolling(intervalSeconds: 30);
+
+        listener.simulateConnected();
+        await Future<void>.delayed(const Duration(milliseconds: 50));
 
         listener.simulateDisconnect();
+        await Future<void>.delayed(const Duration(milliseconds: 50));
 
-        await Future<void>.delayed(const Duration(milliseconds: 1200));
-        expect(listener.reconnectCalls, 1);
-
-        await Future<void>.delayed(const Duration(milliseconds: 1200));
-        expect(listener.reconnectCalls, 1);
+        listener.simulateConnected();
+        await Future<void>.delayed(const Duration(milliseconds: 50));
       },
     );
   });

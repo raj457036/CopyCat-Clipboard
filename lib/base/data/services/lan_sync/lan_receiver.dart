@@ -75,7 +75,9 @@ class LanReceiver {
 
       final decrypted = item.locked ? item : await item.decrypt();
       final events = await _batchSync.syncBatch([decrypted]);
-      _syncEventBus.emit<ClipboardItem>(events.first);
+      for (final event in events) {
+        _syncEventBus.emit<ClipboardItem>(event);
+      }
       logger.d(
         () => 'LAN: processed clip from $fromDeviceId originId=$originId',
       );
@@ -171,8 +173,8 @@ class LanReceiver {
       );
 
       final events = await _batchSync.syncBatch([item]);
-      if (events.isNotEmpty) {
-        _syncEventBus.emit<ClipboardItem>(events.first);
+      for (final event in events) {
+        _syncEventBus.emit<ClipboardItem>(event);
       }
       logger.d(
         () =>

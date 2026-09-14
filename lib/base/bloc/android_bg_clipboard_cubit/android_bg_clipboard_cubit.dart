@@ -66,16 +66,23 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
   }
 
   Future<bool> writeToLocal(ClipboardItem item) async {
+    if (item.deletedAt != null) {
+      final res = await clipRepo.delete(item);
+      final wasDeleted = res.getOrElse(() => false);
+      if (wasDeleted) {
+        syncEventBus.emit<ClipboardItem>((CrossSyncEventType.delete, item));
+      }
+      return true;
+    }
+
     final result = await clipRepo.updateOrCreate(item);
     return result.fold((failure) => false, (r) async {
-      var (item, created) = r;
-      item = item.locked ? item : await item.decrypt();
-      final eventType = item.deletedAt != null
-          ? CrossSyncEventType.delete
-          : created
+      var (savedItem, created) = r;
+      savedItem = savedItem.locked ? savedItem : await savedItem.decrypt();
+      final eventType = created
           ? CrossSyncEventType.create
           : CrossSyncEventType.update;
-      syncEventBus.emit<ClipboardItem>((eventType, item));
+      syncEventBus.emit<ClipboardItem>((eventType, savedItem));
       return true;
     });
   }
@@ -119,7 +126,8 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
     final encMode = clip["encMode"] as String?;
     final sourceId = _cleanString(clip["sourceId"]);
     final sourceApp = _cleanString(clip["sourceApp"]);
-    final originId = _cleanString(clip["originId"]);
+    final originId =
+        _cleanString(clip["originId"]) ?? ClipboardItem.generateOriginId();
     final deletedAtRaw = clip["deletedAt"];
     final deletedAt = deletedAtRaw is num
         ? DateTime.fromMillisecondsSinceEpoch(deletedAtRaw.toInt())

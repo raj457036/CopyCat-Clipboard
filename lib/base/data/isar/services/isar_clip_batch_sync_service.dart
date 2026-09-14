@@ -59,6 +59,8 @@ Future<void> _syncInBackground(_Payload record, Sender send) async {
   }
 
   final events = <ClipCrossSyncEvent>[];
+  final deleteIds = <int>[];
+  final itemsToUpsert = <ClipboardItem>[];
   final now = systemTime();
 
   logger.d('[ClipSyncWorker] resolving conflicts for ${items.length} items');
@@ -75,10 +77,31 @@ Future<void> _syncInBackground(_Payload record, Sender send) async {
       found = existingById[item.serverId!.toString()];
     }
 
+    if (item.deletedAt != null) {
+      if (found != null) {
+        deleteIds.add(found.isarId);
+        final domainItem = found.toDomain();
+        if (found.localPath != null) {
+          unawaited(domainItem.cleanUp());
+        }
+        events.add((
+          CrossSyncEventType.delete,
+          domainItem.copyWith(deletedAt: item.deletedAt),
+        ));
+        if (hasOrigin) existingById.remove(item.originId!);
+        if (item.serverId != null) existingById.remove(item.serverId!.toString());
+      }
+      continue;
+    }
+
+    final eventType = found == null
+        ? CrossSyncEventType.create
+        : CrossSyncEventType.update;
+
     if (found == null) {
       item = item.copyWith(lastSynced: now);
-      items[index] = item;
-      events.add((CrossSyncEventType.create, item));
+      itemsToUpsert.add(item);
+      events.add((eventType, item));
 
       final placeholder = IsarClipboardItem.fromDomain(item);
       if (hasOrigin) {
@@ -111,23 +134,36 @@ Future<void> _syncInBackground(_Payload record, Sender send) async {
       );
     }
 
-    items[index] = item;
-    events.add((CrossSyncEventType.update, item));
+    itemsToUpsert.add(item);
+    events.add((eventType, item));
   }
 
-  logger.d('[ClipSyncWorker] writing ${items.length} items to Isar');
-  final isarItems = items
-      .map(IsarClipboardItem.fromDomain)
-      .toList(growable: false);
-
-  List<int> ids = [];
-  await db.writeTxn(() async {
-    ids = await isarCollection.putAll(isarItems);
-  }, silent: true);
-
-  for (int i = 0; i < events.length; i++) {
-    events[i] = (events[i].$1, events[i].$2.copyWith(id: ids[i]));
+  if (deleteIds.isNotEmpty) {
+    logger.d('[ClipSyncWorker] deleting ${deleteIds.length} items from Isar');
+    await db.writeTxn(() async {
+      await isarCollection.deleteAll(deleteIds);
+    }, silent: true);
   }
+
+  if (itemsToUpsert.isNotEmpty) {
+    logger.d('[ClipSyncWorker] writing ${itemsToUpsert.length} items to Isar');
+    final isarItems = itemsToUpsert
+        .map(IsarClipboardItem.fromDomain)
+        .toList(growable: false);
+
+    List<int> ids = [];
+    await db.writeTxn(() async {
+      ids = await isarCollection.putAll(isarItems);
+    }, silent: true);
+
+    int upsertIdx = 0;
+    for (int i = 0; i < events.length; i++) {
+      if (events[i].$1 != CrossSyncEventType.delete) {
+        events[i] = (events[i].$1, events[i].$2.copyWith(id: ids[upsertIdx++]));
+      }
+    }
+  }
+
   logger.d('[ClipSyncWorker] done, sending ${events.length} events');
   send(events);
 }
@@ -174,7 +210,6 @@ class IsarClipBatchSyncService implements ClipBatchSyncService {
   ///
   /// Prefers `originId` as the unique invariant key for new clips, falling back
   /// to `serverId` for legacy clips where `originId` is null.
-  @visibleForTesting
   static Map<String, ClipboardItem> collapseBatch(
     Iterable<ClipboardItem> items,
   ) {

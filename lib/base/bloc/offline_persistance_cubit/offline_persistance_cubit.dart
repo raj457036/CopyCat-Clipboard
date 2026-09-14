@@ -612,6 +612,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     // Only act on newly created remote clips, not local captures or updates.
     if (type != CrossSyncEventType.create) return;
     if (item.deviceId == deviceId) return; // local capture
+    if (item.deletedAt != null) return; // ignore deleted clips
 
     // Only text / url — file/media need a local path which may not exist yet.
     if (item.type != ClipItemType.text && item.type != ClipItemType.url) return;

@@ -196,16 +196,8 @@ class LocalClipboardSource implements ClipboardSource {
 
   @override
   Future<bool> delete(ClipboardItem item, {bool soft = true}) async {
-    if (item.id == null) return false;
-
-    if (soft) {
-      _logger.i(() => "Soft deleting item with id ${item.id}");
-      await update(item.copyWith(deletedAt: systemTime()));
-      return true;
-    }
-
-    final result = await db.writeTxn(() => _collection.delete(item.id!));
-    return result;
+    final deleted = await deleteMany([item], soft: soft);
+    return deleted.isNotEmpty;
   }
 
   @override
@@ -224,20 +216,20 @@ class LocalClipboardSource implements ClipboardSource {
     }
 
     final result = await db.writeTxn(() async {
-      final q = _collection
-          .filter()
-          .anyOf(
-            items,
-            (q, item) => item.id != null
-                ? q.isarIdEqualTo(item.id!)
-                : q.isarIdEqualTo(-1),
-          )
-          .or()
-          .anyOf(
-            items,
-            (q, item) =>
-                q.serverIdEqualTo(item.serverId).and().serverIdIsNotNull(),
-          );
+      final q = _collection.filter().anyOf(items, (q, item) {
+        final hasOrigin = item.originId != null && item.originId!.isNotEmpty;
+        if (hasOrigin && item.serverId != null) {
+          return q
+              .originIdEqualTo(item.originId!)
+              .or()
+              .serverIdEqualTo(item.serverId!);
+        } else if (hasOrigin) {
+          return q.originIdEqualTo(item.originId!);
+        } else if (item.serverId != null) {
+          return q.serverIdEqualTo(item.serverId!);
+        }
+        return item.id != null ? q.isarIdEqualTo(item.id!) : q.isarIdEqualTo(-1);
+      });
 
       final clipsWithLocalCache = await q.localPathIsNotNull().findAll();
 

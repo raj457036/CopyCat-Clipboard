@@ -21,8 +21,7 @@ mixin _$SyncConfig {
  int get pullBatchSize;/// Size of batch for fetching collections.
  int get collectionBatchSize;/// Size of batch for fetching deleted items.
  int get deleteBatchSize;/// Delay between processing successive sync pages.
- int get interBatchDelayMs;/// Delay before attempting to reconnect to realtime stream after a drop.
- int get reconnectDelaySeconds;/// Whether fresh pull offset is enabled.
+ int get interBatchDelayMs;/// Whether fresh pull offset is enabled.
  bool get freshPullOffsetEnabled;
 /// Create a copy of SyncConfig
 /// with the given fields replaced by the non-null parameter values.
@@ -34,16 +33,16 @@ $SyncConfigCopyWith<SyncConfig> get copyWith => _$SyncConfigCopyWithImpl<SyncCon
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SyncConfig&&(identical(other.pollingIntervalSeconds, pollingIntervalSeconds) || other.pollingIntervalSeconds == pollingIntervalSeconds)&&(identical(other.minManualDelaySeconds, minManualDelaySeconds) || other.minManualDelaySeconds == minManualDelaySeconds)&&(identical(other.manualDelaySeconds, manualDelaySeconds) || other.manualDelaySeconds == manualDelaySeconds)&&(identical(other.pullBatchSize, pullBatchSize) || other.pullBatchSize == pullBatchSize)&&(identical(other.collectionBatchSize, collectionBatchSize) || other.collectionBatchSize == collectionBatchSize)&&(identical(other.deleteBatchSize, deleteBatchSize) || other.deleteBatchSize == deleteBatchSize)&&(identical(other.interBatchDelayMs, interBatchDelayMs) || other.interBatchDelayMs == interBatchDelayMs)&&(identical(other.reconnectDelaySeconds, reconnectDelaySeconds) || other.reconnectDelaySeconds == reconnectDelaySeconds)&&(identical(other.freshPullOffsetEnabled, freshPullOffsetEnabled) || other.freshPullOffsetEnabled == freshPullOffsetEnabled));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SyncConfig&&(identical(other.pollingIntervalSeconds, pollingIntervalSeconds) || other.pollingIntervalSeconds == pollingIntervalSeconds)&&(identical(other.minManualDelaySeconds, minManualDelaySeconds) || other.minManualDelaySeconds == minManualDelaySeconds)&&(identical(other.manualDelaySeconds, manualDelaySeconds) || other.manualDelaySeconds == manualDelaySeconds)&&(identical(other.pullBatchSize, pullBatchSize) || other.pullBatchSize == pullBatchSize)&&(identical(other.collectionBatchSize, collectionBatchSize) || other.collectionBatchSize == collectionBatchSize)&&(identical(other.deleteBatchSize, deleteBatchSize) || other.deleteBatchSize == deleteBatchSize)&&(identical(other.interBatchDelayMs, interBatchDelayMs) || other.interBatchDelayMs == interBatchDelayMs)&&(identical(other.freshPullOffsetEnabled, freshPullOffsetEnabled) || other.freshPullOffsetEnabled == freshPullOffsetEnabled));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,pollingIntervalSeconds,minManualDelaySeconds,manualDelaySeconds,pullBatchSize,collectionBatchSize,deleteBatchSize,interBatchDelayMs,reconnectDelaySeconds,freshPullOffsetEnabled);
+int get hashCode => Object.hash(runtimeType,pollingIntervalSeconds,minManualDelaySeconds,manualDelaySeconds,pullBatchSize,collectionBatchSize,deleteBatchSize,interBatchDelayMs,freshPullOffsetEnabled);
 
 @override
 String toString() {
-  return 'SyncConfig(pollingIntervalSeconds: $pollingIntervalSeconds, minManualDelaySeconds: $minManualDelaySeconds, manualDelaySeconds: $manualDelaySeconds, pullBatchSize: $pullBatchSize, collectionBatchSize: $collectionBatchSize, deleteBatchSize: $deleteBatchSize, interBatchDelayMs: $interBatchDelayMs, reconnectDelaySeconds: $reconnectDelaySeconds, freshPullOffsetEnabled: $freshPullOffsetEnabled)';
+  return 'SyncConfig(pollingIntervalSeconds: $pollingIntervalSeconds, minManualDelaySeconds: $minManualDelaySeconds, manualDelaySeconds: $manualDelaySeconds, pullBatchSize: $pullBatchSize, collectionBatchSize: $collectionBatchSize, deleteBatchSize: $deleteBatchSize, interBatchDelayMs: $interBatchDelayMs, freshPullOffsetEnabled: $freshPullOffsetEnabled)';
 }
 
 
@@ -54,7 +53,7 @@ abstract mixin class $SyncConfigCopyWith<$Res>  {
   factory $SyncConfigCopyWith(SyncConfig value, $Res Function(SyncConfig) _then) = _$SyncConfigCopyWithImpl;
 @useResult
 $Res call({
- int pollingIntervalSeconds, int minManualDelaySeconds, int manualDelaySeconds, int pullBatchSize, int collectionBatchSize, int deleteBatchSize, int interBatchDelayMs, int reconnectDelaySeconds, bool freshPullOffsetEnabled
+ int pollingIntervalSeconds, int minManualDelaySeconds, int manualDelaySeconds, int pullBatchSize, int collectionBatchSize, int deleteBatchSize, int interBatchDelayMs, bool freshPullOffsetEnabled
 });
 
 
@@ -71,7 +70,7 @@ class _$SyncConfigCopyWithImpl<$Res>
 
 /// Create a copy of SyncConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? pollingIntervalSeconds = null,Object? minManualDelaySeconds = null,Object? manualDelaySeconds = null,Object? pullBatchSize = null,Object? collectionBatchSize = null,Object? deleteBatchSize = null,Object? interBatchDelayMs = null,Object? reconnectDelaySeconds = null,Object? freshPullOffsetEnabled = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? pollingIntervalSeconds = null,Object? minManualDelaySeconds = null,Object? manualDelaySeconds = null,Object? pullBatchSize = null,Object? collectionBatchSize = null,Object? deleteBatchSize = null,Object? interBatchDelayMs = null,Object? freshPullOffsetEnabled = null,}) {
   return _then(_self.copyWith(
 pollingIntervalSeconds: null == pollingIntervalSeconds ? _self.pollingIntervalSeconds : pollingIntervalSeconds // ignore: cast_nullable_to_non_nullable
 as int,minManualDelaySeconds: null == minManualDelaySeconds ? _self.minManualDelaySeconds : minManualDelaySeconds // ignore: cast_nullable_to_non_nullable
@@ -80,7 +79,6 @@ as int,pullBatchSize: null == pullBatchSize ? _self.pullBatchSize : pullBatchSiz
 as int,collectionBatchSize: null == collectionBatchSize ? _self.collectionBatchSize : collectionBatchSize // ignore: cast_nullable_to_non_nullable
 as int,deleteBatchSize: null == deleteBatchSize ? _self.deleteBatchSize : deleteBatchSize // ignore: cast_nullable_to_non_nullable
 as int,interBatchDelayMs: null == interBatchDelayMs ? _self.interBatchDelayMs : interBatchDelayMs // ignore: cast_nullable_to_non_nullable
-as int,reconnectDelaySeconds: null == reconnectDelaySeconds ? _self.reconnectDelaySeconds : reconnectDelaySeconds // ignore: cast_nullable_to_non_nullable
 as int,freshPullOffsetEnabled: null == freshPullOffsetEnabled ? _self.freshPullOffsetEnabled : freshPullOffsetEnabled // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -167,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int pollingIntervalSeconds,  int minManualDelaySeconds,  int manualDelaySeconds,  int pullBatchSize,  int collectionBatchSize,  int deleteBatchSize,  int interBatchDelayMs,  int reconnectDelaySeconds,  bool freshPullOffsetEnabled)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int pollingIntervalSeconds,  int minManualDelaySeconds,  int manualDelaySeconds,  int pullBatchSize,  int collectionBatchSize,  int deleteBatchSize,  int interBatchDelayMs,  bool freshPullOffsetEnabled)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SyncConfig() when $default != null:
-return $default(_that.pollingIntervalSeconds,_that.minManualDelaySeconds,_that.manualDelaySeconds,_that.pullBatchSize,_that.collectionBatchSize,_that.deleteBatchSize,_that.interBatchDelayMs,_that.reconnectDelaySeconds,_that.freshPullOffsetEnabled);case _:
+return $default(_that.pollingIntervalSeconds,_that.minManualDelaySeconds,_that.manualDelaySeconds,_that.pullBatchSize,_that.collectionBatchSize,_that.deleteBatchSize,_that.interBatchDelayMs,_that.freshPullOffsetEnabled);case _:
   return orElse();
 
 }
@@ -188,10 +186,10 @@ return $default(_that.pollingIntervalSeconds,_that.minManualDelaySeconds,_that.m
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int pollingIntervalSeconds,  int minManualDelaySeconds,  int manualDelaySeconds,  int pullBatchSize,  int collectionBatchSize,  int deleteBatchSize,  int interBatchDelayMs,  int reconnectDelaySeconds,  bool freshPullOffsetEnabled)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int pollingIntervalSeconds,  int minManualDelaySeconds,  int manualDelaySeconds,  int pullBatchSize,  int collectionBatchSize,  int deleteBatchSize,  int interBatchDelayMs,  bool freshPullOffsetEnabled)  $default,) {final _that = this;
 switch (_that) {
 case _SyncConfig():
-return $default(_that.pollingIntervalSeconds,_that.minManualDelaySeconds,_that.manualDelaySeconds,_that.pullBatchSize,_that.collectionBatchSize,_that.deleteBatchSize,_that.interBatchDelayMs,_that.reconnectDelaySeconds,_that.freshPullOffsetEnabled);case _:
+return $default(_that.pollingIntervalSeconds,_that.minManualDelaySeconds,_that.manualDelaySeconds,_that.pullBatchSize,_that.collectionBatchSize,_that.deleteBatchSize,_that.interBatchDelayMs,_that.freshPullOffsetEnabled);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -208,10 +206,10 @@ return $default(_that.pollingIntervalSeconds,_that.minManualDelaySeconds,_that.m
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int pollingIntervalSeconds,  int minManualDelaySeconds,  int manualDelaySeconds,  int pullBatchSize,  int collectionBatchSize,  int deleteBatchSize,  int interBatchDelayMs,  int reconnectDelaySeconds,  bool freshPullOffsetEnabled)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int pollingIntervalSeconds,  int minManualDelaySeconds,  int manualDelaySeconds,  int pullBatchSize,  int collectionBatchSize,  int deleteBatchSize,  int interBatchDelayMs,  bool freshPullOffsetEnabled)?  $default,) {final _that = this;
 switch (_that) {
 case _SyncConfig() when $default != null:
-return $default(_that.pollingIntervalSeconds,_that.minManualDelaySeconds,_that.manualDelaySeconds,_that.pullBatchSize,_that.collectionBatchSize,_that.deleteBatchSize,_that.interBatchDelayMs,_that.reconnectDelaySeconds,_that.freshPullOffsetEnabled);case _:
+return $default(_that.pollingIntervalSeconds,_that.minManualDelaySeconds,_that.manualDelaySeconds,_that.pullBatchSize,_that.collectionBatchSize,_that.deleteBatchSize,_that.interBatchDelayMs,_that.freshPullOffsetEnabled);case _:
   return null;
 
 }
@@ -223,7 +221,7 @@ return $default(_that.pollingIntervalSeconds,_that.minManualDelaySeconds,_that.m
 
 
 class _SyncConfig implements SyncConfig {
-  const _SyncConfig({this.pollingIntervalSeconds = 45, this.minManualDelaySeconds = 5, this.manualDelaySeconds = 15, this.pullBatchSize = 50, this.collectionBatchSize = 50, this.deleteBatchSize = 50, this.interBatchDelayMs = 350, this.reconnectDelaySeconds = 5, this.freshPullOffsetEnabled = false});
+  const _SyncConfig({this.pollingIntervalSeconds = defaultBestEffortSyncInterval, this.minManualDelaySeconds = 5, this.manualDelaySeconds = 15, this.pullBatchSize = 50, this.collectionBatchSize = 50, this.deleteBatchSize = 50, this.interBatchDelayMs = 350, this.freshPullOffsetEnabled = false});
   
 
 /// Normal polling interval.
@@ -240,8 +238,6 @@ class _SyncConfig implements SyncConfig {
 @override@JsonKey() final  int deleteBatchSize;
 /// Delay between processing successive sync pages.
 @override@JsonKey() final  int interBatchDelayMs;
-/// Delay before attempting to reconnect to realtime stream after a drop.
-@override@JsonKey() final  int reconnectDelaySeconds;
 /// Whether fresh pull offset is enabled.
 @override@JsonKey() final  bool freshPullOffsetEnabled;
 
@@ -255,16 +251,16 @@ _$SyncConfigCopyWith<_SyncConfig> get copyWith => __$SyncConfigCopyWithImpl<_Syn
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SyncConfig&&(identical(other.pollingIntervalSeconds, pollingIntervalSeconds) || other.pollingIntervalSeconds == pollingIntervalSeconds)&&(identical(other.minManualDelaySeconds, minManualDelaySeconds) || other.minManualDelaySeconds == minManualDelaySeconds)&&(identical(other.manualDelaySeconds, manualDelaySeconds) || other.manualDelaySeconds == manualDelaySeconds)&&(identical(other.pullBatchSize, pullBatchSize) || other.pullBatchSize == pullBatchSize)&&(identical(other.collectionBatchSize, collectionBatchSize) || other.collectionBatchSize == collectionBatchSize)&&(identical(other.deleteBatchSize, deleteBatchSize) || other.deleteBatchSize == deleteBatchSize)&&(identical(other.interBatchDelayMs, interBatchDelayMs) || other.interBatchDelayMs == interBatchDelayMs)&&(identical(other.reconnectDelaySeconds, reconnectDelaySeconds) || other.reconnectDelaySeconds == reconnectDelaySeconds)&&(identical(other.freshPullOffsetEnabled, freshPullOffsetEnabled) || other.freshPullOffsetEnabled == freshPullOffsetEnabled));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SyncConfig&&(identical(other.pollingIntervalSeconds, pollingIntervalSeconds) || other.pollingIntervalSeconds == pollingIntervalSeconds)&&(identical(other.minManualDelaySeconds, minManualDelaySeconds) || other.minManualDelaySeconds == minManualDelaySeconds)&&(identical(other.manualDelaySeconds, manualDelaySeconds) || other.manualDelaySeconds == manualDelaySeconds)&&(identical(other.pullBatchSize, pullBatchSize) || other.pullBatchSize == pullBatchSize)&&(identical(other.collectionBatchSize, collectionBatchSize) || other.collectionBatchSize == collectionBatchSize)&&(identical(other.deleteBatchSize, deleteBatchSize) || other.deleteBatchSize == deleteBatchSize)&&(identical(other.interBatchDelayMs, interBatchDelayMs) || other.interBatchDelayMs == interBatchDelayMs)&&(identical(other.freshPullOffsetEnabled, freshPullOffsetEnabled) || other.freshPullOffsetEnabled == freshPullOffsetEnabled));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,pollingIntervalSeconds,minManualDelaySeconds,manualDelaySeconds,pullBatchSize,collectionBatchSize,deleteBatchSize,interBatchDelayMs,reconnectDelaySeconds,freshPullOffsetEnabled);
+int get hashCode => Object.hash(runtimeType,pollingIntervalSeconds,minManualDelaySeconds,manualDelaySeconds,pullBatchSize,collectionBatchSize,deleteBatchSize,interBatchDelayMs,freshPullOffsetEnabled);
 
 @override
 String toString() {
-  return 'SyncConfig(pollingIntervalSeconds: $pollingIntervalSeconds, minManualDelaySeconds: $minManualDelaySeconds, manualDelaySeconds: $manualDelaySeconds, pullBatchSize: $pullBatchSize, collectionBatchSize: $collectionBatchSize, deleteBatchSize: $deleteBatchSize, interBatchDelayMs: $interBatchDelayMs, reconnectDelaySeconds: $reconnectDelaySeconds, freshPullOffsetEnabled: $freshPullOffsetEnabled)';
+  return 'SyncConfig(pollingIntervalSeconds: $pollingIntervalSeconds, minManualDelaySeconds: $minManualDelaySeconds, manualDelaySeconds: $manualDelaySeconds, pullBatchSize: $pullBatchSize, collectionBatchSize: $collectionBatchSize, deleteBatchSize: $deleteBatchSize, interBatchDelayMs: $interBatchDelayMs, freshPullOffsetEnabled: $freshPullOffsetEnabled)';
 }
 
 
@@ -275,7 +271,7 @@ abstract mixin class _$SyncConfigCopyWith<$Res> implements $SyncConfigCopyWith<$
   factory _$SyncConfigCopyWith(_SyncConfig value, $Res Function(_SyncConfig) _then) = __$SyncConfigCopyWithImpl;
 @override @useResult
 $Res call({
- int pollingIntervalSeconds, int minManualDelaySeconds, int manualDelaySeconds, int pullBatchSize, int collectionBatchSize, int deleteBatchSize, int interBatchDelayMs, int reconnectDelaySeconds, bool freshPullOffsetEnabled
+ int pollingIntervalSeconds, int minManualDelaySeconds, int manualDelaySeconds, int pullBatchSize, int collectionBatchSize, int deleteBatchSize, int interBatchDelayMs, bool freshPullOffsetEnabled
 });
 
 
@@ -292,7 +288,7 @@ class __$SyncConfigCopyWithImpl<$Res>
 
 /// Create a copy of SyncConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? pollingIntervalSeconds = null,Object? minManualDelaySeconds = null,Object? manualDelaySeconds = null,Object? pullBatchSize = null,Object? collectionBatchSize = null,Object? deleteBatchSize = null,Object? interBatchDelayMs = null,Object? reconnectDelaySeconds = null,Object? freshPullOffsetEnabled = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? pollingIntervalSeconds = null,Object? minManualDelaySeconds = null,Object? manualDelaySeconds = null,Object? pullBatchSize = null,Object? collectionBatchSize = null,Object? deleteBatchSize = null,Object? interBatchDelayMs = null,Object? freshPullOffsetEnabled = null,}) {
   return _then(_SyncConfig(
 pollingIntervalSeconds: null == pollingIntervalSeconds ? _self.pollingIntervalSeconds : pollingIntervalSeconds // ignore: cast_nullable_to_non_nullable
 as int,minManualDelaySeconds: null == minManualDelaySeconds ? _self.minManualDelaySeconds : minManualDelaySeconds // ignore: cast_nullable_to_non_nullable
@@ -301,7 +297,6 @@ as int,pullBatchSize: null == pullBatchSize ? _self.pullBatchSize : pullBatchSiz
 as int,collectionBatchSize: null == collectionBatchSize ? _self.collectionBatchSize : collectionBatchSize // ignore: cast_nullable_to_non_nullable
 as int,deleteBatchSize: null == deleteBatchSize ? _self.deleteBatchSize : deleteBatchSize // ignore: cast_nullable_to_non_nullable
 as int,interBatchDelayMs: null == interBatchDelayMs ? _self.interBatchDelayMs : interBatchDelayMs // ignore: cast_nullable_to_non_nullable
-as int,reconnectDelaySeconds: null == reconnectDelaySeconds ? _self.reconnectDelaySeconds : reconnectDelaySeconds // ignore: cast_nullable_to_non_nullable
 as int,freshPullOffsetEnabled: null == freshPullOffsetEnabled ? _self.freshPullOffsetEnabled : freshPullOffsetEnabled // ignore: cast_nullable_to_non_nullable
 as bool,
   ));

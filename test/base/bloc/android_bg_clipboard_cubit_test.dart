@@ -7,6 +7,13 @@ import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/syncable.dart';
+import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
+import 'package:clipboard/base/enums/platform_os.dart';
+import 'package:clipboard/common/failure.dart';
+import 'package:dartz/dartz.dart';
+
 class _FakePlugin extends Fake implements AndroidBackgroundClipboard {
   final _controller = StreamController<String>.broadcast();
 
@@ -18,20 +25,49 @@ class _FakePlugin extends Fake implements AndroidBackgroundClipboard {
   }
 }
 
-class _FakeSyncEventBus extends Fake implements SyncEventBus {}
+class _FakeSyncEventBus extends Fake implements SyncEventBus {
+  final emitted = <(CrossSyncEventType, dynamic)>[];
 
-class _FakeClipRepo extends Fake implements ClipboardRepository {}
+  @override
+  void emit<T extends Syncable>(CrossSyncEvent<T> event) {
+    emitted.add(event);
+  }
+}
+
+class _FakeClipRepo extends Fake implements ClipboardRepository {
+  Future<Either<Failure, (ClipboardItem, bool)>> Function(ClipboardItem)?
+      onUpdateOrCreate;
+  Future<Either<Failure, bool>> Function(ClipboardItem)? onDelete;
+
+  @override
+  Future<Either<Failure, (ClipboardItem, bool)>> updateOrCreate(
+    ClipboardItem item,
+  ) async {
+    if (onUpdateOrCreate != null) return onUpdateOrCreate!(item);
+    return Right((item, false));
+  }
+
+  @override
+  Future<Either<Failure, bool>> delete(ClipboardItem item) async {
+    if (onDelete != null) return onDelete!(item);
+    return const Right(false);
+  }
+}
 
 void main() {
   late _FakePlugin plugin;
+  late _FakeSyncEventBus eventBus;
+  late _FakeClipRepo clipRepo;
   late AndroidBgClipboardCubit cubit;
 
   setUp(() {
     plugin = _FakePlugin();
+    eventBus = _FakeSyncEventBus();
+    clipRepo = _FakeClipRepo();
     cubit = AndroidBgClipboardCubit(
       plugin,
-      _FakeSyncEventBus(),
-      _FakeClipRepo(),
+      eventBus,
+      clipRepo,
       'test_device',
     );
   });
@@ -125,6 +161,54 @@ void main() {
 
       expect(item.title, isNull);
       expect(item.description, isNull);
+    });
+  });
+
+  group('AndroidBgClipboardCubit.writeToLocal', () {
+    test('skips emitting delete event when deleted item was not present locally', () async {
+      final now = DateTime(2026, 1, 1);
+      final deletedItem = ClipboardItem(
+        originId: 'origin-absent',
+        created: now,
+        modified: now,
+        deletedAt: now,
+        type: ClipItemType.text,
+        userId: 'u1',
+        os: PlatformOS.android,
+        text: 'hello',
+      );
+
+      // Return false (not found locally)
+      clipRepo.onDelete = (item) async => const Right(false);
+
+      final success = await cubit.writeToLocal(deletedItem);
+
+      expect(success, isTrue);
+      expect(eventBus.emitted.isEmpty, isTrue);
+    });
+
+    test('emits delete event when deleted item was present locally', () async {
+      final now = DateTime(2026, 1, 1);
+      final deletedItem = ClipboardItem(
+        originId: 'origin-present',
+        created: now,
+        modified: now,
+        deletedAt: now,
+        type: ClipItemType.text,
+        userId: 'u1',
+        os: PlatformOS.android,
+        text: 'hello',
+      );
+
+      // Return true (found and deleted)
+      clipRepo.onDelete = (item) async => const Right(true);
+
+      final success = await cubit.writeToLocal(deletedItem);
+
+      expect(success, isTrue);
+      expect(eventBus.emitted.length, equals(1));
+      expect(eventBus.emitted.first.$1, equals(CrossSyncEventType.delete));
+      expect(eventBus.emitted.first.$2.originId, equals('origin-present'));
     });
   });
 }

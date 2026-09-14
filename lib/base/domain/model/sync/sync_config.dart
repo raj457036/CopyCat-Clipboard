@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:clipboard/base/constants/numbers/values.dart';
 
 part 'sync_config.freezed.dart';
 
@@ -7,7 +8,7 @@ part 'sync_config.freezed.dart';
 abstract class SyncConfig with _$SyncConfig {
   const factory SyncConfig({
     /// Normal polling interval.
-    @Default(45) int pollingIntervalSeconds,
+    @Default(defaultBestEffortSyncInterval) int pollingIntervalSeconds,
 
     /// Minimum delay allowed between manual sync pulls.
     @Default(5) int minManualDelaySeconds,
@@ -26,9 +27,6 @@ abstract class SyncConfig with _$SyncConfig {
 
     /// Delay between processing successive sync pages.
     @Default(350) int interBatchDelayMs,
-
-    /// Delay before attempting to reconnect to realtime stream after a drop.
-    @Default(5) int reconnectDelaySeconds,
 
     /// Whether fresh pull offset is enabled.
     @Default(false) bool freshPullOffsetEnabled,

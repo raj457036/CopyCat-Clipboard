@@ -171,7 +171,6 @@ class _StateInitializerState extends State<StateInitializer>
 
   Future<void> _runResumeSyncCatchUp() async {
     if (!mounted || _resumeSyncInProgress) return;
-    if (isDesktopPlatform) return;
     if (!_wasAppBackgrounded) return;
     if (!appConfigCubit.isSyncEnabled || !_isSyncEligibleAuthState()) return;
 

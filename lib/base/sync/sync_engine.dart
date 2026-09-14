@@ -39,9 +39,7 @@ class SyncEngine<T extends Syncable> {
   final List<String> dependsOn;
 
   Timer? _pollingTimer;
-  Timer? _reconnectTimer;
-  int _reconnectAttempts = 0;
-  int? _pollingIntervalSeconds; // saved so realtime fallback can restore it
+  int? _pollingIntervalSeconds;
   bool _busy = false;
   bool _isRealtimeSubscribed = false;
   StreamSubscription? _statusSub;
@@ -552,8 +550,18 @@ class SyncEngine<T extends Syncable> {
     stopPolling();
     final cadence = intervalSeconds ?? config.pollingIntervalSeconds;
     _pollingIntervalSeconds = cadence;
-    // Don't start the timer if realtime is currently connected.
-    if (_isRealtimeSubscribed || _pollingTimer != null) return;
+    // Don't start the timer if realtime is active and connected.
+    if (_isRealtimeSubscribed &&
+        adapter.realtimeListener?.currentStatus ==
+            CrossSyncListenerStatus.connected) {
+      return;
+    }
+    _pollingTimer = Timer.periodic(Duration(seconds: cadence), (_) => pull());
+  }
+
+  void _startFallbackPolling() {
+    _pollingTimer?.cancel();
+    final cadence = _pollingIntervalSeconds ?? config.pollingIntervalSeconds;
     _pollingTimer = Timer.periodic(Duration(seconds: cadence), (_) => pull());
   }
 
@@ -570,8 +578,6 @@ class SyncEngine<T extends Syncable> {
     if (_isRealtimeSubscribed || listener == null) return;
 
     stopPolling();
-    _reconnectTimer?.cancel();
-    _reconnectTimer = null;
 
     _statusSub = listener.onStatusChange.listen(_onRealtimeStatusChange);
     _eventSub = listener.onChangeEvent.listen(_onRealtimeEvent);
@@ -584,47 +590,23 @@ class SyncEngine<T extends Syncable> {
     final status = event.$1;
     switch (status) {
       case CrossSyncListenerStatus.connected:
-        _reconnectTimer?.cancel();
-        _reconnectTimer = null;
-        _reconnectAttempts = 0;
         stopPolling();
         return;
       case CrossSyncListenerStatus.disconnected:
       case CrossSyncListenerStatus.error:
         logger.i(
           () =>
-              "Realtime listener for ${adapter.entityType} disconnected with status: $status",
+              "Realtime listener for ${adapter.entityType} disconnected with status: $status. Activating fallback polling.",
         );
-        if (_pollingIntervalSeconds != null) {
-          startPolling(intervalSeconds: _pollingIntervalSeconds);
-        }
-        _scheduleReconnect();
+        _startFallbackPolling();
         return;
       default:
         return;
     }
   }
 
-  void _scheduleReconnect() {
-    _reconnectTimer?.cancel();
-    final delayMultiplier = 1 << _reconnectAttempts.clamp(0, 4);
-    final delaySeconds = (config.reconnectDelaySeconds * delayMultiplier)
-        .clamp(config.reconnectDelaySeconds, 30);
-    _reconnectTimer = Timer(
-      Duration(seconds: delaySeconds),
-      () async {
-        if (!_isRealtimeSubscribed) return;
-        _reconnectAttempts++;
-        await adapter.realtimeListener?.reconnect();
-      },
-    );
-  }
-
   Future<void> reconnectRealtime() async {
     if (!_isRealtimeSubscribed || adapter.realtimeListener == null) return;
-    _reconnectTimer?.cancel();
-    _reconnectTimer = null;
-    _reconnectAttempts = 0;
     await adapter.realtimeListener?.reconnect();
   }
 
@@ -635,12 +617,8 @@ class SyncEngine<T extends Syncable> {
 
       if (type == CrossSyncEventType.delete || item.deletedAt != null) {
         final deleted = await adapter.deleteLocally([item]);
-        if (deleted.isEmpty) {
-          eventBus.emit<T>((CrossSyncEventType.delete, item));
-        } else {
-          for (final d in deleted) {
-            eventBus.emit<T>((CrossSyncEventType.delete, d));
-          }
+        for (final d in deleted) {
+          eventBus.emit<T>((CrossSyncEventType.delete, d));
         }
       } else {
         final results = await adapter.applyBatch([
@@ -658,9 +636,6 @@ class SyncEngine<T extends Syncable> {
   }
 
   void stopRealtime() {
-    _reconnectTimer?.cancel();
-    _reconnectTimer = null;
-    _reconnectAttempts = 0;
     _statusSub?.cancel();
     _eventSub?.cancel();
     adapter.realtimeListener?.stop();

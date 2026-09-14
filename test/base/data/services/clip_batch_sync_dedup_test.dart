@@ -9,6 +9,7 @@ ClipboardItem _item({
   int? serverId,
   String? originId,
   required DateTime modified,
+  DateTime? deletedAt,
   String text = 'test',
 }) {
   return ClipboardItem(
@@ -17,6 +18,7 @@ ClipboardItem _item({
     originId: originId,
     created: DateTime(2026, 1, 1),
     modified: modified,
+    deletedAt: deletedAt,
     type: ClipItemType.text,
     userId: 'user-1',
     os: PlatformOS.macos,
@@ -107,6 +109,27 @@ void main() {
     test('returns empty map for empty batch', () {
       final collapsed = IsarClipBatchSyncService.collapseBatch([]);
       expect(collapsed.isEmpty, isTrue);
+    });
+
+    test('preserves latest delete mutation', () {
+      final t1 = DateTime(2026, 1, 1, 10, 0);
+      final t2 = DateTime(2026, 1, 1, 10, 5);
+
+      final item = _item(
+        originId: 'origin-del',
+        modified: t1,
+        text: 'hello',
+      );
+      final deletedItem = _item(
+        originId: 'origin-del',
+        modified: t2,
+        deletedAt: t2,
+        text: 'hello',
+      );
+
+      final collapsed = IsarClipBatchSyncService.collapseBatch([item, deletedItem]);
+      expect(collapsed.length, 1);
+      expect(collapsed['origin:origin-del']!.deletedAt, isNotNull);
     });
   });
 }

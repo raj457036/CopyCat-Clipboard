@@ -31,6 +31,9 @@ abstract class CrossSyncListener<T> {
 
   CrossSyncListenerStatus get currentStatus;
   bool get isInitiated;
+
+  /// Dispose resources and close event streams.
+  void dispose();
 }
 
 typedef ClipCrossSyncEvent = CrossSyncEvent<ClipboardItem>;
