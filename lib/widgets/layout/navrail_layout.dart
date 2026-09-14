@@ -1,6 +1,5 @@
 import 'package:clipboard/widgets/layout/navrail.dart';
 import 'package:flutter/material.dart';
-import 'package:universal_io/io.dart';
 
 class NavrailLayout extends StatelessWidget {
   final Widget? floatingActionButton;
@@ -24,9 +23,7 @@ class NavrailLayout extends StatelessWidget {
           navbarActiveIndex: navbarActiveIndex,
           floatingActionButton: floatingActionButton,
         ),
-        Expanded(
-          child: SafeArea(top: !Platform.isAndroid, child: child),
-        ),
+        Expanded(child: child),
       ],
     );
   }

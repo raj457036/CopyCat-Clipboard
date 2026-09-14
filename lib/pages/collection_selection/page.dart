@@ -22,10 +22,8 @@ class ClipCollectionSelectionPage extends StatelessWidget {
         child: CreateCollectionButton(),
       ),
       body: ScaffoldBody(
-        child: SafeArea(
-          child: CollectionSelectionGrid(
-            selectedCollectionId: selectedCollectionId,
-          ),
+        child: CollectionSelectionGrid(
+          selectedCollectionId: selectedCollectionId,
         ),
       ),
     );

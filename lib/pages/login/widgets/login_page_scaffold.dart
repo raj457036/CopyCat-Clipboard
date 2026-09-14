@@ -152,62 +152,60 @@ class LoginMobileLayout extends StatelessWidget {
 
     return ColoredBox(
       color: colors.surface,
-      child: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final heroHeight =
-                (constraints.maxHeight * (hasKeyboard ? 0.24 : 0.38))
-                    .clamp(
-                      hasKeyboard ? _heroMinHeightWithKeyboard : _heroMinHeight,
-                      hasKeyboard ? _heroMaxHeightWithKeyboard : _heroMaxHeight,
-                    )
-                    .toDouble();
-            final contentTopPadding = (heroHeight - _contentOverlap)
-                .clamp(0.0, heroHeight)
-                .toDouble();
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final heroHeight =
+              (constraints.maxHeight * (hasKeyboard ? 0.24 : 0.38))
+                  .clamp(
+                    hasKeyboard ? _heroMinHeightWithKeyboard : _heroMinHeight,
+                    hasKeyboard ? _heroMaxHeightWithKeyboard : _heroMaxHeight,
+                  )
+                  .toDouble();
+          final contentTopPadding = (heroHeight - _contentOverlap)
+              .clamp(0.0, heroHeight)
+              .toDouble();
 
-            return Stack(
-              children: [
-                Positioned.fill(
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: heroHeight,
+                      child: const LoginMobileHero(),
+                    ),
+                    const Expanded(child: SizedBox()),
+                  ],
+                ),
+              ),
+              Positioned.fill(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  padding: const EdgeInsets.fromLTRB(
+                    _horizontalInset,
+                    0,
+                    _horizontalInset,
+                    _bottomInset,
+                  ),
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: heroHeight,
-                        child: const LoginMobileHero(),
+                      SizedBox(height: contentTopPadding),
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: maxWidth),
+                          child: child,
+                        ),
                       ),
-                      const Expanded(child: SizedBox()),
                     ],
                   ),
                 ),
-                Positioned.fill(
-                  child: SingleChildScrollView(
-                    controller: scrollController,
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    padding: const EdgeInsets.fromLTRB(
-                      _horizontalInset,
-                      0,
-                      _horizontalInset,
-                      _bottomInset,
-                    ),
-                    child: Column(
-                      children: [
-                        SizedBox(height: contentTopPadding),
-                        Align(
-                          alignment: Alignment.topCenter,
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: maxWidth),
-                            child: child,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

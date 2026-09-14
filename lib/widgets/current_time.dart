@@ -28,29 +28,27 @@ class _CurentTimeState extends State<CurentTime> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Card.filled(
-        child: Padding(
-          padding: const EdgeInsets.all(padding12),
-          child: Wrap(
-            runAlignment: WrapAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(padding16),
-                child: Text(
-                  context.locale.current_time__local(time: '$currentTime'),
+    return Card.filled(
+      child: Padding(
+        padding: const EdgeInsets.all(padding12),
+        child: Wrap(
+          runAlignment: WrapAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(padding16),
+              child: Text(
+                context.locale.current_time__local(time: '$currentTime'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(padding16),
+              child: Text(
+                context.locale.current_time__utc(
+                  time: '${currentTime.toUtc()}',
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(padding16),
-                child: Text(
-                  context.locale.current_time__utc(
-                    time: '${currentTime.toUtc()}',
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
