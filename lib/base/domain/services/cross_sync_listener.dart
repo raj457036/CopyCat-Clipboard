@@ -25,7 +25,7 @@ abstract class CrossSyncListener<T> {
   Future<void> stop();
 
   /// Reconnect to the service
-  Future<void> reconnect();
+  Future<void> reconnect({bool force = false});
   Stream<CrossSyncStatusEvent> get onStatusChange;
   Stream<CrossSyncEvent<T>> get onChangeEvent;
 

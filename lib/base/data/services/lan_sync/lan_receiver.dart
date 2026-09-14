@@ -13,6 +13,7 @@ import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:crypto/crypto.dart';
+import 'package:mime/mime.dart';
 
 import 'lan_clip_builder.dart';
 import 'lan_constants.dart';
@@ -100,8 +101,8 @@ class LanReceiver {
     String? fileExt,
     String? fileName,
     String? fileMimeType,
-    int? createdMs,
-    int? modifiedMs,
+    String? createdIso,
+    String? modifiedIso,
     String? osStr,
   }) {
     unawaited(
@@ -113,8 +114,8 @@ class LanReceiver {
         fileExt: fileExt,
         fileName: fileName,
         fileMimeType: fileMimeType,
-        createdMs: createdMs,
-        modifiedMs: modifiedMs,
+        createdIso: createdIso,
+        modifiedIso: modifiedIso,
         osStr: osStr,
       ),
     );
@@ -128,32 +129,44 @@ class LanReceiver {
     String? fileExt,
     String? fileName,
     String? fileMimeType,
-    int? createdMs,
-    int? modifiedMs,
+    String? createdIso,
+    String? modifiedIso,
     String? osStr,
   }) async {
     try {
       final now = systemTime();
-      final itemCreated = createdMs != null
-          ? DateTime.fromMillisecondsSinceEpoch(createdMs)
-          : now;
-      final itemModified = modifiedMs != null
-          ? DateTime.fromMillisecondsSinceEpoch(modifiedMs)
-          : now;
+      final itemCreated = (createdIso != null ? DateTime.tryParse(createdIso) : null) ?? now;
+      final itemModified = (modifiedIso != null ? DateTime.tryParse(modifiedIso) : null) ?? now;
       final itemOs = LanClipBuilder.parseOS(osStr) ?? PlatformOS.android;
-      final actualType =
-          (fileMimeType?.startsWith('image/') == true &&
-              type == ClipItemType.file)
-          ? ClipItemType.media
-          : type;
-      final extFromPath = p.extension(file.path).replaceFirst('.', '');
-      final ext = (fileExt?.isNotEmpty == true)
-          ? fileExt!
-          : (extFromPath.isNotEmpty ? extFromPath : 'bin');
+      final extFromPath = p.extension(file.path).replaceFirst('.', '').toLowerCase();
+      final ext = (fileExt?.isNotEmpty == true && fileExt != 'bin')
+          ? fileExt!.toLowerCase()
+          : (extFromPath.isNotEmpty && extFromPath != 'bin' ? extFromPath : 'bin');
       final name = (fileName?.isNotEmpty == true)
           ? fileName!
           : p.basename(file.path);
       final fileSize = await file.length();
+
+      var resolvedMime = (fileMimeType != null &&
+              fileMimeType.isNotEmpty &&
+              fileMimeType != '*/*' &&
+              fileMimeType != 'application/octet-stream')
+          ? fileMimeType
+          : lookupMimeType(file.path);
+
+      var cleanExt = ext;
+      if (cleanExt == 'bin' && resolvedMime != null) {
+        final fromMime = extensionFromMime(resolvedMime);
+        if (fromMime != null && fromMime.isNotEmpty) {
+          cleanExt = fromMime == 'jpeg' ? 'jpg' : fromMime;
+        }
+      }
+
+      final actualType = ((resolvedMime?.startsWith('image/') == true ||
+                  resolvedMime?.startsWith('video/') == true) &&
+              type == ClipItemType.file)
+          ? ClipItemType.media
+          : type;
 
       final userId = _config.userId.isNotEmpty ? _config.userId : kLocalUserId;
       final item = ClipboardItem(
@@ -163,8 +176,8 @@ class LanReceiver {
         localPath: file.path,
         fileName: name,
         title: name,
-        fileExtension: ext,
-        fileMimeType: fileMimeType,
+        fileExtension: cleanExt,
+        fileMimeType: resolvedMime,
         fileSize: fileSize,
         created: itemCreated,
         modified: itemModified,
@@ -207,19 +220,30 @@ class LanReceiver {
           request.headers.value('x-cc-type') ?? '',
         ) ??
         ClipItemType.file;
-    final actualType =
-        (fileMimeType?.startsWith('image/') == true &&
+    final rawExt = (fileExt?.trim().isNotEmpty == true)
+        ? fileExt!.trim()
+        : '';
+    final cleanExt = rawExt.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
+    final resolvedMime = (fileMimeType != null &&
+            fileMimeType.isNotEmpty &&
+            fileMimeType != '*/*' &&
+            fileMimeType != 'application/octet-stream')
+        ? fileMimeType
+        : (cleanExt.isNotEmpty && cleanExt != 'bin'
+            ? lookupMimeType('dummy.$cleanExt')
+            : null);
+    final actualType = ((resolvedMime?.startsWith('image/') == true ||
+                resolvedMime?.startsWith('video/') == true) &&
             clipType == ClipItemType.file)
         ? ClipItemType.media
         : clipType;
     final rootDir = actualType == ClipItemType.media ? 'medias' : 'files';
-    // Sanitize to prevent path traversal: strip non-alphanumeric chars from
-    // the extension and originId before composing file-system paths.
-    final rawExt = (fileExt?.trim().isNotEmpty == true)
-        ? fileExt!.trim()
-        : 'bin';
-    final cleanExt = rawExt.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
-    final ext = cleanExt.isEmpty ? 'bin' : cleanExt;
+    final mimeExt = (resolvedMime != null && resolvedMime.startsWith('image/'))
+        ? resolvedMime.split('/').last.split(';').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
+        : '';
+    final ext = (cleanExt.isNotEmpty && cleanExt != 'bin')
+        ? cleanExt
+        : (mimeExt.isNotEmpty ? (mimeExt == 'jpeg' ? 'jpg' : mimeExt) : 'bin');
     final safeOriginId = originId.replaceAll(RegExp(r'[^a-zA-Z0-9-]'), '_');
     final name = (fileName?.trim().isNotEmpty == true)
         ? p.basename(fileName!.trim())

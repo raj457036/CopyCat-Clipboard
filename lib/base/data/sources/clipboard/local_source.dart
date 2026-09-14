@@ -332,6 +332,10 @@ class LocalClipboardSource implements ClipboardSource {
       if (existingIsar != null) {
         final existingClip = existingIsar.toDomain();
         final updated = existingClip.copyWith(
+          type: (decryptedItem.type == ClipItemType.media ||
+                  decryptedItem.type == ClipItemType.file)
+              ? decryptedItem.type
+              : existingClip.type,
           localPath: decryptedItem.localPath ?? existingClip.localPath,
           text: decryptedItem.text ?? existingClip.text,
           richData: decryptedItem.richData ?? existingClip.richData,
@@ -345,6 +349,11 @@ class LocalClipboardSource implements ClipboardSource {
           encrypted: decryptedItem.encrypted,
           iv: decryptedItem.iv ?? existingClip.iv,
           encMode: decryptedItem.encMode ?? existingClip.encMode,
+          fileName: decryptedItem.fileName ?? existingClip.fileName,
+          fileMimeType: decryptedItem.fileMimeType ?? existingClip.fileMimeType,
+          fileExtension:
+              decryptedItem.fileExtension ?? existingClip.fileExtension,
+          fileSize: decryptedItem.fileSize ?? existingClip.fileSize,
         );
 
         final isarItem = IsarClipboardItem.fromDomain(updated);

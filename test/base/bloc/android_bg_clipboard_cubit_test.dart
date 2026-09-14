@@ -48,7 +48,7 @@ class _FakeClipRepo extends Fake implements ClipboardRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> delete(ClipboardItem item) async {
+  Future<Either<Failure, bool>> delete(ClipboardItem item, {bool soft = true}) async {
     if (onDelete != null) return onDelete!(item);
     return const Right(false);
   }

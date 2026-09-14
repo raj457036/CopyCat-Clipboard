@@ -191,6 +191,10 @@ class CopyCatAccessibilityService : AccessibilityService() {
         } else {
             currentlyActiveApp
         }
+        if (resolvedPackageName == this.packageName) {
+            debugLog(logTag) { "Skipping onCopyEvent from own app ($resolvedPackageName)" }
+            return
+        }
         withAccessibilityOverlayFocus {
             clipboardService?.performClipboardReadFromClipData(
                 clipboardManager.primaryClip,

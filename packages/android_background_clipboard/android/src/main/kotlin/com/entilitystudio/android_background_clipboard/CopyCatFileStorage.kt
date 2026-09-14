@@ -151,6 +151,9 @@ class CopyCatFileStorage(private val context: Context) {
         deletedAt: Long? = null,
         title: String? = null,
         description: String? = null,
+        fileMimeType: String? = null,
+        fileExtension: String? = null,
+        fileSize: Long? = null,
     ): Boolean = lock.write {
         try {
             writeClipItemLocked(
@@ -171,6 +174,9 @@ class CopyCatFileStorage(private val context: Context) {
                 deletedAt = deletedAt,
                 title = title,
                 description = description,
+                fileMimeType = fileMimeType,
+                fileExtension = fileExtension,
+                fileSize = fileSize,
             )
             debugLog(logTag) { "Wrote $clipId to disk (${text.length} bytes)" }
             return true
@@ -198,6 +204,9 @@ class CopyCatFileStorage(private val context: Context) {
         deletedAt: Long?,
         title: String?,
         description: String?,
+        fileMimeType: String? = null,
+        fileExtension: String? = null,
+        fileSize: Long? = null,
     ) {
         val clipFile = File(storageDir, "$clipId.txt")
         clipFile.bufferedWriter().use { writer ->
@@ -217,6 +226,9 @@ class CopyCatFileStorage(private val context: Context) {
             writer.write("$locked\n")
             writer.write("${encodeBase64(title ?: label.ifBlank { null })}\n")
             writer.write("${encodeBase64(description)}\n")
+            writer.write("${fileMimeType ?: ""}\n")
+            writer.write("${fileExtension ?: ""}\n")
+            writer.write("${fileSize ?: ""}\n")
             writer.write("$SEPARATOR\n")
             writer.write(text)
         }
@@ -359,6 +371,18 @@ class CopyCatFileStorage(private val context: Context) {
                 separatorIndex >= 16 -> decodeBase64(lines[15])
                 else -> null
             }
+            val fileMimeType = when {
+                separatorIndex >= 17 -> lines[16].ifBlank { null }
+                else -> null
+            }
+            val fileExtension = when {
+                separatorIndex >= 18 -> lines[17].ifBlank { null }
+                else -> null
+            }
+            val fileSize = when {
+                separatorIndex >= 19 -> lines[18].toLongOrNull()
+                else -> null
+            }
             
             val text = if (separatorIndex != -1 && separatorIndex < lines.size - 1) {
                 lines.subList(separatorIndex + 1, lines.size).joinToString("\n")
@@ -384,6 +408,9 @@ class CopyCatFileStorage(private val context: Context) {
                 deletedAt,
                 title,
                 description,
+                fileMimeType,
+                fileExtension,
+                fileSize,
             )
         } catch (e: Exception) {
             Log.e(logTag, "Error reading clip $clipId: ${e.message}")
@@ -466,6 +493,9 @@ class CopyCatFileStorage(private val context: Context) {
         val deletedAt: Long? = null,
         val title: String? = null,
         val description: String? = null,
+        val fileMimeType: String? = null,
+        val fileExtension: String? = null,
+        val fileSize: Long? = null,
     ) {
         fun toMap(): Map<String, Any?> {
             return mapOf(
@@ -486,6 +516,9 @@ class CopyCatFileStorage(private val context: Context) {
                 "sourceId" to sourceId,
                 "sourceApp" to sourceApp,
                 "deletedAt" to deletedAt,
+                "fileMimeType" to fileMimeType,
+                "fileExtension" to fileExtension,
+                "fileSize" to fileSize,
             )
         }
     }

@@ -166,10 +166,8 @@ class LanHttpHandler {
         request.headers.value('x-cc-mime') ??
         request.headers.contentType?.mimeType;
     final tsMs = int.tryParse(request.headers.value('x-cc-ts') ?? '');
-    final createdMs = int.tryParse(request.headers.value('x-cc-created') ?? '');
-    final modifiedMs = int.tryParse(
-      request.headers.value('x-cc-modified') ?? '',
-    );
+    final createdIso = request.headers.value('x-cc-created');
+    final modifiedIso = request.headers.value('x-cc-modified');
     final osStr = request.headers.value('x-cc-os');
 
     if (tsMs != null &&
@@ -212,8 +210,8 @@ class LanHttpHandler {
       fileExt: fileExt,
       fileName: fileName,
       fileMimeType: fileMimeType,
-      createdMs: createdMs,
-      modifiedMs: modifiedMs,
+      createdIso: createdIso,
+      modifiedIso: modifiedIso,
       osStr: osStr,
     );
   }

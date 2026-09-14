@@ -136,6 +136,8 @@ class _StateInitializerState extends State<StateInitializer>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
+    logger.d("App lifecycle state changed to: $state");
+
     switch (state) {
       case AppLifecycleState.resumed || AppLifecycleState.inactive:
         powerSaverDebounce.cancel();
@@ -190,7 +192,9 @@ class _StateInitializerState extends State<StateInitializer>
         await syncOrchestrator.reconnectRealtime();
       }
 
-      await syncStatusCubit.syncAll(const SyncAllParams(force: true));
+      if (!isDesktopPlatform) {
+        await syncStatusCubit.syncAll(const SyncAllParams(force: true));
+      }
     } catch (e) {
       logger.e("Resume catch-up sync failed: $e");
     } finally {

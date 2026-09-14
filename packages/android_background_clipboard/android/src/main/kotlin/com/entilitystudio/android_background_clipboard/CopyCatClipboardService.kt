@@ -446,6 +446,10 @@ class CopyCatClipboardService : Service() {
         serviceScope.launch(Dispatchers.IO) {
             var actionStatus: ClipAction = ClipAction.Pending
             val normalizedSourcePackage = sourcePackageName.trim()
+            if (normalizedSourcePackage == applicationContext.packageName) {
+                debugLog(logTag) { "Skipping clipboard read from own app ($normalizedSourcePackage)" }
+                return@launch
+            }
             val sourceAppName = resolveAppLabel(normalizedSourcePackage)
 
             if (clipData != null && clipData.itemCount > 0) {

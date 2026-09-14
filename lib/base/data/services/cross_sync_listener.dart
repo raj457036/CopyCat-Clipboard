@@ -10,6 +10,11 @@ import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 mixin SBCrossSyncListenerStatusChangeMixin<T> {
+  bool get shouldReconnect =>
+      currentStatus == CrossSyncListenerStatus.disconnected ||
+      currentStatus == CrossSyncListenerStatus.error ||
+      currentStatus == CrossSyncListenerStatus.unknown;
+
   CrossSyncListenerStatus _lastStatus = CrossSyncListenerStatus.unknown;
   final StreamController<CrossSyncStatusEvent> _statusEvents =
       StreamController<CrossSyncStatusEvent>.broadcast();
@@ -126,7 +131,9 @@ class SBClipCrossSyncListener
   }
 
   @override
-  Future<void> reconnect() async {
+  Future<void> reconnect({bool force = false}) async {
+    if (!force && !shouldReconnect) return;
+
     await stop();
     await wait(const Duration(milliseconds: 200).inMilliseconds);
     await start();
@@ -208,7 +215,9 @@ class SBCollectionCrossSyncListener
   }
 
   @override
-  Future<void> reconnect() async {
+  Future<void> reconnect({bool force = false}) async {
+    if (!force && !shouldReconnect) return;
+
     await stop();
     await wait(const Duration(milliseconds: 200).inMilliseconds);
     await start();

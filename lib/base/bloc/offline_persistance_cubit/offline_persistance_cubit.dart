@@ -487,17 +487,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
               synced ? CrossSyncEventType.update : CrossSyncEventType.create,
               r,
             ));
-            if (!synced && appConfig.state.config.lanInstantSync) {
-              if (Platform.isAndroid) {
-                unawaited(
-                  sl<AndroidBackgroundClipboard>().broadcastClip(
-                    _toLanClipMap(r),
-                  ),
-                );
-              } else if (!Platform.isIOS) {
-                unawaited(sl<LanSyncService>().broadcastClip(r));
-              }
-            }
+            _broadcastLan(r, synced: synced, updatedFields: updatedFields);
             emit(
               OfflinePersistanceState.saved(
                 count: 1,
@@ -524,9 +514,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     for (var result in updated) {
       result.fold((l) => emit(OfflinePersistanceState.error(l)), (r) {
         syncEventBus.emit<ClipboardItem>((CrossSyncEventType.update, r));
-        if (!synced && appConfig.state.config.lanInstantSync) {
-          _broadcastLanMutation(r);
-        }
+        _broadcastLan(r, synced: synced, updatedFields: updatedFields);
         emit(
           OfflinePersistanceState.saved(
             synced: synced,
@@ -575,7 +563,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
           deletedAt: deletedAt,
           modified: deletedAt,
         );
-        _broadcastLanMutation(mutation);
+        _broadcastLan(mutation);
       }
     }
 
@@ -620,42 +608,32 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     unawaited(_autoWriteToClipboard(item));
   }
 
-  Map<String, dynamic> _toLanClipMap(ClipboardItem item) {
-    return {
-      'originId': item.originId ?? ClipboardItem.generateOriginId(),
-      'type': item.type.name,
-      'content': item.text ?? item.url ?? '',
-      'label': item.title ?? item.fileName ?? '',
-      if (item.title != null) 'title': item.title,
-      if (item.description != null) 'description': item.description,
-      'encrypted': item.encrypted,
-      'locked': item.locked,
-      'modified': item.modified.millisecondsSinceEpoch,
-      'created': item.created.millisecondsSinceEpoch,
-      'item': item.toJson(),
-      if (item.iv != null) 'iv': item.iv,
-      if (item.encMode != null) 'encMode': item.encMode,
-      if (item.sourceId != null && item.sourceId!.isNotEmpty)
-        'sourceId': item.sourceId,
-      if (item.sourceApp != null && item.sourceApp!.isNotEmpty)
-        'sourceApp': item.sourceApp,
-      if (item.localPath != null) 'localPath': item.localPath,
-      if (item.fileMimeType != null) 'fileMimeType': item.fileMimeType,
-      if (item.fileExtension != null) 'fileExtension': item.fileExtension,
-      if (item.fileName != null) 'fileName': item.fileName,
-    };
+  static bool _isLocalMetricOnlyUpdate(List<String>? updatedFields) {
+    return updatedFields != null &&
+        updatedFields.isNotEmpty &&
+        updatedFields.every((f) => f == 'copiedCount' || f == 'lastCopied');
   }
 
-  void _broadcastLanMutation(ClipboardItem item) {
+  void _broadcastLan(
+    ClipboardItem item, {
+    bool synced = false,
+    List<String>? updatedFields,
+  }) {
+    if (synced || !appConfig.state.config.lanInstantSync) return;
+    if (_isLocalMetricOnlyUpdate(updatedFields)) return;
+
     if (Platform.isIOS) return;
     if (Platform.isAndroid) {
       unawaited(
-        sl<AndroidBackgroundClipboard>().broadcastClip(_toLanClipMap(item)),
+        sl<AndroidBackgroundClipboard>().broadcastClip({
+          ...item.toJson(),
+          'originId': item.originId ?? '',
+          if (item.localPath != null) 'localPath': item.localPath,
+        }),
       );
       return;
     }
-    // Route mutations via Dart LAN service to preserve full model payload.
-    unawaited(sl<LanSyncService>().broadcastMutation(item));
+    unawaited(sl<LanSyncService>().broadcastClip(item));
   }
 
   Future<void> _autoWriteToClipboard(ClipboardItem item) async {

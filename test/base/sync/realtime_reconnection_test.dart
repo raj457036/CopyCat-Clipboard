@@ -56,7 +56,7 @@ class _FakeRealtimeListener implements CrossSyncListener<ClipboardItem> {
   }
 
   @override
-  Future<void> reconnect() async {
+  Future<void> reconnect({bool force = false}) async {
     reconnectCalls++;
   }
 

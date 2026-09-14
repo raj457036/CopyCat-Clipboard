@@ -321,18 +321,33 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   }
 
   Future<void> deleteItem(List<ClipboardItem> items) async {
-    final ids = items.map((item) => item.id).whereType<int>().toSet();
-    final serverIds = items
-        .map((item) => item.serverId)
-        .whereType<int>()
-        .toSet();
+    if (items.isEmpty || _items.isEmpty) return;
+
+    final originIds = <String>{};
+    final serverIds = <int>{};
+    final ids = <int>{};
+
+    for (final item in items) {
+      final origin = item.originId;
+      if (origin != null && origin.trim().isNotEmpty) {
+        originIds.add(origin);
+      }
+      if (item.serverId != null) {
+        serverIds.add(item.serverId!);
+      }
+      if (item.id != null) {
+        ids.add(item.id!);
+      }
+    }
+
+    if (originIds.isEmpty && serverIds.isEmpty && ids.isEmpty) return;
 
     final before = _items.length;
     _items.removeWhere((it) {
-      final isLocallyDeleted = it.id != null && ids.contains(it.id);
-      final isRemotelyDeleted =
-          it.serverId != null && serverIds.contains(it.serverId);
-      return isLocallyDeleted || isRemotelyDeleted;
+      if (it.originId != null && originIds.contains(it.originId)) return true;
+      if (it.serverId != null && serverIds.contains(it.serverId)) return true;
+      if (it.id != null && ids.contains(it.id)) return true;
+      return false;
     });
 
     final isDeleted = before - _items.length;
