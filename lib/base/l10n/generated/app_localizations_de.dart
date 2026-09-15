@@ -204,6 +204,11 @@ class AppLocalizationsDe extends AppLocalizations {
   String get app__ack__copied => 'Kopiert';
 
   @override
+  String app__ack__copied_from_device({required String device}) {
+    return 'Von $device kopiert';
+  }
+
+  @override
   String get app__ack__pasted => 'Eingefügt';
 
   @override

@@ -15,6 +15,7 @@ import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:clipboard/base/data/services/lan_sync_service.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/clipboard_feedback_service.dart';
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
@@ -42,6 +43,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   final ClipboardRepository repo;
   final ClipboardService clipboard;
   final AppConfigCubit appConfig;
+  final UserDevicesCubit userDevicesCubit;
   final ApplicationMetaResolver appMetaResolver;
   final String deviceId;
   final SyncEventBus syncEventBus;
@@ -58,6 +60,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     @Named("local") this.repo,
     this.clipboard,
     this.appConfig,
+    this.userDevicesCubit,
     this.appMetaResolver,
     @Named("device_id") this.deviceId,
     this.syncEventBus,
@@ -636,6 +639,14 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     unawaited(sl<LanSyncService>().broadcastClip(item));
   }
 
+  String _resolveDeviceName(ClipboardItem item) {
+    if (item.deviceId != null && item.deviceId!.isNotEmpty) {
+      final name = userDevicesCubit.getDeviceName(item.deviceId!);
+      if (name != null && name.isNotEmpty) return name;
+    }
+    return item.os.displayName;
+  }
+
   Future<void> _autoWriteToClipboard(ClipboardItem item) async {
     final content = item.type == ClipItemType.text
         ? (item.text ?? '')
@@ -657,6 +668,13 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       }
       await copy.commit(clipboard);
       logger.i('autoWriteOnReceive: wrote ${item.type} clip to OS clipboard');
+      final deviceName = _resolveDeviceName(item);
+      final message =
+          rootNavigationKey.currentContext?.locale.app__ack__copied_from_device(
+            device: deviceName,
+          ) ??
+          'Copied from $deviceName';
+      await _showFeedback(message);
     } catch (e) {
       logger.e('autoWriteOnReceive: failed to write to OS clipboard: $e');
     }

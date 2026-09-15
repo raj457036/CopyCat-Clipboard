@@ -489,6 +489,12 @@ abstract class AppLocalizations {
   /// **'Copied'**
   String get app__ack__copied;
 
+  /// No description provided for @app__ack__copied_from_device.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied from {device}'**
+  String app__ack__copied_from_device({required String device});
+
   /// No description provided for @app__ack__pasted.
   ///
   /// In en, this message translates to:

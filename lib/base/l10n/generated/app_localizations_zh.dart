@@ -203,6 +203,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app__ack__copied => '已复制';
 
   @override
+  String app__ack__copied_from_device({required String device}) {
+    return '已从 $device 复制';
+  }
+
+  @override
   String get app__ack__pasted => '已粘贴';
 
   @override

@@ -79,6 +79,14 @@
   "app__realtime_connecting": "Realtime Connecting...",
   "app__ack__exported": "Exported",
   "app__ack__copied": "Copied",
+  "app__ack__copied_from_device": "Copied from {device}",
+  "@app__ack__copied_from_device": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "app__ack__pasted": "Pasted",
   "app__ack__pasting": "Pasting",
   "app__ack__done": "Done",

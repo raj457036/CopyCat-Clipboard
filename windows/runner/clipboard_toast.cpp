@@ -1,6 +1,7 @@
 #include "clipboard_toast.h"
 
 #include <windows.h>
+#include <algorithm>
 #include <string>
 #include <thread>
 
@@ -110,14 +111,6 @@ namespace clipboard_toast
 
     RegisterClass(&wc);
 
-    int width = 170;
-    int height = 38;
-
-    // Position near top center of primary monitor
-    int screenW = GetSystemMetrics(SM_CXSCREEN);
-    int x = (screenW - width) / 2;
-    int y = 50;
-
     // allocate and convert message to wide string, pass as lpParam
     std::wstring *wmsg = new std::wstring();
     int size_needed = MultiByteToWideChar(CP_UTF8, 0, message.c_str(), (int)message.size(), NULL, 0);
@@ -127,6 +120,28 @@ namespace clipboard_toast
     } else {
       *wmsg = L"Copied";
     }
+
+    HDC screenDc = GetDC(nullptr);
+    LOGFONT lf = {};
+    lf.lfHeight = -15;
+    lf.lfWeight = FW_MEDIUM;
+    lf.lfCharSet = DEFAULT_CHARSET;
+    wcscpy_s(lf.lfFaceName, L"Segoe UI");
+    HFONT hFont = CreateFontIndirect(&lf);
+    HFONT oldFont = (HFONT)SelectObject(screenDc, hFont);
+    SIZE textSize = {};
+    GetTextExtentPoint32W(screenDc, wmsg->c_str(), static_cast<int>(wmsg->length()), &textSize);
+    SelectObject(screenDc, oldFont);
+    DeleteObject(hFont);
+    ReleaseDC(nullptr, screenDc);
+
+    int width = (std::max)(170, static_cast<int>(textSize.cx) + 48);
+    int height = 38;
+
+    // Position near top center of primary monitor
+    int screenW = GetSystemMetrics(SM_CXSCREEN);
+    int x = (screenW - width) / 2;
+    int y = 50;
 
     HWND hwnd = CreateWindowEx(
         WS_EX_TOPMOST | WS_EX_TOOLWINDOW | WS_EX_LAYERED | WS_EX_NOACTIVATE,

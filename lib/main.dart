@@ -258,11 +258,11 @@ class MainApp extends StatelessWidget {
         BlocProvider<AppConfigCubit>(create: (context) => sl(), lazy: false),
         BlocProvider<WindowActionCubit>(create: (context) => sl()),
         BlocProvider<EventBusCubit>(create: (context) => sl()),
+        BlocProvider<UserDevicesCubit>(create: (context) => sl()),
         BlocProvider<MonetizationCubit>(create: (context) => sl()),
         BlocProvider<OfflinePersistenceCubit>(create: (context) => sl()),
         BlocProvider<ReviewPromptCubit>(create: (context) => sl()),
         BlocProvider<SyncStatusCubit>(create: (context) => sl()),
-        BlocProvider<UserDevicesCubit>(create: (context) => sl()),
         BlocProvider<AppLockCubit>(create: (context) => sl()),
       ],
       child: isMobilePlatform

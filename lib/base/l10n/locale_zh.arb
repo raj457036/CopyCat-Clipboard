@@ -67,6 +67,7 @@
   "app__realtime_connecting": "实时连接中...",
   "app__ack__exported": "已导出",
   "app__ack__copied": "已复制",
+  "app__ack__copied_from_device": "已从 {device} 复制",
   "app__ack__pasted": "已粘贴",
   "app__ack__pasting": "粘贴中",
   "app__ack__done": "完成",

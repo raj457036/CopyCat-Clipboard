@@ -13,7 +13,7 @@ import 'package:injectable/injectable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:universal_io/io.dart';
 
-@lazySingleton
+@singleton
 class UserDevicesCubit extends Cubit<UserDevicesState> {
   final UserDevicesRepository repo;
   final PackageInfo packageInfo;

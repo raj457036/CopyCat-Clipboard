@@ -67,6 +67,7 @@
   "app__realtime_connecting": "Connexion en temps réel...",
   "app__ack__exported": "Exporté",
   "app__ack__copied": "Copié",
+  "app__ack__copied_from_device": "Copié depuis {device}",
   "app__ack__pasted": "Collé",
   "app__ack__pasting": "Collage",
   "app__ack__done": "Terminé",
