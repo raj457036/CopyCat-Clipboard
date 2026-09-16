@@ -135,7 +135,7 @@ namespace clipboard_toast
     DeleteObject(hFont);
     ReleaseDC(nullptr, screenDc);
 
-    int width = (std::max)(170, static_cast<int>(textSize.cx) + 48);
+    int width = (std::max)(170, static_cast<int>(textSize.cx) + 72);
     int height = 38;
 
     // Position near top center of primary monitor

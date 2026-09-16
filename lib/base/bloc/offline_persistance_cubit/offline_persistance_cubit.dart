@@ -605,8 +605,6 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     if (item.deviceId == deviceId) return; // local capture
     if (item.deletedAt != null) return; // ignore deleted clips
 
-    // Only text / url — file/media need a local path which may not exist yet.
-    if (item.type != ClipItemType.text && item.type != ClipItemType.url) return;
     if (item.encrypted) return; // can't write ciphertext to clipboard
     unawaited(_autoWriteToClipboard(item));
   }
@@ -648,28 +646,38 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   }
 
   Future<void> _autoWriteToClipboard(ClipboardItem item) async {
-    final content = item.type == ClipItemType.text
-        ? (item.text ?? '')
-        : (item.url ?? '');
-    if (content.isEmpty) return;
     try {
       final copy = CopyToClipboard();
       switch (item.type) {
         case ClipItemType.text:
+          final String text = item.text ?? '';
+          if (text.isEmpty) return;
           await copy.writeRichText(
             clipboard,
-            text: item.text ?? '',
+            text: text,
             richData: item.richData,
           );
         case ClipItemType.url:
-          copy.writeUrl(Uri.tryParse(item.url ?? ''));
-        default:
-          return;
+          final String url = item.url ?? '';
+          if (url.isEmpty) return;
+          copy.writeUrl(Uri.tryParse(url));
+        case ClipItemType.media:
+        case ClipItemType.file:
+          final String? path = item.localPath;
+          if (path == null) return;
+          final File file = File(path);
+          if (!file.existsSync()) return;
+          final bool written = await copy.writeFileContent(
+            file,
+            mimeType: item.fileMimeType,
+          );
+          if (!written) return;
       }
-      await copy.commit(clipboard);
+      final bool committed = await copy.commit(clipboard);
+      if (!committed) return;
       logger.i('autoWriteOnReceive: wrote ${item.type} clip to OS clipboard');
-      final deviceName = _resolveDeviceName(item);
-      final message =
+      final String deviceName = _resolveDeviceName(item);
+      final String message =
           rootNavigationKey.currentContext?.locale.app__ack__copied_from_device(
             device: deviceName,
           ) ??

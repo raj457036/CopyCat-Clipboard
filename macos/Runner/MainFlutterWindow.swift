@@ -101,7 +101,7 @@ final class ClipboardToastPresenter {
   func show(
     message: String?,
     showToast: Bool,
-    duration: TimeInterval = 1.8
+    duration: TimeInterval = 3.0
   ) {
     DispatchQueue.main.async {
       guard showToast else { return }
@@ -114,8 +114,10 @@ final class ClipboardToastPresenter {
       let toastMessage: String = message ?? "Copied"
 
       let font: NSFont = NSFont.systemFont(ofSize: 12, weight: .medium)
-      let textWidth: CGFloat = (toastMessage as NSString).size(withAttributes: [.font: font]).width
-      let width: CGFloat = max(136, textWidth + 48)
+      let textWidth: CGFloat = ceil((toastMessage as NSString).size(withAttributes: [.font: font]).width)
+      let calculatedWidth: CGFloat = textWidth + 84
+      let maxWidth: CGFloat = min(visibleFrame.width - 48, 640)
+      let width: CGFloat = min(maxWidth, max(144, calculatedWidth))
       let height: CGFloat = 34
       let originX: CGFloat = visibleFrame.midX - width / 2
       let originY: CGFloat = visibleFrame.maxY - height - 22
@@ -191,7 +193,7 @@ private struct ClipboardToastView: View {
   var body: some View {
     let capsule = Capsule(style: .continuous)
 
-    HStack(spacing: 7) {
+    HStack(spacing: 8) {
       Image(systemName: "checkmark")
         .font(.system(size: 11, weight: .semibold))
         .foregroundColor(Color.white.opacity(0.95))
@@ -201,7 +203,7 @@ private struct ClipboardToastView: View {
         .foregroundColor(Color.white)
         .lineLimit(1)
     }
-    .padding(.horizontal, 16)
+    .padding(.horizontal, 18)
     .frame(width: width, height: height)
     .background(
       capsule
