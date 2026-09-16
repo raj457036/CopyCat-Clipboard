@@ -654,6 +654,24 @@ abstract class AppLocalizations {
   /// **'Import'**
   String get dialog__button__e2e_import_key;
 
+  /// No description provided for @dialog__button__e2e_clear_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Key'**
+  String get dialog__button__e2e_clear_key;
+
+  /// No description provided for @dialog__title__e2e_clear_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Encryption Key'**
+  String get dialog__title__e2e_clear_key;
+
+  /// No description provided for @dialog__text__e2e_clear_key__confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove the encryption key from this device? You will not be able to decrypt encrypted clips until you import the key again.'**
+  String get dialog__text__e2e_clear_key__confirm;
+
   /// No description provided for @dialog__text__inconsistent_time__title.
   ///
   /// In en, this message translates to:

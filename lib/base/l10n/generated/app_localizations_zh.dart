@@ -303,6 +303,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get dialog__button__e2e_import_key => '导入';
 
   @override
+  String get dialog__button__e2e_clear_key => '清除密钥';
+
+  @override
+  String get dialog__title__e2e_clear_key => '清除加密密钥';
+
+  @override
+  String get dialog__text__e2e_clear_key__confirm =>
+      '您确定要从此设备中移除加密密钥吗？在重新导入密钥之前，您将无法解密已加密的剪贴板内容。';
+
+  @override
   String get dialog__text__inconsistent_time__title => '时间同步警告';
 
   @override

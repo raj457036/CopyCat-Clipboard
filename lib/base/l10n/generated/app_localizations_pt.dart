@@ -310,6 +310,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get dialog__button__e2e_import_key => 'Importar';
 
   @override
+  String get dialog__button__e2e_clear_key => 'Limpar chave';
+
+  @override
+  String get dialog__title__e2e_clear_key => 'Limpar chave de criptografia';
+
+  @override
+  String get dialog__text__e2e_clear_key__confirm =>
+      'Tem certeza de que deseja remover a chave de criptografia deste dispositivo? Você não poderá descriptografar clipes criptografados até importar a chave novamente.';
+
+  @override
   String get dialog__text__inconsistent_time__title =>
       'Aviso de Sincronização de Tempo';
 

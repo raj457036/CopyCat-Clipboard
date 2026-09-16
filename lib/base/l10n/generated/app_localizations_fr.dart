@@ -311,6 +311,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dialog__button__e2e_import_key => 'Importer';
 
   @override
+  String get dialog__button__e2e_clear_key => 'Effacer la clé';
+
+  @override
+  String get dialog__title__e2e_clear_key => 'Effacer la clé de chiffrement';
+
+  @override
+  String get dialog__text__e2e_clear_key__confirm =>
+      'Êtes-vous sûr de vouloir supprimer la clé de chiffrement de cet appareil ? Vous ne pourrez pas déchiffrer les éléments chiffrés tant que vous n\'aurez pas réimporté la clé.';
+
+  @override
   String get dialog__text__inconsistent_time__title =>
       'Avertissement de synchronisation temporelle';
 

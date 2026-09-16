@@ -310,6 +310,17 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dialog__button__e2e_import_key => 'Importieren';
 
   @override
+  String get dialog__button__e2e_clear_key => 'Schlüssel löschen';
+
+  @override
+  String get dialog__title__e2e_clear_key =>
+      'Verschlüsselungsschlüssel löschen';
+
+  @override
+  String get dialog__text__e2e_clear_key__confirm =>
+      'Möchten Sie den Verschlüsselungsschlüssel wirklich von diesem Gerät entfernen? Sie können verschlüsselte Clips erst wieder entschlüsseln, wenn Sie den Schlüssel erneut importieren.';
+
+  @override
   String get dialog__text__inconsistent_time__title =>
       'Warnung zur Uhrzeitsynchronisation';
 

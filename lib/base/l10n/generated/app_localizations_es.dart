@@ -311,6 +311,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dialog__button__e2e_import_key => 'Importar';
 
   @override
+  String get dialog__button__e2e_clear_key => 'Borrar clave';
+
+  @override
+  String get dialog__title__e2e_clear_key => 'Borrar clave de encriptación';
+
+  @override
+  String get dialog__text__e2e_clear_key__confirm =>
+      '¿Seguro que deseas eliminar la clave de encriptación de este dispositivo? No podrás descifrar los clips encriptados hasta que vuelvas a importar la clave.';
+
+  @override
   String get dialog__text__inconsistent_time__title =>
       'Advertencia de Sincronización de Hora';
 
