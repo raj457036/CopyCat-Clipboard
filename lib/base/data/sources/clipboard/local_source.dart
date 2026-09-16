@@ -342,6 +342,7 @@ class LocalClipboardSource implements ClipboardSource {
           modified: decryptedItem.modified,
           lastSynced: now,
           serverId: decryptedItem.serverId ?? existingClip.serverId,
+          driveFileId: decryptedItem.driveFileId ?? existingClip.driveFileId,
           originId: decryptedItem.originId ?? existingClip.originId,
           description: decryptedItem.description ?? existingClip.description,
           title: decryptedItem.title ?? existingClip.title,

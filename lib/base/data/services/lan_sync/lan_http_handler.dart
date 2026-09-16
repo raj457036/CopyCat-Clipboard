@@ -126,6 +126,8 @@ class LanHttpHandler {
     }
 
     if (clipType == ClipItemType.media || clipType == ClipItemType.file) {
+      final delegateUpload =
+          request.headers.value(kLanHeaderDelegateUpload) == '1';
       await _handleBinaryClip(
         request: request,
         fromDeviceId: fromDeviceId,
@@ -134,6 +136,7 @@ class LanHttpHandler {
         hmacHeader: hmacHeader,
         contentLength: contentLength,
         fromOs: fromOs,
+        delegateUpload: delegateUpload,
       );
     } else {
       if (contentLength > kLanMaxTextPayloadBytes) {
@@ -159,6 +162,7 @@ class LanHttpHandler {
     required String hmacHeader,
     required int contentLength,
     required PlatformOS? fromOs,
+    bool delegateUpload = false,
   }) async {
     final fileExt = request.headers.value('x-cc-ext');
     final fileName = request.headers.value('x-cc-name');
@@ -213,6 +217,7 @@ class LanHttpHandler {
       createdIso: createdIso,
       modifiedIso: modifiedIso,
       osStr: osStr,
+      delegateUpload: delegateUpload,
     );
   }
 

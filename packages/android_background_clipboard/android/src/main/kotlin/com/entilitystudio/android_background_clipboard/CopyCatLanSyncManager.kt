@@ -77,7 +77,13 @@ data class LanClipPayload(
     val description: String? = null,
 )
 
-private data class PeerAddress(val host: String, val port: Int)
+private data class PeerAddress(val host: String, val port: Int, val os: String? = null) {
+    val isDesktop: Boolean
+        get() {
+            val normalized = os?.trim()?.lowercase() ?: return false
+            return normalized == "macos" || normalized == "windows" || normalized == "linux" || normalized == "darwin"
+        }
+}
 
 /**
  * CopyCat LAN sync for Android.
@@ -198,9 +204,10 @@ class CopyCatLanSyncManager(
                 val peerObj = json.optJSONObject(did) ?: continue
                 val host = peerObj.optString("host")
                 val port = peerObj.optInt("port", 0)
+                val os = peerObj.optString("os").takeIf { it.isNotBlank() }
                 if (did.isNotBlank() && did != deviceId && host.isNotBlank() && port in 1..65535) {
-                    peers[did] = PeerAddress(host, port)
-                    LanPeerReporter.getInstance().addPeer(did, host, port)
+                    peers[did] = PeerAddress(host, port, os)
+                    LanPeerReporter.getInstance().addPeer(did, host, port, os)
                     loadedCount++
                 }
             }
@@ -219,6 +226,7 @@ class CopyCatLanSyncManager(
                 val obj = JSONObject().apply {
                     put("host", address.host)
                     put("port", address.port)
+                    if (address.os != null) put("os", address.os)
                 }
                 json.put(did, obj)
             }
@@ -228,15 +236,16 @@ class CopyCatLanSyncManager(
         }
     }
 
-    private fun recordPeer(did: String, host: String, port: Int, source: String) {
+    private fun recordPeer(did: String, host: String, port: Int, source: String, os: String? = null) {
         if (did.isBlank() || did == deviceId || host.isBlank() || port !in 1..65535) return
         val existing = peers[did]
-        if (existing == null || existing.host != host || existing.port != port) {
-            peers[did] = PeerAddress(host, port)
-            LanPeerReporter.getInstance().addPeer(did, host, port)
+        val resolvedOs = os?.takeIf { it.isNotBlank() } ?: existing?.os
+        if (existing == null || existing.host != host || existing.port != port || existing.os != resolvedOs) {
+            peers[did] = PeerAddress(host, port, resolvedOs)
+            LanPeerReporter.getInstance().addPeer(did, host, port, resolvedOs)
             saveCachedPeers()
             scheduleDiscoveryRefresh()
-            Log.i(LOG_TAG, "Peer recorded ($source): $did @ $host:$port")
+            Log.i(LOG_TAG, "Peer recorded ($source): $did @ $host:$port os=$resolvedOs")
         }
     }
 
@@ -460,8 +469,9 @@ class CopyCatLanSyncManager(
                 // Opportunistically learn or refresh peer address from incoming clip traffic
                 val remotePort = headers["x-cc-port"]?.toIntOrNull()?.takeIf { it in 1..65535 }
                 val remoteHost = s.inetAddress?.hostAddress
+                val remoteOs = headers["x-cc-os"]
                 if (remotePort != null && !remoteHost.isNullOrBlank()) {
-                    recordPeer(fromDeviceId, remoteHost, remotePort, "clip-traffic")
+                    recordPeer(fromDeviceId, remoteHost, remotePort, "clip-traffic", remoteOs)
                 }
 
                 val originId = headers["x-cc-oid"] ?: return
@@ -572,7 +582,8 @@ class CopyCatLanSyncManager(
         val announcedDeviceId = headers["x-cc-did"]?.takeIf { it.isNotBlank() } ?: return
         val announcedPort = headers["x-cc-port"]?.toIntOrNull()?.takeIf { it in 1..65535 } ?: return
         val host = remoteAddress.hostAddress ?: return
-        recordPeer(announcedDeviceId, host, announcedPort, "ping")
+        val announcedOs = headers["x-cc-os"]
+        recordPeer(announcedDeviceId, host, announcedPort, "ping", announcedOs)
     }
 
     private fun handleTextClip(
@@ -937,12 +948,16 @@ class CopyCatLanSyncManager(
                 }
                 if (did == deviceId) return // self
                 val host = info.host?.hostAddress ?: return
+                val osBytes = info.attributes["os"]
+                val osStr = if (osBytes != null && osBytes.isNotEmpty()) {
+                    String(osBytes, Charsets.UTF_8)
+                } else null
                 serviceNameToDeviceId[info.serviceName] = did
-                recordPeer(did, host, info.port, "mdns-resolve")
+                recordPeer(did, host, info.port, "mdns-resolve", osStr)
                 // Announce our own HTTP server address to the peer immediately
                 // so it can broadcast clips back to us without waiting for its
                 // own mDNS discovery cycle.
-                announceSelfToPeer(PeerAddress(host, info.port))
+                announceSelfToPeer(PeerAddress(host, info.port, osStr))
             }
         }
 
@@ -1099,6 +1114,9 @@ class CopyCatLanSyncManager(
         typeStr: String = "file",
     ) {
         val hmac = computeHmac(data)
+        val desktopPeers = peers.values.filter { it.isDesktop }
+        val delegatePeer = if (desktopPeers.isNotEmpty()) desktopPeers.random() else null
+
         peers.values.forEach { peer ->
             sendToPeer(
                 peer = peer,
@@ -1113,6 +1131,7 @@ class CopyCatLanSyncManager(
                 sourceApp = sourceApp,
                 createdIso = createdIso,
                 modifiedIso = modifiedIso,
+                delegateUpload = (peer == delegatePeer),
             )
         }
     }
@@ -1130,6 +1149,7 @@ class CopyCatLanSyncManager(
         sourceApp: String?,
         createdIso: String? = null,
         modifiedIso: String? = null,
+        delegateUpload: Boolean = false,
     ) {
         try {
             val requestBuilder = Request.Builder()
@@ -1142,6 +1162,9 @@ class CopyCatLanSyncManager(
                 .addHeader("X-CC-TS", System.currentTimeMillis().toString())
                 .addHeader("X-CC-SIZE", body.size.toString())
                 .addHeader("X-CC-OS", "android")
+            if (delegateUpload) {
+                requestBuilder.addHeader("X-CC-DELEGATE-UPLOAD", "1")
+            }
             if (ext != null) requestBuilder.addHeader("X-CC-EXT", ext)
             if (fileName != null) requestBuilder.addHeader("X-CC-NAME", fileName)
             if (contentType.isNotBlank()) {

@@ -118,17 +118,20 @@ Future<void> _syncInBackground(_Payload record, Sender send) async {
       item = item.copyWith(
         id: found.isarId == Isar.autoIncrement ? null : found.isarId,
         lastSynced: now,
-        localPath: found.localPath,
+        localPath: found.localPath ?? item.localPath,
         serverId: item.serverId ?? found.serverId,
         originId: item.originId ?? found.originId,
+        driveFileId: item.driveFileId ?? found.driveFileId,
         sourceApp: found.sourceApp ?? item.sourceApp,
         sourceId: found.sourceId ?? item.sourceId,
       );
     } else {
       item = found.toDomain().copyWith(
         lastSynced: now,
+        localPath: found.localPath ?? item.localPath,
         serverId: found.serverId ?? item.serverId,
         originId: found.originId ?? item.originId,
+        driveFileId: item.driveFileId ?? found.driveFileId,
         sourceApp: found.sourceApp ?? item.sourceApp,
         sourceId: found.sourceId ?? item.sourceId,
       );

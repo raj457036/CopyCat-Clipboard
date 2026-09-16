@@ -6,6 +6,8 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/sync/sync_outbox_entry.dart';
+import 'package:clipboard/base/domain/repositories/sync_outbox.dart';
 import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
@@ -26,12 +28,14 @@ class LanReceiver {
   final ClipBatchSyncService _batchSync;
   final SyncEventBus _syncEventBus;
   final LanClipBuilder _clipBuilder;
+  final SyncOutboxRepository _outboxRepo;
 
   const LanReceiver(
     this._config,
     this._batchSync,
     this._syncEventBus,
     this._clipBuilder,
+    this._outboxRepo,
   );
 
   // MARK: - Text / URL
@@ -104,6 +108,7 @@ class LanReceiver {
     String? createdIso,
     String? modifiedIso,
     String? osStr,
+    bool delegateUpload = false,
   }) {
     unawaited(
       _processBinaryClipAsync(
@@ -117,6 +122,7 @@ class LanReceiver {
         createdIso: createdIso,
         modifiedIso: modifiedIso,
         osStr: osStr,
+        delegateUpload: delegateUpload,
       ),
     );
   }
@@ -132,6 +138,7 @@ class LanReceiver {
     String? createdIso,
     String? modifiedIso,
     String? osStr,
+    bool delegateUpload = false,
   }) async {
     try {
       final now = systemTime();
@@ -168,10 +175,13 @@ class LanReceiver {
           ? ClipItemType.media
           : type;
 
+      final itemDeviceId = delegateUpload
+          ? (_config.deviceId.isNotEmpty ? _config.deviceId : null)
+          : (fromDeviceId.isNotEmpty ? fromDeviceId : null);
       final userId = _config.userId.isNotEmpty ? _config.userId : kLocalUserId;
       final item = ClipboardItem(
         userId: userId,
-        deviceId: fromDeviceId.isNotEmpty ? fromDeviceId : null,
+        deviceId: itemDeviceId,
         type: actualType,
         localPath: file.path,
         fileName: name,
@@ -188,6 +198,23 @@ class LanReceiver {
       final events = await _batchSync.syncBatch([item]);
       for (final event in events) {
         _syncEventBus.emit<ClipboardItem>(event);
+      }
+      if (delegateUpload && events.isNotEmpty) {
+        final savedItem = events.first.$2;
+        if (savedItem.id != null && savedItem.needsFileUpload) {
+          await _outboxRepo.enqueue(
+            SyncOutboxEntry(
+              entityType: SyncEntityType.clip,
+              localId: savedItem.id!,
+              action: SyncOutboxAction.create,
+              createdAt: systemTime(),
+            ),
+          );
+          logger.i(
+            () =>
+                'LAN: enqueued delegated cloud upload for clip ${savedItem.id} (originId=$originId)',
+          );
+        }
       }
       logger.d(
         () =>

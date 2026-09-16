@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/repositories/sync_outbox.dart';
 import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/enums/platform_os.dart';
@@ -38,6 +39,7 @@ export 'lan_peer.dart';
 class LanSyncService {
   final ClipBatchSyncService _batchSync;
   final SyncEventBus _syncEventBus;
+  final SyncOutboxRepository _outboxRepo;
 
   // MARK: - Collaborators
 
@@ -50,12 +52,22 @@ class LanSyncService {
   late final LanDiscovery _discovery;
   late final LanHttpHandler _httpHandler;
 
-  LanSyncService(this._batchSync, this._syncEventBus) {
+  LanSyncService(
+    this._batchSync,
+    this._syncEventBus,
+    this._outboxRepo,
+  ) {
     _cfg = LanSyncConfig();
     _registry = LanPeerRegistry(_cfg);
     _hmac = LanHmac(_cfg);
     _clipBuilder = LanClipBuilder(_cfg);
-    _receiver = LanReceiver(_cfg, _batchSync, _syncEventBus, _clipBuilder);
+    _receiver = LanReceiver(
+      _cfg,
+      _batchSync,
+      _syncEventBus,
+      _clipBuilder,
+      _outboxRepo,
+    );
     _sender = LanSender(_cfg, _registry, _hmac);
     _discovery = LanDiscovery(
       _cfg,

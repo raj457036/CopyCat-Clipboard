@@ -302,6 +302,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i976.LanSyncService(
         gh<_i616.ClipBatchSyncService>(),
         gh<_i292.SyncEventBus>(),
+        gh<_i770.SyncOutboxRepository>(),
       ),
     );
     gh.lazySingleton<_i543.ClipCrossSyncListener>(
