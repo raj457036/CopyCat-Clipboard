@@ -54,44 +54,48 @@ class Mode2AggressiveStrategy(
             return
         }
 
-        // Step 1: Pre-process selection events to track active selection or selection collapse
-        if (event.eventType == AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED) {
-            handleTextSelectionChangedEvent(event, packageName)
-        }
-
-        // Step 2: Delegate to Mode 1 base logic first (catches exact ack text, announcements, toasts)
-        var detectedByBase = false
-        val delegatingCallback = object : ClipboardDetectionCallback {
-            override fun onCopyDetected(packageName: String) {
-                detectedByBase = true
-                clearSelectionArm()
-                callback.onCopyDetected(packageName)
+        try {
+            // Step 1: Pre-process selection events to track active selection or selection collapse
+            if (event.eventType == AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED) {
+                handleTextSelectionChangedEvent(event, packageName)
             }
 
-            override fun onTestAckCandidate(ackText: String) {
-                callback.onTestAckCandidate(ackText)
-            }
-        }
+            // Step 2: Delegate to Mode 1 base logic first (catches exact ack text, announcements, toasts)
+            var detectedByBase = false
+            val delegatingCallback = object : ClipboardDetectionCallback {
+                override fun onCopyDetected(packageName: String) {
+                    detectedByBase = true
+                    clearSelectionArm()
+                    callback.onCopyDetected(packageName)
+                }
 
-        super.onAccessibilityEvent(event, packageName, isScreenOn, isAppInForeground, delegatingCallback)
-        if (detectedByBase) {
-            return
-        }
+                override fun onTestAckCandidate(ackText: String) {
+                    callback.onTestAckCandidate(ackText)
+                }
+            }
 
-        // Step 3: If not detected by Mode 1, apply Mode 2 aggressive heuristics
-        when (event.eventType) {
-            AccessibilityEvent.TYPE_VIEW_CLICKED -> {
-                handleViewClickedEvent(event, packageName, callback)
+            super.onAccessibilityEvent(event, packageName, isScreenOn, isAppInForeground, delegatingCallback)
+            if (detectedByBase) {
+                return
             }
-            AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED -> {
-                handleAggressiveSignalEvent(event, packageName, callback, "notification")
+
+            // Step 3: If not detected by Mode 1, apply Mode 2 aggressive heuristics
+            when (event.eventType) {
+                AccessibilityEvent.TYPE_VIEW_CLICKED -> {
+                    handleViewClickedEvent(event, packageName, callback)
+                }
+                AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED -> {
+                    handleAggressiveSignalEvent(event, packageName, callback, "notification")
+                }
+                AccessibilityEvent.TYPE_ANNOUNCEMENT -> {
+                    handleAggressiveSignalEvent(event, packageName, callback, "announcement")
+                }
+                else -> {
+                    // Ignore other event types
+                }
             }
-            AccessibilityEvent.TYPE_ANNOUNCEMENT -> {
-                handleAggressiveSignalEvent(event, packageName, callback, "announcement")
-            }
-            else -> {
-                // Ignore other event types
-            }
+        } catch (t: Throwable) {
+            Log.e(logTag, "Suppressed exception in Mode2 onAccessibilityEvent: ${t.message}", t)
         }
     }
 
@@ -107,25 +111,29 @@ class Mode2AggressiveStrategy(
         event: AccessibilityEvent,
         currentForegroundPackage: String,
     ) {
-        val candidatePackage = resolveSelectionPackage(
-            currentForegroundPackage = currentForegroundPackage,
-            eventPackage = event.packageName?.toString().orEmpty(),
-        )
+        runCatching {
+            val candidatePackage = resolveSelectionPackage(
+                currentForegroundPackage = currentForegroundPackage,
+                eventPackage = event.packageName?.toString().orEmpty(),
+            )
 
-        val hasSelection = event.hasActiveSelection()
-        val isSelectionCollapsed = event.fromIndex >= 0 && event.fromIndex == event.toIndex
+            val hasSelection = event.hasActiveSelection()
+            val isSelectionCollapsed = event.fromIndex >= 0 && event.fromIndex == event.toIndex
 
-        if (hasSelection) {
-            // User selected text (toIndex > fromIndex)
-            lastSelectionArmedAtMs = SystemClock.elapsedRealtime()
-            lastSelectionPackageName = candidatePackage
-            debugLog(logTag) { "Armed selection heuristic for package=$candidatePackage [${event.fromIndex}..${event.toIndex}]" }
-        } else if (isSelectionCollapsed && isRecentSelectionArmed(candidatePackage)) {
-            // User had text selected, and now cursor collapsed to a single point (fromIndex == toIndex)
-            // Typical signature of Cut (or Deselect) in an EditText
-            lastSelectionCollapsedAtMs = SystemClock.elapsedRealtime()
-            lastCollapsedPackageName = candidatePackage
-            debugLog(logTag) { "Recorded selection collapse in package=$candidatePackage at index ${event.fromIndex}" }
+            if (hasSelection) {
+                // User selected text (toIndex > fromIndex)
+                lastSelectionArmedAtMs = SystemClock.elapsedRealtime()
+                lastSelectionPackageName = candidatePackage
+                debugLog(logTag) { "Armed selection heuristic for package=$candidatePackage [${event.fromIndex}..${event.toIndex}]" }
+            } else if (isSelectionCollapsed && isRecentSelectionArmed(candidatePackage)) {
+                // User had text selected, and now cursor collapsed to a single point (fromIndex == toIndex)
+                // Typical signature of Cut (or Deselect) in an EditText
+                lastSelectionCollapsedAtMs = SystemClock.elapsedRealtime()
+                lastCollapsedPackageName = candidatePackage
+                debugLog(logTag) { "Recorded selection collapse in package=$candidatePackage at index ${event.fromIndex}" }
+            }
+        }.onFailure { e ->
+            Log.w(logTag, "Error in handleTextSelectionChangedEvent: ${e.message}")
         }
     }
 
@@ -148,42 +156,46 @@ class Mode2AggressiveStrategy(
         currentForegroundPackage: String,
         callback: ClipboardDetectionCallback,
     ) {
-        val eventPackage = event.packageName?.toString().orEmpty()
+        runCatching {
+            val eventPackage = event.packageName?.toString().orEmpty()
 
-        val activeImePackage = activeImePackageProvider?.invoke()?.trim().orEmpty()
-        if (activeImePackage.isNotEmpty() && eventPackage == activeImePackage) {
-            debugLog(logTag) { "Ignoring active IME click event package=$eventPackage" }
-            return
+            val activeImePackage = activeImePackageProvider?.invoke()?.trim().orEmpty()
+            if (activeImePackage.isNotEmpty() && eventPackage == activeImePackage) {
+                debugLog(logTag) { "Ignoring active IME click event package=$eventPackage" }
+                return
+            }
+
+            if (isImePackage(eventPackage)) {
+                debugLog(logTag) { "Ignoring IME click event package=$eventPackage" }
+                return
+            }
+
+            if (!event.hasSemanticClickPayload()) {
+                return
+            }
+
+            if (!shouldTriggerClickRead()) {
+                return
+            }
+
+            if (!shouldEmitCopy()) {
+                return
+            }
+
+            val targetPackage = resolveSelectionPackage(
+                currentForegroundPackage = currentForegroundPackage,
+                eventPackage = event.packageName?.toString().orEmpty(),
+            )
+            if (targetPackage.isBlank()) {
+                return
+            }
+
+            debugLog(logTag) { "Triggering clipboard read via clicked view package=$targetPackage" }
+            clearSelectionArm()
+            callback.onCopyDetected(targetPackage)
+        }.onFailure { e ->
+            Log.w(logTag, "Error in handleViewClickedEvent: ${e.message}")
         }
-
-        if (isImePackage(eventPackage)) {
-            debugLog(logTag) { "Ignoring IME click event package=$eventPackage" }
-            return
-        }
-
-        if (!event.hasSemanticClickPayload()) {
-            return
-        }
-
-        if (!shouldTriggerClickRead()) {
-            return
-        }
-
-        if (!shouldEmitCopy()) {
-            return
-        }
-
-        val targetPackage = resolveSelectionPackage(
-            currentForegroundPackage = currentForegroundPackage,
-            eventPackage = event.packageName?.toString().orEmpty(),
-        )
-        if (targetPackage.isBlank()) {
-            return
-        }
-
-        debugLog(logTag) { "Triggering clipboard read via clicked view package=$targetPackage" }
-        clearSelectionArm()
-        callback.onCopyDetected(targetPackage)
     }
 
     private fun handleAggressiveSignalEvent(
@@ -192,29 +204,33 @@ class Mode2AggressiveStrategy(
         callback: ClipboardDetectionCallback,
         source: String,
     ) {
-        val keywords = getActionKeywords()
-        val matchesKeywords = ClipboardLocalizationHelper.containsActionKeyword(event.text, keywords) ||
-            ClipboardLocalizationHelper.containsActionKeyword(event.contentDescription, keywords)
+        runCatching {
+            val keywords = getActionKeywords()
+            val matchesKeywords = ClipboardLocalizationHelper.containsActionKeyword(event.text, keywords) ||
+                ClipboardLocalizationHelper.containsActionKeyword(event.contentDescription, keywords)
 
-        val targetPackage = resolveCopyPackage(
-            currentForegroundPackage = currentForegroundPackage,
-            eventPackage = event.packageName?.toString().orEmpty(),
-        )
+            val targetPackage = resolveCopyPackage(
+                currentForegroundPackage = currentForegroundPackage,
+                eventPackage = event.packageName?.toString().orEmpty(),
+            )
 
-        val recentCollapsed = isRecentSelectionCollapsed(targetPackage)
+            val recentCollapsed = isRecentSelectionCollapsed(targetPackage)
 
-        // Aggressive detection: either matched localized keywords, or event occurred right after a selection collapse in the target package
-        if (!matchesKeywords && !recentCollapsed) {
-            return
+            // Aggressive detection: either matched localized keywords, or event occurred right after a selection collapse in the target package
+            if (!matchesKeywords && !recentCollapsed) {
+                return
+            }
+
+            if (!shouldEmitCopy()) {
+                return
+            }
+
+            debugLog(logTag) { "Copy/Cut detected via $source package=$targetPackage (keywordMatched=$matchesKeywords, recentCollapsed=$recentCollapsed)" }
+            clearSelectionArm()
+            callback.onCopyDetected(targetPackage)
+        }.onFailure { e ->
+            Log.w(logTag, "Error in handleAggressiveSignalEvent: ${e.message}")
         }
-
-        if (!shouldEmitCopy()) {
-            return
-        }
-
-        debugLog(logTag) { "Copy/Cut detected via $source package=$targetPackage (keywordMatched=$matchesKeywords, recentCollapsed=$recentCollapsed)" }
-        clearSelectionArm()
-        callback.onCopyDetected(targetPackage)
     }
 
     private fun shouldTriggerClickRead(): Boolean {
@@ -304,17 +320,19 @@ class Mode2AggressiveStrategy(
             return true
         }
 
-        for (entry in text) {
-            val value = entry?.toString() ?: continue
-            if (value.isNotBlank()) {
-                return true
+        return runCatching {
+            val textList = text
+            for (i in 0 until textList.size) {
+                val value = textList.getOrNull(i)?.toString() ?: continue
+                if (value.isNotBlank()) {
+                    return@runCatching true
+                }
             }
-        }
-
-        return false
+            false
+        }.getOrDefault(false)
     }
 
     private fun AccessibilityEvent.hasActiveSelection(): Boolean {
-        return fromIndex >= 0 && toIndex > fromIndex
+        return runCatching { fromIndex >= 0 && toIndex > fromIndex }.getOrDefault(false)
     }
 }

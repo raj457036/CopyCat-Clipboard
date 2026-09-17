@@ -49,6 +49,24 @@ class CopyCatAccessibilityService : AccessibilityService() {
     }
     private var strategyMode: ClipboardDetectionMode = ClipboardDetectionMode.default()
 
+    private fun safeToast(message: String) {
+        runCatching {
+            handler.post {
+                runCatching {
+                    Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        runCatching {
+            clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        }
+    }
+
     // Strategy for detection
     private lateinit var detectionStrategy: ClipboardDetectionStrategy
 
@@ -171,35 +189,41 @@ class CopyCatAccessibilityService : AccessibilityService() {
     }
 
     private fun onCopyEvent(packageName: String = "") {
-        debugLog(logTag) { "Copy Event Detected, Reading Clipboard" }
+        runCatching {
+            debugLog(logTag) { "Copy Event Detected, Reading Clipboard" }
 
-        if (!isClipboardServiceConnected) {
-            Log.w(logTag, "ClipboardService not connected yet, ignoring onCopyEvent")
-            return
-        }
-        if (isCapturePaused()) {
-            debugLog(logTag) { "Capture paused, ignoring onCopyEvent before clipboard read" }
-            return
-        }
-        if (!isScreenOn()) {
-            debugLog(logTag) { "Screen is OFF, skipping onCopyEvent" }
-            return
-        }
-        val normalizedPackageName = normalizeSourcePackage(packageName)
-        val resolvedPackageName = if (normalizedPackageName.isNotEmpty()) {
-            normalizedPackageName
-        } else {
-            currentlyActiveApp
-        }
-        if (resolvedPackageName == this.packageName) {
-            debugLog(logTag) { "Skipping onCopyEvent from own app ($resolvedPackageName)" }
-            return
-        }
-        withAccessibilityOverlayFocus {
-            clipboardService?.performClipboardReadFromClipData(
-                clipboardManager.primaryClip,
-                resolvedPackageName,
-            )
+            if (!isClipboardServiceConnected) {
+                Log.w(logTag, "ClipboardService not connected yet, attempting reconnect and ignoring onCopyEvent")
+                restartClipboardService()
+                return
+            }
+            if (isCapturePaused()) {
+                debugLog(logTag) { "Capture paused, ignoring onCopyEvent before clipboard read" }
+                return
+            }
+            if (!isScreenOn()) {
+                debugLog(logTag) { "Screen is OFF, skipping onCopyEvent" }
+                return
+            }
+            val normalizedPackageName = normalizeSourcePackage(packageName)
+            val resolvedPackageName = if (normalizedPackageName.isNotEmpty()) {
+                normalizedPackageName
+            } else {
+                currentlyActiveApp
+            }
+            if (resolvedPackageName == this.packageName) {
+                debugLog(logTag) { "Skipping onCopyEvent from own app ($resolvedPackageName)" }
+                return
+            }
+            withAccessibilityOverlayFocus {
+                val clipData = runCatching { clipboardManager.primaryClip }.getOrNull()
+                clipboardService?.performClipboardReadFromClipData(
+                    clipData,
+                    resolvedPackageName,
+                )
+            }
+        }.onFailure { e ->
+            Log.e(logTag, "Error in onCopyEvent: ${e.message}", e)
         }
     }
 
@@ -214,7 +238,7 @@ class CopyCatAccessibilityService : AccessibilityService() {
         val bindIntent = Intent(this, CopyCatClipboardService::class.java)
         bindService(bindIntent, connection, Context.BIND_AUTO_CREATE)
         debugLog(logTag) { "Clipboard service start requested" }
-        Toast.makeText(this, "CopyCat Service Starting", Toast.LENGTH_SHORT).show()
+        safeToast("CopyCat Service Starting")
     }
 
     private fun stopClipboardService() {
@@ -256,9 +280,15 @@ class CopyCatAccessibilityService : AccessibilityService() {
     private fun isDetectionProbeStillOnClipboard(probeText: String): Boolean {
         var clipboardText: String? = null
         withAccessibilityOverlayFocus {
-            val clipData = clipboardManager.primaryClip
-            if (clipData != null && clipData.itemCount > 0) {
-                clipboardText = clipData.getItemAt(0).coerceToText(this)?.toString()
+            runCatching {
+                val clipData = clipboardManager.primaryClip
+                if (clipData != null && clipData.itemCount > 0) {
+                    val item = clipData.getItemAt(0)
+                    clipboardText = item.text?.toString()
+                        ?: runCatching { item.coerceToText(this)?.toString() }.getOrNull()
+                }
+            }.onFailure { e ->
+                Log.w(logTag, "Failed to read probe from clipboard: ${e.message}")
             }
         }
 
@@ -290,11 +320,10 @@ class CopyCatAccessibilityService : AccessibilityService() {
             outcome = if (succeeded) "success" else "failure",
         )
         if (succeeded) {
-            Toast.makeText(this, "CopyCat Service Started", Toast.LENGTH_SHORT).show()
+            safeToast("CopyCat Service Started")
             debugLog(logTag) { "CopyCat Service successfully detected copy acknowledgement" }
         } else {
-            Toast.makeText(this, "CopyCat started with fallback detection", Toast.LENGTH_SHORT)
-                .show()
+            safeToast("CopyCat started with fallback detection")
             Log.w(logTag, "CopyCat calibration timed out; continuing with fallback detection")
         }
     }
@@ -302,38 +331,49 @@ class CopyCatAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         Log.i(logTag, "CopyCat Accessibility Service Connected")
-        clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        registerActiveImeObserver()
-
-        startClipboardService()
+        runCatching {
+            if (!::clipboardManager.isInitialized) {
+                clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            }
+            if (!::windowManager.isInitialized) {
+                windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            }
+            registerActiveImeObserver()
+            startClipboardService()
+        }.onFailure { e ->
+            Log.e(logTag, "Error in onServiceConnected: ${e.message}", e)
+        }
     }
 
     private fun getFocusOnOverlay(): Boolean {
-        transientOverlayLayout = LinearLayout(this)
-        val layoutParams = WindowManager.LayoutParams(
-            0,
-            0,
-            WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            android.graphics.PixelFormat.TRANSPARENT,
-        )
-
         return try {
+            if (!::windowManager.isInitialized) {
+                windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            }
+            transientOverlayLayout = LinearLayout(this)
+            val layoutParams = WindowManager.LayoutParams(
+                0,
+                0,
+                WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                android.graphics.PixelFormat.TRANSPARENT,
+            )
             windowManager.addView(transientOverlayLayout, layoutParams)
             true
         } catch (e: Exception) {
-            Log.e(logTag, "Failed to add accessibility overlay: ${e.message}")
+            Log.w(logTag, "Failed to add accessibility overlay: ${e.message}")
             transientOverlayLayout = null
             false
         }
     }
 
     private fun removeFocusOnOverlay() {
-        transientOverlayLayout?.let {
+        transientOverlayLayout?.let { layout ->
             try {
-                windowManager.removeView(it)
+                if (::windowManager.isInitialized) {
+                    windowManager.removeView(layout)
+                }
             } catch (e: Exception) {
                 Log.w(logTag, "Failed to remove accessibility overlay: ${e.message}")
             }
@@ -343,13 +383,17 @@ class CopyCatAccessibilityService : AccessibilityService() {
 
     private fun withAccessibilityOverlayFocus(action: () -> Unit) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            action()
+            runCatching { action() }.onFailure { e ->
+                Log.e(logTag, "Failed executing action in overlay focus (pre-O): ${e.message}", e)
+            }
             return
         }
 
         val overlayAdded = getFocusOnOverlay()
         try {
             action()
+        } catch (t: Throwable) {
+            Log.e(logTag, "Error during withAccessibilityOverlayFocus action: ${t.message}", t)
         } finally {
             if (overlayAdded) {
                 removeFocusOnOverlay()
@@ -436,73 +480,93 @@ class CopyCatAccessibilityService : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        if (event == null) {
-            return
-        }
-
-        if (isCapturePaused()) {
-            return
-        }
-
-        val isOwnAppEvent = event.packageName?.toString() == packageName
-        if (isOwnAppEvent && !detectingCopyAck) {
-            return
-        }
-
-        if (verboseEventLogging) {
-            debugLog(logTag) { "Event : $event" }
-        }
-
-        initializeDetectionStrategy()
-
-        // Keep the latest meaningful app package from any event as context.
-        val normalizedPackage = normalizeSourcePackage(event.packageName?.toString())
-        if (normalizedPackage.isNotEmpty()) {
-            currentlyActiveApp = normalizedPackage
-        }
-
-        // Delegate to detection strategy
-        detectionStrategy.onAccessibilityEvent(
-            event,
-            packageName = currentlyActiveApp,
-            isScreenOn = isScreenOn(),
-            isAppInForeground = Utils.isActivityOnTop,
-            callback = object : ClipboardDetectionCallback {
-                override fun onCopyDetected(packageName: String) {
-                    onCopyEvent(packageName = packageName)
-                }
-                override fun onTestAckCandidate(ackText: String) {}
+        try {
+            if (event == null) {
+                return
             }
-        )
+
+            if (isCapturePaused()) {
+                return
+            }
+
+            val isOwnAppEvent = event.packageName?.toString() == packageName
+            if (isOwnAppEvent && !detectingCopyAck) {
+                return
+            }
+
+            if (verboseEventLogging) {
+                debugLog(logTag) { "Event : $event" }
+            }
+
+            initializeDetectionStrategy()
+
+            // Auto-heal connection if service disconnected
+            if (!isClipboardServiceConnected) {
+                restartClipboardService()
+            }
+
+            // Keep the latest meaningful app package from any event as context.
+            val normalizedPackage = normalizeSourcePackage(event.packageName?.toString())
+            if (normalizedPackage.isNotEmpty()) {
+                currentlyActiveApp = normalizedPackage
+            }
+
+            if (!::detectionStrategy.isInitialized) {
+                Log.w(logTag, "Detection strategy not initialized, skipping event")
+                return
+            }
+
+            // Delegate to detection strategy
+            detectionStrategy.onAccessibilityEvent(
+                event,
+                packageName = currentlyActiveApp,
+                isScreenOn = isScreenOn(),
+                isAppInForeground = Utils.isActivityOnTop,
+                callback = object : ClipboardDetectionCallback {
+                    override fun onCopyDetected(packageName: String) {
+                        onCopyEvent(packageName = packageName)
+                    }
+                    override fun onTestAckCandidate(ackText: String) {}
+                }
+            )
+        } catch (t: Throwable) {
+            Log.e(logTag, "Suppressed uncaught exception in onAccessibilityEvent: ${t.message}", t)
+        }
     }
 
     override fun onInterrupt() {
-        debugLog(logTag) { "Interrupt" }
+        runCatching {
+            debugLog(logTag) { "Interrupt" }
+        }
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
         Log.i(logTag, "CopyCat Accessibility Service Disconnected")
 
-        cancelDetectionTest()
+        runCatching { cancelDetectionTest() }
 
         // Clean up strategy
-        if (::detectionStrategy.isInitialized) {
-            detectionStrategy.shutdown()
+        runCatching {
+            if (::detectionStrategy.isInitialized) {
+                detectionStrategy.shutdown()
+            }
         }
 
         // Cancel any pending handler callbacks to prevent leaks
         handler.removeCallbacks(modeRelearnRunnable)
         handler.removeCallbacks(ackDetectionTimeoutRunnable)
         handler.removeCallbacksAndMessages(null)
-        updateDetectionStatus(state = "stopped", outcome = "none")
-        removeFocusOnOverlay()
-        unregisterActiveImeObserver()
+        runCatching { updateDetectionStatus(state = "stopped", outcome = "none") }
+        runCatching { removeFocusOnOverlay() }
+        runCatching { unregisterActiveImeObserver() }
 
-        clipboardService?.copycatStorage?.removeDetectionModeListener(detectionModeListener)
-        clipboardService?.copycatStorage?.removeNotificationPausedListener(notificationPausedListener)
-        if (isClipboardServiceConnected) unbindService(connection)
-        stopClipboardService()
-        Toast.makeText(this, "CopyCat Service Stopped", Toast.LENGTH_SHORT).show()
+        runCatching {
+            clipboardService?.copycatStorage?.removeDetectionModeListener(detectionModeListener)
+            clipboardService?.copycatStorage?.removeNotificationPausedListener(notificationPausedListener)
+            if (isClipboardServiceConnected) unbindService(connection)
+            stopClipboardService()
+        }
+        safeToast("CopyCat Service Stopped")
         return super.onUnbind(intent)
     }
 }

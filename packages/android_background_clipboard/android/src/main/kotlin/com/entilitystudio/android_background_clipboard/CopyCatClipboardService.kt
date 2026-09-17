@@ -75,7 +75,8 @@ class CopyCatClipboardService : Service() {
     private val logTag = "CopyCatClipboardService"
     private val binder = LocalBinder()
     private var resumedActivityCount = 0
-    private val lastAckToastAtMsByPackage = mutableMapOf<String, Long>()
+    private var lastAckToastPackage: String = ""
+    private var lastAckToastAtMs: Long = 0L
     private val detectionModeNotificationListener: (ClipboardDetectionMode) -> Unit = {
         mainHandler.post {
             if (isRunning) {
@@ -273,6 +274,9 @@ class CopyCatClipboardService : Service() {
                     ClipAction.Success
                 } catch (e: Exception) {
                     Log.e(logTag, "Failed to read URI media clip: ${e.message}")
+                    ClipAction.Failed
+                } catch (t: Throwable) {
+                    Log.e(logTag, "Critical error reading URI media clip: ${t.message}")
                     ClipAction.Failed
                 }
             }
@@ -558,20 +562,24 @@ class CopyCatClipboardService : Service() {
 
         val now = SystemClock.elapsedRealtime()
         val packageKey = sourcePackageName.trim().ifBlank { "<unknown>" }
-        val lastToastAtMs = lastAckToastAtMsByPackage[packageKey] ?: 0L
-        if (now - lastToastAtMs < clipboardAckToastCooldownMs) {
+        if (packageKey == lastAckToastPackage && now - lastAckToastAtMs < clipboardAckToastCooldownMs) {
             debugLog(logTag) { "Suppressing clipboard ack toast for package=$packageKey" }
             return
         }
 
-        lastAckToastAtMsByPackage[packageKey] = now
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+        lastAckToastPackage = packageKey
+        lastAckToastAtMs = now
+        runCatching {
+            Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT).show()
+        }
     }
 
 
     private fun showAck(text: String) {
         if (!ackToastEnable) return
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+        runCatching {
+            Toast.makeText(applicationContext, text, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun createNotificationChannel() {
@@ -750,7 +758,9 @@ class CopyCatClipboardService : Service() {
         mainHandler.removeCallbacks(autoResumePauseRunnable)
         mainHandler.postDelayed(autoResumePauseRunnable, 30 * 60 * 1000L)
         debugLog(logTag) { "Notification paused clipboard capture for 30 minutes" }
-        Toast.makeText(this, "CopyCat Clipboard Paused for 30 minutes", Toast.LENGTH_SHORT).show()
+        runCatching {
+            Toast.makeText(applicationContext, "CopyCat Clipboard Paused for 30 minutes", Toast.LENGTH_SHORT).show()
+        }
 
         prepareAndShowNotification()
     }
@@ -763,7 +773,9 @@ class CopyCatClipboardService : Service() {
         copycatStorage.updateNotificationPaused(false)
         pauseResumeAtMs = null
         debugLog(logTag) { "Notification resumed clipboard capture" }
-        Toast.makeText(this, "CopyCat Clipboard Resumed", Toast.LENGTH_SHORT).show()
+        runCatching {
+            Toast.makeText(applicationContext, "CopyCat Clipboard Resumed", Toast.LENGTH_SHORT).show()
+        }
         prepareAndShowNotification()
     }
 
@@ -893,7 +905,8 @@ class CopyCatClipboardService : Service() {
         
         // Clear references to prevent memory leaks
         lastCopiedText = null
-        lastAckToastAtMsByPackage.clear()
+        lastAckToastPackage = ""
+        lastAckToastAtMs = 0L
         
         super.onDestroy()
     }

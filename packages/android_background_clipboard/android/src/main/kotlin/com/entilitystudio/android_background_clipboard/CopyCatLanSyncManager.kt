@@ -164,7 +164,8 @@ class CopyCatLanSyncManager(
     private var started = false
     private var connectionExecutor: ThreadPoolExecutor? = null
     private val mainHandler = Handler(Looper.getMainLooper())
-    private val lastErrorToastAtMs = mutableMapOf<String, Long>()
+    private var lastErrorToastMessage: String = ""
+    private var lastErrorToastAtMs: Long = 0L
     private val errorToastCooldownMs = 5000L
     private var multicastLock: WifiManager.MulticastLock? = null
     private val sp = appContext.getSharedPreferences("CopyCatSharedPreferences", Context.MODE_PRIVATE)
@@ -251,13 +252,17 @@ class CopyCatLanSyncManager(
 
     private fun showErrorToast(message: String) {
         val now = SystemClock.elapsedRealtime()
-        synchronized(lastErrorToastAtMs) {
-            val lastToast = lastErrorToastAtMs[message] ?: 0L
-            if (now - lastToast < errorToastCooldownMs) return
-            lastErrorToastAtMs[message] = now
+        synchronized(this) {
+            if (message == lastErrorToastMessage && now - lastErrorToastAtMs < errorToastCooldownMs) {
+                return
+            }
+            lastErrorToastMessage = message
+            lastErrorToastAtMs = now
         }
         mainHandler.post {
-            Toast.makeText(appContext, message, Toast.LENGTH_SHORT).show()
+            runCatching {
+                Toast.makeText(appContext, message, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
