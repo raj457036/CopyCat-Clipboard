@@ -33,9 +33,15 @@ mixin SBCrossSyncListenerStatusChangeMixin<T> {
         _lastStatus = CrossSyncListenerStatus.connected;
         _statusEvents.add((CrossSyncListenerStatus.connected, obj));
       case RealtimeSubscribeStatus.channelError:
+        logger.w("Realtime channel error: $obj");
         _lastStatus = CrossSyncListenerStatus.error;
         _statusEvents.add((CrossSyncListenerStatus.error, obj));
-      case RealtimeSubscribeStatus.closed || RealtimeSubscribeStatus.timedOut:
+      case RealtimeSubscribeStatus.closed:
+        logger.w("Realtime channel closed: $obj");
+        _lastStatus = CrossSyncListenerStatus.disconnected;
+        _statusEvents.add((CrossSyncListenerStatus.disconnected, obj));
+      case RealtimeSubscribeStatus.timedOut:
+        logger.w("Realtime channel timed out: $obj");
         _lastStatus = CrossSyncListenerStatus.disconnected;
         _statusEvents.add((CrossSyncListenerStatus.disconnected, obj));
     }

@@ -17,6 +17,7 @@ import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/generated/app_localizations.dart';
 import 'package:clipboard/base/theme/theme_builder.dart';
 import 'package:clipboard/common/bloc_config.dart';
+import 'package:clipboard/common/file_log_sink.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/routes/routes.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -58,6 +59,7 @@ Future<void> appRunner() async {
   if (Platform.isWindows || Platform.isLinux) {
     MediaKit.ensureInitialized();
   }
+  await FileLogSink.instance.init();
   await initializeServices();
   runApp(const MainApp());
 }

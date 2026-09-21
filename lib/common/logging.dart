@@ -1,5 +1,6 @@
 import 'dart:developer' as developer;
 
+import 'package:clipboard/common/file_log_sink.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/foundation.dart';
 
@@ -14,7 +15,7 @@ typedef LogMessageBuilder = Object? Function();
 class LoggingConfig {
   LoggingConfig._();
 
-  static bool enabled = !kReleaseMode;
+  static bool enabled = true;
   static LogLevel minimumLevel = kDebugMode ? LogLevel.debug : LogLevel.warning;
   static bool useAnsiColors = kDebugMode;
   static bool captureErrorStackTraces = kDebugMode;
@@ -98,6 +99,7 @@ class AppLogger {
       error: error,
       stackTrace: _resolveErrorStackTrace(message, error, stackTrace),
     );
+    FileLogSink.instance.flushNow();
   }
 
   // MARK: - Internals
@@ -111,21 +113,29 @@ class AppLogger {
     if (!_shouldLog(level)) return;
 
     final now = systemTime();
-    final resolvedMessage = _withScope(
-      level,
-      _resolveMessage(message)?.toString() ?? '',
-      now,
-    );
-    final payload = _colorize(resolvedMessage, _messageColor(level));
+    final resolvedMsg = _resolveMessage(message)?.toString() ?? '';
 
-    developer.log(
-      payload,
-      level: _levelValue(level),
-      name: 'CC',
-      error: error,
-      stackTrace: stackTrace,
-      time: now,
-    );
+    if (!kReleaseMode) {
+      final formatted = _withScope(level, resolvedMsg, now);
+      final payload = _colorize(formatted, _messageColor(level));
+      developer.log(
+        payload,
+        level: _levelValue(level),
+        name: 'CC',
+        error: error,
+        stackTrace: stackTrace,
+        time: now,
+      );
+    }
+
+    if (level.index >= LogLevel.warning.index) {
+      final errorSuffix = error != null ? ' | error: $error' : '';
+      FileLogSink.instance.write(
+        level.name,
+        _scope,
+        '$resolvedMsg$errorSuffix',
+      );
+    }
   }
 
   // MARK: - Message Resolution

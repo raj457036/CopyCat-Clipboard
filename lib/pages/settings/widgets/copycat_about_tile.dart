@@ -1,16 +1,55 @@
+import 'dart:async';
+
 import 'package:clipboard/base/constants/strings/asset_constants.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/common/custom_icons.dart';
+import 'package:clipboard/common/file_log_sink.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class CopycatAboutTile extends StatelessWidget {
+class CopycatAboutTile extends StatefulWidget {
   const CopycatAboutTile({super.key});
+
+  @override
+  State<CopycatAboutTile> createState() => _CopycatAboutTileState();
+}
+
+class _CopycatAboutTileState extends State<CopycatAboutTile> {
+  int _iconTapCount = 0;
+  Timer? _resetTimer;
+
+  @override
+  void dispose() {
+    _resetTimer?.cancel();
+    super.dispose();
+  }
+
+  void _onIconTap() {
+    _resetTimer?.cancel();
+    _iconTapCount++;
+
+    if (_iconTapCount >= 10) {
+      _iconTapCount = 0;
+      _openLogFile();
+      return;
+    }
+
+    _resetTimer = Timer(const Duration(seconds: 3), () {
+      _iconTapCount = 0;
+    });
+  }
+
+  Future<void> _openLogFile() async {
+    final file = await FileLogSink.getLogFile();
+    if (file == null) return;
+    await OpenFilex.open(file.path);
+  }
 
   Future<void> openWebsite() async {
     await launchUrlString(websiteUrl);
@@ -45,9 +84,15 @@ class CopycatAboutTile extends StatelessWidget {
     return AboutListTile(
       icon: const Icon(Icons.new_releases_rounded),
       applicationName: context.locale.app__name,
-      applicationIcon: const ClipRRect(
-        borderRadius: radius16,
-        child: Image(image: AssetImage(AssetConstants.copyCatIcon), width: 85),
+      applicationIcon: GestureDetector(
+        onTap: _onIconTap,
+        child: const ClipRRect(
+          borderRadius: radius16,
+          child: Image(
+            image: AssetImage(AssetConstants.copyCatIcon),
+            width: 85,
+          ),
+        ),
       ),
       applicationVersion: "$version+$build",
       aboutBoxChildren: [
