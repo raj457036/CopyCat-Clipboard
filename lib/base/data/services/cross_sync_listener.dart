@@ -122,14 +122,7 @@ class SBClipCrossSyncListener
     _statusEvents.add((CrossSyncListenerStatus.disconnected, null));
     if (channel != null) {
       try {
-        await channel.unsubscribe().timeout(const Duration(seconds: 2));
-      } catch (e) {
-        logger.w(
-          "Error or timeout unsubscribing realtime channel ($channelID): $e",
-        );
-      }
-      try {
-        await client.removeChannel(channel);
+        await client.removeChannel(channel).timeout(const Duration(seconds: 2));
       } catch (e) {
         logger.w("Error removing realtime channel ($channelID): $e");
       }
@@ -206,14 +199,7 @@ class SBCollectionCrossSyncListener
     _statusEvents.add((CrossSyncListenerStatus.disconnected, null));
     if (channel != null) {
       try {
-        await channel.unsubscribe().timeout(const Duration(seconds: 2));
-      } catch (e) {
-        logger.w(
-          "Error or timeout unsubscribing realtime channel ($channelID): $e",
-        );
-      }
-      try {
-        await client.removeChannel(channel);
+        await client.removeChannel(channel).timeout(const Duration(seconds: 2));
       } catch (e) {
         logger.w("Error removing realtime channel ($channelID): $e");
       }

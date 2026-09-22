@@ -11,10 +11,12 @@ import 'package:clipboard/base/domain/services/conflict_resolver.dart';
 import 'package:clipboard/base/domain/services/sync_adapter.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/domain/model/sync/sync_config.dart';
+import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/sync/sync_engine.dart';
 import 'package:clipboard/common/logging.dart' show AppLogger;
 import 'package:clipboard/utils/utility.dart';
 import 'package:injectable/injectable.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:synchronized/extension.dart';
 import 'package:synchronized/synchronized.dart' show Lock;
 
@@ -31,6 +33,7 @@ class SyncOrchestrator {
   static const _realtimeStartupOutboxDelay = Duration(seconds: 4);
   final Map<String, SyncEngine> _engines = {};
   final SyncOutboxRepository _outboxRepo;
+  final SupabaseClient _client;
   Timer? _outboxTimer;
   StreamSubscription? _outboxStreamSub;
 
@@ -48,6 +51,7 @@ class SyncOrchestrator {
     this._outboxRepo,
     SyncEventBus eventBus,
     @Named('device_id') String deviceId,
+    this._client,
   ) {
     _bootstrapEngine(
       clipAdapter,
@@ -270,13 +274,49 @@ class SyncOrchestrator {
     }
   }
 
+  bool get _needsRealtimeReconnect {
+    return _engines.values.any((engine) {
+      if (!engine.isRealtimeActive) return false;
+      final status = engine.realtimeStatus;
+      return status == null ||
+          status == CrossSyncListenerStatus.disconnected ||
+          status == CrossSyncListenerStatus.error ||
+          status == CrossSyncListenerStatus.unknown;
+    });
+  }
+
   /// Reconnects realtime listeners across all registered engines if realtime is active.
-  Future<void> reconnectRealtime() async {
+  ///
+  /// When [force] is false, this is a no-op if all active realtime listeners are
+  /// already in [CrossSyncListenerStatus.connected] state.
+  /// When reconnection is performed, all engines are stopped, the shared socket is
+  /// cleanly disconnected to clear stale TCP state, and all listeners are restarted.
+  Future<void> reconnectRealtime({bool force = false}) async {
     if (!_isRunning || _activeSyncSpeed != SyncSpeed.realtime) return;
-    _logger.d('Reconnecting realtime listeners across all engines...');
-    for (final engine in _engines.values) {
-      await engine.reconnectRealtime();
+
+    if (!force && !_needsRealtimeReconnect) {
+      _logger.d('reconnectRealtime: all listeners healthy, skipping reconnect');
+      return;
     }
+
+    _logger.i(
+      () =>
+          'Coordinated realtime reconnection (force: $force): resetting transport and subscriptions...',
+    );
+
+    for (final engine in _engines.values) {
+      engine.stopRealtime();
+    }
+
+    try {
+      await _client.realtime.disconnect();
+    } catch (e) {
+      _logger.w('Error disconnecting realtime socket: $e');
+    }
+
+    await wait(150);
+
+    _startRealtime();
   }
 
   void _startPolling({int? intervalSeconds}) {

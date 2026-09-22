@@ -605,6 +605,10 @@ class SyncEngine<T extends Syncable> {
     }
   }
 
+  bool get isRealtimeActive => _isRealtimeSubscribed;
+  CrossSyncListenerStatus? get realtimeStatus =>
+      adapter.realtimeListener?.currentStatus;
+
   Future<void> reconnectRealtime() async {
     if (!_isRealtimeSubscribed || adapter.realtimeListener == null) return;
     await adapter.realtimeListener?.reconnect();

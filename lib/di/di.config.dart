@@ -521,6 +521,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i770.SyncOutboxRepository>(),
         gh<_i292.SyncEventBus>(),
         gh<String>(instanceName: 'device_id'),
+        gh<_i454.SupabaseClient>(),
       ),
     );
     gh.singleton<_i805.UserDevicesCubit>(
