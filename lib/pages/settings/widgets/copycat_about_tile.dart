@@ -9,7 +9,6 @@ import 'package:clipboard/common/file_log_sink.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as p;
 import 'package:open_filex/open_filex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:universal_io/universal_io.dart';
