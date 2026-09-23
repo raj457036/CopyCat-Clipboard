@@ -9,8 +9,10 @@ import 'package:clipboard/common/file_log_sink.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as p;
 import 'package:open_filex/open_filex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:universal_io/universal_io.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class CopycatAboutTile extends StatefulWidget {
@@ -48,6 +50,12 @@ class _CopycatAboutTileState extends State<CopycatAboutTile> {
   Future<void> _openLogFile() async {
     final file = await FileLogSink.getLogFile();
     if (file == null) return;
+
+    // openfilex not working on windows
+    if (Platform.isWindows) {
+      await Process.run('notepad', [file.path]);
+      return;
+    }
     await OpenFilex.open(file.path);
   }
 

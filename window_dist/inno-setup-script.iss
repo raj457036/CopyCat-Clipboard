@@ -3,7 +3,7 @@
 
 #define MyAppName "CopyCat Clipboard"
 #define MyAppVersion "2.0.8+102"
-#define MyAppPublisher "Entility Studio"
+s#define MyAppPublisher "Entility Studio"
 #define MyAppExeName "Clipboard.exe"
 #define MyAppAssocName MyAppName + ""
 #define MyAppAssocExt ".myp"

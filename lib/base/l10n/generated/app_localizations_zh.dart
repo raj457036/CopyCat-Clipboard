@@ -1688,13 +1688,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings__text__gdrive__info =>
-      '您的文件和媒体通过 Google Drive 安全地跨设备同步，确保您的隐私得到保护。';
+      '您的文件和媒体通过受支持的云提供商安全地跨设备同步，确保您的隐私得到保护。连接多个提供商时，您可以为新上传选择默认存储。';
 
   @override
-  String get settings__drive__default_tooltip => 'Default storage for uploads';
+  String get settings__drive__default_tooltip => '默认上传存储';
 
   @override
-  String get settings__drive__set_default => 'Set as default';
+  String get settings__drive__set_default => '设为默认';
 
   @override
   String get settings__tile__other_cloud__title => '设置其他云端驱动';
@@ -1704,82 +1704,77 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings__text__webdav__info =>
-      'Connect your WebDAV server (Nextcloud, ownCloud, Synology NAS, etc.) to store and sync your files and media attachments.';
+      '连接您的 WebDAV 服务器（Nextcloud、ownCloud、Synology NAS 等）以存储和同步您的文件及媒体附件。';
 
   @override
-  String get settings__dialog__webdav__title => 'WebDAV Storage';
+  String get settings__dialog__webdav__title => 'WebDAV 存储';
 
   @override
-  String get settings__dialog__webdav__preset_provider => 'Provider Preset';
+  String get settings__dialog__webdav__preset_provider => '预设服务商';
 
   @override
-  String get settings__dialog__webdav__server_url => 'Server URL';
+  String get settings__dialog__webdav__server_url => '服务器 URL';
 
   @override
   String get settings__dialog__webdav__server_url_hint =>
       'https://cloud.example.com/remote.php/dav/files/username/';
 
   @override
-  String get settings__dialog__webdav__username => 'Username';
+  String get settings__dialog__webdav__username => '用户名';
 
   @override
-  String get settings__dialog__webdav__password => 'Password / App Password';
+  String get settings__dialog__webdav__password => '密码 / 应用密码';
 
   @override
-  String get settings__dialog__webdav__base_path => 'Storage Folder Path';
+  String get settings__dialog__webdav__base_path => '存储文件夹路径';
 
   @override
   String get settings__dialog__webdav__base_path_helper =>
-      'Folder path cannot be changed after setup. To change it, disconnect first.';
+      '文件夹路径在设置后无法更改。如需更改，请先断开连接。';
 
   @override
-  String get settings__dialog__webdav__advanced => 'Advanced';
+  String get settings__dialog__webdav__advanced => '高级';
 
   @override
-  String get settings__dialog__webdav__self_signed =>
-      'Allow Self-Signed / Insecure Certificates';
+  String get settings__dialog__webdav__self_signed => '允许自签名 / 不安全证书';
 
   @override
-  String get settings__dialog__webdav__auto_clean =>
-      'Auto-clean inactive files after 30 days';
+  String get settings__dialog__webdav__auto_clean => '30 天后自动清理非活动文件';
 
   @override
   String get settings__dialog__webdav__auto_clean_subtitle =>
-      'Because WebDAV credentials remain private on your device, remote files are not removed by cloud cleanup. When enabled, media files older than 30 days from last modification will be deleted from your WebDAV server. Clips in collections or locked are always protected.';
+      '由于 WebDAV 凭据仅保留在您的设备本地，云清理不会删除远程文件。启用后，自上次修改起超过 30 天的媒体文件将从您的 WebDAV 服务器中删除。收藏中或已锁定的剪贴片段始终受到保护。';
 
   @override
-  String get settings__dialog__webdav__test_conn => 'Test Connection';
+  String get settings__dialog__webdav__test_conn => '测试连接';
 
   @override
-  String get settings__dialog__webdav__testing => 'Testing Connection...';
+  String get settings__dialog__webdav__testing => '正在测试连接...';
 
   @override
-  String get settings__dialog__webdav__test_success => 'Connection successful!';
+  String get settings__dialog__webdav__test_success => '连接成功！';
 
   @override
-  String get settings__dialog__webdav__disconnect => 'Disconnect';
+  String get settings__dialog__webdav__disconnect => '断开连接';
 
   @override
-  String get settings__dialog__webdav__save => 'Save & Connect';
+  String get settings__dialog__webdav__save => '保存并连接';
 
   @override
-  String get settings__dialog__webdav__reconnect_title => 'WebDAV Settings';
+  String get settings__dialog__webdav__reconnect_title => 'WebDAV 设置';
 
   @override
   String get settings__dialog__webdav__reconnect_subtitle =>
-      'WebDAV is already connected. Update settings or disconnect?';
+      'WebDAV 已连接。更新设置还是断开连接？';
 
   @override
-  String get settings__dialog__webdav__url_required =>
-      'Please enter a valid WebDAV server URL';
+  String get settings__dialog__webdav__url_required => '请输入有效的 WebDAV 服务器 URL';
 
   @override
-  String get settings__dialog__webdav__username_required =>
-      'Please enter a username';
+  String get settings__dialog__webdav__username_required => '请输入用户名';
 
   @override
-  String get settings__dialog__webdav__password_required =>
-      'Please enter a password or app token';
+  String get settings__dialog__webdav__password_required => '请输入密码或应用令牌';
 
   @override
   String get settings__app_lock__title => '应用锁定';
