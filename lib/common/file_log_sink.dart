@@ -80,13 +80,18 @@ class FileLogSink {
   }
 
   void _drain() {
-    if (_draining || _queue.isEmpty || _sink == null) return;
-    _draining = true;
+    try {
+      if (_draining || _queue.isEmpty || _sink == null) return;
+      _draining = true;
 
-    while (_queue.isNotEmpty) {
-      _sink!.write(_queue.removeFirst());
+      while (_queue.isNotEmpty) {
+        _sink!.write(_queue.removeFirst());
+      }
+      _draining = false;
+    } catch (e) {
+      debugPrint("FilelogSink - $e");
+      _draining = false;
     }
-    _draining = false;
   }
 
   void _flush() {

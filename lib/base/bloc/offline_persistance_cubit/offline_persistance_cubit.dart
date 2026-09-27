@@ -267,10 +267,12 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
             );
             if (!saved) saveFileSuccess = false;
           } else {
-            await copy.writeFileContent(
+            final written = await copy.writeFileContent(
               File(item.localPath!),
               mimeType: item.fileMimeType,
+              fileName: item.fileName,
             );
+            if (!written) return false;
           }
       }
     }
@@ -383,8 +385,8 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
 
       if (exclusionChecker != null && clip.isTextSubType) {
         final content = clip.text ?? clip.uri?.toString();
-        if (content != null &&
-            !exclusionChecker!.isClipAllowed(clip, activity)) {
+        final notExcluded = exclusionChecker!.isClipAllowed(clip, activity);
+        if (content != null && !notExcluded) {
           continue;
         }
       }
@@ -670,6 +672,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
           final bool written = await copy.writeFileContent(
             file,
             mimeType: item.fileMimeType,
+            fileName: item.fileName,
           );
           if (!written) return;
       }

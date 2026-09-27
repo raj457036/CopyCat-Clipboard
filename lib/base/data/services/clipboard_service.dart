@@ -1,5 +1,3 @@
-import 'dart:async' show FutureOr;
-
 import 'package:clipboard/base/background/file_ops_worker.dart';
 import 'package:clipboard/base/constants/misc.dart';
 import 'package:clipboard/base/data/services/clipboard/clip_models.dart';
@@ -103,7 +101,7 @@ class ClipboardService with ClipboardListener {
     if (items.isEmpty) return;
     setWriting(true);
     await SystemClipboard.instance?.write(items);
-    await wait(Durations.short2.inMilliseconds);
+    await wait(Durations.short1.inMilliseconds);
     setWriting();
   }
 
@@ -280,31 +278,43 @@ class CopyToClipboard {
     return true;
   }
 
-  Future<bool> writeFileContent(File file, {String? mimeType}) async {
-    FutureOr<EncodedData>? format;
+  List<DataWriterItem> get items => List.unmodifiable(_items);
 
-    for (final f in allSupportedClipFormats) {
-      if (f is SimpleFileFormat) {
-        final mime_ = mimeType ?? mime.lookupMimeType(file.path);
-        final isThis = f.mimeTypes?.contains(mime_);
-        if (isThis != null && isThis) {
-          format = f.lazy(() => file.readAsBytes());
-          break;
-        }
-      }
-    }
-
-    if (format == null) {
-      logger.i(
-        () =>
-            "[CopyToClipboard] Couldn't determine mime type for file ${file.path} "
-            "with mime type $mimeType",
-      );
+  Future<bool> writeFileContent(
+    File file, {
+    String? mimeType,
+    String? fileName,
+  }) async {
+    if (!await file.exists()) {
+      logger.w(() => "[CopyToClipboard] File does not exist at ${file.path}");
       return false;
     }
 
-    final item = DataWriterItem(suggestedName: p.basename(file.path));
-    item.add(format);
+    final String resolvedMime =
+        mimeType ?? mime.lookupMimeType(file.path) ?? 'application/octet-stream';
+    final Uri resolvedUri = await resolveFileUri(file.path);
+    final String baseName = fileName?.trim().isNotEmpty == true
+        ? fileName!.trim()
+        : p.basename(file.path);
+
+    final DataWriterItem item = DataWriterItem(suggestedName: baseName);
+
+    if (resolvedMime.toLowerCase().startsWith('image/')) {
+      SimpleFileFormat? imageFormat;
+      for (final f in allSupportedClipFormats) {
+        if (f is SimpleFileFormat &&
+            (f.mimeTypes?.contains(resolvedMime) ?? false)) {
+          imageFormat = f;
+          break;
+        }
+      }
+      imageFormat ??= Formats.png;
+      item.add(imageFormat.lazy(() => file.readAsBytes()));
+    }
+
+    item.add(Formats.fileUri(resolvedUri));
+    item.add(Formats.plainText(file.path));
+
     _items.add(item);
     return true;
   }
@@ -319,11 +329,12 @@ class CopyToClipboard {
         ? fileName!.trim()
         : p.basename(file.path);
 
-    var ext = (fileExtension?.trim().isNotEmpty == true
-            ? fileExtension!.trim()
-            : p.extension(baseName))
-        .replaceAll('.', '')
-        .toLowerCase();
+    var ext =
+        (fileExtension?.trim().isNotEmpty == true
+                ? fileExtension!.trim()
+                : p.extension(baseName))
+            .replaceAll('.', '')
+            .toLowerCase();
 
     if (ext.isEmpty) {
       ext = p.extension(file.path).replaceAll('.', '').toLowerCase();
@@ -331,8 +342,8 @@ class CopyToClipboard {
 
     final resolvedFileName =
         ext.isNotEmpty && !baseName.toLowerCase().endsWith('.$ext')
-            ? '$baseName.$ext'
-            : baseName;
+        ? '$baseName.$ext'
+        : baseName;
 
     final bytes = await file.readAsBytes();
 

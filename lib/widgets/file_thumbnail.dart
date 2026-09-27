@@ -35,23 +35,28 @@ class FileThumbnail extends StatelessWidget {
       return const Icon(Icons.insert_drive_file_rounded);
     }
 
-    return Thumbnail(
-      mimeType: mimeType,
-      widgetSize: widgetSize,
-      onlyIcon: _useIconOnly,
-      useWrapper: false,
-      useWaterMark: false,
-      name: modifier,
-      decoration: WidgetDecoration(
-        backgroundColor: context.colors.surfaceContainer,
-        iconColor: context.colors.onSurface,
+    return FittedBox(
+      fit: BoxFit.fitWidth,
+      clipBehavior: Clip.hardEdge,
+      alignment: Alignment.topCenter,
+      child: Thumbnail(
+        mimeType: mimeType,
+        widgetSize: widgetSize,
+        onlyIcon: _useIconOnly,
+        useWrapper: false,
+        useWaterMark: false,
+        name: modifier,
+        decoration: WidgetDecoration(
+          backgroundColor: context.colors.surfaceContainer,
+          iconColor: context.colors.onSurface,
+        ),
+        dataSize: item.fileSize,
+        dataResolver: _useIconOnly
+            ? null
+            : () => File(item.localPath!).readAsBytes(),
+        errorBuilder: (context, error) =>
+            const Icon(Icons.insert_drive_file_rounded),
       ),
-      dataSize: item.fileSize,
-      dataResolver: _useIconOnly
-          ? null
-          : () => File(item.localPath!).readAsBytes(),
-      errorBuilder: (context, error) =>
-          const Icon(Icons.insert_drive_file_rounded),
     );
   }
 }
