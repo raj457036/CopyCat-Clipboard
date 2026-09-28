@@ -22,6 +22,7 @@ import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:clipboard/widgets/window_focus_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:focus_window/focus_window.dart';
 import 'package:go_router/go_router.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -111,8 +112,14 @@ Future<void> copyToClipboard(
   if (!context.mounted) return;
   final ctx = context.mounted ? context : rootNavigationKey.currentContext!;
   try {
-    final cubit = ctx.read<OfflinePersistenceCubit>();
-    final result = await cubit.copyToClipboard([item], saveFile: saveFile);
+    bool result;
+    if (item.locked && !saveFile && (item.text?.isNotEmpty ?? false)) {
+      await const FocusWindow().writeSensitiveContent(item.text!);
+      result = true;
+    } else {
+      final cubit = ctx.read<OfflinePersistenceCubit>();
+      result = await cubit.copyToClipboard([item], saveFile: saveFile);
+    }
     if (!ctx.mounted) return;
     if (noAck) return;
     if (result) {
@@ -291,7 +298,10 @@ Future<void> pasteOnLastWindow(BuildContext context, ClipboardItem item) async {
   if (!context.mounted) return;
 
   final focusManager = WindowFocusManager.of(context);
-  await copyToClipboard(context, item, noAck: true);
+  final isSensitive = item.locked && (item.text?.isNotEmpty ?? false);
+  if (!isSensitive) {
+    await copyToClipboard(context, item, noAck: true);
+  }
   await focusManager?.toggleAndPaste(item);
   if (!context.mounted) return;
   unawaited(_maybeShowReviewPrompt());

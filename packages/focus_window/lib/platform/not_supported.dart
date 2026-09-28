@@ -57,6 +57,16 @@ class NotSupportedPlatformActivityObserver
   }
 
   @override
+  Future<void> writeSensitiveContent(String content) {
+    return Future.value(null);
+  }
+
+  @override
+  Future<void> pasteSensitiveContent(String content) {
+    return Future.value(null);
+  }
+
+  @override
   Future<void> setActiveWindowId(int windowId) {
     return Future.value(null);
   }

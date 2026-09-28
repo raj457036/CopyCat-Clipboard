@@ -5,6 +5,8 @@ import 'package:focus_window/platform/activity_info.dart';
 import 'focus_window_platform_interface.dart';
 
 class FocusWindow {
+  const FocusWindow();
+
   Future<int?> getActiveWindowId() {
     return FocusWindowPlatform.instance.getActiveWindowId();
   }
@@ -15,6 +17,14 @@ class FocusWindow {
 
   Future<void> pasteContent() {
     return FocusWindowPlatform.instance.pasteContent();
+  }
+
+  Future<void> writeSensitiveContent(String content) {
+    return FocusWindowPlatform.instance.writeSensitiveContent(content);
+  }
+
+  Future<void> pasteSensitiveContent(String content) {
+    return FocusWindowPlatform.instance.pasteSensitiveContent(content);
   }
 
   Stream get events => FocusWindowPlatform.instance.events;

@@ -14,6 +14,8 @@ abstract class PlatformActivityObserverInterface {
   Future<int?> getActiveWindowId();
   Future<void> setActiveWindowId(int windowId);
   Future<void> pasteContent();
+  Future<void> writeSensitiveContent(String content);
+  Future<void> pasteSensitiveContent(String content);
   Future<bool> get isObserving;
 
   Stream get events;

@@ -204,6 +204,16 @@ class QuickPasteService {
       }
     }
 
+    if (selectedItem.locked && (selectedItem.text?.isNotEmpty ?? false)) {
+      if (targetWindowId == null) {
+        return 'Unable to restore the target application';
+      }
+      await focusWindow.setActiveWindowId(targetWindowId);
+      await wait(const Duration(milliseconds: 80).inMilliseconds);
+      await focusWindow.pasteSensitiveContent(selectedItem.text!);
+      return null;
+    }
+
     final copied = await offlinePersistenceCubit.copyToClipboard([
       selectedItem,
     ]);
