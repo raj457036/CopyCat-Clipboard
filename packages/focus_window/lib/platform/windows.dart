@@ -3,8 +3,6 @@ import 'dart:async';
 import 'dart:convert' show base64;
 import 'dart:io';
 
-import 'dart:ffi';
-import 'package:ffi/ffi.dart';
 import 'package:flutter/services.dart';
 import 'package:focus_window/platform/activity_info.dart';
 import 'package:focus_window/platform/utils.dart';
@@ -162,71 +160,6 @@ class WindowsActivityObserver implements PlatformActivityObserverInterface {
   @override
   Future<void> pasteContent() async {
     simulateWindowsPasteShortcut();
-  }
-
-  void _setClipboardDwordFlag(String formatName, int value) {
-    final formatNamePtr = formatName.toNativeUtf16();
-    final formatId = RegisterClipboardFormat(formatNamePtr);
-    calloc.free(formatNamePtr);
-
-    if (formatId != 0) {
-      const gMemFlags = 0x0042;
-      final hMem = GlobalAlloc(gMemFlags, sizeOf<DWORD>());
-      if (hMem != nullptr) {
-        final pMem = GlobalLock(hMem);
-        pMem.cast<DWORD>().value = value;
-        GlobalUnlock(hMem);
-        SetClipboardData(formatId, hMem.address);
-      }
-    }
-  }
-
-  void _writeSensitiveToClipboard(String text) {
-    if (OpenClipboard(NULL) == FALSE) return;
-    try {
-      EmptyClipboard();
-
-      _setClipboardDwordFlag('CanIncludeInClipboardHistory', 0);
-      _setClipboardDwordFlag('CanUploadToCloudClipboard', 0);
-      _setClipboardDwordFlag('Clipboard Viewer Ignore', 0);
-
-      const cfUnicodeText = 13;
-      const gmemMoveable = 0x0002;
-      final textUnits = text.toNativeUtf16();
-      final textBytes = (text.length + 1) * 2;
-      final hTextMem = GlobalAlloc(gmemMoveable, textBytes);
-      if (hTextMem != nullptr) {
-        final pTextMem = GlobalLock(hTextMem);
-        pTextMem.cast<Uint8>().asTypedList(textBytes).setAll(
-              0,
-              textUnits.cast<Uint8>().asTypedList(textBytes),
-            );
-        GlobalUnlock(hTextMem);
-        SetClipboardData(cfUnicodeText, hTextMem.address);
-      }
-      calloc.free(textUnits);
-    } finally {
-      CloseClipboard();
-    }
-  }
-
-  @override
-  Future<void> writeSensitiveContent(String content) async {
-    _writeSensitiveToClipboard(content);
-  }
-
-  @override
-  Future<void> pasteSensitiveContent(String content) async {
-    _writeSensitiveToClipboard(content);
-    await pasteContent();
-    await Future<void>.delayed(const Duration(milliseconds: 150));
-    if (OpenClipboard(NULL) != FALSE) {
-      try {
-        EmptyClipboard();
-      } finally {
-        CloseClipboard();
-      }
-    }
   }
 
   @override

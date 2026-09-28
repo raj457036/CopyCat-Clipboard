@@ -242,6 +242,9 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   }) async {
     items = await _resolvePreviewItems(items);
     final copy = CopyToClipboard();
+    if (items.any((item) => item.locked)) {
+      copy.markSensitive();
+    }
 
     bool saveFileSuccess = true;
     for (final item in items) {

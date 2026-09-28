@@ -41,16 +41,6 @@ class MethodChannelFocusWindow extends FocusWindowPlatform {
   }
 
   @override
-  Future<void> writeSensitiveContent(String content) async {
-    await activityObserver.writeSensitiveContent(content);
-  }
-
-  @override
-  Future<void> pasteSensitiveContent(String content) async {
-    await activityObserver.pasteSensitiveContent(content);
-  }
-
-  @override
   Stream get events => activityObserver.events;
 
   @override

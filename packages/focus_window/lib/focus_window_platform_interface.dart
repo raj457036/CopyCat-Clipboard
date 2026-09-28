@@ -44,16 +44,6 @@ abstract class FocusWindowPlatform extends PlatformInterface
   }
 
   @override
-  Future<void> writeSensitiveContent(String content) {
-    throw UnimplementedError("writeSensitiveContent() has not been implemented");
-  }
-
-  @override
-  Future<void> pasteSensitiveContent(String content) {
-    throw UnimplementedError("pasteSensitiveContent() has not been implemented");
-  }
-
-  @override
   Future<Uint8List?> getIcon(String applicationPath) {
     throw UnimplementedError("getIcon() has not been implemented");
   }

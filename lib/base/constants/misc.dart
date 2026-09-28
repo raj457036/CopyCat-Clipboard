@@ -11,6 +11,15 @@ const svg = SimpleFileFormat(
   mimeTypes: ['public.svg-image', "image/svg+xml", "image/svg"],
 );
 
+const kdePasswordManagerHint = SimpleValueFormat<String>(
+  linux: SimplePlatformCodec(
+    formats: ['x-kde-passwordManagerHint'],
+  ),
+  fallback: SimplePlatformCodec(
+    formats: ['x-kde-passwordManagerHint'],
+  ),
+);
+
 const allSupportedClipFormats = [...Formats.standardFormats, avif, svg];
 
 /// Maximum allowed size for rich clipboard payload (in bytes).

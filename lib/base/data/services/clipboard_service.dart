@@ -15,6 +15,7 @@ import 'package:path/path.dart' as p;
 import 'package:rxdart/rxdart.dart';
 import 'package:super_clipboard/super_clipboard.dart';
 import 'package:universal_io/io.dart';
+import 'package:clipboard/base/data/services/clipboard/sensitive_clipboard_writer.dart';
 import 'package:window_manager/window_manager.dart';
 
 // Re-export sub-modules so all existing `import clipboard_service.dart`
@@ -224,16 +225,49 @@ class ClipboardService with ClipboardListener {
   }
 }
 
+class _SensitiveTextContent {
+  String? content;
+
+  bool get isValid => content != null && content!.isNotEmpty;
+}
+
 /// Accumulates clipboard write operations and commits them as a single
 /// [SystemClipboard.write] call, suppressing the re-capture listener.
 class CopyToClipboard {
+  final _SensitiveTextContent _sensitiveContent = _SensitiveTextContent();
   final List<DataWriterItem> _items;
+  bool isSensitive = false;
 
   CopyToClipboard() : _items = <DataWriterItem>[];
 
+  void markSensitive([String? plainText]) {
+    isSensitive = true;
+    if (plainText != null && plainText.isNotEmpty) {
+      _sensitiveContent.content = plainText;
+    }
+  }
+
   Future<bool> commit(ClipboardService service) async {
-    if (_items.isEmpty) return false;
     try {
+      if (isSensitive && (Platform.isMacOS || Platform.isWindows)) {
+        if (!_sensitiveContent.isValid) return false;
+
+        await service.runWithCaptureSuppressed(() async {
+          await SensitiveClipboardWriter.instance.writeSensitiveText(
+            _sensitiveContent.content!,
+          );
+        });
+        return true;
+      }
+
+      if (_items.isEmpty) return false;
+
+      if (isSensitive && Platform.isLinux) {
+        for (final item in _items) {
+          item.add(kdePasswordManagerHint('secret'));
+        }
+      }
+
       await service.runWithCaptureSuppressed(() async {
         await service.write(_items);
       });
@@ -246,6 +280,9 @@ class CopyToClipboard {
 
   Future<bool> writeText(String text) async {
     if (text.isEmpty) return false;
+    if (isSensitive) {
+      _sensitiveContent.content = text;
+    }
     final item = DataWriterItem(suggestedName: "Text");
     item.add(Formats.plainText(text));
     _items.add(item);
@@ -260,6 +297,9 @@ class CopyToClipboard {
     String? richData,
     TextPasteFormat mode = TextPasteFormat.auto,
   }) async {
+    if (isSensitive) {
+      _sensitiveContent.content = text;
+    }
     final success = service.writeRichTextIfAvailable(
       _items,
       text: text,
@@ -272,6 +312,9 @@ class CopyToClipboard {
 
   bool writeUrl(Uri? uri) {
     if (uri == null) return false;
+    if (isSensitive) {
+      _sensitiveContent.content = uri.toString();
+    }
     final item = DataWriterItem(suggestedName: "Uri");
     item.add(Formats.uri(NamedUri(uri)));
     _items.add(item);
@@ -291,7 +334,9 @@ class CopyToClipboard {
     }
 
     final String resolvedMime =
-        mimeType ?? mime.lookupMimeType(file.path) ?? 'application/octet-stream';
+        mimeType ??
+        mime.lookupMimeType(file.path) ??
+        'application/octet-stream';
     final Uri resolvedUri = await resolveFileUri(file.path);
     final String baseName = fileName?.trim().isNotEmpty == true
         ? fileName!.trim()

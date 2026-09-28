@@ -62,11 +62,7 @@ class WindowFocusManagerState extends State<WindowFocusManager>
     final unfocused = await _unfocusForPaste();
     await wait(Durations.short1.inMilliseconds);
     if (unfocused == true) {
-      if (item.locked && (item.text?.isNotEmpty ?? false)) {
-        await pasteSensitiveOnFocusedWindow(item.text!);
-      } else {
-        await pasteOnFocusedWindow();
-      }
+      await pasteOnFocusedWindow();
     }
   }
 
@@ -101,13 +97,9 @@ class WindowFocusManagerState extends State<WindowFocusManager>
         final item = transformed[i];
         if (!mounted) break;
         await synchronized(() async {
-          if (item.locked && (item.text?.isNotEmpty ?? false)) {
-            await pasteSensitiveOnFocusedWindow(item.text!);
-          } else {
-            await copyToClipboard(context, item, noAck: true);
-            await wait(Durations.short1.inMilliseconds);
-            await pasteOnFocusedWindow();
-          }
+          await copyToClipboard(context, item, noAck: true);
+          await wait(Durations.short1.inMilliseconds);
+          await pasteOnFocusedWindow();
           if (i < transformed.length - 1 && waitDuration > Duration.zero) {
             await wait(waitDuration.inMilliseconds);
           }
@@ -138,10 +130,6 @@ class WindowFocusManagerState extends State<WindowFocusManager>
 
   Future<void> pasteOnFocusedWindow() async {
     await widget.focusWindow.pasteContent();
-  }
-
-  Future<void> pasteSensitiveOnFocusedWindow(String content) async {
-    await widget.focusWindow.pasteSensitiveContent(content);
   }
 
   /// returns true when unfocused and false when focused

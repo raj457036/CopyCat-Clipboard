@@ -94,6 +94,21 @@ void main() {
       expect(success, isTrue);
       expect(copy.items, hasLength(1));
       expect(copy.items.first.suggestedName, 'Text');
+      expect(copy.items.first.data, hasLength(1));
+    });
+
+    test('markSensitive marks clipboard operation as sensitive', () async {
+      final copy = CopyToClipboard();
+      expect(copy.isSensitive, isFalse);
+
+      copy.markSensitive();
+      expect(copy.isSensitive, isTrue);
+
+      final success = await copy.writeText('SecretPassword');
+      expect(success, isTrue);
+      expect(copy.items, hasLength(1));
+      expect(copy.items.first.suggestedName, 'Text');
+      expect(copy.items.first.data, hasLength(1));
     });
 
     test('writeUrl adds URI item', () {
@@ -103,6 +118,19 @@ void main() {
       expect(success, isTrue);
       expect(copy.items, hasLength(1));
       expect(copy.items.first.suggestedName, 'Uri');
+      expect(copy.items.first.data, hasLength(1));
+    });
+
+    test('writeUrl with markSensitive', () {
+      final copy = CopyToClipboard();
+      copy.markSensitive();
+      final success = copy.writeUrl(Uri.parse('https://secret.com'));
+
+      expect(success, isTrue);
+      expect(copy.isSensitive, isTrue);
+      expect(copy.items, hasLength(1));
+      expect(copy.items.first.suggestedName, 'Uri');
+      expect(copy.items.first.data, hasLength(1));
     });
   });
 

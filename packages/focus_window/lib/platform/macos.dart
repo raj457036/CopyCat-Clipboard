@@ -106,18 +106,4 @@ class MacosActivityObserver implements PlatformActivityObserverInterface {
   Future<void> pasteContent() async {
     await _channel.invokeMethod<void>("pasteContent", {});
   }
-
-  @override
-  Future<void> writeSensitiveContent(String content) async {
-    await _channel.invokeMethod<void>("writeSensitiveContent", {
-      "content": content,
-    });
-  }
-
-  @override
-  Future<void> pasteSensitiveContent(String content) async {
-    await _channel.invokeMethod<void>("pasteSensitiveContent", {
-      "content": content,
-    });
-  }
 }
