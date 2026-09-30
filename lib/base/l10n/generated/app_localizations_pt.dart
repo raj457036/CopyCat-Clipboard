@@ -845,6 +845,15 @@ class AppLocalizationsPt extends AppLocalizations {
   String get preview__card__video__play => 'Reproduzir Vídeo';
 
   @override
+  String get preview__card__video__mute => 'Silenciar';
+
+  @override
+  String get preview__card__video__unmute => 'Ativar som';
+
+  @override
+  String get preview__card__video__close => 'Fechar reprodutor';
+
+  @override
   String get preview__card__file__open => 'Abrir Arquivo';
 
   @override

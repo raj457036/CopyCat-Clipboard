@@ -16,6 +16,7 @@ class MeidaKitVideoPlayer extends StatefulWidget {
   final BorderRadius? borderRadius;
   final bool mute;
   final bool loop;
+  final bool autoPlay;
 
   const MeidaKitVideoPlayer({
     super.key,
@@ -26,6 +27,7 @@ class MeidaKitVideoPlayer extends StatefulWidget {
     this.borderRadius,
     this.mute = true,
     this.loop = true,
+    this.autoPlay = true,
   });
 
   @override
@@ -80,7 +82,7 @@ class _MeidaKitVideoPlayerState extends State<MeidaKitVideoPlayer> {
     if (!mounted) return;
     if (!loading) setState(() => loading = true);
     _listenForFrame();
-    player.open(Media(widget.url));
+    player.open(Media(widget.url), play: widget.autoPlay);
   }
 
   Future<void> _listenForFrame() async {

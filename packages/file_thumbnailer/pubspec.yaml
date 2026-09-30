@@ -1,0 +1,23 @@
+name: file_thumbnailer
+description: "A fast, extensible thumbnail generation and disk caching package for Flutter."
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ">=3.11.0 <4.0.0"
+  flutter: ">=3.3.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  crypto: ^3.0.7
+  pdfx: ^2.11.0
+  fc_native_video_thumbnail: ^3.0.1
+  image: ^4.8.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0

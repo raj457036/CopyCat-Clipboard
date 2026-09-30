@@ -838,6 +838,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get preview__card__video__play => 'Play Video';
 
   @override
+  String get preview__card__video__mute => 'Mute';
+
+  @override
+  String get preview__card__video__unmute => 'Unmute';
+
+  @override
+  String get preview__card__video__close => 'Close player';
+
+  @override
   String get preview__card__file__open => 'Open File';
 
   @override

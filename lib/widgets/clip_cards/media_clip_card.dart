@@ -7,6 +7,7 @@ import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/clip_cards/file_display_name_mixin.dart';
 import 'package:clipboard/widgets/clipcard_loading.dart';
+import 'package:file_thumbnailer/file_thumbnailer.dart' as ft;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import "package:universal_io/io.dart";
@@ -19,25 +20,38 @@ class MediaPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isImage = item.fileMimeType!.startsWith("image");
-    if (!isImage) {
-      return placeholderImage;
+    final mime = item.fileMimeType?.toLowerCase() ?? '';
+
+    if (mime.startsWith('audio')) {
+      return Center(
+        child: Icon(
+          Icons.graphic_eq_rounded,
+          size: 48,
+          color: context.colors.onSurfaceVariant,
+        ),
+      );
     }
 
     if (item.localPath != null) {
-      if (item.fileMimeType!.contains("svg")) {
+      if (mime.contains('svg')) {
         return SvgPicture.file(File(item.localPath!), width: 360);
       }
-      return Image(
-        image: ResizeImage(
-          FileImage(File(item.localPath!)),
-          width: 480,
-          policy: ResizeImagePolicy.fit,
+
+      return ft.FileThumbnail(
+        request: ft.ThumbnailRequest(
+          filePath: item.localPath!,
+          widgetSize: 320,
+          mimeType: item.fileMimeType,
+          fileSize: item.fileSize,
         ),
-        gaplessPlayback: true,
         fit: BoxFit.cover,
+        alignment: Alignment.center,
+        showVideoBadge: mime.startsWith('video'),
+        placeholder: placeholderImage,
+        errorWidget: placeholderImage,
       );
     }
+
     if (item.imgBlurHash == null) {
       return placeholderImage;
     }

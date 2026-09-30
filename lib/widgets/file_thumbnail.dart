@@ -1,14 +1,10 @@
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
-import 'package:clipboard/utils/common_extension.dart';
+import 'package:file_thumbnailer/file_thumbnailer.dart' as ft;
 import 'package:flutter/material.dart';
-import 'package:thumbnailer/thumbnailer.dart';
-import 'package:universal_io/io.dart';
 
 class FileThumbnail extends StatelessWidget {
   final ClipboardItem item;
   final double widgetSize;
-
-  /// This is used by the custom thumbnail generation
   final String? modifier;
 
   const FileThumbnail({
@@ -25,38 +21,21 @@ class FileThumbnail extends StatelessWidget {
         mimeType?.isNotEmpty == true;
   }
 
-  bool get _useIconOnly => (item.fileSize ?? 0) > (10 * 1024 * 1024);
-
   @override
   Widget build(BuildContext context) {
-    final mimeType = item.fileMimeType?.trim();
-
-    if (!_canShowThumbnail || mimeType == null) {
+    if (!_canShowThumbnail) {
       return const Icon(Icons.insert_drive_file_rounded);
     }
 
-    return FittedBox(
-      fit: BoxFit.fitWidth,
-      clipBehavior: Clip.hardEdge,
-      alignment: Alignment.topCenter,
-      child: Thumbnail(
-        mimeType: mimeType,
+    return ft.FileThumbnail(
+      request: ft.ThumbnailRequest(
+        filePath: item.localPath!,
         widgetSize: widgetSize,
-        onlyIcon: _useIconOnly,
-        useWrapper: false,
-        useWaterMark: false,
-        name: modifier,
-        decoration: WidgetDecoration(
-          backgroundColor: context.colors.surfaceContainer,
-          iconColor: context.colors.onSurface,
-        ),
-        dataSize: item.fileSize,
-        dataResolver: _useIconOnly
-            ? null
-            : () => File(item.localPath!).readAsBytes(),
-        errorBuilder: (context, error) =>
-            const Icon(Icons.insert_drive_file_rounded),
+        mimeType: item.fileMimeType?.trim(),
+        fileSize: item.fileSize,
+        modifier: modifier,
       ),
+      errorWidget: const Icon(Icons.insert_drive_file_rounded),
     );
   }
 }

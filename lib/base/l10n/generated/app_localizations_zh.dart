@@ -812,6 +812,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get preview__card__video__play => '播放视频';
 
   @override
+  String get preview__card__video__mute => '静音';
+
+  @override
+  String get preview__card__video__unmute => '取消静音';
+
+  @override
+  String get preview__card__video__close => '关闭播放器';
+
+  @override
   String get preview__card__file__open => '打开文件';
 
   @override

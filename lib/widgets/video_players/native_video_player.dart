@@ -4,7 +4,9 @@ import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage;
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/widgets/yarn_ball_loading.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:universal_io/io.dart';
 import 'package:video_player/video_player.dart';
 
 class NativeVideoPlayer extends StatefulWidget {
@@ -15,6 +17,7 @@ class NativeVideoPlayer extends StatefulWidget {
   final BorderRadius? borderRadius;
   final bool mute;
   final bool loop;
+  final bool autoPlay;
 
   const NativeVideoPlayer({
     super.key,
@@ -25,6 +28,7 @@ class NativeVideoPlayer extends StatefulWidget {
     this.borderRadius,
     this.mute = true,
     this.loop = true,
+    this.autoPlay = true,
   });
 
   @override
@@ -34,6 +38,7 @@ class NativeVideoPlayer extends StatefulWidget {
 class _NativeVideoPlayerState extends State<NativeVideoPlayer> {
   VideoPlayerController? _controller;
   bool _loading = true;
+  bool _isPlaying = true;
 
   @override
   void initState() {
@@ -50,7 +55,7 @@ class _NativeVideoPlayerState extends State<NativeVideoPlayer> {
       return;
     }
 
-    final controller = _controller;
+    final VideoPlayerController? controller = _controller;
     if (controller == null) return;
 
     if (oldWidget.mute != widget.mute) {
@@ -61,26 +66,67 @@ class _NativeVideoPlayerState extends State<NativeVideoPlayer> {
     }
   }
 
+  void _onControllerUpdate() {
+    final VideoPlayerController? controller = _controller;
+    if (controller == null) return;
+    if (controller.value.isPlaying != _isPlaying) {
+      if (mounted) {
+        setState(() {
+          _isPlaying = controller.value.isPlaying;
+        });
+      }
+    }
+  }
+
   @override
   void dispose() {
-    final controller = _controller;
+    final VideoPlayerController? controller = _controller;
     _controller = null;
+    controller?.removeListener(_onControllerUpdate);
     controller?.dispose();
     super.dispose();
   }
 
+  void _togglePlayPause() {
+    final VideoPlayerController? controller = _controller;
+    if (controller == null || !controller.value.isInitialized) return;
+    if (controller.value.isPlaying) {
+      controller.pause();
+    } else {
+      controller.play();
+    }
+  }
+
   Future<void> _initialize() async {
-    final previous = _controller;
+    final VideoPlayerController? previous = _controller;
+    previous?.removeListener(_onControllerUpdate);
     setState(() => _loading = true);
 
-    final controller = VideoPlayerController.networkUrl(Uri.parse(widget.url));
+    final Uri? parsedUri = Uri.tryParse(widget.url);
+    final bool isNetwork = parsedUri != null &&
+        (parsedUri.scheme == 'http' || parsedUri.scheme == 'https');
+
+    final VideoPlayerController controller;
+    if (isNetwork || kIsWeb) {
+      controller = VideoPlayerController.networkUrl(
+        parsedUri ?? Uri.parse(widget.url),
+      );
+    } else if (parsedUri != null && parsedUri.scheme == 'file') {
+      controller = VideoPlayerController.file(File.fromUri(parsedUri));
+    } else {
+      controller = VideoPlayerController.file(File(widget.url));
+    }
     _controller = controller;
 
     try {
       await controller.setLooping(widget.loop);
       await controller.setVolume(widget.mute ? 0 : 1);
       await controller.initialize();
-      await controller.play();
+      controller.addListener(_onControllerUpdate);
+      if (widget.autoPlay) {
+        await controller.play();
+      }
+      _isPlaying = controller.value.isPlaying;
     } catch (e) {
       if (mounted && identical(_controller, controller)) {
         InAppNotificationService.i.notify(
@@ -95,6 +141,7 @@ class _NativeVideoPlayerState extends State<NativeVideoPlayer> {
       if (mounted && identical(_controller, controller)) {
         setState(() => _loading = false);
       } else {
+        controller.removeListener(_onControllerUpdate);
         await controller.dispose();
       }
     }
@@ -102,34 +149,58 @@ class _NativeVideoPlayerState extends State<NativeVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = _controller;
+    final VideoPlayerController? controller = _controller;
     if (_loading || controller == null || !controller.value.isInitialized) {
-      return ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: widget.width,
-          maxHeight: widget.height ?? double.infinity,
-        ),
-        child: AspectRatio(
-          aspectRatio: widget.aspectRatio,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              borderRadius: widget.borderRadius,
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      return Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: widget.width,
+            maxHeight: widget.height ?? double.infinity,
+          ),
+          child: AspectRatio(
+            aspectRatio: widget.aspectRatio,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: widget.borderRadius,
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              ),
+              child: const Center(child: YarnBallLoading(size: 32)),
             ),
-            child: const Center(child: YarnBallLoading(size: 32)),
           ),
         ),
       );
     }
 
-    Widget child = ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: widget.width,
-        maxHeight: widget.height ?? double.infinity,
-      ),
-      child: AspectRatio(
-        aspectRatio: controller.value.aspectRatio,
-        child: VideoPlayer(controller),
+    Widget child = Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: widget.width,
+          maxHeight: widget.height ?? double.infinity,
+        ),
+        child: AspectRatio(
+          aspectRatio: controller.value.aspectRatio,
+          child: GestureDetector(
+            onTap: _togglePlayPause,
+            behavior: HitTestBehavior.opaque,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                VideoPlayer(controller),
+                if (!_isPlaying)
+                  const ColoredBox(
+                    color: Colors.black38,
+                    child: Center(
+                      child: Icon(
+                        Icons.play_circle_filled_rounded,
+                        size: 56,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
 

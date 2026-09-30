@@ -1608,6 +1608,24 @@ abstract class AppLocalizations {
   /// **'Play Video'**
   String get preview__card__video__play;
 
+  /// No description provided for @preview__card__video__mute.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute'**
+  String get preview__card__video__mute;
+
+  /// No description provided for @preview__card__video__unmute.
+  ///
+  /// In en, this message translates to:
+  /// **'Unmute'**
+  String get preview__card__video__unmute;
+
+  /// No description provided for @preview__card__video__close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close player'**
+  String get preview__card__video__close;
+
   /// No description provided for @preview__card__file__open.
   ///
   /// In en, this message translates to:

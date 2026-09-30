@@ -9,6 +9,7 @@ import 'package:clipboard/pages/preview/widgets/media/media_svg_preview.dart';
 import 'package:clipboard/pages/preview/widgets/media/media_video_preview.dart';
 import 'package:clipboard/utils/blur_hash.dart';
 import 'package:clipboard/utils/clipboard_actions.dart';
+import 'package:file_thumbnailer/file_thumbnailer.dart' as ft;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:universal_io/io.dart';
@@ -23,11 +24,13 @@ class MediaClipPreviewCard extends StatefulWidget {
 
 class _MediaClipPreviewCardState extends State<MediaClipPreviewCard> {
   Uint8List? _blurHashBytes;
+  File? _videoThumbnailFile;
 
   @override
   void initState() {
     super.initState();
     _loadBlurHash();
+    _loadVideoThumbnail();
   }
 
   @override
@@ -35,6 +38,9 @@ class _MediaClipPreviewCardState extends State<MediaClipPreviewCard> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.item.imgBlurHash != widget.item.imgBlurHash) {
       _loadBlurHash();
+    }
+    if (oldWidget.item.localPath != widget.item.localPath) {
+      _loadVideoThumbnail();
     }
   }
 
@@ -47,7 +53,52 @@ class _MediaClipPreviewCardState extends State<MediaClipPreviewCard> {
     }
   }
 
+  Future<void> _loadVideoThumbnail() async {
+    final mime = widget.item.fileMimeType?.toLowerCase() ?? '';
+    final path = widget.item.localPath;
+    if (!mime.startsWith('video') || path == null) return;
+
+    final request = ft.ThumbnailRequest(
+      filePath: path,
+      widgetSize: 640,
+      mimeType: widget.item.fileMimeType,
+      fileSize: widget.item.fileSize,
+    );
+
+    final syncHit = ft.ThumbnailService.instance.getCachedThumbnailSync(request);
+    if (syncHit != null) {
+      _videoThumbnailFile = syncHit;
+      return;
+    }
+
+    final file = await ft.ThumbnailService.instance.getOrGenerateThumbnail(request);
+    if (mounted && file != null) {
+      setState(() => _videoThumbnailFile = file);
+    }
+  }
+
   ImageProvider? _getPreview() {
+    final mime = widget.item.fileMimeType?.toLowerCase() ?? '';
+    if (mime.startsWith('video')) {
+      if (_videoThumbnailFile != null) {
+        return FileImage(_videoThumbnailFile!);
+      }
+      final path = widget.item.localPath;
+      if (path != null) {
+        final request = ft.ThumbnailRequest(
+          filePath: path,
+          widgetSize: 640,
+          mimeType: widget.item.fileMimeType,
+          fileSize: widget.item.fileSize,
+        );
+        final syncHit = ft.ThumbnailService.instance.getCachedThumbnailSync(request);
+        if (syncHit != null) {
+          return FileImage(syncHit);
+        }
+      }
+      return null;
+    }
+
     if (widget.item.localPath != null) {
       return FileImage(File(widget.item.localPath!));
     }

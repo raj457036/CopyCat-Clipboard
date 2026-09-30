@@ -852,6 +852,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get preview__card__video__play => 'Lire la vidéo';
 
   @override
+  String get preview__card__video__mute => 'Couper le son';
+
+  @override
+  String get preview__card__video__unmute => 'Activer le son';
+
+  @override
+  String get preview__card__video__close => 'Fermer le lecteur';
+
+  @override
   String get preview__card__file__open => 'Ouvrir le fichier';
 
   @override

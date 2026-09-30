@@ -848,6 +848,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get preview__card__video__play => 'Video abspielen';
 
   @override
+  String get preview__card__video__mute => 'Stummschalten';
+
+  @override
+  String get preview__card__video__unmute => 'Stummschaltung aufheben';
+
+  @override
+  String get preview__card__video__close => 'Player schließen';
+
+  @override
   String get preview__card__file__open => 'Datei öffnen';
 
   @override
