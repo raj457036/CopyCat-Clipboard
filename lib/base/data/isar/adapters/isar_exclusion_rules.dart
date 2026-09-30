@@ -21,12 +21,12 @@ class IsarAppInfo {
 @Name("ExclusionRules")
 @Embedded(ignore: {"copyWith"})
 class IsarExclusionRules {
-  bool enable = false;
-  bool creditCard = true;
-  bool phone = true;
+  bool enable = true;
+  bool creditCard = false;
+  bool phone = false;
   bool passwordManager = true;
-  bool email = true;
-  bool sensitiveUrls = true;
+  bool email = false;
+  bool sensitiveUrls = false;
   List<String> patterns = [];
   List<String> titles = [];
   List<String> urls = [];

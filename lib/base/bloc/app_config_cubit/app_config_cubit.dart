@@ -136,6 +136,7 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
       onBoardComplete: false,
       syncSpeed: SyncSpeed.balanced,
       enc2: null,
+      exclusionRules: defaultExclusionRules,
     );
     emit(AppConfigState.loaded(config: config));
     await repo.update(config);
@@ -146,6 +147,7 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
     Subscription subscription,
   ) {
     final hasProSync = subscription.isActive && !subscription.isFree;
+
     final nextConfig = hasProSync
         ? config.copyWith(
             syncSpeed: SyncSpeed.realtime,
@@ -571,7 +573,8 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
       );
       logger.w(activity);
       lastActivity = activity;
-      final result = exclusionChecker?.checkActivity(activity) ??
+      final result =
+          exclusionChecker?.checkActivity(activity) ??
           const ExclusionCheckResult.allowed();
       return result;
     } on TimeoutException {

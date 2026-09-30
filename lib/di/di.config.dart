@@ -264,6 +264,13 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       preResolve: true,
     );
+    gh.lazySingleton<_i976.LanSyncService>(
+      () => _i976.LanSyncService(
+        gh<_i616.ClipBatchSyncService>(),
+        gh<_i292.SyncEventBus>(),
+        gh<_i770.SyncOutboxRepository>(),
+      ),
+    );
     gh.lazySingleton<_i782.SyncClipboardSource>(
       () => _i425.SyncClipboardSourceImpl(gh<_i454.SupabaseClient>()),
       instanceName: 'remote',
@@ -296,13 +303,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i61.SyncRepository>(
       () => _i223.SyncRepositoryImpl(
         gh<_i782.SyncClipboardSource>(instanceName: 'remote'),
-      ),
-    );
-    gh.lazySingleton<_i976.LanSyncService>(
-      () => _i976.LanSyncService(
-        gh<_i616.ClipBatchSyncService>(),
-        gh<_i292.SyncEventBus>(),
-        gh<_i770.SyncOutboxRepository>(),
       ),
     );
     gh.lazySingleton<_i543.ClipCrossSyncListener>(
@@ -524,6 +524,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i454.SupabaseClient>(),
       ),
     );
+    gh.lazySingleton<_i891.SyncStatusCubit>(
+      () => _i891.SyncStatusCubit(
+        gh<_i443.SyncOrchestrator>(),
+        gh<_i292.SyncEventBus>(),
+        gh<_i246.MonetizationCubit>(),
+        gh<_i579.PostSyncDecryptionService>(),
+        gh<_i1069.RestorationStatusRepository>(),
+      ),
+    );
     gh.singleton<_i805.UserDevicesCubit>(
       () => _i805.UserDevicesCubit(
         repo: gh<_i462.UserDevicesRepository>(),
@@ -546,13 +555,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i292.SyncEventBus>(),
       ),
     );
-    gh.lazySingleton<_i891.SyncStatusCubit>(
-      () => _i891.SyncStatusCubit(
-        gh<_i443.SyncOrchestrator>(),
+    gh.factoryCached<_i489.ClipboardCubit>(
+      () => _i489.ClipboardCubit(
         gh<_i292.SyncEventBus>(),
-        gh<_i246.MonetizationCubit>(),
-        gh<_i579.PostSyncDecryptionService>(),
-        gh<_i1069.RestorationStatusRepository>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i542.AppConfigCubit>(),
+        gh<_i891.SyncStatusCubit>(),
       ),
     );
     gh.lazySingleton<_i227.QuickPasteService>(
@@ -570,14 +578,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i657.WindowActionCubit>(),
         gh<_i246.MonetizationCubit>(),
         gh<_i706.OfflinePersistenceCubit>(),
-      ),
-    );
-    gh.factoryCached<_i489.ClipboardCubit>(
-      () => _i489.ClipboardCubit(
-        gh<_i292.SyncEventBus>(),
-        gh<_i230.ClipboardRepository>(instanceName: 'local'),
-        gh<_i542.AppConfigCubit>(),
-        gh<_i891.SyncStatusCubit>(),
       ),
     );
     return this;

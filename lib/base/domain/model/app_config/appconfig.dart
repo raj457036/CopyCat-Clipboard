@@ -154,7 +154,7 @@ abstract class AppConfig with _$AppConfig, Identifiable {
   }
 
   ExclusionRules get copyExclusionRules =>
-      exclusionRules ?? ExclusionRules(enable: false);
+      exclusionRules ?? defaultExclusionRules;
 
   HotKey? get getToggleHotkey =>
       toggleHotkey != null ? HotKey.fromJson(jsonDecode(toggleHotkey!)) : null;

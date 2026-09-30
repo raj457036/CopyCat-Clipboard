@@ -158,7 +158,7 @@ void main() {
       });
 
       test('exclusion rules still block clips that contain embedded phone or email content', () {
-        final checker = ExclusionChecker(ExclusionRules());
+        final checker = ExclusionChecker(ExclusionRules(phone: true));
         final clip = ClipItem.text(text: 'Call me at 5551234567');
 
         expect(checker.isClipAllowed(clip, null), isFalse);
