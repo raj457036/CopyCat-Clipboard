@@ -58,6 +58,8 @@ class ClipsBuilder extends StatelessWidget {
     bool hasMore,
     bool loading,
   ) {
+    if (notification.depth != 0) return false;
+    if (notification.metrics.axis != scrollDirection) return false;
     if (!hasMore || loading) return false;
     if (notification.metrics.extentAfter > 800) return false;
     loadMore();
