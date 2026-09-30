@@ -87,6 +87,22 @@
       }
     }
   },
+  "app__ack__excluded": "Excluded",
+  "app__ack__excluded_with_reason": "Excluded • {reason}",
+  "@app__ack__excluded_with_reason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "app__ack__reason_phone": "Phone",
+  "app__ack__reason_email": "Email",
+  "app__ack__reason_credit_card": "Credit Card",
+  "app__ack__reason_sensitive_url": "Sensitive URL",
+  "app__ack__reason_app": "Sensitive App",
+  "app__ack__reason_pattern": "Pattern",
+  "app__ack__reason_title": "Sensitive Window",
   "app__ack__pasted": "Pasted",
   "app__ack__pasting": "Pasting",
   "app__ack__done": "Done",

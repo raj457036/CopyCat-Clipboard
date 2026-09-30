@@ -208,6 +208,35 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get app__ack__excluded => '已排除';
+
+  @override
+  String app__ack__excluded_with_reason({required String reason}) {
+    return '已排除 • $reason';
+  }
+
+  @override
+  String get app__ack__reason_phone => '电话号码';
+
+  @override
+  String get app__ack__reason_email => '电子邮件';
+
+  @override
+  String get app__ack__reason_credit_card => '信用卡';
+
+  @override
+  String get app__ack__reason_sensitive_url => '敏感网址';
+
+  @override
+  String get app__ack__reason_app => '敏感应用';
+
+  @override
+  String get app__ack__reason_pattern => '自定义规则';
+
+  @override
+  String get app__ack__reason_title => '敏感窗口';
+
+  @override
   String get app__ack__pasted => '已粘贴';
 
   @override

@@ -209,6 +209,35 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get app__ack__excluded => 'Excluido';
+
+  @override
+  String app__ack__excluded_with_reason({required String reason}) {
+    return 'Excluido • $reason';
+  }
+
+  @override
+  String get app__ack__reason_phone => 'Teléfono';
+
+  @override
+  String get app__ack__reason_email => 'Correo electrónico';
+
+  @override
+  String get app__ack__reason_credit_card => 'Tarjeta de crédito';
+
+  @override
+  String get app__ack__reason_sensitive_url => 'URL confidencial';
+
+  @override
+  String get app__ack__reason_app => 'Aplicación confidencial';
+
+  @override
+  String get app__ack__reason_pattern => 'Patrón';
+
+  @override
+  String get app__ack__reason_title => 'Ventana confidencial';
+
+  @override
   String get app__ack__pasted => 'Pegado';
 
   @override

@@ -1,4 +1,5 @@
 import 'package:clipboard/base/data/services/clipboard_service.dart';
+import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_result.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_rules.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/sensitive_info.dart';
 import 'package:clipboard/base/domain/services/analysis/text_analysis.dart';
@@ -88,81 +89,128 @@ class ExclusionChecker {
     return _patterns.any((pattern) => pattern.hasMatch(text));
   }
 
-  bool isClipAllowed(ClipItem clip, ActivityInfo? activity) {
-    if (clip.isText) {
-      if (isPatternExcluded(clip.text!)) return false;
-      if (_phone && (clip.textCategory == TextCategory.phone || TextAnalysis.containsPhone(clip.text!))) {
-        logger.w("Exclusion rule triggered for phone numebr");
-        return false;
-      }
-      if (_email && (clip.textCategory == TextCategory.email || TextAnalysis.containsEmail(clip.text!))) {
-        logger.w("Exclusion rule triggered for email");
-        return false;
-      }
-      if (_creditCard && _creditCardPattern.hasMatch(clip.text!)) {
-        logger.w("Exclusion rule triggered for credit card");
-        return false;
-      }
-      // if (_bankAccount && bankAccountPattern.hasMatch(clip.text!)) return false;
-      // if (_personalInfo && passportPattern.hasMatch(clip.text!)) return false;
-    }
-    if (_sensitiveUrls) {
-      final p0 = activity != null ? isActivityAllowed(activity) : true;
-      if (clip.isUri) {
-        final p1 = !_rUrls.any((r) => r.hasMatch(clip.uri!.toString())) && p0;
-        if (!p1) {
-          logger.w("Exclusion rule triggered for sensitive url");
-        }
-        return p1;
-      }
-      return p0;
-    }
-
-    if (_patterns.isNotEmpty) {
-      final found = _patterns.any((pattern) => pattern.hasMatch(clip.text!));
-      if (found) {
-        logger.w("Exclusion rule triggered for custom pattern.");
-        return false;
-      }
-    }
-    return true;
-  }
-
-  bool isActivityAllowed(ActivityInfo activity) {
-    if (activity.title.isNotEmpty) {
-      final hasMatch = _rTitle.any((r) => r.hasMatch(activity.title));
-      if (hasMatch) {
-        logger.w("Excluded pattern detected in title");
-        return false;
-      }
-    }
-    if (activity.url.isNotEmpty && Platform.isMacOS) {
-      final hasMatch = _rUrls.any((r) => activity.url.contains(r));
-      if (hasMatch) {
-        logger.w("Excluded pattern detected in url");
-        return false;
-      }
-    }
-
+  ExclusionCheckResult checkActivity(ActivityInfo activity) {
     for (final app in _apps) {
       if (app.identifier != null &&
           (activity.identifier.isNotEmpty &&
               activity.identifier == app.identifier!) &&
           (activity.app.isNotEmpty && app.name == activity.app)) {
         logger.w("Excluded pattern detected for the app.");
-
-        return false;
+        return ExclusionCheckResult.excluded(
+          reason: ExclusionReason.excludedApp,
+          matchedDetail: app.name.isNotEmpty ? app.name : activity.app,
+        );
       }
       if (activity.appFileName.startsWith(app.name)) {
         logger.w("Excluded pattern detected for the app name.");
-        return false;
+        return ExclusionCheckResult.excluded(
+          reason: ExclusionReason.excludedApp,
+          matchedDetail: app.name,
+        );
       }
       if (app.path != null && activity.appFilePath.endsWith(app.path!)) {
         logger.w("Excluded pattern detected for the app path.");
-        return false;
+        return ExclusionCheckResult.excluded(
+          reason: ExclusionReason.excludedApp,
+          matchedDetail: app.name,
+        );
       }
     }
 
-    return true;
+    if (activity.title.isNotEmpty) {
+      final hasMatch = _rTitle.any((r) => r.hasMatch(activity.title));
+      if (hasMatch) {
+        logger.w("Excluded pattern detected in title");
+        return const ExclusionCheckResult.excluded(
+          reason: ExclusionReason.windowTitle,
+        );
+      }
+    }
+    if (activity.url.isNotEmpty && Platform.isMacOS) {
+      final hasMatch = _rUrls.any((r) => activity.url.contains(r));
+      if (hasMatch) {
+        logger.w("Excluded pattern detected in url");
+        return const ExclusionCheckResult.excluded(
+          reason: ExclusionReason.sensitiveUrl,
+        );
+      }
+    }
+
+    return const ExclusionCheckResult.allowed();
+  }
+
+  bool isActivityAllowed(ActivityInfo activity) {
+    return checkActivity(activity).isAllowed;
+  }
+
+  ExclusionCheckResult checkClip(ExclusionCheckParams params) {
+    final clip = params.clip;
+    final activity = params.activity;
+
+    if (activity != null) {
+      final activityResult = checkActivity(activity);
+      if (!activityResult.isAllowed) {
+        return activityResult;
+      }
+    }
+
+    if (clip.isText && clip.text != null) {
+      final text = clip.text!;
+      if (_creditCard && _creditCardPattern.hasMatch(text)) {
+        logger.w("Exclusion rule triggered for credit card");
+        return const ExclusionCheckResult.excluded(
+          reason: ExclusionReason.creditCard,
+        );
+      }
+      if (_email &&
+          (clip.textCategory == TextCategory.email ||
+              TextAnalysis.containsEmail(text))) {
+        logger.w("Exclusion rule triggered for email");
+        return const ExclusionCheckResult.excluded(
+          reason: ExclusionReason.email,
+        );
+      }
+      if (_phone &&
+          (clip.textCategory == TextCategory.phone ||
+              TextAnalysis.containsPhone(text))) {
+        logger.w("Exclusion rule triggered for phone number");
+        return const ExclusionCheckResult.excluded(
+          reason: ExclusionReason.phone,
+        );
+      }
+      if (isPatternExcluded(text)) {
+        return const ExclusionCheckResult.excluded(
+          reason: ExclusionReason.pattern,
+        );
+      }
+    }
+
+    if (_sensitiveUrls && clip.isUri && clip.uri != null) {
+      final uriStr = clip.uri!.toString();
+      if (_rUrls.any((r) => r.hasMatch(uriStr))) {
+        logger.w("Exclusion rule triggered for sensitive url");
+        return const ExclusionCheckResult.excluded(
+          reason: ExclusionReason.sensitiveUrl,
+        );
+      }
+    }
+
+    if (_patterns.isNotEmpty && clip.text != null) {
+      final found = _patterns.any((pattern) => pattern.hasMatch(clip.text!));
+      if (found) {
+        logger.w("Exclusion rule triggered for custom pattern.");
+        return const ExclusionCheckResult.excluded(
+          reason: ExclusionReason.pattern,
+        );
+      }
+    }
+
+    return const ExclusionCheckResult.allowed();
+  }
+
+  bool isClipAllowed(ClipItem clip, ActivityInfo? activity) {
+    return checkClip(
+      ExclusionCheckParams(clip: clip, activity: activity),
+    ).isAllowed;
   }
 }

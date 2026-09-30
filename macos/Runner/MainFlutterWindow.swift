@@ -72,9 +72,11 @@ class MainFlutterWindow: NSWindow {
         let arguments = call.arguments as? [String: Any]
         let message = arguments?["message"] as? String
         let showToast = arguments?["showToast"] as? Bool ?? false
+        let icon = arguments?["icon"] as? String ?? "checkmark"
         self?.clipboardToastPresenter.show(
           message: message,
-          showToast: showToast
+          showToast: showToast,
+          icon: icon
         )
         result(nil)
 
@@ -101,6 +103,7 @@ final class ClipboardToastPresenter {
   func show(
     message: String?,
     showToast: Bool,
+    icon: String = "checkmark",
     duration: TimeInterval = 3.0
   ) {
     DispatchQueue.main.async {
@@ -140,6 +143,7 @@ final class ClipboardToastPresenter {
       panel.contentViewController = NSHostingController(
         rootView: ClipboardToastView(
           message: toastMessage,
+          icon: icon,
           width: width,
           height: height
         )
@@ -187,6 +191,7 @@ final class ClipboardToastPresenter {
 
 private struct ClipboardToastView: View {
   let message: String
+  let icon: String
   let width: CGFloat
   let height: CGFloat
 
@@ -194,7 +199,7 @@ private struct ClipboardToastView: View {
     let capsule = Capsule(style: .continuous)
 
     HStack(spacing: 8) {
-      Image(systemName: "checkmark")
+      Image(systemName: icon)
         .font(.system(size: 11, weight: .semibold))
         .foregroundColor(Color.white.opacity(0.95))
 

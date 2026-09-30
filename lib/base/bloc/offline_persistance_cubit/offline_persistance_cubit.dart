@@ -13,6 +13,7 @@ import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/data/services/clipboard/clip_hash_registry.dart';
 import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:clipboard/base/data/services/lan_sync_service.dart';
+import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_result.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/clipboard_feedback_service.dart';
 import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
@@ -36,12 +37,15 @@ import "package:universal_io/io.dart";
 
 part 'offline_persistance_cubit.freezed.dart';
 part 'offline_persistance_state.dart';
+part 'offline_persistance_feedback_mixin.dart';
 
 @lazySingleton
-class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
+class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState>
+    with OfflinePersistenceFeedbackMixin {
   final AuthCubit auth;
   final ClipboardRepository repo;
   final ClipboardService clipboard;
+  @override
   final AppConfigCubit appConfig;
   final UserDevicesCubit userDevicesCubit;
   final ApplicationMetaResolver appMetaResolver;
@@ -113,9 +117,12 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       );
       return;
     }
-    if (await appConfig.isCopyingAllowedByActivity()) {
-      await clipboard.readClipboard();
+    final activityCheck = await appConfig.checkActivityExclusion();
+    if (!activityCheck.isAllowed) {
+      await showExclusionFeedback(activityCheck);
+      return;
     }
+    await clipboard.readClipboard();
   }
 
   Future<void> startListeners() async {
@@ -383,10 +390,15 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     for (final clip in clips) {
       if (clip == null) continue;
 
-      if (exclusionChecker != null && clip.isTextSubType) {
-        final content = clip.text ?? clip.uri?.toString();
-        final notExcluded = exclusionChecker!.isClipAllowed(clip, activity);
-        if (content != null && !notExcluded) {
+      if (exclusionChecker != null) {
+        final result = exclusionChecker!.checkClip(
+          ExclusionCheckParams(
+            clip: clip,
+            activity: activity,
+          ),
+        );
+        if (!result.isAllowed) {
+          await showExclusionFeedback(result);
           continue;
         }
       }
@@ -408,7 +420,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       }
 
       if (clip.isDuplicate) {
-        await _showFeedback();
+        await showFeedback();
         continue;
       }
 
@@ -428,26 +440,9 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         continue;
       }
       _newClipboardItem.add(item);
-      await _showFeedback();
+      await showFeedback();
       await persist([item]);
     }
-  }
-
-  // TODO(raj): implement for linux
-  Future<void> _showFeedback([String? message]) async {
-    if (!(Platform.isMacOS || Platform.isWindows)) return;
-    final feedbackMode = appConfig.state.config.clipboardFeedbackMode;
-    final copiedLabel =
-        message ??
-        rootNavigationKey.currentContext?.locale.app__ack__copied ??
-        'Copied';
-    final showToast = feedbackMode == ClipboardFeedbackMode.toast;
-    unawaited(
-      ClipboardFeedbackService.i.notifyClipboardCopied(
-        showToast: showToast,
-        message: copiedLabel,
-      ),
-    );
   }
 
   /// stateless = true will not persist the change in the local database, only emit the new state. ( only work with updates )
@@ -685,7 +680,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
             device: deviceName,
           ) ??
           'Copied from $deviceName';
-      await _showFeedback(message);
+      await showFeedback(message);
     } catch (e) {
       logger.e('autoWriteOnReceive: failed to write to OS clipboard: $e');
     }

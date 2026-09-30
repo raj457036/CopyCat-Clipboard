@@ -209,6 +209,35 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get app__ack__excluded => 'Ausgeschlossen';
+
+  @override
+  String app__ack__excluded_with_reason({required String reason}) {
+    return 'Ausgeschlossen • $reason';
+  }
+
+  @override
+  String get app__ack__reason_phone => 'Telefon';
+
+  @override
+  String get app__ack__reason_email => 'E-Mail';
+
+  @override
+  String get app__ack__reason_credit_card => 'Kreditkarte';
+
+  @override
+  String get app__ack__reason_sensitive_url => 'Sensible URL';
+
+  @override
+  String get app__ack__reason_app => 'Sensible App';
+
+  @override
+  String get app__ack__reason_pattern => 'Muster';
+
+  @override
+  String get app__ack__reason_title => 'Sensibles Fenster';
+
+  @override
   String get app__ack__pasted => 'Eingefügt';
 
   @override

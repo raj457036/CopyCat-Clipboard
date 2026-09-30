@@ -495,6 +495,60 @@ abstract class AppLocalizations {
   /// **'Copied from {device}'**
   String app__ack__copied_from_device({required String device});
 
+  /// No description provided for @app__ack__excluded.
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded'**
+  String get app__ack__excluded;
+
+  /// No description provided for @app__ack__excluded_with_reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded • {reason}'**
+  String app__ack__excluded_with_reason({required String reason});
+
+  /// No description provided for @app__ack__reason_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get app__ack__reason_phone;
+
+  /// No description provided for @app__ack__reason_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get app__ack__reason_email;
+
+  /// No description provided for @app__ack__reason_credit_card.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit Card'**
+  String get app__ack__reason_credit_card;
+
+  /// No description provided for @app__ack__reason_sensitive_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitive URL'**
+  String get app__ack__reason_sensitive_url;
+
+  /// No description provided for @app__ack__reason_app.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitive App'**
+  String get app__ack__reason_app;
+
+  /// No description provided for @app__ack__reason_pattern.
+  ///
+  /// In en, this message translates to:
+  /// **'Pattern'**
+  String get app__ack__reason_pattern;
+
+  /// No description provided for @app__ack__reason_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitive Window'**
+  String get app__ack__reason_title;
+
   /// No description provided for @app__ack__pasted.
   ///
   /// In en, this message translates to:
