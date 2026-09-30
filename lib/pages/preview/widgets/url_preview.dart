@@ -28,7 +28,8 @@ class URLClipPreviewCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           spacing: 12,
           children: [
-            Expanded(
+            LimitedBox(
+              maxHeight: 350,
               child: Card.outlined(
                 shape: const RoundedRectangleBorder(borderRadius: radius12),
                 clipBehavior: Clip.hardEdge,
@@ -44,9 +45,7 @@ class URLClipPreviewCard extends StatelessWidget {
             SelectableText(
               item.url ?? context.locale.preview__card__missing_text,
               textAlign: TextAlign.center,
-              style: context.textTheme.labelLarge?.copyWith(
-                fontStyle: FontStyle.italic,
-              ),
+              style: context.textTheme.bodyLarge,
               contextMenuBuilder: isDesktopPlatform
                   ? textSelectionToolbarButtonItems
                   : null,

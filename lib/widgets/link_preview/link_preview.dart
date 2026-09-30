@@ -150,7 +150,7 @@ class _LinkPreviewImage extends StatelessWidget {
 
     return CachedNetworkImage(
       imageUrl: url,
-      fit: BoxFit.cover,
+      fit: imageBoxFit,
       errorWidget: (context, error, stackTrace) => const ImageNotFound(),
     );
   }
@@ -190,7 +190,8 @@ class LinkPreview extends StatefulWidget {
 class _LinkPreviewState extends State<LinkPreview> {
   static final Map<String, LinkPreviewData> _stalePreviewCache = {};
   static final Set<String> _sessionTransientErrors = {};
-  static final Map<String, Future<LinkPreviewFetchResult>> _inFlightFetches = {};
+  static final Map<String, Future<LinkPreviewFetchResult>> _inFlightFetches =
+      {};
 
   LinkPreviewData? _preview;
   bool _isLoading = false;
@@ -298,8 +299,8 @@ class _LinkPreviewState extends State<LinkPreview> {
       _inFlightFetches[url] = fetch;
     }
 
-    final OfflinePersistenceCubit persistenceCubit =
-        context.read<OfflinePersistenceCubit>();
+    final OfflinePersistenceCubit persistenceCubit = context
+        .read<OfflinePersistenceCubit>();
 
     final LinkPreviewFetchResult result = await fetch;
 
@@ -355,7 +356,8 @@ class _LinkPreviewState extends State<LinkPreview> {
     final String? description = item.linkPreviewDescription?.trim();
     final String? imageUrl = item.linkPreviewImageUrl?.trim();
 
-    final bool hasContent = (title != null && title.isNotEmpty) ||
+    final bool hasContent =
+        (title != null && title.isNotEmpty) ||
         (description != null && description.isNotEmpty) ||
         (imageUrl != null && imageUrl.isNotEmpty);
 
@@ -368,10 +370,7 @@ class _LinkPreviewState extends State<LinkPreview> {
       title: title,
       description: description,
       image: imageUrl != null
-          ? LinkImagePreviewData(
-              imageUrl: imageUrl,
-              imageSize: Size.zero,
-            )
+          ? LinkImagePreviewData(imageUrl: imageUrl, imageSize: Size.zero)
           : null,
     );
   }
