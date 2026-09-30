@@ -8,7 +8,6 @@ import 'package:clipboard/pages/settings/widgets/setting_header.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:universal_io/io.dart';
 
 class ExclusionRulesPage extends StatelessWidget {
   const ExclusionRulesPage({super.key});
@@ -111,7 +110,7 @@ class ExclusionRulesPage extends StatelessWidget {
                           }
                         : null,
                   ),
-                  if (Platform.isMacOS)
+                  if (isDesktopPlatform)
                     SwitchListTile(
                       title: Text(context.locale.settings__text__er__url),
                       value: state.sensitiveUrls,

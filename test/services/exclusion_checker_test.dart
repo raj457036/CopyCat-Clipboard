@@ -137,6 +137,145 @@ void main() {
       expect(result.reason, ExclusionReason.excludedApp);
       expect(result.matchedDetail, 'CustomRestrictedApp');
     });
+
+    test('excludes sensitive URLs and token parameters', () {
+      final tokenClip = ClipItem.uri(
+        uri: Uri.parse('https://example.com/auth/callback?token=secret_abc123'),
+      );
+      final paymentClip = ClipItem.uri(
+        uri: Uri.parse('https://store.example.com/checkout/payment'),
+      );
+      final oauthClip = ClipItem.uri(
+        uri: Uri.parse('https://accounts.google.com/o/oauth2/v2/auth'),
+      );
+      final accessTokenClip = ClipItem.uri(
+        uri: Uri.parse('https://api.example.com/v1/user?access_token=xyz987'),
+      );
+
+      expect(checker.checkClip(ExclusionCheckParams(clip: tokenClip)).isAllowed, isFalse);
+      expect(checker.checkClip(ExclusionCheckParams(clip: tokenClip)).reason, ExclusionReason.sensitiveUrl);
+
+      expect(checker.checkClip(ExclusionCheckParams(clip: paymentClip)).isAllowed, isFalse);
+      expect(checker.checkClip(ExclusionCheckParams(clip: paymentClip)).reason, ExclusionReason.sensitiveUrl);
+
+      expect(checker.checkClip(ExclusionCheckParams(clip: oauthClip)).isAllowed, isFalse);
+      expect(checker.checkClip(ExclusionCheckParams(clip: oauthClip)).reason, ExclusionReason.sensitiveUrl);
+
+      expect(checker.checkClip(ExclusionCheckParams(clip: accessTokenClip)).isAllowed, isFalse);
+      expect(checker.checkClip(ExclusionCheckParams(clip: accessTokenClip)).reason, ExclusionReason.sensitiveUrl);
+    });
+
+    test('does not falsely exclude benign URLs with substring collisions (display, border, join, pinterest)', () {
+      final borderClip = ClipItem.uri(
+        uri: Uri.parse('https://developer.mozilla.org/en-US/docs/Web/CSS/border'),
+      );
+      final displayClip = ClipItem.uri(
+        uri: Uri.parse('https://css-tricks.com/almanac/properties/d/display/'),
+      );
+      final joinClip = ClipItem.uri(
+        uri: Uri.parse('https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join'),
+      );
+      final pinterestClip = ClipItem.uri(
+        uri: Uri.parse('https://www.pinterest.com/pin/123456789/'),
+      );
+
+      expect(checker.checkClip(ExclusionCheckParams(clip: borderClip)).isAllowed, isTrue);
+      expect(checker.checkClip(ExclusionCheckParams(clip: displayClip)).isAllowed, isTrue);
+      expect(checker.checkClip(ExclusionCheckParams(clip: joinClip)).isAllowed, isTrue);
+      expect(checker.checkClip(ExclusionCheckParams(clip: pinterestClip)).isAllowed, isTrue);
+    });
+
+    test('does not falsely exclude benign window titles (apply, submit, order)', () {
+      const applyActivity = ActivityInfo(
+        pid: 2001,
+        app: 'Browser',
+        identifier: 'com.google.Chrome',
+        appFileName: 'Google Chrome',
+        appFilePath: '/Applications/Google Chrome.app',
+        title: 'Function.prototype.apply() - JavaScript | MDN',
+        url: '',
+        document: '',
+      );
+      const submitActivity = ActivityInfo(
+        pid: 2002,
+        app: 'Browser',
+        identifier: 'com.google.Chrome',
+        appFileName: 'Google Chrome',
+        appFilePath: '/Applications/Google Chrome.app',
+        title: 'Submit a pull request · raj457036/CopyCat',
+        url: '',
+        document: '',
+      );
+
+      final clip = ClipItem.text(text: 'const x = 1;');
+      expect(checker.checkClip(ExclusionCheckParams(clip: clip, activity: applyActivity)).isAllowed, isTrue);
+      expect(checker.checkClip(ExclusionCheckParams(clip: clip, activity: submitActivity)).isAllowed, isTrue);
+    });
+
+    test('excludes sensitive window titles matching boundary phrases', () {
+      const accountSettingsActivity = ActivityInfo(
+        pid: 2003,
+        app: 'Browser',
+        identifier: 'com.google.Chrome',
+        appFileName: 'Google Chrome',
+        appFilePath: '/Applications/Google Chrome.app',
+        title: 'Google Account Settings',
+        url: '',
+        document: '',
+      );
+      const pinActivity = ActivityInfo(
+        pid: 2004,
+        app: 'SecurityApp',
+        identifier: 'com.example.security',
+        appFileName: 'SecurityApp',
+        appFilePath: '/Applications/SecurityApp.app',
+        title: 'Please Enter PIN Code to Proceed',
+        url: '',
+        document: '',
+      );
+
+      final clip = ClipItem.text(text: 'secret content');
+      final result1 = checker.checkClip(ExclusionCheckParams(clip: clip, activity: accountSettingsActivity));
+      final result2 = checker.checkClip(ExclusionCheckParams(clip: clip, activity: pinActivity));
+
+      expect(result1.isAllowed, isFalse);
+      expect(result1.reason, ExclusionReason.windowTitle);
+
+      expect(result2.isAllowed, isFalse);
+      expect(result2.reason, ExclusionReason.windowTitle);
+    });
+
+    test('safely escapes user-provided custom URLs and titles containing regex characters', () {
+      final customChecker = ExclusionChecker(
+        ExclusionRules(
+          sensitiveUrls: false,
+          urls: ['test.com/path?key=value', 'special[name].org'],
+          titles: ['Title with (Parentheses) & Dots...'],
+        ),
+      );
+
+      final matchingClip = ClipItem.uri(
+        uri: Uri.parse('https://test.com/path?key=value'),
+      );
+      final nonMatchingClip = ClipItem.uri(
+        uri: Uri.parse('https://test.com/pathXkey=value'),
+      );
+
+      expect(customChecker.checkClip(ExclusionCheckParams(clip: matchingClip)).isAllowed, isFalse);
+      expect(customChecker.checkClip(ExclusionCheckParams(clip: nonMatchingClip)).isAllowed, isTrue);
+
+      const matchingActivity = ActivityInfo(
+        pid: 3001,
+        app: 'Test',
+        identifier: 'com.test',
+        appFileName: 'Test',
+        appFilePath: '/Test',
+        title: 'Title with (Parentheses) & Dots...',
+        url: '',
+        document: '',
+      );
+      expect(customChecker.checkActivity(matchingActivity).isAllowed, isFalse);
+    });
   });
 
   group('ClipboardFeedback Models', () {

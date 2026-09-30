@@ -6,24 +6,9 @@ import 'package:clipboard/base/domain/services/analysis/text_analysis.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:focus_window/platform/activity_info.dart';
-import 'package:universal_io/io.dart';
 
 // patterns
 final _creditCardPattern = RegExp(r'\b\d{4} \d{4} \d{4} \d{4}\b');
-// Regex to match a combination of letters, digits, and special characters
-final passwordPattern = RegExp(
-  r'^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+=-]).{8,}$',
-);
-// Exclude patterns that are likely not passwords (e.g., hex colors, common words)
-final commonWordPattern = RegExp(r'^[a-zA-Z]+$'); // Only alphabets, like a word
-final hexPattern = RegExp(r'^#?[A-Fa-f0-9]{6}$'); // Hex color pattern
-final otpPattern = RegExp(r'^\d{4,6}$'); // OTP pattern
-
-// Bank account number pattern (6-18 digits or IBAN format 15-34 alphanumeric)
-final bankAccountPattern = RegExp(r'^\d{6,18}$|^[A-Z]{2}\d{2}[A-Z0-9]{11,30}$');
-
-// Generic passport number pattern (6-9 alphanumeric characters)
-final passportPattern = RegExp(r'^[A-Z0-9]{6,9}$');
 
 class ExclusionChecker {
   final List<RegExp> _rTitle = [];
@@ -38,10 +23,23 @@ class ExclusionChecker {
   final bool _email;
   final bool _sensitiveUrls;
 
+  static List<RegExp> _buildBoundaryPatterns(Iterable<String> items) {
+    if (items.isEmpty) return const [];
+    final patterns = <String>[];
+    for (final raw in items) {
+      final item = raw.trim();
+      if (item.isEmpty) continue;
+      final escaped = RegExp.escape(item);
+      final prefix = RegExp(r'^\w').hasMatch(item) ? r'\b' : '';
+      final suffix = RegExp(r'\w$').hasMatch(item) ? r'\b' : '';
+      patterns.add('$prefix$escaped$suffix');
+    }
+    if (patterns.isEmpty) return const [];
+    return [RegExp(patterns.join('|'), caseSensitive: false, multiLine: true)];
+  }
+
   ExclusionChecker(ExclusionRules rules)
-    : // _titles = [...rules.titles],
-      //       _urls = [...rules.urls],
-      _patterns = rules.patterns.map((e) => RegExp(e)).toList(),
+    : _patterns = rules.patterns.map((e) => RegExp(e)).toList(),
       _apps = [...rules.apps],
       _creditCard = rules.creditCard,
       _phone = rules.phone,
@@ -49,35 +47,16 @@ class ExclusionChecker {
       _email = rules.email,
       _sensitiveUrls = rules.sensitiveUrls {
     if (_sensitiveUrls) {
-      if (Platform.isMacOS) {
-        _rUrls.add(
-          RegExp(
-            sensitiveUrlKeywords.join("|"),
-            caseSensitive: false,
-            multiLine: true,
-          ),
-        );
-      }
-
-      _rTitle.add(
-        RegExp(
-          sensitiveTitlesKeywords.join("|"),
-          caseSensitive: false,
-          multiLine: true,
-        ),
-      );
+      _rUrls.addAll(_buildBoundaryPatterns(sensitiveUrlKeywords));
+      _rTitle.addAll(_buildBoundaryPatterns(sensitiveTitlesKeywords));
     }
 
     if (rules.titles.isNotEmpty) {
-      _rTitle.add(
-        RegExp(rules.titles.join("|"), caseSensitive: false, multiLine: true),
-      );
+      _rTitle.addAll(_buildBoundaryPatterns(rules.titles));
     }
 
-    if (rules.urls.isNotEmpty && Platform.isMacOS) {
-      _rUrls.add(
-        RegExp(rules.urls.join("|"), caseSensitive: false, multiLine: true),
-      );
+    if (rules.urls.isNotEmpty) {
+      _rUrls.addAll(_buildBoundaryPatterns(rules.urls));
     }
 
     if (_passwordManager) {
@@ -126,8 +105,8 @@ class ExclusionChecker {
         );
       }
     }
-    if (activity.url.isNotEmpty && Platform.isMacOS) {
-      final hasMatch = _rUrls.any((r) => activity.url.contains(r));
+    if (activity.url.isNotEmpty) {
+      final hasMatch = _rUrls.any((r) => r.hasMatch(activity.url));
       if (hasMatch) {
         logger.w("Excluded pattern detected in url");
         return const ExclusionCheckResult.excluded(
@@ -185,7 +164,7 @@ class ExclusionChecker {
       }
     }
 
-    if (_sensitiveUrls && clip.isUri && clip.uri != null) {
+    if (clip.isUri && clip.uri != null) {
       final uriStr = clip.uri!.toString();
       if (_rUrls.any((r) => r.hasMatch(uriStr))) {
         logger.w("Exclusion rule triggered for sensitive url");
