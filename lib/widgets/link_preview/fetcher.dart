@@ -1,36 +1,32 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ui' show Size;
+import 'dart:typed_data';
 
-import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/widgets/link_preview/type.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/painting.dart' show decodeImageFromList;
 import 'package:html/dom.dart' show Document, Element;
 import 'package:html/parser.dart' as parser show parse;
-import 'package:http/http.dart' as http show Request, Client, Response;
+import 'package:http/http.dart' as http
+    show Request, Client, StreamedResponse;
 import 'package:punycode/punycode.dart' as puny;
 
-// Calculates the URL to be used for fetching link preview data,
-// taking into account any provided proxy and handling punycode
-// encoding for non-ASCII domain names.
 String _calculateUrl(String baseUrl, String? proxy) {
-  var urlToReturn = baseUrl;
+  String urlToReturn = baseUrl;
 
-  final domainRegex = RegExp(r'^(?:(http|https|ftp):\/\/)?([^\/?#]+)');
-  final match = domainRegex.firstMatch(baseUrl);
+  final RegExp domainRegex = RegExp(r'^(?:(http|https|ftp):\/\/)?([^\/?#]+)');
+  final RegExpMatch? match = domainRegex.firstMatch(baseUrl);
 
   if (match != null) {
-    final originalDomain = match.group(2)!;
+    final String originalDomain = match.group(2)!;
 
-    final labels = originalDomain.split('.');
+    final List<String> labels = originalDomain.split('.');
     if (labels.length <= 10) {
-      final encodedLabels = labels.map((label) {
-        final isAscii = label.runes.every((r) => r < 128);
+      final List<String> encodedLabels = labels.map((String label) {
+        final bool isAscii = label.runes.every((int r) => r < 128);
         return isAscii ? label : 'xn--${puny.punycodeEncode(label)}';
       }).toList();
 
-      final punycodedDomain = encodedLabels.join('.');
+      final String punycodedDomain = encodedLabels.join('.');
       urlToReturn = baseUrl.replaceFirst(originalDomain, punycodedDomain);
     }
   }
@@ -43,11 +39,11 @@ String _calculateUrl(String baseUrl, String? proxy) {
 }
 
 String? _getMetaContent(Document document, String propertyValue) {
-  final meta = document.getElementsByTagName('meta');
-  final element = meta.firstWhere(
-    (e) => e.attributes['property'] == propertyValue,
+  final List<Element> meta = document.getElementsByTagName('meta');
+  final Element element = meta.firstWhere(
+    (Element e) => e.attributes['property'] == propertyValue,
     orElse: () => meta.firstWhere(
-      (e) => e.attributes['name'] == propertyValue,
+      (Element e) => e.attributes['name'] == propertyValue,
       orElse: () => Element.tag(null),
     ),
   );
@@ -56,15 +52,15 @@ String? _getMetaContent(Document document, String propertyValue) {
 }
 
 String? _getTitle(Document document) {
-  final metaTitle =
+  final String? metaTitle =
       _getMetaContent(document, 'og:title') ??
       _getMetaContent(document, 'twitter:title') ??
       _getMetaContent(document, 'og:site_name');
 
-  if (metaTitle != null) return metaTitle;
+  if (metaTitle != null && metaTitle.isNotEmpty) return metaTitle;
 
-  final titleElements = document.getElementsByTagName('title');
-  if (titleElements.isNotEmpty) return titleElements.last.text;
+  final List<Element> titleElements = document.getElementsByTagName('title');
+  if (titleElements.isNotEmpty) return titleElements.last.text.trim();
   return null;
 }
 
@@ -74,31 +70,42 @@ String? _getDescription(Document document) =>
     _getMetaContent(document, 'twitter:description');
 
 List<String> _getImageUrls(Document document, String baseUrl) {
-  final meta = document.getElementsByTagName('meta');
-  var attribute = 'content';
-  var elements = meta
+  final List<Element> meta = document.getElementsByTagName('meta');
+  final List<Element> elements = meta
       .where(
-        (e) =>
+        (Element e) =>
             e.attributes['property'] == 'og:image' ||
-            e.attributes['property'] == 'twitter:image',
+            e.attributes['property'] == 'twitter:image' ||
+            e.attributes['name'] == 'og:image' ||
+            e.attributes['name'] == 'twitter:image',
       )
       .toList();
 
-  if (elements.isEmpty) {
-    elements = document.getElementsByTagName('img');
-    attribute = 'src';
+  final List<String> urls = <String>[];
+  for (final Element element in elements) {
+    final String? content = element.attributes['content']?.trim();
+    final String? actual = _getActualImageUrl(baseUrl, content);
+    if (actual != null && actual.isNotEmpty) {
+      urls.add(actual);
+    }
   }
 
-  return elements.fold<List<String>>([], (previousValue, element) {
-    final actualImageUrl = _getActualImageUrl(
-      baseUrl,
-      element.attributes[attribute]?.trim(),
-    );
+  if (urls.isEmpty) {
+    final List<Element> links = document.getElementsByTagName('link');
+    for (final Element link in links) {
+      final String? rel = link.attributes['rel']?.toLowerCase();
+      if (rel == 'image_src' || rel == 'apple-touch-icon') {
+        final String? href = link.attributes['href']?.trim();
+        final String? actual = _getActualImageUrl(baseUrl, href);
+        if (actual != null && actual.isNotEmpty) {
+          urls.add(actual);
+          break;
+        }
+      }
+    }
+  }
 
-    return actualImageUrl != null
-        ? [...previousValue, actualImageUrl]
-        : previousValue;
-  });
+  return urls;
 }
 
 String? _getActualImageUrl(String baseUrl, String? imageUrl) {
@@ -108,157 +115,281 @@ String? _getActualImageUrl(String baseUrl, String? imageUrl) {
 
   if (imageUrl.contains('.svg') || imageUrl.contains('.gif')) return null;
 
-  if (imageUrl.startsWith('//')) imageUrl = 'https:$imageUrl';
+  String resolved = imageUrl;
+  if (resolved.startsWith('//')) {
+    resolved = 'https:$resolved';
+  }
 
-  if (!imageUrl.startsWith('http')) {
-    if (baseUrl.endsWith('/') && imageUrl.startsWith('/')) {
-      imageUrl = '${baseUrl.substring(0, baseUrl.length - 1)}$imageUrl';
-    } else if (!baseUrl.endsWith('/') && !imageUrl.startsWith('/')) {
-      imageUrl = '$baseUrl/$imageUrl';
+  if (!resolved.startsWith('http')) {
+    if (baseUrl.endsWith('/') && resolved.startsWith('/')) {
+      resolved = '${baseUrl.substring(0, baseUrl.length - 1)}$resolved';
+    } else if (!baseUrl.endsWith('/') && !resolved.startsWith('/')) {
+      resolved = '$baseUrl/$resolved';
     } else {
-      imageUrl = '$baseUrl$imageUrl';
+      resolved = '$baseUrl$resolved';
     }
   }
 
-  return imageUrl;
+  return resolved;
 }
 
-Future<Size> _getImageSizeFromBytes(Uint8List bytes) async {
-  final image = await decodeImageFromList(bytes);
-  return Size(image.width.toDouble(), image.height.toDouble());
-}
-
-Map<String, Object?> _extractPreviewMetadata(Map<String, Object?> payload) {
-  final html = payload['html'] as String;
-  final baseUrl = payload['baseUrl'] as String;
-
-  final document = parser.parse(html);
-  final title = _getTitle(document)?.trim();
-  final description = _getDescription(document)?.trim();
-  final imageUrls = _getImageUrls(document, baseUrl);
-
-  return {'title': title, 'description': description, 'imageUrls': imageUrls};
-}
-
-Future<http.Response?> _getRedirectedResponse(
+Future<http.StreamedResponse?> _getRedirectedStreamedResponse(
   Uri uri, {
   Map<String, String>? headers,
   int maxRedirects = 5,
   Duration timeout = const Duration(seconds: 5),
   http.Client? client,
 }) async {
-  final httpClient = client ?? http.Client();
-  var redirectCount = 0;
+  final http.Client httpClient = client ?? http.Client();
+  int redirectCount = 0;
+  Uri currentUri = uri;
 
   while (redirectCount < maxRedirects) {
-    final request = http.Request('GET', uri)..followRedirects = false;
+    final http.Request request = http.Request('GET', currentUri)
+      ..followRedirects = false;
 
     if (headers != null) {
       request.headers.addAll(headers);
     }
 
-    final streamedResponse = await httpClient.send(request).timeout(timeout);
+    final http.StreamedResponse streamedResponse =
+        await httpClient.send(request).timeout(timeout);
 
     if (streamedResponse.isRedirect &&
         streamedResponse.headers.containsKey('location')) {
-      uri = uri.resolve(streamedResponse.headers['location']!);
+      final String location = streamedResponse.headers['location']!;
+      currentUri = currentUri.resolve(location);
       redirectCount++;
+      await streamedResponse.stream.drain<void>();
       continue;
     }
 
-    return http.Response.fromStream(streamedResponse);
+    return streamedResponse;
   }
 
   return null;
 }
 
-/// Fetches link preview data for a given URL, including title, description,
-/// and image.
-Future<LinkPreviewData?> getLinkPreviewData(
-  String url, {
-  Map<String, String>? headers,
-  String? proxy,
-  Duration? requestTimeout,
-  String userAgent = 'WhatsApp/2',
-}) async {
-  String? previewDataUrl;
-  LinkImagePreviewData? previewDataImage;
-  String? previewDataDescription;
-  String? previewDataTitle;
+Future<Uint8List> _readHeadBytes(http.StreamedResponse response) async {
+  final BytesBuilder builder = BytesBuilder(copy: false);
+  final Completer<void> completer = Completer<void>();
+  late final StreamSubscription<List<int>> subscription;
+  List<int> overlap = const <int>[];
+  bool isDone = false;
 
+  void finish() {
+    if (!isDone) {
+      isDone = true;
+      subscription.cancel();
+      if (!completer.isCompleted) {
+        completer.complete();
+      }
+    }
+  }
+
+  subscription = response.stream.listen(
+    (List<int> chunk) {
+      if (isDone) return;
+      builder.add(chunk);
+
+      final List<int> toCheck = overlap.isEmpty
+          ? chunk
+          : <int>[...overlap, ...chunk];
+      final String text =
+          latin1.decode(toCheck, allowInvalid: true).toLowerCase();
+
+      if (text.contains('</head>') || text.contains('<body')) {
+        finish();
+        return;
+      }
+
+      overlap = chunk.length > 16
+          ? chunk.sublist(chunk.length - 16)
+          : chunk;
+
+      if (builder.length >= 1024 * 1024) {
+        finish();
+      }
+    },
+    onError: (Object error, StackTrace stackTrace) {
+      if (!isDone) {
+        isDone = true;
+        subscription.cancel();
+        if (!completer.isCompleted) {
+          completer.completeError(error, stackTrace);
+        }
+      }
+    },
+    onDone: () {
+      finish();
+    },
+    cancelOnError: true,
+  );
+
+  await completer.future;
+  return builder.takeBytes();
+}
+
+Future<LinkPreviewFetchResult> _fetchAndParseInIsolate(
+  LinkPreviewFetchRequest request,
+) async {
+  final http.Client client = http.Client();
   try {
+    String url = request.url;
     if (!url.toLowerCase().startsWith('http')) {
       url = 'https://$url';
     }
-    previewDataUrl = _calculateUrl(url, proxy);
-    final uri = Uri.parse(previewDataUrl);
 
-    final effectiveHeaders = <String, String>{
-      'User-Agent': userAgent,
-      ...?headers,
+    final String previewDataUrl = _calculateUrl(url, request.proxy);
+    final Uri uri = Uri.parse(previewDataUrl);
+
+    final Map<String, String> effectiveHeaders = <String, String>{
+      'User-Agent': request.userAgent,
+      ...?request.headers,
     };
 
-    final response = await _getRedirectedResponse(
-      uri,
-      headers: effectiveHeaders,
-      timeout: requestTimeout ?? const Duration(seconds: 5),
-    );
+    final http.StreamedResponse? streamedResponse =
+        await _getRedirectedStreamedResponse(
+          uri,
+          headers: effectiveHeaders,
+          timeout: request.requestTimeout,
+          client: client,
+        );
 
-    if (response == null || response.statusCode != 200) {
-      return null;
-    }
-    url = response.request?.url.toString() ?? url;
-
-    final imageRegexp = RegExp(r'image\/*');
-
-    if (imageRegexp.hasMatch(response.headers['content-type'] ?? '')) {
-      final imageSize = await _getImageSizeFromBytes(response.bodyBytes);
-      return LinkPreviewData(
+    if (streamedResponse == null) {
+      return LinkPreviewFetchResult(
         link: previewDataUrl,
-        image: LinkImagePreviewData(
-          imageUrl: previewDataUrl,
-          imageSize: imageSize,
-        ),
+        status: LinkPreviewFetchStatus.transientError,
       );
     }
 
-    try {
-      Encoding encoding;
-      final contentType = response.headers['content-type']?.toLowerCase() ?? '';
-      if (contentType.contains('charset=')) {
-        final charset = contentType.split('charset=')[1].split(';')[0].trim();
-        encoding = Encoding.getByName(charset) ?? utf8;
-        logger.d('getLinkPreviewData fetched document encoding: $encoding');
-      } else {
-        encoding = utf8;
-      }
-
-      final parsedMetadata = await compute(_extractPreviewMetadata, {
-        'html': encoding.decode(response.bodyBytes),
-        'baseUrl': url,
-      });
-
-      previewDataTitle = parsedMetadata['title'] as String?;
-      previewDataDescription = parsedMetadata['description'] as String?;
-
-      final imageUrls = (parsedMetadata['imageUrls'] as List<dynamic>)
-          .cast<String>();
-
-      if (imageUrls.isNotEmpty) {
-        final previewDataImageUrl = _calculateUrl(imageUrls.first, proxy);
-        previewDataImage = LinkImagePreviewData(imageUrl: previewDataImageUrl);
-      }
-    } catch (e) {
-      return LinkPreviewData(link: url);
+    final int statusCode = streamedResponse.statusCode;
+    if (statusCode >= 500) {
+      return LinkPreviewFetchResult(
+        link: previewDataUrl,
+        status: LinkPreviewFetchStatus.transientError,
+      );
     }
 
-    return LinkPreviewData(
-      link: previewDataUrl,
-      title: previewDataTitle,
-      description: previewDataDescription,
-      image: previewDataImage,
+    if (statusCode == 408 ||
+        statusCode == 425 ||
+        statusCode == 429 ||
+        statusCode == 401 ||
+        statusCode == 403 ||
+        statusCode == 407) {
+      return LinkPreviewFetchResult(
+        link: previewDataUrl,
+        status: LinkPreviewFetchStatus.transientError,
+      );
+    }
+
+    if (statusCode >= 400) {
+      return LinkPreviewFetchResult(
+        link: previewDataUrl,
+        status: LinkPreviewFetchStatus.noMetadata,
+      );
+    }
+
+    final String finalUrl = previewDataUrl;
+    final String contentType =
+        streamedResponse.headers['content-type']?.toLowerCase() ?? '';
+
+    if (contentType.startsWith('image/')) {
+      return LinkPreviewFetchResult(
+        link: finalUrl,
+        imageUrl: finalUrl,
+        status: LinkPreviewFetchStatus.success,
+      );
+    }
+
+    final bool isHtml = contentType.contains('text/html') ||
+        contentType.contains('application/xhtml') ||
+        contentType.isEmpty;
+
+    if (!isHtml) {
+      return LinkPreviewFetchResult(
+        link: finalUrl,
+        status: LinkPreviewFetchStatus.noMetadata,
+      );
+    }
+
+    final Uint8List headBytes = await _readHeadBytes(streamedResponse);
+    if (headBytes.isEmpty) {
+      return LinkPreviewFetchResult(
+        link: finalUrl,
+        status: LinkPreviewFetchStatus.transientError,
+      );
+    }
+
+    Encoding encoding = utf8;
+    if (contentType.contains('charset=')) {
+      final String charset =
+          contentType.split('charset=')[1].split(';')[0].trim();
+      encoding = Encoding.getByName(charset) ?? utf8;
+    }
+
+    String html;
+    try {
+      html = encoding.decode(headBytes);
+    } catch (_) {
+      html = utf8.decode(headBytes, allowMalformed: true);
+    }
+
+    final Document document = parser.parse(html);
+    final String? title = _getTitle(document);
+    final String? description = _getDescription(document);
+    final List<String> imageUrls = _getImageUrls(document, finalUrl);
+
+    String? previewDataImageUrl;
+    if (imageUrls.isNotEmpty) {
+      previewDataImageUrl = _calculateUrl(imageUrls.first, request.proxy);
+    }
+
+    final bool hasMetadata = (title != null && title.isNotEmpty) ||
+        (description != null && description.isNotEmpty) ||
+        (previewDataImageUrl != null && previewDataImageUrl.isNotEmpty);
+
+    return LinkPreviewFetchResult(
+      link: finalUrl,
+      title: title,
+      description: description,
+      imageUrl: previewDataImageUrl,
+      status: hasMetadata
+          ? LinkPreviewFetchStatus.success
+          : LinkPreviewFetchStatus.noMetadata,
     );
-  } catch (e) {
-    return null;
+  } on TimeoutException {
+    return LinkPreviewFetchResult(
+      link: request.url,
+      status: LinkPreviewFetchStatus.transientError,
+    );
+  } catch (_) {
+    return LinkPreviewFetchResult(
+      link: request.url,
+      status: LinkPreviewFetchStatus.transientError,
+    );
+  } finally {
+    client.close();
+  }
+}
+
+Future<LinkPreviewFetchResult> getLinkPreviewData(
+  LinkPreviewFetchRequest request,
+) async {
+  try {
+    final LinkPreviewFetchResult? result = await compute(
+      _fetchAndParseInIsolate,
+      request,
+    );
+    return result ??
+        LinkPreviewFetchResult(
+          link: request.url,
+          status: LinkPreviewFetchStatus.transientError,
+        );
+  } catch (_) {
+    return LinkPreviewFetchResult(
+      link: request.url,
+      status: LinkPreviewFetchStatus.transientError,
+    );
   }
 }

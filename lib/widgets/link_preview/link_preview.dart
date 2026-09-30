@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
@@ -187,10 +189,12 @@ class LinkPreview extends StatefulWidget {
 
 class _LinkPreviewState extends State<LinkPreview> {
   static final Map<String, LinkPreviewData> _stalePreviewCache = {};
-  static final Map<String, Future<LinkPreviewData?>> _inFlightFetches = {};
+  static final Set<String> _sessionTransientErrors = {};
+  static final Map<String, Future<LinkPreviewFetchResult>> _inFlightFetches = {};
 
   LinkPreviewData? _preview;
   bool _isLoading = false;
+  Timer? _debounceTimer;
 
   String get _url => widget.item.url?.trim() ?? '';
 
@@ -223,11 +227,16 @@ class _LinkPreviewState extends State<LinkPreview> {
     }
   }
 
+  @override
+  void dispose() {
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
+
   void _hydrateFromItem() {
     _preview = _previewFromItem(widget.item);
 
     if (_preview != null) {
-      // Preview now exists on the item (usually after DB sync), so drop stale cache.
       _stalePreviewCache.remove(_url);
     } else {
       _preview = _stalePreviewCache[_url];
@@ -238,86 +247,130 @@ class _LinkPreviewState extends State<LinkPreview> {
 
   void _fetchPreviewIfNeeded() {
     if (_preview == null) {
-      _fetchPreview();
+      _debounceTimer?.cancel();
+      _debounceTimer = Timer(const Duration(milliseconds: 250), () {
+        if (mounted && _preview == null) {
+          _fetchPreview();
+        }
+      });
     }
   }
 
   Future<void> _fetchPreview() async {
-    if (_url.isEmpty || !_isValidUrl(_url)) {
-      logger.w('Invalid URL for link preview: $_url');
+    final String url = _url;
+    if (url.isEmpty || !_isValidUrl(url)) {
+      logger.w('Invalid URL for link preview: $url');
       return;
     }
 
-    final cached = _stalePreviewCache[_url];
+    final LinkPreviewData? cached = _stalePreviewCache[url];
     if (cached != null) {
-      setState(() {
-        _preview = cached;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _preview = cached;
+          _isLoading = false;
+        });
+      }
       return;
     }
 
-    setState(() {
-      _preview = null;
-      _isLoading = true;
-    });
-
-    logger.d('Fetching link preview for: $_url');
-
-    final existingFetch = _inFlightFetches[_url];
-    final startedFetch = existingFetch == null;
-    final fetch = existingFetch ?? getLinkPreviewData(_url);
-
-    if (startedFetch) {
-      _inFlightFetches[_url] = fetch;
+    if (_sessionTransientErrors.contains(url)) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+      return;
     }
 
-    final data = await fetch;
-
-    if (startedFetch) {
-      _inFlightFetches.remove(_url);
+    if (mounted) {
+      setState(() {
+        _preview = null;
+        _isLoading = true;
+      });
     }
 
-    logger.d('Fetched link preview for: $_url, data: $data');
+    Future<LinkPreviewFetchResult>? fetch = _inFlightFetches[url];
+    final bool startedFetch = fetch == null;
+    if (startedFetch) {
+      logger.d('Fetching link preview for: $url');
+      fetch = getLinkPreviewData(LinkPreviewFetchRequest(url: url));
+      _inFlightFetches[url] = fetch;
+    }
 
-    if (!mounted) return;
+    final OfflinePersistenceCubit persistenceCubit =
+        context.read<OfflinePersistenceCubit>();
 
-    if (data != null) {
-      _stalePreviewCache[_url] = data;
+    final LinkPreviewFetchResult result = await fetch;
+
+    if (startedFetch) {
+      _inFlightFetches.remove(url);
+    }
+
+    logger.d('Fetched link preview for: $url, status: ${result.status}');
+
+    if (result.status == LinkPreviewFetchStatus.success) {
+      final LinkPreviewData data = result.toLinkPreviewData();
+      _stalePreviewCache[url] = data;
 
       if (startedFetch) {
-        await context.read<OfflinePersistenceCubit>().persistLocalLinkPreview(
+        await persistenceCubit.persistLocalLinkPreview(
           widget.item,
           title: data.title,
           description: data.description,
           imageUrl: data.image?.imageUrl,
         );
       }
-    }
-    if (mounted) {
-      setState(() {
-        _preview = data;
-        _isLoading = false;
-      });
+
+      if (mounted) {
+        setState(() {
+          _preview = data;
+          _isLoading = false;
+        });
+      }
+    } else if (result.status == LinkPreviewFetchStatus.noMetadata) {
+      final LinkPreviewData emptyData = LinkPreviewData(link: url, title: '');
+      _stalePreviewCache[url] = emptyData;
+
+      if (mounted) {
+        setState(() {
+          _preview = emptyData;
+          _isLoading = false;
+        });
+      }
+    } else {
+      _sessionTransientErrors.add(url);
+
+      if (mounted) {
+        setState(() {
+          _preview = null;
+          _isLoading = false;
+        });
+      }
     }
   }
 
   LinkPreviewData? _previewFromItem(ClipboardItem item) {
-    if (item.linkPreviewTitle == null &&
-        item.linkPreviewDescription == null &&
-        item.linkPreviewImageUrl == null) {
+    final String? title = item.linkPreviewTitle?.trim();
+    final String? description = item.linkPreviewDescription?.trim();
+    final String? imageUrl = item.linkPreviewImageUrl?.trim();
+
+    final bool hasContent = (title != null && title.isNotEmpty) ||
+        (description != null && description.isNotEmpty) ||
+        (imageUrl != null && imageUrl.isNotEmpty);
+
+    if (!hasContent) {
       return null;
     }
 
     return LinkPreviewData(
       link: item.url ?? '',
-      title: item.linkPreviewTitle,
-      description: item.linkPreviewDescription,
-      image: item.linkPreviewImageUrl != null
+      title: title,
+      description: description,
+      image: imageUrl != null
           ? LinkImagePreviewData(
-              imageUrl: item.linkPreviewImageUrl!,
-              imageSize: Size
-                  .zero, // You can replace this with actual size if available
+              imageUrl: imageUrl,
+              imageSize: Size.zero,
             )
           : null,
     );
