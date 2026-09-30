@@ -138,6 +138,43 @@ void main() {
       expect(result.matchedDetail, 'CustomRestrictedApp');
     });
 
+    test('excludes text from KeePassXC and Proton Pass by default', () {
+      final clip = ClipItem.text(text: 'secret password');
+      const keepassActivity = ActivityInfo(
+        pid: 1235,
+        app: 'KeePassXC',
+        identifier: 'org.keepassxc.keepassxc',
+        appFileName: 'KeePassXC.app',
+        appFilePath: '/Applications/KeePassXC.app',
+        title: 'KeePassXC',
+        url: '',
+        document: '',
+      );
+      const protonActivity = ActivityInfo(
+        pid: 1236,
+        app: 'Proton Pass',
+        identifier: 'me.proton.pass.electron',
+        appFileName: 'Proton Pass.app',
+        appFilePath: '/Applications/Proton Pass.app',
+        title: 'Proton Pass',
+        url: '',
+        document: '',
+      );
+
+      final result1 = checker.checkClip(
+        ExclusionCheckParams(clip: clip, activity: keepassActivity),
+      );
+      final result2 = checker.checkClip(
+        ExclusionCheckParams(clip: clip, activity: protonActivity),
+      );
+
+      expect(result1.isAllowed, isFalse);
+      expect(result1.reason, ExclusionReason.excludedApp);
+
+      expect(result2.isAllowed, isFalse);
+      expect(result2.reason, ExclusionReason.excludedApp);
+    });
+
     test('excludes sensitive URLs and token parameters', () {
       final tokenClip = ClipItem.uri(
         uri: Uri.parse('https://example.com/auth/callback?token=secret_abc123'),

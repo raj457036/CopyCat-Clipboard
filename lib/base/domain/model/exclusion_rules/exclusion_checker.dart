@@ -71,16 +71,17 @@ class ExclusionChecker {
   ExclusionCheckResult checkActivity(ActivityInfo activity) {
     for (final app in _apps) {
       if (app.identifier != null &&
-          (activity.identifier.isNotEmpty &&
-              activity.identifier == app.identifier!) &&
-          (activity.app.isNotEmpty && app.name == activity.app)) {
+          activity.identifier.isNotEmpty &&
+          activity.identifier == app.identifier!) {
         logger.w("Excluded pattern detected for the app.");
         return ExclusionCheckResult.excluded(
           reason: ExclusionReason.excludedApp,
           matchedDetail: app.name.isNotEmpty ? app.name : activity.app,
         );
       }
-      if (activity.appFileName.startsWith(app.name)) {
+      if (app.name.isNotEmpty &&
+          (activity.appFileName.startsWith(app.name) ||
+              activity.app == app.name)) {
         logger.w("Excluded pattern detected for the app name.");
         return ExclusionCheckResult.excluded(
           reason: ExclusionReason.excludedApp,
