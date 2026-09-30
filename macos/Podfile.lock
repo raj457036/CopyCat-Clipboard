@@ -7,7 +7,7 @@ PODS:
   - AppAuth/Core (1.7.6)
   - AppAuth/ExternalUserAgent (1.7.6):
     - AppAuth/Core
-  - AppCheckCore (11.3.1):
+  - AppCheckCore (11.3.2):
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
@@ -92,14 +92,14 @@ PODS:
   - PromisesObjC (2.4.1)
   - PromisesSwift (2.4.1):
     - PromisesObjC (= 2.4.1)
-  - purchases_flutter (10.12.0):
+  - purchases_flutter (10.13.2):
     - FlutterMacOS
-    - PurchasesHybridCommon (= 18.37.0)
-  - PurchasesHybridCommon (18.37.0):
-    - RevenueCat (= 5.88.0)
+    - PurchasesHybridCommon (= 19.3.1)
+  - PurchasesHybridCommon (19.3.1):
+    - RevenueCat (= 5.90.2)
   - quick_paste_popup (0.0.1):
     - FlutterMacOS
-  - RevenueCat (5.88.0)
+  - RevenueCat (5.90.2)
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
   - share_plus (0.0.1):
@@ -255,7 +255,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   app_links: 05a6ec2341985eb05e9f97dc63f5837c39895c3f
   AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
-  AppCheckCore: e215d35177a9cf469927863e69c13e220df32a8b
+  AppCheckCore: be8fce5469f68d7f6a29aa94b25f097409ff7fdc
   clipboard_watcher: e9c9d88b3aea4889fe80025037e690e73600b160
   device_info_plus: 4fb280989f669696856f8b129e4a5e3cd6c48f76
   emoji_picker_flutter: 51ca408e289d84d1e460016b2a28721ec754fcf7
@@ -285,10 +285,10 @@ SPEC CHECKSUMS:
   pdfx: 824a9108791a81e400da7d1a903ab73668365072
   PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
   PromisesSwift: 217dea0fd5d2ad65222a109c48698add13cc1c5b
-  purchases_flutter: 40f3e615d6e58925e88805847188f11046e48eb1
-  PurchasesHybridCommon: 2e72564d3393d480ca126d4d057737435dd7ccba
+  purchases_flutter: 38666312b8697d696bb427a29d28d84e69631946
+  PurchasesHybridCommon: c364d4198150bf4027b00fcada9b4ddc280df108
   quick_paste_popup: 0ed179088e77d0add387a5acb6e641940c9230bf
-  RevenueCat: 96e12da1f3de201c65f337ff661506ac28ee1514
+  RevenueCat: c44e15b3ee88506da1fdf537c62a6c239cc41b21
   screen_retriever_macos: c5508cc3c66ff0d4db650480cf0ab691e220d933
   share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
