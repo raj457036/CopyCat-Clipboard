@@ -27,12 +27,14 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
 
   final Map<String, ApplicationMeta?> _cache = {};
   final Map<String, DateTime> _negativeCacheUntil = {};
+  final Map<String, DateTime> _localIconNegativeCacheUntil = {};
   final Map<String, Future<ApplicationMeta?>> _resolveInFlight = {};
   Future<Directory>? _iconsDirFuture;
   // Guards against firing duplicate in-flight syncs for the same sourceId.
   final Set<String> _syncInFlight = {};
 
   static const Duration _negativeCacheTtl = Duration(seconds: 30);
+  static const Duration _localIconLookupTimeout = Duration(seconds: 3);
 
   ApplicationMetaResolverImpl(
     this.repo,
@@ -150,15 +152,32 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
     return true;
   }
 
+  bool _isLocalIconNegativeCached(String sourceId) {
+    final until = _localIconNegativeCacheUntil[sourceId];
+    if (until == null) return false;
+
+    if (systemTime().isAfter(until)) {
+      _localIconNegativeCacheUntil.remove(sourceId);
+      return false;
+    }
+
+    return true;
+  }
+
   void _markNegativeCache(String sourceId) {
     _negativeCacheUntil[sourceId] = systemTime().add(_negativeCacheTtl);
   }
 
-  Future<ApplicationMeta> _buildFromPayload(
+  void _markLocalIconNegativeCache(String sourceId) {
+    _localIconNegativeCacheUntil[sourceId] = systemTime().add(
+      _negativeCacheTtl,
+    );
+  }
+
+  ApplicationMeta _buildFromPayload(
     String sourceId,
     ActivityMetaPayload payload,
-  ) async {
-    final iconLocalPath = await _cacheIconToFile(sourceId, payload.appFilePath);
+  ) {
     final now = systemTime();
 
     return ApplicationMeta(
@@ -167,7 +186,6 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
       appName: _normalizeValue(payload.appName),
       appFilePath: _normalizeValue(payload.appFilePath),
       os: payload.os,
-      iconLocalPath: iconLocalPath,
       created: now,
       modified: now,
     );
@@ -191,33 +209,42 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
   Future<String?> _cacheIconToFile(String sourceId, String? appFilePath) async {
     final normalizedPath = _normalizeValue(appFilePath);
     if (normalizedPath == null) return null;
+    if (_isLocalIconNegativeCached(sourceId)) return null;
 
     try {
       final bytes = await _focusWindow
           .getIcon(normalizedPath)
-          .timeout(const Duration(seconds: 3));
-      return await _persistIconBytes(
+          .timeout(_localIconLookupTimeout);
+      final iconPath = await _persistIconBytes(
         sourceId,
         bytes,
         emptyBytesLog: 'focus_window returned empty icon bytes',
       );
+      if (iconPath == null) _markLocalIconNegativeCache(sourceId);
+      return iconPath;
     } catch (e) {
+      _markLocalIconNegativeCache(sourceId);
       logger.w('${_tag(sourceId)} cache icon failed: $e');
       return null;
     }
   }
 
   Future<String?> _cacheIconByIdentifierToFile(String sourceId) async {
+    if (_isLocalIconNegativeCached(sourceId)) return null;
+
     try {
       final bytes = await _focusWindow
           .getIconByIdentifier(sourceId)
-          .timeout(const Duration(seconds: 3));
-      return await _persistIconBytes(
+          .timeout(_localIconLookupTimeout);
+      final iconPath = await _persistIconBytes(
         sourceId,
         bytes,
         emptyBytesLog: 'identifier icon lookup returned empty bytes',
       );
+      if (iconPath == null) _markLocalIconNegativeCache(sourceId);
+      return iconPath;
     } catch (e) {
+      _markLocalIconNegativeCache(sourceId);
       logger.w('${_tag(sourceId)} identifier icon lookup failed: $e');
       return null;
     }
@@ -273,6 +300,16 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
     return rebuilt;
   }
 
+  Future<void> _resolveAndSaveLocalIcon(
+    String sourceId,
+    String? appFilePath,
+  ) async {
+    final iconLocalPath = await _cacheIconToFile(sourceId, appFilePath);
+    if (iconLocalPath != null) {
+      await _saveResolvedIcon(sourceId, iconLocalPath);
+    }
+  }
+
   @override
   Future<String?> syncFromActivity(ActivityMetaPayload? payload) async {
     final sourceId = resolveSourceId(payload);
@@ -284,7 +321,7 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
       return sourceId;
     }
 
-    final app = await _buildFromPayload(sourceId, payload);
+    final app = _buildFromPayload(sourceId, payload);
 
     final savedResult = await repo.upsert(app);
     savedResult.fold(
@@ -295,6 +332,7 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
         _cacheAndScheduleSyncIfNeeded(saved);
       },
     );
+    unawaited(_resolveAndSaveLocalIcon(sourceId, payload.appFilePath));
 
     return sourceId;
   }
