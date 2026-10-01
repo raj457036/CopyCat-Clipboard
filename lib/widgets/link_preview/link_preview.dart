@@ -188,7 +188,6 @@ class LinkPreview extends StatefulWidget {
 }
 
 class _LinkPreviewState extends State<LinkPreview> {
-  static final Map<String, LinkPreviewData> _stalePreviewCache = {};
   static final Set<String> _sessionTransientErrors = {};
   static final Map<String, Future<LinkPreviewFetchResult>> _inFlightFetches =
       {};
@@ -236,13 +235,6 @@ class _LinkPreviewState extends State<LinkPreview> {
 
   void _hydrateFromItem() {
     _preview = _previewFromItem(widget.item);
-
-    if (_preview != null) {
-      _stalePreviewCache.remove(_url);
-    } else {
-      _preview = _stalePreviewCache[_url];
-    }
-
     _isLoading = false;
   }
 
@@ -261,17 +253,6 @@ class _LinkPreviewState extends State<LinkPreview> {
     final String url = _url;
     if (url.isEmpty || !_isValidUrl(url)) {
       logger.w('Invalid URL for link preview: $url');
-      return;
-    }
-
-    final LinkPreviewData? cached = _stalePreviewCache[url];
-    if (cached != null) {
-      if (mounted) {
-        setState(() {
-          _preview = cached;
-          _isLoading = false;
-        });
-      }
       return;
     }
 
@@ -312,7 +293,6 @@ class _LinkPreviewState extends State<LinkPreview> {
 
     if (result.status == LinkPreviewFetchStatus.success) {
       final LinkPreviewData data = result.toLinkPreviewData();
-      _stalePreviewCache[url] = data;
 
       if (startedFetch) {
         await persistenceCubit.persistLocalLinkPreview(
@@ -331,7 +311,13 @@ class _LinkPreviewState extends State<LinkPreview> {
       }
     } else if (result.status == LinkPreviewFetchStatus.noMetadata) {
       final LinkPreviewData emptyData = LinkPreviewData(link: url, title: '');
-      _stalePreviewCache[url] = emptyData;
+
+      if (startedFetch) {
+        await persistenceCubit.persistLocalLinkPreview(
+          widget.item,
+          title: '',
+        );
+      }
 
       if (mounted) {
         setState(() {
@@ -356,12 +342,12 @@ class _LinkPreviewState extends State<LinkPreview> {
     final String? description = item.linkPreviewDescription?.trim();
     final String? imageUrl = item.linkPreviewImageUrl?.trim();
 
-    final bool hasContent =
-        (title != null && title.isNotEmpty) ||
-        (description != null && description.isNotEmpty) ||
-        (imageUrl != null && imageUrl.isNotEmpty);
+    final bool hasBeenFetched =
+        item.linkPreviewTitle != null ||
+        item.linkPreviewDescription != null ||
+        item.linkPreviewImageUrl != null;
 
-    if (!hasContent) {
+    if (!hasBeenFetched) {
       return null;
     }
 
