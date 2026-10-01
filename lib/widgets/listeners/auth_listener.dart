@@ -26,14 +26,22 @@ import 'package:clipboard/di/di.dart';
 import 'package:clipboard/routes/routes.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universal_io/io.dart';
 
-class AuthListener extends StatelessWidget {
+class AuthListener extends StatefulWidget {
   final Widget child;
 
   const AuthListener({super.key, required this.child});
+
+  @override
+  State<AuthListener> createState() => _AuthListenerState();
+}
+
+class _AuthListenerState extends State<AuthListener> {
+  bool _isCompletingAuthentication = false;
 
   Future<void> initEncryptionWorker(AuthenticatedAuthState authState) async {
     final appConfigCubit = sl<AppConfigCubit>();
@@ -131,7 +139,14 @@ class AuthListener extends StatelessWidget {
         switch (state) {
           case AuthenticatedAuthState():
             logger.d("User ID: ${state.user.userId}");
-            await _handleAuthenticatedState(context, state);
+            setState(() => _isCompletingAuthentication = true);
+            try {
+              await _handleAuthenticatedState(context, state);
+            } finally {
+              if (mounted) {
+                setState(() => _isCompletingAuthentication = false);
+              }
+            }
           case UnauthenticatedAuthState(:final failure):
             context.read<ReviewPromptCubit>().setEnabled(false);
             if (failure != null && failure != authFailure) {
@@ -165,7 +180,20 @@ class AuthListener extends StatelessWidget {
             sl<AppLockCubit>().onAppForeground();
         }
       },
-      child: child,
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Stack(
+          children: [
+            widget.child,
+            if (_isCompletingAuthentication)
+              const Positioned.fill(
+                child: AbsorbPointer(
+                  child: Material(child: Center(child: YarnBallLoading())),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

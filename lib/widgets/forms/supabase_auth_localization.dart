@@ -203,7 +203,7 @@ class SupabaseAuthLocalizations extends SupabaseAuthUILocalizations {
 }
 
 class SupabaseAuthLocalizationsDelegate
-  extends LocalizationsDelegate<SupabaseAuthUILocalizations> {
+    extends LocalizationsDelegate<SupabaseAuthUILocalizations> {
   const SupabaseAuthLocalizationsDelegate();
 
   @override
@@ -253,5 +253,5 @@ class SupabaseAuthLocalizationsDelegate
   }
 
   @override
-  bool shouldReload(covariant LocalizationsDelegate old) => old != this;
+  bool shouldReload(covariant LocalizationsDelegate old) => false;
 }
