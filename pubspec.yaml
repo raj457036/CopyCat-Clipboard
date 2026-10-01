@@ -1,11 +1,10 @@
 name: clipboard
 description: "CopyCat Clipboard: One Clipboard, Limitless Productivity"
 publish_to: "none"
-version: 2.0.19+118
+version: 2.0.19+119
 
 environment:
   sdk: ">=3.11.0 <4.0.0"
-
 
 dependencies:
   flutter:
@@ -82,9 +81,8 @@ dependencies:
       url: https://github.com/raj457036/emoji_picker_flutter.git
   purchases_flutter: ^10.11.0
   purchases_ui_flutter: ^10.11.0
-  supabase_flutter: ^2.17.2
-  supabase_auth_ui:
-    path: packages/supabase_auth_ui
+  supabase_flutter: ^2.18.0
+  supabase_auth_ui: ^0.7.0
   super_clipboard: ^0.9.1
   super_drag_and_drop: ^0.9.1
   easy_worker: ^1.2.3
