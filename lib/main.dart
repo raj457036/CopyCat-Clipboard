@@ -26,6 +26,8 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/utils/windows/update_registry.dart';
 import 'package:clipboard/widgets/app_lock_overlay.dart';
 import 'package:clipboard/widgets/debug/gizmo_overlay.dart';
+import 'package:clipboard/widgets/forms/supabase_auth_localization.dart'
+    show SupabaseAuthLocalizationsDelegate;
 import 'package:clipboard/widgets/keyboard_shortcuts/actions/select_all.dart';
 import 'package:clipboard/widgets/listeners/auth_listener.dart';
 import 'package:clipboard/widgets/listeners/monetization_listener.dart';
@@ -225,7 +227,10 @@ class AppContent extends StatelessWidget {
               darkTheme: darkTheme,
               debugShowCheckedModeBanner: false,
               locale: locale,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              localizationsDelegates: const [
+                ...AppLocalizations.localizationsDelegates,
+                SupabaseAuthLocalizationsDelegate(),
+              ],
               supportedLocales: AppLocalizations.supportedLocales,
               builder: (context, child) {
                 return AppLockOverlay(child: UpgraderBuilder(child: child));

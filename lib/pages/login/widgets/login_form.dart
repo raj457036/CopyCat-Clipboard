@@ -7,7 +7,6 @@ import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
 import 'package:clipboard/base/domain/model/auth_user/auth_user.dart';
-import 'package:clipboard/base/domain/model/localization.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
@@ -63,26 +62,6 @@ class LoginForm extends StatelessWidget {
     );
   }
 
-  AuthUserFormLocalization _buildAuthLocalization(BuildContext context) {
-    return AuthUserFormLocalization(
-      displayNameLabel: context.locale.login__form__input__name,
-      enterEmail: context.locale.login__form__input__email,
-      validEmailError: context.locale.login__form__input__error_email,
-      enterPassword: context.locale.login__form__input__password,
-      passwordLengthError:
-          context.locale.login__form__input__error_password_length,
-      signIn: context.locale.login__form__button__signin,
-      signUp: context.locale.login__form__button__signup,
-      forgotPassword: context.locale.login__form__button__forgot_password,
-      dontHaveAccount: context.locale.login__form__text__signup,
-      haveAccount: context.locale.login__form__text__old_user,
-      sendPasswordReset: context.locale.login__form__text__reset_password,
-      passwordResetSent: context.locale.login__form__text__reset_ack,
-      backToSignIn: context.locale.login__form__button__back,
-      unexpectedError: context.locale.app__unknown_error,
-    );
-  }
-
   Future<void> _onAuthComplete(
     BuildContext context,
     AuthUser user,
@@ -119,7 +98,6 @@ class LoginForm extends StatelessWidget {
     final colors = context.colors;
     final isMobile = context.isMobile;
     final authTheme = _buildAuthTheme(context);
-    final localization = _buildAuthLocalization(context);
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -133,7 +111,6 @@ class LoginForm extends StatelessWidget {
             onSignInComplete: (user, accessToken) =>
                 _onAuthComplete(context, user, accessToken, isSignUp: false),
             onError: (error) => _onAuthError(context, error),
-            localization: localization,
           ),
         ),
         Text(
