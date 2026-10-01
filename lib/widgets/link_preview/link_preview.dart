@@ -313,10 +313,7 @@ class _LinkPreviewState extends State<LinkPreview> {
       final LinkPreviewData emptyData = LinkPreviewData(link: url, title: '');
 
       if (startedFetch) {
-        await persistenceCubit.persistLocalLinkPreview(
-          widget.item,
-          title: '',
-        );
+        await persistenceCubit.persistLocalLinkPreview(widget.item, title: '');
       }
 
       if (mounted) {

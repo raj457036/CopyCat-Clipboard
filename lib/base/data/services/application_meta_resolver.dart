@@ -269,7 +269,9 @@ class ApplicationMetaResolverImpl implements ApplicationMetaResolver {
     final existingResult = await repo.getBySourceId(sourceId);
     var rebuilt = existingResult.fold(
       (failure) {
-        logger.w('${_tag(sourceId)} local lookup before icon save failed: $failure');
+        logger.w(
+          '${_tag(sourceId)} local lookup before icon save failed: $failure',
+        );
         return ApplicationMeta(
           sourceId: sourceId,
           os: _currentOs,
