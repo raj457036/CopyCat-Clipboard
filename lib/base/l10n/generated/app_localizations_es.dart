@@ -1461,16 +1461,36 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settings__text__er__pass_manager => 'Gestores de Contraseñas';
 
   @override
+  String get settings__text__er__pass_manager__subtitle =>
+      'Excluir capturas de gestores de contraseñas';
+
+  @override
   String get settings__text__er__cc => 'Número de Tarjeta de Crédito';
+
+  @override
+  String get settings__text__er__cc__subtitle =>
+      'Excluir números de tarjeta detectados';
 
   @override
   String get settings__text__er__phone => 'Número de Teléfono';
 
   @override
+  String get settings__text__er__phone__subtitle =>
+      'Excluir números de teléfono detectados';
+
+  @override
   String get settings__text__er__email => 'Dirección de Correo Electrónico';
 
   @override
+  String get settings__text__er__email__subtitle =>
+      'Excluir direcciones de correo detectadas';
+
+  @override
   String get settings__text__er__url => 'URL Sensible';
+
+  @override
+  String get settings__text__er__url__subtitle =>
+      'Excluir capturas con URL sensibles';
 
   @override
   String get settings__text__decrypted__note =>

@@ -1459,16 +1459,36 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings__text__er__pass_manager => 'Passwortmanager';
 
   @override
+  String get settings__text__er__pass_manager__subtitle =>
+      'Kopien aus Passwortmanager-Apps ausschließen';
+
+  @override
   String get settings__text__er__cc => 'Kreditkartennummer';
+
+  @override
+  String get settings__text__er__cc__subtitle =>
+      'Erkannte Kreditkartennummern ausschließen';
 
   @override
   String get settings__text__er__phone => 'Telefonnummer';
 
   @override
+  String get settings__text__er__phone__subtitle =>
+      'Erkannte Telefonnummern ausschließen';
+
+  @override
   String get settings__text__er__email => 'E-Mail-Adresse';
 
   @override
+  String get settings__text__er__email__subtitle =>
+      'Erkannte E-Mail-Adressen ausschließen';
+
+  @override
   String get settings__text__er__url => 'Empfindliche URL';
+
+  @override
+  String get settings__text__er__url__subtitle =>
+      'Kopien mit empfindlichen URLs ausschließen';
 
   @override
   String get settings__text__decrypted__note =>

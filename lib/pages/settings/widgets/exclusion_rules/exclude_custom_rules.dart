@@ -22,9 +22,6 @@ class ExcludeCustomRules extends StatelessWidget {
           title: ProBadge(
             child: Text(context.locale.settings__tile__cer_title),
           ),
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(16)),
-          ),
           subtitle: Text(context.locale.settings__tile__cer_subtitle),
           enabled: enabled && hasAccess,
           trailing: const Icon(Icons.keyboard_arrow_right_rounded),

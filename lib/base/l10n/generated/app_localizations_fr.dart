@@ -1465,16 +1465,36 @@ class AppLocalizationsFr extends AppLocalizations {
       'Gestionnaires de mots de passe';
 
   @override
+  String get settings__text__er__pass_manager__subtitle =>
+      'Exclure les captures des gestionnaires de mots de passe';
+
+  @override
   String get settings__text__er__cc => 'Numéro de carte de crédit';
+
+  @override
+  String get settings__text__er__cc__subtitle =>
+      'Exclure les numéros de carte détectés';
 
   @override
   String get settings__text__er__phone => 'Numéro de téléphone';
 
   @override
+  String get settings__text__er__phone__subtitle =>
+      'Exclure les numéros de téléphone détectés';
+
+  @override
   String get settings__text__er__email => 'Adresse e-mail';
 
   @override
+  String get settings__text__er__email__subtitle =>
+      'Exclure les adresses e-mail détectées';
+
+  @override
   String get settings__text__er__url => 'URL sensible';
+
+  @override
+  String get settings__text__er__url__subtitle =>
+      'Exclure les captures contenant des URL sensibles';
 
   @override
   String get settings__text__decrypted__note =>

@@ -1407,16 +1407,31 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__text__er__pass_manager => '密码管理器';
 
   @override
+  String get settings__text__er__pass_manager__subtitle => '排除来自密码管理器应用的剪贴内容';
+
+  @override
   String get settings__text__er__cc => '信用卡号';
+
+  @override
+  String get settings__text__er__cc__subtitle => '排除检测到的信用卡号';
 
   @override
   String get settings__text__er__phone => '电话号码';
 
   @override
+  String get settings__text__er__phone__subtitle => '排除检测到的电话号码';
+
+  @override
   String get settings__text__er__email => '电子邮件地址';
 
   @override
+  String get settings__text__er__email__subtitle => '排除检测到的电子邮件地址';
+
+  @override
   String get settings__text__er__url => '敏感网址';
+
+  @override
+  String get settings__text__er__url__subtitle => '排除包含敏感网址的剪贴内容';
 
   @override
   String get settings__text__decrypted__note =>

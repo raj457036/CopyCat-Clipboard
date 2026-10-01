@@ -2658,11 +2658,23 @@ abstract class AppLocalizations {
   /// **'Password Managers'**
   String get settings__text__er__pass_manager;
 
+  /// No description provided for @settings__text__er__pass_manager__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude captures from password manager apps'**
+  String get settings__text__er__pass_manager__subtitle;
+
   /// No description provided for @settings__text__er__cc.
   ///
   /// In en, this message translates to:
   /// **'Credit Card Number'**
   String get settings__text__er__cc;
+
+  /// No description provided for @settings__text__er__cc__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude detected credit card numbers'**
+  String get settings__text__er__cc__subtitle;
 
   /// No description provided for @settings__text__er__phone.
   ///
@@ -2670,17 +2682,35 @@ abstract class AppLocalizations {
   /// **'Phone number'**
   String get settings__text__er__phone;
 
+  /// No description provided for @settings__text__er__phone__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude detected phone numbers'**
+  String get settings__text__er__phone__subtitle;
+
   /// No description provided for @settings__text__er__email.
   ///
   /// In en, this message translates to:
   /// **'Email Address'**
   String get settings__text__er__email;
 
+  /// No description provided for @settings__text__er__email__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude detected email addresses'**
+  String get settings__text__er__email__subtitle;
+
   /// No description provided for @settings__text__er__url.
   ///
   /// In en, this message translates to:
   /// **'Sensitive Url'**
   String get settings__text__er__url;
+
+  /// No description provided for @settings__text__er__url__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude captures containing sensitive URLs'**
+  String get settings__text__er__url__subtitle;
 
   /// No description provided for @settings__text__decrypted__note.
   ///

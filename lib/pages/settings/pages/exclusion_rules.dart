@@ -63,6 +63,9 @@ class ExclusionRulesPage extends StatelessWidget {
                     title: Text(
                       context.locale.settings__text__er__pass_manager,
                     ),
+                    subtitle: Text(
+                      context.locale.settings__text__er__pass_manager__subtitle,
+                    ),
                     value: state.passwordManager,
                     onChanged: enable
                         ? (value) {
@@ -76,6 +79,9 @@ class ExclusionRulesPage extends StatelessWidget {
                   if (isDesktopPlatform)
                     SwitchListTile(
                       title: Text(context.locale.settings__text__er__cc),
+                      subtitle: Text(
+                        context.locale.settings__text__er__cc__subtitle,
+                      ),
                       value: state.creditCard,
                       onChanged: enable
                           ? (value) {
@@ -88,6 +94,9 @@ class ExclusionRulesPage extends StatelessWidget {
                     ),
                   SwitchListTile(
                     title: Text(context.locale.settings__text__er__phone),
+                    subtitle: Text(
+                      context.locale.settings__text__er__phone__subtitle,
+                    ),
                     value: state.phone,
                     onChanged: enable
                         ? (value) {
@@ -100,6 +109,9 @@ class ExclusionRulesPage extends StatelessWidget {
                   ),
                   SwitchListTile(
                     title: Text(context.locale.settings__text__er__email),
+                    subtitle: Text(
+                      context.locale.settings__text__er__email__subtitle,
+                    ),
                     value: state.email,
                     onChanged: enable
                         ? (value) {
@@ -113,6 +125,9 @@ class ExclusionRulesPage extends StatelessWidget {
                   if (isDesktopPlatform)
                     SwitchListTile(
                       title: Text(context.locale.settings__text__er__url),
+                      subtitle: Text(
+                        context.locale.settings__text__er__url__subtitle,
+                      ),
                       value: state.sensitiveUrls,
                       onChanged: enable
                           ? (value) {
