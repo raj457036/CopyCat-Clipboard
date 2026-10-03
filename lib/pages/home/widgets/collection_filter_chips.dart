@@ -187,13 +187,14 @@ class _CollectionChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final collectionColor = collection.collectionColor;
+    final collectionColor = collection.collectionColor ?? colors.outline;
     final labelStyle = context.textTheme.labelLarge?.copyWith(
-      color: isSelected ? colors.onPrimaryContainer : colors.onSurface,
+      color: colors.onSurface,
     );
     return TooltipTheme(
       data: const TooltipThemeData(constraints: BoxConstraints(maxWidth: 200)),
       child: ChoiceChip(
+        pressElevation: 1,
         avatar: isReadOnly
             ? const Icon(Icons.lock_outline_rounded, size: 16)
             : Text(collection.emoji),
@@ -201,15 +202,17 @@ class _CollectionChip extends StatelessWidget {
         selected: isSelected,
         tooltip: collection.description,
         onSelected: (selected) => _onSelected(context, selected),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         shape: isSelected
             ? const StadiumBorder()
             : const RoundedRectangleBorder(borderRadius: radius8),
         showCheckmark: false,
-        backgroundColor: collectionColor?.withValues(alpha: 0.15),
-        selectedColor: collectionColor?.withValues(alpha: 0.3),
-        side: collectionColor != null
-            ? BorderSide(color: collectionColor.withValues(alpha: 0.4), width: 1)
-            : null,
+        backgroundColor: collectionColor.withValues(alpha: 0.15),
+        selectedColor: collectionColor.withValues(alpha: 0.3),
+        side: BorderSide(
+          color: collectionColor.withValues(alpha: 0.4),
+          width: .7,
+        ),
         mouseCursor: SystemMouseCursors.click,
         labelStyle: labelStyle,
       ),
