@@ -1,16 +1,27 @@
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:flutter/material.dart';
 
-/// Provides ClipboardItem context-wide to avoid prop drilling
 class ClipItemScope extends InheritedWidget {
   final ClipboardItem item;
+  final Color? collectionColor;
 
-  const ClipItemScope({super.key, required this.item, required super.child});
+  const ClipItemScope({
+    super.key,
+    required this.item,
+    required super.child,
+    this.collectionColor,
+  });
 
-  static ClipboardItem of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<ClipItemScope>()!.item;
+  static ClipItemScope _scopeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ClipItemScope>()!;
   }
 
+  static ClipboardItem of(BuildContext context) => _scopeOf(context).item;
+
+  static Color? collectionColorOf(BuildContext context) =>
+      _scopeOf(context).collectionColor;
+
   @override
-  bool updateShouldNotify(ClipItemScope oldWidget) => oldWidget.item != item;
+  bool updateShouldNotify(ClipItemScope oldWidget) =>
+      oldWidget.item != item || oldWidget.collectionColor != collectionColor;
 }

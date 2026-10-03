@@ -187,6 +187,7 @@ class _CollectionChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final collectionColor = collection.collectionColor;
     final labelStyle = context.textTheme.labelLarge?.copyWith(
       color: isSelected ? colors.onPrimaryContainer : colors.onSurface,
     );
@@ -204,7 +205,11 @@ class _CollectionChip extends StatelessWidget {
             ? const StadiumBorder()
             : const RoundedRectangleBorder(borderRadius: radius8),
         showCheckmark: false,
-
+        backgroundColor: collectionColor?.withValues(alpha: 0.15),
+        selectedColor: collectionColor?.withValues(alpha: 0.3),
+        side: collectionColor != null
+            ? BorderSide(color: collectionColor.withValues(alpha: 0.4), width: 1)
+            : null,
         mouseCursor: SystemMouseCursors.click,
         labelStyle: labelStyle,
       ),

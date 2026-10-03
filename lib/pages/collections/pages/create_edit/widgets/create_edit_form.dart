@@ -6,6 +6,7 @@ import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/collection_color_picker.dart';
 import 'package:clipboard/widgets/sheets/emoji_selector.dart';
 import 'package:clipboard/widgets/yarn_ball_loading.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ class _ClipCollectionCreateEditFormState
       nameController,
       descriptionController;
   bool _isSaving = false;
+  int? _selectedColor;
 
   @override
   void initState() {
@@ -43,6 +45,7 @@ class _ClipCollectionCreateEditFormState
     descriptionController = TextEditingController(
       text: widget.collection?.description,
     );
+    _selectedColor = widget.collection?.color;
   }
 
   @override
@@ -74,6 +77,7 @@ class _ClipCollectionCreateEditFormState
         emoji: emojiController.text,
         title: nameController.text.trim(),
         description: description,
+        color: _selectedColor,
         created: systemTime(),
         modified: systemTime(),
       );
@@ -82,6 +86,7 @@ class _ClipCollectionCreateEditFormState
         emoji: emojiController.text,
         title: nameController.text.trim(),
         description: description,
+        color: _selectedColor,
       );
     }
     final error = await cubit.upsert(collection);
@@ -198,6 +203,11 @@ class _ClipCollectionCreateEditFormState
               maxLength: 255,
               textInputAction: TextInputAction.done,
               onFieldSubmitted: (_) => submit(),
+            ),
+            height12,
+            CollectionColorPicker(
+              value: _selectedColor,
+              onChanged: (rgb) => setState(() => _selectedColor = rgb),
             ),
             height12,
             OverflowBar(

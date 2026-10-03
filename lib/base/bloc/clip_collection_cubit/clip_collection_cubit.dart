@@ -161,12 +161,17 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
   bool isReadOnly(ClipCollection collection) =>
       state.mapOrNull(loaded: (s) => s.isReadOnly(collection)) ?? false;
 
+  ClipCollection? findInState({int? id, int? serverId}) =>
+      state.mapOrNull(
+        loaded: (loaded) => loaded.collections.findFirst((c) {
+          if (id != null && c.id == id) return true;
+          if (serverId != null && c.serverId == serverId) return true;
+          return false;
+        }),
+      );
+
   Future<ClipCollection?> get(int id, int? serverId) async {
-    ClipCollection? collection = state.mapOrNull(
-      loaded: (loaded) => loaded.collections.findFirst(
-        (e) => serverId != null ? e.serverId == serverId : e.id == id,
-      ),
-    );
+    ClipCollection? collection = findInState(id: id, serverId: serverId);
 
     if (collection == null) {
       final result = await repo.get(id: id, serverId: serverId);

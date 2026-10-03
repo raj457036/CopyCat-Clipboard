@@ -15,7 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ClipCollection {
 
-@JsonKey(includeToJson: false, includeFromJson: false) int? get id;@JsonKey(name: "id", includeToJson: false) int? get serverId;@JsonKey(includeFromJson: false, includeToJson: false) DateTime? get lastSynced;@JsonKey(name: "created")@DateTimeConverter() DateTime get created;@JsonKey(name: "modified")@DateTimeConverter() DateTime get modified; String get userId;@DateTimeConverter() DateTime? get deletedAt; String? get deviceId; String get title; String? get description; String get emoji;
+@JsonKey(includeToJson: false, includeFromJson: false) int? get id;@JsonKey(name: "id", includeToJson: false) int? get serverId;@JsonKey(includeFromJson: false, includeToJson: false) DateTime? get lastSynced;@JsonKey(name: "created")@DateTimeConverter() DateTime get created;@JsonKey(name: "modified")@DateTimeConverter() DateTime get modified; String get userId;@DateTimeConverter() DateTime? get deletedAt; String? get deviceId; String get title; String? get description; String get emoji;// 24-bit RGB integer (0x000000–0xFFFFFF). Alpha is always 0xFF on read.
+ int? get color;
 /// Create a copy of ClipCollection
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +29,16 @@ $ClipCollectionCopyWith<ClipCollection> get copyWith => _$ClipCollectionCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClipCollection&&(identical(other.id, id) || other.id == id)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.lastSynced, lastSynced) || other.lastSynced == lastSynced)&&(identical(other.created, created) || other.created == created)&&(identical(other.modified, modified) || other.modified == modified)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.emoji, emoji) || other.emoji == emoji));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClipCollection&&(identical(other.id, id) || other.id == id)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.lastSynced, lastSynced) || other.lastSynced == lastSynced)&&(identical(other.created, created) || other.created == created)&&(identical(other.modified, modified) || other.modified == modified)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.emoji, emoji) || other.emoji == emoji)&&(identical(other.color, color) || other.color == color));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,serverId,lastSynced,created,modified,userId,deletedAt,deviceId,title,description,emoji);
+int get hashCode => Object.hash(runtimeType,id,serverId,lastSynced,created,modified,userId,deletedAt,deviceId,title,description,emoji,color);
 
 @override
 String toString() {
-  return 'ClipCollection(id: $id, serverId: $serverId, lastSynced: $lastSynced, created: $created, modified: $modified, userId: $userId, deletedAt: $deletedAt, deviceId: $deviceId, title: $title, description: $description, emoji: $emoji)';
+  return 'ClipCollection(id: $id, serverId: $serverId, lastSynced: $lastSynced, created: $created, modified: $modified, userId: $userId, deletedAt: $deletedAt, deviceId: $deviceId, title: $title, description: $description, emoji: $emoji, color: $color)';
 }
 
 
@@ -48,7 +49,7 @@ abstract mixin class $ClipCollectionCopyWith<$Res>  {
   factory $ClipCollectionCopyWith(ClipCollection value, $Res Function(ClipCollection) _then) = _$ClipCollectionCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(includeToJson: false, includeFromJson: false) int? id,@JsonKey(name: "id", includeToJson: false) int? serverId,@JsonKey(includeFromJson: false, includeToJson: false) DateTime? lastSynced,@JsonKey(name: "created")@DateTimeConverter() DateTime created,@JsonKey(name: "modified")@DateTimeConverter() DateTime modified, String userId,@DateTimeConverter() DateTime? deletedAt, String? deviceId, String title, String? description, String emoji
+@JsonKey(includeToJson: false, includeFromJson: false) int? id,@JsonKey(name: "id", includeToJson: false) int? serverId,@JsonKey(includeFromJson: false, includeToJson: false) DateTime? lastSynced,@JsonKey(name: "created")@DateTimeConverter() DateTime created,@JsonKey(name: "modified")@DateTimeConverter() DateTime modified, String userId,@DateTimeConverter() DateTime? deletedAt, String? deviceId, String title, String? description, String emoji, int? color
 });
 
 
@@ -65,7 +66,7 @@ class _$ClipCollectionCopyWithImpl<$Res>
 
 /// Create a copy of ClipCollection
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? serverId = freezed,Object? lastSynced = freezed,Object? created = null,Object? modified = null,Object? userId = null,Object? deletedAt = freezed,Object? deviceId = freezed,Object? title = null,Object? description = freezed,Object? emoji = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? serverId = freezed,Object? lastSynced = freezed,Object? created = null,Object? modified = null,Object? userId = null,Object? deletedAt = freezed,Object? deviceId = freezed,Object? title = null,Object? description = freezed,Object? emoji = null,Object? color = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,serverId: freezed == serverId ? _self.serverId : serverId // ignore: cast_nullable_to_non_nullable
@@ -78,7 +79,8 @@ as DateTime?,deviceId: freezed == deviceId ? _self.deviceId : deviceId // ignore
 as String?,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,emoji: null == emoji ? _self.emoji : emoji // ignore: cast_nullable_to_non_nullable
-as String,
+as String,color: freezed == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -163,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id, @JsonKey(name: "id", includeToJson: false)  int? serverId, @JsonKey(includeFromJson: false, includeToJson: false)  DateTime? lastSynced, @JsonKey(name: "created")@DateTimeConverter()  DateTime created, @JsonKey(name: "modified")@DateTimeConverter()  DateTime modified,  String userId, @DateTimeConverter()  DateTime? deletedAt,  String? deviceId,  String title,  String? description,  String emoji)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id, @JsonKey(name: "id", includeToJson: false)  int? serverId, @JsonKey(includeFromJson: false, includeToJson: false)  DateTime? lastSynced, @JsonKey(name: "created")@DateTimeConverter()  DateTime created, @JsonKey(name: "modified")@DateTimeConverter()  DateTime modified,  String userId, @DateTimeConverter()  DateTime? deletedAt,  String? deviceId,  String title,  String? description,  String emoji,  int? color)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ClipCollection() when $default != null:
-return $default(_that.id,_that.serverId,_that.lastSynced,_that.created,_that.modified,_that.userId,_that.deletedAt,_that.deviceId,_that.title,_that.description,_that.emoji);case _:
+return $default(_that.id,_that.serverId,_that.lastSynced,_that.created,_that.modified,_that.userId,_that.deletedAt,_that.deviceId,_that.title,_that.description,_that.emoji,_that.color);case _:
   return orElse();
 
 }
@@ -184,10 +186,10 @@ return $default(_that.id,_that.serverId,_that.lastSynced,_that.created,_that.mod
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id, @JsonKey(name: "id", includeToJson: false)  int? serverId, @JsonKey(includeFromJson: false, includeToJson: false)  DateTime? lastSynced, @JsonKey(name: "created")@DateTimeConverter()  DateTime created, @JsonKey(name: "modified")@DateTimeConverter()  DateTime modified,  String userId, @DateTimeConverter()  DateTime? deletedAt,  String? deviceId,  String title,  String? description,  String emoji)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id, @JsonKey(name: "id", includeToJson: false)  int? serverId, @JsonKey(includeFromJson: false, includeToJson: false)  DateTime? lastSynced, @JsonKey(name: "created")@DateTimeConverter()  DateTime created, @JsonKey(name: "modified")@DateTimeConverter()  DateTime modified,  String userId, @DateTimeConverter()  DateTime? deletedAt,  String? deviceId,  String title,  String? description,  String emoji,  int? color)  $default,) {final _that = this;
 switch (_that) {
 case _ClipCollection():
-return $default(_that.id,_that.serverId,_that.lastSynced,_that.created,_that.modified,_that.userId,_that.deletedAt,_that.deviceId,_that.title,_that.description,_that.emoji);case _:
+return $default(_that.id,_that.serverId,_that.lastSynced,_that.created,_that.modified,_that.userId,_that.deletedAt,_that.deviceId,_that.title,_that.description,_that.emoji,_that.color);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +206,10 @@ return $default(_that.id,_that.serverId,_that.lastSynced,_that.created,_that.mod
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id, @JsonKey(name: "id", includeToJson: false)  int? serverId, @JsonKey(includeFromJson: false, includeToJson: false)  DateTime? lastSynced, @JsonKey(name: "created")@DateTimeConverter()  DateTime created, @JsonKey(name: "modified")@DateTimeConverter()  DateTime modified,  String userId, @DateTimeConverter()  DateTime? deletedAt,  String? deviceId,  String title,  String? description,  String emoji)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeToJson: false, includeFromJson: false)  int? id, @JsonKey(name: "id", includeToJson: false)  int? serverId, @JsonKey(includeFromJson: false, includeToJson: false)  DateTime? lastSynced, @JsonKey(name: "created")@DateTimeConverter()  DateTime created, @JsonKey(name: "modified")@DateTimeConverter()  DateTime modified,  String userId, @DateTimeConverter()  DateTime? deletedAt,  String? deviceId,  String title,  String? description,  String emoji,  int? color)?  $default,) {final _that = this;
 switch (_that) {
 case _ClipCollection() when $default != null:
-return $default(_that.id,_that.serverId,_that.lastSynced,_that.created,_that.modified,_that.userId,_that.deletedAt,_that.deviceId,_that.title,_that.description,_that.emoji);case _:
+return $default(_that.id,_that.serverId,_that.lastSynced,_that.created,_that.modified,_that.userId,_that.deletedAt,_that.deviceId,_that.title,_that.description,_that.emoji,_that.color);case _:
   return null;
 
 }
@@ -219,7 +221,7 @@ return $default(_that.id,_that.serverId,_that.lastSynced,_that.created,_that.mod
 @JsonSerializable()
 
 class _ClipCollection extends ClipCollection {
-   _ClipCollection({@JsonKey(includeToJson: false, includeFromJson: false) this.id, @JsonKey(name: "id", includeToJson: false) this.serverId, @JsonKey(includeFromJson: false, includeToJson: false) this.lastSynced, @JsonKey(name: "created")@DateTimeConverter() required this.created, @JsonKey(name: "modified")@DateTimeConverter() required this.modified, this.userId = kLocalUserId, @DateTimeConverter() this.deletedAt, this.deviceId, required this.title, this.description, required this.emoji}): super._();
+   _ClipCollection({@JsonKey(includeToJson: false, includeFromJson: false) this.id, @JsonKey(name: "id", includeToJson: false) this.serverId, @JsonKey(includeFromJson: false, includeToJson: false) this.lastSynced, @JsonKey(name: "created")@DateTimeConverter() required this.created, @JsonKey(name: "modified")@DateTimeConverter() required this.modified, this.userId = kLocalUserId, @DateTimeConverter() this.deletedAt, this.deviceId, required this.title, this.description, required this.emoji, this.color}): super._();
   factory _ClipCollection.fromJson(Map<String, dynamic> json) => _$ClipCollectionFromJson(json);
 
 @override@JsonKey(includeToJson: false, includeFromJson: false) final  int? id;
@@ -233,6 +235,8 @@ class _ClipCollection extends ClipCollection {
 @override final  String title;
 @override final  String? description;
 @override final  String emoji;
+// 24-bit RGB integer (0x000000–0xFFFFFF). Alpha is always 0xFF on read.
+@override final  int? color;
 
 /// Create a copy of ClipCollection
 /// with the given fields replaced by the non-null parameter values.
@@ -247,16 +251,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClipCollection&&(identical(other.id, id) || other.id == id)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.lastSynced, lastSynced) || other.lastSynced == lastSynced)&&(identical(other.created, created) || other.created == created)&&(identical(other.modified, modified) || other.modified == modified)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.emoji, emoji) || other.emoji == emoji));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClipCollection&&(identical(other.id, id) || other.id == id)&&(identical(other.serverId, serverId) || other.serverId == serverId)&&(identical(other.lastSynced, lastSynced) || other.lastSynced == lastSynced)&&(identical(other.created, created) || other.created == created)&&(identical(other.modified, modified) || other.modified == modified)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.emoji, emoji) || other.emoji == emoji)&&(identical(other.color, color) || other.color == color));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,serverId,lastSynced,created,modified,userId,deletedAt,deviceId,title,description,emoji);
+int get hashCode => Object.hash(runtimeType,id,serverId,lastSynced,created,modified,userId,deletedAt,deviceId,title,description,emoji,color);
 
 @override
 String toString() {
-  return 'ClipCollection(id: $id, serverId: $serverId, lastSynced: $lastSynced, created: $created, modified: $modified, userId: $userId, deletedAt: $deletedAt, deviceId: $deviceId, title: $title, description: $description, emoji: $emoji)';
+  return 'ClipCollection(id: $id, serverId: $serverId, lastSynced: $lastSynced, created: $created, modified: $modified, userId: $userId, deletedAt: $deletedAt, deviceId: $deviceId, title: $title, description: $description, emoji: $emoji, color: $color)';
 }
 
 
@@ -267,7 +271,7 @@ abstract mixin class _$ClipCollectionCopyWith<$Res> implements $ClipCollectionCo
   factory _$ClipCollectionCopyWith(_ClipCollection value, $Res Function(_ClipCollection) _then) = __$ClipCollectionCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(includeToJson: false, includeFromJson: false) int? id,@JsonKey(name: "id", includeToJson: false) int? serverId,@JsonKey(includeFromJson: false, includeToJson: false) DateTime? lastSynced,@JsonKey(name: "created")@DateTimeConverter() DateTime created,@JsonKey(name: "modified")@DateTimeConverter() DateTime modified, String userId,@DateTimeConverter() DateTime? deletedAt, String? deviceId, String title, String? description, String emoji
+@JsonKey(includeToJson: false, includeFromJson: false) int? id,@JsonKey(name: "id", includeToJson: false) int? serverId,@JsonKey(includeFromJson: false, includeToJson: false) DateTime? lastSynced,@JsonKey(name: "created")@DateTimeConverter() DateTime created,@JsonKey(name: "modified")@DateTimeConverter() DateTime modified, String userId,@DateTimeConverter() DateTime? deletedAt, String? deviceId, String title, String? description, String emoji, int? color
 });
 
 
@@ -284,7 +288,7 @@ class __$ClipCollectionCopyWithImpl<$Res>
 
 /// Create a copy of ClipCollection
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? serverId = freezed,Object? lastSynced = freezed,Object? created = null,Object? modified = null,Object? userId = null,Object? deletedAt = freezed,Object? deviceId = freezed,Object? title = null,Object? description = freezed,Object? emoji = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? serverId = freezed,Object? lastSynced = freezed,Object? created = null,Object? modified = null,Object? userId = null,Object? deletedAt = freezed,Object? deviceId = freezed,Object? title = null,Object? description = freezed,Object? emoji = null,Object? color = freezed,}) {
   return _then(_ClipCollection(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,serverId: freezed == serverId ? _self.serverId : serverId // ignore: cast_nullable_to_non_nullable
@@ -297,7 +301,8 @@ as DateTime?,deviceId: freezed == deviceId ? _self.deviceId : deviceId // ignore
 as String?,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,emoji: null == emoji ? _self.emoji : emoji // ignore: cast_nullable_to_non_nullable
-as String,
+as String,color: freezed == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 

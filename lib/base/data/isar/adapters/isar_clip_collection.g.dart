@@ -18,50 +18,51 @@ const IsarClipCollectionSchema = CollectionSchema(
   name: r'ClipCollection',
   id: 442837445801629852,
   properties: {
+    r'color': PropertySchema(id: 0, name: r'color', type: IsarType.long),
     r'created': PropertySchema(
-      id: 0,
+      id: 1,
       name: r'created',
       type: IsarType.dateTime,
     ),
     r'deletedAt': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'deletedAt',
       type: IsarType.dateTime,
     ),
     r'description': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'description',
       type: IsarType.string,
     ),
     r'descriptionWords': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'descriptionWords',
       type: IsarType.stringList,
     ),
     r'deviceId': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'deviceId',
       type: IsarType.string,
     ),
-    r'emoji': PropertySchema(id: 5, name: r'emoji', type: IsarType.string),
+    r'emoji': PropertySchema(id: 6, name: r'emoji', type: IsarType.string),
     r'lastSynced': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'lastSynced',
       type: IsarType.dateTime,
     ),
     r'modified': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'modified',
       type: IsarType.dateTime,
     ),
-    r'serverId': PropertySchema(id: 8, name: r'serverId', type: IsarType.long),
-    r'title': PropertySchema(id: 9, name: r'title', type: IsarType.string),
+    r'serverId': PropertySchema(id: 9, name: r'serverId', type: IsarType.long),
+    r'title': PropertySchema(id: 10, name: r'title', type: IsarType.string),
     r'titleWords': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'titleWords',
       type: IsarType.stringList,
     ),
-    r'userId': PropertySchema(id: 11, name: r'userId', type: IsarType.string),
+    r'userId': PropertySchema(id: 12, name: r'userId', type: IsarType.string),
   },
 
   estimateSize: _isarClipCollectionEstimateSize,
@@ -163,18 +164,19 @@ void _isarClipCollectionSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeDateTime(offsets[0], object.created);
-  writer.writeDateTime(offsets[1], object.deletedAt);
-  writer.writeString(offsets[2], object.description);
-  writer.writeStringList(offsets[3], object.descriptionWords);
-  writer.writeString(offsets[4], object.deviceId);
-  writer.writeString(offsets[5], object.emoji);
-  writer.writeDateTime(offsets[6], object.lastSynced);
-  writer.writeDateTime(offsets[7], object.modified);
-  writer.writeLong(offsets[8], object.serverId);
-  writer.writeString(offsets[9], object.title);
-  writer.writeStringList(offsets[10], object.titleWords);
-  writer.writeString(offsets[11], object.userId);
+  writer.writeLong(offsets[0], object.color);
+  writer.writeDateTime(offsets[1], object.created);
+  writer.writeDateTime(offsets[2], object.deletedAt);
+  writer.writeString(offsets[3], object.description);
+  writer.writeStringList(offsets[4], object.descriptionWords);
+  writer.writeString(offsets[5], object.deviceId);
+  writer.writeString(offsets[6], object.emoji);
+  writer.writeDateTime(offsets[7], object.lastSynced);
+  writer.writeDateTime(offsets[8], object.modified);
+  writer.writeLong(offsets[9], object.serverId);
+  writer.writeString(offsets[10], object.title);
+  writer.writeStringList(offsets[11], object.titleWords);
+  writer.writeString(offsets[12], object.userId);
 }
 
 IsarClipCollection _isarClipCollectionDeserialize(
@@ -184,17 +186,18 @@ IsarClipCollection _isarClipCollectionDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = IsarClipCollection();
-  object.created = reader.readDateTime(offsets[0]);
-  object.deletedAt = reader.readDateTimeOrNull(offsets[1]);
-  object.description = reader.readStringOrNull(offsets[2]);
-  object.deviceId = reader.readStringOrNull(offsets[4]);
-  object.emoji = reader.readString(offsets[5]);
+  object.color = reader.readLongOrNull(offsets[0]);
+  object.created = reader.readDateTime(offsets[1]);
+  object.deletedAt = reader.readDateTimeOrNull(offsets[2]);
+  object.description = reader.readStringOrNull(offsets[3]);
+  object.deviceId = reader.readStringOrNull(offsets[5]);
+  object.emoji = reader.readString(offsets[6]);
   object.isarId = id;
-  object.lastSynced = reader.readDateTimeOrNull(offsets[6]);
-  object.modified = reader.readDateTime(offsets[7]);
-  object.serverId = reader.readLongOrNull(offsets[8]);
-  object.title = reader.readString(offsets[9]);
-  object.userId = reader.readString(offsets[11]);
+  object.lastSynced = reader.readDateTimeOrNull(offsets[7]);
+  object.modified = reader.readDateTime(offsets[8]);
+  object.serverId = reader.readLongOrNull(offsets[9]);
+  object.title = reader.readString(offsets[10]);
+  object.userId = reader.readString(offsets[12]);
   return object;
 }
 
@@ -206,28 +209,30 @@ P _isarClipCollectionDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readDateTime(offset)) as P;
-    case 1:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 2:
-      return (reader.readStringOrNull(offset)) as P;
-    case 3:
-      return (reader.readStringList(offset) ?? []) as P;
-    case 4:
-      return (reader.readStringOrNull(offset)) as P;
-    case 5:
-      return (reader.readString(offset)) as P;
-    case 6:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 7:
-      return (reader.readDateTime(offset)) as P;
-    case 8:
       return (reader.readLongOrNull(offset)) as P;
-    case 9:
-      return (reader.readString(offset)) as P;
-    case 10:
+    case 1:
+      return (reader.readDateTime(offset)) as P;
+    case 2:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 3:
+      return (reader.readStringOrNull(offset)) as P;
+    case 4:
       return (reader.readStringList(offset) ?? []) as P;
+    case 5:
+      return (reader.readStringOrNull(offset)) as P;
+    case 6:
+      return (reader.readString(offset)) as P;
+    case 7:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 8:
+      return (reader.readDateTime(offset)) as P;
+    case 9:
+      return (reader.readLongOrNull(offset)) as P;
+    case 10:
+      return (reader.readString(offset)) as P;
     case 11:
+      return (reader.readStringList(offset) ?? []) as P;
+    case 12:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -815,6 +820,79 @@ extension IsarClipCollectionQueryWhere
 
 extension IsarClipCollectionQueryFilter
     on QueryBuilder<IsarClipCollection, IsarClipCollection, QFilterCondition> {
+  QueryBuilder<IsarClipCollection, IsarClipCollection, QAfterFilterCondition>
+  colorIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'color'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipCollection, IsarClipCollection, QAfterFilterCondition>
+  colorIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'color'),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipCollection, IsarClipCollection, QAfterFilterCondition>
+  colorEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'color', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipCollection, IsarClipCollection, QAfterFilterCondition>
+  colorGreaterThan(int? value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'color',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipCollection, IsarClipCollection, QAfterFilterCondition>
+  colorLessThan(int? value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'color',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<IsarClipCollection, IsarClipCollection, QAfterFilterCondition>
+  colorBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'color',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
+    });
+  }
+
   QueryBuilder<IsarClipCollection, IsarClipCollection, QAfterFilterCondition>
   createdEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
@@ -2344,6 +2422,20 @@ extension IsarClipCollectionQueryLinks
 extension IsarClipCollectionQuerySortBy
     on QueryBuilder<IsarClipCollection, IsarClipCollection, QSortBy> {
   QueryBuilder<IsarClipCollection, IsarClipCollection, QAfterSortBy>
+  sortByColor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'color', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarClipCollection, IsarClipCollection, QAfterSortBy>
+  sortByColorDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'color', Sort.desc);
+    });
+  }
+
+  QueryBuilder<IsarClipCollection, IsarClipCollection, QAfterSortBy>
   sortByCreated() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'created', Sort.asc);
@@ -2486,6 +2578,20 @@ extension IsarClipCollectionQuerySortBy
 
 extension IsarClipCollectionQuerySortThenBy
     on QueryBuilder<IsarClipCollection, IsarClipCollection, QSortThenBy> {
+  QueryBuilder<IsarClipCollection, IsarClipCollection, QAfterSortBy>
+  thenByColor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'color', Sort.asc);
+    });
+  }
+
+  QueryBuilder<IsarClipCollection, IsarClipCollection, QAfterSortBy>
+  thenByColorDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'color', Sort.desc);
+    });
+  }
+
   QueryBuilder<IsarClipCollection, IsarClipCollection, QAfterSortBy>
   thenByCreated() {
     return QueryBuilder.apply(this, (query) {
@@ -2644,6 +2750,13 @@ extension IsarClipCollectionQuerySortThenBy
 extension IsarClipCollectionQueryWhereDistinct
     on QueryBuilder<IsarClipCollection, IsarClipCollection, QDistinct> {
   QueryBuilder<IsarClipCollection, IsarClipCollection, QDistinct>
+  distinctByColor() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'color');
+    });
+  }
+
+  QueryBuilder<IsarClipCollection, IsarClipCollection, QDistinct>
   distinctByCreated() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'created');
@@ -2733,6 +2846,12 @@ extension IsarClipCollectionQueryProperty
   QueryBuilder<IsarClipCollection, int, QQueryOperations> isarIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isarId');
+    });
+  }
+
+  QueryBuilder<IsarClipCollection, int?, QQueryOperations> colorProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'color');
     });
   }
 
