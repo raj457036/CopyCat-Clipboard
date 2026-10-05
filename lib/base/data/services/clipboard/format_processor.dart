@@ -307,7 +307,7 @@ class ClipboardFormatProcessor {
     if (uri != null && supportedUriSchemas.contains(uri.scheme)) {
       final hash = sha256.convert(utf8.encode(trimmed)).toString();
       if (ClipHashRegistry.instance.isDuplicate(hash)) {
-        return ClipItem.duplicate();
+        return ClipItem.duplicate(contentDigest: hash);
       }
       return ClipItem.uri(uri: uri);
     }
@@ -331,7 +331,7 @@ class ClipboardFormatProcessor {
     final (textCategory, parsedText) = TextAnalysis.getTextCategory(text);
     final hash = sha256.convert(utf8.encode(parsedText)).toString();
     if (ClipHashRegistry.instance.isDuplicate(hash)) {
-      return ClipItem.duplicate();
+      return ClipItem.duplicate(contentDigest: hash);
     }
 
     return ClipItem.text(text: parsedText, textCategory: textCategory);
@@ -549,7 +549,7 @@ class ClipboardFormatProcessor {
       final urlStr = uri.uri.toString().trim();
       final hash = sha256.convert(utf8.encode(urlStr)).toString();
       if (ClipHashRegistry.instance.isDuplicate(hash)) {
-        return ClipItem.duplicate();
+        return ClipItem.duplicate(contentDigest: hash);
       }
       return await getUrl(reader, uri);
     }

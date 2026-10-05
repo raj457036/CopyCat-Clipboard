@@ -469,18 +469,6 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.lazySingleton<_i589.SyncAdapter<_i1066.ClipboardItem>>(
-      () => _i8.ClipSyncAdapter(
-        gh<_i61.SyncRepository>(),
-        gh<_i230.ClipboardRepository>(instanceName: 'local'),
-        gh<_i230.ClipboardRepository>(instanceName: 'remote'),
-        gh<_i616.ClipBatchSyncService>(),
-        gh<_i543.ClipCrossSyncListener>(),
-        gh<_i112.FileCloudService>(),
-        gh<_i23.ClipboardSource>(instanceName: 'local'),
-      ),
-      instanceName: 'non_collection_clips',
-    );
-    gh.lazySingleton<_i589.SyncAdapter<_i1066.ClipboardItem>>(
       () => _i272.CollectionClipSyncAdapter(
         gh<_i61.SyncRepository>(),
         gh<_i230.ClipboardRepository>(instanceName: 'local'),
@@ -507,6 +495,19 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i620.ClipCollectionCubit>(),
         gh<_i543.CollectionCrossSyncListener>(),
       ),
+    );
+    gh.lazySingleton<_i589.SyncAdapter<_i1066.ClipboardItem>>(
+      () => _i8.ClipSyncAdapter(
+        gh<_i61.SyncRepository>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i230.ClipboardRepository>(instanceName: 'remote'),
+        gh<_i616.ClipBatchSyncService>(),
+        gh<_i543.ClipCrossSyncListener>(),
+        gh<_i112.FileCloudService>(),
+        gh<_i23.ClipboardSource>(instanceName: 'local'),
+        gh<String>(instanceName: 'device_id'),
+      ),
+      instanceName: 'non_collection_clips',
     );
     gh.singleton<_i443.SyncOrchestrator>(
       () => _i443.SyncOrchestrator(

@@ -25,6 +25,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   final ClipBatchSyncService _batchSyncService;
   final ClipCrossSyncListener _realtimeListener;
   final FileCloudService _fileCloudService;
+  final String deviceId;
 
   /// Direct local source access for write-back operations that must NOT
   /// trigger outbox re-enqueue (e.g., saving serverId after remote creation).
@@ -38,6 +39,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     this._realtimeListener,
     this._fileCloudService,
     @Named("local") this._localSource,
+    @Named("device_id") this.deviceId,
   );
 
   @override
@@ -142,7 +144,8 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
             () =>
                 'File upload SUCCESS. driveFileId=${uploadedItem.driveFileId}',
           );
-          item = uploadedItem;
+          // Device id is for the device which last modifies the clip.
+          item = uploadedItem.copyWith(deviceId: deviceId);
           return await _createOrUpdateRemote(item);
         },
       );

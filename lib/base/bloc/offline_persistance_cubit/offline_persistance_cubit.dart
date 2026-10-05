@@ -417,7 +417,11 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState>
       }
 
       if (clip.isDuplicate) {
-        await showFeedback();
+        if (!ClipHashRegistry.instance.consumeFeedbackSuppression(
+          clip.contentHash,
+        )) {
+          await showFeedback();
+        }
         continue;
       }
 
@@ -647,6 +651,9 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState>
 
   Future<void> _autoWriteToClipboard(ClipboardItem item) async {
     try {
+      final String? hash = item.contentHash;
+      if (ClipHashRegistry.instance.isDuplicate(hash)) return;
+
       final copy = CopyToClipboard();
       switch (item.type) {
         case ClipItemType.text:
@@ -674,8 +681,10 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState>
           );
           if (!written) return;
       }
+
       final bool committed = await copy.commit(clipboard);
       if (!committed) return;
+      ClipHashRegistry.instance.register(hash, suppressFeedback: true);
       logger.i('autoWriteOnReceive: wrote ${item.type} clip to OS clipboard');
       final String deviceName = _resolveDeviceName(item);
       final String message =

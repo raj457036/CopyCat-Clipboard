@@ -175,9 +175,7 @@ class LanReceiver {
           ? ClipItemType.media
           : type;
 
-      final itemDeviceId = delegateUpload
-          ? (_config.deviceId.isNotEmpty ? _config.deviceId : null)
-          : (fromDeviceId.isNotEmpty ? fromDeviceId : null);
+      final itemDeviceId = fromDeviceId.isNotEmpty ? fromDeviceId : null;
       final userId = _config.userId.isNotEmpty ? _config.userId : kLocalUserId;
       final item = ClipboardItem(
         userId: userId,

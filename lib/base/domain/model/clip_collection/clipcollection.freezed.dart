@@ -15,8 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ClipCollection {
 
-@JsonKey(includeToJson: false, includeFromJson: false) int? get id;@JsonKey(name: "id", includeToJson: false) int? get serverId;@JsonKey(includeFromJson: false, includeToJson: false) DateTime? get lastSynced;@JsonKey(name: "created")@DateTimeConverter() DateTime get created;@JsonKey(name: "modified")@DateTimeConverter() DateTime get modified; String get userId;@DateTimeConverter() DateTime? get deletedAt; String? get deviceId; String get title; String? get description; String get emoji;// 24-bit RGB integer (0x000000–0xFFFFFF). Alpha is always 0xFF on read.
- int? get color;
+@JsonKey(includeToJson: false, includeFromJson: false) int? get id;@JsonKey(name: "id", includeToJson: false) int? get serverId;@JsonKey(includeFromJson: false, includeToJson: false) DateTime? get lastSynced;@JsonKey(name: "created")@DateTimeConverter() DateTime get created;@JsonKey(name: "modified")@DateTimeConverter() DateTime get modified; String get userId;@DateTimeConverter() DateTime? get deletedAt; String? get deviceId; String get title; String? get description; String get emoji; int? get color;
 /// Create a copy of ClipCollection
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -235,7 +234,6 @@ class _ClipCollection extends ClipCollection {
 @override final  String title;
 @override final  String? description;
 @override final  String emoji;
-// 24-bit RGB integer (0x000000–0xFFFFFF). Alpha is always 0xFF on read.
 @override final  int? color;
 
 /// Create a copy of ClipCollection

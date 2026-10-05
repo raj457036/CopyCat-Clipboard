@@ -1,4 +1,7 @@
+import 'dart:convert' show utf8;
+
 import 'package:clipboard/base/constants/strings/strings.dart';
+import 'package:crypto/crypto.dart' show sha256;
 import 'package:clipboard/base/data/services/encryption.dart';
 import 'package:clipboard/base/domain/model/base.dart';
 import 'package:clipboard/base/domain/model/json_converters/datetime_converters.dart';
@@ -286,6 +289,22 @@ abstract class ClipboardItem with _$ClipboardItem, Identifiable, Syncable {
       localPath != null;
 
   bool get isTextType => type == ClipItemType.text || type == ClipItemType.url;
+
+  String? get contentHash {
+    switch (type) {
+      case ClipItemType.text:
+        final String? t = text?.trim();
+        if (t == null || t.isEmpty) return null;
+        return sha256.convert(utf8.encode(t)).toString();
+      case ClipItemType.url:
+        final String? u = url?.trim();
+        if (u == null || u.isEmpty) return null;
+        return sha256.convert(utf8.encode(u)).toString();
+      case ClipItemType.media:
+      case ClipItemType.file:
+        return localPath;
+    }
+  }
 
   bool get inCache =>
       ((type == ClipItemType.file || type == ClipItemType.media) &&
