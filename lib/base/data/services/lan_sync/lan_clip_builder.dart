@@ -65,6 +65,12 @@ class LanClipBuilder {
       final parsedType = parseClipType(rawType) ?? ClipItemType.text;
       payload['type'] = parsedType.name;
 
+      final rawCategory = (payload['textCategory'] as String?) ??
+          (json['textCategory'] as String?);
+      if (rawCategory != null && rawCategory.trim().isNotEmpty) {
+        payload['textCategory'] = rawCategory.trim().toLowerCase();
+      }
+
       if (payload['origin_id'] == null && payload['originId'] == null) {
         payload['origin_id'] = originId;
       }

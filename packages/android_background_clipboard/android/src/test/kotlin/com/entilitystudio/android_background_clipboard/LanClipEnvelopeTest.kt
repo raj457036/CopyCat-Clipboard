@@ -142,4 +142,45 @@ class LanClipEnvelopeTest {
         assertTrue(payload.encrypted)
         assertEquals("my-iv", payload.iv)
     }
+
+    @Test
+    fun testTextClipWithTextCategoryPhoneAndEmail() {
+        val phoneItem = LanClipItem(
+            originId = "otp-123",
+            text = "206099",
+            type = "text",
+            textCategory = "phone",
+        )
+        val phoneEnvelope = LanClipEnvelope.fromItem(
+            item = phoneItem,
+            deviceId = "test-device",
+        )
+        val phoneEncoded = LanClipEnvelope.json.encodeToString(LanClipEnvelope.serializer(), phoneEnvelope)
+        val phoneDecoded = LanClipEnvelope.json.decodeFromString<LanClipEnvelope>(phoneEncoded)
+
+        assertEquals("phone", phoneDecoded.textCategory)
+        assertEquals("phone", phoneDecoded.item?.textCategory)
+        val phonePayload = phoneDecoded.toLanClipPayload("peer-1", "fallback", ClipType.Text)
+        assertEquals(ClipType.Phone, phonePayload.type)
+        assertEquals("206099", phonePayload.content)
+
+        val emailItem = LanClipItem(
+            originId = "email-123",
+            text = "test@example.com",
+            type = "text",
+            textCategory = "email",
+        )
+        val emailEnvelope = LanClipEnvelope.fromItem(
+            item = emailItem,
+            deviceId = "test-device",
+        )
+        val emailEncoded = LanClipEnvelope.json.encodeToString(LanClipEnvelope.serializer(), emailEnvelope)
+        val emailDecoded = LanClipEnvelope.json.decodeFromString<LanClipEnvelope>(emailEncoded)
+
+        assertEquals("email", emailDecoded.textCategory)
+        assertEquals("email", emailDecoded.item?.textCategory)
+        val emailPayload = emailDecoded.toLanClipPayload("peer-1", "fallback", ClipType.Text)
+        assertEquals(ClipType.Email, emailPayload.type)
+        assertEquals("test@example.com", emailPayload.content)
+    }
 }

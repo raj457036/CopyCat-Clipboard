@@ -627,6 +627,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                 LanClipItem(
                     originId = originId,
                     type = if (type == ClipType.Url) "url" else "text",
+                    textCategory = when (type) {
+                        ClipType.Phone -> "phone"
+                        ClipType.Email -> "email"
+                        else -> null
+                    },
                     text = if (type == ClipType.Url) null else contentToPersist,
                     url = if (type == ClipType.Url) contentToPersist else null,
                     title = label,

@@ -245,6 +245,33 @@ void main() {
         DateTime.parse('2026-09-14T12:05:00.000Z').toLocal(),
       );
     });
+
+    test('parses textCategory when present in item payload', () {
+      final itemJson = _makeTextItemJson(text: '206099')
+        ..['textCategory'] = 'phone';
+      final result = builder.buildFromPayload(
+        json: {'item': itemJson, 'content': '206099'},
+        fromDeviceId: 'dev',
+        originId: 'o1',
+      );
+      expect(result, isNotNull);
+      expect(result!.textCategory, TextCategory.phone);
+    });
+
+    test('falls back to outer json textCategory when omitted from item payload', () {
+      final itemJson = _makeTextItemJson(text: 'test@example.com');
+      final result = builder.buildFromPayload(
+        json: {
+          'item': itemJson,
+          'content': 'test@example.com',
+          'textCategory': 'EMAIL',
+        },
+        fromDeviceId: 'dev',
+        originId: 'o2',
+      );
+      expect(result, isNotNull);
+      expect(result!.textCategory, TextCategory.email);
+    });
   });
 }
 

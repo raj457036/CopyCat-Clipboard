@@ -89,7 +89,9 @@ Future<void> _syncInBackground(_Payload record, Sender send) async {
           domainItem.copyWith(deletedAt: item.deletedAt),
         ));
         if (hasOrigin) existingById.remove(item.originId!);
-        if (item.serverId != null) existingById.remove(item.serverId!.toString());
+        if (item.serverId != null) {
+          existingById.remove(item.serverId!.toString());
+        }
       }
       continue;
     }
@@ -114,28 +116,11 @@ Future<void> _syncInBackground(_Payload record, Sender send) async {
     }
 
     // Conflict Resolution: Last-Modified-Wins
-    if (item.modified.isAfter(found.modified)) {
-      item = item.copyWith(
-        id: found.isarId == Isar.autoIncrement ? null : found.isarId,
-        lastSynced: now,
-        localPath: found.localPath ?? item.localPath,
-        serverId: item.serverId ?? found.serverId,
-        originId: item.originId ?? found.originId,
-        driveFileId: item.driveFileId ?? found.driveFileId,
-        sourceApp: found.sourceApp ?? item.sourceApp,
-        sourceId: found.sourceId ?? item.sourceId,
-      );
-    } else {
-      item = found.toDomain().copyWith(
-        lastSynced: now,
-        localPath: found.localPath ?? item.localPath,
-        serverId: found.serverId ?? item.serverId,
-        originId: found.originId ?? item.originId,
-        driveFileId: item.driveFileId ?? found.driveFileId,
-        sourceApp: found.sourceApp ?? item.sourceApp,
-        sourceId: found.sourceId ?? item.sourceId,
-      );
-    }
+    item = IsarClipBatchSyncService.resolveConflict(
+      incoming: item,
+      existing: found,
+      now: now,
+    );
 
     itemsToUpsert.add(item);
     events.add((eventType, item));
@@ -233,5 +218,49 @@ class IsarClipBatchSyncService implements ClipBatchSyncService {
       }
     }
     return collapsed;
+  }
+
+  @visibleForTesting
+  static ClipboardItem resolveConflict({
+    required ClipboardItem incoming,
+    required IsarClipboardItem existing,
+    required DateTime now,
+  }) {
+    if (incoming.modified.isAfter(existing.modified)) {
+      return incoming.copyWith(
+        id: existing.isarId == Isar.autoIncrement ? null : existing.isarId,
+        lastSynced: now,
+        localPath: existing.localPath ?? incoming.localPath,
+        serverId: incoming.serverId ?? existing.serverId,
+        originId: incoming.originId ?? existing.originId,
+        driveFileId: incoming.driveFileId ?? existing.driveFileId,
+        sourceApp: incoming.sourceApp ?? existing.sourceApp,
+        sourceId: incoming.sourceId ?? existing.sourceId,
+        textCategory: incoming.textCategory ?? existing.textCategory,
+        title: (incoming.title?.isNotEmpty ?? false)
+            ? incoming.title
+            : existing.title,
+        description: (incoming.description?.isNotEmpty ?? false)
+            ? incoming.description
+            : existing.description,
+      );
+    } else {
+      return existing.toDomain().copyWith(
+        lastSynced: now,
+        localPath: existing.localPath ?? incoming.localPath,
+        serverId: existing.serverId ?? incoming.serverId,
+        originId: existing.originId ?? incoming.originId,
+        driveFileId: incoming.driveFileId ?? existing.driveFileId,
+        sourceApp: existing.sourceApp ?? incoming.sourceApp,
+        sourceId: existing.sourceId ?? incoming.sourceId,
+        textCategory: existing.textCategory ?? incoming.textCategory,
+        title: (existing.title?.isNotEmpty ?? false)
+            ? existing.title
+            : incoming.title,
+        description: (existing.description?.isNotEmpty ?? false)
+            ? existing.description
+            : incoming.description,
+      );
+    }
   }
 }

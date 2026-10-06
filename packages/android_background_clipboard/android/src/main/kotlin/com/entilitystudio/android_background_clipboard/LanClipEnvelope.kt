@@ -31,6 +31,7 @@ data class LanClipItem(
     val fileExtension: String? = null,
     val fileMimeType: String? = null,
     val fileSize: Long? = null,
+    val textCategory: String? = null,
     val os: String? = "android",
 )
 
@@ -52,6 +53,7 @@ data class LanClipEnvelope(
     val sourceId: String? = null,
     val sourceApp: String? = null,
     val deletedAt: String? = null,
+    val textCategory: String? = null,
     val item: LanClipItem? = null,
 ) {
     val isDeleted: Boolean
@@ -72,10 +74,15 @@ data class LanClipEnvelope(
             ?: originId?.takeIf { it.isNotBlank() }
             ?: fallbackOriginId
 
+        val resolvedTextCategory = item?.textCategory?.lowercase() ?: textCategory?.lowercase()
         val resolvedType = item?.type?.lowercase()?.let { raw ->
             when (raw) {
                 "url" -> ClipType.Url
-                "text" -> ClipType.Text
+                "text" -> when (resolvedTextCategory) {
+                    "email" -> ClipType.Email
+                    "phone" -> ClipType.Phone
+                    else -> ClipType.Text
+                }
                 "media", "file", "fileurl" -> ClipType.FileUrl
                 else -> defaultType
             }
@@ -178,6 +185,7 @@ data class LanClipEnvelope(
                 sourceId = item.sourceId,
                 sourceApp = item.sourceApp,
                 deletedAt = itemDeletedAt,
+                textCategory = item.textCategory,
                 item = enrichedItem,
             )
         }
