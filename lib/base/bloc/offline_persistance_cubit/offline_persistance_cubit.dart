@@ -47,6 +47,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState>
   final ClipboardService clipboard;
   @override
   final AppConfigCubit appConfig;
+  @override
   final UserDevicesCubit userDevicesCubit;
   final ApplicationMetaResolver appMetaResolver;
   final String deviceId;
@@ -420,7 +421,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState>
         if (!ClipHashRegistry.instance.consumeFeedbackSuppression(
           clip.contentHash,
         )) {
-          await showFeedback();
+          await showCopyFeedback();
         }
         continue;
       }
@@ -441,7 +442,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState>
         continue;
       }
       _newClipboardItem.add(item);
-      await showFeedback();
+      await showCopyFeedback();
       await persist([item]);
     }
   }
@@ -601,7 +602,6 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState>
   /// device, write it straight to the OS clipboard (desktop only).
   void _onRemoteClipEvent(CrossSyncEvent<ClipboardItem> event) {
     if (Platform.isAndroid || Platform.isIOS) return;
-    if (!appConfig.state.config.autoWriteOnReceive) return;
 
     final (type, item) = event;
     // Only act on newly created remote clips, not local captures or updates.
@@ -609,8 +609,16 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState>
     if (item.deviceId == deviceId) return; // local capture
     if (item.deletedAt != null) return; // ignore deleted clips
 
-    if (item.encrypted) return; // can't write ciphertext to clipboard
-    unawaited(_autoWriteToClipboard(item));
+    final String? hash = item.contentHash;
+    if (ClipHashRegistry.instance.isDuplicate(hash)) return;
+
+    if (appConfig.state.config.autoWriteOnReceive) {
+      if (item.encrypted) return; // can't write ciphertext to clipboard
+      unawaited(_autoWriteToClipboard(item));
+    } else {
+      ClipHashRegistry.instance.register(hash, suppressFeedback: false);
+      unawaited(showSyncFeedback(item));
+    }
   }
 
   static bool _isLocalMetricOnlyUpdate(List<String>? updatedFields) {
@@ -639,14 +647,6 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState>
       return;
     }
     unawaited(sl<LanSyncService>().broadcastClip(item));
-  }
-
-  String _resolveDeviceName(ClipboardItem item) {
-    if (item.deviceId != null && item.deviceId!.isNotEmpty) {
-      final name = userDevicesCubit.getDeviceName(item.deviceId!);
-      if (name != null && name.isNotEmpty) return name;
-    }
-    return item.os.displayName;
   }
 
   Future<void> _autoWriteToClipboard(ClipboardItem item) async {
@@ -686,13 +686,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState>
       if (!committed) return;
       ClipHashRegistry.instance.register(hash, suppressFeedback: true);
       logger.i('autoWriteOnReceive: wrote ${item.type} clip to OS clipboard');
-      final String deviceName = _resolveDeviceName(item);
-      final String message =
-          rootNavigationKey.currentContext?.locale.app__ack__copied_from_device(
-            device: deviceName,
-          ) ??
-          'Copied from $deviceName';
-      await showFeedback(message);
+      await showSyncFeedback(item);
     } catch (e) {
       logger.e('autoWriteOnReceive: failed to write to OS clipboard: $e');
     }

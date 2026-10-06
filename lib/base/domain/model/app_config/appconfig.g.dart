@@ -45,12 +45,9 @@ _AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => _AppConfig(
   smartPaste: json['smartPaste'] as bool? ?? false,
   keepWindowOpenOnUnfocus: json['keepWindowOpenOnUnfocus'] as bool? ?? true,
   transformAsNewClip: json['transformAsNewClip'] as bool? ?? false,
-  clipboardFeedbackMode:
-      $enumDecodeNullable(
-        _$ClipboardFeedbackModeEnumMap,
-        json['clipboardFeedbackMode'],
-      ) ??
-      ClipboardFeedbackMode.toast,
+  clipboardFeedbackMode: json['clipboardFeedbackMode'] == null
+      ? ClipboardFeedbackMode.copyAndSync
+      : _feedbackModeFromJson(json['clipboardFeedbackMode']),
   enableTypeToSearch: json['enableTypeToSearch'] as bool? ?? false,
   launchAtStartup: json['launchAtStartup'] as bool? ?? false,
   locale: json['locale'] as String? ?? "en",
@@ -86,57 +83,57 @@ _AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => _AppConfig(
   reviewNeverAsk: json['reviewNeverAsk'] as bool? ?? false,
 );
 
-Map<String, dynamic> _$AppConfigToJson(_AppConfig instance) =>
-    <String, dynamic>{
-      'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
-      'enableSync': instance.enableSync,
-      'enableFileSync': instance.enableFileSync,
-      'activeStorageProvider':
-          _$ActiveCloudStorageProviderEnumMap[instance.activeStorageProvider]!,
-      'layout': _$AppLayoutEnumMap[instance.layout]!,
-      'view': _$AppViewEnumMap[instance.view]!,
-      'pinned': instance.pinned,
-      'windowWidth': instance.windowWidth,
-      'windowHeight': instance.windowHeight,
-      'sortBy': _$ClipboardSortKeyEnumMap[instance.sortBy]!,
-      'sortOrder': _$SortOrderEnumMap[instance.sortOrder]!,
-      'dontUploadOver': instance.dontUploadOver,
-      'dontCopyOver': instance.dontCopyOver,
-      'pausedTill': instance.pausedTill?.toIso8601String(),
-      'syncSpeed': _$SyncSpeedEnumMap[instance.syncSpeed]!,
-      'toggleHotkey': instance.toggleHotkey,
-      'quickPasteHotkey': instance.quickPasteHotkey,
-      'pasteStackHotkey': instance.pasteStackHotkey,
-      'smartPaste': instance.smartPaste,
-      'keepWindowOpenOnUnfocus': instance.keepWindowOpenOnUnfocus,
-      'transformAsNewClip': instance.transformAsNewClip,
-      'clipboardFeedbackMode':
-          _$ClipboardFeedbackModeEnumMap[instance.clipboardFeedbackMode]!,
-      'enableTypeToSearch': instance.enableTypeToSearch,
-      'launchAtStartup': instance.launchAtStartup,
-      'locale': instance.locale,
-      'enc2': instance.enc2,
-      'autoEncrypt': instance.autoEncrypt,
-      'useEncryptionNonce': instance.useEncryptionNonce,
-      'hideFromScreenCapture': instance.hideFromScreenCapture,
-      'enableLocalAuth': instance.enableLocalAuth,
-      'localAuthTimeoutMinutes': instance.localAuthTimeoutMinutes,
-      'themeColor': instance.themeColor,
-      'themeVariant': _$DynamicSchemeVariantEnumMap[instance.themeVariant]!,
-      'showCollectionTip': instance.showCollectionTip,
-      'searchIndexReady': instance.searchIndexReady,
-      'enableDragNDrop': instance.enableDragNDrop,
-      'enablePasteStack': instance.enablePasteStack,
-      'androidBgListener': instance.androidBgListener,
-      'richDataCapture': instance.richDataCapture,
-      'lanInstantSync': instance.lanInstantSync,
-      'autoWriteOnReceive': instance.autoWriteOnReceive,
-      'showTrayIcon': instance.showTrayIcon,
-      'onBoardComplete': instance.onBoardComplete,
-      'reviewQualifyingEventCount': instance.reviewQualifyingEventCount,
-      'lastReviewPromptDate': instance.lastReviewPromptDate?.toIso8601String(),
-      'reviewNeverAsk': instance.reviewNeverAsk,
-    };
+Map<String, dynamic> _$AppConfigToJson(
+  _AppConfig instance,
+) => <String, dynamic>{
+  'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
+  'enableSync': instance.enableSync,
+  'enableFileSync': instance.enableFileSync,
+  'activeStorageProvider':
+      _$ActiveCloudStorageProviderEnumMap[instance.activeStorageProvider]!,
+  'layout': _$AppLayoutEnumMap[instance.layout]!,
+  'view': _$AppViewEnumMap[instance.view]!,
+  'pinned': instance.pinned,
+  'windowWidth': instance.windowWidth,
+  'windowHeight': instance.windowHeight,
+  'sortBy': _$ClipboardSortKeyEnumMap[instance.sortBy]!,
+  'sortOrder': _$SortOrderEnumMap[instance.sortOrder]!,
+  'dontUploadOver': instance.dontUploadOver,
+  'dontCopyOver': instance.dontCopyOver,
+  'pausedTill': instance.pausedTill?.toIso8601String(),
+  'syncSpeed': _$SyncSpeedEnumMap[instance.syncSpeed]!,
+  'toggleHotkey': instance.toggleHotkey,
+  'quickPasteHotkey': instance.quickPasteHotkey,
+  'pasteStackHotkey': instance.pasteStackHotkey,
+  'smartPaste': instance.smartPaste,
+  'keepWindowOpenOnUnfocus': instance.keepWindowOpenOnUnfocus,
+  'transformAsNewClip': instance.transformAsNewClip,
+  'clipboardFeedbackMode': _feedbackModeToJson(instance.clipboardFeedbackMode),
+  'enableTypeToSearch': instance.enableTypeToSearch,
+  'launchAtStartup': instance.launchAtStartup,
+  'locale': instance.locale,
+  'enc2': instance.enc2,
+  'autoEncrypt': instance.autoEncrypt,
+  'useEncryptionNonce': instance.useEncryptionNonce,
+  'hideFromScreenCapture': instance.hideFromScreenCapture,
+  'enableLocalAuth': instance.enableLocalAuth,
+  'localAuthTimeoutMinutes': instance.localAuthTimeoutMinutes,
+  'themeColor': instance.themeColor,
+  'themeVariant': _$DynamicSchemeVariantEnumMap[instance.themeVariant]!,
+  'showCollectionTip': instance.showCollectionTip,
+  'searchIndexReady': instance.searchIndexReady,
+  'enableDragNDrop': instance.enableDragNDrop,
+  'enablePasteStack': instance.enablePasteStack,
+  'androidBgListener': instance.androidBgListener,
+  'richDataCapture': instance.richDataCapture,
+  'lanInstantSync': instance.lanInstantSync,
+  'autoWriteOnReceive': instance.autoWriteOnReceive,
+  'showTrayIcon': instance.showTrayIcon,
+  'onBoardComplete': instance.onBoardComplete,
+  'reviewQualifyingEventCount': instance.reviewQualifyingEventCount,
+  'lastReviewPromptDate': instance.lastReviewPromptDate?.toIso8601String(),
+  'reviewNeverAsk': instance.reviewNeverAsk,
+};
 
 const _$ThemeModeEnumMap = {
   ThemeMode.system: 'system',
@@ -171,11 +168,6 @@ const _$SortOrderEnumMap = {SortOrder.asc: 'asc', SortOrder.desc: 'desc'};
 const _$SyncSpeedEnumMap = {
   SyncSpeed.realtime: 'realtime',
   SyncSpeed.balanced: 'balanced',
-};
-
-const _$ClipboardFeedbackModeEnumMap = {
-  ClipboardFeedbackMode.disabled: 'disabled',
-  ClipboardFeedbackMode.toast: 'toast',
 };
 
 const _$DynamicSchemeVariantEnumMap = {

@@ -208,6 +208,11 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String app__ack__received_from_device({required String device}) {
+    return '已从 $device 接收';
+  }
+
+  @override
   String get app__ack__excluded => '已排除';
 
   @override
@@ -1527,6 +1532,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings__clipboard_feedback__disabled => '禁用';
+
+  @override
+  String get settings__clipboard_feedback__copy_only => '仅复制';
+
+  @override
+  String get settings__clipboard_feedback__sync_only => '仅同步';
+
+  @override
+  String get settings__clipboard_feedback__copy_and_sync => '复制与同步';
 
   @override
   String get settings__clipboard_feedback__toast => '吐司';

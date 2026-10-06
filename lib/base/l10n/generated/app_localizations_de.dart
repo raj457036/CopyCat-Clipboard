@@ -209,6 +209,11 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String app__ack__received_from_device({required String device}) {
+    return 'Von $device empfangen';
+  }
+
+  @override
   String get app__ack__excluded => 'Ausgeschlossen';
 
   @override
@@ -1591,6 +1596,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settings__clipboard_feedback__disabled => 'Disabled';
+
+  @override
+  String get settings__clipboard_feedback__copy_only => 'Nur Kopieren';
+
+  @override
+  String get settings__clipboard_feedback__sync_only => 'Nur Synchronisierung';
+
+  @override
+  String get settings__clipboard_feedback__copy_and_sync =>
+      'Kopieren & Synchronisieren';
 
   @override
   String get settings__clipboard_feedback__toast => 'Toast';

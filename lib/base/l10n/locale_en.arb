@@ -87,6 +87,14 @@
       }
     }
   },
+  "app__ack__received_from_device": "Received from {device}",
+  "@app__ack__received_from_device": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
   "app__ack__excluded": "Excluded",
   "app__ack__excluded_with_reason": "Excluded • {reason}",
   "@app__ack__excluded_with_reason": {
@@ -687,6 +695,9 @@
   "settings__dropdown__clipboard_feedback__title": "Clipboard Feedback",
   "settings__dropdown__clipboard_feedback__subtitle": "Choose how CopyCat responds when a clip is captured.",
   "settings__clipboard_feedback__disabled": "Disabled",
+  "settings__clipboard_feedback__copy_only": "Copy Only",
+  "settings__clipboard_feedback__sync_only": "Sync Only",
+  "settings__clipboard_feedback__copy_and_sync": "Copy & Sync",
   "settings__clipboard_feedback__toast": "Toast",
   "settings__color_mode__tonalSpot": "Tonal Spot",
   "settings__color_mode__content": "Content",

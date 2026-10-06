@@ -68,7 +68,8 @@ class IsarAppConfig {
   bool showTrayIcon = true;
 
   @Enumerated(EnumType.name)
-  ClipboardFeedbackMode clipboardFeedbackMode = ClipboardFeedbackMode.toast;
+  ClipboardFeedbackMode clipboardFeedbackMode =
+      ClipboardFeedbackMode.copyAndSync;
 
   // App Lock
   bool enableLocalAuth = false;
@@ -128,7 +129,10 @@ class IsarAppConfig {
     hideFromScreenCapture: hideFromScreenCapture,
     showTrayIcon: showTrayIcon,
     searchIndexReady: searchIndexReady,
-    clipboardFeedbackMode: clipboardFeedbackMode,
+    clipboardFeedbackMode:
+        clipboardFeedbackMode == ClipboardFeedbackMode.toast
+            ? ClipboardFeedbackMode.copyAndSync
+            : clipboardFeedbackMode,
   );
 
   static IsarAppConfig fromDomain(AppConfig config) => IsarAppConfig()
@@ -183,5 +187,8 @@ class IsarAppConfig {
     ..hideFromScreenCapture = config.hideFromScreenCapture
     ..showTrayIcon = config.showTrayIcon
     ..searchIndexReady = config.searchIndexReady
-    ..clipboardFeedbackMode = config.clipboardFeedbackMode;
+    ..clipboardFeedbackMode =
+        config.clipboardFeedbackMode == ClipboardFeedbackMode.toast
+            ? ClipboardFeedbackMode.copyAndSync
+            : config.clipboardFeedbackMode;
 }

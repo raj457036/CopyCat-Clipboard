@@ -26,21 +26,38 @@ class ClipboardFeedbackDropdownTile extends StatelessWidget {
       ),
       trailing:
           BlocSelector<AppConfigCubit, AppConfigState, ClipboardFeedbackMode>(
-            selector: (state) => state.config.clipboardFeedbackMode,
-            builder: (context, mode) {
+            selector: (AppConfigState state) =>
+                state.config.clipboardFeedbackMode,
+            builder: (BuildContext context, ClipboardFeedbackMode mode) {
+              final ClipboardFeedbackMode effectiveMode =
+                  mode == ClipboardFeedbackMode.toast
+                      ? ClipboardFeedbackMode.copyAndSync
+                      : mode;
               return SettingsMenuDropdown<ClipboardFeedbackMode>(
                 enabled: enabled,
-                value: mode,
+                value: effectiveMode,
                 items: const [
                   SettingsDropdownItem(value: ClipboardFeedbackMode.disabled),
-                  SettingsDropdownItem(value: ClipboardFeedbackMode.toast),
+                  SettingsDropdownItem(value: ClipboardFeedbackMode.copyOnly),
+                  SettingsDropdownItem(value: ClipboardFeedbackMode.syncOnly),
+                  SettingsDropdownItem(
+                    value: ClipboardFeedbackMode.copyAndSync,
+                  ),
                 ],
-                itemBuilder: (context, value) {
-                  final label = switch (value) {
+                itemBuilder: (
+                  BuildContext context,
+                  ClipboardFeedbackMode value,
+                ) {
+                  final String label = switch (value) {
                     ClipboardFeedbackMode.disabled =>
                       context.locale.settings__clipboard_feedback__disabled,
+                    ClipboardFeedbackMode.copyOnly =>
+                      context.locale.settings__clipboard_feedback__copy_only,
+                    ClipboardFeedbackMode.syncOnly =>
+                      context.locale.settings__clipboard_feedback__sync_only,
+                    ClipboardFeedbackMode.copyAndSync ||
                     ClipboardFeedbackMode.toast =>
-                      context.locale.settings__clipboard_feedback__toast,
+                      context.locale.settings__clipboard_feedback__copy_and_sync,
                   };
 
                   return (leading: null, child: Text(label), trailing: null);

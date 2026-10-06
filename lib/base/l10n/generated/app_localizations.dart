@@ -495,6 +495,12 @@ abstract class AppLocalizations {
   /// **'Copied from {device}'**
   String app__ack__copied_from_device({required String device});
 
+  /// No description provided for @app__ack__received_from_device.
+  ///
+  /// In en, this message translates to:
+  /// **'Received from {device}'**
+  String app__ack__received_from_device({required String device});
+
   /// No description provided for @app__ack__excluded.
   ///
   /// In en, this message translates to:
@@ -2883,6 +2889,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Disabled'**
   String get settings__clipboard_feedback__disabled;
+
+  /// No description provided for @settings__clipboard_feedback__copy_only.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Only'**
+  String get settings__clipboard_feedback__copy_only;
+
+  /// No description provided for @settings__clipboard_feedback__sync_only.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Only'**
+  String get settings__clipboard_feedback__sync_only;
+
+  /// No description provided for @settings__clipboard_feedback__copy_and_sync.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy & Sync'**
+  String get settings__clipboard_feedback__copy_and_sync;
 
   /// No description provided for @settings__clipboard_feedback__toast.
   ///

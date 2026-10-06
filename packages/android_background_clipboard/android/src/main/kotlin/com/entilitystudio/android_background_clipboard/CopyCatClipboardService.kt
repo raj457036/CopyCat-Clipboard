@@ -109,7 +109,10 @@ class CopyCatClipboardService : Service() {
     var disableDuplicateAnnouncement: Boolean = false
 
     private val ackToastEnable: Boolean
-        get() = copycatStorage.showAckToast && copycatStorage.clipboardFeedbackMode == "toast"
+        get() = copycatStorage.showAckToast &&
+            (copycatStorage.clipboardFeedbackMode == "toast" ||
+             copycatStorage.clipboardFeedbackMode == "copyOnly" ||
+             copycatStorage.clipboardFeedbackMode == "copyAndSync")
 
     inner class LocalBinder : Binder() {
         fun getService(): CopyCatClipboardService = this@CopyCatClipboardService
@@ -550,7 +553,9 @@ class CopyCatClipboardService : Service() {
     }
 
     private fun handleClipboardAck(text: String, sourcePackageName: String) {
-        val shouldShowToast = copycatStorage.clipboardFeedbackMode == "toast"
+        val shouldShowToast = copycatStorage.clipboardFeedbackMode == "toast" ||
+            copycatStorage.clipboardFeedbackMode == "copyOnly" ||
+            copycatStorage.clipboardFeedbackMode == "copyAndSync"
 
         if (shouldShowToast) {
             showClipboardAck(text, sourcePackageName)

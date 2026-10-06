@@ -20,7 +20,31 @@ enum SyncSpeed { realtime, balanced }
 
 enum AppView { topDocked, bottomDocked, leftDocked, rightDocked, windowed }
 
-enum ClipboardFeedbackMode { disabled, toast }
+enum ClipboardFeedbackMode {
+  disabled,
+  copyOnly,
+  syncOnly,
+  copyAndSync,
+  @Deprecated('Use copyAndSync instead')
+  toast,
+}
+
+ClipboardFeedbackMode _feedbackModeFromJson(Object? value) {
+  if (value == null) return ClipboardFeedbackMode.copyAndSync;
+  final String str = value.toString();
+  if (str == 'toast') return ClipboardFeedbackMode.copyAndSync;
+  return ClipboardFeedbackMode.values.firstWhere(
+    (ClipboardFeedbackMode e) => e.name == str,
+    orElse: () => ClipboardFeedbackMode.copyAndSync,
+  );
+}
+
+String _feedbackModeToJson(ClipboardFeedbackMode mode) {
+  if (mode == ClipboardFeedbackMode.toast) {
+    return ClipboardFeedbackMode.copyAndSync.name;
+  }
+  return mode.name;
+}
 
 enum ActiveCloudStorageProvider { googleDrive, webdav }
 
@@ -79,8 +103,12 @@ abstract class AppConfig with _$AppConfig, Identifiable {
     /// being copied/pasted immediately.
     @Default(false) bool transformAsNewClip,
 
-    /// Controls the feedback shown when a clip is captured.
-    @Default(ClipboardFeedbackMode.toast)
+    /// Controls the feedback shown when a clip is captured or received.
+    @JsonKey(
+      fromJson: _feedbackModeFromJson,
+      toJson: _feedbackModeToJson,
+    )
+    @Default(ClipboardFeedbackMode.copyAndSync)
     ClipboardFeedbackMode clipboardFeedbackMode,
 
     /// If enabled, search runs while the user types in the search box.
