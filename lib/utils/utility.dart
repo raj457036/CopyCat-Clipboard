@@ -274,6 +274,10 @@ final isApplePlatform = Platform.isIOS || Platform.isMacOS;
 
 final isMobilePlatform = Platform.isIOS || Platform.isAndroid;
 
+/// `true` when this Flutter engine was launched by [CopyCatImeService].
+/// Set once at startup from the dart entrypoint args before [runApp].
+bool isImeMode = false;
+
 /// Simple wrapper around [Future.delayed] to wait for few seconds.
 ///
 /// Default: 2 seconds

@@ -54,8 +54,9 @@ import 'package:universal_io/io.dart';
 import 'package:upgrader/upgrader.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'widgets/keyboard_shortcuts/actions/actions.dart';
-import 'widgets/keyboard_shortcuts/arrow_focus_visibility_listener.dart';
+import 'package:clipboard/widgets/keyboard_shortcuts/actions/actions.dart';
+import 'package:clipboard/widgets/keyboard_shortcuts/arrow_focus_visibility_listener.dart';
+import 'package:clipboard/pages/ime/ime_runner.dart';
 
 Future<void> appRunner() async {
   if (Platform.isWindows || Platform.isLinux) {
@@ -66,12 +67,17 @@ Future<void> appRunner() async {
   runApp(const MainApp());
 }
 
-Future<void> main() async {
+Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   PaintingBinding.instance.imageCache.maximumSize = 20;
   PaintingBinding.instance.imageCache.maximumSizeBytes = 50 << 20;
 
-  await appRunner();
+  if (args.contains('--ime')) {
+    isImeMode = true;
+    await imeRunner();
+  } else {
+    await appRunner();
+  }
 }
 
 Future<void> initializeServices() async {

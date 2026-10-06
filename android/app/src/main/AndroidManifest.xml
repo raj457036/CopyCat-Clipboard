@@ -59,6 +59,20 @@
         <receiver
             android:name="com.entilitystudio.android_background_clipboard.NotificationDeleteReceiver" />
 
+        <service
+            android:name=".CopyCatImeService"
+            android:label="CopyCat Clipboard"
+            android:theme="@style/Theme.CopyCatIme"
+            android:permission="android.permission.BIND_INPUT_METHOD"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/ime_method" />
+        </service>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
