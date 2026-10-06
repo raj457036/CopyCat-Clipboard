@@ -87,6 +87,7 @@ class _ClipCollectionCreateEditFormState
         title: nameController.text.trim(),
         description: description,
         color: _selectedColor,
+        modified: systemTime(),
       );
     }
     final error = await cubit.upsert(collection);

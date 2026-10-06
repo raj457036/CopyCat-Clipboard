@@ -107,6 +107,7 @@ class ClipCollectionRepositoryImpl implements ClipCollectionRepository {
   @override
   FailureOr<ClipCollection> update(ClipCollection collection) async {
     try {
+      collection = collection.copyWith(modified: systemTime());
       ClipCollection result = await local.update(collection);
       if (result.id != null) {
         await outbox.enqueue(
