@@ -43,9 +43,9 @@ Features:
 
 **8. Customization and Theming**
 
-**9. Drag and Drop** ( Desktop and IOS devices, android wip )
+**9. Drag and Drop**
 
-**10. Realtime Android Background listener** ( Experimental )**
+**10. Realtime Android Background listener**
 
 **11. Extensive keyboard shortcuts** ( Desktops )
 
