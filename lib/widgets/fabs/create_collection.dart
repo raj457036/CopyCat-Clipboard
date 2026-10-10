@@ -6,7 +6,6 @@ import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/subscription_actions.dart';
-import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -32,23 +31,18 @@ class CreateCollectionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return SubscriptionBuilder(
-      builder: (context, subscription) {
-        return BlocSelector<
-          ClipCollectionCubit,
-          ClipCollectionState,
-          (int, int)
-        >(
-          selector: (state) {
-            if (state is ClipCollectionLoaded) {
-              return (
-                subscription?.collections ?? defaultCollectionCount,
-                state.collections.length,
-              );
-            }
-            return (subscription?.collections ?? defaultCollectionCount, 0);
-          },
-          builder: (context, state) {
+    return BlocSelector<
+      ClipCollectionCubit,
+      ClipCollectionState,
+      (int, int)
+    >(
+      selector: (state) {
+        if (state is ClipCollectionLoaded) {
+          return (state.activeLimit, state.collections.length);
+        }
+        return (defaultCollectionCount, 0);
+      },
+      builder: (context, state) {
             final (collection, count) = state;
             final canCreate = localMode || collection > count;
 
@@ -85,7 +79,5 @@ class CreateCollectionButton extends StatelessWidget {
             );
           },
         );
-      },
-    );
   }
 }

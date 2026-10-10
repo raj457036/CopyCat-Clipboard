@@ -52,45 +52,43 @@ class _EmojiSelectorSheetState extends State<EmojiSelectorSheet> {
     final keyboardHeight = mq.viewInsets.bottom;
     return Padding(
       padding: EdgeInsets.only(bottom: keyboardHeight),
-      child: SafeArea(
-        child: ClipRRect(
-          borderRadius: radius12,
-          child: EmojiPicker(
-            onEmojiSelected: (Category? category, Emoji emoji) {
-              Navigator.of(context).pop(emoji);
-            },
-            config: Config(
-              height: min(mq.size.height * 0.5, 450),
-              locale: Locale(locale.localeName),
-              checkPlatformCompatibility: true,
-              emojiViewConfig: EmojiViewConfig(
-                backgroundColor: colors.surface,
+      child: ClipRRect(
+        borderRadius: radius12,
+        child: EmojiPicker(
+          onEmojiSelected: (Category? category, Emoji emoji) {
+            Navigator.of(context).pop(emoji);
+          },
+          config: Config(
+            height: min(mq.size.height * 0.5, 450),
+            locale: Locale(locale.localeName),
+            checkPlatformCompatibility: true,
+            emojiViewConfig: EmojiViewConfig(
+              backgroundColor: colors.surface,
 
-                // Issue: https://github.com/flutter/flutter/issues/28894
-                emojiSizeMax:
-                    28 *
-                    (foundation.defaultTargetPlatform == TargetPlatform.iOS
-                        ? 1.20
-                        : 1.0),
-              ),
-              viewOrderConfig: const ViewOrderConfig(
-                top: EmojiPickerItem.categoryBar,
-                middle: EmojiPickerItem.emojiView,
-                bottom: EmojiPickerItem.searchBar,
-              ),
-              skinToneConfig: const SkinToneConfig(),
-              categoryViewConfig: CategoryViewConfig(
-                backgroundColor: colors.surface,
-              ),
-              bottomActionBarConfig: BottomActionBarConfig(
-                backgroundColor: colors.surface,
-                buttonColor: colors.surface,
-                buttonIconColor: colors.onSurface,
-              ),
-              searchViewConfig: SearchViewConfig(
-                backgroundColor: colors.surface,
-                buttonIconColor: colors.onSurface,
-              ),
+              // Issue: https://github.com/flutter/flutter/issues/28894
+              emojiSizeMax:
+                  28 *
+                  (foundation.defaultTargetPlatform == TargetPlatform.iOS
+                      ? 1.20
+                      : 1.0),
+            ),
+            viewOrderConfig: const ViewOrderConfig(
+              top: EmojiPickerItem.categoryBar,
+              middle: EmojiPickerItem.emojiView,
+              bottom: EmojiPickerItem.searchBar,
+            ),
+            skinToneConfig: const SkinToneConfig(),
+            categoryViewConfig: CategoryViewConfig(
+              backgroundColor: colors.surface,
+            ),
+            bottomActionBarConfig: BottomActionBarConfig(
+              backgroundColor: colors.surface,
+              buttonColor: colors.surface,
+              buttonIconColor: colors.onSurface,
+            ),
+            searchViewConfig: SearchViewConfig(
+              backgroundColor: colors.surface,
+              buttonIconColor: colors.onSurface,
             ),
           ),
         ),

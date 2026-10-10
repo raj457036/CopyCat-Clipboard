@@ -24,3 +24,6 @@ const kLanDiscoveryWarmupInterval = Duration(seconds: 8);
 
 /// Number of consecutive ping failures before a peer is evicted from the registry.
 const kLanMaxPeerFailures = 10;
+
+/// Header sent when a LAN peer delegates uploading a binary file to cloud drive.
+const kLanHeaderDelegateUpload = 'x-cc-delegate-upload';

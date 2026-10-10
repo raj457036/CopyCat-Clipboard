@@ -49,7 +49,7 @@ class SyncProgressInitParams {
 @lazySingleton
 class SyncStatusCubit extends Cubit<SyncStatusState> {
   static const _notificationDedupeWindow = Duration(seconds: 3);
-  static const _completionIdleDelay = Duration(seconds: 2);
+  static const _completionIdleDelay = Duration(milliseconds: 400);
 
   final MonetizationCubit monetizationCubit;
   final SyncOrchestrator orchestrator;
@@ -189,7 +189,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
       if (_busyEngines.isNotEmpty || _isManualSyncing) {
         return;
       }
-      await _runPostSyncDecryption();
+      await _completeSync();
     } finally {
       _completionCheckPending = false;
     }
@@ -246,7 +246,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
         pullOffset: pullOffset,
       );
       if (success) {
-        await _runPostSyncDecryption();
+        await _completeSync();
       } else {
         emit(
           const SyncStatusState.failed(
@@ -305,7 +305,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
   /// then emits [SyncStatusState.complete]. Safe to call when the encryption
   /// worker is inactive — it will find zero encrypted items (or skip them) and
   /// proceed straight to [complete].
-  Future<void> _runPostSyncDecryption() async {
+  Future<void> _completeSync() async {
     // Decrypt if service is available
     bool hasUxUpdates = false;
 

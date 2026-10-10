@@ -6,6 +6,7 @@ abstract class UserDevicesSource {
     required String deviceId,
     required String platform,
     String? appVersion,
+    String? deviceName,
   });
 
   Future<DeviceListResult> listDevices({required String userId});

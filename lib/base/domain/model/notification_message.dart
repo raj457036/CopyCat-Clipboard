@@ -21,6 +21,7 @@ class NotificationMessage extends NotificationContent {
   final String? id;
   final VoidCallback? onClose;
   final bool persistent;
+  final bool clearPrevious;
 
   NotificationMessage({
     this.id,
@@ -29,6 +30,7 @@ class NotificationMessage extends NotificationContent {
     super.action,
     this.onClose,
     this.persistent = false,
+    this.clearPrevious = false,
   });
 
   /// A model representing a notification message that is built using a
@@ -40,6 +42,7 @@ class NotificationMessage extends NotificationContent {
     SnackBarAction? action,
     VoidCallback? onClose,
     bool persistent = false,
+    bool clearPrevious = false,
   }) {
     return BuildNotificationMessage(
       id: id,
@@ -47,6 +50,7 @@ class NotificationMessage extends NotificationContent {
       action: action,
       onClose: onClose,
       persistent: persistent,
+      clearPrevious: clearPrevious,
     );
   }
 
@@ -66,5 +70,6 @@ class BuildNotificationMessage extends NotificationMessage {
     super.action,
     super.onClose,
     super.persistent,
+    super.clearPrevious,
   }) : super(body: _emptyMessage);
 }

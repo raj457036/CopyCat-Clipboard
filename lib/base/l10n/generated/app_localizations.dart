@@ -489,6 +489,72 @@ abstract class AppLocalizations {
   /// **'Copied'**
   String get app__ack__copied;
 
+  /// No description provided for @app__ack__copied_from_device.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied from {device}'**
+  String app__ack__copied_from_device({required String device});
+
+  /// No description provided for @app__ack__received_from_device.
+  ///
+  /// In en, this message translates to:
+  /// **'Received from {device}'**
+  String app__ack__received_from_device({required String device});
+
+  /// No description provided for @app__ack__excluded.
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded'**
+  String get app__ack__excluded;
+
+  /// No description provided for @app__ack__excluded_with_reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Excluded • {reason}'**
+  String app__ack__excluded_with_reason({required String reason});
+
+  /// No description provided for @app__ack__reason_phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get app__ack__reason_phone;
+
+  /// No description provided for @app__ack__reason_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get app__ack__reason_email;
+
+  /// No description provided for @app__ack__reason_credit_card.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit Card'**
+  String get app__ack__reason_credit_card;
+
+  /// No description provided for @app__ack__reason_sensitive_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitive URL'**
+  String get app__ack__reason_sensitive_url;
+
+  /// No description provided for @app__ack__reason_app.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitive App'**
+  String get app__ack__reason_app;
+
+  /// No description provided for @app__ack__reason_pattern.
+  ///
+  /// In en, this message translates to:
+  /// **'Pattern'**
+  String get app__ack__reason_pattern;
+
+  /// No description provided for @app__ack__reason_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sensitive Window'**
+  String get app__ack__reason_title;
+
   /// No description provided for @app__ack__pasted.
   ///
   /// In en, this message translates to:
@@ -647,6 +713,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Import'**
   String get dialog__button__e2e_import_key;
+
+  /// No description provided for @dialog__button__e2e_clear_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Key'**
+  String get dialog__button__e2e_clear_key;
+
+  /// No description provided for @dialog__title__e2e_clear_key.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Encryption Key'**
+  String get dialog__title__e2e_clear_key;
+
+  /// No description provided for @dialog__text__e2e_clear_key__confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove the encryption key from this device? You will not be able to decrypt encrypted clips until you import the key again.'**
+  String get dialog__text__e2e_clear_key__confirm;
 
   /// No description provided for @dialog__text__inconsistent_time__title.
   ///
@@ -1583,6 +1667,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Play Video'**
   String get preview__card__video__play;
+
+  /// No description provided for @preview__card__video__mute.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute'**
+  String get preview__card__video__mute;
+
+  /// No description provided for @preview__card__video__unmute.
+  ///
+  /// In en, this message translates to:
+  /// **'Unmute'**
+  String get preview__card__video__unmute;
+
+  /// No description provided for @preview__card__video__close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close player'**
+  String get preview__card__video__close;
 
   /// No description provided for @preview__card__file__open.
   ///
@@ -2562,11 +2664,23 @@ abstract class AppLocalizations {
   /// **'Password Managers'**
   String get settings__text__er__pass_manager;
 
+  /// No description provided for @settings__text__er__pass_manager__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude captures from password manager apps'**
+  String get settings__text__er__pass_manager__subtitle;
+
   /// No description provided for @settings__text__er__cc.
   ///
   /// In en, this message translates to:
   /// **'Credit Card Number'**
   String get settings__text__er__cc;
+
+  /// No description provided for @settings__text__er__cc__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude detected credit card numbers'**
+  String get settings__text__er__cc__subtitle;
 
   /// No description provided for @settings__text__er__phone.
   ///
@@ -2574,17 +2688,35 @@ abstract class AppLocalizations {
   /// **'Phone number'**
   String get settings__text__er__phone;
 
+  /// No description provided for @settings__text__er__phone__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude detected phone numbers'**
+  String get settings__text__er__phone__subtitle;
+
   /// No description provided for @settings__text__er__email.
   ///
   /// In en, this message translates to:
   /// **'Email Address'**
   String get settings__text__er__email;
 
+  /// No description provided for @settings__text__er__email__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude detected email addresses'**
+  String get settings__text__er__email__subtitle;
+
   /// No description provided for @settings__text__er__url.
   ///
   /// In en, this message translates to:
   /// **'Sensitive Url'**
   String get settings__text__er__url;
+
+  /// No description provided for @settings__text__er__url__subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exclude captures containing sensitive URLs'**
+  String get settings__text__er__url__subtitle;
 
   /// No description provided for @settings__text__decrypted__note.
   ///
@@ -2757,6 +2889,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Disabled'**
   String get settings__clipboard_feedback__disabled;
+
+  /// No description provided for @settings__clipboard_feedback__copy_only.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Only'**
+  String get settings__clipboard_feedback__copy_only;
+
+  /// No description provided for @settings__clipboard_feedback__sync_only.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Only'**
+  String get settings__clipboard_feedback__sync_only;
+
+  /// No description provided for @settings__clipboard_feedback__copy_and_sync.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy & Sync'**
+  String get settings__clipboard_feedback__copy_and_sync;
 
   /// No description provided for @settings__clipboard_feedback__toast.
   ///

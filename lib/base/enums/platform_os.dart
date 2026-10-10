@@ -14,6 +14,16 @@ enum PlatformOS {
   linux,
 }
 
+extension PlatformOSDisplay on PlatformOS {
+  String get displayName => switch (this) {
+    PlatformOS.android => 'Android',
+    PlatformOS.ios => 'iOS',
+    PlatformOS.macos => 'macOS',
+    PlatformOS.windows => 'Windows',
+    PlatformOS.linux => 'Linux',
+  };
+}
+
 PlatformOS currentPlatformOS() {
   if (Platform.isAndroid) {
     return PlatformOS.android;

@@ -2,6 +2,7 @@ import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/pages/home/widgets/create_new_clip_note_icon_button.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/debounce.dart';
 import 'package:flutter/material.dart';
@@ -118,6 +119,8 @@ class _CompactSearchBarState extends State<CompactSearchBar> {
                 ? Text(context.mlocale.closeButtonLabel)
                 : Text(context.locale.app__search),
           ),
+          if (!_searchActive) width8,
+          if (!_searchActive) const CreateNewClipNoteIconButton(compact: true),
           Expanded(
             child: AnimatedCrossFade(
               firstChild: widget.child,

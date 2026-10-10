@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:clipboard/base/domain/model/application_meta/app_directory_entry.dart';
 import 'package:clipboard/base/domain/model/application_meta/application_meta.dart';
@@ -6,12 +7,14 @@ import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/base/domain/repositories/app_directory.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/utils/icon_optimizer.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:universal_io/io.dart';
 
-const _kMaxIconUploadBytes = 512 * 1024; // 512 KB cap
+const _kMaxIconUploadBytes = 256 * 1024; // 256 KB safety ceiling
+const _kIconCompressionThresholdBytes = 64 * 1024; // Compress if larger than 64 KB
 const _kEdgeFunctionName = 'sync_activity_directory_entry';
 const _kDirectoryTable = 'app_activity_directory';
 
@@ -33,16 +36,25 @@ class AppDirectoryRepositoryImpl implements AppDirectoryRepository {
       if (app.iconLocalPath != null) {
         final file = File(app.iconLocalPath!);
         if (await file.exists()) {
-          final bytes = await file.readAsBytes();
-          if (bytes.isNotEmpty && bytes.length <= _kMaxIconUploadBytes) {
-            iconBase64 = base64Encode(bytes);
-            logger.d(
-              '${_tag(app.sourceId)} encoded icon bytes for upload (${bytes.length} bytes)',
-            );
-          } else {
-            logger.w(
-              '${_tag(app.sourceId)} icon bytes skipped (empty or above limit: ${bytes.length})',
-            );
+          Uint8List bytes = await file.readAsBytes();
+          if (bytes.isNotEmpty) {
+            if (bytes.length > _kIconCompressionThresholdBytes) {
+              final optimized = await IconOptimizer.optimize(bytes);
+              if (optimized.length < bytes.length) {
+                bytes = optimized;
+                await file.writeAsBytes(optimized, flush: true);
+              }
+            }
+            if (bytes.length <= _kMaxIconUploadBytes) {
+              iconBase64 = base64Encode(bytes);
+              logger.d(
+                '${_tag(app.sourceId)} encoded icon bytes for upload (${bytes.length} bytes)',
+              );
+            } else {
+              logger.w(
+                '${_tag(app.sourceId)} icon bytes skipped (above limit: ${bytes.length})',
+              );
+            }
           }
         } else {
           logger.w(

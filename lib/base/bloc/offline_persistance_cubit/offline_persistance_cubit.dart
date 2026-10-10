@@ -13,8 +13,10 @@ import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/data/services/clipboard/clip_hash_registry.dart';
 import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:clipboard/base/data/services/lan_sync_service.dart';
+import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_result.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/clipboard_feedback_service.dart';
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
@@ -35,13 +37,18 @@ import "package:universal_io/io.dart";
 
 part 'offline_persistance_cubit.freezed.dart';
 part 'offline_persistance_state.dart';
+part 'offline_persistance_feedback_mixin.dart';
 
 @lazySingleton
-class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
+class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState>
+    with OfflinePersistenceFeedbackMixin {
   final AuthCubit auth;
   final ClipboardRepository repo;
   final ClipboardService clipboard;
+  @override
   final AppConfigCubit appConfig;
+  @override
+  final UserDevicesCubit userDevicesCubit;
   final ApplicationMetaResolver appMetaResolver;
   final String deviceId;
   final SyncEventBus syncEventBus;
@@ -58,6 +65,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     @Named("local") this.repo,
     this.clipboard,
     this.appConfig,
+    this.userDevicesCubit,
     this.appMetaResolver,
     @Named("device_id") this.deviceId,
     this.syncEventBus,
@@ -110,9 +118,12 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
       );
       return;
     }
-    if (await appConfig.isCopyingAllowedByActivity()) {
-      await clipboard.readClipboard();
+    final activityCheck = await appConfig.checkActivityExclusion();
+    if (!activityCheck.isAllowed) {
+      await showExclusionFeedback(activityCheck);
+      return;
     }
+    await clipboard.readClipboard();
   }
 
   Future<void> startListeners() async {
@@ -264,10 +275,12 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
             );
             if (!saved) saveFileSuccess = false;
           } else {
-            await copy.writeFileContent(
+            final written = await copy.writeFileContent(
               File(item.localPath!),
               mimeType: item.fileMimeType,
+              fileName: item.fileName,
             );
+            if (!written) return false;
           }
       }
     }
@@ -378,10 +391,12 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     for (final clip in clips) {
       if (clip == null) continue;
 
-      if (exclusionChecker != null && clip.isTextSubType) {
-        final content = clip.text ?? clip.uri?.toString();
-        if (content != null &&
-            !exclusionChecker!.isClipAllowed(clip, activity)) {
+      if (exclusionChecker != null) {
+        final result = exclusionChecker!.checkClip(
+          ExclusionCheckParams(clip: clip, activity: activity),
+        );
+        if (!result.isAllowed) {
+          await showExclusionFeedback(result);
           continue;
         }
       }
@@ -402,7 +417,14 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         return;
       }
 
-      if (clip.isDuplicate) continue;
+      if (clip.isDuplicate) {
+        if (!ClipHashRegistry.instance.consumeFeedbackSuppression(
+          clip.contentHash,
+        )) {
+          await showCopyFeedback();
+        }
+        continue;
+      }
 
       if (!manualPaste) {
         ClipHashRegistry.instance.register(clip.contentHash);
@@ -420,24 +442,9 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
         continue;
       }
       _newClipboardItem.add(item);
-      await _showFeedback();
+      await showCopyFeedback();
       await persist([item]);
     }
-  }
-
-  // TODO(raj): implement for linux
-  Future<void> _showFeedback() async {
-    if (!(Platform.isMacOS || Platform.isWindows)) return;
-    final feedbackMode = appConfig.state.config.clipboardFeedbackMode;
-    final copiedLabel =
-        rootNavigationKey.currentContext?.locale.app__ack__copied ?? 'Copied';
-    final showToast = feedbackMode == ClipboardFeedbackMode.toast;
-    unawaited(
-      ClipboardFeedbackService.i.notifyClipboardCopied(
-        showToast: showToast,
-        message: copiedLabel,
-      ),
-    );
   }
 
   /// stateless = true will not persist the change in the local database, only emit the new state. ( only work with updates )
@@ -482,17 +489,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
               synced ? CrossSyncEventType.update : CrossSyncEventType.create,
               r,
             ));
-            if (!synced && appConfig.state.config.lanInstantSync) {
-              if (Platform.isAndroid) {
-                unawaited(
-                  sl<AndroidBackgroundClipboard>().broadcastClip(
-                    _toLanClipMap(r),
-                  ),
-                );
-              } else if (!Platform.isIOS) {
-                unawaited(sl<LanSyncService>().broadcastClip(r));
-              }
-            }
+            _broadcastLan(r, synced: synced, updatedFields: updatedFields);
             emit(
               OfflinePersistanceState.saved(
                 count: 1,
@@ -519,9 +516,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     for (var result in updated) {
       result.fold((l) => emit(OfflinePersistanceState.error(l)), (r) {
         syncEventBus.emit<ClipboardItem>((CrossSyncEventType.update, r));
-        if (!synced && appConfig.state.config.lanInstantSync) {
-          _broadcastLanMutation(r);
-        }
+        _broadcastLan(r, synced: synced, updatedFields: updatedFields);
         emit(
           OfflinePersistanceState.saved(
             synced: synced,
@@ -552,10 +547,16 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
     }
 
     final result = await repo.update(next);
-    return result.fold((failure) {
-      logger.w('Failed to persist local link preview: $failure');
-      return null;
-    }, (updated) => updated);
+    return result.fold(
+      (failure) {
+        logger.w('Failed to persist local link preview: $failure');
+        return null;
+      },
+      (updated) {
+        syncEventBus.emit<ClipboardItem>((CrossSyncEventType.update, updated));
+        return updated;
+      },
+    );
   }
 
   Future<void> delete(List<ClipboardItem> items) async {
@@ -570,7 +571,7 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
           deletedAt: deletedAt,
           modified: deletedAt,
         );
-        _broadcastLanMutation(mutation);
+        _broadcastLan(mutation);
       }
     }
 
@@ -601,66 +602,91 @@ class OfflinePersistenceCubit extends Cubit<OfflinePersistanceState> {
   /// device, write it straight to the OS clipboard (desktop only).
   void _onRemoteClipEvent(CrossSyncEvent<ClipboardItem> event) {
     if (Platform.isAndroid || Platform.isIOS) return;
-    if (!appConfig.state.config.autoWriteOnReceive) return;
 
     final (type, item) = event;
     // Only act on newly created remote clips, not local captures or updates.
     if (type != CrossSyncEventType.create) return;
     if (item.deviceId == deviceId) return; // local capture
+    if (item.deletedAt != null) return; // ignore deleted clips
 
-    // Only text / url — file/media need a local path which may not exist yet.
-    if (item.type != ClipItemType.text && item.type != ClipItemType.url) return;
-    if (item.encrypted) return; // can't write ciphertext to clipboard
-    unawaited(_autoWriteToClipboard(item));
+    final String? hash = item.contentHash;
+    if (ClipHashRegistry.instance.isDuplicate(hash)) return;
+
+    if (appConfig.state.config.autoWriteOnReceive) {
+      if (item.encrypted) return; // can't write ciphertext to clipboard
+      unawaited(_autoWriteToClipboard(item));
+    } else {
+      ClipHashRegistry.instance.register(hash, suppressFeedback: false);
+      unawaited(showSyncFeedback(item));
+    }
   }
 
-  Map<String, dynamic> _toLanClipMap(ClipboardItem item) {
-    return {
-      'originId': item.originId ?? ClipboardItem.generateOriginId(),
-      'type': item.type.name,
-      'content': item.text ?? item.url ?? '',
-      'label': item.title ?? '',
-      'encrypted': item.encrypted,
-      if (item.iv != null) 'iv': item.iv,
-      if (item.encMode != null) 'encMode': item.encMode,
-      if (item.sourceId != null && item.sourceId!.isNotEmpty)
-        'sourceId': item.sourceId,
-      if (item.sourceApp != null && item.sourceApp!.isNotEmpty)
-        'sourceApp': item.sourceApp,
-      if (item.localPath != null) 'localPath': item.localPath,
-      if (item.fileMimeType != null) 'fileMimeType': item.fileMimeType,
-      if (item.fileExtension != null) 'fileExtension': item.fileExtension,
-      if (item.fileName != null) 'fileName': item.fileName,
-    };
+  static bool _isLocalMetricOnlyUpdate(List<String>? updatedFields) {
+    return updatedFields != null &&
+        updatedFields.isNotEmpty &&
+        updatedFields.every((f) => f == 'copiedCount' || f == 'lastCopied');
   }
 
-  void _broadcastLanMutation(ClipboardItem item) {
+  void _broadcastLan(
+    ClipboardItem item, {
+    bool synced = false,
+    List<String>? updatedFields,
+  }) {
+    if (synced || !appConfig.state.config.lanInstantSync) return;
+    if (_isLocalMetricOnlyUpdate(updatedFields)) return;
+
     if (Platform.isIOS) return;
-    // Route mutations via Dart LAN service to preserve full model payload.
-    unawaited(sl<LanSyncService>().broadcastMutation(item));
+    if (Platform.isAndroid) {
+      unawaited(
+        sl<AndroidBackgroundClipboard>().broadcastClip({
+          ...item.toJson(),
+          'originId': item.originId ?? '',
+          if (item.localPath != null) 'localPath': item.localPath,
+        }),
+      );
+      return;
+    }
+    unawaited(sl<LanSyncService>().broadcastClip(item));
   }
 
   Future<void> _autoWriteToClipboard(ClipboardItem item) async {
-    final content = item.type == ClipItemType.text
-        ? (item.text ?? '')
-        : (item.url ?? '');
-    if (content.isEmpty) return;
     try {
+      final String? hash = item.contentHash;
+      if (ClipHashRegistry.instance.isDuplicate(hash)) return;
+
       final copy = CopyToClipboard();
       switch (item.type) {
         case ClipItemType.text:
+          final String text = item.text ?? '';
+          if (text.isEmpty) return;
           await copy.writeRichText(
             clipboard,
-            text: item.text ?? '',
+            text: text,
             richData: item.richData,
           );
         case ClipItemType.url:
-          copy.writeUrl(Uri.tryParse(item.url ?? ''));
-        default:
-          return;
+          final String url = item.url ?? '';
+          if (url.isEmpty) return;
+          copy.writeUrl(Uri.tryParse(url));
+        case ClipItemType.media:
+        case ClipItemType.file:
+          final String? path = item.localPath;
+          if (path == null) return;
+          final File file = File(path);
+          if (!file.existsSync()) return;
+          final bool written = await copy.writeFileContent(
+            file,
+            mimeType: item.fileMimeType,
+            fileName: item.fileName,
+          );
+          if (!written) return;
       }
-      await copy.commit(clipboard);
+
+      final bool committed = await copy.commit(clipboard);
+      if (!committed) return;
+      ClipHashRegistry.instance.register(hash, suppressFeedback: true);
       logger.i('autoWriteOnReceive: wrote ${item.type} clip to OS clipboard');
+      await showSyncFeedback(item);
     } catch (e) {
       logger.e('autoWriteOnReceive: failed to write to OS clipboard: $e');
     }

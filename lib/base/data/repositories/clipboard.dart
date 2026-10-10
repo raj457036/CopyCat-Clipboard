@@ -88,7 +88,7 @@ class ClipboardRepositoryCloudImpl implements ClipboardRepository {
   }
 
   @override
-  FailureOr<bool> delete(ClipboardItem item) async {
+  FailureOr<bool> delete(ClipboardItem item, {bool soft = false}) async {
     try {
       await remote.delete(item);
       return const Right(true);
@@ -337,9 +337,9 @@ class ClipboardRepositoryOfflineImpl implements ClipboardRepository {
   }
 
   @override
-  FailureOr<bool> delete(ClipboardItem item) async {
+  FailureOr<bool> delete(ClipboardItem item, {bool soft = true}) async {
     try {
-      await local.delete(item, soft: true);
+      await local.delete(item, soft: soft);
       if (item.id != null) {
         await outbox.enqueue(
           SyncOutboxEntry(

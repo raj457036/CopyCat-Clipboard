@@ -39,8 +39,7 @@ class SyncEngine<T extends Syncable> {
   final List<String> dependsOn;
 
   Timer? _pollingTimer;
-  Timer? _reconnectTimer;
-  int? _pollingIntervalSeconds; // saved so realtime fallback can restore it
+  int? _pollingIntervalSeconds;
   bool _busy = false;
   bool _isRealtimeSubscribed = false;
   StreamSubscription? _statusSub;
@@ -369,23 +368,42 @@ class SyncEngine<T extends Syncable> {
   Future<void> _processDeleteBatch(List<SyncOutboxEntry> entries) async {
     if (entries.isEmpty) return;
 
-    final resolvable = <(SyncOutboxEntry, T)>[];
-
+    final entriesByLocalId = <int, List<SyncOutboxEntry>>{};
     for (final entry in entries) {
-      final item = await adapter.getLocalById(entry.localId);
+      entriesByLocalId.putIfAbsent(entry.localId, () => []).add(entry);
+    }
+
+    final resolvable = <(List<SyncOutboxEntry>, T)>[];
+
+    for (final MapEntry(:key, :value) in entriesByLocalId.entries) {
+      final item = await adapter.getLocalById(key);
       if (item == null) {
-        if (entry.id != null) {
-          await outboxRepo.markCompleted(entry.id!);
+        for (final entry in value) {
+          if (entry.id != null) {
+            await outboxRepo.markCompleted(entry.id!);
+          }
         }
         continue;
       }
-      resolvable.add((entry, item));
+      resolvable.add((value, item));
     }
 
     if (resolvable.isEmpty) return;
 
-    final items = resolvable.map((e) => e.$2).toList(growable: false);
-    final result = await adapter.deleteBatchFromRemote(items);
+    // Deduplicate items to delete remotely by serverId
+    final uniqueRemoteItems = <Object, T>{};
+    for (final (_, item) in resolvable) {
+      if (item.serverId != null) {
+        uniqueRemoteItems[item.serverId!] = item;
+      } else {
+        uniqueRemoteItems[item] = item;
+      }
+    }
+
+    final allLocalItems = resolvable.map((e) => e.$2).toList(growable: false);
+    final remoteItems = uniqueRemoteItems.values.toList(growable: false);
+
+    final result = await adapter.deleteBatchFromRemote(remoteItems);
 
     final success = result.fold((_) => false, (ok) => ok);
     if (!success) {
@@ -396,7 +414,7 @@ class SyncEngine<T extends Syncable> {
       return;
     }
 
-    await adapter.deleteLocally(items);
+    await adapter.deleteLocally(allLocalItems);
 
     for (final entry in entries) {
       if (entry.id != null) {
@@ -532,8 +550,18 @@ class SyncEngine<T extends Syncable> {
     stopPolling();
     final cadence = intervalSeconds ?? config.pollingIntervalSeconds;
     _pollingIntervalSeconds = cadence;
-    // Don't start the timer if realtime is currently connected.
-    if (_isRealtimeSubscribed || _pollingTimer != null) return;
+    // Don't start the timer if realtime is active and connected.
+    if (_isRealtimeSubscribed &&
+        adapter.realtimeListener?.currentStatus ==
+            CrossSyncListenerStatus.connected) {
+      return;
+    }
+    _pollingTimer = Timer.periodic(Duration(seconds: cadence), (_) => pull());
+  }
+
+  void _startFallbackPolling() {
+    _pollingTimer?.cancel();
+    final cadence = _pollingIntervalSeconds ?? config.pollingIntervalSeconds;
     _pollingTimer = Timer.periodic(Duration(seconds: cadence), (_) => pull());
   }
 
@@ -550,8 +578,6 @@ class SyncEngine<T extends Syncable> {
     if (_isRealtimeSubscribed || listener == null) return;
 
     stopPolling();
-    _reconnectTimer?.cancel();
-    _reconnectTimer = null;
 
     _statusSub = listener.onStatusChange.listen(_onRealtimeStatusChange);
     _eventSub = listener.onChangeEvent.listen(_onRealtimeEvent);
@@ -564,32 +590,28 @@ class SyncEngine<T extends Syncable> {
     final status = event.$1;
     switch (status) {
       case CrossSyncListenerStatus.connected:
-        _reconnectTimer?.cancel();
-        _reconnectTimer = null;
         stopPolling();
         return;
       case CrossSyncListenerStatus.disconnected:
       case CrossSyncListenerStatus.error:
         logger.i(
           () =>
-              "Realtime listener for ${adapter.entityType} disconnected with status: $status",
+              "Realtime listener for ${adapter.entityType} disconnected with status: $status. Activating fallback polling.",
         );
-        if (_pollingIntervalSeconds != null) {
-          startPolling(intervalSeconds: _pollingIntervalSeconds);
-        }
-        _scheduleReconnect();
+        _startFallbackPolling();
         return;
       default:
         return;
     }
   }
 
-  void _scheduleReconnect() {
-    _reconnectTimer?.cancel();
-    _reconnectTimer = Timer(
-      Duration(seconds: config.reconnectDelaySeconds),
-      () => adapter.realtimeListener?.reconnect(),
-    );
+  bool get isRealtimeActive => _isRealtimeSubscribed;
+  CrossSyncListenerStatus? get realtimeStatus =>
+      adapter.realtimeListener?.currentStatus;
+
+  Future<void> reconnectRealtime() async {
+    if (!_isRealtimeSubscribed || adapter.realtimeListener == null) return;
+    await adapter.realtimeListener?.reconnect();
   }
 
   Future<void> _onRealtimeEvent(CrossSyncEvent<T> event) async {
@@ -599,12 +621,8 @@ class SyncEngine<T extends Syncable> {
 
       if (type == CrossSyncEventType.delete || item.deletedAt != null) {
         final deleted = await adapter.deleteLocally([item]);
-        if (deleted.isEmpty) {
-          eventBus.emit<T>((CrossSyncEventType.delete, item));
-        } else {
-          for (final d in deleted) {
-            eventBus.emit<T>((CrossSyncEventType.delete, d));
-          }
+        for (final d in deleted) {
+          eventBus.emit<T>((CrossSyncEventType.delete, d));
         }
       } else {
         final results = await adapter.applyBatch([
@@ -622,8 +640,6 @@ class SyncEngine<T extends Syncable> {
   }
 
   void stopRealtime() {
-    _reconnectTimer?.cancel();
-    _reconnectTimer = null;
     _statusSub?.cancel();
     _eventSub?.cancel();
     adapter.realtimeListener?.stop();

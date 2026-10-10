@@ -439,11 +439,11 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
     public func getIcon(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         let args:[String: Any] = call.arguments as! [String: Any]
         let applicationPath: String = args["applicationPath"] as! String
-        let application = getIconForApplicationPath(applicationPath)
-        if (application != nil) {
-            let data = NSBitmapImageRep(data: application!.tiffRepresentation(using: .lzw, factor: .greatestFiniteMagnitude)!)!.representation(using: .png, properties: [:]);
-            
-            if (data != nil) {
+        DispatchQueue.global(qos: .utility).async {
+            let data = self.pngDataForApplication(
+                self.getIconForApplicationPath(applicationPath),
+            )
+            DispatchQueue.main.async {
                 result(data)
             }
         }
@@ -452,16 +452,26 @@ public class FocusWindowPlugin: NSObject, FlutterPlugin {
     public func getIconByIdentifier(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         let args:[String: Any] = call.arguments as! [String: Any]
         let identifier: String = args["identifier"] as! String
-        let application = getIconForApplicationIdentifier(identifier)
-        if (application != nil) {
-            let data = NSBitmapImageRep(data: application!.tiffRepresentation(using: .lzw, factor: .greatestFiniteMagnitude)!)!.representation(using: .png, properties: [:]);
-
-            if (data != nil) {
+        DispatchQueue.global(qos: .utility).async {
+            let data = self.pngDataForApplication(
+                self.getIconForApplicationIdentifier(identifier),
+            )
+            DispatchQueue.main.async {
                 result(data)
-                return
             }
         }
-        result(nil)
+    }
+
+    private func pngDataForApplication(_ application: NSImage?) -> Data? {
+        guard
+            let application = application,
+            let tiffData = application.tiffRepresentation(using: .lzw, factor: .greatestFiniteMagnitude),
+            let bitmap = NSBitmapImageRep(data: tiffData)
+        else {
+            return nil
+        }
+
+        return bitmap.representation(using: .png, properties: [:])
     }
 
     public func isAccessibilityPermissionGranted(_ call: FlutterMethodCall, result: @escaping FlutterResult) {

@@ -1,7 +1,6 @@
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/data/services/notification_service.dart'
     show InAppNotificationService;
-import 'package:clipboard/base/domain/model/localization.dart';
 import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
@@ -34,15 +33,6 @@ class ResetPasswordPage extends StatelessWidget {
               width: 300,
               height: 300,
               child: ResetPasswordForm(
-                localization: AuthUserResetPasswordFormLocalization(
-                  passwordResetSent: context.locale.reset_password__success_ack,
-                  enterPassword: context.locale.login__form__input__password,
-                  passwordLengthError:
-                      context.locale.login__form__input__error_password_length,
-                  updatePassword:
-                      context.locale.login__form__button__update_password,
-                  unexpectedError: context.locale.app__unknown_error,
-                ),
                 accessToken: accessToken,
                 onSuccess: (user) {
                   context.pop();

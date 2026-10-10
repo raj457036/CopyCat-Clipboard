@@ -203,6 +203,45 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app__ack__copied => '已复制';
 
   @override
+  String app__ack__copied_from_device({required String device}) {
+    return '已从 $device 复制';
+  }
+
+  @override
+  String app__ack__received_from_device({required String device}) {
+    return '已从 $device 接收';
+  }
+
+  @override
+  String get app__ack__excluded => '已排除';
+
+  @override
+  String app__ack__excluded_with_reason({required String reason}) {
+    return '已排除 • $reason';
+  }
+
+  @override
+  String get app__ack__reason_phone => '电话号码';
+
+  @override
+  String get app__ack__reason_email => '电子邮件';
+
+  @override
+  String get app__ack__reason_credit_card => '信用卡';
+
+  @override
+  String get app__ack__reason_sensitive_url => '敏感网址';
+
+  @override
+  String get app__ack__reason_app => '敏感应用';
+
+  @override
+  String get app__ack__reason_pattern => '自定义规则';
+
+  @override
+  String get app__ack__reason_title => '敏感窗口';
+
+  @override
   String get app__ack__pasted => '已粘贴';
 
   @override
@@ -296,6 +335,16 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dialog__button__e2e_import_key => '导入';
+
+  @override
+  String get dialog__button__e2e_clear_key => '清除密钥';
+
+  @override
+  String get dialog__title__e2e_clear_key => '清除加密密钥';
+
+  @override
+  String get dialog__text__e2e_clear_key__confirm =>
+      '您确定要从此设备中移除加密密钥吗？在重新导入密钥之前，您将无法解密已加密的剪贴板内容。';
 
   @override
   String get dialog__text__inconsistent_time__title => '时间同步警告';
@@ -795,6 +844,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get preview__card__video__play => '播放视频';
+
+  @override
+  String get preview__card__video__mute => '静音';
+
+  @override
+  String get preview__card__video__unmute => '取消静音';
+
+  @override
+  String get preview__card__video__close => '关闭播放器';
 
   @override
   String get preview__card__file__open => '打开文件';
@@ -1354,16 +1412,31 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings__text__er__pass_manager => '密码管理器';
 
   @override
+  String get settings__text__er__pass_manager__subtitle => '排除来自密码管理器应用的剪贴内容';
+
+  @override
   String get settings__text__er__cc => '信用卡号';
+
+  @override
+  String get settings__text__er__cc__subtitle => '排除检测到的信用卡号';
 
   @override
   String get settings__text__er__phone => '电话号码';
 
   @override
+  String get settings__text__er__phone__subtitle => '排除检测到的电话号码';
+
+  @override
   String get settings__text__er__email => '电子邮件地址';
 
   @override
+  String get settings__text__er__email__subtitle => '排除检测到的电子邮件地址';
+
+  @override
   String get settings__text__er__url => '敏感网址';
+
+  @override
+  String get settings__text__er__url__subtitle => '排除包含敏感网址的剪贴内容';
 
   @override
   String get settings__text__decrypted__note =>
@@ -1459,6 +1532,15 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings__clipboard_feedback__disabled => '禁用';
+
+  @override
+  String get settings__clipboard_feedback__copy_only => '仅复制';
+
+  @override
+  String get settings__clipboard_feedback__sync_only => '仅同步';
+
+  @override
+  String get settings__clipboard_feedback__copy_and_sync => '复制与同步';
 
   @override
   String get settings__clipboard_feedback__toast => '吐司';
@@ -1673,13 +1755,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings__text__gdrive__info =>
-      '您的文件和媒体通过 Google Drive 安全地跨设备同步，确保您的隐私得到保护。';
+      '您的文件和媒体通过受支持的云提供商安全地跨设备同步，确保您的隐私得到保护。连接多个提供商时，您可以为新上传选择默认存储。';
 
   @override
-  String get settings__drive__default_tooltip => 'Default storage for uploads';
+  String get settings__drive__default_tooltip => '默认上传存储';
 
   @override
-  String get settings__drive__set_default => 'Set as default';
+  String get settings__drive__set_default => '设为默认';
 
   @override
   String get settings__tile__other_cloud__title => '设置其他云端驱动';
@@ -1689,82 +1771,77 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get settings__text__webdav__info =>
-      'Connect your WebDAV server (Nextcloud, ownCloud, Synology NAS, etc.) to store and sync your files and media attachments.';
+      '连接您的 WebDAV 服务器（Nextcloud、ownCloud、Synology NAS 等）以存储和同步您的文件及媒体附件。';
 
   @override
-  String get settings__dialog__webdav__title => 'WebDAV Storage';
+  String get settings__dialog__webdav__title => 'WebDAV 存储';
 
   @override
-  String get settings__dialog__webdav__preset_provider => 'Provider Preset';
+  String get settings__dialog__webdav__preset_provider => '预设服务商';
 
   @override
-  String get settings__dialog__webdav__server_url => 'Server URL';
+  String get settings__dialog__webdav__server_url => '服务器 URL';
 
   @override
   String get settings__dialog__webdav__server_url_hint =>
       'https://cloud.example.com/remote.php/dav/files/username/';
 
   @override
-  String get settings__dialog__webdav__username => 'Username';
+  String get settings__dialog__webdav__username => '用户名';
 
   @override
-  String get settings__dialog__webdav__password => 'Password / App Password';
+  String get settings__dialog__webdav__password => '密码 / 应用密码';
 
   @override
-  String get settings__dialog__webdav__base_path => 'Storage Folder Path';
+  String get settings__dialog__webdav__base_path => '存储文件夹路径';
 
   @override
   String get settings__dialog__webdav__base_path_helper =>
-      'Folder path cannot be changed after setup. To change it, disconnect first.';
+      '文件夹路径在设置后无法更改。如需更改，请先断开连接。';
 
   @override
-  String get settings__dialog__webdav__advanced => 'Advanced';
+  String get settings__dialog__webdav__advanced => '高级';
 
   @override
-  String get settings__dialog__webdav__self_signed =>
-      'Allow Self-Signed / Insecure Certificates';
+  String get settings__dialog__webdav__self_signed => '允许自签名 / 不安全证书';
 
   @override
-  String get settings__dialog__webdav__auto_clean =>
-      'Auto-clean inactive files after 30 days';
+  String get settings__dialog__webdav__auto_clean => '30 天后自动清理非活动文件';
 
   @override
   String get settings__dialog__webdav__auto_clean_subtitle =>
-      'Because WebDAV credentials remain private on your device, remote files are not removed by cloud cleanup. When enabled, media files older than 30 days from last modification will be deleted from your WebDAV server. Clips in collections or locked are always protected.';
+      '由于 WebDAV 凭据仅保留在您的设备本地，云清理不会删除远程文件。启用后，自上次修改起超过 30 天的媒体文件将从您的 WebDAV 服务器中删除。收藏中或已锁定的剪贴片段始终受到保护。';
 
   @override
-  String get settings__dialog__webdav__test_conn => 'Test Connection';
+  String get settings__dialog__webdav__test_conn => '测试连接';
 
   @override
-  String get settings__dialog__webdav__testing => 'Testing Connection...';
+  String get settings__dialog__webdav__testing => '正在测试连接...';
 
   @override
-  String get settings__dialog__webdav__test_success => 'Connection successful!';
+  String get settings__dialog__webdav__test_success => '连接成功！';
 
   @override
-  String get settings__dialog__webdav__disconnect => 'Disconnect';
+  String get settings__dialog__webdav__disconnect => '断开连接';
 
   @override
-  String get settings__dialog__webdav__save => 'Save & Connect';
+  String get settings__dialog__webdav__save => '保存并连接';
 
   @override
-  String get settings__dialog__webdav__reconnect_title => 'WebDAV Settings';
+  String get settings__dialog__webdav__reconnect_title => 'WebDAV 设置';
 
   @override
   String get settings__dialog__webdav__reconnect_subtitle =>
-      'WebDAV is already connected. Update settings or disconnect?';
+      'WebDAV 已连接。更新设置还是断开连接？';
 
   @override
-  String get settings__dialog__webdav__url_required =>
-      'Please enter a valid WebDAV server URL';
+  String get settings__dialog__webdav__url_required => '请输入有效的 WebDAV 服务器 URL';
 
   @override
-  String get settings__dialog__webdav__username_required =>
-      'Please enter a username';
+  String get settings__dialog__webdav__username_required => '请输入用户名';
 
   @override
-  String get settings__dialog__webdav__password_required =>
-      'Please enter a password or app token';
+  String get settings__dialog__webdav__password_required => '请输入密码或应用令牌';
 
   @override
   String get settings__app_lock__title => '应用锁定';

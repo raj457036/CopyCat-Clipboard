@@ -258,8 +258,9 @@ class ClipboardCubit extends Cubit<ClipboardState> {
     SearchFilterState? filterState,
     int? limit,
   }) async {
+    final isInitialOrTop = fromTop || state.offset == 0;
     if (_isFetching) return;
-    if (!fromTop && !state.hasMore) return;
+    if (!isInitialOrTop && !state.hasMore) return;
 
     _isFetching = true;
 
@@ -274,7 +275,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
         state.copyWith(
           loading: true,
           query: resolvedQuery,
-          offset: fromTop ? 0 : state.offset,
+          offset: isInitialOrTop ? 0 : state.offset,
           filterState: resolvedFilter,
           limit: limit ?? 50,
         ),
@@ -282,7 +283,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
 
       final items = await repo.getList(
         limit: state.limit,
-        offset: fromTop ? 0 : state.offset,
+        offset: isInitialOrTop ? 0 : state.offset,
         search: resolvedQuery.isEmpty ? null : resolvedQuery,
         types: state.filterState.typeIncludes,
         category: state.filterState.textCategories,
@@ -296,7 +297,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
 
       emit(
         items.fold((l) => state.copyWith(failure: l, loading: false), (r) {
-          if (fromTop) {
+          if (isInitialOrTop) {
             _items
               ..clear()
               ..addAll(r.results);
@@ -305,7 +306,7 @@ class ClipboardCubit extends Cubit<ClipboardState> {
           }
           return state.copyWith(
             loading: false,
-            offset: fromTop
+            offset: isInitialOrTop
                 ? r.results.length
                 : state.offset + r.results.length,
             limit: state.limit,
@@ -320,18 +321,33 @@ class ClipboardCubit extends Cubit<ClipboardState> {
   }
 
   Future<void> deleteItem(List<ClipboardItem> items) async {
-    final ids = items.map((item) => item.id).whereType<int>().toSet();
-    final serverIds = items
-        .map((item) => item.serverId)
-        .whereType<int>()
-        .toSet();
+    if (items.isEmpty || _items.isEmpty) return;
+
+    final originIds = <String>{};
+    final serverIds = <int>{};
+    final ids = <int>{};
+
+    for (final item in items) {
+      final origin = item.originId;
+      if (origin != null && origin.trim().isNotEmpty) {
+        originIds.add(origin);
+      }
+      if (item.serverId != null) {
+        serverIds.add(item.serverId!);
+      }
+      if (item.id != null) {
+        ids.add(item.id!);
+      }
+    }
+
+    if (originIds.isEmpty && serverIds.isEmpty && ids.isEmpty) return;
 
     final before = _items.length;
     _items.removeWhere((it) {
-      final isLocallyDeleted = it.id != null && ids.contains(it.id);
-      final isRemotelyDeleted =
-          it.serverId != null && serverIds.contains(it.serverId);
-      return isLocallyDeleted || isRemotelyDeleted;
+      if (it.originId != null && originIds.contains(it.originId)) return true;
+      if (it.serverId != null && serverIds.contains(it.serverId)) return true;
+      if (it.id != null && ids.contains(it.id)) return true;
+      return false;
     });
 
     final isDeleted = before - _items.length;

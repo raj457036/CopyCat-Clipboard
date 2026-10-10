@@ -79,6 +79,38 @@
   "app__realtime_connecting": "Realtime Connecting...",
   "app__ack__exported": "Exported",
   "app__ack__copied": "Copied",
+  "app__ack__copied_from_device": "Copied from {device}",
+  "@app__ack__copied_from_device": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "app__ack__received_from_device": "Received from {device}",
+  "@app__ack__received_from_device": {
+    "placeholders": {
+      "device": {
+        "type": "String"
+      }
+    }
+  },
+  "app__ack__excluded": "Excluded",
+  "app__ack__excluded_with_reason": "Excluded • {reason}",
+  "@app__ack__excluded_with_reason": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "app__ack__reason_phone": "Phone",
+  "app__ack__reason_email": "Email",
+  "app__ack__reason_credit_card": "Credit Card",
+  "app__ack__reason_sensitive_url": "Sensitive URL",
+  "app__ack__reason_app": "Sensitive App",
+  "app__ack__reason_pattern": "Pattern",
+  "app__ack__reason_title": "Sensitive Window",
   "app__ack__pasted": "Pasted",
   "app__ack__pasting": "Pasting",
   "app__ack__done": "Done",
@@ -130,6 +162,9 @@
   "dialog__text__e2e_key_import__note": "Import your encryption key below to access your encrypted data on this device.",
   "dialog__button__e2e_importing_key": "Importing",
   "dialog__button__e2e_import_key": "Import",
+  "dialog__button__e2e_clear_key": "Clear Key",
+  "dialog__title__e2e_clear_key": "Clear Encryption Key",
+  "dialog__text__e2e_clear_key__confirm": "Are you sure you want to remove the encryption key from this device? You will not be able to decrypt encrypted clips until you import the key again.",
   "dialog__text__inconsistent_time__title": "Time Sync Warning",
   "dialog__text__inconsistent_time__content": "Inconsistent Device Time Detected\n\nTo ensure accurate clipboard syncing, please check and correct your device's time settings.\n\nInconsistent time settings may cause synchronization issues.",
   "dialog__text__inconsistent_time__still_off": "Clock is still out of sync. Please update your system time manually.",
@@ -339,6 +374,9 @@
   "preview__vert_view__tab2__title": "Details",
   "preview__card__missing_text": "This is an Empty Clip",
   "preview__card__video__play": "Play Video",
+  "preview__card__video__mute": "Mute",
+  "preview__card__video__unmute": "Unmute",
+  "preview__card__video__close": "Close player",
   "preview__card__file__open": "Open File",
   "preview__form__title": "Edit Details",
   "preview__inspector__lock_clip": "Lock Clip",
@@ -606,10 +644,15 @@
   "settings__appbar__er__title": "Exclusion Rules",
   "settings__text__er__predefine": "Predefined Exclusion Rules",
   "settings__text__er__pass_manager": "Password Managers",
+  "settings__text__er__pass_manager__subtitle": "Exclude captures from password manager apps",
   "settings__text__er__cc": "Credit Card Number",
+  "settings__text__er__cc__subtitle": "Exclude detected credit card numbers",
   "settings__text__er__phone": "Phone number",
+  "settings__text__er__phone__subtitle": "Exclude detected phone numbers",
   "settings__text__er__email": "Email Address",
+  "settings__text__er__email__subtitle": "Exclude detected email addresses",
   "settings__text__er__url": "Sensitive Url",
+  "settings__text__er__url__subtitle": "Exclude captures containing sensitive URLs",
   "settings__text__decrypted__note": "🥳 Congratulations! All your clips have been successfully decrypted locally,\n so rebuilding the database is not required.",
   "settings__appbar__cer__title": "Custom Exclusion Rules",
   "settings__switch__drag_n_drop__title": "Drag and Drop",
@@ -652,6 +695,9 @@
   "settings__dropdown__clipboard_feedback__title": "Clipboard Feedback",
   "settings__dropdown__clipboard_feedback__subtitle": "Choose how CopyCat responds when a clip is captured.",
   "settings__clipboard_feedback__disabled": "Disabled",
+  "settings__clipboard_feedback__copy_only": "Copy Only",
+  "settings__clipboard_feedback__sync_only": "Sync Only",
+  "settings__clipboard_feedback__copy_and_sync": "Copy & Sync",
   "settings__clipboard_feedback__toast": "Toast",
   "settings__color_mode__tonalSpot": "Tonal Spot",
   "settings__color_mode__content": "Content",

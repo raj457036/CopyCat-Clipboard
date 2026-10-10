@@ -2,6 +2,7 @@ import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/model/base.dart';
 import 'package:clipboard/base/domain/model/json_converters/datetime_converters.dart';
 import 'package:clipboard/base/domain/model/syncable.dart';
+import 'package:flutter/widgets.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'clipcollection.freezed.dart';
@@ -23,10 +24,15 @@ abstract class ClipCollection with _$ClipCollection, Identifiable, Syncable {
     required String title,
     String? description,
     required String emoji,
+    int? color,
   }) = _ClipCollection;
 
   factory ClipCollection.fromJson(Map<String, dynamic> json) =>
       _$ClipCollectionFromJson(json);
+
+  /// Reconstructs the full ARGB [Color] with full opacity, or null if unset.
+  Color? get collectionColor =>
+      color == null ? null : Color(0xFF000000 | color!);
 
   @override
   Syncable copyWithSyncMetadata({int? id, DateTime? lastSynced}) {

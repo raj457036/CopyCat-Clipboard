@@ -17,6 +17,7 @@ import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/l10n/generated/app_localizations.dart';
 import 'package:clipboard/base/theme/theme_builder.dart';
 import 'package:clipboard/common/bloc_config.dart';
+import 'package:clipboard/common/file_log_sink.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/routes/routes.dart';
 import 'package:clipboard/utils/common_extension.dart';
@@ -25,6 +26,8 @@ import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/utils/windows/update_registry.dart';
 import 'package:clipboard/widgets/app_lock_overlay.dart';
 import 'package:clipboard/widgets/debug/gizmo_overlay.dart';
+import 'package:clipboard/widgets/forms/supabase_auth_localization.dart'
+    show SupabaseAuthLocalizationsDelegate;
 import 'package:clipboard/widgets/keyboard_shortcuts/actions/select_all.dart';
 import 'package:clipboard/widgets/listeners/auth_listener.dart';
 import 'package:clipboard/widgets/listeners/monetization_listener.dart';
@@ -58,6 +61,7 @@ Future<void> appRunner() async {
   if (Platform.isWindows || Platform.isLinux) {
     MediaKit.ensureInitialized();
   }
+  await FileLogSink.instance.init();
   await initializeServices();
   runApp(const MainApp());
 }
@@ -223,7 +227,10 @@ class AppContent extends StatelessWidget {
               darkTheme: darkTheme,
               debugShowCheckedModeBanner: false,
               locale: locale,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              localizationsDelegates: const [
+                ...AppLocalizations.localizationsDelegates,
+                SupabaseAuthLocalizationsDelegate(),
+              ],
               supportedLocales: AppLocalizations.supportedLocales,
               builder: (context, child) {
                 return AppLockOverlay(child: UpgraderBuilder(child: child));
@@ -258,11 +265,11 @@ class MainApp extends StatelessWidget {
         BlocProvider<AppConfigCubit>(create: (context) => sl(), lazy: false),
         BlocProvider<WindowActionCubit>(create: (context) => sl()),
         BlocProvider<EventBusCubit>(create: (context) => sl()),
+        BlocProvider<UserDevicesCubit>(create: (context) => sl()),
         BlocProvider<MonetizationCubit>(create: (context) => sl()),
         BlocProvider<OfflinePersistenceCubit>(create: (context) => sl()),
         BlocProvider<ReviewPromptCubit>(create: (context) => sl()),
         BlocProvider<SyncStatusCubit>(create: (context) => sl()),
-        BlocProvider<UserDevicesCubit>(create: (context) => sl()),
         BlocProvider<AppLockCubit>(create: (context) => sl()),
       ],
       child: isMobilePlatform

@@ -52,51 +52,49 @@ class _OnBoardPageState extends State<OnBoardPage> {
       hideLayoutToggle: true,
       hideTabToggle: true,
       child: Scaffold(
-        body: SafeArea(
-          child: switch (currentStep) {
-            0 => Padding(
-              padding: const EdgeInsets.all(padding16),
-              child: WelcomeStep(onContinue: () => goToPage(1)),
-            ),
-            1 => Padding(
-              padding: const EdgeInsets.all(padding16),
+        body: switch (currentStep) {
+          0 => Padding(
+            padding: const EdgeInsets.all(padding16),
+            child: WelcomeStep(onContinue: () => goToPage(1)),
+          ),
+          1 => Padding(
+            padding: const EdgeInsets.all(padding16),
 
-              child: EncryptionStep(
-                onContinue: () {
-                  if (Platform.isAndroid) {
-                    goToPage(2);
-                    return;
-                  }
+            child: EncryptionStep(
+              onContinue: () {
+                if (Platform.isAndroid) {
+                  goToPage(2);
+                  return;
+                }
 
-                  if (isDesktopPlatform) {
-                    goToPage(3);
-                  } else {
-                    goToPage(5);
-                  }
-                },
-              ),
+                if (isDesktopPlatform) {
+                  goToPage(3);
+                } else {
+                  goToPage(5);
+                }
+              },
             ),
-            2 => AndroidBackgroundClipboardStep(onContinue: () => goToPage(5)),
-            3 => Padding(
-              padding: const EdgeInsets.all(padding16),
-              child: SmartPasteStep(onContinue: () => goToPage(4)),
+          ),
+          2 => AndroidBackgroundClipboardStep(onContinue: () => goToPage(5)),
+          3 => Padding(
+            padding: const EdgeInsets.all(padding16),
+            child: SmartPasteStep(onContinue: () => goToPage(4)),
+          ),
+          4 => Padding(
+            padding: const EdgeInsets.all(padding16),
+            child: KeyboardShortcutStep(onContinue: () => goToPage(5)),
+          ),
+          5 => Padding(
+            padding: const EdgeInsets.all(padding16),
+            child: SyncRestoreStep(
+              onContinue: finishOnboarding,
+              clipboardRepository: sl(instanceName: "remote"),
+              collectionRepository: sl(),
+              restorationStatusRepository: sl(),
             ),
-            4 => Padding(
-              padding: const EdgeInsets.all(padding16),
-              child: KeyboardShortcutStep(onContinue: () => goToPage(5)),
-            ),
-            5 => Padding(
-              padding: const EdgeInsets.all(padding16),
-              child: SyncRestoreStep(
-                onContinue: finishOnboarding,
-                clipboardRepository: sl(instanceName: "remote"),
-                collectionRepository: sl(),
-                restorationStatusRepository: sl(),
-              ),
-            ),
-            _ => const SizedBox.shrink(),
-          },
-        ),
+          ),
+          _ => const SizedBox.shrink(),
+        },
       ),
     );
   }

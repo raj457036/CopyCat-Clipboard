@@ -484,7 +484,7 @@ return $default(_that.enable,_that.creditCard,_that.phone,_that.passwordManager,
 
 
 class _ExclusionRules extends ExclusionRules {
-   _ExclusionRules({this.enable = false, this.creditCard = true, this.phone = true, this.passwordManager = true, this.email = true, this.sensitiveUrls = true, final  List<String> patterns = const [], final  List<String> titles = const [], final  List<String> urls = const [], final  List<AppInfo> apps = const []}): _patterns = patterns,_titles = titles,_urls = urls,_apps = apps,super._();
+   _ExclusionRules({this.enable = true, this.creditCard = false, this.phone = false, this.passwordManager = true, this.email = false, this.sensitiveUrls = false, final  List<String> patterns = const [], final  List<String> titles = const [], final  List<String> urls = const [], final  List<AppInfo> apps = const []}): _patterns = patterns,_titles = titles,_urls = urls,_apps = apps,super._();
   
 
 /// including password patterns and password managers

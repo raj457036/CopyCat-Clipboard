@@ -462,6 +462,7 @@ class ManualBackupRestoreService {
       'title': collection.title,
       'description': collection.description,
       'emoji': collection.emoji,
+      'color': collection.color,
     };
   }
 
@@ -478,6 +479,7 @@ class ManualBackupRestoreService {
       title: _toString(map['title']) ?? 'Untitled Collection',
       description: _toString(map['description']),
       emoji: _toString(map['emoji']) ?? '📁',
+      color: _toInt(map['color']),
     );
   }
 

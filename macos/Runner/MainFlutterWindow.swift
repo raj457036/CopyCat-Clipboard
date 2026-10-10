@@ -4,10 +4,42 @@ import LaunchAtLogin
 import SwiftUI
 import window_manager
 
+// Intercept FLTEnableImpeller lookup before FlutterViewController initializes.
+// Forces Skia on Intel (x86_64) and Impeller on Apple Silicon (arm64).
+extension Bundle {
+  private static let swizzleInfoDictionaryOnce: Void = {
+    let originalSelector = #selector(Bundle.object(forInfoDictionaryKey:))
+    let swizzledSelector = #selector(Bundle.custom_object(forInfoDictionaryKey:))
+
+    guard let originalMethod = class_getInstanceMethod(Bundle.self, originalSelector),
+          let swizzledMethod = class_getInstanceMethod(Bundle.self, swizzledSelector) else {
+      return
+    }
+    method_exchangeImplementations(originalMethod, swizzledMethod)
+  }()
+
+  static func enableArchitectureSpecificRendering() {
+    _ = swizzleInfoDictionaryOnce
+  }
+
+  @objc func custom_object(forInfoDictionaryKey key: String) -> Any? {
+    if key == "FLTEnableImpeller" {
+      #if arch(x86_64)
+        return false
+      #else
+        return true
+      #endif
+    }
+    return custom_object(forInfoDictionaryKey: key)
+  }
+}
+
 class MainFlutterWindow: NSWindow {
   private let clipboardToastPresenter = ClipboardToastPresenter()
 
   override func awakeFromNib() {
+    Bundle.enableArchitectureSpecificRendering()
+
     let flutterViewController = FlutterViewController.init()
     let windowFrame = self.frame
     self.contentViewController = flutterViewController
@@ -40,9 +72,11 @@ class MainFlutterWindow: NSWindow {
         let arguments = call.arguments as? [String: Any]
         let message = arguments?["message"] as? String
         let showToast = arguments?["showToast"] as? Bool ?? false
+        let icon = arguments?["icon"] as? String ?? "checkmark"
         self?.clipboardToastPresenter.show(
           message: message,
-          showToast: showToast
+          showToast: showToast,
+          icon: icon
         )
         result(nil)
 
@@ -69,7 +103,8 @@ final class ClipboardToastPresenter {
   func show(
     message: String?,
     showToast: Bool,
-    duration: TimeInterval = 1.8
+    icon: String = "checkmark",
+    duration: TimeInterval = 3.0
   ) {
     DispatchQueue.main.async {
       guard showToast else { return }
@@ -77,12 +112,18 @@ final class ClipboardToastPresenter {
       self.dismissWorkItem?.cancel()
       self.dismissCurrentToast()
 
-      let screen = self.activeScreen()
-      let visibleFrame = screen.visibleFrame
-      let width: CGFloat = 132
-      let height: CGFloat = 30
-      let originX = visibleFrame.midX - width / 2
-      let originY = visibleFrame.maxY - height - 22
+      let screen: NSScreen = self.activeScreen()
+      let visibleFrame: NSRect = screen.visibleFrame
+      let toastMessage: String = message ?? "Copied"
+
+      let font: NSFont = NSFont.systemFont(ofSize: 12, weight: .medium)
+      let textWidth: CGFloat = ceil((toastMessage as NSString).size(withAttributes: [.font: font]).width)
+      let calculatedWidth: CGFloat = textWidth + 84
+      let maxWidth: CGFloat = min(visibleFrame.width - 48, 640)
+      let width: CGFloat = min(maxWidth, max(144, calculatedWidth))
+      let height: CGFloat = 34
+      let originX: CGFloat = visibleFrame.midX - width / 2
+      let originY: CGFloat = visibleFrame.maxY - height - 22
 
       let panel = NSPanel(
         contentRect: NSRect(x: originX, y: originY, width: width, height: height),
@@ -100,7 +141,12 @@ final class ClipboardToastPresenter {
       panel.hidesOnDeactivate = false
       panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .transient, .ignoresCycle]
       panel.contentViewController = NSHostingController(
-        rootView: ClipboardToastView(message: message ?? "Copied")
+        rootView: ClipboardToastView(
+          message: toastMessage,
+          icon: icon,
+          width: width,
+          height: height
+        )
       )
       panel.alphaValue = 0
       panel.orderFrontRegardless()
@@ -134,7 +180,7 @@ final class ClipboardToastPresenter {
   }
 
   private func activeScreen() -> NSScreen {
-    let mouseLocation = NSEvent.mouseLocation
+    let mouseLocation: NSPoint = NSEvent.mouseLocation
     if let screen = NSScreen.screens.first(where: { NSMouseInRect(mouseLocation, $0.frame, false) }) {
       return screen
     }
@@ -145,28 +191,54 @@ final class ClipboardToastPresenter {
 
 private struct ClipboardToastView: View {
   let message: String
-  @Environment(\.colorScheme) private var colorScheme
+  let icon: String
+  let width: CGFloat
+  let height: CGFloat
 
   var body: some View {
     let capsule = Capsule(style: .continuous)
 
-    Text(message)
-      .font(.system(size: 11, weight: .semibold))
-      .foregroundColor(.primary)
-      .kerning(0.2)
-      .multilineTextAlignment(.center)
-      .padding(.horizontal, 12)
-      .lineLimit(1)
-      .frame(width: 132, height: 30)
-      .background(
-        capsule.fill(colorScheme == .dark ? Color(white: 0.22) : Color(white: 0.89))
-      )
-      .clipShape(capsule)
-      .overlay(
-        capsule.strokeBorder(
-          colorScheme == .dark ? Color(white: 0.33) : Color(white: 0.77),
-          lineWidth: 0.9
+    HStack(spacing: 8) {
+      Image(systemName: icon)
+        .font(.system(size: 11, weight: .semibold))
+        .foregroundColor(Color.white.opacity(0.95))
+
+      Text(message)
+        .font(.system(size: 12, weight: .medium))
+        .foregroundColor(Color.white)
+        .lineLimit(1)
+    }
+    .padding(.horizontal, 18)
+    .frame(width: width, height: height)
+    .background(
+      capsule
+        .fill(Color(white: 0.44))
+        .overlay(
+          LinearGradient(
+            colors: [
+              Color.white.opacity(0.12),
+              Color.clear,
+            ],
+            startPoint: .top,
+            endPoint: .center
+          )
+          .clipShape(capsule)
         )
+    )
+    .clipShape(capsule)
+    .overlay(
+      capsule.strokeBorder(
+        LinearGradient(
+          colors: [
+            Color.white.opacity(0.35),
+            Color.white.opacity(0.08),
+            Color.white.opacity(0.18),
+          ],
+          startPoint: .top,
+          endPoint: .bottom
+        ),
+        lineWidth: 0.75
       )
+    )
   }
 }

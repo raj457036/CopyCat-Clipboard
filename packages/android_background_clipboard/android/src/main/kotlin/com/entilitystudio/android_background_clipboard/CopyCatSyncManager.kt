@@ -36,11 +36,14 @@ data class RemoteClipPayload(
     val type: ClipType,
     val label: String? = null,
     val encrypted: Boolean = false,
+    val locked: Boolean = false,
     val iv: String? = null,
     val encMode: String? = null,
     val userId: String? = null,
     val modifiedAt: Long = System.currentTimeMillis(),
     val originId: String? = null,
+    val title: String? = null,
+    val description: String? = null,
 )
 
 object ListeningMode {
@@ -588,17 +591,22 @@ class CopyCatSyncManager(
             return
         }
 
+        val title = record.optNonBlank(JsonKey.TITLE)
+        val description = record.optNonBlank(JsonKey.DESCRIPTION)
         val payload = RemoteClipPayload(
             serverId = serverId,
             content = content,
             type = clipType,
-            label = record.optNonBlank(JsonKey.TITLE),
+            label = title,
             encrypted = record.optBoolean(JsonKey.ENCRYPTED, false),
+            locked = record.optBoolean(JsonKey.LOCKED, false),
             iv = record.optNonBlank(JsonKey.IV),
             encMode = record.optNonBlank(JsonKey.ENC_MODE_SNAKE),
             userId = record.optNonBlank(JsonKey.USER_ID),
             modifiedAt = parseIsoToMillis(record.optString(JsonKey.MODIFIED)),
             originId = originId,
+            title = title,
+            description = description,
         )
 
         Log.i(
@@ -619,6 +627,8 @@ class CopyCatSyncManager(
         originId: String? = null,
         sourceId: String? = null,
         sourceApp: String? = null,
+        title: String? = null,
+        description: String? = null,
     ): Long {
         lastWriteAuthFailure = false
         Log.i(logTag, "Writing to remote clipboard")
@@ -642,8 +652,8 @@ class CopyCatSyncManager(
         val normalizedSourceId = sourceId?.trim()?.ifEmpty { null }
         val normalizedSourceApp = sourceApp?.trim()?.ifEmpty { null }
         val payload = JSONObject().apply {
-            putIfNotBlank(JsonKey.TITLE, label)
-            putIfNotBlank(JsonKey.DESCRIPTION, label)
+            putIfNotBlank(JsonKey.TITLE, title ?: label)
+            putIfNotBlank(JsonKey.DESCRIPTION, description)
             put(JsonKey.USER_ID, userId!!)
             put(JsonKey.MODIFIED, currentTime())
             put(JsonKey.OS, "android")

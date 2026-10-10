@@ -11,8 +11,10 @@ import 'package:clipboard/base/data/services/notification_service.dart'
 import 'package:clipboard/base/domain/model/notification_message.dart'
     show NotificationMessage;
 import 'package:clipboard/base/l10n/l10n.dart';
+import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/globals.dart';
 import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:clipboard/widgets/dialogs/inconsistent_timing.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +31,8 @@ class NetworkObserver extends StatefulWidget {
 
 class _NetworkObserverState extends State<NetworkObserver> {
   StreamSubscription? subscription;
+  Timer? _statusDebounceTimer;
+  bool? _lastStableStatus;
   bool wasDisconnected = false;
   late AuthCubit authCubit;
   late MonetizationCubit monetizationCubit;
@@ -36,17 +40,17 @@ class _NetworkObserverState extends State<NetworkObserver> {
   late AppConfigCubit appConfigCubit;
   late SyncStatusCubit syncStatusCubit;
   late UserDevicesCubit userDevicesCubit;
+  late SyncOrchestrator syncOrchestrator;
 
   Stream<bool>? networkObserver;
 
   bool transformNetworkStatus(InternetStatus event) {
-    final connected = event == InternetStatus.connected;
-    internetConnected.set(connected);
-    return connected;
+    return event == InternetStatus.connected;
   }
 
   @override
   void dispose() {
+    _statusDebounceTimer?.cancel();
     subscription?.cancel();
     super.dispose();
   }
@@ -55,6 +59,7 @@ class _NetworkObserverState extends State<NetworkObserver> {
   void initState() {
     super.initState();
     authCubit = BlocProvider.of<AuthCubit>(context);
+    syncOrchestrator = sl<SyncOrchestrator>();
     if (authCubit.isLocalAuth) return;
     networkObserver = InternetConnection().onStatusChange.map(
       transformNetworkStatus,
@@ -86,13 +91,26 @@ class _NetworkObserverState extends State<NetworkObserver> {
     await driveSetupCubit.fetch();
     await appConfigCubit.syncClocks();
     await syncStatusCubit.syncAll(const SyncAllParams());
+    await syncOrchestrator.reconnectRealtime();
   }
 
   void onConnectionChanged(bool isConnected) {
-    logger.i('Network connection changed: $isConnected');
+    _statusDebounceTimer?.cancel();
+    _statusDebounceTimer = Timer(const Duration(milliseconds: 1500), () {
+      if (!mounted) return;
+      _handleStableConnectionChange(isConnected);
+    });
+  }
+
+  void _handleStableConnectionChange(bool isConnected) {
+    if (_lastStableStatus == isConnected) return;
+    _lastStableStatus = isConnected;
+
+    logger.i('Network connection settled: $isConnected');
     if (authCubit.isLocalAuth) return;
     internetConnected.set(isConnected);
     if (isConnected) {
+      InAppNotificationService.i.dismiss("internet_disconnected");
       if (wasDisconnected) {
         wasDisconnected = false;
         unawaited(refetchStates());
@@ -100,15 +118,18 @@ class _NetworkObserverState extends State<NetworkObserver> {
           NotificationMessage(
             id: "internet_connected",
             body: context.locale.app__ack__internet_connected,
+            clearPrevious: true,
           ),
         );
       }
     } else {
       wasDisconnected = true;
+      InAppNotificationService.i.dismiss("internet_connected");
       InAppNotificationService.i.notify(
         NotificationMessage(
           id: "internet_disconnected",
           body: context.locale.app__ack__internet_disconnected,
+          clearPrevious: true,
         ),
       );
     }

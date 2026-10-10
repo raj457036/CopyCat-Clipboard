@@ -99,7 +99,7 @@ class LanDiscovery {
       final entries = await MDNSClient.discover(
         _config.serviceType,
         timeout: const Duration(seconds: 5),
-        reusePort: true,
+        reusePort: !Platform.isWindows,
       );
       for (final entry in entries) {
         if (!entry.isComplete) continue;

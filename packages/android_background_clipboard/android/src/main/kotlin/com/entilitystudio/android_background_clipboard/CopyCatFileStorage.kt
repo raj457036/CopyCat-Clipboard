@@ -20,7 +20,27 @@ class CopyCatFileStorage(private val context: Context) {
 
     private companion object {
         const val SEPARATOR = "---|---|---"
-        const val SEPARATOR_LINE = 13
+        const val SEPARATOR_LINE = 16
+
+        fun encodeBase64(value: String?): String {
+            if (value.isNullOrEmpty()) return ""
+            return android.util.Base64.encodeToString(
+                value.toByteArray(Charsets.UTF_8),
+                android.util.Base64.NO_WRAP
+            )
+        }
+
+        fun decodeBase64(encoded: String?): String? {
+            if (encoded.isNullOrBlank()) return null
+            return try {
+                String(
+                    android.util.Base64.decode(encoded.trim(), android.util.Base64.NO_WRAP),
+                    Charsets.UTF_8
+                )
+            } catch (_: Exception) {
+                null
+            }
+        }
     }
     
     init {
@@ -44,9 +64,9 @@ class CopyCatFileStorage(private val context: Context) {
             } catch (_: Exception) {
                 continue
             }
-            // Old-format files have fewer header lines; the separator position
-            // is what distinguishes them.
-            if (header.getOrNull(SEPARATOR_LINE) != SEPARATOR) continue
+            // Find separator to support both current (line 14) and legacy (line 13) formats
+            val sepIndex = header.indexOfFirst { it == SEPARATOR }
+            if (sepIndex < 10) continue
 
             header[9].trim().takeIf { it.isNotEmpty() }?.let { byOriginId[it] = clipId }
         }
@@ -103,12 +123,15 @@ class CopyCatFileStorage(private val context: Context) {
      * Line 6: encrypted (true/false)
      * Line 7: iv (base64, empty when not applicable)
      * Line 8: encMode (CFB/GCM, empty when not applicable)
-    * Line 9: originId (base62, empty for old-format clips)
-    * Line 10: sourceId/packageName (empty when unknown)
-    * Line 11: sourceApp/appName (empty when unknown)
-    * Line 12: deletedAt timestamp millis (empty when not deleted)
-    * Line 13: ---|---|---
-    * Line 14+: clip content
+     * Line 9: originId (base62, empty for old-format clips)
+     * Line 10: sourceId/packageName (empty when unknown)
+     * Line 11: sourceApp/appName (empty when unknown)
+     * Line 12: deletedAt timestamp millis (empty when not deleted)
+     * Line 13: locked (true/false)
+     * Line 14: title (base64)
+     * Line 15: description (base64)
+     * Line 16: ---|---|---
+     * Line 17+: clip content
      */
     fun writeClipItem(
         clipId: String,
@@ -116,6 +139,7 @@ class CopyCatFileStorage(private val context: Context) {
         type: ClipType,
         label: String = "",
         encrypted: Boolean = false,
+        locked: Boolean = false,
         iv: String? = null,
         encMode: String? = null,
         serverId: Long = -1,
@@ -125,6 +149,11 @@ class CopyCatFileStorage(private val context: Context) {
         sourceId: String = "",
         sourceApp: String = "",
         deletedAt: Long? = null,
+        title: String? = null,
+        description: String? = null,
+        fileMimeType: String? = null,
+        fileExtension: String? = null,
+        fileSize: Long? = null,
     ): Boolean = lock.write {
         try {
             writeClipItemLocked(
@@ -133,6 +162,7 @@ class CopyCatFileStorage(private val context: Context) {
                 type = type,
                 label = label,
                 encrypted = encrypted,
+                locked = locked,
                 iv = iv,
                 encMode = encMode,
                 serverId = serverId,
@@ -142,6 +172,11 @@ class CopyCatFileStorage(private val context: Context) {
                 sourceId = sourceId,
                 sourceApp = sourceApp,
                 deletedAt = deletedAt,
+                title = title,
+                description = description,
+                fileMimeType = fileMimeType,
+                fileExtension = fileExtension,
+                fileSize = fileSize,
             )
             debugLog(logTag) { "Wrote $clipId to disk (${text.length} bytes)" }
             return true
@@ -157,6 +192,7 @@ class CopyCatFileStorage(private val context: Context) {
         type: ClipType,
         label: String,
         encrypted: Boolean,
+        locked: Boolean,
         iv: String?,
         encMode: String?,
         serverId: Long,
@@ -166,6 +202,11 @@ class CopyCatFileStorage(private val context: Context) {
         sourceId: String,
         sourceApp: String,
         deletedAt: Long?,
+        title: String?,
+        description: String?,
+        fileMimeType: String? = null,
+        fileExtension: String? = null,
+        fileSize: Long? = null,
     ) {
         val clipFile = File(storageDir, "$clipId.txt")
         clipFile.bufferedWriter().use { writer ->
@@ -182,6 +223,12 @@ class CopyCatFileStorage(private val context: Context) {
             writer.write("$sourceId\n")
             writer.write("$sourceApp\n")
             writer.write("${deletedAt ?: ""}\n")
+            writer.write("$locked\n")
+            writer.write("${encodeBase64(title ?: label.ifBlank { null })}\n")
+            writer.write("${encodeBase64(description)}\n")
+            writer.write("${fileMimeType ?: ""}\n")
+            writer.write("${fileExtension ?: ""}\n")
+            writer.write("${fileSize ?: ""}\n")
             writer.write("$SEPARATOR\n")
             writer.write(text)
         }
@@ -312,6 +359,30 @@ class CopyCatFileStorage(private val context: Context) {
                 separatorIndex >= 13 -> lines[12].toLongOrNull()
                 else -> null
             }
+            val locked = when {
+                separatorIndex >= 14 -> lines[13].toBooleanStrictOrNull() ?: false
+                else -> false
+            }
+            val title = when {
+                separatorIndex >= 15 -> decodeBase64(lines[14]) ?: label.ifBlank { null }
+                else -> label.ifBlank { null }
+            }
+            val description = when {
+                separatorIndex >= 16 -> decodeBase64(lines[15])
+                else -> null
+            }
+            val fileMimeType = when {
+                separatorIndex >= 17 -> lines[16].ifBlank { null }
+                else -> null
+            }
+            val fileExtension = when {
+                separatorIndex >= 18 -> lines[17].ifBlank { null }
+                else -> null
+            }
+            val fileSize = when {
+                separatorIndex >= 19 -> lines[18].toLongOrNull()
+                else -> null
+            }
             
             val text = if (separatorIndex != -1 && separatorIndex < lines.size - 1) {
                 lines.subList(separatorIndex + 1, lines.size).joinToString("\n")
@@ -328,12 +399,18 @@ class CopyCatFileStorage(private val context: Context) {
                 serverId,
                 userId,
                 encrypted,
+                locked,
                 iv,
                 encMode,
                 originId,
                 sourceId,
                 sourceApp,
                 deletedAt,
+                title,
+                description,
+                fileMimeType,
+                fileExtension,
+                fileSize,
             )
         } catch (e: Exception) {
             Log.e(logTag, "Error reading clip $clipId: ${e.message}")
@@ -407,12 +484,18 @@ class CopyCatFileStorage(private val context: Context) {
         val serverId: Long = -1,
         val userId: String = "",
         val encrypted: Boolean = false,
+        val locked: Boolean = false,
         val iv: String? = null,
         val encMode: String? = null,
         val originId: String? = null,
         val sourceId: String? = null,
         val sourceApp: String? = null,
         val deletedAt: Long? = null,
+        val title: String? = null,
+        val description: String? = null,
+        val fileMimeType: String? = null,
+        val fileExtension: String? = null,
+        val fileSize: Long? = null,
     ) {
         fun toMap(): Map<String, Any?> {
             return mapOf(
@@ -420,16 +503,22 @@ class CopyCatFileStorage(private val context: Context) {
                 "text" to text,
                 "type" to type.name, // assuming ClipType is an enum
                 "label" to label,
+                "title" to (title ?: label.takeIf { it.isNotBlank() }),
+                "description" to description,
                 "timestamp" to timestamp,
                 "serverId" to serverId,
                 "userId" to userId,
                 "encrypted" to encrypted,
+                "locked" to locked,
                 "iv" to iv,
                 "encMode" to encMode,
                 "originId" to originId,
                 "sourceId" to sourceId,
                 "sourceApp" to sourceApp,
                 "deletedAt" to deletedAt,
+                "fileMimeType" to fileMimeType,
+                "fileExtension" to fileExtension,
+                "fileSize" to fileSize,
             )
         }
     }

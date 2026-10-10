@@ -6,6 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/data/services/encryption.dart';
 import 'package:clipboard/base/domain/model/app_config/appconfig.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_checker.dart';
+import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_result.dart';
 import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_rules.dart';
 import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/repositories/app_config.dart';
@@ -135,6 +136,7 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
       onBoardComplete: false,
       syncSpeed: SyncSpeed.balanced,
       enc2: null,
+      exclusionRules: defaultExclusionRules,
     );
     emit(AppConfigState.loaded(config: config));
     await repo.update(config);
@@ -145,6 +147,7 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
     Subscription subscription,
   ) {
     final hasProSync = subscription.isActive && !subscription.isFree;
+
     final nextConfig = hasProSync
         ? config.copyWith(
             syncSpeed: SyncSpeed.realtime,
@@ -562,23 +565,30 @@ class AppConfigCubit extends Cubit<AppConfigState> with AppConfigE2EEMixin {
     initializeExclusionChecker();
   }
 
-  Future<bool> isCopyingAllowedByActivity() async {
-    if (isMobilePlatform) return true;
+  Future<ExclusionCheckResult> checkActivityExclusion() async {
+    if (isMobilePlatform) return const ExclusionCheckResult.allowed();
     try {
       final activity = await focusWindow.getActivity().timeout(
         const Duration(seconds: 5),
       );
       logger.w(activity);
       lastActivity = activity;
-      final allowed = exclusionChecker?.isActivityAllowed(activity) ?? true;
-      return allowed;
+      final result =
+          exclusionChecker?.checkActivity(activity) ??
+          const ExclusionCheckResult.allowed();
+      return result;
     } on TimeoutException {
       lastActivity = null;
-      return true;
+      return const ExclusionCheckResult.allowed();
     } catch (e) {
       lastActivity = null;
-      return true;
+      return const ExclusionCheckResult.allowed();
     }
+  }
+
+  Future<bool> isCopyingAllowedByActivity() async {
+    final result = await checkActivityExclusion();
+    return result.isAllowed;
   }
 
   Future<bool> confirmAccessibilityPermission() async {

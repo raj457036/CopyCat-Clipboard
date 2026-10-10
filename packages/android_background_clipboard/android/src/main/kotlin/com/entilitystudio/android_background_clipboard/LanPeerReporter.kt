@@ -31,12 +31,14 @@ class LanPeerReporter private constructor() {
     /**
      * Called when NSD resolves a new peer.
      */
-    fun addPeer(deviceId: String, host: String, port: Int) {
-        peers[deviceId] = mapOf(
+    fun addPeer(deviceId: String, host: String, port: Int, os: String? = null) {
+        val map = mutableMapOf(
             "deviceId" to deviceId,
             "host" to host,
             "port" to port.toString(),
         )
+        if (os != null) map["os"] = os
+        peers[deviceId] = map
         notifyListeners()
     }
 

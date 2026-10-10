@@ -1,11 +1,10 @@
 name: clipboard
 description: "CopyCat Clipboard: One Clipboard, Limitless Productivity"
 publish_to: "none"
-version: 2.0.11+105
+version: 2.0.20+124
 
 environment:
   sdk: ">=3.11.0 <4.0.0"
-
 
 dependencies:
   flutter:
@@ -80,11 +79,10 @@ dependencies:
   emoji_picker_flutter:
     git:
       url: https://github.com/raj457036/emoji_picker_flutter.git
-  purchases_flutter: ^10.1.0
-  purchases_ui_flutter: ^10.1.0
-  supabase_flutter: ^2.12.4
-  supabase_auth_ui:
-    path: packages/supabase_auth_ui
+  purchases_flutter: ^10.11.0
+  purchases_ui_flutter: ^10.11.0
+  supabase_flutter: ^2.18.0
+  supabase_auth_ui: ^0.7.0
   super_clipboard: ^0.9.1
   super_drag_and_drop: ^0.9.1
   easy_worker: ^1.2.3
@@ -108,7 +106,8 @@ dependencies:
   open_dir: ^0.0.2+1
   qr_flutter: ^4.1.0
   mobile_scanner: ^7.1.1
-  thumbnailer: ^3.3.0
+  file_thumbnailer:
+    path: packages/file_thumbnailer
   image_size_getter: ^2.4.0
 
 dev_dependencies:
@@ -180,7 +179,7 @@ flutter_launcher_icons:
   min_sdk_android: 24
 
   ios: true
-  image_path_ios: "logo_resources/icon_2026_flat.png"
+  image_path_ios: "logo_resources/icon_2026_no_pad.png"
   remove_alpha_ios: true
 
   windows:

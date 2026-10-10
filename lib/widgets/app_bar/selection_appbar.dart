@@ -33,8 +33,7 @@ class SelectionAppbar extends StatelessWidget implements PreferredSizeWidget {
       if (isDesktopPlatform)
         ActionItem(
           key: 'pasteStack',
-          label:
-              'Move to Paste Stack • ${keyboardShortcut(meta: true, shift: true, key: 'C')}',
+          label: 'Move to Paste Stack',
           icon: Icons.layers_rounded,
           action: () async {
             await moveToPasteStack(context, items.toList());

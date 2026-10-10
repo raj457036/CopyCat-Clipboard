@@ -7,14 +7,18 @@ import 'package:injectable/injectable.dart';
 
 part 'webdav_setup_state.dart';
 
-@injectable
+@Injectable(cache: true)
 class WebDavSetupCubit extends Cubit<WebDavSetupState> {
   static const _logger = AppLogger.scoped('WebDavSetupCubit');
   final WebDavCredentialRepository _repo;
 
   WebDavSetupCubit(this._repo) : super(const WebDavSetupInitial());
 
-  Future<void> fetch() async {
+  Future<void> fetch({bool force = false}) async {
+    if (!force) {
+      if (state is WebDavSetupLoading) return;
+      if (state is WebDavSetupConfigured) return;
+    }
     emit(const WebDavSetupLoading());
     final result = await _repo.getConfig();
     result.fold(
@@ -30,6 +34,10 @@ class WebDavSetupCubit extends Cubit<WebDavSetupState> {
         }
       },
     );
+  }
+
+  void reset() {
+    emit(const WebDavSetupInitial());
   }
 
   FailureOr<void> testConnection(WebDavConfig config) {

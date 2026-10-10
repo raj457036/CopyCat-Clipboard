@@ -161,12 +161,17 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
   bool isReadOnly(ClipCollection collection) =>
       state.mapOrNull(loaded: (s) => s.isReadOnly(collection)) ?? false;
 
+  ClipCollection? findInState({int? id, int? serverId}) =>
+      state.mapOrNull(
+        loaded: (loaded) => loaded.collections.findFirst((c) {
+          if (id != null && c.id == id) return true;
+          if (serverId != null && c.serverId == serverId) return true;
+          return false;
+        }),
+      );
+
   Future<ClipCollection?> get(int id, int? serverId) async {
-    ClipCollection? collection = state.mapOrNull(
-      loaded: (loaded) => loaded.collections.findFirst(
-        (e) => serverId != null ? e.serverId == serverId : e.id == id,
-      ),
-    );
+    ClipCollection? collection = findInState(id: id, serverId: serverId);
 
     if (collection == null) {
       final result = await repo.get(id: id, serverId: serverId);
@@ -282,12 +287,18 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
     );
   }
 
-  Future<void> fetch({bool fromTop = false}) async {
-    emit(state.copyWith(loading: true, offset: fromTop ? 0 : state.offset));
+  Future<void> fetch({bool fromTop = true}) async {
+    final isInitialOrTop = fromTop || state.offset == 0;
+    emit(
+      state.copyWith(
+        loading: true,
+        offset: isInitialOrTop ? 0 : state.offset,
+      ),
+    );
 
     final items = await repo.getList(
       limit: state.limit,
-      offset: fromTop ? 0 : state.offset,
+      offset: isInitialOrTop ? 0 : state.offset,
     );
 
     emit(
@@ -295,13 +306,24 @@ class ClipCollectionCubit extends Cubit<ClipCollectionState> {
         (l) => state.copyWith(failure: l, loading: false),
         (r) => state.copyWith(
           loading: false,
-          collections: fromTop
+          collections: isInitialOrTop
               ? r.results
               : [...state.collections, ...r.results],
-          offset: state.offset + r.results.length,
+          offset: isInitialOrTop
+              ? r.results.length
+              : state.offset + r.results.length,
           limit: state.limit,
           hasMore: r.hasMore,
         ),
+      ),
+    );
+  }
+
+  void reset() {
+    emit(
+      ClipCollectionState.loaded(
+        collections: [],
+        activeLimit: _limitFromMonetization(monetizationCubit.state),
       ),
     );
   }

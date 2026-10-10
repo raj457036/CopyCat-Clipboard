@@ -1,13 +1,13 @@
 PODS:
   - app_links (7.0.0):
     - Flutter
-  - AppAuth (1.7.6):
-    - AppAuth/Core (= 1.7.6)
-    - AppAuth/ExternalUserAgent (= 1.7.6)
-  - AppAuth/Core (1.7.6)
-  - AppAuth/ExternalUserAgent (1.7.6):
+  - AppAuth (2.1.0):
+    - AppAuth/Core (= 2.1.0)
+    - AppAuth/ExternalUserAgent (= 2.1.0)
+  - AppAuth/Core (2.1.0)
+  - AppAuth/ExternalUserAgent (2.1.0):
     - AppAuth/Core
-  - AppCheckCore (11.3.1):
+  - AppCheckCore (11.3.2):
     - GoogleUtilities/Environment (~> 8.0)
     - GoogleUtilities/UserDefaults (~> 8.0)
     - PromisesObjC (~> 2.4)
@@ -50,6 +50,9 @@ PODS:
     - SwiftyGif
   - emoji_picker_flutter (0.0.1):
     - Flutter
+  - fc_native_video_thumbnail (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
@@ -60,27 +63,26 @@ PODS:
     - Flutter
     - FlutterMacOS
   - google_sign_in_ios (0.0.1):
-    - AppAuth (>= 1.7.4)
     - Flutter
     - FlutterMacOS
-    - GoogleSignIn (~> 8.0)
+    - GoogleSignIn (~> 9.0)
     - GTMSessionFetcher (>= 3.4.0)
-  - GoogleSignIn (8.0.0):
-    - AppAuth (< 2.0, >= 1.7.3)
+  - GoogleSignIn (9.2.0):
+    - AppAuth (~> 2.1)
     - AppCheckCore (~> 11.0)
-    - GTMAppAuth (< 5.0, >= 4.1.1)
+    - GTMAppAuth (~> 5.0)
     - GTMSessionFetcher/Core (~> 3.3)
-  - GoogleUtilities/Environment (8.1.3):
+  - GoogleUtilities/Environment (8.1.4):
     - GoogleUtilities/Privacy
-  - GoogleUtilities/Logger (8.1.3):
+  - GoogleUtilities/Logger (8.1.4):
     - GoogleUtilities/Environment
     - GoogleUtilities/Privacy
-  - GoogleUtilities/Privacy (8.1.3)
-  - GoogleUtilities/UserDefaults (8.1.3):
+  - GoogleUtilities/Privacy (8.1.4)
+  - GoogleUtilities/UserDefaults (8.1.4):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
-  - GTMAppAuth (4.1.1):
-    - AppAuth/Core (~> 1.7)
+  - GTMAppAuth (5.0.0):
+    - AppAuth/Core (~> 2.0)
     - GTMSessionFetcher/Core (< 4.0, >= 3.3)
   - GTMSessionFetcher (3.5.0):
     - GTMSessionFetcher/Full (= 3.5.0)
@@ -115,21 +117,21 @@ PODS:
   - PromisesObjC (2.4.1)
   - PromisesSwift (2.4.1):
     - PromisesObjC (= 2.4.1)
-  - purchases_flutter (10.10.0):
+  - purchases_flutter (10.13.2):
     - Flutter
-    - PurchasesHybridCommon (= 18.32.1)
-  - purchases_ui_flutter (10.10.0):
+    - PurchasesHybridCommon (= 19.3.1)
+  - purchases_ui_flutter (10.13.2):
     - Flutter
-    - PurchasesHybridCommonUI (= 18.32.1)
-  - PurchasesHybridCommon (18.32.1):
-    - RevenueCat (= 5.85.0)
-  - PurchasesHybridCommonUI (18.32.1):
-    - PurchasesHybridCommon (= 18.32.1)
-    - RevenueCatUI (= 5.85.0)
+    - PurchasesHybridCommonUI (= 19.3.1)
+  - PurchasesHybridCommon (19.3.1):
+    - RevenueCat (= 5.90.2)
+  - PurchasesHybridCommonUI (19.3.1):
+    - PurchasesHybridCommon (= 19.3.1)
+    - RevenueCatUI (= 5.90.2)
   - RecaptchaInterop (101.0.0)
-  - RevenueCat (5.85.0)
-  - RevenueCatUI (5.85.0):
-    - RevenueCat (= 5.85.0)
+  - RevenueCat (5.90.2)
+  - RevenueCatUI (5.90.2):
+    - RevenueCat (= 5.90.2)
   - SDWebImage (5.21.7):
     - SDWebImage/Core (= 5.21.7)
   - SDWebImage/Core (5.21.7)
@@ -167,6 +169,7 @@ DEPENDENCIES:
   - clipboard_watcher (from `.symlinks/plugins/clipboard_watcher/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - emoji_picker_flutter (from `.symlinks/plugins/emoji_picker_flutter/ios`)
+  - fc_native_video_thumbnail (from `.symlinks/plugins/fc_native_video_thumbnail/darwin`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_platform_alert (from `.symlinks/plugins/flutter_platform_alert/ios`)
@@ -225,6 +228,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/device_info_plus/ios"
   emoji_picker_flutter:
     :path: ".symlinks/plugins/emoji_picker_flutter/ios"
+  fc_native_video_thumbnail:
+    :path: ".symlinks/plugins/fc_native_video_thumbnail/darwin"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
@@ -284,21 +289,22 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   app_links: a754cbec3c255bd4bbb4d236ecc06f28cd9a7ce8
-  AppAuth: d4f13a8fe0baf391b2108511793e4b479691fb73
-  AppCheckCore: e215d35177a9cf469927863e69c13e220df32a8b
+  AppAuth: ef4da5a3fc2e10b90c09a0a94a9baeaedc0341d5
+  AppCheckCore: be8fce5469f68d7f6a29aa94b25f097409ff7fdc
   clipboard_watcher: 80cd8a0f62b85c9b70f399f602cd9a4eb3d0498c
   device_info_plus: 21fcca2080fbcd348be798aa36c3e5ed849eefbe
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   emoji_picker_flutter: ece213fc274bdddefb77d502d33080dc54e616cc
+  fc_native_video_thumbnail: f9cf25a1b294cd15489e40bb8ac28684677fa1bc
   file_picker: a0560bc09d61de87f12d246fc47d2119e6ef37be
   Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
   flutter_platform_alert: bf3b5fcd4ac14bd637e20527e9c471633071afd3
   flutter_secure_storage_darwin: acdb3f316ed05a3e68f856e0353b133eec373a23
-  google_sign_in_ios: b48bb9af78576358a168361173155596c845f0b9
-  GoogleSignIn: ce8c89bb9b37fb624b92e7514cc67335d1e277e4
-  GoogleUtilities: 4e0c2ad9fa0d0d18b5c4df8bf57b461cba35b0bb
-  GTMAppAuth: f69bd07d68cd3b766125f7e072c45d7340dea0de
+  google_sign_in_ios: d66ab4c862f03eb4b3cac147ba2d9d7e56ef03f7
+  GoogleSignIn: e449a40a92e9f2eea56e98b5214d13725dc5a00a
+  GoogleUtilities: db34c1c11c6f2eccb6fab2340cb8ceb1451299dc
+  GTMAppAuth: 217a876b249c3c585a54fd6f73e6b58c4f5c4238
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   in_app_review: 7dd1ea365263f834b8464673f9df72c80c17c937
   irondash_engine_context: 8e58ca8e0212ee9d1c7dc6a42121849986c88486
@@ -313,13 +319,13 @@ SPEC CHECKSUMS:
   pdfx: 824a9108791a81e400da7d1a903ab73668365072
   PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
   PromisesSwift: 217dea0fd5d2ad65222a109c48698add13cc1c5b
-  purchases_flutter: 187d766283ddd415af6d95a32dfd63f55162a130
-  purchases_ui_flutter: 468e9e4a547222a836f2ae7c4da12177dfe64376
-  PurchasesHybridCommon: 02cad5fb69b682309baa3ad4d6dcb7836c1543e0
-  PurchasesHybridCommonUI: 9427eeba27c63c4c01d1a51b3686bc5b235bfc82
+  purchases_flutter: 92f7f2c4730b13452fcc4301df141cc4b06bbca5
+  purchases_ui_flutter: f43f5ce4f46f7e43b337ae69cb07b12ffadcf66b
+  PurchasesHybridCommon: c364d4198150bf4027b00fcada9b4ddc280df108
+  PurchasesHybridCommonUI: 060fadc5112e8c0c750bd7e8f1b19c78f3fcb657
   RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
-  RevenueCat: 2dec9f71800de36af31884c3cc73e9ffb4a41786
-  RevenueCatUI: d9ab8d7ad43baecf7b300c876363b6821d48b4ba
+  RevenueCat: c44e15b3ee88506da1fdf537c62a6c239cc41b21
+  RevenueCatUI: 0a1f31996e19f7905ea3175c11b4732b3908837b
   SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
   share_handler_ios: e2244e990f826b2c8eaa291ac3831569438ba0fb
   share_handler_ios_models: fc638c9b4330dc7f082586c92aee9dfa0b87b871

@@ -631,10 +631,16 @@ const _IsarAppConfigactiveStorageProviderValueEnumMap = {
 };
 const _IsarAppConfigclipboardFeedbackModeEnumValueMap = {
   r'disabled': r'disabled',
+  r'copyOnly': r'copyOnly',
+  r'syncOnly': r'syncOnly',
+  r'copyAndSync': r'copyAndSync',
   r'toast': r'toast',
 };
 const _IsarAppConfigclipboardFeedbackModeValueEnumMap = {
   r'disabled': ClipboardFeedbackMode.disabled,
+  r'copyOnly': ClipboardFeedbackMode.copyOnly,
+  r'syncOnly': ClipboardFeedbackMode.syncOnly,
+  r'copyAndSync': ClipboardFeedbackMode.copyAndSync,
   r'toast': ClipboardFeedbackMode.toast,
 };
 const _IsarAppConfiglayoutEnumValueMap = {r'grid': r'grid', r'list': r'list'};

@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:clipboard/base/bloc/android_bg_clipboard_cubit/android_bg_clipboard_cubit.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
-import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import "package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart";
 import "package:clipboard/base/domain/model/clip_collection/clipcollection.dart";
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
@@ -101,6 +100,62 @@ class _RouteExtraDecoder extends Converter<Object?, Object?> {
   }
 }
 
+/// For route which require material page transition
+GoRoute materialRoute({
+  required String path,
+  String? name,
+  required Widget Function(BuildContext context, GoRouterState state) builder,
+  List<RouteBase> routes = const <RouteBase>[],
+  FutureOr<String?> Function(BuildContext context, GoRouterState state)?
+  redirect,
+}) {
+  return GoRoute(
+    path: path,
+    name: name,
+    redirect: redirect,
+    routes: routes,
+    pageBuilder: (context, state) => MaterialPage(
+      key: state.pageKey,
+      name: name ?? path,
+      child: builder(context, state),
+    ),
+  );
+}
+
+class _AppShellScope extends StatelessWidget {
+  final Widget child;
+
+  const _AppShellScope({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<FileCloudCubit>(create: (context) => sl<FileCloudCubit>()),
+        BlocProvider<ClipCollectionCubit>.value(
+          value: sl<ClipCollectionCubit>(),
+        ),
+        BlocProvider<DriveSetupCubit>.value(value: sl<DriveSetupCubit>()),
+        BlocProvider<WebDavSetupCubit>.value(value: sl<WebDavSetupCubit>()),
+        BlocProvider<SelectedClipsCubit>(
+          create: (context) => sl<SelectedClipsCubit>(),
+        ),
+        BlocProvider<ClipboardCubit>.value(value: sl<ClipboardCubit>()),
+        if (Platform.isAndroid)
+          BlocProvider<AndroidBgClipboardCubit>.value(
+            value: sl<AndroidBgClipboardCubit>(),
+          ),
+      ],
+      child: Platform.isAndroid
+          ? AndroidClipRestoreLifecycleListener(
+              androidBgClipboardCubit: sl(),
+              child: child,
+            )
+          : child,
+    );
+  }
+}
+
 final appRouter = GoRouter(
   // restorationScopeId: 'router',
   debugLogDiagnostics: kDebugMode,
@@ -124,77 +179,7 @@ final appRouter = GoRouter(
       builder: (context, state) => LoginFormPage(key: state.pageKey),
     ),
     ShellRoute(
-      builder: (context, state, child) {
-        final authState = context.read<AuthCubit>().state;
-        final isLocalAuth = authState is LocalAuthenticatedAuthState;
-        final shouldRunInitialSync = switch (authState) {
-          AuthenticatedAuthState(:final isOnboardingCompleted) =>
-            isOnboardingCompleted,
-          _ => false,
-        };
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider<FileCloudCubit>(
-              create: (context) => sl<FileCloudCubit>(),
-            ),
-            BlocProvider<ClipCollectionCubit>(
-              create: (context) {
-                final cubit = sl<ClipCollectionCubit>();
-                if (shouldRunInitialSync || isLocalAuth) {
-                  unawaited(cubit.fetch());
-                }
-                return cubit;
-              },
-            ),
-            BlocProvider<DriveSetupCubit>(
-              create: (context) {
-                final cubit = sl<DriveSetupCubit>();
-                if (!isLocalAuth) {
-                  unawaited(cubit.fetch());
-                }
-                return cubit;
-              },
-            ),
-            BlocProvider<WebDavSetupCubit>(
-              create: (context) {
-                final cubit = sl<WebDavSetupCubit>();
-                unawaited(cubit.fetch());
-                return cubit;
-              },
-            ),
-
-            BlocProvider<SelectedClipsCubit>(
-              create: (context) => sl<SelectedClipsCubit>(),
-            ),
-            BlocProvider<ClipboardCubit>(
-              create: (context) {
-                final cubit = sl<ClipboardCubit>();
-                if (shouldRunInitialSync || isLocalAuth) {
-                  unawaited(cubit.fetch());
-                }
-                return cubit;
-              },
-            ),
-            if (Platform.isAndroid)
-              BlocProvider<AndroidBgClipboardCubit>(
-                lazy: false,
-                create: (context) {
-                  final cubit = sl<AndroidBgClipboardCubit>();
-                  if (shouldRunInitialSync || isLocalAuth) {
-                    unawaited(cubit.syncStates());
-                  }
-                  return cubit;
-                },
-              ),
-          ],
-          child: Platform.isAndroid
-              ? AndroidClipRestoreLifecycleListener(
-                  androidBgClipboardCubit: sl(),
-                  child: child,
-                )
-              : child,
-        );
-      },
+      builder: (context, state, child) => _AppShellScope(child: child),
       routes: [
         GoRoute(
           name: RouteConstants.onboard,
@@ -238,7 +223,7 @@ final appRouter = GoRouter(
         ),
         ShellRoute(
           builder: (context, state, child) {
-            return ShellPage(key: state.pageKey, child: child);
+            return ShellPage(child: child);
           },
           routes: [
             GoRoute(
@@ -292,7 +277,7 @@ final appRouter = GoRouter(
                 child: const CollectionsPage(),
               ),
               routes: [
-                GoRoute(
+                materialRoute(
                   name: RouteConstants.collectionDetail,
                   path: ":id",
                   redirect: idPresentOrRedirect,
@@ -301,10 +286,8 @@ final appRouter = GoRouter(
 
                     return ClipCollectionProvider(
                       collectionId: id,
-                      builder: (context, collection) => CollectionDetailPage(
-                        key: state.pageKey,
-                        collection: collection,
-                      ),
+                      builder: (context, collection) =>
+                          CollectionDetailPage(collection: collection),
                     );
                   },
                 ),
@@ -322,7 +305,7 @@ final appRouter = GoRouter(
                 );
               },
               routes: [
-                GoRoute(
+                materialRoute(
                   name: RouteConstants.androidBgClipboardSettings,
                   path: "android-bg-clipboard",
                   builder: (context, state) => AndroidBgClipboardSettings(
@@ -331,19 +314,19 @@ final appRouter = GoRouter(
                     deviceId: sl(instanceName: "device_id"),
                   ),
                 ),
-                GoRoute(
+                materialRoute(
                   name: RouteConstants.appLockSettings,
                   path: 'app-lock',
                   builder: (context, state) =>
                       AppLockSettingsPage(key: state.pageKey),
                 ),
-                GoRoute(
+                materialRoute(
                   name: RouteConstants.exclusionRules,
                   path: "exclusion-rules",
                   builder: (context, state) =>
                       ExclusionRulesPage(key: state.pageKey),
                   routes: [
-                    GoRoute(
+                    materialRoute(
                       name: RouteConstants.customExclusionRules,
                       path: "custom",
                       builder: (context, state) =>
@@ -351,21 +334,21 @@ final appRouter = GoRouter(
                     ),
                   ],
                 ),
-                GoRoute(
+                materialRoute(
                   name: RouteConstants.resetPassword,
                   path: 'reset-password',
                   builder: (context, state) {
                     return ResetPasswordPage(key: state.pageKey);
                   },
                 ),
-                GoRoute(
+                materialRoute(
                   name: RouteConstants.accountDetails,
                   path: 'account-details',
                   builder: (context, state) {
                     return AccountPage(key: state.pageKey);
                   },
                 ),
-                GoRoute(
+                materialRoute(
                   name: RouteConstants.rebuildDatabase,
                   path: 'rebuild-database',
                   builder: (context, state) {
@@ -375,32 +358,32 @@ final appRouter = GoRouter(
                     );
                   },
                 ),
-                GoRoute(
+                materialRoute(
                   name: RouteConstants.backupRestore,
                   path: 'backup-restore',
                   builder: (context, state) {
                     return BackupRestorePage(key: state.pageKey);
                   },
                 ),
-                GoRoute(
+                materialRoute(
                   name: RouteConstants.deviceManagement,
                   path: 'device-management',
                   builder: (context, state) {
                     return DeviceManagementPage(key: state.pageKey);
                   },
                 ),
-                GoRoute(
+                materialRoute(
                   name: RouteConstants.lanMesh,
                   path: 'lan-mesh',
                   builder: (context, state) => LanMeshPage(key: state.pageKey),
                 ),
-                GoRoute(
+                materialRoute(
                   name: RouteConstants.personalDrives,
                   path: 'personal-drives',
                   builder: (context, state) =>
                       PersonalDrivesPage(key: state.pageKey),
                   routes: [
-                    GoRoute(
+                    materialRoute(
                       name: RouteConstants.driveConnect,
                       path: 'drive-connect/:code',
                       builder: (context, state) {
@@ -418,7 +401,7 @@ final appRouter = GoRouter(
                         );
                       },
                     ),
-                    GoRoute(
+                    materialRoute(
                       name: RouteConstants.webdavSetup,
                       path: 'webdav-setup',
                       builder: (context, state) =>
@@ -501,7 +484,9 @@ final appRouter = GoRouter(
                 future: collectionFuture,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    return const Center(child: YarnBallLoading());
+                    return const Scaffold(
+                      body: Center(child: YarnBallLoading()),
+                    );
                   }
                   return build(snapshot.data);
                 },

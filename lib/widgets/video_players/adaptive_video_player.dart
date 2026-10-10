@@ -11,6 +11,7 @@ class AdaptiveVideoPlayer extends StatelessWidget {
   final BorderRadius? borderRadius;
   final bool mute;
   final bool loop;
+  final bool autoPlay;
 
   const AdaptiveVideoPlayer({
     super.key,
@@ -21,6 +22,7 @@ class AdaptiveVideoPlayer extends StatelessWidget {
     this.borderRadius,
     this.mute = true,
     this.loop = true,
+    this.autoPlay = true,
   });
 
   bool get _useMediaKit {
@@ -42,6 +44,7 @@ class AdaptiveVideoPlayer extends StatelessWidget {
         borderRadius: borderRadius,
         mute: mute,
         loop: loop,
+        autoPlay: autoPlay,
       );
     }
 
@@ -53,6 +56,7 @@ class AdaptiveVideoPlayer extends StatelessWidget {
       borderRadius: borderRadius,
       mute: mute,
       loop: loop,
+      autoPlay: autoPlay,
     );
   }
 }

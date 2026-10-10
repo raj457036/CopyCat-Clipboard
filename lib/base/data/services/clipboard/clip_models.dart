@@ -62,11 +62,11 @@ class ClipItem {
     switch (type) {
       case ClipItemType.text:
         final t = text?.trim();
-        if (t == null || t.isEmpty) return null;
+        if (t == null || t.isEmpty) return contentDigest;
         return sha256.convert(utf8.encode(t)).toString();
       case ClipItemType.url:
         final u = uri?.toString().trim();
-        if (u == null || u.isEmpty) return null;
+        if (u == null || u.isEmpty) return contentDigest;
         return sha256.convert(utf8.encode(u)).toString();
       case ClipItemType.file:
       case ClipItemType.media:

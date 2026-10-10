@@ -204,6 +204,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app__ack__copied => 'Copied';
 
   @override
+  String app__ack__copied_from_device({required String device}) {
+    return 'Copied from $device';
+  }
+
+  @override
+  String app__ack__received_from_device({required String device}) {
+    return 'Received from $device';
+  }
+
+  @override
+  String get app__ack__excluded => 'Excluded';
+
+  @override
+  String app__ack__excluded_with_reason({required String reason}) {
+    return 'Excluded • $reason';
+  }
+
+  @override
+  String get app__ack__reason_phone => 'Phone';
+
+  @override
+  String get app__ack__reason_email => 'Email';
+
+  @override
+  String get app__ack__reason_credit_card => 'Credit Card';
+
+  @override
+  String get app__ack__reason_sensitive_url => 'Sensitive URL';
+
+  @override
+  String get app__ack__reason_app => 'Sensitive App';
+
+  @override
+  String get app__ack__reason_pattern => 'Pattern';
+
+  @override
+  String get app__ack__reason_title => 'Sensitive Window';
+
+  @override
   String get app__ack__pasted => 'Pasted';
 
   @override
@@ -302,6 +341,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dialog__button__e2e_import_key => 'Import';
+
+  @override
+  String get dialog__button__e2e_clear_key => 'Clear Key';
+
+  @override
+  String get dialog__title__e2e_clear_key => 'Clear Encryption Key';
+
+  @override
+  String get dialog__text__e2e_clear_key__confirm =>
+      'Are you sure you want to remove the encryption key from this device? You will not be able to decrypt encrypted clips until you import the key again.';
 
   @override
   String get dialog__text__inconsistent_time__title => 'Time Sync Warning';
@@ -821,6 +870,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get preview__card__video__play => 'Play Video';
+
+  @override
+  String get preview__card__video__mute => 'Mute';
+
+  @override
+  String get preview__card__video__unmute => 'Unmute';
+
+  @override
+  String get preview__card__video__close => 'Close player';
 
   @override
   String get preview__card__file__open => 'Open File';
@@ -1410,16 +1468,36 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings__text__er__pass_manager => 'Password Managers';
 
   @override
+  String get settings__text__er__pass_manager__subtitle =>
+      'Exclude captures from password manager apps';
+
+  @override
   String get settings__text__er__cc => 'Credit Card Number';
+
+  @override
+  String get settings__text__er__cc__subtitle =>
+      'Exclude detected credit card numbers';
 
   @override
   String get settings__text__er__phone => 'Phone number';
 
   @override
+  String get settings__text__er__phone__subtitle =>
+      'Exclude detected phone numbers';
+
+  @override
   String get settings__text__er__email => 'Email Address';
 
   @override
+  String get settings__text__er__email__subtitle =>
+      'Exclude detected email addresses';
+
+  @override
   String get settings__text__er__url => 'Sensitive Url';
+
+  @override
+  String get settings__text__er__url__subtitle =>
+      'Exclude captures containing sensitive URLs';
 
   @override
   String get settings__text__decrypted__note =>
@@ -1520,6 +1598,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings__clipboard_feedback__disabled => 'Disabled';
+
+  @override
+  String get settings__clipboard_feedback__copy_only => 'Copy Only';
+
+  @override
+  String get settings__clipboard_feedback__sync_only => 'Sync Only';
+
+  @override
+  String get settings__clipboard_feedback__copy_and_sync => 'Copy & Sync';
 
   @override
   String get settings__clipboard_feedback__toast => 'Toast';

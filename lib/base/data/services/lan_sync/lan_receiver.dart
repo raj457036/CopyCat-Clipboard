@@ -6,6 +6,8 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
+import 'package:clipboard/base/domain/model/sync/sync_outbox_entry.dart';
+import 'package:clipboard/base/domain/repositories/sync_outbox.dart';
 import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart';
 import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
@@ -13,6 +15,7 @@ import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:crypto/crypto.dart';
+import 'package:mime/mime.dart';
 
 import 'lan_clip_builder.dart';
 import 'lan_constants.dart';
@@ -25,12 +28,14 @@ class LanReceiver {
   final ClipBatchSyncService _batchSync;
   final SyncEventBus _syncEventBus;
   final LanClipBuilder _clipBuilder;
+  final SyncOutboxRepository _outboxRepo;
 
   const LanReceiver(
     this._config,
     this._batchSync,
     this._syncEventBus,
     this._clipBuilder,
+    this._outboxRepo,
   );
 
   // MARK: - Text / URL
@@ -75,7 +80,9 @@ class LanReceiver {
 
       final decrypted = item.locked ? item : await item.decrypt();
       final events = await _batchSync.syncBatch([decrypted]);
-      _syncEventBus.emit<ClipboardItem>(events.first);
+      for (final event in events) {
+        _syncEventBus.emit<ClipboardItem>(event);
+      }
       logger.d(
         () => 'LAN: processed clip from $fromDeviceId originId=$originId',
       );
@@ -98,9 +105,10 @@ class LanReceiver {
     String? fileExt,
     String? fileName,
     String? fileMimeType,
-    int? createdMs,
-    int? modifiedMs,
+    String? createdIso,
+    String? modifiedIso,
     String? osStr,
+    bool delegateUpload = false,
   }) {
     unawaited(
       _processBinaryClipAsync(
@@ -111,9 +119,10 @@ class LanReceiver {
         fileExt: fileExt,
         fileName: fileName,
         fileMimeType: fileMimeType,
-        createdMs: createdMs,
-        modifiedMs: modifiedMs,
+        createdIso: createdIso,
+        modifiedIso: modifiedIso,
         osStr: osStr,
+        delegateUpload: delegateUpload,
       ),
     );
   }
@@ -126,43 +135,57 @@ class LanReceiver {
     String? fileExt,
     String? fileName,
     String? fileMimeType,
-    int? createdMs,
-    int? modifiedMs,
+    String? createdIso,
+    String? modifiedIso,
     String? osStr,
+    bool delegateUpload = false,
   }) async {
     try {
       final now = systemTime();
-      final itemCreated = createdMs != null
-          ? DateTime.fromMillisecondsSinceEpoch(createdMs)
-          : now;
-      final itemModified = modifiedMs != null
-          ? DateTime.fromMillisecondsSinceEpoch(modifiedMs)
-          : now;
+      final itemCreated = (createdIso != null ? DateTime.tryParse(createdIso) : null) ?? now;
+      final itemModified = (modifiedIso != null ? DateTime.tryParse(modifiedIso) : null) ?? now;
       final itemOs = LanClipBuilder.parseOS(osStr) ?? PlatformOS.android;
-      final actualType =
-          (fileMimeType?.startsWith('image/') == true &&
-              type == ClipItemType.file)
-          ? ClipItemType.media
-          : type;
-      final extFromPath = p.extension(file.path).replaceFirst('.', '');
-      final ext = (fileExt?.isNotEmpty == true)
-          ? fileExt!
-          : (extFromPath.isNotEmpty ? extFromPath : 'bin');
+      final extFromPath = p.extension(file.path).replaceFirst('.', '').toLowerCase();
+      final ext = (fileExt?.isNotEmpty == true && fileExt != 'bin')
+          ? fileExt!.toLowerCase()
+          : (extFromPath.isNotEmpty && extFromPath != 'bin' ? extFromPath : 'bin');
       final name = (fileName?.isNotEmpty == true)
           ? fileName!
           : p.basename(file.path);
       final fileSize = await file.length();
 
+      var resolvedMime = (fileMimeType != null &&
+              fileMimeType.isNotEmpty &&
+              fileMimeType != '*/*' &&
+              fileMimeType != 'application/octet-stream')
+          ? fileMimeType
+          : lookupMimeType(file.path);
+
+      var cleanExt = ext;
+      if (cleanExt == 'bin' && resolvedMime != null) {
+        final fromMime = extensionFromMime(resolvedMime);
+        if (fromMime != null && fromMime.isNotEmpty) {
+          cleanExt = fromMime == 'jpeg' ? 'jpg' : fromMime;
+        }
+      }
+
+      final actualType = ((resolvedMime?.startsWith('image/') == true ||
+                  resolvedMime?.startsWith('video/') == true) &&
+              type == ClipItemType.file)
+          ? ClipItemType.media
+          : type;
+
+      final itemDeviceId = fromDeviceId.isNotEmpty ? fromDeviceId : null;
       final userId = _config.userId.isNotEmpty ? _config.userId : kLocalUserId;
       final item = ClipboardItem(
         userId: userId,
-        deviceId: fromDeviceId.isNotEmpty ? fromDeviceId : null,
+        deviceId: itemDeviceId,
         type: actualType,
         localPath: file.path,
         fileName: name,
         title: name,
-        fileExtension: ext,
-        fileMimeType: fileMimeType,
+        fileExtension: cleanExt,
+        fileMimeType: resolvedMime,
         fileSize: fileSize,
         created: itemCreated,
         modified: itemModified,
@@ -171,8 +194,25 @@ class LanReceiver {
       );
 
       final events = await _batchSync.syncBatch([item]);
-      if (events.isNotEmpty) {
-        _syncEventBus.emit<ClipboardItem>(events.first);
+      for (final event in events) {
+        _syncEventBus.emit<ClipboardItem>(event);
+      }
+      if (delegateUpload && events.isNotEmpty) {
+        final savedItem = events.first.$2;
+        if (savedItem.id != null && savedItem.needsFileUpload) {
+          await _outboxRepo.enqueue(
+            SyncOutboxEntry(
+              entityType: SyncEntityType.clip,
+              localId: savedItem.id!,
+              action: SyncOutboxAction.create,
+              createdAt: systemTime(),
+            ),
+          );
+          logger.i(
+            () =>
+                'LAN: enqueued delegated cloud upload for clip ${savedItem.id} (originId=$originId)',
+          );
+        }
       }
       logger.d(
         () =>
@@ -205,19 +245,30 @@ class LanReceiver {
           request.headers.value('x-cc-type') ?? '',
         ) ??
         ClipItemType.file;
-    final actualType =
-        (fileMimeType?.startsWith('image/') == true &&
+    final rawExt = (fileExt?.trim().isNotEmpty == true)
+        ? fileExt!.trim()
+        : '';
+    final cleanExt = rawExt.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
+    final resolvedMime = (fileMimeType != null &&
+            fileMimeType.isNotEmpty &&
+            fileMimeType != '*/*' &&
+            fileMimeType != 'application/octet-stream')
+        ? fileMimeType
+        : (cleanExt.isNotEmpty && cleanExt != 'bin'
+            ? lookupMimeType('dummy.$cleanExt')
+            : null);
+    final actualType = ((resolvedMime?.startsWith('image/') == true ||
+                resolvedMime?.startsWith('video/') == true) &&
             clipType == ClipItemType.file)
         ? ClipItemType.media
         : clipType;
     final rootDir = actualType == ClipItemType.media ? 'medias' : 'files';
-    // Sanitize to prevent path traversal: strip non-alphanumeric chars from
-    // the extension and originId before composing file-system paths.
-    final rawExt = (fileExt?.trim().isNotEmpty == true)
-        ? fileExt!.trim()
-        : 'bin';
-    final cleanExt = rawExt.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
-    final ext = cleanExt.isEmpty ? 'bin' : cleanExt;
+    final mimeExt = (resolvedMime != null && resolvedMime.startsWith('image/'))
+        ? resolvedMime.split('/').last.split(';').first.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '')
+        : '';
+    final ext = (cleanExt.isNotEmpty && cleanExt != 'bin')
+        ? cleanExt
+        : (mimeExt.isNotEmpty ? (mimeExt == 'jpeg' ? 'jpg' : mimeExt) : 'bin');
     final safeOriginId = originId.replaceAll(RegExp(r'[^a-zA-Z0-9-]'), '_');
     final name = (fileName?.trim().isNotEmpty == true)
         ? p.basename(fileName!.trim())

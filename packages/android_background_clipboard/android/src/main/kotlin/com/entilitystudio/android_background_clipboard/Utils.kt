@@ -22,9 +22,7 @@ import androidx.core.app.ActivityCompat
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 
 inline fun debugLog(tag: String, message: () -> String) {
-    if (Log.isLoggable(tag, Log.DEBUG)) {
-        Log.d(tag, message())
-    }
+    Log.d(tag, message())
 }
 
 private const val ORIGIN_ID_LENGTH = 11

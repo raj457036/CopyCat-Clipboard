@@ -23,6 +23,7 @@ class AuthCubit extends Cubit<AuthState> {
   StreamSubscription<AuthSessionChange>? _authStateChangesSubscription;
   bool _isAuthCheckInProgress = false;
   bool _isRefreshInProgress = false;
+  bool _initialAuthCheckDone = false;
 
   AuthCubit(this.repo, this.localCache, this.appConfigCubit)
     : super(const AuthState.unknown()) {
@@ -76,13 +77,19 @@ class AuthCubit extends Cubit<AuthState> {
 
       final hasCachedSession = currentUser != null || accessToken != null;
       if (hasCachedSession) {
+        logger.w(
+          "Partial session found (user: ${currentUser != null}, "
+          "token: ${accessToken != null}). Attempting refresh.",
+        );
         unawaited(_refreshSessionInBackground());
         return false;
       }
 
+      logger.w("No session found at startup — user is unauthenticated.");
       unauthenticated(authFailure);
       return false;
     } finally {
+      _initialAuthCheckDone = true;
       _isAuthCheckInProgress = false;
     }
   }
@@ -180,14 +187,6 @@ class AuthCubit extends Cubit<AuthState> {
       await result.fold(
         (failure) async {
           logger.w("Session refresh failed: ${failure.message}");
-
-          final hasSession =
-              repo.currentUser != null && repo.accessToken != null;
-          if (!hasSession &&
-              state is! AuthenticatedAuthState &&
-              state is! LocalAuthenticatedAuthState) {
-            unauthenticated(failure);
-          }
         },
         (_) async {
           final refreshedUser = repo.currentUser;
@@ -198,16 +197,13 @@ class AuthCubit extends Cubit<AuthState> {
             return;
           }
 
-          if (state is! AuthenticatedAuthState &&
-              state is! LocalAuthenticatedAuthState) {
-            unauthenticated(authFailure);
-          }
+          logger.w("Session refresh succeeded but session is empty.");
         },
       );
     } on TimeoutException {
-      logger.w("Session refresh timed out while bootstrapping auth state.");
+      logger.w("Session refresh timed out.");
     } catch (e) {
-      logger.w("Session refresh threw while bootstrapping auth state. $e");
+      logger.w("Session refresh threw: $e");
     } finally {
       _isRefreshInProgress = false;
     }
@@ -245,8 +241,14 @@ class AuthCubit extends Cubit<AuthState> {
 
     if (event != AuthSessionChange.signedOut) return;
 
+    if (!_initialAuthCheckDone) {
+      logger.w("Ignoring early signedOut event before initial auth check.");
+      return;
+    }
+
+    logger.w("Supabase signedOut event received — logging out.");
     if (state is! UnauthenticatedAuthState) {
-      unauthenticated(authFailure);
+      emit(const AuthState.unauthenticated());
     }
   }
 
@@ -254,7 +256,9 @@ class AuthCubit extends Cubit<AuthState> {
     emit(const AuthState.authenticating());
     localCache.set(klocalAuthKey, false);
     await repo.logout();
-    emit(const AuthState.unauthenticated());
+    if (state is! UnauthenticatedAuthState) {
+      emit(const AuthState.unauthenticated());
+    }
   }
 
   @override

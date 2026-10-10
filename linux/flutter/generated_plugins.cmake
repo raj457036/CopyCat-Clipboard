@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   clipboard_watcher
   emoji_picker_flutter
+  fc_native_video_thumbnail
   flutter_platform_alert
   flutter_secure_storage_linux
   focus_window

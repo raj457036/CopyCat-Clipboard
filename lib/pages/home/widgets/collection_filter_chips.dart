@@ -1,13 +1,11 @@
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
-import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/constants/strings/route_constants.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clip_collection/clipcollection.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/subscription_actions.dart';
-import 'package:clipboard/widgets/subscription/subscription_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -34,94 +32,89 @@ class CollectionFilterChips extends StatelessWidget {
           builder: (context, clipboardState) {
             final activeId = clipboardState.filterState.collectionId;
             final colorScheme = context.colors;
+            final dense = context.isMobile;
 
-            return SubscriptionBuilder(
-              builder: (context, subscription) {
-                final limit =
-                    subscription?.collections ?? defaultCollectionCount;
-                final canCreate = limit > collections.length;
-                final dense = context.isMobile;
-                final itemLength = dense
-                    ? collections.length + 1
-                    : collections.length;
+            final itemLength = dense
+                ? collections.length + 1
+                : collections.length;
 
-                final row = Row(
-                  spacing: padding4,
-                  children: [
-                    if (!dense) _CreateCollectionButton(canCreate: canCreate),
-                    if (!dense)
-                      const VerticalDivider(
-                        indent: padding14,
-                        endIndent: padding14,
-                      ),
-                    Expanded(
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        padding: placedInBottomNavBar
-                            ? const EdgeInsets.symmetric(
-                                horizontal: padding16,
-                                vertical: padding2,
-                              )
-                            : const EdgeInsets.symmetric(vertical: padding8),
-                        itemCount: itemLength,
-                        separatorBuilder: (_, _) => width8,
-                        itemBuilder: (context, index) {
-                          if (dense && index == 0) {
-                            return Align(
-                              alignment: Alignment.centerLeft,
-                              child: _CreateCollectionButton(
-                                canCreate: canCreate,
-                              ),
-                            );
-                          }
-                          final i = dense ? index - 1 : index;
-                          final collection = collections[i];
-                          final isReadOnly = loaded.isReadOnly(collection);
-                          return _CollectionChip(
-                            collection: collection,
-                            isSelected: activeId == collection.id,
-                            isReadOnly: isReadOnly,
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                );
-
-                final SingleChildRenderObjectWidget childWithPadding;
-                if (placedInBottomNavBar) {
-                  childWithPadding = DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: colorScheme.surfaceContainerLow,
-                      border: Border(
-                        top: BorderSide(color: colorScheme.outlineVariant),
-                      ),
-                    ),
-                    child: row,
-                  );
-                } else {
-                  childWithPadding = Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: padding8),
-                    child: row,
-                  );
-                }
-
-                return SizedBox(
-                  height: 50,
-                  child: ChipTheme(
-                    data: ChipThemeData(
-                      backgroundColor: colorScheme.surfaceContainerHighest,
-                      selectedColor: colorScheme.primaryContainer,
-                      disabledColor: colorScheme.surfaceContainerLow,
-                      side: BorderSide.none,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: radius4,
-                      ),
-                    ),
-                    child: childWithPadding,
+            final row = Row(
+              spacing: padding4,
+              children: [
+                if (!dense)
+                  _CreateCollectionButton(
+                    collectionCount: collections.length,
+                    allowedCollectionCount: loaded.activeLimit,
                   ),
-                );
-              },
+                if (!dense)
+                  const VerticalDivider(
+                    indent: padding14,
+                    endIndent: padding14,
+                  ),
+                Expanded(
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: placedInBottomNavBar
+                        ? const EdgeInsets.symmetric(
+                            horizontal: padding16,
+                            vertical: padding2,
+                          )
+                        : const EdgeInsets.symmetric(vertical: padding8),
+                    itemCount: itemLength,
+                    separatorBuilder: (_, _) => width8,
+                    itemBuilder: (context, index) {
+                      if (dense && index == 0) {
+                        return Align(
+                          alignment: Alignment.centerLeft,
+                          child: _CreateCollectionButton(
+                            collectionCount: collections.length,
+                            allowedCollectionCount: loaded.activeLimit,
+                          ),
+                        );
+                      }
+                      final i = dense ? index - 1 : index;
+                      final collection = collections[i];
+                      final isReadOnly = loaded.isReadOnly(collection);
+                      return _CollectionChip(
+                        collection: collection,
+                        isSelected: activeId == collection.id,
+                        isReadOnly: isReadOnly,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+
+            final SingleChildRenderObjectWidget childWithPadding;
+            if (placedInBottomNavBar) {
+              childWithPadding = DecoratedBox(
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerLow,
+                  border: Border(
+                    top: BorderSide(color: colorScheme.outlineVariant),
+                  ),
+                ),
+                child: row,
+              );
+            } else {
+              childWithPadding = Padding(
+                padding: const EdgeInsets.symmetric(horizontal: padding8),
+                child: row,
+              );
+            }
+
+            return SizedBox(
+              height: 50,
+              child: ChipTheme(
+                data: ChipThemeData(
+                  backgroundColor: colorScheme.surfaceContainerHighest,
+                  selectedColor: colorScheme.primaryContainer,
+                  disabledColor: colorScheme.outlineVariant,
+                  side: BorderSide.none,
+                ),
+                child: childWithPadding,
+              ),
             );
           },
         );
@@ -131,12 +124,16 @@ class CollectionFilterChips extends StatelessWidget {
 }
 
 class _CreateCollectionButton extends StatelessWidget {
-  final bool canCreate;
+  final int collectionCount;
+  final int allowedCollectionCount;
 
-  const _CreateCollectionButton({required this.canCreate});
+  const _CreateCollectionButton({
+    required this.collectionCount,
+    required this.allowedCollectionCount,
+  });
 
   void _onCreate(BuildContext context) {
-    if (!canCreate) {
+    if (collectionCount >= allowedCollectionCount) {
       showUpgradePlanDialog();
       return;
     }
@@ -148,12 +145,14 @@ class _CreateCollectionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final canCreate = allowedCollectionCount > collectionCount;
+
     return Badge(
       label: Text(context.locale.badges__label__pro),
       alignment: Alignment.topLeft,
       isLabelVisible: !canCreate,
       child: TextButton.icon(
-        icon: const Icon(Icons.add_rounded),
+        icon: const Icon(Icons.create_new_folder_rounded),
         onPressed: () => _onCreate(context),
         style: TextButton.styleFrom(
           foregroundColor: context.colors.onSecondaryContainer,
@@ -187,9 +186,15 @@ class _CollectionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final collectionColor = collection.collectionColor ?? colors.outline;
+    final labelStyle = context.textTheme.labelLarge?.copyWith(
+      color: colors.onSurface,
+    );
     return TooltipTheme(
       data: const TooltipThemeData(constraints: BoxConstraints(maxWidth: 200)),
       child: ChoiceChip(
+        pressElevation: 1,
         avatar: isReadOnly
             ? const Icon(Icons.lock_outline_rounded, size: 16)
             : Text(collection.emoji),
@@ -197,11 +202,19 @@ class _CollectionChip extends StatelessWidget {
         selected: isSelected,
         tooltip: collection.description,
         onSelected: (selected) => _onSelected(context, selected),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         shape: isSelected
             ? const StadiumBorder()
             : const RoundedRectangleBorder(borderRadius: radius8),
         showCheckmark: false,
+        backgroundColor: collectionColor.withValues(alpha: 0.15),
+        selectedColor: collectionColor.withValues(alpha: 0.3),
+        side: BorderSide(
+          color: collectionColor.withValues(alpha: 0.4),
+          width: .7,
+        ),
         mouseCursor: SystemMouseCursors.click,
+        labelStyle: labelStyle,
       ),
     );
   }

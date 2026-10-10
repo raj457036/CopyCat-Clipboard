@@ -42,39 +42,37 @@ class _LockScreen extends StatelessWidget {
 
     return Material(
       color: theme.colorScheme.surface,
-      child: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.lock_rounded,
-                size: 72,
-                color: theme.colorScheme.primary,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.lock_rounded,
+              size: 72,
+              color: theme.colorScheme.primary,
+            ),
+            height24,
+            Text(
+              context.locale.app__name,
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
               ),
-              height24,
-              Text(
-                context.locale.app__name,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+            ),
+            height8,
+            Text(
+              context.locale.app_lock__screen__locked,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
               ),
-              height8,
-              Text(
-                context.locale.app_lock__screen__locked,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-              height32,
-              FilledButton.icon(
-                onPressed: () => context.read<AppLockCubit>().unlock(),
-                icon: const Icon(Icons.fingerprint),
-                label: Text(context.locale.app_lock__screen__unlock),
-                autofocus: false,
-              ),
-            ],
-          ),
+            ),
+            height32,
+            FilledButton.icon(
+              onPressed: () => context.read<AppLockCubit>().unlock(),
+              icon: const Icon(Icons.fingerprint),
+              label: Text(context.locale.app_lock__screen__unlock),
+              autofocus: false,
+            ),
+          ],
         ),
       ),
     );

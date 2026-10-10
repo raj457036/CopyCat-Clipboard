@@ -24,11 +24,13 @@ class ClipCardBodyContent extends StatelessWidget {
   /// loading other interactives.
   final bool liteMode;
   final bool dragAndDropEnabled;
+  final Color? accentColor;
 
   const ClipCardBodyContent({
     super.key,
     this.liteMode = false,
     this.dragAndDropEnabled = false,
+    this.accentColor,
   });
 
   @override
@@ -43,6 +45,7 @@ class ClipCardBodyContent extends StatelessWidget {
     final selected = context.select(
       (SelectedClipsCubit cubit) => cubit.isSelected(item),
     );
+
     final child = Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -57,6 +60,16 @@ class ClipCardBodyContent extends StatelessWidget {
                 height: padding44,
                 child: ClipCardOptionsHeader(),
               ),
+              if (item.hasCollection)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  height: 4,
+                  child: Center(
+                    child: _CollectionAccentBar(color: accentColor),
+                  ),
+                ),
             ],
           ),
         ),
@@ -78,6 +91,21 @@ class _SyncStatusFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     final item = ClipItemScope.of(context);
     return DisableForLocalUser(child: ClipSyncStatusFooter(item: item));
+  }
+}
+
+class _CollectionAccentBar extends StatelessWidget {
+  final Color? color;
+
+  const _CollectionAccentBar({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final color_ = color ?? context.colors.primary;
+    return DecoratedBox(
+      decoration: BoxDecoration(color: color_, borderRadius: radius8),
+      child: const SizedBox(height: 4, width: 100),
+    );
   }
 }
 
@@ -152,6 +180,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final accentColor = ClipItemScope.collectionColorOf(context);
     final menuOpen = Menu.maybeIsOpenOf(context) ?? false;
     final highlighted = focused || menuOpen;
     final selectedShape = RoundedRectangleBorder(
@@ -159,16 +188,21 @@ class _ClipCardBodyState extends State<ClipCardBody> {
         color: widget.selected
             ? colors.secondary
             : highlighted
-            ? colors.primary
+            ? (accentColor ?? colors.primary)
             : colors.outlineVariant,
         width: highlighted ? gridItemBorderWidth * 2 : gridItemBorderWidth,
         strokeAlign: BorderSide.strokeAlignInside,
       ),
       borderRadius: radius12,
     );
+
     final content = HoverScopeProvider(
-      child: ClipCardBodyContent(dragAndDropEnabled: widget.dragAndDropEnabled),
+      child: ClipCardBodyContent(
+        dragAndDropEnabled: widget.dragAndDropEnabled,
+        accentColor: accentColor,
+      ),
     );
+
     final bgColor = widget.item.locked
         ? colors.primaryContainer
         : colors.surfaceContainerLowest;
@@ -185,7 +219,7 @@ class _ClipCardBodyState extends State<ClipCardBody> {
       onShiftC: (context) => onShiftC(context, widget.item),
       child: Card(
         color: bgColor,
-        elevation: highlighted ? 3 : 0,
+        elevation: highlighted ? 2 : 0,
         shape: selectedShape,
         clipBehavior: Clip.hardEdge,
         child: InkWell(

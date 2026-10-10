@@ -15,6 +15,11 @@ class WebDavSetupLoading extends WebDavSetupState {
 class WebDavSetupConfigured extends WebDavSetupState {
   final WebDavConfig config;
   const WebDavSetupConfigured({required this.config});
+
+  @override
+  String toString() {
+    return "WebDavSetupConfigured(config: $config)";
+  }
 }
 
 class WebDavSetupDisconnected extends WebDavSetupState {
@@ -25,4 +30,9 @@ class WebDavSetupError extends WebDavSetupState {
   final Failure failure;
   final WebDavConfig? config;
   const WebDavSetupError({required this.failure, this.config});
+
+  @override
+  String toString() {
+    return "WebDavSetupError(failure: $failure, config: $config)";
+  }
 }

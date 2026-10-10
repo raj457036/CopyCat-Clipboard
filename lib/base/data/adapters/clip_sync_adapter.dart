@@ -9,6 +9,7 @@ import 'package:clipboard/base/domain/repositories/sync_clipboard.dart';
 import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart';
 import 'package:clipboard/base/domain/services/conflict_resolver.dart';
 import 'package:clipboard/base/domain/services/sync_adapter.dart';
+import 'package:clipboard/base/data/services/post_sync_decryption_service.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/paginated_results.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -24,6 +25,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   final ClipBatchSyncService _batchSyncService;
   final ClipCrossSyncListener _realtimeListener;
   final FileCloudService _fileCloudService;
+  final String deviceId;
 
   /// Direct local source access for write-back operations that must NOT
   /// trigger outbox re-enqueue (e.g., saving serverId after remote creation).
@@ -37,6 +39,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     this._realtimeListener,
     this._fileCloudService,
     @Named("local") this._localSource,
+    @Named("device_id") this.deviceId,
   );
 
   @override
@@ -87,7 +90,8 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     required ConflictResolver<ClipboardItem> conflictResolver,
   }) async {
     await _batchSyncService.waitUntilReady();
-    final events = await _batchSyncService.syncBatch(items);
+    final decrypted = await PostSyncDecryptionService.decryptBatch(items);
+    final events = await _batchSyncService.syncBatch(decrypted);
     return events;
   }
 
@@ -140,7 +144,8 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
             () =>
                 'File upload SUCCESS. driveFileId=${uploadedItem.driveFileId}',
           );
-          item = uploadedItem;
+          // Device id is for the device which last modifies the clip.
+          item = uploadedItem.copyWith(deviceId: deviceId);
           return await _createOrUpdateRemote(item);
         },
       );

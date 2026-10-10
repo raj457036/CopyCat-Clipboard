@@ -35,4 +35,11 @@ class UserDevicesState {
       accessStatus: accessStatus ?? this.accessStatus,
     );
   }
+
+  @override
+  String toString() {
+    return 'UserDevicesState{isLoading: $isLoading, isRegistering: '
+        '$isRegistering, deviceList: $deviceList, failure: $failure, '
+        'accessStatus: $accessStatus}';
+  }
 }

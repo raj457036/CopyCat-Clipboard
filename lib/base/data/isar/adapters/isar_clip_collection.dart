@@ -19,6 +19,7 @@ class IsarClipCollection {
   late String title;
   String? description;
   late String emoji;
+  int? color;
 
   @Index(type: IndexType.value, caseSensitive: false)
   List<String> get titleWords => Isar.splitWords(title);
@@ -38,6 +39,7 @@ class IsarClipCollection {
     title: title,
     description: description,
     emoji: emoji,
+    color: color,
   );
 
   static IsarClipCollection fromDomain(ClipCollection collection) =>
@@ -52,5 +54,6 @@ class IsarClipCollection {
         ..deviceId = collection.deviceId
         ..title = collection.title
         ..description = collection.description
-        ..emoji = collection.emoji;
+        ..emoji = collection.emoji
+        ..color = collection.color;
 }

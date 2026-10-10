@@ -13,6 +13,7 @@ import "package:universal_io/io.dart";
 import 'package:uuid/uuid.dart';
 import 'package:uuid/v4.dart';
 import 'package:image_size_getter/image_size_getter.dart';
+import 'package:flutter/services.dart' show MethodChannel, PlatformException;
 import 'package:image_size_getter/file_input.dart';
 
 String formatDuration(Duration duration) {
@@ -286,3 +287,29 @@ void dud() {}
 
 bool get iapCatSupportedPlatform =>
     Platform.isIOS || Platform.isMacOS || Platform.isAndroid;
+
+const MethodChannel _fileUriChannel = MethodChannel(
+  'com.entilitystudio.CopyCat/drag_file_uri',
+);
+
+Future<Uri> resolveFileUri(String path) async {
+  if (!Platform.isAndroid) {
+    return Uri.file(path, windows: Platform.isWindows);
+  }
+
+  try {
+    final String? uriString = await _fileUriChannel.invokeMethod<String>(
+      'getContentUriForPath',
+      <String, dynamic>{'path': path},
+    );
+    if (uriString != null && uriString.trim().isNotEmpty) {
+      return Uri.parse(uriString.trim());
+    }
+  } on PlatformException catch (e) {
+    logger.w(() => "PlatformException resolving content URI for $path: $e");
+  } catch (e) {
+    logger.w(() => "Error resolving content URI for $path: $e");
+  }
+
+  return Uri.file(path);
+}

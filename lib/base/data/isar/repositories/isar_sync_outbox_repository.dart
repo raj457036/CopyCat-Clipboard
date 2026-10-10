@@ -32,6 +32,7 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
   final Map<int, String> _idToEntityLocalKey = {};
 
   bool _initialized = false;
+  bool _isFlushing = false;
 
   String _key(String entityType, int localId) => '$entityType:$localId';
 
@@ -73,55 +74,67 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
 
   Future<void> _flushCollector() async {
     if (_collector.isEmpty) return;
+    if (_isFlushing) {
+      _collectorDebouncer(_flushCollector);
+      return;
+    }
+    _isFlushing = true;
 
-    _logger.d(
-      () => 'Flushing collector with ${_collector.length} entries to Isar',
-    );
-    final entriesToAdd = _collapseEntries(_collector);
-    _collector.clear();
+    try {
+      _logger.d(
+        () => 'Flushing collector with ${_collector.length} entries to Isar',
+      );
+      final entriesToAdd = _collapseEntries(_collector);
+      _collector.clear();
 
-    var persistedCount = 0;
+      var persistedCount = 0;
 
-    await _db.writeTxn(() async {
-      for (final incoming in entriesToAdd) {
-        final existing = await _collection
-            .filter()
-            .entityTypeEqualTo(incoming.entityType)
-            .and()
-            .localIdEqualTo(incoming.localId)
-            .findAll();
+      await _db.writeTxn(() async {
+        for (final incoming in entriesToAdd) {
+          final existing = await _collection
+              .filter()
+              .entityTypeEqualTo(incoming.entityType)
+              .and()
+              .localIdEqualTo(incoming.localId)
+              .findAll();
 
-        SyncOutboxEntry? merged = incoming;
-        for (final old in existing) {
-          if (merged == null) break;
-          merged = _mergeEntries(old.toDomain(), merged);
-          _idToEntityLocalKey.remove(old.id);
+          SyncOutboxEntry? merged = incoming;
+          for (final old in existing) {
+            if (merged == null) break;
+            merged = _mergeEntries(old.toDomain(), merged);
+            _idToEntityLocalKey.remove(old.id);
+          }
+
+          if (existing.isNotEmpty) {
+            await _collection.deleteAll(existing.map((e) => e.id).toList());
+          }
+
+          if (merged == null) {
+            _pendingEntityLocalIds.remove(
+              _key(incoming.entityType, incoming.localId),
+            );
+            continue;
+          }
+
+          final isarEntry = IsarSyncOutboxEntry.fromDomain(merged);
+          final id = await _collection.put(isarEntry);
+          final key = _key(merged.entityType, merged.localId);
+          _idToEntityLocalKey[id] = key;
+          _pendingEntityLocalIds.add(key);
+          persistedCount++;
         }
+      });
 
-        if (existing.isNotEmpty) {
-          await _collection.deleteAll(existing.map((e) => e.id).toList());
-        }
-
-        if (merged == null) {
-          _pendingEntityLocalIds.remove(
-            _key(incoming.entityType, incoming.localId),
-          );
-          continue;
-        }
-
-        final isarEntry = IsarSyncOutboxEntry.fromDomain(merged);
-        final id = await _collection.put(isarEntry);
-        final key = _key(merged.entityType, merged.localId);
-        _idToEntityLocalKey[id] = key;
-        _pendingEntityLocalIds.add(key);
-        persistedCount++;
+      _logger.d(() => 'Flushed $persistedCount entries to Isar');
+      if (persistedCount > 0) {
+        _logger.d(() => 'Enqueued. Notifying stream listeners...');
+        _newEntryController.add(null);
       }
-    });
-
-    _logger.d(() => 'Flushed $persistedCount entries to Isar');
-    if (persistedCount > 0) {
-      _logger.d(() => 'Enqueued. Notifying stream listeners...');
-      _newEntryController.add(null);
+    } finally {
+      _isFlushing = false;
+      if (_collector.isNotEmpty) {
+        _collectorDebouncer(_flushCollector);
+      }
     }
   }
 
@@ -195,7 +208,24 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
         .sortByCreatedAt()
         .limit(limit)
         .findAll();
-    return results.map((e) => e.toDomain()).toList();
+
+    final uniqueEntries = <String, SyncOutboxEntry>{};
+    final obsoleteIds = <int>[];
+
+    for (final e in results) {
+      final key = _key(e.entityType, e.localId);
+      if (uniqueEntries.containsKey(key)) {
+        obsoleteIds.add(e.id);
+      } else {
+        uniqueEntries[key] = e.toDomain();
+      }
+    }
+
+    if (obsoleteIds.isNotEmpty) {
+      unawaited(_db.writeTxn(() => _collection.deleteAll(obsoleteIds)));
+    }
+
+    return uniqueEntries.values.toList();
   }
 
   @override

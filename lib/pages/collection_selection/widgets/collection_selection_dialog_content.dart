@@ -22,11 +22,9 @@ class CollectionSelectionDialogContent extends StatelessWidget {
       ),
       body: ScaffoldBody(
         margin: const EdgeInsets.symmetric(horizontal: padding12),
-        child: SafeArea(
-          child: CollectionSelectionGrid(
-            selectedCollectionId: selectedCollectionId,
-            showCreateItem: true,
-          ),
+        child: CollectionSelectionGrid(
+          selectedCollectionId: selectedCollectionId,
+          showCreateItem: true,
         ),
       ),
     );

@@ -13,6 +13,7 @@ import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/di/di.dart';
 import 'package:clipboard/utils/common_extension.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:clipboard/widgets/dialogs/confirm_dialog.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialogs/export_e2ee.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialogs/e2ee_passcode_prompt_dialog.dart';
 import 'package:clipboard/widgets/dialogs/e2ee_dialogs/e2ee_qr_scan_action_button.dart';
@@ -214,6 +215,28 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
     });
   }
 
+  Future<void> clearEnc2Key() async {
+    final bool confirmed = await ConfirmDialog(
+      title: context.locale.dialog__title__e2e_clear_key,
+      message: context.locale.dialog__text__e2e_clear_key__confirm,
+      yes: context.locale.dialog__button__e2e_clear_key,
+      focusFor: false,
+    ).show(context);
+
+    if (!confirmed || !mounted) return;
+
+    setState(() => loading = true);
+    try {
+      EncryptionWorker.instance.dispose();
+      await appConfigCubit.toggleAutoEncrypt(false);
+      await appConfigCubit.setE2EEKey(null);
+    } finally {
+      if (mounted) {
+        setState(() => loading = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AppConfigCubit, AppConfigState>(
@@ -256,6 +279,7 @@ class _E2EESettingDialogState extends State<E2EESettingDialog> {
                 return ExportE2eeDialog(
                   exportEnc2Key: () => exportEnc2Key(context, keyId, enc2Key),
                   transferEnc2KeyViaQr: () => openQrTransfer(keyId, enc2Key),
+                  clearEnc2Key: clearEnc2Key,
                   loading: loading,
                   bottom: EncryptedClipsStat(
                     repository: sl(instanceName: "local"),

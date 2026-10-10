@@ -4,41 +4,43 @@ import 'package:clipboard/base/domain/model/exclusion_rules/exclusion_rules.dart
 import 'package:universal_io/io.dart';
 
 final sensitiveExcludedApps = [
-  // Password Managers
+  AppInfo(name: "1Password", identifier: 'com.1password.1password'),
+  AppInfo(name: "1Password 7", identifier: 'com.agilebits.onepassword'),
   AppInfo(name: "1Password", identifier: 'com.agilebits.onepassword'),
-  AppInfo(name: "LastPass", identifier: 'com.lastpass.LastPass'),
   AppInfo(name: "Bitwarden", identifier: 'com.bitwarden.desktop'),
+  AppInfo(name: "KeePassXC", identifier: 'org.keepassxc.keepassxc'),
+  AppInfo(name: "KeePass", identifier: 'KeePass'),
+  AppInfo(name: "Proton Pass", identifier: 'me.proton.pass.electron'),
+  AppInfo(name: "NordPass", identifier: 'com.nordpass.macos'),
+  AppInfo(name: "LastPass", identifier: 'com.lastpass.LastPass'),
   AppInfo(name: "Dashlane", identifier: 'com.dashlane.Dashlane'),
   AppInfo(name: "Keeper", identifier: 'com.callpod.Keeper'),
-  AppInfo(name: "System Settings", identifier: "com.apple.systempreferences"),
-  AppInfo(name: "Passwords", identifier: "com.apple.Passwords"),
-
-  // Common across platforms
+  AppInfo(name: "Enpass", identifier: 'in.sinew.Enpass-Desktop'),
+  AppInfo(name: "RoboForm", identifier: 'com.siber.RoboForm'),
+  AppInfo(name: "Authy", identifier: 'com.authy.authy-mac'),
   AppInfo(name: "PayPal", identifier: 'com.paypal.desktop'),
 
-  // Linux-only (Password Managers)
-  if (Platform.isLinux) ...[
-    AppInfo(name: "KeePassXC", identifier: 'org.keepassxc.KeePassXC'),
-    // Terminal-based apps that may handle sensitive info (Linux/Unix)
-    AppInfo(name: "Gnome Keyring", identifier: 'org.gnome.keyring'),
-    AppInfo(
-      name: "KWallet",
-      identifier: 'org.kde.kwalletd5',
-    ), // KDE's password manager]
+  if (Platform.isMacOS) ...[
+    AppInfo(name: "Passwords", identifier: "com.apple.Passwords"),
+    AppInfo(name: "Keychain Access", identifier: 'com.apple.KeychainAccess'),
+    AppInfo(name: "System Settings", identifier: "com.apple.SystemSettings"),
+    AppInfo(name: "System Preferences", identifier: "com.apple.systempreferences"),
+    AppInfo(name: "Strongbox", identifier: "com.strongbox.mac"),
+    AppInfo(name: "MacPass", identifier: "com.hicknhacksoftware.MacPass"),
   ],
 
-  // System Applications Handling Sensitive Data (macOS, Windows)
-  if (Platform.isMacOS)
-    AppInfo(
-      name: "Keychain Access",
-      identifier: 'com.apple.KeychainAccess',
-    ), // macOS keychain
-
-  if (Platform.isWindows)
+  if (Platform.isWindows) ...[
     AppInfo(
       name: "Credential Manager",
       identifier: 'com.microsoft.windows.credentials',
-    ), // Windows Credential Manager
+    ),
+  ],
+
+  if (Platform.isLinux) ...[
+    AppInfo(name: "KeePassXC", identifier: 'org.keepassxc.KeePassXC'),
+    AppInfo(name: "Gnome Keyring", identifier: 'org.gnome.keyring'),
+    AppInfo(name: "KWallet", identifier: 'org.kde.kwalletd5'),
+  ],
 ];
 
 const sensitiveTitlesKeywords = [
@@ -59,16 +61,20 @@ const sensitiveTitlesKeywords = [
   "verify",
   "authentication",
   "authorization",
-  "account",
-  "profile",
-  "forgot",
-  "recover",
-  "reset",
+  "account settings",
+  "account security",
+  "user profile",
+  "forgot password",
+  "password reset",
+  "account recovery",
   "change password",
   "update password",
-  "PIN",
+  "pin code",
+  "security pin",
+  "enter pin",
   "OTP",
   "2FA",
+  "MFA",
   "checkout",
   "payment",
   "transaction",
@@ -85,10 +91,9 @@ const sensitiveTitlesKeywords = [
   "secure message",
   "security question",
   "encrypted",
-  "apply",
-  "submit",
   "billing",
 ];
+
 const sensitiveUrlKeywords = [
   "login",
   "auth",
@@ -107,21 +112,20 @@ const sensitiveUrlKeywords = [
   "keeper",
   "create-account",
   "new-account",
-  "join",
   "reset-password",
   "forgot-password",
   "change-password",
   "update-password",
   "password-recovery",
   "password-reset",
-  "reset-password",
   "checkout",
   "payment",
   "billing",
   "transaction",
-  "pay",
+  "paypal",
+  "apple-pay",
+  "google-pay",
   "purchase",
-  "order",
   "bank",
   "transfer",
   "wallet",
@@ -135,15 +139,22 @@ const sensitiveUrlKeywords = [
   "confidential",
   "private",
   "ssn",
-  "pin",
+  "pin-code",
+  "security-pin",
   "otp",
   "security-question",
-  "profile",
-  "account",
-  "settings",
-  "manage",
-  "preferences",
+  "account-settings",
+  "account-security",
+  "security-settings",
   "netbanking",
   "securepayment",
   "paymentgateway",
+  "token=",
+  "access_token=",
+  "refresh_token=",
+  "id_token=",
+  "api_key=",
+  "apikey=",
+  "auth_token=",
+  "secret=",
 ];

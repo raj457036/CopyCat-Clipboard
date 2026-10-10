@@ -204,6 +204,45 @@ class AppLocalizationsPt extends AppLocalizations {
   String get app__ack__copied => 'Copiado';
 
   @override
+  String app__ack__copied_from_device({required String device}) {
+    return 'Copiado de $device';
+  }
+
+  @override
+  String app__ack__received_from_device({required String device}) {
+    return 'Recebido de $device';
+  }
+
+  @override
+  String get app__ack__excluded => 'Excluído';
+
+  @override
+  String app__ack__excluded_with_reason({required String reason}) {
+    return 'Excluído • $reason';
+  }
+
+  @override
+  String get app__ack__reason_phone => 'Telefone';
+
+  @override
+  String get app__ack__reason_email => 'E-mail';
+
+  @override
+  String get app__ack__reason_credit_card => 'Cartão de crédito';
+
+  @override
+  String get app__ack__reason_sensitive_url => 'URL confidencial';
+
+  @override
+  String get app__ack__reason_app => 'Aplicativo confidencial';
+
+  @override
+  String get app__ack__reason_pattern => 'Padrão';
+
+  @override
+  String get app__ack__reason_title => 'Janela confidencial';
+
+  @override
   String get app__ack__pasted => 'Colado';
 
   @override
@@ -303,6 +342,16 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get dialog__button__e2e_import_key => 'Importar';
+
+  @override
+  String get dialog__button__e2e_clear_key => 'Limpar chave';
+
+  @override
+  String get dialog__title__e2e_clear_key => 'Limpar chave de criptografia';
+
+  @override
+  String get dialog__text__e2e_clear_key__confirm =>
+      'Tem certeza de que deseja remover a chave de criptografia deste dispositivo? Você não poderá descriptografar clipes criptografados até importar a chave novamente.';
 
   @override
   String get dialog__text__inconsistent_time__title =>
@@ -828,6 +877,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get preview__card__video__play => 'Reproduzir Vídeo';
+
+  @override
+  String get preview__card__video__mute => 'Silenciar';
+
+  @override
+  String get preview__card__video__unmute => 'Ativar som';
+
+  @override
+  String get preview__card__video__close => 'Fechar reprodutor';
 
   @override
   String get preview__card__file__open => 'Abrir Arquivo';
@@ -1424,16 +1482,36 @@ class AppLocalizationsPt extends AppLocalizations {
   String get settings__text__er__pass_manager => 'Gerenciadores de Senha';
 
   @override
+  String get settings__text__er__pass_manager__subtitle =>
+      'Excluir capturas de gerenciadores de senhas';
+
+  @override
   String get settings__text__er__cc => 'Número do Cartão de Crédito';
+
+  @override
+  String get settings__text__er__cc__subtitle =>
+      'Excluir números de cartão detectados';
 
   @override
   String get settings__text__er__phone => 'Número de Telefone';
 
   @override
+  String get settings__text__er__phone__subtitle =>
+      'Excluir números de telefone detectados';
+
+  @override
   String get settings__text__er__email => 'Endereço de E-mail';
 
   @override
+  String get settings__text__er__email__subtitle =>
+      'Excluir endereços de e-mail detectados';
+
+  @override
   String get settings__text__er__url => 'Url Sensível';
+
+  @override
+  String get settings__text__er__url__subtitle =>
+      'Excluir capturas com URLs sensíveis';
 
   @override
   String get settings__text__decrypted__note =>
@@ -1536,6 +1614,16 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settings__clipboard_feedback__disabled => 'Disabled';
+
+  @override
+  String get settings__clipboard_feedback__copy_only => 'Apenas cópia';
+
+  @override
+  String get settings__clipboard_feedback__sync_only => 'Apenas sincronização';
+
+  @override
+  String get settings__clipboard_feedback__copy_and_sync =>
+      'Cópia e sincronização';
 
   @override
   String get settings__clipboard_feedback__toast => 'Toast';
@@ -1778,13 +1866,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settings__text__gdrive__info =>
-      'Seus arquivos e mídias são sincronizados com segurança entre os dispositivos via Google Drive, garantindo que sua privacidade seja protegida.';
+      'Seus arquivos e mídias são sincronizados com segurança entre dispositivos por meio de provedores de nuvem suportados, garantindo que sua privacidade seja protegida. Quando múltiplos provedores estiverem conectados, você poderá escolher o armazenamento padrão para novos envios.';
 
   @override
-  String get settings__drive__default_tooltip => 'Default storage for uploads';
+  String get settings__drive__default_tooltip =>
+      'Armazenamento padrão para envios';
 
   @override
-  String get settings__drive__set_default => 'Set as default';
+  String get settings__drive__set_default => 'Definir como padrão';
 
   @override
   String get settings__tile__other_cloud__title =>
@@ -1795,82 +1884,86 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settings__text__webdav__info =>
-      'Connect your WebDAV server (Nextcloud, ownCloud, Synology NAS, etc.) to store and sync your files and media attachments.';
+      'Conecte seu servidor WebDAV (Nextcloud, ownCloud, Synology NAS, etc.) para armazenar e sincronizar seus arquivos e anexos de mídia.';
 
   @override
-  String get settings__dialog__webdav__title => 'WebDAV Storage';
+  String get settings__dialog__webdav__title => 'Armazenamento WebDAV';
 
   @override
-  String get settings__dialog__webdav__preset_provider => 'Provider Preset';
+  String get settings__dialog__webdav__preset_provider =>
+      'Predefinição de Provedor';
 
   @override
-  String get settings__dialog__webdav__server_url => 'Server URL';
+  String get settings__dialog__webdav__server_url => 'URL do Servidor';
 
   @override
   String get settings__dialog__webdav__server_url_hint =>
       'https://cloud.example.com/remote.php/dav/files/username/';
 
   @override
-  String get settings__dialog__webdav__username => 'Username';
+  String get settings__dialog__webdav__username => 'Nome de usuário';
 
   @override
-  String get settings__dialog__webdav__password => 'Password / App Password';
+  String get settings__dialog__webdav__password =>
+      'Senha / Senha de aplicativo';
 
   @override
-  String get settings__dialog__webdav__base_path => 'Storage Folder Path';
+  String get settings__dialog__webdav__base_path =>
+      'Caminho da Pasta de Armazenamento';
 
   @override
   String get settings__dialog__webdav__base_path_helper =>
-      'Folder path cannot be changed after setup. To change it, disconnect first.';
+      'O caminho da pasta não pode ser alterado após a configuração. Para alterá-lo, desconecte primeiro.';
 
   @override
-  String get settings__dialog__webdav__advanced => 'Advanced';
+  String get settings__dialog__webdav__advanced => 'Avançado';
 
   @override
   String get settings__dialog__webdav__self_signed =>
-      'Allow Self-Signed / Insecure Certificates';
+      'Permitir Certificados Autoassinados / Inseguros';
 
   @override
   String get settings__dialog__webdav__auto_clean =>
-      'Auto-clean inactive files after 30 days';
+      'Limpar automaticamente arquivos inativos após 30 dias';
 
   @override
   String get settings__dialog__webdav__auto_clean_subtitle =>
-      'Because WebDAV credentials remain private on your device, remote files are not removed by cloud cleanup. When enabled, media files older than 30 days from last modification will be deleted from your WebDAV server. Clips in collections or locked are always protected.';
+      'Como as credenciais do WebDAV permanecem privadas no seu dispositivo, os arquivos remotos não são removidos pela limpeza da nuvem. Quando ativado, os arquivos de mídia com mais de 30 dias desde a última modificação serão excluídos do seu servidor WebDAV. Clipes em coleções ou bloqueados estão sempre protegidos.';
 
   @override
-  String get settings__dialog__webdav__test_conn => 'Test Connection';
+  String get settings__dialog__webdav__test_conn => 'Testar Conexão';
 
   @override
-  String get settings__dialog__webdav__testing => 'Testing Connection...';
+  String get settings__dialog__webdav__testing => 'Testando conexão...';
 
   @override
-  String get settings__dialog__webdav__test_success => 'Connection successful!';
+  String get settings__dialog__webdav__test_success => 'Conexão bem-sucedida!';
 
   @override
-  String get settings__dialog__webdav__disconnect => 'Disconnect';
+  String get settings__dialog__webdav__disconnect => 'Desconectar';
 
   @override
-  String get settings__dialog__webdav__save => 'Save & Connect';
+  String get settings__dialog__webdav__save => 'Salvar e Conectar';
 
   @override
-  String get settings__dialog__webdav__reconnect_title => 'WebDAV Settings';
+  String get settings__dialog__webdav__reconnect_title =>
+      'Configurações do WebDAV';
 
   @override
   String get settings__dialog__webdav__reconnect_subtitle =>
-      'WebDAV is already connected. Update settings or disconnect?';
+      'O WebDAV já está conectado. Deseja atualizar as configurações ou desconectar?';
 
   @override
   String get settings__dialog__webdav__url_required =>
-      'Please enter a valid WebDAV server URL';
+      'Insira uma URL de servidor WebDAV válida';
 
   @override
   String get settings__dialog__webdav__username_required =>
-      'Please enter a username';
+      'Insira um nome de usuário';
 
   @override
   String get settings__dialog__webdav__password_required =>
-      'Please enter a password or app token';
+      'Insira uma senha ou token de aplicativo';
 
   @override
   String get settings__app_lock__title => 'Bloqueio do App';

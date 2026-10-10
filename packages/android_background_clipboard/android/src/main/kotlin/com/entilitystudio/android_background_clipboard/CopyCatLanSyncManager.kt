@@ -15,6 +15,7 @@ import android.net.nsd.NsdServiceInfo
 import android.net.wifi.WifiManager
 import android.os.SystemClock
 import android.util.Log
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import okhttp3.Call
@@ -25,6 +26,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import org.json.JSONObject
+import kotlinx.serialization.encodeToString
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -56,6 +58,7 @@ data class LanClipPayload(
     val label: String,
     val timestamp: Long,
     val encrypted: Boolean,
+    val locked: Boolean = false,
     val iv: String?,
     val encMode: String?,
     val userId: String? = null,
@@ -65,13 +68,22 @@ data class LanClipPayload(
     val fileMimeType: String? = null,
     val fileExtension: String? = null,
     val fileName: String? = null,
+    val fileSize: Long? = null,
     val sourceId: String? = null,
     val sourceApp: String? = null,
     val deleted: Boolean = false,
     val deletedAtMs: Long? = null,
+    val title: String? = null,
+    val description: String? = null,
 )
 
-private data class PeerAddress(val host: String, val port: Int)
+private data class PeerAddress(val host: String, val port: Int, val os: String? = null) {
+    val isDesktop: Boolean
+        get() {
+            val normalized = os?.trim()?.lowercase() ?: return false
+            return normalized == "macos" || normalized == "windows" || normalized == "linux" || normalized == "darwin"
+        }
+}
 
 /**
  * CopyCat LAN sync for Android.
@@ -152,7 +164,8 @@ class CopyCatLanSyncManager(
     private var started = false
     private var connectionExecutor: ThreadPoolExecutor? = null
     private val mainHandler = Handler(Looper.getMainLooper())
-    private val lastErrorToastAtMs = mutableMapOf<String, Long>()
+    private var lastErrorToastMessage: String = ""
+    private var lastErrorToastAtMs: Long = 0L
     private val errorToastCooldownMs = 5000L
     private var multicastLock: WifiManager.MulticastLock? = null
     private val sp = appContext.getSharedPreferences("CopyCatSharedPreferences", Context.MODE_PRIVATE)
@@ -192,9 +205,10 @@ class CopyCatLanSyncManager(
                 val peerObj = json.optJSONObject(did) ?: continue
                 val host = peerObj.optString("host")
                 val port = peerObj.optInt("port", 0)
+                val os = peerObj.optString("os").takeIf { it.isNotBlank() }
                 if (did.isNotBlank() && did != deviceId && host.isNotBlank() && port in 1..65535) {
-                    peers[did] = PeerAddress(host, port)
-                    LanPeerReporter.getInstance().addPeer(did, host, port)
+                    peers[did] = PeerAddress(host, port, os)
+                    LanPeerReporter.getInstance().addPeer(did, host, port, os)
                     loadedCount++
                 }
             }
@@ -213,6 +227,7 @@ class CopyCatLanSyncManager(
                 val obj = JSONObject().apply {
                     put("host", address.host)
                     put("port", address.port)
+                    if (address.os != null) put("os", address.os)
                 }
                 json.put(did, obj)
             }
@@ -222,27 +237,32 @@ class CopyCatLanSyncManager(
         }
     }
 
-    private fun recordPeer(did: String, host: String, port: Int, source: String) {
+    private fun recordPeer(did: String, host: String, port: Int, source: String, os: String? = null) {
         if (did.isBlank() || did == deviceId || host.isBlank() || port !in 1..65535) return
         val existing = peers[did]
-        if (existing == null || existing.host != host || existing.port != port) {
-            peers[did] = PeerAddress(host, port)
-            LanPeerReporter.getInstance().addPeer(did, host, port)
+        val resolvedOs = os?.takeIf { it.isNotBlank() } ?: existing?.os
+        if (existing == null || existing.host != host || existing.port != port || existing.os != resolvedOs) {
+            peers[did] = PeerAddress(host, port, resolvedOs)
+            LanPeerReporter.getInstance().addPeer(did, host, port, resolvedOs)
             saveCachedPeers()
             scheduleDiscoveryRefresh()
-            Log.i(LOG_TAG, "Peer recorded ($source): $did @ $host:$port")
+            Log.i(LOG_TAG, "Peer recorded ($source): $did @ $host:$port os=$resolvedOs")
         }
     }
 
     private fun showErrorToast(message: String) {
         val now = SystemClock.elapsedRealtime()
-        synchronized(lastErrorToastAtMs) {
-            val lastToast = lastErrorToastAtMs[message] ?: 0L
-            if (now - lastToast < errorToastCooldownMs) return
-            lastErrorToastAtMs[message] = now
+        synchronized(this) {
+            if (message == lastErrorToastMessage && now - lastErrorToastAtMs < errorToastCooldownMs) {
+                return
+            }
+            lastErrorToastMessage = message
+            lastErrorToastAtMs = now
         }
         mainHandler.post {
-            Toast.makeText(appContext, message, Toast.LENGTH_SHORT).show()
+            runCatching {
+                Toast.makeText(appContext, message, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -454,8 +474,9 @@ class CopyCatLanSyncManager(
                 // Opportunistically learn or refresh peer address from incoming clip traffic
                 val remotePort = headers["x-cc-port"]?.toIntOrNull()?.takeIf { it in 1..65535 }
                 val remoteHost = s.inetAddress?.hostAddress
+                val remoteOs = headers["x-cc-os"]
                 if (remotePort != null && !remoteHost.isNullOrBlank()) {
-                    recordPeer(fromDeviceId, remoteHost, remotePort, "clip-traffic")
+                    recordPeer(fromDeviceId, remoteHost, remotePort, "clip-traffic", remoteOs)
                 }
 
                 val originId = headers["x-cc-oid"] ?: return
@@ -494,22 +515,26 @@ class CopyCatLanSyncManager(
                         }
                         handleTextClip(bodyBytes, fromDeviceId, originId, clipType)
                     }
-                    ClipType.FileUrl -> handleBinaryClip(
-                        rawInput,
-                        contentLength,
-                        hmacHeader,
-                        fromDeviceId,
-                        originId,
-                        clipType,
-                        // Accept X-CC-MIME (Dart) or Content-Type (Android peer)
-                        sanitizeMimeType(
-                            headers["x-cc-mime"] ?: headers["content-type"]
-                        ),
-                        sanitizeExt(headers["x-cc-ext"]),
-                        sanitizeFileName(headers["x-cc-name"], originId),
-                        headers["x-cc-source-id"],
-                        headers["x-cc-source-app"],
-                    )
+                    ClipType.FileUrl -> {
+                        val headerExt = headers["x-cc-ext"]?.trim()?.lowercase()
+                        val headerMime = headers["x-cc-mime"] ?: headers["content-type"]
+                        val mime = sanitizeMimeType(headerMime, headerExt)
+                        val ext = sanitizeExt(headerExt, mime)
+                        val resolvedType = if (mime.startsWith("image/") || mime.startsWith("video/")) ClipType.FileUrl else clipType
+                        handleBinaryClip(
+                            rawInput,
+                            contentLength,
+                            hmacHeader,
+                            fromDeviceId,
+                            originId,
+                            resolvedType,
+                            mime,
+                            ext,
+                            sanitizeFileName(headers["x-cc-name"], originId),
+                            headers["x-cc-source-id"],
+                            headers["x-cc-source-app"],
+                        )
+                    }
                 }
 
                 // Send minimal HTTP 200 response
@@ -562,7 +587,8 @@ class CopyCatLanSyncManager(
         val announcedDeviceId = headers["x-cc-did"]?.takeIf { it.isNotBlank() } ?: return
         val announcedPort = headers["x-cc-port"]?.toIntOrNull()?.takeIf { it in 1..65535 } ?: return
         val host = remoteAddress.hostAddress ?: return
-        recordPeer(announcedDeviceId, host, announcedPort, "ping")
+        val announcedOs = headers["x-cc-os"]
+        recordPeer(announcedDeviceId, host, announcedPort, "ping", announcedOs)
     }
 
     private fun handleTextClip(
@@ -571,30 +597,35 @@ class CopyCatLanSyncManager(
         originId: String,
         type: ClipType,
     ) {
-        val json = try {
-            JSONObject(String(body, Charsets.UTF_8))
+        val bodyStr = try {
+            String(body, Charsets.UTF_8)
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "Malformed UTF-8 text clip: ${e.message}")
+            return
+        }
+
+        val envelope = try {
+            LanClipEnvelope.json.decodeFromString<LanClipEnvelope>(bodyStr)
         } catch (e: Exception) {
             Log.w(LOG_TAG, "Malformed JSON text clip: ${e.message}")
             return
         }
 
-        val timestamp = json.optLong("ts", System.currentTimeMillis())
+        val timestamp = if (envelope.ts > 0L) envelope.ts else System.currentTimeMillis()
         if (System.currentTimeMillis() - timestamp > REPLAY_WINDOW_MS) {
             Log.w(LOG_TAG, "Replay detected, dropping clip from $fromDeviceId")
             return
         }
 
-        val payload = parseTextClipPayload(
-            json = json,
+        val payload = envelope.toLanClipPayload(
             fromDeviceId = fromDeviceId,
-            originId = originId,
+            fallbackOriginId = originId,
             defaultType = type,
-            timestamp = timestamp,
         )
 
         onLanClipReceived(payload)
 
-        if (autoWriteOnReceive && !payload.deleted && payload.content.isNotBlank()) {
+        if (autoWriteOnReceive && !payload.deleted && !payload.locked && payload.content.isNotBlank()) {
             val textToWrite = if (payload.encrypted) {
                 decryptContent?.invoke(payload.content, payload.encMode, payload.iv)
             } else {
@@ -607,96 +638,6 @@ class CopyCatLanSyncManager(
                 Log.w(LOG_TAG, "Skipping clipboard write: encrypted LAN clip could not be decrypted")
             }
         }
-    }
-
-    private fun hasDeletedMarker(json: JSONObject?): Boolean {
-        if (json == null) return false
-        val deletedAtCamel = json.optString(JsonKey.DELETED_AT).trim()
-        if (deletedAtCamel.isNotEmpty() &&
-            !deletedAtCamel.equals("null", ignoreCase = true)) {
-            return true
-        }
-        return false
-    }
-
-    private fun parseDeletedAtMillis(json: JSONObject?): Long? {
-        if (json == null) return null
-
-        val rawCamel = json.optString(JsonKey.DELETED_AT).trim()
-        val raw = when {
-            rawCamel.isNotEmpty() && !rawCamel.equals("null", ignoreCase = true) -> rawCamel
-            else -> return null
-        }
-
-        raw.toLongOrNull()?.let { return it }
-
-        return try {
-            Instant.parse(raw).toEpochMilli()
-        } catch (_: Exception) {
-            null
-        }
-    }
-
-    private fun parseTextClipPayload(
-        json: JSONObject,
-        fromDeviceId: String,
-        originId: String,
-        defaultType: ClipType,
-        timestamp: Long,
-    ): LanClipPayload {
-        val fullItem = json.optJSONObject(JsonKey.ITEM)
-        val fallbackContent = when (defaultType) {
-            ClipType.Url -> fullItem?.optString(JsonKey.URL, "") ?: ""
-            else -> fullItem?.optString(JsonKey.TEXT, "") ?: ""
-        }
-        val content = json.optString(JsonKey.CONTENT, fallbackContent)
-        val label = json.optString(JsonKey.LABEL, fullItem?.optString(JsonKey.TITLE, "") ?: "")
-        val encrypted = if (json.has(JsonKey.ENCRYPTED)) {
-            json.optBoolean(JsonKey.ENCRYPTED, false)
-        } else {
-            fullItem?.optBoolean(JsonKey.ENCRYPTED, false) ?: false
-        }
-        val iv = json.optNonBlank(JsonKey.IV)
-            ?: fullItem?.optNonBlank(JsonKey.IV)
-        val encMode = json.optNonBlank(JsonKey.ENC_MODE)
-            ?: fullItem?.optNonBlank(JsonKey.ENC_MODE_SNAKE)
-            ?: fullItem?.optNonBlank(JsonKey.ENC_MODE)
-        val sourceId = json.optNonBlank(JsonKey.SOURCE_ID)
-            ?: fullItem?.optNonBlank(JsonKey.SOURCE_ID)
-        val sourceApp = json.optNonBlank(JsonKey.SOURCE_APP)
-            ?: fullItem?.optNonBlank(JsonKey.SOURCE_APP)
-        val itemUserId = fullItem?.optNonBlank(JsonKey.USER_ID)
-        val itemServerId = fullItem?.optLong(JsonKey.ID)?.takeIf { it > 0L }
-        val deleted = hasDeletedMarker(fullItem) || hasDeletedMarker(json)
-        val deletedAtMs = parseDeletedAtMillis(fullItem) ?: parseDeletedAtMillis(json)
-
-        val payloadType = fullItem?.optNonBlank(JsonKey.TYPE)
-            ?.let { raw ->
-                when (raw.lowercase()) {
-                    "url" -> ClipType.Url
-                    "text" -> ClipType.Text
-                    "media", "file", "fileurl" -> ClipType.FileUrl
-                    else -> defaultType
-                }
-            } ?: defaultType
-
-        return LanClipPayload(
-            originId = originId,
-            fromDeviceId = fromDeviceId,
-            type = payloadType,
-            content = content,
-            label = label,
-            timestamp = timestamp,
-            encrypted = encrypted,
-            iv = iv,
-            encMode = encMode,
-            userId = itemUserId,
-            serverId = itemServerId,
-            sourceId = sourceId,
-            sourceApp = sourceApp,
-            deleted = deleted,
-            deletedAtMs = deletedAtMs,
-        )
     }
 
     private fun handleBinaryClip(
@@ -747,8 +688,7 @@ class CopyCatLanSyncManager(
                 return
             }
 
-            // Always persist to the CopyCat database via the host callback so
-            // the clip appears in history even when autoWriteOnReceive is off.
+            val fileSize = tempFile.length()
             val payload = LanClipPayload(
                 originId = originId,
                 fromDeviceId = fromDeviceId,
@@ -763,8 +703,11 @@ class CopyCatLanSyncManager(
                 fileMimeType = mimeType,
                 fileExtension = ext,
                 fileName = fileName,
+                fileSize = fileSize,
                 sourceId = sourceId,
                 sourceApp = sourceApp,
+                title = fileName,
+                description = null,
             )
             onLanClipReceived(payload)
 
@@ -801,18 +744,41 @@ class CopyCatLanSyncManager(
         }
     }
 
-    private fun sanitizeMimeType(raw: String?): String {
-        val value = raw?.trim().orEmpty()
-        if (value.isEmpty() || value.equals("null", ignoreCase = true)) {
-            return "application/octet-stream"
+    private fun sanitizeMimeType(raw: String?, ext: String? = null): String {
+        val value = raw?.split(";")?.firstOrNull()?.trim().orEmpty()
+        if (value.isNotEmpty() && !value.equals("null", ignoreCase = true) && value != "*/*" && value != "application/octet-stream") {
+            return value
         }
-        return value
+        val cleanExt = ext?.trim()?.lowercase().orEmpty().replace(Regex("[^a-z0-9]"), "")
+        if (cleanExt.isNotEmpty()) {
+            val fromExt = MimeTypeMap.getSingleton().getMimeTypeFromExtension(cleanExt)
+            if (!fromExt.isNullOrBlank()) return fromExt
+            return when (cleanExt) {
+                "png" -> "image/png"
+                "jpg", "jpeg" -> "image/jpeg"
+                "webp" -> "image/webp"
+                "gif" -> "image/gif"
+                "svg" -> "image/svg+xml"
+                "mp4" -> "video/mp4"
+                "pdf" -> "application/pdf"
+                else -> "application/octet-stream"
+            }
+        }
+        return "application/octet-stream"
     }
 
-    private fun sanitizeExt(raw: String?): String {
+    private fun sanitizeExt(raw: String?, mimeType: String? = null): String {
         val value = raw?.trim()?.lowercase().orEmpty()
             .replace(Regex("[^a-z0-9]"), "")
-        return if (value.isEmpty()) "bin" else value
+        if (value.isNotEmpty() && value != "bin") return value
+        val mime = mimeType?.lowercase().orEmpty()
+        return when {
+            mime.contains("png") -> "png"
+            mime.contains("jpeg") || mime.contains("jpg") -> "jpg"
+            mime.contains("webp") -> "webp"
+            mime.contains("gif") -> "gif"
+            else -> if (value.isNotEmpty()) value else "bin"
+        }
     }
 
     private fun sanitizeFileName(raw: String?, originId: String): String {
@@ -987,12 +953,16 @@ class CopyCatLanSyncManager(
                 }
                 if (did == deviceId) return // self
                 val host = info.host?.hostAddress ?: return
+                val osBytes = info.attributes["os"]
+                val osStr = if (osBytes != null && osBytes.isNotEmpty()) {
+                    String(osBytes, Charsets.UTF_8)
+                } else null
                 serviceNameToDeviceId[info.serviceName] = did
-                recordPeer(did, host, info.port, "mdns-resolve")
+                recordPeer(did, host, info.port, "mdns-resolve", osStr)
                 // Announce our own HTTP server address to the peer immediately
                 // so it can broadcast clips back to us without waiting for its
                 // own mDNS discovery cycle.
-                announceSelfToPeer(PeerAddress(host, info.port))
+                announceSelfToPeer(PeerAddress(host, info.port, osStr))
             }
         }
 
@@ -1040,102 +1010,133 @@ class CopyCatLanSyncManager(
 
 
     /**
-     * Broadcast a text/URL clip to all discovered peers.
-     * Called from the clipboard-capture pipeline (background thread is fine).
+     * Broadcast a clip to all LAN peers:
+     * 1. Broadcast the clip JSON payload.
+     * 2. If it is media/file and NOT deleted, attach the binary file.
      */
-    fun broadcastTextClip(
-        originId: String,
-        type: ClipType,
-        content: String,
-        label: String,
-        encrypted: Boolean = false,
-        iv: String? = null,
-        encMode: String? = null,
-        sourceId: String? = null,
-        sourceApp: String? = null,
-    ) {
-        if (!started || peers.isEmpty() || userId.isBlank()) {
-            Log.i(LOG_TAG, "broadcastTextClip skipped: started=$started peersCount=${peers.size} userIdBlank=${userId.isBlank()}")
+    fun broadcastClip(data: Map<String, Any?>) {
+        val item = try {
+            LanClipEnvelope.json.decodeFromString<LanClipItem>(JSONObject(data).toString())
+        } catch (e: Exception) {
+            Log.w(LOG_TAG, "Failed to decode LanClipItem from map: ${e.message}")
             return
         }
+        val localPath = (data["localPath"] as? String) ?: item.localPath
+        broadcastClip(item, localPath)
+    }
 
-        val timestamp = System.currentTimeMillis()
-        val payloadType = when (type) {
-            ClipType.Url -> "url"
-            else -> "text"
-        }
-        val bodyJson = JSONObject().apply {
-            put(JsonKey.CONTENT, content)
-            put(JsonKey.LABEL, label)
-            put(JsonKey.TS, timestamp)
-            put(JsonKey.CREATED, timestamp)
-            put(JsonKey.MODIFIED, timestamp)
-            put(JsonKey.OS, "android")
-            put(JsonKey.ENCRYPTED, encrypted)
-            putIfNotBlank(JsonKey.IV, iv)
-            putIfNotBlank(JsonKey.ENC_MODE, encMode)
-            putIfNotBlank(JsonKey.SOURCE_ID, sourceId)
-            putIfNotBlank(JsonKey.SOURCE_APP, sourceApp)
+    fun broadcastClip(item: LanClipItem, localPath: String? = null) {
+        if (!started || peers.isEmpty() || userId.isBlank()) return
+        val originId = item.originId?.takeIf { it.isNotBlank() } ?: return
 
-            put(JsonKey.ITEM, JSONObject().apply {
-                put(JsonKey.TYPE, payloadType)
-                put(JsonKey.USER_ID, if (userId.isNotBlank()) userId else "local")
-                put(JsonKey.CREATED, toIso8601Utc(timestamp))
-                put(JsonKey.MODIFIED, toIso8601Utc(timestamp))
-                put(JsonKey.OS, "android")
-                put(JsonKey.TITLE, label)
-                put(JsonKey.ORIGIN_ID, originId)
-                put(JsonKey.ENCRYPTED, encrypted)
-                if (payloadType == "url") {
-                    put(JsonKey.URL, content)
-                } else {
-                    put(JsonKey.TEXT, content)
-                }
-                putIfNotBlank(JsonKey.IV, iv)
-                putIfNotBlank(JsonKey.ENC_MODE_SNAKE, encMode)
-                putIfNotBlank(JsonKey.SOURCE_ID, sourceId)
-                putIfNotBlank(JsonKey.SOURCE_APP, sourceApp)
-            })
+        val isDeleted = item.deletedAt != null && item.deletedAt.isNotBlank() && !item.deletedAt.equals("null", ignoreCase = true)
+        val path = localPath ?: item.localPath
+        val typeLower = (item.type ?: "text").lowercase()
+        val isBinary = !isDeleted &&
+            (typeLower == "media" || typeLower == "file" || typeLower == "fileurl") &&
+            !path.isNullOrBlank()
+
+        if (isBinary) {
+            val file = File(path!!)
+            if (file.exists() && file.canRead()) {
+                val fileExt = file.extension.lowercase()
+                val cleanExt = item.fileExtension?.takeIf { it.isNotBlank() && it != "bin" }
+                    ?: fileExt.ifBlank { "bin" }
+                val mimeType = item.fileMimeType?.takeIf { it.isNotBlank() && it != "*/*" && it != "application/octet-stream" }
+                    ?: MimeTypeMap.getSingleton().getMimeTypeFromExtension(cleanExt)
+                    ?: when (cleanExt) {
+                        "jpg", "jpeg" -> "image/jpeg"
+                        "png" -> "image/png"
+                        "webp" -> "image/webp"
+                        "gif" -> "image/gif"
+                        "svg" -> "image/svg+xml"
+                        "mp4" -> "video/mp4"
+                        "pdf" -> "application/pdf"
+                        else -> "application/octet-stream"
+                    }
+                val resolvedType = if (mimeType.startsWith("image/") || mimeType.startsWith("video/")) "media" else "file"
+                val resolvedExt = if (cleanExt == "bin" && mimeType.startsWith("image/")) {
+                    mimeType.substringAfterLast('/').substringBefore(';').let { if (it == "jpeg") "jpg" else it }
+                } else cleanExt
+                val fileName = item.fileName?.takeIf { it.isNotBlank() } ?: file.name
+
+                sendBinaryClip(
+                    originId = originId,
+                    data = file.readBytes(),
+                    mimeType = mimeType,
+                    ext = resolvedExt,
+                    fileName = fileName,
+                    sourceId = item.sourceId,
+                    sourceApp = item.sourceApp,
+                    createdIso = item.created,
+                    modifiedIso = item.modified,
+                    typeStr = resolvedType,
+                )
+                return
+            }
         }
-        val bodyBytes = bodyJson.toString().toByteArray(Charsets.UTF_8)
+
+        // For non-binary clips (text, url, deletions, or metadata mutations): broadcast the JSON envelope.
+        val envelope = LanClipEnvelope.fromItem(
+            item = item,
+            deviceId = deviceId,
+            os = "android",
+            localPath = localPath,
+        )
+
+        val jsonString = LanClipEnvelope.json.encodeToString(envelope)
+        val bodyBytes = jsonString.toByteArray(Charsets.UTF_8)
         val hmac = computeHmac(bodyBytes)
 
         peers.values.forEach { peer ->
-            sendToPeer(peer, originId, type.name.lowercase(), bodyBytes, hmac,
-                "application/json", null, null, sourceId, sourceApp)
+            sendToPeer(
+                peer = peer,
+                originId = originId,
+                typeStr = if (isDeleted) "text" else if (typeLower == "url") "url" else "text",
+                body = bodyBytes,
+                hmac = hmac,
+                contentType = "application/json",
+                ext = null,
+                fileName = null,
+                sourceId = envelope.sourceId,
+                sourceApp = envelope.sourceApp,
+                createdIso = envelope.created,
+                modifiedIso = envelope.modified,
+            )
         }
     }
 
-    /**
-     * Broadcast a binary clip (media/file) to all discovered peers.
-     */
-    fun broadcastBinaryClip(
+    private fun sendBinaryClip(
         originId: String,
-        type: ClipType,
         data: ByteArray,
         mimeType: String,
         ext: String,
         fileName: String,
         sourceId: String? = null,
         sourceApp: String? = null,
+        createdIso: String? = null,
+        modifiedIso: String? = null,
+        typeStr: String = "file",
     ) {
-        if (!started || peers.isEmpty() || userId.isBlank()) {
-            Log.i(LOG_TAG, "broadcastBinaryClip skipped: started=$started peersCount=${peers.size} userIdBlank=${userId.isBlank()}")
-            return
-        }
         val hmac = computeHmac(data)
+        val desktopPeers = peers.values.filter { it.isDesktop }
+        val delegatePeer = if (desktopPeers.isNotEmpty()) desktopPeers.random() else null
+
         peers.values.forEach { peer ->
             sendToPeer(
-                peer,
-                originId,
-                type.name.lowercase(),
-                data,
-                hmac,
-                mimeType,
-                ext,
-                fileName,
-                sourceId,
-                sourceApp,
+                peer = peer,
+                originId = originId,
+                typeStr = typeStr,
+                body = data,
+                hmac = hmac,
+                contentType = mimeType,
+                ext = ext,
+                fileName = fileName,
+                sourceId = sourceId,
+                sourceApp = sourceApp,
+                createdIso = createdIso,
+                modifiedIso = modifiedIso,
+                delegateUpload = (peer == delegatePeer),
             )
         }
     }
@@ -1151,6 +1152,9 @@ class CopyCatLanSyncManager(
         fileName: String?,
         sourceId: String?,
         sourceApp: String?,
+        createdIso: String? = null,
+        modifiedIso: String? = null,
+        delegateUpload: Boolean = false,
     ) {
         try {
             val requestBuilder = Request.Builder()
@@ -1160,8 +1164,20 @@ class CopyCatLanSyncManager(
                 .addHeader("X-CC-TYPE", typeStr)
                 .addHeader("X-CC-HMAC", hmac)
                 .addHeader("X-CC-PORT", serverPort.toString())
+                .addHeader("X-CC-TS", System.currentTimeMillis().toString())
+                .addHeader("X-CC-SIZE", body.size.toString())
+                .addHeader("X-CC-OS", "android")
+            if (delegateUpload) {
+                requestBuilder.addHeader("X-CC-DELEGATE-UPLOAD", "1")
+            }
             if (ext != null) requestBuilder.addHeader("X-CC-EXT", ext)
             if (fileName != null) requestBuilder.addHeader("X-CC-NAME", fileName)
+            if (contentType.isNotBlank()) {
+                requestBuilder.addHeader("X-CC-MIME", contentType)
+                requestBuilder.addHeader("Content-Type", contentType)
+            }
+            if (!createdIso.isNullOrBlank()) requestBuilder.addHeader("X-CC-CREATED", createdIso)
+            if (!modifiedIso.isNullOrBlank()) requestBuilder.addHeader("X-CC-MODIFIED", modifiedIso)
             if (!sourceId.isNullOrBlank()) {
                 requestBuilder.addHeader("X-CC-SOURCE-ID", sourceId)
             }

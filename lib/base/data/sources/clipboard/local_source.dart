@@ -196,16 +196,8 @@ class LocalClipboardSource implements ClipboardSource {
 
   @override
   Future<bool> delete(ClipboardItem item, {bool soft = true}) async {
-    if (item.id == null) return false;
-
-    if (soft) {
-      _logger.i(() => "Soft deleting item with id ${item.id}");
-      await update(item.copyWith(deletedAt: systemTime()));
-      return true;
-    }
-
-    final result = await db.writeTxn(() => _collection.delete(item.id!));
-    return result;
+    final deleted = await deleteMany([item], soft: soft);
+    return deleted.isNotEmpty;
   }
 
   @override
@@ -224,20 +216,20 @@ class LocalClipboardSource implements ClipboardSource {
     }
 
     final result = await db.writeTxn(() async {
-      final q = _collection
-          .filter()
-          .anyOf(
-            items,
-            (q, item) => item.id != null
-                ? q.isarIdEqualTo(item.id!)
-                : q.isarIdEqualTo(-1),
-          )
-          .or()
-          .anyOf(
-            items,
-            (q, item) =>
-                q.serverIdEqualTo(item.serverId).and().serverIdIsNotNull(),
-          );
+      final q = _collection.filter().anyOf(items, (q, item) {
+        final hasOrigin = item.originId != null && item.originId!.isNotEmpty;
+        if (hasOrigin && item.serverId != null) {
+          return q
+              .originIdEqualTo(item.originId!)
+              .or()
+              .serverIdEqualTo(item.serverId!);
+        } else if (hasOrigin) {
+          return q.originIdEqualTo(item.originId!);
+        } else if (item.serverId != null) {
+          return q.serverIdEqualTo(item.serverId!);
+        }
+        return item.id != null ? q.isarIdEqualTo(item.id!) : q.isarIdEqualTo(-1);
+      });
 
       final clipsWithLocalCache = await q.localPathIsNotNull().findAll();
 
@@ -316,40 +308,73 @@ class LocalClipboardSource implements ClipboardSource {
 
   @override
   Future<(ClipboardItem, bool)> updateOrCreate(ClipboardItem item) async {
-    item = item.copyWith(lastSynced: systemTime());
-    item = item.locked ? item : await item.decrypt();
+    final decryptedItem = item.locked ? item : await item.decrypt();
+    final now = systemTime();
 
-    ClipboardItem? existingClip;
+    return await db.writeTxn(() async {
+      IsarClipboardItem? existingIsar;
 
-    if (item.originId != null) {
-      existingClip = await db
-          .txn(
-            () =>
-                _collection.where().originIdEqualTo(item.originId).findFirst(),
-          )
-          .then((e) => e?.toDomain());
-    }
+      if (decryptedItem.originId != null &&
+          decryptedItem.originId!.trim().isNotEmpty) {
+        existingIsar = await _collection
+            .where()
+            .originIdEqualTo(decryptedItem.originId!)
+            .findFirst();
+      }
 
-    if (existingClip == null && item.serverId != null) {
-      existingClip = await get(serverId: item.serverId!);
-    }
+      if (existingIsar == null && decryptedItem.serverId != null) {
+        existingIsar = await _collection
+            .filter()
+            .serverIdEqualTo(decryptedItem.serverId!)
+            .findFirst();
+      }
 
-    if (existingClip != null) {
-      item = existingClip.copyWith(
-        localPath: item.localPath ?? existingClip.localPath,
-        text: item.text ?? existingClip.text,
-        richData: item.richData ?? existingClip.richData,
-        modified: item.modified,
-        lastSynced: item.lastSynced,
-        serverId: item.serverId ?? existingClip.serverId,
-        originId: item.originId ?? existingClip.originId,
-        description: item.description ?? existingClip.description,
-        title: item.title ?? existingClip.title,
-      );
-      return (await update(item), false);
-    }
+      if (existingIsar != null) {
+        final existingClip = existingIsar.toDomain();
+        final updated = existingClip.copyWith(
+          type: (decryptedItem.type == ClipItemType.media ||
+                  decryptedItem.type == ClipItemType.file)
+              ? decryptedItem.type
+              : existingClip.type,
+          localPath: decryptedItem.localPath ?? existingClip.localPath,
+          text: decryptedItem.text ?? existingClip.text,
+          richData: decryptedItem.richData ?? existingClip.richData,
+          modified: decryptedItem.modified,
+          lastSynced: now,
+          serverId: decryptedItem.serverId ?? existingClip.serverId,
+          driveFileId: decryptedItem.driveFileId ?? existingClip.driveFileId,
+          originId: decryptedItem.originId ?? existingClip.originId,
+          description: decryptedItem.description ?? existingClip.description,
+          title: decryptedItem.title ?? existingClip.title,
+          locked: decryptedItem.locked,
+          encrypted: decryptedItem.encrypted,
+          iv: decryptedItem.iv ?? existingClip.iv,
+          encMode: decryptedItem.encMode ?? existingClip.encMode,
+          fileName: decryptedItem.fileName ?? existingClip.fileName,
+          fileMimeType: decryptedItem.fileMimeType ?? existingClip.fileMimeType,
+          fileExtension:
+              decryptedItem.fileExtension ?? existingClip.fileExtension,
+          fileSize: decryptedItem.fileSize ?? existingClip.fileSize,
+        );
 
-    return (await create(item), true);
+        final isarItem = IsarClipboardItem.fromDomain(updated);
+        await _collection.put(isarItem);
+
+        if (updated.serverId != null) {
+          await _pruneDuplicatesByServerId(
+            serverId: updated.serverId!,
+            keepIsarId: isarItem.isarId,
+          );
+        }
+
+        return (updated, false);
+      }
+
+      final newItem = decryptedItem.copyWith(lastSynced: now);
+      final isarItem = IsarClipboardItem.fromDomain(newItem);
+      final id = await _collection.put(isarItem);
+      return (newItem.copyWith(id: id), true);
+    });
   }
 
   @override
@@ -370,5 +395,26 @@ class LocalClipboardSource implements ClipboardSource {
     final isarItems = items.map(IsarClipboardItem.fromDomain).toList();
     await db.writeTxn(() => _collection.putAll(isarItems));
     return items;
+  }
+
+  /// Prunes legacy orphan duplicate rows in Isar that share [serverId] but have
+  /// a different local ID from [keepIsarId].
+  Future<void> _pruneDuplicatesByServerId({
+    required int serverId,
+    required int keepIsarId,
+  }) async {
+    final duplicates = await _collection
+        .filter()
+        .serverIdEqualTo(serverId)
+        .and()
+        .not()
+        .isarIdEqualTo(keepIsarId)
+        .findAll();
+
+    if (duplicates.isNotEmpty) {
+      await _collection.deleteAll(
+        duplicates.map((e) => e.isarId).toList(),
+      );
+    }
   }
 }

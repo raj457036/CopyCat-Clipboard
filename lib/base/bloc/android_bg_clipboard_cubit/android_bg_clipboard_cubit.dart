@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:android_background_clipboard/android_background_clipboard.dart';
 import 'package:bloc/bloc.dart';
@@ -12,6 +13,8 @@ import 'package:clipboard/base/enums/platform_os.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/debounce.dart';
 import 'package:clipboard/utils/utility.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart' as p;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:synchronized/synchronized.dart';
@@ -66,18 +69,33 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
   }
 
   Future<bool> writeToLocal(ClipboardItem item) async {
+    if (item.deletedAt != null) {
+      final res = await clipRepo.delete(item, soft: false);
+      final wasDeleted = res.getOrElse(() => false);
+      if (wasDeleted) {
+        syncEventBus.emit<ClipboardItem>((CrossSyncEventType.delete, item));
+      }
+      return true;
+    }
+
     final result = await clipRepo.updateOrCreate(item);
     return result.fold((failure) => false, (r) async {
-      var (item, created) = r;
-      item = await item.decrypt();
-      final eventType = item.deletedAt != null
-          ? CrossSyncEventType.delete
-          : created
+      var (savedItem, created) = r;
+      savedItem = savedItem.locked ? savedItem : await savedItem.decrypt();
+      final eventType = created
           ? CrossSyncEventType.create
           : CrossSyncEventType.update;
-      syncEventBus.emit<ClipboardItem>((eventType, item));
+      syncEventBus.emit<ClipboardItem>((eventType, savedItem));
       return true;
     });
+  }
+
+  static String? _cleanString(dynamic raw) {
+    if (raw is! String) return null;
+    final trimmed = raw.trim();
+    return (trimmed.isEmpty || trimmed.toLowerCase() == 'null')
+        ? null
+        : trimmed;
   }
 
   ClipboardItem parseClip(Map clip) {
@@ -94,11 +112,12 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       "Phone" => TextCategory.phone,
       _ => null,
     };
-    final rawDesc = (clip["label"] as String?)?.trim();
-    final desc =
-        (rawDesc == null || rawDesc.isEmpty || rawDesc.toLowerCase() == 'null')
-        ? null
-        : rawDesc;
+    final cleanTitle = _cleanString(clip["title"]);
+    final cleanDescription = _cleanString(clip["description"]);
+    final cleanLabel = _cleanString(clip["label"]);
+    final resolvedTitle = cleanTitle ?? cleanLabel;
+    final resolvedDescription = cleanDescription;
+
     final serverIdRaw = clip["serverId"];
     final serverId = serverIdRaw is num ? serverIdRaw.toInt() : -1;
     final timestampRaw = clip["timestamp"];
@@ -107,11 +126,13 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
         : systemTime();
     final clipText = clip["text"] as String?;
     final encrypted = clip["encrypted"] == true;
+    final locked = clip["locked"] == true;
     final iv = clip["iv"] as String?;
     final encMode = clip["encMode"] as String?;
-    final sourceId = (clip["sourceId"] as String?)?.trim();
-    final sourceApp = (clip["sourceApp"] as String?)?.trim();
-    final originId = clip["originId"] as String?;
+    final sourceId = _cleanString(clip["sourceId"]);
+    final sourceApp = _cleanString(clip["sourceApp"]);
+    final originId =
+        _cleanString(clip["originId"]) ?? ClipboardItem.generateOriginId();
     final deletedAtRaw = clip["deletedAt"];
     final deletedAt = deletedAtRaw is num
         ? DateTime.fromMillisecondsSinceEpoch(deletedAtRaw.toInt())
@@ -132,34 +153,44 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       localPath = null;
     }
 
-    // Infer MIME type and upgrade to media type from the cached file extension.
-    // The Android file storage format does not persist fileMimeType, so we
-    // derive it from the extension written by writeBinaryClip() / handleBinaryClip().
-    String? fileMimeType;
-    ClipItemType resolvedType = clipType;
+    int? fileSize = (clip["fileSize"] as num?)?.toInt();
+    String? fileExtension = _cleanString(clip["fileExtension"]);
+    String? fileMimeType = _cleanString(clip["fileMimeType"]);
+
     if (isFileClip && localPath != null) {
-      final ext = localPath.split('.').last.toLowerCase();
-      const imageExts = {
-        'jpg',
-        'jpeg',
-        'png',
-        'gif',
-        'webp',
-        'bmp',
-        'heic',
-        'heif',
-        'svg',
-      };
-      const videoExts = {'mp4', 'mov', 'avi', 'mkv', 'm4v', 'webm', '3gp'};
-      if (imageExts.contains(ext)) {
-        fileMimeType = ext == 'jpg'
-            ? 'image/jpeg'
-            : ext == 'heif'
-            ? 'image/heic'
-            : 'image/$ext';
-        resolvedType = ClipItemType.media;
-      } else if (videoExts.contains(ext)) {
-        fileMimeType = ext == 'mov' ? 'video/quicktime' : 'video/$ext';
+      final file = File(localPath);
+      if (file.existsSync()) {
+        fileSize ??= file.lengthSync();
+      }
+      if (fileExtension == null ||
+          fileExtension.isEmpty ||
+          fileExtension == 'bin') {
+        final ext = p.extension(localPath).replaceFirst('.', '').toLowerCase();
+        if (ext.isNotEmpty && ext != 'bin') {
+          fileExtension = ext;
+        }
+      }
+      if (fileMimeType == null ||
+          fileMimeType.isEmpty ||
+          fileMimeType == '*/*' ||
+          fileMimeType == 'application/octet-stream') {
+        fileMimeType = lookupMimeType(localPath);
+      }
+      if ((fileExtension == null ||
+              fileExtension.isEmpty ||
+              fileExtension == 'bin') &&
+          fileMimeType != null) {
+        final fromMime = extensionFromMime(fileMimeType);
+        if (fromMime != null && fromMime.isNotEmpty) {
+          fileExtension = fromMime == 'jpeg' ? 'jpg' : fromMime;
+        }
+      }
+    }
+
+    ClipItemType resolvedType = clipType;
+    if (isFileClip && fileMimeType != null) {
+      if (fileMimeType.startsWith('image/') ||
+          fileMimeType.startsWith('video/')) {
         resolvedType = ClipItemType.media;
       }
     }
@@ -170,22 +201,25 @@ class AndroidBgClipboardCubit extends Cubit<AndroidBgClipboardState> {
       type: resolvedType,
       os: PlatformOS.android,
       encrypted: encrypted,
+      locked: locked,
       iv: iv,
       encMode: encMode,
       textCategory: textCategory,
       text: resolvedType == ClipItemType.text ? clipText : null,
       url: resolvedType == ClipItemType.url ? clipText : null,
       localPath: localPath,
-      fileName: isFileClip ? desc : null,
+      fileName: isFileClip ? (cleanLabel ?? resolvedTitle) : null,
       fileMimeType: fileMimeType,
-      title: desc,
-      description: desc,
-      sourceId: sourceId?.isEmpty == true ? null : sourceId,
-      sourceApp: sourceApp?.isEmpty == true ? null : sourceApp,
+      fileExtension: fileExtension,
+      fileSize: fileSize,
+      title: resolvedTitle,
+      description: resolvedDescription,
+      sourceId: sourceId,
+      sourceApp: sourceApp,
       serverId: serverId == -1 ? null : serverId,
       lastSynced: systemTime(),
       deviceId: deviceId,
-      originId: originId?.isEmpty == true ? null : originId,
+      originId: originId,
       deletedAt: deletedAt,
     );
   }

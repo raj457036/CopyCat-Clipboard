@@ -57,7 +57,10 @@ const revenueCatApplePublicKey = String.fromEnvironment(
 const iosAppStoreId = String.fromEnvironment("IOS_APP_STORE_ID");
 const microsoftStoreId = String.fromEnvironment("MICROSOFT_STORE_ID");
 
-const dbName = "CopyCat-Clipboard-DB";
+const dbName = String.fromEnvironment(
+  "DEFAULT_DATABASE_LOCATION",
+  defaultValue: "CopyCat-Clipboard-DB",
+);
 
 // system env variable keys
 const dbPathEnvKey = "COPYCAT_DB_ROOT";

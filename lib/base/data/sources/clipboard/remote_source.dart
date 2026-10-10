@@ -115,20 +115,25 @@ class RemoteClipboardSource implements ClipboardSource {
     List<ClipboardItem> items, {
     bool soft = false,
   }) async {
-    final items_ = items
-        .where((item) => item.serverId != null && item.userId != kLocalUserId)
-        .map((item) {
-          final json = item
-              .copyWith(
-                deletedAt: systemTime(),
-                modified: systemTime(),
-                text: "",
-                url: "",
-              )
-              .toJson();
-          return {...json, "id": item.serverId};
-        })
-        .toList();
+    final deduped = <int, ClipboardItem>{};
+    for (final item in items) {
+      final serverId = item.serverId;
+      if (serverId == null || item.userId == kLocalUserId) continue;
+      deduped[serverId] = item;
+    }
+    if (deduped.isEmpty) return items;
+
+    final items_ = deduped.values.map((item) {
+      final json = item
+          .copyWith(
+            deletedAt: systemTime(),
+            modified: systemTime(),
+            text: "",
+            url: "",
+          )
+          .toJson();
+      return {...json, "id": item.serverId};
+    }).toList();
     await db.from(clipItemTable).upsert(items_);
     return items;
   }
@@ -163,10 +168,18 @@ class RemoteClipboardSource implements ClipboardSource {
   @override
   Future<List<ClipboardItem>> updateAll(List<ClipboardItem> items) async {
     //? only support updating collection id in bulk.
-    final updates = items.map(
-      (item) => {"id": item.serverId, "collectionId": item.serverCollectionId},
-    );
-    await db.from(clipItemTable).upsert(updates);
+    final deduped = <int, Map<String, dynamic>>{};
+    for (final item in items) {
+      final serverId = item.serverId;
+      if (serverId == null) continue;
+      deduped[serverId] = {
+        "id": serverId,
+        "collectionId": item.serverCollectionId,
+      };
+    }
+    if (deduped.isEmpty) return items;
+
+    await db.from(clipItemTable).upsert(deduped.values.toList());
     return items;
   }
 }

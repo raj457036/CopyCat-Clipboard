@@ -53,18 +53,23 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     private var encryptor: CopyCatEncryptor? = null
     private val authSyncFailureTracker = CopyCatAuthSyncFailureTracker(appContext)
     private val mainHandler = Handler(Looper.getMainLooper())
-    private val lastErrorToastAtMs = mutableMapOf<String, Long>()
+    private var lastErrorToastMessage: String = ""
+    private var lastErrorToastAtMs: Long = 0L
     private val errorToastCooldownMs = 5000L
 
     fun showErrorToast(message: String) {
         val now = SystemClock.elapsedRealtime()
-        synchronized(lastErrorToastAtMs) {
-            val lastToast = lastErrorToastAtMs[message] ?: 0L
-            if (now - lastToast < errorToastCooldownMs) return
-            lastErrorToastAtMs[message] = now
+        synchronized(this) {
+            if (message == lastErrorToastMessage && now - lastErrorToastAtMs < errorToastCooldownMs) {
+                return
+            }
+            lastErrorToastMessage = message
+            lastErrorToastAtMs = now
         }
         mainHandler.post {
-            Toast.makeText(appContext, message, Toast.LENGTH_SHORT).show()
+            runCatching {
+                Toast.makeText(appContext, message, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -614,17 +619,34 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         if (currentUid.isNotBlank() && lanSyncManager.userId != currentUid) {
             lanSyncManager.userId = currentUid
         }
-        lanSyncManager.broadcastTextClip(
-            originId = originId,
-            type = type,
-            content = contentToPersist,
-            label = label,
-            encrypted = encrypted,
-            iv = iv,
-            encMode = encMode,
-            sourceId = sourceId,
-            sourceApp = sourceApp,
-        )
+        val nowIso = java.time.Instant.now().toString()
+        if (sourceId == appContext.packageName) {
+            debugLog(logTag) { "Skipping LAN broadcast for clip from own app ($sourceId)" }
+        } else {
+            lanSyncManager.broadcastClip(
+                LanClipItem(
+                    originId = originId,
+                    type = if (type == ClipType.Url) "url" else "text",
+                    textCategory = when (type) {
+                        ClipType.Phone -> "phone"
+                        ClipType.Email -> "email"
+                        else -> null
+                    },
+                    text = if (type == ClipType.Url) null else contentToPersist,
+                    url = if (type == ClipType.Url) contentToPersist else null,
+                    title = label,
+                    encrypted = encrypted,
+                    iv = iv,
+                    encMode = encMode,
+                    sourceId = sourceId,
+                    sourceApp = sourceApp,
+                    userId = currentUid,
+                    created = nowIso,
+                    modified = nowIso,
+                    os = "android",
+                )
+            )
+        }
 
         // Sync to server if enabled
         if (syncEnabled) {
@@ -724,6 +746,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         val rawHash = contentHash(data)
         var originId = ""
         var nextId = ""
+        var writtenFilePath = ""
 
         val writeResult = synchronized(latestClipLock) {
             if (lastClipHash == rawHash) {
@@ -743,6 +766,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                 return@synchronized CopyCatFileStorage.ClipWriteOutcome.Failed
             }
 
+            writtenFilePath = cacheFile.absolutePath
             nextId = getNextId()
 
             val success = fileStorage.writeClipItem(
@@ -754,6 +778,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                 originId = originId,
                 sourceId = sourceId,
                 sourceApp = sourceApp ?: "",
+                fileMimeType = mimeType,
+                fileExtension = ext,
+                fileSize = data.size.toLong(),
             )
             if (!success) {
                 Log.e(logTag, "writeBinaryClip: failed to persist to file storage")
@@ -780,16 +807,29 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         if (binaryUid.isNotBlank() && lanSyncManager.userId != binaryUid) {
             lanSyncManager.userId = binaryUid
         }
-        lanSyncManager.broadcastBinaryClip(
-            originId = originId,
-            type = ClipType.FileUrl,
-            data = data,
-            mimeType = mimeType,
-            ext = ext,
-            fileName = fileName,
-            sourceId = sourceId,
-            sourceApp = sourceApp,
-        )
+        val binaryNowIso = java.time.Instant.now().toString()
+        val clipType = if (mimeType.startsWith("image/")) "media" else "file"
+        if (sourceId == appContext.packageName) {
+            debugLog(logTag) { "Skipping LAN broadcast for binary clip from own app ($sourceId)" }
+        } else {
+            lanSyncManager.broadcastClip(
+                LanClipItem(
+                    originId = originId,
+                    type = clipType,
+                    localPath = writtenFilePath,
+                    fileMimeType = mimeType,
+                    fileExtension = ext,
+                    fileName = fileName,
+                    sourceId = sourceId,
+                    sourceApp = sourceApp,
+                    userId = binaryUid,
+                    created = binaryNowIso,
+                    modified = binaryNowIso,
+                    os = "android",
+                ),
+                localPath = writtenFilePath,
+            )
+        }
 
         debugLog(logTag) { "writeBinaryClip: persisted $nextId and broadcast $mimeType clip (${ data.size } bytes)" }
         return writeResult
@@ -798,70 +838,21 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
     /**
      * Broadcasts a foreground-captured clip to LAN peers by routing directly
      * through the already-running [CopyCatLanSyncManager].
-     *
-     * Called from Flutter (foreground app) via method channel so that Android
-     * foreground clips participate in instant-LAN-sync without needing to go
-     * through the background service's capture pipeline.
-     *
-     * [data] keys: originId, type (text|url|media|file), content, label,
-     * encrypted, iv?, encMode?, sourceId?, sourceApp?,
-     * localPath? (for media/file), fileMimeType?, fileExtension?, fileName?
      */
-    fun broadcastForegroundClip(data: Map<String, Any?>) {
-        val typeStr = data["type"] as? String ?: return
-        val originId = data["originId"] as? String ?: return
-        val label = data["label"] as? String ?: ""
-        val encrypted = data["encrypted"] as? Boolean ?: false
-        val iv = data["iv"] as? String
-        val encMode = data["encMode"] as? String
-        val sourceId = data["sourceId"] as? String
-        val sourceApp = data["sourceApp"] as? String
-
-        // Lazily propagate userId in case the token loaded after service start.
+    fun broadcastForegroundClip(item: LanClipItem, localPath: String? = null) {
         if (lanSyncManager.userId.isBlank()) {
             val uid = syncManager.currentUserId ?: ""
             if (uid.isNotBlank()) lanSyncManager.userId = uid
         }
+        lanSyncManager.broadcastClip(item, localPath)
+    }
 
-        when (typeStr) {
-            "text", "url" -> {
-                val content = data["content"] as? String ?: return
-                val type = if (typeStr == "url") ClipType.Url else ClipType.Text
-                lanSyncManager.broadcastTextClip(
-                    originId = originId,
-                    type = type,
-                    content = content,
-                    label = label,
-                    encrypted = encrypted,
-                    iv = iv,
-                    encMode = encMode,
-                    sourceId = sourceId,
-                    sourceApp = sourceApp,
-                )
-            }
-            "media", "file" -> {
-                val localPath = data["localPath"] as? String ?: return
-                val mimeType = data["fileMimeType"] as? String ?: "*/*"
-                val ext = data["fileExtension"] as? String ?: ""
-                val fileName = data["fileName"] as? String ?: ""
-                val fileBytes = try {
-                    java.io.File(localPath).readBytes()
-                } catch (e: Exception) {
-                    Log.w(logTag, "broadcastForegroundClip: cannot read $localPath: ${e.message}")
-                    return
-                }
-                lanSyncManager.broadcastBinaryClip(
-                    originId = originId,
-                    type = ClipType.FileUrl,
-                    data = fileBytes,
-                    mimeType = mimeType,
-                    ext = ext,
-                    fileName = fileName,
-                    sourceId = sourceId,
-                    sourceApp = sourceApp,
-                )
-            }
+    fun broadcastForegroundClip(data: Map<String, Any?>) {
+        if (lanSyncManager.userId.isBlank()) {
+            val uid = syncManager.currentUserId ?: ""
+            if (uid.isNotBlank()) lanSyncManager.userId = uid
         }
+        lanSyncManager.broadcastClip(data)
     }
 
     fun clean() {
@@ -890,8 +881,9 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         return when (detectionMode) {
             ClipboardDetectionMode.MODE_INACTIVE -> ModeInactiveStrategy()
             ClipboardDetectionMode.MODE_1_ACK_TEXT ->
-                Mode1AckTextStrategy(initialAckText = mode1AckText)
-            ClipboardDetectionMode.MODE_2_AGGRESSIVE -> Mode2AggressiveStrategy()
+                Mode1AckTextStrategy(context = appContext, initialAckText = mode1AckText)
+            ClipboardDetectionMode.MODE_2_AGGRESSIVE ->
+                Mode2AggressiveStrategy(context = appContext, initialAckText = mode1AckText)
         }
     }
 
@@ -956,17 +948,22 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             type = clip.type,
             label = clip.label ?: "",
             encrypted = clip.encrypted,
+            locked = clip.locked,
             iv = clip.iv,
             encMode = clip.encMode,
             serverId = clip.serverId,
             userId = clip.userId ?: "",
             timestamp = clip.modifiedAt,
             originId = clip.originId ?: "",
+            title = clip.title,
+            description = clip.description,
         )
 
-        val decryptedContent = decryptRemoteContent(clip) ?: return
-        Log.i(logTag, "Applying remote clip to system clipboard")
-        remoteClipApplier?.invoke(decryptedContent)
+        if (!clip.locked) {
+            val decryptedContent = decryptRemoteContent(clip) ?: return
+            Log.i(logTag, "Applying remote clip to system clipboard")
+            remoteClipApplier?.invoke(decryptedContent)
+        }
     }
 
     /** Called by [CopyCatLanSyncManager] when a clip arrives from a LAN peer. */
@@ -1004,6 +1001,8 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                 sourceId = payload.sourceId ?: "",
                 sourceApp = payload.sourceApp ?: "",
                 deletedAt = tombstoneTimestamp,
+                title = payload.title,
+                description = payload.description,
             )
 
             if (writeSuccess) {
@@ -1028,6 +1027,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
         val isFileClip = payload.localFilePath != null ||
             (payload.content.isBlank() && text.isNotBlank())
 
+        val resolvedTitle = payload.title?.takeIf { it.isNotBlank() }
+            ?: (if (!isFileClip) payload.label.takeIf { it.isNotBlank() } else null)
+            ?: payload.fileName?.takeIf { it.isNotBlank() }
+            ?: payload.label
+
         val written = fileStorage.writeClipItem(
             clipId = clipId,
             text = text,
@@ -1038,6 +1042,7 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
                 payload.label
             },
             encrypted = if (isFileClip) false else payload.encrypted,
+            locked = if (isFileClip) false else payload.locked,
             iv = if (isFileClip) null else payload.iv,
             encMode = if (isFileClip) null else payload.encMode,
             serverId = payload.serverId ?: -1,
@@ -1047,6 +1052,11 @@ class CopyCatSharedStorage private constructor(applicationContext: Context) {
             sourceId = payload.sourceId ?: "",
             sourceApp = payload.sourceApp ?: "",
             deletedAt = null,
+            title = resolvedTitle,
+            description = payload.description,
+            fileMimeType = payload.fileMimeType,
+            fileExtension = payload.fileExtension,
+            fileSize = payload.fileSize,
         )
 
         if (written) {

@@ -9,6 +9,7 @@ import 'package:clipboard/base/domain/repositories/sync_clipboard.dart';
 import 'package:clipboard/base/domain/services/clip_batch_sync_service.dart';
 import 'package:clipboard/base/domain/services/conflict_resolver.dart';
 import 'package:clipboard/base/domain/services/sync_adapter.dart';
+import 'package:clipboard/base/data/services/post_sync_decryption_service.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/paginated_results.dart';
 import 'package:clipboard/utils/utility.dart';
@@ -83,7 +84,8 @@ class CollectionClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     required ConflictResolver<ClipboardItem> conflictResolver,
   }) async {
     await _batchSyncService.waitUntilReady();
-    final events = await _batchSyncService.syncBatch(items);
+    final decrypted = await PostSyncDecryptionService.decryptBatch(items);
+    final events = await _batchSyncService.syncBatch(decrypted);
     return events;
   }
 

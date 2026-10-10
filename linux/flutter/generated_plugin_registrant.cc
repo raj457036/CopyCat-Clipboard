@@ -8,6 +8,7 @@
 
 #include <clipboard_watcher/clipboard_watcher_plugin.h>
 #include <emoji_picker_flutter/emoji_picker_flutter_plugin.h>
+#include <fc_native_video_thumbnail/fc_native_video_thumbnail_plugin.h>
 #include <flutter_platform_alert/flutter_platform_alert_plugin.h>
 #include <flutter_secure_storage_linux/flutter_secure_storage_linux_plugin.h>
 #include <focus_window/focus_window_plugin.h>
@@ -32,6 +33,9 @@ void fl_register_plugins(FlPluginRegistry* registry) {
   g_autoptr(FlPluginRegistrar) emoji_picker_flutter_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "EmojiPickerFlutterPlugin");
   emoji_picker_flutter_plugin_register_with_registrar(emoji_picker_flutter_registrar);
+  g_autoptr(FlPluginRegistrar) fc_native_video_thumbnail_registrar =
+      fl_plugin_registry_get_registrar_for_plugin(registry, "FcNativeVideoThumbnailPlugin");
+  fc_native_video_thumbnail_plugin_register_with_registrar(fc_native_video_thumbnail_registrar);
   g_autoptr(FlPluginRegistrar) flutter_platform_alert_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "FlutterPlatformAlertPlugin");
   flutter_platform_alert_plugin_register_with_registrar(flutter_platform_alert_registrar);

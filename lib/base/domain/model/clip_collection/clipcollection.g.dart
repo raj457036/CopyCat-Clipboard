@@ -20,6 +20,7 @@ _ClipCollection _$ClipCollectionFromJson(Map<String, dynamic> json) =>
       title: json['title'] as String,
       description: json['description'] as String?,
       emoji: json['emoji'] as String,
+      color: (json['color'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$ClipCollectionToJson(_ClipCollection instance) =>
@@ -35,6 +36,7 @@ Map<String, dynamic> _$ClipCollectionToJson(_ClipCollection instance) =>
       'title': instance.title,
       'description': instance.description,
       'emoji': instance.emoji,
+      'color': instance.color,
     };
 
 Value? _$JsonConverterFromJson<Json, Value>(

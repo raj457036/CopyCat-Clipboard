@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/domain/model/app_config/appconfig.dart'
+    show SyncSpeed;
 import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
@@ -21,13 +23,11 @@ import 'package:clipboard/utils/applink_listener.dart';
 import 'package:clipboard/utils/debounce.dart';
 import 'package:clipboard/utils/share_listener.dart';
 import 'package:clipboard/utils/utility.dart';
-import 'package:clipboard/common/custom_thumbnailer_generations.dart';
 import 'package:clipboard/widgets/dialogs/in_app_review_dialog.dart';
 import 'package:clipboard/widgets/in_background_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thumbnailer/thumbnailer.dart';
 import 'package:window_manager/window_manager.dart';
 
 class StateInitializer extends StatefulWidget {
@@ -60,6 +60,7 @@ class _StateInitializerState extends State<StateInitializer>
   bool renderingDisabled = false;
   bool _isAppLifecycleBackgrounded = false;
   bool _isWindowBackgrounded = false;
+  bool _wasAppBackgrounded = false;
   bool? _lastClipboardBackgroundState;
   bool _resumeSyncInProgress = false;
 
@@ -103,8 +104,6 @@ class _StateInitializerState extends State<StateInitializer>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       sl<WebDavCleanupService>().runCleanupIfEligible();
     });
-
-    Thumbnailer.addCustomGenerationStrategies(customGenerationStrategies);
   }
 
   Future<void> _trackMobileAppLaunch() async {
@@ -133,6 +132,8 @@ class _StateInitializerState extends State<StateInitializer>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
 
+    logger.d("App lifecycle state changed to: $state");
+
     switch (state) {
       case AppLifecycleState.resumed || AppLifecycleState.inactive:
         powerSaverDebounce.cancel();
@@ -143,6 +144,7 @@ class _StateInitializerState extends State<StateInitializer>
           unawaited(_runResumeSyncCatchUp());
         }
       case _:
+        _wasAppBackgrounded = true;
         _isAppLifecycleBackgrounded = true;
         if (!isDesktopPlatform) {
           powerSaverDebounce(() => disableRendering(true));
@@ -167,33 +169,31 @@ class _StateInitializerState extends State<StateInitializer>
 
   Future<void> _runResumeSyncCatchUp() async {
     if (!mounted || _resumeSyncInProgress) return;
-    if (isDesktopPlatform) return;
+    if (!_wasAppBackgrounded) return;
     if (!appConfigCubit.isSyncEnabled || !_isSyncEligibleAuthState()) return;
 
+    _wasAppBackgrounded = false;
+    _resumeSyncInProgress = true;
     final intervalSeconds =
         monetizationCubit.active?.syncInterval ?? defaultBestEffortSyncInterval;
-
-    _resumeSyncInProgress = true;
-    final wasRunning = syncOrchestrator.isRunning;
     final syncSpeed = appConfigCubit.state.config.syncSpeed;
 
     try {
-      if (wasRunning) {
-        syncOrchestrator.stop();
-      }
-
-      await syncStatusCubit.syncAll(const SyncAllParams(force: true));
-    } catch (e) {
-      logger.e("Resume catch-up sync failed: $e");
-    } finally {
-      if (wasRunning &&
-          appConfigCubit.isSyncEnabled &&
-          _isSyncEligibleAuthState()) {
+      if (!syncOrchestrator.isRunning) {
         syncOrchestrator.start(
           syncSpeed: syncSpeed,
           intervalSeconds: intervalSeconds,
         );
+      } else if (syncSpeed == SyncSpeed.realtime) {
+        await syncOrchestrator.reconnectRealtime();
       }
+
+      if (!isDesktopPlatform) {
+        await syncStatusCubit.syncAll(const SyncAllParams(force: true));
+      }
+    } catch (e) {
+      logger.e("Resume catch-up sync failed: $e");
+    } finally {
       _resumeSyncInProgress = false;
     }
   }

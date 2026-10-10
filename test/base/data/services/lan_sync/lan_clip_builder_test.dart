@@ -176,6 +176,102 @@ void main() {
       );
       expect(result!.userId, 'item-user');
     });
+
+    test('preserves deletedAt from payload', () {
+      final now = DateTime.now().toUtc();
+      final itemJson = _makeTextItemJson(text: 'to-delete')
+        ..['deletedAt'] = now.toIso8601String();
+      final result = builder.buildFromPayload(
+        json: {'item': itemJson, 'content': ''},
+        fromDeviceId: 'dev',
+        originId: 'o-del',
+      );
+      expect(result, isNotNull);
+      expect(result!.deletedAt, isNotNull);
+    });
+
+    test('handles sparse item payload missing created, modified, os, and userId without throwing', () {
+      final result = builder.buildFromPayload(
+        json: {
+          'content': 'Sparse content',
+          'label': 'Sparse label',
+          'ts': 1789392181051,
+          'created': '2026-09-14T12:00:00.000Z',
+          'modified': '2026-09-14T12:00:00.000Z',
+          'os': 'android',
+          'item': {
+            'originId': 'sparse-orig',
+            'type': 'text',
+            'text': 'Sparse content',
+          },
+        },
+        fromDeviceId: 'android-dev',
+        originId: 'sparse-orig',
+      );
+      expect(result, isNotNull);
+      expect(result!.text, 'Sparse content');
+      expect(result.os, PlatformOS.android);
+      expect(result.originId, 'sparse-orig');
+      expect(result.userId, 'user-abc');
+      expect(
+        result.created,
+        DateTime.parse('2026-09-14T12:00:00.000Z').toLocal(),
+      );
+    });
+
+    test('parses ISO-8601 created and modified timestamps in item', () {
+      final result = builder.buildFromPayload(
+        json: {
+          'content': 'ISO content',
+          'item': {
+            'originId': 'iso-orig',
+            'type': 'text',
+            'text': 'ISO content',
+            'created': '2026-09-14T12:00:00.000Z',
+            'modified': '2026-09-14T12:05:00.000Z',
+            'os': 'android',
+          },
+        },
+        fromDeviceId: 'android-dev',
+        originId: 'iso-orig',
+      );
+      expect(result, isNotNull);
+      expect(
+        result!.created,
+        DateTime.parse('2026-09-14T12:00:00.000Z').toLocal(),
+      );
+      expect(
+        result.modified,
+        DateTime.parse('2026-09-14T12:05:00.000Z').toLocal(),
+      );
+    });
+
+    test('parses textCategory when present in item payload', () {
+      final itemJson = _makeTextItemJson(text: '206099')
+        ..['textCategory'] = 'phone';
+      final result = builder.buildFromPayload(
+        json: {'item': itemJson, 'content': '206099'},
+        fromDeviceId: 'dev',
+        originId: 'o1',
+      );
+      expect(result, isNotNull);
+      expect(result!.textCategory, TextCategory.phone);
+    });
+
+    test('falls back to outer json textCategory when omitted from item payload', () {
+      final itemJson = _makeTextItemJson(text: 'test@example.com');
+      final result = builder.buildFromPayload(
+        json: {
+          'item': itemJson,
+          'content': 'test@example.com',
+          'textCategory': 'EMAIL',
+        },
+        fromDeviceId: 'dev',
+        originId: 'o2',
+      );
+      expect(result, isNotNull);
+      expect(result!.textCategory, TextCategory.email);
+    });
   });
 }
 

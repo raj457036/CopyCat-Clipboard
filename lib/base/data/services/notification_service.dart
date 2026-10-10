@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:clipboard/common/globals.dart';
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/routes/routes.dart' show rootNavigationKey;
 import 'package:clipboard/utils/common_extension.dart'
     show BreakpointExtension, ListExtension;
@@ -77,13 +78,10 @@ class InAppNotificationService {
   /// MARK: - NotificationService Implementation
 
   void dismissAll() {
-    while (_activeNotifications.isNotEmpty) {
-      try {
-        _activeNotifications.removeLast().controller.close();
-      } catch (e) {
-        debugPrint('Error dismissing notification: $e');
-      }
-    }
+    try {
+      _scaffoldMessenger.clearSnackBars();
+    } catch (_) {}
+    _activeNotifications.clear();
   }
 
   /// Dismisses the notification with the given ID, if it is currently active.
@@ -94,9 +92,10 @@ class InAppNotificationService {
       );
       if (notification == null) return;
 
+      _activeNotifications.remove(notification);
       notification.controller.close();
     } catch (e) {
-      debugPrint('Error dismissing notification: $e');
+      logger.e('Error dismissing notification: $e');
     }
   }
 
@@ -128,9 +127,18 @@ class InAppNotificationService {
   Future<void> _notify(NotificationMessage message) async {
     await windowSizeStabilized();
 
-    if (_activeNotifications.any((active) => active.message.id == message.id) ||
-        _context == null) {
-      dismiss(message.id!);
+    if (message.clearPrevious) {
+      dismissAll();
+    } else if (message.id != null) {
+      final hasActive = _activeNotifications.any(
+        (active) => active.message.id == message.id,
+      );
+      if (hasActive) {
+        dismiss(message.id!);
+        try {
+          _scaffoldMessenger.removeCurrentSnackBar();
+        } catch (_) {}
+      }
     }
 
     final snackbar = _buildSnackBar(message);
