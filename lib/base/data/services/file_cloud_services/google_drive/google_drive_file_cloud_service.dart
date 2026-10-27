@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
 import 'package:clipboard/base/data/services/file_cloud_services/google_drive/google_services.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
@@ -57,10 +58,12 @@ class GoogleDriveFileCloudService implements FileCloudService {
       );
     }
 
-    // Finish image processing before creating a remote file so a worker
-    // timeout cannot leave an upload running after the queue moves on.
-    final blurHash = await _getBlurHashIfNeeded(item);
+    final blurHashFuture = _getBlurHashIfNeeded(item).catchError((Object e) {
+      logger.w('Blur hash failed for clip ${item.id}: $e');
+      return null;
+    });
     final result = await _drive.upload(item);
+    final blurHash = await blurHashFuture;
 
     return result.fold((failure) => Left(failure), (uploadedItem) {
       final updated = uploadedItem.copyWith(

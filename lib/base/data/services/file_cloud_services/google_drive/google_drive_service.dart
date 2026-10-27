@@ -40,6 +40,9 @@ class GoogleOAuth2Service {
 @Named("google_drive")
 @LazySingleton(as: DriveService)
 class GoogleDriveService implements DriveService {
+  /// Files up to this size are uploaded in one multipart request.
+  static const _multipartUploadLimit = 2 * 1024 * 1024;
+
   final _uploadOperations = <int, Completer>{};
   final _downloadOperations = <int, Completer>{};
 
@@ -140,13 +143,9 @@ class GoogleDriveService implements DriveService {
       final result = await drive.files.create(
         gfile,
         uploadMedia: media,
-        // Resumable uploads reject empty files; multipart handles them.
-        uploadOptions: length == 0
+        uploadOptions: length <= _multipartUploadLimit
             ? UploadOptions.defaultOptions
-            : ResumableUploadOptions(
-                // chunkSize: $10MB,
-                numberOfAttempts: 8,
-              ),
+            : ResumableUploadOptions(numberOfAttempts: 8),
       );
 
       item = item.copyWith(driveFileId: result.id);
