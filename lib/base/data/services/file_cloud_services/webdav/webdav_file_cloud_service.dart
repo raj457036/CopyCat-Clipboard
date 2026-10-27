@@ -186,8 +186,12 @@ class WebDavFileCloudService implements FileCloudService {
     }
 
     HttpClient? client;
+    // Cosmetic; runs alongside the upload and never fails it.
+    final blurHashFuture = _getBlurHashIfNeeded(item).catchError((Object e) {
+      _logger.w('Blur hash failed for clip ${item.id}: $e');
+      return null;
+    });
     try {
-      final blurHash = await _getBlurHashIfNeeded(item);
       client = _createHttpClient(config);
       await _ensureDirectoryExists(client, config, config.sanitizedBasePath);
 
@@ -216,6 +220,7 @@ class WebDavFileCloudService implements FileCloudService {
 
       if (statusCode >= 200 && statusCode < 300) {
         final cloudFileId = CloudFileId.webdav(relativePath);
+        final blurHash = await blurHashFuture;
 
         final updated = item.copyWith(
           driveFileId: cloudFileId.format(),
