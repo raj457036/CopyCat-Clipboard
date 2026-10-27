@@ -78,7 +78,7 @@ class E2EESetupListTile extends StatelessWidget {
             SwitchListTile(
               secondary: const Icon(Icons.lock_outline_rounded),
               value: autoEncrypt,
-              onChanged: setup
+              onChanged: setup || autoEncrypt
                   ? (value) => toggleAutoEncrypt(context, value)
                   : null,
               title: Text(context.locale.settings__switch__e2e__title),
@@ -90,7 +90,7 @@ class E2EESetupListTile extends StatelessWidget {
             SwitchListTile(
               secondary: const Icon(Icons.shield_rounded),
               value: useNonce,
-              onChanged: setup
+              onChanged: setup || useNonce
                   ? (value) => toggleUseEncryptionNonce(context, value)
                   : null,
               title: Text(context.locale.settings__switch__e2e_nonce__title),
