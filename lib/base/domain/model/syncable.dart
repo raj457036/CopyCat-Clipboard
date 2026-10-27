@@ -1,3 +1,4 @@
+import 'package:clipboard/base/constants/strings/strings.dart';
 import 'package:clipboard/base/domain/model/base.dart';
 
 /// Mixin for domain models that participate in cross-device sync.
@@ -22,6 +23,12 @@ abstract mixin class Syncable implements Identifiable {
 
   /// The deletion timestamp for soft-deleted items.
   DateTime? get deletedAt;
+
+  /// Local-only entities have no server identity and must never be pushed.
+  bool get belongsToLocalUser => userId == kLocalUserId;
+
+  /// Owner of this entity; [kLocalUserId] when created without an account.
+  String get userId;
 
   /// Returns a copy of the entity with updated sync metadata.
   Syncable copyWithSyncMetadata({int? id, DateTime? lastSynced});

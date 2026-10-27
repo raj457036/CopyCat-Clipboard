@@ -1,3 +1,4 @@
+import 'package:clipboard/base/domain/repositories/auth.dart';
 import 'package:clipboard/base/bloc/clip_collection_cubit/clip_collection_cubit.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/domain/sources/clip_collection.dart';
@@ -19,6 +20,7 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
   final ClipCollectionSource _remoteSource;
   final ClipCollectionCubit _collectionCubit;
   final CollectionCrossSyncListener _realtimeListener;
+  final AuthRepository _auth;
 
   CollectionSyncAdapter(
     this._syncRepo,
@@ -27,6 +29,7 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
     @Named("remote") this._remoteSource,
     this._collectionCubit,
     this._realtimeListener,
+    this._auth,
   );
 
   @override
@@ -129,6 +132,11 @@ class CollectionSyncAdapter implements SyncAdapter<ClipCollection> {
   @override
   FailureOr<ClipCollection> pushToRemote(ClipCollection item) async {
     try {
+      if (item.belongsToLocalUser) {
+        final userId = _auth.userId;
+        if (userId == null) return const Left(authFailure);
+        item = await _localSource.update(item.copyWith(userId: userId));
+      }
       if (item.serverId == null) {
         final result = await _remoteSource.create(item);
         // We only return success here, the pull will sync back the ID and lastSynced,

@@ -1,3 +1,4 @@
+import 'package:clipboard/base/domain/repositories/auth.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/domain/services/file_cloud_service.dart';
@@ -30,6 +31,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
   /// Direct local source access for write-back operations that must NOT
   /// trigger outbox re-enqueue (e.g., saving serverId after remote creation).
   final ClipboardSource _localSource;
+  final AuthRepository _auth;
 
   ClipSyncAdapter(
     this._syncRepo,
@@ -40,6 +42,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
     this._fileCloudService,
     @Named("local") this._localSource,
     @Named("device_id") this.deviceId,
+    this._auth,
   );
 
   @override
@@ -128,6 +131,12 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
         );
         item = fresh;
       }
+    }
+
+    if (item.belongsToLocalUser) {
+      final userId = _auth.userId;
+      if (userId == null) return const Left(authFailure);
+      item = await _localSource.update(item.copyWith(userId: userId));
     }
 
     // Handle file/media upload via the FileUploadService

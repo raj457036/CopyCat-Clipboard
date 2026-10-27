@@ -470,6 +470,20 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.lazySingleton<_i589.SyncAdapter<_i1066.ClipboardItem>>(
+      () => _i8.ClipSyncAdapter(
+        gh<_i61.SyncRepository>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i230.ClipboardRepository>(instanceName: 'remote'),
+        gh<_i616.ClipBatchSyncService>(),
+        gh<_i545.ClipCrossSyncListener>(),
+        gh<_i112.FileCloudService>(),
+        gh<_i23.ClipboardSource>(instanceName: 'local'),
+        gh<String>(instanceName: 'device_id'),
+        gh<_i580.AuthRepository>(),
+      ),
+      instanceName: 'non_collection_clips',
+    );
+    gh.lazySingleton<_i589.SyncAdapter<_i1066.ClipboardItem>>(
       () => _i272.CollectionClipSyncAdapter(
         gh<_i61.SyncRepository>(),
         gh<_i230.ClipboardRepository>(instanceName: 'local'),
@@ -477,6 +491,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i616.ClipBatchSyncService>(),
         gh<_i112.FileCloudService>(),
         gh<_i23.ClipboardSource>(instanceName: 'local'),
+        gh<_i580.AuthRepository>(),
       ),
       instanceName: 'collection_clips',
     );
@@ -495,20 +510,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i670.ClipCollectionSource>(instanceName: 'remote'),
         gh<_i620.ClipCollectionCubit>(),
         gh<_i545.CollectionCrossSyncListener>(),
+        gh<_i580.AuthRepository>(),
       ),
-    );
-    gh.lazySingleton<_i589.SyncAdapter<_i1066.ClipboardItem>>(
-      () => _i8.ClipSyncAdapter(
-        gh<_i61.SyncRepository>(),
-        gh<_i230.ClipboardRepository>(instanceName: 'local'),
-        gh<_i230.ClipboardRepository>(instanceName: 'remote'),
-        gh<_i616.ClipBatchSyncService>(),
-        gh<_i545.ClipCrossSyncListener>(),
-        gh<_i112.FileCloudService>(),
-        gh<_i23.ClipboardSource>(instanceName: 'local'),
-        gh<String>(instanceName: 'device_id'),
-      ),
-      instanceName: 'non_collection_clips',
     );
     gh.singleton<_i443.SyncOrchestrator>(
       () => _i443.SyncOrchestrator(
@@ -524,15 +527,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i292.SyncEventBus>(),
         gh<String>(instanceName: 'device_id'),
         gh<_i454.SupabaseClient>(),
-      ),
-    );
-    gh.lazySingleton<_i892.SyncStatusCubit>(
-      () => _i892.SyncStatusCubit(
-        gh<_i443.SyncOrchestrator>(),
-        gh<_i292.SyncEventBus>(),
-        gh<_i246.MonetizationCubit>(),
-        gh<_i579.PostSyncDecryptionService>(),
-        gh<_i1069.RestorationStatusRepository>(),
       ),
     );
     gh.singleton<_i805.UserDevicesCubit>(
@@ -557,12 +551,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i292.SyncEventBus>(),
       ),
     );
-    gh.factoryCached<_i489.ClipboardCubit>(
-      () => _i489.ClipboardCubit(
+    gh.lazySingleton<_i892.SyncStatusCubit>(
+      () => _i892.SyncStatusCubit(
+        gh<_i443.SyncOrchestrator>(),
         gh<_i292.SyncEventBus>(),
-        gh<_i230.ClipboardRepository>(instanceName: 'local'),
-        gh<_i542.AppConfigCubit>(),
-        gh<_i892.SyncStatusCubit>(),
+        gh<_i246.MonetizationCubit>(),
+        gh<_i579.PostSyncDecryptionService>(),
+        gh<_i1069.RestorationStatusRepository>(),
       ),
     );
     gh.lazySingleton<_i227.QuickPasteService>(
@@ -580,6 +575,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i657.WindowActionCubit>(),
         gh<_i246.MonetizationCubit>(),
         gh<_i706.OfflinePersistenceCubit>(),
+      ),
+    );
+    gh.factoryCached<_i489.ClipboardCubit>(
+      () => _i489.ClipboardCubit(
+        gh<_i292.SyncEventBus>(),
+        gh<_i230.ClipboardRepository>(instanceName: 'local'),
+        gh<_i542.AppConfigCubit>(),
+        gh<_i892.SyncStatusCubit>(),
       ),
     );
     return this;

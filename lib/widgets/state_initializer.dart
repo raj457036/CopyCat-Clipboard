@@ -7,12 +7,11 @@ import 'package:clipboard/base/domain/model/app_config/appconfig.dart'
 import 'package:clipboard/base/bloc/app_lock_cubit/app_lock_cubit.dart';
 import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
 import 'package:clipboard/base/bloc/clipboard_cubit/clipboard_cubit.dart';
-import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
 import 'package:clipboard/base/bloc/review_prompt_cubit/review_prompt_cubit.dart';
 import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/bloc/window_action_cubit/window_action_cubit.dart';
-import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/constants/numbers/breakpoints.dart';
 import 'package:clipboard/base/data/services/file_cloud_services/webdav/webdav_cleanup_service.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
@@ -52,7 +51,6 @@ class _StateInitializerState extends State<StateInitializer>
   late final AppConfigCubit appConfigCubit;
   late final AuthCubit authCubit;
   late final AppLockCubit appLockCubit;
-  late final MonetizationCubit monetizationCubit;
   late final SyncStatusCubit syncStatusCubit;
   late final SyncOrchestrator syncOrchestrator;
   late final ReviewPromptCubit reviewPromptCubit;
@@ -88,7 +86,6 @@ class _StateInitializerState extends State<StateInitializer>
     appConfigCubit = context.read<AppConfigCubit>();
     authCubit = context.read<AuthCubit>();
     appLockCubit = context.read<AppLockCubit>();
-    monetizationCubit = context.read<MonetizationCubit>();
     syncStatusCubit = context.read<SyncStatusCubit>();
     syncOrchestrator = sl<SyncOrchestrator>();
     reviewPromptCubit = context.read<ReviewPromptCubit>();
@@ -157,14 +154,10 @@ class _StateInitializerState extends State<StateInitializer>
   }
 
   bool _isSyncEligibleAuthState() {
+    // Local-mode users have no account to sync against.
     final authState = authCubit.state;
-    return switch (authState) {
-      AuthenticatedAuthState(:final isOnboardingCompleted) =>
-        isOnboardingCompleted,
-      LocalAuthenticatedAuthState() =>
-        appConfigCubit.state.config.onBoardComplete,
-      _ => false,
-    };
+    return authState is AuthenticatedAuthState &&
+        authState.isOnboardingCompleted;
   }
 
   Future<void> _runResumeSyncCatchUp() async {
@@ -174,16 +167,17 @@ class _StateInitializerState extends State<StateInitializer>
 
     _wasAppBackgrounded = false;
     _resumeSyncInProgress = true;
-    final intervalSeconds =
-        monetizationCubit.active?.syncInterval ?? defaultBestEffortSyncInterval;
     final syncSpeed = appConfigCubit.state.config.syncSpeed;
 
     try {
       if (!syncOrchestrator.isRunning) {
-        syncOrchestrator.start(
-          syncSpeed: syncSpeed,
-          intervalSeconds: intervalSeconds,
+        final failure = await sl<UserDevicesCubit>().ensureSyncReady(
+          userId: authCubit.userId,
         );
+        if (failure != null) {
+          logger.w("Resume catch-up sync not started: ${failure.message}");
+          return;
+        }
       } else if (syncSpeed == SyncSpeed.realtime) {
         await syncOrchestrator.reconnectRealtime();
       }

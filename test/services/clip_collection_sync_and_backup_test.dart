@@ -57,6 +57,7 @@ void main() {
       final collection = ClipCollection(
         id: 1,
         serverId: 101,
+        userId: 'user-1',
         title: 'Work',
         emoji: '💼',
         color: 0x1E88E5,
