@@ -264,6 +264,15 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       preResolve: true,
     );
+    gh.lazySingleton<_i23.ClipboardSource>(
+      () => _i730.LocalClipboardSource(
+        gh<_i214.Isar>(),
+        gh<String>(instanceName: 'device_id'),
+        gh<_i770.SyncOutboxRepository>(),
+        gh<_i292.SyncEventBus>(),
+      ),
+      instanceName: 'local',
+    );
     gh.lazySingleton<_i976.LanSyncService>(
       () => _i976.LanSyncService(
         gh<_i616.ClipBatchSyncService>(),
@@ -318,14 +327,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i756.ApplicationMetaRepositoryImpl(
         gh<_i284.ApplicationMetaSource>(instanceName: 'local'),
       ),
-    );
-    gh.lazySingleton<_i23.ClipboardSource>(
-      () => _i730.LocalClipboardSource(
-        gh<_i214.Isar>(),
-        gh<String>(instanceName: 'device_id'),
-        gh<_i770.SyncOutboxRepository>(),
-      ),
-      instanceName: 'local',
     );
     gh.lazySingleton<_i242.AppLockCubit>(
       () => _i242.AppLockCubit(

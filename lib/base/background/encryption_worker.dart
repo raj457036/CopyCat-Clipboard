@@ -468,7 +468,16 @@ class EncryptionWorker {
   Future<void> waitUntilReady() async {
     final completer = _completer;
     if (completer == null || completer.isCompleted) return;
-    await completer.future;
+    await completer.future.timeout(
+      _workerTimeout,
+      onTimeout: () {
+        _logger.e('Encryption worker startup timed out');
+        throw EncryptionException(
+          'Encryption is not ready. Please restart the app.',
+          code: 'timeout',
+        );
+      },
+    );
   }
 
   /// Encryption is on but the worker isn't running, so content can't be
@@ -675,7 +684,7 @@ class EncryptionWorker {
     if (currentSecret == null) return;
     _logger.w("🔵 Restarting worker due to failure");
     dispose();
-    await start(currentSecret);
+    await start(currentSecret).timeout(_workerTimeout);
   }
 
   Exception _exceptionForAction(

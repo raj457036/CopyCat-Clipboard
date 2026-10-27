@@ -1,4 +1,5 @@
 import 'package:clipboard/base/bloc/offline_persistance_cubit/offline_persistance_cubit.dart';
+import 'package:clipboard/base/bloc/sync_status_cubit/sync_status_cubit.dart';
 import 'package:clipboard/base/constants/widget_styles.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/l10n/generated/app_localizations.dart';
@@ -12,10 +13,12 @@ class ClipSyncStatusFooter extends StatelessWidget {
 
   const ClipSyncStatusFooter({super.key, required this.item});
 
-  void _sync(BuildContext context) {
-    context.read<OfflinePersistenceCubit>().persist([
+  Future<void> _sync(BuildContext context) async {
+    final sync = context.read<SyncStatusCubit>();
+    await context.read<OfflinePersistenceCubit>().persist([
       item.copyWith(userIntent: true, failure: null),
     ]);
+    await sync.pushPending();
   }
 
   String _syncingLabel(AppLocalizations locale) {

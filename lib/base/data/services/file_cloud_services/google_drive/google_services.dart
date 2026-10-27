@@ -31,12 +31,19 @@ abstract class DriveService {
 
 class GoogleAuthClient with http.BaseClient {
   final String accessToken;
+  final http.Client _client;
+  final Duration _requestTimeout;
 
   BehaviorSubject<int>? progress;
   int currentBytes = 0;
   bool stopped = false;
 
-  GoogleAuthClient(this.accessToken);
+  GoogleAuthClient(
+    this.accessToken, {
+    http.Client? client,
+    Duration requestTimeout = const Duration(minutes: 2),
+  }) : _client = client ?? http.Client(),
+       _requestTimeout = requestTimeout;
 
   BehaviorSubject<int> setProgressListener() {
     progress ??= BehaviorSubject<int>();
@@ -50,9 +57,10 @@ class GoogleAuthClient with http.BaseClient {
 
   @override
   void close() {
+    if (stopped) return;
     unsetProgressListener();
     stopped = true;
-    super.close();
+    _client.close();
   }
 
   @override
@@ -61,7 +69,17 @@ class GoogleAuthClient with http.BaseClient {
       throw StateError('Already stopped');
     }
     request.headers["Authorization"] = "Bearer $accessToken";
-    final response = await request.send();
+    final response = await _client
+        .send(request)
+        .timeout(
+          _requestTimeout,
+          onTimeout: () {
+            close();
+            throw TimeoutException(
+              'Google Drive request timed out. Please retry.',
+            );
+          },
+        );
     int currentLength = 0;
 
     // "range" -> "bytes=0-5505023" // upload
@@ -82,6 +100,24 @@ class GoogleAuthClient with http.BaseClient {
     progress?.add((currentBytes));
     logger.d(() => 'Transfered: $currentBytes bytes');
 
-    return response;
+    return http.StreamedResponse(
+      response.stream.timeout(
+        _requestTimeout,
+        onTimeout: (sink) {
+          close();
+          sink.addError(
+            TimeoutException('Google Drive response stalled. Please retry.'),
+          );
+          sink.close();
+        },
+      ),
+      response.statusCode,
+      contentLength: response.contentLength,
+      request: response.request,
+      headers: response.headers,
+      isRedirect: response.isRedirect,
+      persistentConnection: response.persistentConnection,
+      reasonPhrase: response.reasonPhrase,
+    );
   }
 }

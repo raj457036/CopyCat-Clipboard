@@ -20,14 +20,13 @@ import 'package:universal_io/io.dart';
 @LazySingleton(as: FileCloudService)
 class WebDavFileCloudService implements FileCloudService {
   static const _logger = AppLogger.scoped('WebDavFileCloudService');
+  static const _requestTimeout = Duration(seconds: 30);
+  static const _uploadTimeout = Duration(minutes: 5);
 
   final WebDavCredentialRepository _credentialRepo;
   final AppConfigCubit _appConfig;
 
-  WebDavFileCloudService(
-    this._credentialRepo,
-    this._appConfig,
-  );
+  WebDavFileCloudService(this._credentialRepo, this._appConfig);
 
   @override
   Future<bool> get isAvailable async {
@@ -49,8 +48,9 @@ class WebDavFileCloudService implements FileCloudService {
     final cleanServer = serverUrl.trim().endsWith('/')
         ? serverUrl.trim().substring(0, serverUrl.trim().length - 1)
         : serverUrl.trim();
-    final cleanPath =
-        relativePath.startsWith('/') ? relativePath : '/$relativePath';
+    final cleanPath = relativePath.startsWith('/')
+        ? relativePath
+        : '/$relativePath';
     return Uri.parse('$cleanServer$cleanPath');
   }
 
@@ -106,16 +106,18 @@ class WebDavFileCloudService implements FileCloudService {
       currentPath += '/$segment';
       try {
         final uri = _buildUri(config.serverUrl, currentPath);
-        final req = await client.openUrl('MKCOL', uri);
+        final req = await client.openUrl('MKCOL', uri).timeout(_requestTimeout);
         req.headers.set(
           HttpHeaders.authorizationHeader,
           _getAuthHeader(config),
         );
         final resp = await req.close().timeout(const Duration(seconds: 10));
-        await resp.drain();
+        await resp.timeout(_requestTimeout).drain<void>();
         _logger.d(
           () => 'Directory $currentPath MKCOL status: ${resp.statusCode}',
         );
+      } on TimeoutException {
+        rethrow;
       } catch (e) {
         _logger.d(() => 'Directory check/create notice for $currentPath: $e');
       }
@@ -179,49 +181,40 @@ class WebDavFileCloudService implements FileCloudService {
     final localFile = File(item.localPath!);
     if (!await localFile.exists()) {
       return const Left(
-        Failure(
-          message: "Local file does not exist",
-          code: "file-not-found",
-        ),
+        Failure(message: "Local file does not exist", code: "file-not-found"),
       );
     }
 
     HttpClient? client;
     try {
+      final blurHash = await _getBlurHashIfNeeded(item);
       client = _createHttpClient(config);
       await _ensureDirectoryExists(client, config, config.sanitizedBasePath);
 
       final fileLength = await localFile.length();
-      final fileExt = item.fileExtension ??
+      final fileExt =
+          item.fileExtension ??
           (item.fileName != null ? p.extension(item.fileName!) : '');
-      final sanitizedName =
-          p.basenameWithoutExtension(item.fileName ?? 'file');
+      final sanitizedName = p.basenameWithoutExtension(item.fileName ?? 'file');
       final uniqueFileName = '${getId()}_$sanitizedName$fileExt';
       final relativePath = '${config.sanitizedBasePath}/$uniqueFileName';
 
       final fileUri = _buildUri(config.serverUrl, relativePath);
-      final req = await client.openUrl('PUT', fileUri);
-      req.headers.set(
-        HttpHeaders.authorizationHeader,
-        _getAuthHeader(config),
-      );
+      final req = await client.openUrl('PUT', fileUri).timeout(_requestTimeout);
+      req.headers.set(HttpHeaders.authorizationHeader, _getAuthHeader(config));
       if (item.fileMimeType != null) {
-        req.headers.set(
-          HttpHeaders.contentTypeHeader,
-          item.fileMimeType!,
-        );
+        req.headers.set(HttpHeaders.contentTypeHeader, item.fileMimeType!);
       }
       req.contentLength = fileLength;
 
       // Stream the raw binary bytes directly to the WebDAV server
-      await req.addStream(localFile.openRead());
-      final resp = await req.close();
-      await resp.drain();
+      await req.addStream(localFile.openRead()).timeout(_uploadTimeout);
+      final resp = await req.close().timeout(_requestTimeout);
+      await resp.timeout(_requestTimeout).drain<void>();
 
       final statusCode = resp.statusCode;
 
       if (statusCode >= 200 && statusCode < 300) {
-        final blurHash = await _getBlurHashIfNeeded(item);
         final cloudFileId = CloudFileId.webdav(relativePath);
 
         final updated = item.copyWith(
@@ -280,22 +273,16 @@ class WebDavFileCloudService implements FileCloudService {
       final fileUri = _buildUri(config.serverUrl, cloudFileId.pathOrId);
 
       client = _createHttpClient(config);
-      final req = await client.getUrl(fileUri);
-      req.headers.set(
-        HttpHeaders.authorizationHeader,
-        _getAuthHeader(config),
-      );
+      final req = await client.getUrl(fileUri).timeout(_requestTimeout);
+      req.headers.set(HttpHeaders.authorizationHeader, _getAuthHeader(config));
 
-      final resp = await req.close();
+      final resp = await req.close().timeout(_requestTimeout);
       final statusCode = resp.statusCode;
 
       if (statusCode >= 200 && statusCode < 300) {
         final rootDir = await getPersistedRootDirPath(item.rootDir);
-        final fileName = '${getId()}_${resolveFileName(
-          item.fileName ?? 'file',
-          extension: item.fileExtension,
-          mimeType: item.fileMimeType,
-        )}';
+        final fileName =
+            '${getId()}_${resolveFileName(item.fileName ?? 'file', extension: item.fileExtension, mimeType: item.fileMimeType)}';
         final localFilePath = p.join(rootDir, fileName);
 
         final targetFile = File(localFilePath);
@@ -304,7 +291,7 @@ class WebDavFileCloudService implements FileCloudService {
         IOSink? sink;
         try {
           sink = targetFile.openWrite();
-          await resp.pipe(sink);
+          await resp.timeout(_requestTimeout).pipe(sink);
         } catch (e) {
           await sink?.close();
           if (await targetFile.exists()) {
@@ -316,7 +303,7 @@ class WebDavFileCloudService implements FileCloudService {
         _logger.i('WebDAV download success: $localFilePath');
         return Right(item.copyWith(localPath: localFilePath));
       } else if (statusCode == 404) {
-        await resp.drain();
+        await resp.timeout(_requestTimeout).drain<void>();
         _logger.w('WebDAV file not found (404)');
         return const Left(
           Failure(
@@ -326,7 +313,7 @@ class WebDavFileCloudService implements FileCloudService {
           ),
         );
       } else {
-        await resp.drain();
+        await resp.timeout(_requestTimeout).drain<void>();
         _logger.e('WebDAV download failed with status $statusCode');
         return Left(
           Failure(
@@ -367,14 +354,13 @@ class WebDavFileCloudService implements FileCloudService {
       final fileUri = _buildUri(config.serverUrl, cloudFileId.pathOrId);
 
       client = _createHttpClient(config);
-      final req = await client.openUrl('DELETE', fileUri);
-      req.headers.set(
-        HttpHeaders.authorizationHeader,
-        _getAuthHeader(config),
-      );
+      final req = await client
+          .openUrl('DELETE', fileUri)
+          .timeout(_requestTimeout);
+      req.headers.set(HttpHeaders.authorizationHeader, _getAuthHeader(config));
 
       final resp = await req.close().timeout(const Duration(seconds: 30));
-      await resp.drain();
+      await resp.timeout(_requestTimeout).drain<void>();
       final statusCode = resp.statusCode;
 
       if ((statusCode >= 200 && statusCode < 300) || statusCode == 404) {

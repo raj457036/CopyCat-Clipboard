@@ -4,6 +4,8 @@ import 'package:clipboard/base/domain/model/subscription/subscription.dart';
 import 'package:clipboard/base/domain/repositories/subscription.dart';
 import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/base/data/services/notification_service.dart';
+import 'package:clipboard/base/domain/model/notification_message.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -51,18 +53,32 @@ class MonetizationCubit extends Cubit<MonetizationState>
     });
   }
 
-  Future<void> login(String userId) async {
+  Future<Failure?> refreshSubscription(String userId) async {
     final result = await repo.get(userId: userId);
-    result.fold(
-      (l) {
-        logger.e(l);
-        return null;
-      },
-      (subscription) {
-        if (subscription == null) return null;
-        onSubscriptionChange(subscription);
-      },
-    );
+    return result.fold((failure) => failure, (subscription) {
+      if (subscription == null) {
+        return const Failure(
+          message:
+              'Sync could not start because account access is unavailable.',
+          code: 'sync-account-unavailable',
+        );
+      }
+      onSubscriptionChange(subscription);
+      return null;
+    });
+  }
+
+  Future<void> login(String userId) async {
+    final failure = await refreshSubscription(userId);
+    if (failure != null) {
+      logger.e(failure);
+      InAppNotificationService.i.notify(
+        NotificationMessage(
+          id: 'sync-account-unavailable',
+          body: failure.message,
+        ),
+      );
+    }
 
     if (_isListenersSetUp) return;
     setupListeners();

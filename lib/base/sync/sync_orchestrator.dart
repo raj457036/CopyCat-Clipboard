@@ -14,6 +14,7 @@ import 'package:clipboard/base/domain/model/sync/sync_config.dart';
 import 'package:clipboard/base/domain/services/cross_sync_listener.dart';
 import 'package:clipboard/base/sync/sync_engine.dart';
 import 'package:clipboard/common/logging.dart' show AppLogger;
+import 'package:clipboard/common/failure.dart';
 import 'package:clipboard/utils/utility.dart';
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -33,6 +34,7 @@ class SyncOrchestrator {
   static const _realtimeStartupOutboxDelay = Duration(seconds: 4);
   final Map<String, SyncEngine> _engines = {};
   final SyncOutboxRepository _outboxRepo;
+  final SyncEventBus _eventBus;
   final SupabaseClient _client;
   Timer? _outboxTimer;
   StreamSubscription? _outboxStreamSub;
@@ -49,7 +51,7 @@ class SyncOrchestrator {
     SyncAdapter<ClipCollection> collectionAdapter,
     SyncCursorRepository cursorRepo,
     this._outboxRepo,
-    SyncEventBus eventBus,
+    this._eventBus,
     @Named('device_id') String deviceId,
     this._client,
   ) {
@@ -57,7 +59,7 @@ class SyncOrchestrator {
       clipAdapter,
       cursorRepo,
       _outboxRepo,
-      eventBus,
+      _eventBus,
       deviceId,
       config: const SyncConfig(freshPullOffsetEnabled: true),
       namespace: "clip",
@@ -67,7 +69,7 @@ class SyncOrchestrator {
       collectionAdapter,
       cursorRepo,
       _outboxRepo,
-      eventBus,
+      _eventBus,
       deviceId,
       namespace: "collection",
     );
@@ -76,7 +78,7 @@ class SyncOrchestrator {
       collectionClipAdapter,
       cursorRepo,
       _outboxRepo,
-      eventBus,
+      _eventBus,
       deviceId,
       namespace: "collection-clip",
       dependsOn: [collectionEngine.identity],
@@ -157,9 +159,9 @@ class SyncOrchestrator {
     int? pullOffset,
   }) async {
     final sortedEngines = _getSortedEngines();
+    if (isRunning) await processOutboxes();
 
     for (final engine in sortedEngines) {
-      if (isRunning) await engine.processOutbox();
       final pullOffset_ = engine.config.freshPullOffsetEnabled
           ? pullOffset
           : null;
@@ -183,10 +185,26 @@ class SyncOrchestrator {
 
   /// Triggers a push sync (outbox processing) across all engines.
   Future<void> processOutboxes() async {
-    final sortedEngines = _getSortedEngines();
-    for (final engine in sortedEngines) {
-      await engine.processOutbox();
-    }
+    await _outboxLock.synchronized(() async {
+      final sortedEngines = _getSortedEngines();
+      while (isRunning) {
+        final before = await _outboxRepo.getPending();
+        if (before.isEmpty) return;
+        for (final engine in sortedEngines) {
+          if (!isRunning) return;
+          await engine.processOutbox();
+        }
+        final after = await _outboxRepo.getPending();
+        final previousIds = before.map((entry) => entry.id).toSet();
+        if (after.isNotEmpty &&
+            after.length == before.length &&
+            after.every((entry) => previousIds.contains(entry.id))) {
+          throw StateError(
+            'Sync queue made no progress. Please restart the app.',
+          );
+        }
+      }
+    });
   }
 
   /// Process the outbox with [synchronized] to ensure only one push
@@ -202,11 +220,17 @@ class SyncOrchestrator {
 
   Future<void> _processOutboxSynchronized() async {
     _logger.d('_processOutboxSynchronized triggered');
-    await _outboxLock.synchronized(() async {
-      _logger.d('synchronized lock acquired, calling processOutboxes()');
+    try {
       await processOutboxes();
-      _logger.d('processOutboxes() completed');
-    });
+    } catch (e, stack) {
+      _logger.e('Queue processing failed', error: e, stackTrace: stack);
+      // Queue-level failures have no individual entry to attach to.
+      _eventBus.emitOutboxFailure(
+        entityType: 'queue',
+        outboxEntryId: 0,
+        failure: Failure.fromException(e),
+      );
+    }
   }
 
   /// Start scheduled tasks (polling, outbox) with the given [syncSpeed].

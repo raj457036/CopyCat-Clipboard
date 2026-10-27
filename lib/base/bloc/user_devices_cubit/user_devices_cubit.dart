@@ -9,12 +9,15 @@ import 'package:clipboard/base/domain/repositories/user_devices.dart';
 import 'package:clipboard/base/l10n/l10n.dart';
 import 'package:clipboard/base/sync/sync_orchestrator.dart';
 import 'package:clipboard/common/logging.dart';
+import 'package:clipboard/common/failure.dart';
+import 'package:synchronized/synchronized.dart';
 import 'package:injectable/injectable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:universal_io/io.dart';
 
 @singleton
 class UserDevicesCubit extends Cubit<UserDevicesState> {
+  final _syncSetupLock = Lock();
   final UserDevicesRepository repo;
   final PackageInfo packageInfo;
   final String deviceId;
@@ -158,6 +161,49 @@ class UserDevicesCubit extends Cubit<UserDevicesState> {
       case DeviceAccessStatus.unknown:
         return;
     }
+  }
+
+  Future<Failure?> ensureSyncReady({String? userId}) {
+    return _syncSetupLock.synchronized(() async {
+      if (!appConfigCubit.state.config.enableSync) {
+        return const Failure(
+          message: 'Sync is disabled. Enable it in settings.',
+          code: 'sync-disabled',
+        );
+      }
+      if (syncOrchestrator.isRunning) return null;
+
+      if (monetizationCubit.active == null) {
+        if (userId == null) return authFailure;
+        final failure = await monetizationCubit.refreshSubscription(userId);
+        if (failure != null) return failure;
+      }
+      final subscription = monetizationCubit.active;
+      if (subscription == null) {
+        return const Failure(
+          message: 'Account access is unavailable. Please try Sync now again.',
+          code: 'sync-account-unavailable',
+        );
+      }
+      await appConfigCubit.load(subscription);
+      final access = await registerCurrentDevice();
+      if (access != DeviceAccessStatus.allowed) {
+        return state.failure ??
+            const Failure(
+              message:
+                  'This device is not allowed to sync. Check device management.',
+              code: 'sync-device-not-allowed',
+            );
+      }
+      await setupSyncOrchestrator();
+      if (!syncOrchestrator.isRunning) {
+        return const Failure(
+          message: 'Sync could not start. Please check your sync settings.',
+          code: 'sync-not-running',
+        );
+      }
+      return null;
+    });
   }
 
   Future<void> fetchDevices({bool force = false}) async {

@@ -28,8 +28,12 @@ class GoogleOAuth2Service {
       oauth2.Oauth2Api(client ?? authClient);
 
   Future<oauth2.Tokeninfo> getTokenInfo() async {
-    final client = getOAuth();
-    return await client.tokeninfo();
+    final client = authClient;
+    try {
+      return await getOAuth(client).tokeninfo();
+    } finally {
+      client.close();
+    }
   }
 }
 
@@ -80,11 +84,8 @@ class GoogleDriveService implements DriveService {
               as Media;
 
       final rootDir = await getPersistedRootDirPath(item.rootDir!);
-      final fileName = '${getId()}_${resolveFileName(
-        item.fileName ?? 'file',
-        extension: item.fileExtension,
-        mimeType: item.fileMimeType ?? media.contentType,
-      )}';
+      final fileName =
+          '${getId()}_${resolveFileName(item.fileName ?? 'file', extension: item.fileExtension, mimeType: item.fileMimeType ?? media.contentType)}';
       final filePath = p.join(rootDir, fileName);
 
       final file = io.File(filePath).openWrite();
@@ -166,14 +167,18 @@ class GoogleDriveService implements DriveService {
 
   @override
   Future<bool> delete(ClipboardItem item) async {
+    GoogleAuthClient? client;
     try {
-      final drive = getDrive();
       if (item.driveFileId == null) return false;
+      client = authClient;
+      final drive = getDrive(client);
       await drive.files.delete(item.driveFileId!);
       return true;
     } catch (e) {
       logger.e(e, error: e);
       return false;
+    } finally {
+      client?.close();
     }
   }
 
@@ -193,8 +198,10 @@ class GoogleDriveService implements DriveService {
   @override
   Future<int> deleteMany(List<ClipboardItem> items) async {
     int deletedCount = 0;
+    GoogleAuthClient? client;
     try {
-      final drive = getDrive();
+      client = authClient;
+      final drive = getDrive(client);
       await Future.wait(
         items.where((item) => item.driveFileId != null).map((item) async {
           try {
@@ -210,6 +217,8 @@ class GoogleDriveService implements DriveService {
       );
     } catch (e) {
       logger.e(e, error: e);
+    } finally {
+      client?.close();
     }
     return deletedCount;
   }

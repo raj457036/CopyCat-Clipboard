@@ -67,6 +67,18 @@ class SyncOutboxFailureEvent implements SyncEvent {
 @singleton
 class SyncEventBus {
   final _controller = StreamController<SyncEvent>.broadcast();
+  final Set<(String, int)> _processing = {};
+
+  bool isProcessing(String entityType, int localId) =>
+      _processing.contains((entityType, localId));
+
+  void setProcessing(String entityType, int localId, bool processing) {
+    if (processing) {
+      _processing.add((entityType, localId));
+    } else {
+      _processing.remove((entityType, localId));
+    }
+  }
 
   Stream<SyncEvent> get stream => _controller.stream;
 
@@ -108,6 +120,7 @@ class SyncEventBus {
   }
 
   void dispose() {
+    _processing.clear();
     _controller.close();
   }
 }

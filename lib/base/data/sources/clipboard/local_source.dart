@@ -3,6 +3,7 @@
 import 'package:clipboard/base/data/isar/adapters/isar_clipboard_item.dart';
 import 'package:clipboard/base/domain/model/clipboard_item/clipboard_item.dart';
 import 'package:clipboard/base/domain/repositories/sync_outbox.dart';
+import 'package:clipboard/base/domain/services/sync_event_bus.dart';
 import 'package:clipboard/base/domain/sources/clipboard.dart';
 import 'package:clipboard/base/enums/clip_type.dart';
 import 'package:clipboard/base/enums/sort.dart';
@@ -20,8 +21,14 @@ class LocalClipboardSource implements ClipboardSource {
   final Isar db;
   final String deviceId;
   final SyncOutboxRepository outbox;
+  final SyncEventBus syncEventBus;
 
-  LocalClipboardSource(this.db, @Named('device_id') this.deviceId, this.outbox);
+  LocalClipboardSource(
+    this.db,
+    @Named('device_id') this.deviceId,
+    this.outbox,
+    this.syncEventBus,
+  );
 
   IsarCollection<IsarClipboardItem> get _collection =>
       db.collection<IsarClipboardItem>();
@@ -155,6 +162,9 @@ class LocalClipboardSource implements ClipboardSource {
     final isarResults = await db.txn(() async => await paginatedQuery);
     final results = isarResults.map((e) {
       final item = _toPreviewItem(e.toDomain());
+      if (item.id != null && syncEventBus.isProcessing('clip', item.id!)) {
+        return item.copyWith(uploading: true, isQueued: false);
+      }
       return item.id != null && outbox.isLocalIdQueued('clip', item.id!)
           ? item.copyWith(isQueued: true)
           : item;

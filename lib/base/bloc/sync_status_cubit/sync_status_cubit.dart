@@ -2,6 +2,8 @@ import 'dart:async' show StreamSubscription;
 
 import 'package:bloc/bloc.dart';
 import 'package:clipboard/base/bloc/app_config_cubit/app_config_cubit.dart';
+import 'package:clipboard/base/bloc/auth_cubit/auth_cubit.dart';
+import 'package:clipboard/base/bloc/user_devices_cubit/user_devices_cubit.dart';
 import 'package:clipboard/base/bloc/monetization_cubit/monetization_cubit.dart';
 import 'package:clipboard/base/constants/numbers/values.dart';
 import 'package:clipboard/base/data/services/notification_service.dart';
@@ -63,6 +65,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
   DateTime? _lastManualSyncAt;
   Future<void>? _syncAllInFlight;
   bool _completionCheckPending = false;
+  bool _syncFailed = false;
   final Lock _syncLock = Lock();
 
   SyncStatusCubit(
@@ -108,6 +111,8 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     _eventSub = eventBus.stream.listen((event) async {
       await _syncLock.synchronized(() async {
         if (event is SyncProgressEvent) {
+          // New sync activity supersedes a previously reported failure.
+          _syncFailed = false;
           final currentProgress = state.maybeWhen(
             syncing: (progress) => Map<String, SyncProgress>.from(progress),
             orElse: () => <String, SyncProgress>{},
@@ -125,6 +130,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
           await _checkCompletion();
         } else if (event is SyncEngineStatusUpdateEvent) {
           if (event.isBusy) {
+            _syncFailed = false;
             _busyEngines.add(event.entityType);
             if (state is! SyncingStatus) {
               emit(const SyncStatusState.syncing());
@@ -178,6 +184,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
 
   Future<void> _checkCompletion() async {
     if (_completionCheckPending ||
+        _syncFailed ||
         _busyEngines.isNotEmpty ||
         _isManualSyncing) {
       return;
@@ -186,7 +193,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     _completionCheckPending = true;
     try {
       await wait(_completionIdleDelay.inMilliseconds);
-      if (_busyEngines.isNotEmpty || _isManualSyncing) {
+      if (_syncFailed || _busyEngines.isNotEmpty || _isManualSyncing) {
         return;
       }
       await _completeSync();
@@ -209,6 +216,25 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     });
     _syncAllInFlight = tracked;
     return tracked;
+  }
+
+  Future<void> pushPending() async {
+    _syncFailed = false;
+    try {
+      final failure = await sl<UserDevicesCubit>().ensureSyncReady(
+        userId: sl<AuthCubit>().userId,
+      );
+      if (failure != null) throw failure;
+      await orchestrator.processOutboxes();
+    } catch (e) {
+      _syncFailed = true;
+      final failure = Failure.fromException(e);
+      logger.e('Manual clip sync failed', error: e);
+      emit(SyncStatusState.failed(failure));
+      InAppNotificationService.i.notify(
+        NotificationMessage(id: 'sync-failed', body: failure.message),
+      );
+    }
   }
 
   Future<void> _runSyncAll(SyncAllParams params) async {
@@ -235,11 +261,18 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
     }
 
     _isManualSyncing = true;
+    _syncFailed = false;
     if (state is! SyncingStatus) {
       emit(const SyncStatusState.syncing());
     }
 
     try {
+      if (!params.restoration) {
+        final failure = await sl<UserDevicesCubit>().ensureSyncReady(
+          userId: sl<AuthCubit>().userId,
+        );
+        if (failure != null) throw failure;
+      }
       final success = await orchestrator.syncAll(
         force: params.force,
         freshPull: params.freshPull,
@@ -248,6 +281,7 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
       if (success) {
         await _completeSync();
       } else {
+        _syncFailed = true;
         emit(
           const SyncStatusState.failed(
             Failure(
@@ -258,10 +292,13 @@ class SyncStatusCubit extends Cubit<SyncStatusState> {
         );
       }
     } catch (e) {
-      emit(
-        SyncStatusState.failed(
-          Failure(message: e.toString(), code: 'sync_error'),
-        ),
+      _syncFailed = true;
+      _lastManualSyncAt = null;
+      final failure = Failure.fromException(e);
+      logger.e('Sync failed', error: e);
+      emit(SyncStatusState.failed(failure));
+      InAppNotificationService.i.notify(
+        NotificationMessage(id: 'sync-failed', body: failure.message),
       );
     } finally {
       _isManualSyncing = false;

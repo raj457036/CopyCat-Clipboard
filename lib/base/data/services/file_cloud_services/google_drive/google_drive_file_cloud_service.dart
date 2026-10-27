@@ -57,13 +57,10 @@ class GoogleDriveFileCloudService implements FileCloudService {
       );
     }
 
-    final results = await Future.wait([
-      _drive.upload(item),
-      _getBlurHashIfNeeded(item),
-    ]);
-
-    final result = results[0] as Either<Failure, ClipboardItem>;
-    final blurHash = results[1] as String?;
+    // Finish image processing before creating a remote file so a worker
+    // timeout cannot leave an upload running after the queue moves on.
+    final blurHash = await _getBlurHashIfNeeded(item);
+    final result = await _drive.upload(item);
 
     return result.fold((failure) => Left(failure), (uploadedItem) {
       final updated = uploadedItem.copyWith(

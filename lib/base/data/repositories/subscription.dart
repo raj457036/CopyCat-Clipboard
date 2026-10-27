@@ -17,7 +17,7 @@ class SubscriptionRepositoryImpl extends SubscriptionRepository {
       final info = await remote.get(userId);
       return Right(info);
     } catch (e) {
-      return const Right(null);
+      return Left(Failure.fromException(e));
     }
   }
 

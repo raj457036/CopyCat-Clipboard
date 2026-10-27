@@ -8,6 +8,7 @@ import 'package:clipboard/utils/debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:isar_community/isar.dart';
+import 'package:synchronized/synchronized.dart';
 import 'package:clipboard/base/constants/strings/strings.dart';
 
 @LazySingleton(as: SyncOutboxRepository)
@@ -32,7 +33,7 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
   final Map<int, String> _idToEntityLocalKey = {};
 
   bool _initialized = false;
-  bool _isFlushing = false;
+  final _flushLock = Lock();
 
   String _key(String entityType, int localId) => '$entityType:$localId';
 
@@ -72,13 +73,8 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
     _collectorDebouncer(_flushCollector);
   }
 
-  Future<void> _flushCollector() async {
+  Future<void> _flushCollector() => _flushLock.synchronized(() async {
     if (_collector.isEmpty) return;
-    if (_isFlushing) {
-      _collectorDebouncer(_flushCollector);
-      return;
-    }
-    _isFlushing = true;
 
     try {
       _logger.d(
@@ -131,12 +127,11 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
         _newEntryController.add(null);
       }
     } finally {
-      _isFlushing = false;
       if (_collector.isNotEmpty) {
         _collectorDebouncer(_flushCollector);
       }
     }
-  }
+  });
 
   List<SyncOutboxEntry> _collapseEntries(List<SyncOutboxEntry> entries) {
     final merged = <String, SyncOutboxEntry>{};
@@ -203,6 +198,7 @@ class IsarSyncOutboxRepository implements SyncOutboxRepository {
 
   @override
   Future<List<SyncOutboxEntry>> getPending({int limit = 50}) async {
+    await _flushCollector();
     final results = await _collection
         .where()
         .sortByCreatedAt()

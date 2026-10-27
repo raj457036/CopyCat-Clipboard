@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:cacherine/cacherine.dart';
@@ -73,16 +74,28 @@ void processBlurHash((String, String) payload, Sender send) {
 final blurHashWorker = EasyCompute<(Uint8List?, String?), (String, String)>(
   ComputeEntrypoint(processBlurHash),
   workerName: "BlurHash Enc/Dec",
+  timeoutDuration: _workerTimeout,
 );
 
 // LRU cache: avoids re-decoding the same blurHash every time a card
 // re-enters the viewport. Capped at 100 entries (~3–4 KB each -> ~400 KB max).
 final _decodeCache = SimpleLRUCache<String, Uint8List>(100);
+const _workerTimeout = Duration(seconds: 15);
+
+Future<(Uint8List?, String?)> _computeBlurHash((String, String) payload) {
+  return (() async {
+    await blurHashWorker.waitUntilReady();
+    return blurHashWorker.compute(payload);
+  })().timeout(
+    _workerTimeout,
+    onTimeout: () {
+      throw TimeoutException('Image processing timed out. Please retry.');
+    },
+  );
+}
 
 Future<String?> getBlurHash(String path) async {
-  await blurHashWorker.waitUntilReady();
-  final (_, blurHash) = await blurHashWorker.compute(("encode", path));
-
+  final (_, blurHash) = await _computeBlurHash(("encode", path));
   return blurHash;
 }
 
@@ -90,8 +103,7 @@ Future<Uint8List?> getImageFromBlurHash(String blurHash) async {
   final cached = _decodeCache.get(blurHash);
   if (cached != null) return cached;
 
-  await blurHashWorker.waitUntilReady();
-  final (bin, _) = await blurHashWorker.compute(("decode", blurHash));
+  final (bin, _) = await _computeBlurHash(("decode", blurHash));
   if (bin != null) {
     _decodeCache.set(blurHash, bin);
   }

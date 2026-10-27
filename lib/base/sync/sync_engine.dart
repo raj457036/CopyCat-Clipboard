@@ -403,7 +403,13 @@ class SyncEngine<T extends Syncable> {
     final allLocalItems = resolvable.map((e) => e.$2).toList(growable: false);
     final remoteItems = uniqueRemoteItems.values.toList(growable: false);
 
-    final result = await adapter.deleteBatchFromRemote(remoteItems);
+    Either<Failure, bool> result;
+    try {
+      result = await adapter.deleteBatchFromRemote(remoteItems);
+    } catch (e, stack) {
+      logger.e('Outbox batch delete threw', error: e, stackTrace: stack);
+      result = Left(Failure.fromException(e));
+    }
 
     final success = result.fold((_) => false, (ok) => ok);
     if (!success) {
@@ -424,6 +430,34 @@ class SyncEngine<T extends Syncable> {
   }
 
   Future<void> _processOutboxEntry(SyncOutboxEntry entry) async {
+    eventBus.setProcessing(adapter.entityType, entry.localId, true);
+    try {
+      await _pushOutboxEntry(entry);
+    } catch (e, stack) {
+      logger.e(
+        'Queue entry failed outside the remote operation',
+        error: e,
+        stackTrace: stack,
+      );
+      final failure = Failure.fromException(e);
+      await _handleOutboxFailure(entry, failure);
+      final item = await adapter.getLocalById(entry.localId);
+      if (item != null && entry.action != SyncOutboxAction.delete) {
+        final failed = await adapter.markSyncInProgress(
+          item,
+          inProgress: false,
+          failure: failure,
+        );
+        if (failed != null) {
+          eventBus.emit<T>((CrossSyncEventType.update, failed));
+        }
+      }
+    } finally {
+      eventBus.setProcessing(adapter.entityType, entry.localId, false);
+    }
+  }
+
+  Future<void> _pushOutboxEntry(SyncOutboxEntry entry) async {
     final item = await adapter.getLocalById(entry.localId);
     logger.d(
       () =>
@@ -451,30 +485,40 @@ class SyncEngine<T extends Syncable> {
 
     Either<Failure, dynamic>? resultEither;
 
-    switch (entry.action) {
-      case SyncOutboxAction.create:
-      case SyncOutboxAction.update:
-        if (item == null) {
-          resultEither = const Left(
-            Failure(message: 'Item not found locally', code: 'not-found'),
+    try {
+      switch (entry.action) {
+        case SyncOutboxAction.create:
+        case SyncOutboxAction.update:
+          if (item == null) {
+            resultEither = const Left(
+              Failure(message: 'Item not found locally', code: 'not-found'),
+            );
+            break;
+          }
+          logger.d(
+            () => '[SyncEngine:${adapter.entityType}] Calling pushToRemote...',
           );
-          break;
-        }
-        logger.d(
-          () => '[SyncEngine:${adapter.entityType}] Calling pushToRemote...',
-        );
-        resultEither = await adapter.pushToRemote(item);
-      case SyncOutboxAction.delete:
-        // NOTE: We know the item is soft deleted locally at this point.
-        if (item == null) {
-          await outboxRepo.markCompleted(entry.id!);
-          return;
-        }
-        resultEither = await adapter.deleteFromRemote(item);
+          resultEither = await adapter.pushToRemote(item);
+        case SyncOutboxAction.delete:
+          // NOTE: We know the item is soft deleted locally at this point.
+          if (item == null) {
+            await outboxRepo.markCompleted(entry.id!);
+            return;
+          }
+          resultEither = await adapter.deleteFromRemote(item);
+      }
+    } catch (e, stack) {
+      logger.e(
+        'Outbox operation threw for entry ${entry.id}',
+        error: e,
+        stackTrace: stack,
+      );
+      resultEither = Left(Failure.fromException(e));
     }
 
     await resultEither.fold(
       (failure) async {
+        await _handleOutboxFailure(entry, failure);
         if (item != null && entry.action != SyncOutboxAction.delete) {
           final completed = await adapter.markSyncInProgress(
             item,
@@ -489,7 +533,6 @@ class SyncEngine<T extends Syncable> {
           () =>
               '[SyncEngine:${adapter.entityType}] Push FAILED: ${failure.message} (${failure.code})',
         );
-        await _handleOutboxFailure(entry, failure);
       },
       (result) async {
         if (entry.action == SyncOutboxAction.delete && item != null) {

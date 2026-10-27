@@ -52,6 +52,9 @@ abstract class RegisterModule {
       debug: kDebugMode,
       headers: {"user-agent": userAgent},
       httpClient: SupabaseHttpClient(),
+      postgrestOptions: const PostgrestClientOptions(
+        requestTimeout: Duration(seconds: 30),
+      ),
     );
     return Supabase.instance.client;
   }

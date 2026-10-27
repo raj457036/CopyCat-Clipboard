@@ -266,7 +266,7 @@ class ClipSyncAdapter implements SyncAdapter<ClipboardItem> {
       uploading: inProgress,
       uploadProgress: inProgress ? item.uploadProgress : null,
       failure: failure,
-      isQueued: inProgress ? item.isQueued : false,
+      isQueued: false,
     );
   }
 
