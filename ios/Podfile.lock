@@ -117,21 +117,21 @@ PODS:
   - PromisesObjC (2.4.1)
   - PromisesSwift (2.4.1):
     - PromisesObjC (= 2.4.1)
-  - purchases_flutter (10.15.2):
+  - purchases_flutter (10.18.1):
     - Flutter
-    - PurchasesHybridCommon (= 19.10.0)
-  - purchases_ui_flutter (10.15.2):
+    - PurchasesHybridCommon (= 19.15.0)
+  - purchases_ui_flutter (10.18.1):
     - Flutter
-    - PurchasesHybridCommonUI (= 19.10.0)
-  - PurchasesHybridCommon (19.10.0):
-    - RevenueCat (= 5.94.0)
-  - PurchasesHybridCommonUI (19.10.0):
-    - PurchasesHybridCommon (= 19.10.0)
-    - RevenueCatUI (= 5.94.0)
+    - PurchasesHybridCommonUI (= 19.15.0)
+  - PurchasesHybridCommon (19.15.0):
+    - RevenueCat (= 5.98.0)
+  - PurchasesHybridCommonUI (19.15.0):
+    - PurchasesHybridCommon (= 19.15.0)
+    - RevenueCatUI (= 5.98.0)
   - RecaptchaInterop (101.0.0)
-  - RevenueCat (5.94.0)
-  - RevenueCatUI (5.94.0):
-    - RevenueCat (= 5.94.0)
+  - RevenueCat (5.98.0)
+  - RevenueCatUI (5.98.0):
+    - RevenueCat (= 5.98.0)
   - SDWebImage (5.21.7):
     - SDWebImage/Core (= 5.21.7)
   - SDWebImage/Core (5.21.7)
@@ -320,24 +320,24 @@ SPEC CHECKSUMS:
   pdfx: 824a9108791a81e400da7d1a903ab73668365072
   PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
   PromisesSwift: 217dea0fd5d2ad65222a109c48698add13cc1c5b
-  purchases_flutter: d695b22943fb094b02badf0f5f5a8bd7ab1c035f
-  purchases_ui_flutter: 338ab82d9535689da59ddc9ebfaa0d5d179e4854
-  PurchasesHybridCommon: 4ea84285a799df27db9e4a0cc180d9129e6e9cf2
-  PurchasesHybridCommonUI: 64533f29a16a47437a194a1dec89e5fcc73a3732
+  purchases_flutter: bce632274172e59844aa3ba697b90a139fe81978
+  purchases_ui_flutter: f43993b7b2a7566a52f2ac6442c483eff9453d1a
+  PurchasesHybridCommon: 896c922f222ffde889a96568e02268b5ca9db85a
+  PurchasesHybridCommonUI: 843d45949325d6cf4c4abe285fa15876ca16f910
   RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
-  RevenueCat: f381deba42a93e5194104b17a1f653a389d2e215
-  RevenueCatUI: 7f972d3c8cff4d64d5eb26e25b5aace659024260
+  RevenueCat: d2d6a98d8e1d53cc1c6362cc1fdfb64ca99b8735
+  RevenueCatUI: 8f089ba531a2393465cb5062e2009eb3a6e42927
   SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
   share_handler_ios: e2244e990f826b2c8eaa291ac3831569438ba0fb
   share_handler_ios_models: fc638c9b4330dc7f082586c92aee9dfa0b87b871
   share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
-  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
+  shared_preferences_foundation: a7c3904f2dedb3701dd1903cb152ef5e7df92422
   sign_in_with_apple: 5e34677a4e74c5f42760f41b3bbe05343e84d171
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   super_native_extensions: b763c02dc3a8fd078389f410bf15149179020cb4
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
-  video_player_avfoundation: 3453f792138786248960ca029747fcd9f318ef52
+  video_player_avfoundation: bc5f800d1e1c4f389bc5d51778a4f89dd1bf4a77
   wakelock_plus: e29112ab3ef0b318e58cfa5c32326458be66b556
 
 PODFILE CHECKSUM: 5860455b91496c4f116b6b27bd48f19644234fee
