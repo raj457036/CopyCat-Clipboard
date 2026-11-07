@@ -1,21 +1,27 @@
 import 'dart:convert';
 
+import 'package:clipboard/base/data/services/supabase_session_reader.dart';
 import 'package:clipboard/common/logging.dart';
 import 'package:http/http.dart' as http;
 
-/// HTTP client used by Supabase that protects the session from transient
-/// token-refresh failures.
+/// HTTP client used by Supabase that keeps the session alive across token
+/// refreshes. Only refresh-token requests are touched:
 ///
-/// gotrue signs the user out on *any* non-5xx refresh error. Non-JSON 3xx/4xx
-/// responses (captive portals, VPN/proxy reconnects after wake or unlock,
-/// CDN error pages) and rate limiting are not session problems, so they are
-/// rewritten to `503` which gotrue treats as retryable. Genuine auth errors
-/// (a JSON body carrying an error code, e.g. `refresh_token_not_found`) are
-/// passed through unchanged.
+/// 1. Before sending, the refresh token is replaced with the latest persisted
+///    one when a [SupabaseSessionReader] is provided. This lets the SDK pick
+///    up tokens rotated by the Android background service.
+/// 2. After receiving, transient failures are rewritten to `503`. gotrue signs
+///    the user out on *any* non-5xx refresh error, but non-JSON 3xx/4xx
+///    responses (captive portals, VPN/proxy reconnects, CDN error pages) and
+///    rate limiting are not session problems. Genuine auth errors (a JSON body
+///    carrying an error code, e.g. `refresh_token_not_found`) pass through.
 class SupabaseHttpClient extends http.BaseClient {
-  SupabaseHttpClient([http.Client? inner]) : _inner = inner ?? http.Client();
+  SupabaseHttpClient({http.Client? inner, SupabaseSessionReader? sessionReader})
+    : _inner = inner ?? http.Client(),
+      _sessionReader = sessionReader;
 
   final http.Client _inner;
+  final SupabaseSessionReader? _sessionReader;
 
   static const _transientStatusCodes = {408, 425, 429};
   static const _transientErrorCodes = {'over_request_rate_limit'};
@@ -26,13 +32,38 @@ class SupabaseHttpClient extends http.BaseClient {
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
-    final response = await _inner.send(request);
-    final status = response.statusCode;
+    if (!_isRefreshTokenRequest(request.url)) return _inner.send(request);
 
-    if (!_isRefreshTokenRequest(request.url) ||
-        (status >= 200 && status < 300)) {
-      return response;
+    await _useLatestRefreshToken(request);
+    return _normalizeRefreshResponse(await _inner.send(request));
+  }
+
+  @override
+  void close() => _inner.close();
+
+  bool _isRefreshTokenRequest(Uri url) =>
+      url.path.endsWith('/auth/v1/token') &&
+      url.queryParameters['grant_type'] == 'refresh_token';
+
+  Future<void> _useLatestRefreshToken(http.BaseRequest request) async {
+    final reader = _sessionReader;
+    if (reader == null || request is! http.Request) return;
+
+    final body = _decodeJsonObject(request.body);
+    final latestToken = await reader.latestRefreshToken();
+    if (body == null ||
+        latestToken == null ||
+        body['refresh_token'] == latestToken) {
+      return;
     }
+    request.body = jsonEncode({...body, 'refresh_token': latestToken});
+  }
+
+  Future<http.StreamedResponse> _normalizeRefreshResponse(
+    http.StreamedResponse response,
+  ) async {
+    final status = response.statusCode;
+    if (status >= 200 && status < 300) return response;
 
     if (status >= 500) {
       _log(status, null, transient: true);
@@ -60,20 +91,23 @@ class SupabaseHttpClient extends http.BaseClient {
     );
   }
 
-  bool _isRefreshTokenRequest(Uri url) =>
-      url.path.endsWith('/auth/v1/token') &&
-      url.queryParameters['grant_type'] == 'refresh_token';
-
   String? _authErrorCode(List<int> bytes) {
-    try {
-      final data = jsonDecode(utf8.decode(bytes));
-      if (data is! Map) return null;
-      for (final key in const ['error_code', 'code', 'error']) {
-        final value = data[key];
-        if (value is String && value.isNotEmpty) return value;
-      }
-    } catch (_) {}
+    final data = _decodeJsonObject(utf8.decode(bytes, allowMalformed: true));
+    if (data == null) return null;
+    for (final key in const ['error_code', 'code', 'error']) {
+      final value = data[key];
+      if (value is String && value.isNotEmpty) return value;
+    }
     return null;
+  }
+
+  Map<String, dynamic>? _decodeJsonObject(String source) {
+    try {
+      final decoded = jsonDecode(source);
+      return decoded is Map<String, dynamic> ? decoded : null;
+    } on FormatException {
+      return null;
+    }
   }
 
   void _log(int status, String? errorCode, {required bool transient}) {
@@ -96,7 +130,4 @@ class SupabaseHttpClient extends http.BaseClient {
       logger.e('$message (session rejected by server)');
     }
   }
-
-  @override
-  void close() => _inner.close();
 }

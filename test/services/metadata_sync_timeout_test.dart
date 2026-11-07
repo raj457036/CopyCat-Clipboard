@@ -18,7 +18,7 @@ void main() {
       // Intentionally do not send response headers.
     });
     final transport = SupabaseHttpClient(
-      IOClient(_RealHttpOverrides().createHttpClient(null)),
+      inner: IOClient(_RealHttpOverrides().createHttpClient(null)),
     );
     final client = SupabaseClient(
       'http://${server.address.address}:${server.port}',

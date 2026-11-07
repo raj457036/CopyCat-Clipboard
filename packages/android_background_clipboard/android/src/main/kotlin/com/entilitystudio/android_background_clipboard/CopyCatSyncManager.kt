@@ -54,6 +54,7 @@ object ListeningMode {
 class CopyCatSyncManager(
     applicationContext: Context,
     private val onRemoteClipUpsert: (RemoteClipPayload) -> Unit,
+    httpClient: OkHttpClient? = null,
 ) {
     private val appContext: Context = applicationContext.applicationContext
     private val logTag = "CopyCatSyncManager"
@@ -67,7 +68,7 @@ class CopyCatSyncManager(
     private val loggingInterceptor = HttpLoggingInterceptor()
 
     // Configure OkHttp with memory-efficient settings
-    private val client = OkHttpClient.Builder()
+    private val client = httpClient ?: OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .connectionPool(ConnectionPool(5, 5, TimeUnit.MINUTES)) // Limit connection pool
         .connectTimeout(10, TimeUnit.SECONDS)
@@ -105,8 +106,10 @@ class CopyCatSyncManager(
     private var lastScreenOnRefreshAtMs: Long = 0L
     private val screenOnRefreshInFlight = AtomicBoolean(false)
     private val authRefreshLock = Any()
+    private val sessionStateLock = Any()
     @Volatile
     private var lastWriteAuthFailure: Boolean = false
+    @Volatile
     var isStopped = false
 
     private val screenStateReceiver = object : BroadcastReceiver() {
@@ -130,10 +133,11 @@ class CopyCatSyncManager(
 
 
     private val listener =
-        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             if (key == tokenKey) {
-                token = sharedPreferences.getString(key, "{}")!!
-                load()
+                val wasStopped = isStopped
+                synchronized(sessionStateLock) { applySession(readStoredSession()) }
+                if (wasStopped != isStopped) reconfigureConnections()
             }
         }
 
@@ -271,6 +275,10 @@ class CopyCatSyncManager(
     private fun load() {
         if (token == "{}") {
             debugLog(logTag) { "Load failed, token = {}" }
+            accessToken = null
+            refreshToken = null
+            expireAt = null
+            userId = null
             isStopped = true
             return
         }
@@ -283,27 +291,59 @@ class CopyCatSyncManager(
     }
 
     private fun reloadTokenFromSharedPreferences(): Boolean {
-        val latestToken = sp.getString(tokenKey, "{}") ?: "{}"
+        val latestToken = readStoredSession()
         if (latestToken == "{}") return false
 
         return try {
-            token = latestToken
-            load()
-            !accessToken.isNullOrBlank()
+            synchronized(sessionStateLock) {
+                applySession(latestToken)
+                !accessToken.isNullOrBlank()
+            }
         } catch (e: Exception) {
             Log.e(logTag, "Failed to reload token from preferences: ${e.message}")
             false
         }
     }
 
+    private fun readStoredSession(): String = sp.getString(tokenKey, "{}") ?: "{}"
+
+    /** Replaces the in-memory credentials. Callers must hold [sessionStateLock]. */
+    private fun applySession(session: String) {
+        token = session
+        load()
+    }
+
+    private fun refreshTokenOf(session: String): String? =
+        if (session == "{}") null else JSONObject(session).optString("refresh_token")
+
+    /**
+     * Persists [refreshedSession] only if the stored session still holds [sentRefreshToken].
+     * Otherwise the app rotated or cleared the session while the request was in flight,
+     * so the stored session wins. Returns whether usable credentials are loaded.
+     */
+    private fun commitRefreshedSession(sentRefreshToken: String, refreshedSession: String): Boolean =
+        synchronized(sessionStateLock) {
+            val storedSession = readStoredSession()
+            if (refreshTokenOf(storedSession) == sentRefreshToken) {
+                applySession(refreshedSession)
+                writeToSp(tokenKey, refreshedSession)
+                Log.i(logTag, "Successfully refreshed Supabase token in background")
+            } else {
+                applySession(storedSession)
+                Log.i(logTag, "Session changed during background refresh; keeping stored session")
+            }
+            !isStopped && !accessToken.isNullOrBlank()
+        }
+
     private fun writeToSp(key: String, value: String): Boolean {
         return sp.edit().putString(key, value).commit()
     }
 
     private fun doRefreshToken(): Boolean {
-        if (refreshToken == null || !isReady) return false
+        val sentRefreshToken = synchronized(sessionStateLock) { refreshToken }
+        if (sentRefreshToken == null || !isReady) return false
         val url = "$url/auth/v1/token?grant_type=refresh_token"
-        val refreshTokenBody = """{"refresh_token": "$refreshToken"}"""
+        val refreshTokenBody = """{"refresh_token": "$sentRefreshToken"}"""
 
         val requestBody = refreshTokenBody.toRequestBody(contentType.toMediaTypeOrNull())
 
@@ -319,11 +359,7 @@ class CopyCatSyncManager(
             client.newCall(request).execute().use { response ->
                 val bodyString = response.body?.string() ?: ""
                 if (response.code == 200 && bodyString.isNotBlank()) {
-                    token = bodyString
-                    load()
-                    writeToSp(tokenKey, bodyString)
-                    Log.i(logTag, "Successfully refreshed Supabase token in background")
-                    true
+                    commitRefreshedSession(sentRefreshToken, bodyString)
                 } else {
                     Log.w(logTag, "Token refresh failed. code=${response.code} body=$bodyString")
                     false
@@ -479,7 +515,7 @@ class CopyCatSyncManager(
         reconnectTimer = Timer("copycat-bg-reconnect", true)
         reconnectTimer?.schedule(object : TimerTask() {
             override fun run() {
-                if (realtimeEnabled && !realtimeConnected) {
+                if (!isStopped && realtimeEnabled && !realtimeConnected) {
                     if (isExpired) {
                         recoverAuthWithRetries()
                     }

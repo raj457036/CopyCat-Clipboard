@@ -7,6 +7,7 @@ WIP
 #### Bug Fixes
 
 - Fix: Incorrect frequenent syncing error message toast when syncing files
+- Fix: Android background sync could leave the app using an outdated refresh token.
 
 ## 0.1.22
 

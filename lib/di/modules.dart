@@ -3,6 +3,7 @@ import "package:clipboard/base/constants/strings/strings.dart";
 import "package:clipboard/base/data/isar/isar_database.dart";
 import "package:clipboard/base/data/isar/isar_database_service.dart";
 import "package:clipboard/base/data/services/supabase_http_client.dart";
+import "package:clipboard/base/data/services/supabase_session_reader.dart";
 import "package:clipboard/base/domain/services/database_service.dart";
 import 'package:device_info_plus/device_info_plus.dart';
 import "package:flutter/foundation.dart";
@@ -12,6 +13,7 @@ import "package:isar_community/isar.dart";
 import "package:package_info_plus/package_info_plus.dart";
 import 'package:path/path.dart' as p;
 import "package:path_provider/path_provider.dart";
+import "package:shared_preferences/shared_preferences.dart";
 import "package:supabase_flutter/supabase_flutter.dart";
 import "package:tiny_storage/tiny_storage.dart";
 import "package:universal_io/io.dart";
@@ -35,9 +37,26 @@ abstract class RegisterModule {
 
   @preResolve
   @singleton
+  Future<SharedPreferences> get sharedPreferences =>
+      SharedPreferences.getInstance();
+
+  @singleton
+  SupabaseHttpClient supabaseHttpClient(
+    SharedPreferences preferences,
+    @Named("supabase_project_key") String projectKey,
+  ) => SupabaseHttpClient(
+    // The Android background service rotates the session natively.
+    sessionReader: Platform.isAndroid
+        ? SupabaseSessionReader(preferences, projectKey)
+        : null,
+  );
+
+  @preResolve
+  @singleton
   Future<SupabaseClient> client(
     @Named("supabase_url") String url,
     @Named("supabase_key") String key,
+    SupabaseHttpClient httpClient,
   ) async {
     final packageInfo = await PackageInfo.fromPlatform();
     final userAgent =
@@ -51,7 +70,7 @@ abstract class RegisterModule {
       publishableKey: key,
       debug: kDebugMode,
       headers: {"user-agent": userAgent},
-      httpClient: SupabaseHttpClient(),
+      httpClient: httpClient,
       postgrestOptions: const PostgrestClientOptions(
         requestTimeout: Duration(seconds: 30),
       ),
